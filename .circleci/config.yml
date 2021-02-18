@@ -1,23 +1,20 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@2.2
+  hmpps: ministryofjustice/hmpps@2.3
 
 executors:
   integration-tests:
     docker:
-      - image: circleci/node:14-buster-browsers
+      - image: cimg/node:14.15-browsers
       - image: circleci/redis:buster
     working_directory: ~/app
-  builder:
-    docker:
-      - image: 'circleci/node:14-buster-browsers'
-    working_directory: ~/app   
-  
 
 jobs:
   build:
-    executor: builder
+    executor:
+      name: hmpps/node
+      tag: 14.15-browsers
     steps:
       - checkout
       - run:
@@ -52,8 +49,28 @@ jobs:
             - dist
             - .cache/Cypress
 
+  check_outdated:
+    executor:
+      name: hmpps/node
+      tag: 14.15-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: install-npm
+          command: 'npm ci --no-audit'
+      - run:
+          name: Check version
+          command: 'npm --version'
+      - run:
+          name: Run check
+          command: 'npm outdated typescript govuk-frontend'
+
   unit_test:
-    executor: builder
+    executor:
+      name: hmpps/node
+      tag: 14.15-browsers
     steps:
       - checkout
       - restore_cache:
@@ -147,3 +164,4 @@ workflows:
                 - main
     jobs:
       - hmpps/npm_security_audit
+      - check_outdated
