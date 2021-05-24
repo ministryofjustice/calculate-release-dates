@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   hmpps: ministryofjustice/hmpps@3.2
+  slack: circleci/slack@4.4.2
 
 executors:
   integration-tests:
@@ -66,6 +67,10 @@ jobs:
       - run:
           name: Run check
           command: 'npm outdated typescript govuk-frontend'
+      - slack/notify:
+          event: fail
+          channel: hmpps_typescript_notifications
+          template: basic_fail_1
 
   unit_test:
     executor:
