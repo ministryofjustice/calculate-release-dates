@@ -9,20 +9,15 @@ parameters:
     type: string
     default: hmpps_typescript_notifications
 
-executors:
-  builder:
-    docker:
-      - image: 'cimg/node:14.17-browsers'
-    working_directory: ~/app
-  integration-tests:
-    docker:
-      - image: cimg/node:14.17-browsers
-      - image: circleci/redis:buster
-    working_directory: ~/app
+  node-version:
+    type: string
+    default: 14.17-browsers
 
 jobs:
   build:
-    executor: builder
+    executor:
+      name: hmpps/node
+      tag: << pipeline.parameters.node-version >>
     steps:
       - checkout
       - run:
@@ -58,7 +53,9 @@ jobs:
             - .cache/Cypress
 
   check_outdated:
-    executor: builder
+    executor:
+      name: hmpps/node
+      tag: << pipeline.parameters.node-version >>
     steps:
       - checkout
       - restore_cache:
@@ -78,7 +75,9 @@ jobs:
           template: basic_fail_1
 
   unit_test:
-    executor: builder
+    executor:
+      name: hmpps/node
+      tag: << pipeline.parameters.node-version >>
     steps:
       - checkout
       - restore_cache:
@@ -92,7 +91,10 @@ jobs:
           path: test-results/unit-test-reports.html
 
   integration_test:
-    executor: integration-tests
+    executor:
+      name: hmpps/node_redis
+      node_tag: << pipeline.parameters.node-version >>
+      redis_tag: buster
     steps:
       - checkout
       - attach_workspace:
