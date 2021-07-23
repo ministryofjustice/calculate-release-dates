@@ -1,5 +1,17 @@
 version: '3.1'
 services:
+  calculate-release-dates-db:
+    image: postgres
+    networks:
+      - hmpps
+    container_name: calculate-release-dates-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=calculate-release-dates
+      - POSTGRES_USER=calculate-release-dates
+      - POSTGRES_DB=calculate_release_dates
 
   redis:
     image: 'bitnami/redis:5.0'
