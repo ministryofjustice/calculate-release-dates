@@ -52,6 +52,7 @@ services:
       - API_CLIENT_SECRET=client-secret
       - SYSTEM_CLIENT_ID=system-client-id
       - SYSTEM_CLIENT_SECRET=system-client-secret
+      - CALCULATE_RELEASE_DATES_API_URL=http://localhost:8089
 
 networks:
   hmpps:
