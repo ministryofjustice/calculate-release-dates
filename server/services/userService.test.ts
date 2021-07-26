@@ -1,5 +1,5 @@
 import UserService from './userService'
-import HmppsAuthClient, { User } from '../data/hmppsAuthClient'
+import HmppsAuthClient, { User } from '../api/hmppsAuthClient'
 
 jest.mock('../data/hmppsAuthClient')
 

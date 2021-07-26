@@ -1,19 +1,39 @@
-import type { RequestHandler, Router } from 'express'
-
+import { RequestHandler, Router } from 'express'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+import { Services } from '../services'
+import populateCurrentUser from '../middleware/populateCurrentUser'
+import tokenVerifier from '../api/tokenVerification'
+import auth from '../authentication/auth'
+import OtherRoutes from './otherRoutes'
 
-export default function routes(router: Router, calculateReleaseDatesService: CalculateReleaseDatesService): Router {
+export default function Index({ userService, calculateReleaseDatesService }: Services): Router {
+  const router = Router({ mergeParams: true })
+
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
+  // const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
-  get('/', async (req, res, next) => {
-    console.log('hello 1')
-    console.log(`hello 1${JSON.stringify(res.locals.user)}`)
-    const a = await calculateReleaseDatesService.getTestData(res.locals.user.token)
-    console.log(`hello 2 XXX${JSON.stringify(a)}`)
-    console.log(`hello 2${a}`)
-    res.render('pages/index')
+  const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService)
+
+  const indexRoutes = () =>
+    get('/', (req, res) => {
+      res.render('pages/index')
+    })
+
+  const otherRoutes = () => {
+    get('/test/data', otherAccessRoutes.listTestData)
+  }
+
+  router.use(auth.authenticationMiddleware(tokenVerifier))
+  router.use(populateCurrentUser(userService))
+  router.use((req, res, next) => {
+    if (typeof req.csrfToken === 'function') {
+      res.locals.csrfToken = req.csrfToken()
+    }
+    next()
   })
+
+  indexRoutes()
+  otherRoutes()
 
   return router
 }

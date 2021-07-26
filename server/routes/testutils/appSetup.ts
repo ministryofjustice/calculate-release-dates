@@ -6,10 +6,10 @@ import path from 'path'
 import allRoutes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
-import standardRouter from '../standardRouter'
 import UserService from '../../services/userService'
 import * as auth from '../../authentication/auth'
-import MockCalculateReleaseDatesService from './MockCalculateReleaseDateService'
+import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
+import { Services } from '../../services'
 
 const user = {
   name: 'john smith',
@@ -32,7 +32,7 @@ class MockUserService extends UserService {
   }
 }
 
-function appSetup(route: Router, production: boolean): Express {
+function appSetup({ router, production = false }: { router: Router; production?: boolean }): Express {
   const app = express()
 
   app.set('view engine', 'njk')
@@ -48,14 +48,20 @@ function appSetup(route: Router, production: boolean): Express {
   app.use(cookieSession({ keys: [''] }))
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
-  app.use('/', route)
+  app.use('/', router)
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))
 
   return app
 }
 
-export default function appWithAllRoutes({ production = false }: { production?: boolean }): Express {
+// eslint-disable-next-line import/prefer-default-export
+export const appWithAllRoutes = (overrides: Partial<Services> = {}, production?: boolean): Express => {
+  const router = allRoutes({
+    userService: new MockUserService(),
+    calculateReleaseDatesService: {} as CalculateReleaseDatesService,
+    ...overrides,
+  })
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(allRoutes(standardRouter(new MockUserService()), new MockCalculateReleaseDatesService()), production)
+  return appSetup({ router, production })
 }

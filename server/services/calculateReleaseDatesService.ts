@@ -1,10 +1,12 @@
-import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
-import { TestData } from '../data/calculateReleaseDatesClientTypes'
+import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import { TestData } from '../api/calculateReleaseDatesClientTypes'
+import HmppsAuthClient from '../api/hmppsAuthClient'
 
 export default class CalculateReleaseDatesService {
-  constructor(private readonly calculateReleaseDatesApiClient: CalculateReleaseDatesApiClient) {}
+  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
-  async getTestData(token: string): Promise<TestData[]> {
-    return this.calculateReleaseDatesApiClient.getTestData(token)
+  async getTestData(username: string): Promise<TestData[]> {
+    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+    return new CalculateReleaseDatesApiClient(token).getTestData()
   }
 }

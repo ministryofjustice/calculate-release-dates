@@ -1,0 +1,33 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitle = applicationName + " - test data" %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-l govuk-!-margin-top-7">Calculate release dates</h1>
+        <p class="govuk-body govuk-!-margin-bottom-7">Test data.</p>
+    </div>
+    <div class="test-content">
+        <div class="govuk-width-container">
+            <table id="test-list" class="govuk-table" data-qa="test-list">
+
+              <thead class="govuk-table__head">
+                <th scope="col" class="govuk-table__header">Key</th>
+                <th scope="col" class="govuk-table__header">Value</th>
+              </thead>
+
+              <tbody class="govuk-table__body govuk-body-s">
+                {% for test in testData %}
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ test.key }}</td>
+                    <td class="govuk-table__cell">{{ test.value }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+
+            </table>
+        </div>
+    </div>
+{% endblock %}
