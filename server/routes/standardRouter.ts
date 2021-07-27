@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import csurf from 'csurf'
 import auth from '../authentication/auth'
-import tokenVerifier from '../data/tokenVerification'
+import tokenVerifier from '../api/tokenVerification'
 import populateCurrentUser from '../middleware/populateCurrentUser'
 import type UserService from '../services/userService'
 

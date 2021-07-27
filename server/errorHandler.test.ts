@@ -1,6 +1,11 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import appWithAllRoutes from './routes/testutils/appSetup'
+import { appWithAllRoutes } from './routes/testutils/appSetup'
+import CalculateReleaseDatesService from './services/calculateReleaseDatesService'
+
+jest.mock('./services/calculateReleaseDatesService')
+
+const calculateReleaseDatesService = new CalculateReleaseDatesService(null) as jest.Mocked<CalculateReleaseDatesService>
 
 let app: Express
 
@@ -25,7 +30,7 @@ describe('GET 404', () => {
   })
 
   it('should render content without stack in production mode', () => {
-    return request(appWithAllRoutes({ production: true }))
+    return request(appWithAllRoutes({ calculateReleaseDatesService }, true))
       .get('/unknown')
       .expect(404)
       .expect('Content-Type', /html/)
