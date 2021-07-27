@@ -6,7 +6,7 @@ This is the user interface service for calculating release dates for people in p
 The app requires instances of these services to be available:
 * hmpps-auth - for authentication
 * redis - session store and token caching
-* calculate-release-dates-api - for access to licence data
+* calculate-release-dates-api - for access to data stored by the calculation of release dates
 
 ## Building
 
