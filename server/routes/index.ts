@@ -10,8 +10,6 @@ export default function Index({ userService, calculateReleaseDatesService }: Ser
   const router = Router({ mergeParams: true })
 
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-  // const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
-
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService)
 
   const indexRoutes = () =>
