@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express'
-import UserService from '../services/userService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 export default class OtherRoutes {
