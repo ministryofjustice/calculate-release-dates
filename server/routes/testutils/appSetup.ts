@@ -40,8 +40,8 @@ function appSetup({ router, production = false }: { router: Router; production?:
   nunjucksSetup(app, path)
 
   app.use((req, res, next) => {
-    res.locals = {}
-    res.locals.user = req.user
+    req.user = { ...user, token: 'token1', authSource: 'nomis', username: 'user1' }
+    res.locals = { user: { ...req.user } }
     next()
   })
 
