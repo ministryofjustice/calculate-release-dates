@@ -13,7 +13,7 @@
     "watch-node": "DEBUG=gov-starter-server* nodemon --watch dist/ dist/server.js | bunyan -o short",
     "watch-sass": "npm run compile-sass -- --watch",
     "build": "npm run compile-sass && tsc && npm run copy-views",
-    "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
+    "start": "node $NODE_OPTIONS -r dotenv/config dist/server.js | bunyan -o short",
     "start:dev": "npm run build && concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node,Sass\" -c \"yellow.bold,cyan.bold,green.bold,blue.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node\" \"npm run watch-sass\"",
     "start-feature": "export $(cat feature.env) && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
     "watch-node-feature": "export $(cat feature.env) && nodemon --watch dist/ $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
