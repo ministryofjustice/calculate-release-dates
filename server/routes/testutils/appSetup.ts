@@ -10,6 +10,7 @@ import UserService from '../../services/userService'
 import * as auth from '../../authentication/auth'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import { Services } from '../../services'
+import PrisonerService from '../../services/prisonerService'
 
 const user = {
   name: 'john smith',
@@ -59,6 +60,7 @@ function appSetup({ router, production = false }: { router: Router; production?:
 export const appWithAllRoutes = (overrides: Partial<Services> = {}, production?: boolean): Express => {
   const router = allRoutes({
     userService: new MockUserService(),
+    prisonerService: {} as PrisonerService,
     calculateReleaseDatesService: {} as CalculateReleaseDatesService,
     ...overrides,
   })
