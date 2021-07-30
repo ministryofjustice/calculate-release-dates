@@ -6,11 +6,11 @@ import tokenVerifier from '../api/tokenVerification'
 import auth from '../authentication/auth'
 import OtherRoutes from './otherRoutes'
 
-export default function Index({ userService, calculateReleaseDatesService }: Services): Router {
+export default function Index({ userService, prisonerService, calculateReleaseDatesService }: Services): Router {
   const router = Router({ mergeParams: true })
 
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-  const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService)
+  const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
 
   const indexRoutes = () =>
     get('/', (req, res) => {
@@ -19,6 +19,8 @@ export default function Index({ userService, calculateReleaseDatesService }: Ser
 
   const otherRoutes = () => {
     get('/test/data', otherAccessRoutes.listTestData)
+    get('/prisoner/:nomsId/detail', otherAccessRoutes.getPrisonerDetail)
+    get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
   }
 
   router.use(auth.authenticationMiddleware(tokenVerifier))

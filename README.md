@@ -54,30 +54,25 @@ OR
 
 `$ npm run int-test-ui` - to run tests via the Cypress control panel
 
-## Running locally
-###1. Using docker-compose
+## Running and developing locally
+Starting at the root folder of the project pull the latest images for the service and dependent containers using the following command.
 `$ docker-compose pull`
-To pull the latest images for the service and dependent containers.
 
-`$ docker-compose up` To start these containers
+Bring the containers up as follows
+`$ docker-compose up --no-start --scale=calculate-release-dates=0`
 
-Point a browser to `localhost:3000`
+Start the dependent containers as follows
+`$ docker start redis hmpps-auth prison-api calculate-release-dates-db`
 
-
-###2. Running via npm
-`$ npm run start:dev`  - to start the service
-
-Point a browser to `localhost:3000`
-
-## Running the app for development
-###1. Using docker-compose
-To start the main services excluding the app:
-`docker-compose up`
-
-###2. Running the back end api service
 This service requires the equivalent api service to be running. In order to do this checkout https://github.com/ministryofjustice/calculate-release-dates-api
 and run the following from the root folder
 `./run-local.sh`  - to start the calculate-release-dates-api service
+
+Start up the service
+`npm install`
+`$ npm run start:dev`  
+
+Point a browser to `localhost:3000`
 
 ###2. Running ui app
 Install dependencies using `npm install`, ensuring you are using >= `Node v14.x`
