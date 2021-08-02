@@ -1,0 +1,47 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% if (prisoners and prisoners.length > 0) %}
+    <table id="reports-table" class="govuk-table" data-qa="reports-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header"></th>
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header">Prisoner ID</th>
+            <th scope="col" class="govuk-table__header">Prison</th>
+            <th scope="col" class="govuk-table__header">Cell location</th>
+            <th scope="col" class="govuk-table__header"></th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body govuk-body-s">
+        {% for prisoner in prisoners %}
+            {% set rowClass = 'even' if loop.index % 2 === 0 else 'odd' %}
+            <tr class="govuk-table__row {{ rowClass }}">
+                <td class="govuk-table__cell">
+                    <img
+                            src="/prisoner/{{ prisoner.prisonerNumber }}/image"
+                            alt="Headshot of {{ prisoner.prisonerNumber }}"
+                            height="110"
+                            width="90"
+                            data-qa="offender-image"
+                    />
+                </td>
+                <td class="govuk-table__cell govuk-!-padding-top-8">{{ (prisoner.firstName + ' ' + prisoner.lastName) | title }}</td>
+                <td class="govuk-table__cell govuk-!-padding-top-8">{{ prisoner.prisonerNumber }}</td>
+                <td class="govuk-table__cell govuk-!-padding-top-8">{{ prisoner.locationDescription }}</td>
+                <td class="govuk-table__cell govuk-!-padding-top-8">{{ prisoner.cellLocation }}</td>
+                <td class="govuk-table__cell govuk-!-padding-top-7">
+                    {{ govukButton({
+                        text: "Select",
+                        value: 'select-prisoner',
+                        classes: 'govuk-button--tertiary',
+                        href: '/prisoner/' + prisoner.prisonerNumber + '/detail',
+                        preventDoubleClick: true
+                    }) }}
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

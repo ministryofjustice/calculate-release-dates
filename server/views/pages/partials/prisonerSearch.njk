@@ -1,0 +1,50 @@
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+<form method="get">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            {{ govukInput({
+                label: {
+                    text: "Prisoner first name"
+                },
+                id: "prisonerFirstName",
+                value: searchValues.firstName,
+                name: "firstName"
+            }) }}
+        </div>
+        <div class="govuk-grid-column-one-third">
+            {{ govukInput({
+                label: {
+                    text: "Prisoner last name"
+                },
+                id: "prisonerLastName",
+                value: searchValues.lastName,
+                name: "lastName"
+            }) }}
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+            {{ govukInput({
+                label: {
+                    text: "Prisoner identifier"
+                },
+                id: "prisonerIdentifier",
+                value: searchValues.prisonerIdentifier,
+                name: "prisonerIdentifier"
+            }) }}
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters ">
+            <div>
+                {{ govukButton({
+                    classes: "govuk-button--primary",
+                    text: "Search",
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'search-prisoners' }
+                }) }}
+            </div>
+        </div>
+    </div>
+
+</form>
