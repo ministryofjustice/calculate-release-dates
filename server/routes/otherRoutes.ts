@@ -2,6 +2,7 @@ import { RequestHandler } from 'express'
 import path from 'path'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
+import { PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 
 export default class OtherRoutes {
   constructor(
@@ -35,5 +36,24 @@ export default class OtherRoutes {
         const placeHolder = path.join(process.cwd(), '/assets/images/image-missing.png')
         res.sendFile(placeHolder)
       })
+  }
+
+  public searchPrisoners: RequestHandler = async (req, res): Promise<void> => {
+    const { firstName, lastName, prisonerIdentifier } = req.query as Record<string, string>
+    const { username } = res.locals.user
+    const searchValues = { firstName, lastName, prisonerIdentifier }
+
+    if (!(prisonerIdentifier || firstName || lastName)) {
+      return res.render('pages/prisoners')
+    }
+    const prisoners = await this.prisonerService.searchPrisoners(username, {
+      firstName,
+      lastName,
+      prisonerIdentifier: prisonerIdentifier || null,
+      // prisonIds: ['MDI'], TODO Pass in prisonId's that user has access to
+      includeAliases: false,
+    } as PrisonerSearchCriteria)
+
+    return res.render('pages/prisoners', { prisoners, searchValues })
   }
 }

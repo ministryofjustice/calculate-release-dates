@@ -21,6 +21,7 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
     get('/test/data', otherAccessRoutes.listTestData)
     get('/prisoner/:nomsId/detail', otherAccessRoutes.getPrisonerDetail)
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
+    get('/search/prisoners', otherAccessRoutes.searchPrisoners)
   }
 
   router.use(auth.authenticationMiddleware(tokenVerifier))

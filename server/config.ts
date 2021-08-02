@@ -83,6 +83,14 @@ export default {
       },
       agent: new AgentConfig(),
     },
+    prisonerSearch: {
+      url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8084', requiredInProduction),
+      timeout: {
+        response: get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000),
+        deadline: get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 10000),
+      },
+      agent: new AgentConfig(),
+    },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
 }

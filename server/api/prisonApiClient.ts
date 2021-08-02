@@ -1,7 +1,7 @@
 import { Readable } from 'stream'
 import config, { ApiConfig } from '../config'
 import RestClient from './restClient'
-import type { PrisonApiPrisoner, PrisonApiUserDetail } from './prisonClientTypes'
+import type { PrisonApiPrisoner, PrisonApiUserDetail } from '../@types/prisonApi/prisonClientTypes'
 
 export default class PrisonApiClient {
   restClient: RestClient

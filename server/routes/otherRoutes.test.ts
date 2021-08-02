@@ -3,7 +3,7 @@ import type { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../api/prisonClientTypes'
+import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 jest.mock('../services/userService')
