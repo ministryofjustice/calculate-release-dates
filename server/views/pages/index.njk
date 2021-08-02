@@ -1,12 +1,27 @@
 {% extends "../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = applicationName + " - Home" %}
 
 {% block content %}
 
-  <main class="app-container govuk-body">
-    <h1>This site is under construction...</h1>
-    <p>Please check back later when there is content to view.</p>
-  </main>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Calculate release dates</h1>
+            <p class="govuk-body">Use this service to:</p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Calculate release dates</li>
+            </ul>
+
+            {{ govukButton({
+                text: "Start now",
+                href: "/search/prisoners",
+                classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
+                isStartButton: true
+            }) }}
+        </div>
+    </div>
+
 
 {% endblock %}
