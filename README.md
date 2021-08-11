@@ -12,9 +12,9 @@ The app requires instances of these services to be available:
 
 Ensure you have the appropriate tools installed:
 
-`node - v14.xx`
+`node >= v14.xx < v15`
 
-`npm - v6.x`
+`npm >= v6.4x`
 
 Then:
 
