@@ -3,6 +3,7 @@ import path from 'path'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import { PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
+import logger from '../../logger'
 
 export default class OtherRoutes {
   constructor(
@@ -13,7 +14,42 @@ export default class OtherRoutes {
   public listTestData: RequestHandler = async (req, res): Promise<void> => {
     const { username } = res.locals.user
     const testData = await this.calculateReleaseDatesService.getTestData(username)
-    res.render('pages/testData', { testData })
+    res.render('pages/test/testData', { testData })
+  }
+
+  public testCalculation: RequestHandler = async (req, res): Promise<void> => {
+    const { username } = res.locals.user
+    const { bookingData } = req.query
+    try {
+      const releaseDates = bookingData
+        ? await this.calculateReleaseDatesService.calculateReleaseDates(username, bookingData)
+        : ''
+
+      res.render('pages/test-pages/testCalculation', {
+        releaseDates: releaseDates ? JSON.stringify(releaseDates, undefined, 4) : '',
+        bookingData,
+      })
+    } catch (ex) {
+      logger.error(ex)
+      const errorSummaryList =
+        ex.status > 499 && ex.status < 600
+          ? [
+              {
+                text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
+                href: '#bookingData',
+              },
+            ]
+          : [
+              {
+                text: 'The JSON is malformed',
+                href: '#bookingData',
+              },
+            ]
+      res.render('pages/test-pages/testCalculation', {
+        bookingData,
+        errorSummaryList,
+      })
+    }
   }
 
   public getPrisonerDetail: RequestHandler = async (req, res): Promise<void> => {
