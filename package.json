@@ -152,6 +152,7 @@
     "mocha-junit-reporter": "^2.0.0",
     "nock": "^13.1.0",
     "nodemon": "^2.0.9",
+    "path-parse": "^1.0.7",
     "prettier": "^2.3.2",
     "sass": "^1.35.1",
     "supertest": "^6.1.3",
