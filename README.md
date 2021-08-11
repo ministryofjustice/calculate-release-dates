@@ -10,7 +10,7 @@ The app requires instances of these services to be available:
 
 ## Building
 
-Ensure you have the approprite tools installed:
+Ensure you have the appropriate tools installed:
 
 `node - v14.xx`
 
