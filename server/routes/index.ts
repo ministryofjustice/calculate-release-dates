@@ -19,6 +19,7 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
 
   const otherRoutes = () => {
     get('/test/data', otherAccessRoutes.listTestData)
+    get('/test/calculation', otherAccessRoutes.testCalculation)
     get('/prisoner/:nomsId/detail', otherAccessRoutes.getPrisonerDetail)
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
     get('/search/prisoners', otherAccessRoutes.searchPrisoners)
