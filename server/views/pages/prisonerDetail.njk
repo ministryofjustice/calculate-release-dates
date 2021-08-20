@@ -5,6 +5,7 @@
 {% set pageTitle = applicationName + " - prisoner detail" %}
 
 {% block content %}
+    {% include "./partials/formError.njk" %}
     <div class="govuk-width-container">
         <h1 class="govuk-heading-l govuk-!-margin-top-7">{{ prisonerDetail.lastName | title }}, {{ prisonerDetail.firstName | title }}</h1>
     </div>
@@ -107,5 +108,15 @@
             </div>
         </div>
     </div>
+
+    <h1 class="govuk-heading-m">Sentences</h1>
+    {% include "./partials/sentenceTermsTable.njk" %}
+    <h1 class="govuk-heading-m">Adjustments</h1>
+    {% include "./partials/sentenceAdjustmentsTable.njk" %}
+
+    <h1 class="govuk-heading-m">Release date calculation results</h1>
+    <p class="govuk-body govuk-!-font-size-19">
+        {{ releaseDates | striptags(true) | escape | nl2br }}
+    </p>
 
 {% endblock %}

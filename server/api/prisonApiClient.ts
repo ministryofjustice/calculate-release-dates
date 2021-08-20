@@ -1,7 +1,12 @@
 import { Readable } from 'stream'
 import config, { ApiConfig } from '../config'
 import RestClient from './restClient'
-import type { PrisonApiPrisoner, PrisonApiUserDetail } from '../@types/prisonApi/prisonClientTypes'
+import type {
+  PrisonApiPrisoner,
+  PrisonApiSentenceAdjustmentDetail,
+  PrisonApiUserDetail,
+} from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiOffenderSentenceTerms } from '../@types/prisonApi/prisonClientTypes'
 
 export default class PrisonApiClient {
   restClient: RestClient
@@ -23,5 +28,17 @@ export default class PrisonApiClient {
   // TODO: Currently unused
   async getPrisonUser(targetUsername: string): Promise<PrisonApiUserDetail> {
     return this.restClient.get({ path: `/api/users/${targetUsername}` }) as Promise<PrisonApiUserDetail>
+  }
+
+  async getSentenceAdjustments(bookingId: number): Promise<PrisonApiSentenceAdjustmentDetail> {
+    return this.restClient.get({
+      path: `/api/bookings/${bookingId}/sentenceAdjustments`,
+    }) as Promise<PrisonApiSentenceAdjustmentDetail>
+  }
+
+  async getSentenceTerms(bookingId: number): Promise<PrisonApiOffenderSentenceTerms[]> {
+    return this.restClient.get({ path: `/api/offender-sentences/booking/${bookingId}/sentenceTerms` }) as Promise<
+      PrisonApiOffenderSentenceTerms[]
+    >
   }
 }
