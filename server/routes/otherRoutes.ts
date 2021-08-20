@@ -58,13 +58,8 @@ export default class OtherRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
     const sentenceTerms = await this.prisonerService.getSentenceTerms(username, prisonerDetail.bookingId)
     const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(username, prisonerDetail.bookingId)
-    console.log('##################')
-    console.log('##################')
-    console.log('##################')
-    console.log(JSON.stringify(sentenceTerms))
     try {
       const releaseDates = await this.calculateReleaseDatesService.getReleaseDatesForPrisoner(username, nomsId)
-      console.log(JSON.stringify(releaseDates))
       res.render('pages/prisonerDetail', {
         prisonerDetail,
         releaseDates: releaseDates ? JSON.stringify(releaseDates, undefined, 4) : '',
