@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% if (prisoners and prisoners.length > 0) %}
-    <table id="reports-table" class="govuk-table" data-qa="reports-table">
+    <table id="search-results-table" class="govuk-table" data-qa="search-results-table">
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header"></th>
@@ -32,7 +32,7 @@
                 <td class="govuk-table__cell govuk-!-padding-top-8">{{ prisoner.cellLocation }}</td>
                 <td class="govuk-table__cell govuk-!-padding-top-7">
                     {{ govukButton({
-                        text: "Select",
+                        text: "Run calculation",
                         value: 'select-prisoner',
                         classes: 'govuk-button--tertiary',
                         href: '/prisoner/' + prisoner.prisonerNumber + '/detail',

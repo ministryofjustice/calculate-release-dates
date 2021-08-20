@@ -1,7 +1,11 @@
 import { Readable } from 'stream'
 import type HmppsAuthClient from '../api/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
-import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonApiOffenderSentenceTerms,
+  PrisonApiPrisoner,
+  PrisonApiSentenceAdjustmentDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
 import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 
@@ -21,5 +25,15 @@ export default class PrisonerService {
   async searchPrisoners(username: string, prisonerSearchCriteria: PrisonerSearchCriteria): Promise<Prisoner[]> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
     return new PrisonerSearchApiClient(token).searchPrisoners(prisonerSearchCriteria)
+  }
+
+  async getSentenceTerms(username: string, bookingId: number): Promise<PrisonApiOffenderSentenceTerms[]> {
+    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+    return new PrisonApiClient(token).getSentenceTerms(bookingId)
+  }
+
+  async getSentenceAdjustments(username: string, bookingId: number): Promise<PrisonApiSentenceAdjustmentDetail> {
+    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+    return new PrisonApiClient(token).getSentenceAdjustments(bookingId)
   }
 }
