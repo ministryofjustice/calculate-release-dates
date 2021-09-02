@@ -3,7 +3,6 @@ import type HmppsAuthClient from '../api/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
 import {
   PrisonApiOffenderSentenceAndOffences,
-  PrisonApiOffenderSentenceTerms,
   PrisonApiPrisoner,
   PrisonApiSentenceAdjustmentDetail,
 } from '../@types/prisonApi/prisonClientTypes'

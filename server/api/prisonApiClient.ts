@@ -6,10 +6,7 @@ import type {
   PrisonApiSentenceAdjustmentDetail,
   PrisonApiUserDetail,
 } from '../@types/prisonApi/prisonClientTypes'
-import {
-  PrisonApiOffenderSentenceAndOffences,
-  PrisonApiOffenderSentenceTerms,
-} from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 
 export default class PrisonApiClient {
   restClient: RestClient
