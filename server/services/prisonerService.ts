@@ -2,7 +2,7 @@ import { Readable } from 'stream'
 import type HmppsAuthClient from '../api/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
 import {
-  PrisonApiOffenderSentenceTerms,
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceAdjustmentDetail,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -27,9 +27,9 @@ export default class PrisonerService {
     return new PrisonerSearchApiClient(token).searchPrisoners(prisonerSearchCriteria)
   }
 
-  async getSentenceTerms(username: string, bookingId: number): Promise<PrisonApiOffenderSentenceTerms[]> {
+  async getSentencesAndOffences(username: string, bookingId: number): Promise<PrisonApiOffenderSentenceAndOffences[]> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    return new PrisonApiClient(token).getSentenceTerms(bookingId)
+    return new PrisonApiClient(token).getSentencesAndOffences(bookingId)
   }
 
   async getSentenceAdjustments(username: string, bookingId: number): Promise<PrisonApiSentenceAdjustmentDetail> {

@@ -6,7 +6,7 @@ import type {
   PrisonApiSentenceAdjustmentDetail,
   PrisonApiUserDetail,
 } from '../@types/prisonApi/prisonClientTypes'
-import { PrisonApiOffenderSentenceTerms } from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 
 export default class PrisonApiClient {
   restClient: RestClient
@@ -36,9 +36,9 @@ export default class PrisonApiClient {
     }) as Promise<PrisonApiSentenceAdjustmentDetail>
   }
 
-  async getSentenceTerms(bookingId: number): Promise<PrisonApiOffenderSentenceTerms[]> {
-    return this.restClient.get({ path: `/api/offender-sentences/booking/${bookingId}/sentenceTerms` }) as Promise<
-      PrisonApiOffenderSentenceTerms[]
-    >
+  async getSentencesAndOffences(bookingId: number): Promise<PrisonApiOffenderSentenceAndOffences[]> {
+    return this.restClient.get({
+      path: `/api/offender-sentences/booking/${bookingId}/sentences-and-offences`,
+    }) as Promise<PrisonApiOffenderSentenceAndOffences[]>
   }
 }
