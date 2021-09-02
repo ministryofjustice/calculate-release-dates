@@ -181,6 +181,10 @@ export interface paths {
     /** Basic offender details by booking ids */
     post: operations['getBasicInmateDetailsForOffendersByBookingIds']
   }
+  '/api/bookings/v2': {
+    /** Returns data that is available to the users caseload privileges, at least one attribute of a prisonId, bookingId or offenderNo must be specified */
+    get: operations['getPrisonerBookingsV2UsingGET']
+  }
   '/api/bookings/{bookingId}': {
     /** Offender detail. */
     get: operations['getOffenderBooking']
@@ -207,7 +211,7 @@ export interface paths {
   '/api/bookings/{bookingId}/alert/{alertSeq}': {
     put: operations['updateAlertUsingPUT']
   }
-  '/api/bookings/{bookingId}/alerts': {
+  '/api/bookings/{bookingId}/alerts/v2': {
     /** Offender alerts. */
     get: operations['getOffenderAlerts']
   }
@@ -650,6 +654,14 @@ export interface paths {
   '/api/offences/statute': {
     get: operations['getOffencesByStatuteUsingGET']
   }
+  '/api/offender-activities/{offenderNo}/current-work': {
+    /** This includes suspended activities */
+    get: operations['getCurrentWorkActivities']
+  }
+  '/api/offender-activities/{offenderNo}/work-history': {
+    /** This includes suspended activities */
+    get: operations['getRecentStartedWorkActivities']
+  }
   '/api/offender-assessments/assessments': {
     get: operations['getAssessmentsUsingGET']
   }
@@ -780,12 +792,16 @@ export interface paths {
   '/api/offenders/{offenderNo}/adjudications/{adjudicationNo}': {
     get: operations['getAdjudicationUsingGET']
   }
-  '/api/offenders/{offenderNo}/alerts': {
+  '/api/offenders/{offenderNo}/alerts/v2': {
     /** System or cat tool access only */
-    get: operations['getAlertsByOffenderNoUsingGET']
+    get: operations['getAlertsForAllBookingByOffenderNoUsingGET']
   }
   '/api/offenders/{offenderNo}/booking': {
     post: operations['newBookingUsingPOST']
+  }
+  '/api/offenders/{offenderNo}/bookings/latest/alerts': {
+    /** System or cat tool access only */
+    get: operations['getAlertsForLatestBookingByOffenderNoUsingGET']
   }
   '/api/offenders/{offenderNo}/case-notes': {
     /** Create case note for offender. Will attach to the latest booking */
@@ -861,6 +877,9 @@ export interface paths {
   }
   '/api/offender-sentences/booking/{bookingId}/sentenceTerms': {
     get: operations['getOffenderSentenceTerms']
+  }
+  '/api/offender-sentences/booking/{bookingId}/sentences-and-offences': {
+    get: operations['getSentenceAndOffenceDetails']
   }
   '/api/offender-sentences/bookings': {
     /** Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists. */
@@ -1037,17 +1056,9 @@ export interface paths {
     /** Get user details. */
     get: operations['getUsers']
   }
-  '/api/users/access-roles/caseload/{caseload}/access-role/{roleCode}': {
-    /** List of users who have the named role at the named caseload */
-    get: operations['getAllUsersHavingRoleAtCaseload']
-  }
   '/api/users/add/default/{caseload}': {
     /** Add the NWEB caseload to specified caseload. */
     put: operations['addApiAccessForCaseload']
-  }
-  '/api/users/caseload/{caseload}': {
-    /** Get user details by prison. */
-    get: operations['getUsersByCaseLoad']
   }
   '/api/users/list': {
     /** user details for supplied usernames */
@@ -1055,10 +1066,6 @@ export interface paths {
   }
   '/api/users/local-administrator/available': {
     /** Get user details for local administrator */
-    get: operations['getStaffUsersForLocalAdministrator_1']
-  }
-  '/api/users/local-administrator/caseload/{caseload}': {
-    /** Deprecated: please use /users/local-administrator/available */
     get: operations['getStaffUsersForLocalAdministrator']
   }
   '/api/users/me': {
@@ -1084,10 +1091,6 @@ export interface paths {
   '/api/users/me/roles': {
     /** List of roles for current user. */
     get: operations['getMyRoles']
-  }
-  '/api/users/staff/{staffId}': {
-    /** Deprecated: Use <b>/staff/{staffId}</b> instead. This API will be removed in a future release. */
-    get: operations['getStaffDetail_1']
   }
   '/api/users/{username}': {
     /** User detail. */
@@ -1379,15 +1382,15 @@ export interface components {
       bookingId: number
       /** Alert comments */
       comment: string
-      /** Date the alert was created */
+      /** Date of the alert, which might differ to the date it was created */
       dateCreated: string
       /** Date the alert expires */
       dateExpires?: string
       /** True / False based on presence of expiry date */
       expired: boolean
-      /** First name of the user who expired the alert */
+      /** First name of the user who last modified the alert */
       expiredByFirstName?: string
-      /** Last name of the user who expired the alert */
+      /** Last name of the user who last modified the alert */
       expiredByLastName?: string
       /** Offender Unique Reference */
       offenderNo: string
@@ -1645,8 +1648,8 @@ export interface components {
       /** Award status description */
       statusDescription?: string
     }
-    /** Sentence Details */
-    BaseSentenceDetail: {
+    /** Base Sentence Calc Dates */
+    BaseSentenceCalcDates: {
       /** APD - the offender's actual parole date. */
       actualParoleDate?: string
       /** ARD - calculated automatic (unconditional) release date for offender. */
@@ -2696,7 +2699,7 @@ export interface components {
       /** Internal Root Offender ID */
       rootOffenderId: number
       /** Sentence Detail */
-      sentenceDetail?: components['schemas']['SentenceDetail']
+      sentenceDetail?: components['schemas']['SentenceCalcDates']
       /** Current Sentence Terms */
       sentenceTerms?: components['schemas']['OffenderSentenceTerms'][]
       /** Status of prisoner */
@@ -3082,6 +3085,27 @@ export interface components {
       surname?: string
       /** Title */
       title?: string
+    }
+    /** Information about an Offender's activities */
+    OffenderActivities: {
+      /** Display Prisoner Number (UK is NOMS ID) */
+      offenderNo: string
+      /** The current work activities */
+      workActivities?: components['schemas']['OffenderActivitySummary'][]
+    }
+    /** Offender activity */
+    OffenderActivitySummary: {
+      /** The description of the institution where this activity was based */
+      agencyLocationDescription?: string
+      /** The id of the institution where this activity was based */
+      agencyLocationId?: string
+      bookingId: number
+      /** The description of the activity */
+      description?: string
+      /** When the offender stopped this activity */
+      endDate?: string
+      /** When the offender started this activity */
+      startDate?: string
     }
     /** Offender Alias */
     OffenderAlias: {
@@ -3501,6 +3525,13 @@ export interface components {
       /** offenderNumber */
       offenderNumber?: string
     }
+    /** Offence details related to an offender */
+    OffenderOffence: {
+      offenceCode?: string
+      offenceDate?: string
+      offenceDescription?: string
+      offenderChargeId?: number
+    }
     /** Summary of an offender 'currently out' according to Establishment Roll */
     OffenderOut: {
       bookingId: number
@@ -3536,6 +3567,35 @@ export interface components {
       /** Relationship to inmate (e.g. COM or POM, etc.) */
       relationshipType: string
     }
+    /** Offender sentence and offence details */
+    OffenderSentenceAndOffences: {
+      /** The bookingId this sentence and offence(s) relates to */
+      bookingId?: number
+      /** This sentence is consecutive to this sequence (if populated) */
+      consecutiveToSequence?: number
+      /** The sentence duration - days */
+      days?: number
+      /** The sentence duration - months */
+      months?: number
+      /** The offences related to this sentence (will usually only have one offence per sentence) */
+      offences?: components['schemas']['OffenderOffence'][]
+      /** The sentence calculation type e.g. R or ADIMP_ORA */
+      sentenceCalculationType?: string
+      /** The sentence category e.g. 2003 or Licence */
+      sentenceCategory?: string
+      /** The sentenced date for this sentence (aka court date) */
+      sentenceDate?: string
+      /** Sentence sequence - a number representing the order */
+      sentenceSequence?: number
+      /** This sentence status: A = Active I = Inactive */
+      sentenceStatus?: string
+      /** The sentence type description e.g. Standard Determinate Sentence */
+      sentenceTypeDescription?: string
+      /** The sentence duration - weeks */
+      weeks?: number
+      /** The sentence duration - years */
+      years?: number
+    }
     /** Offender Sentence Calculation */
     OffenderSentenceCalc: {
       /** Agency Id */
@@ -3549,7 +3609,7 @@ export interface components {
       /** Offender Unique Reference */
       offenderNo: string
       /** Offender Sentence Detail Information */
-      sentenceDetail?: components['schemas']['BaseSentenceDetail']
+      sentenceDetail?: components['schemas']['BaseSentenceCalcDates']
     }
     /** Offender Sentence Detail */
     OffenderSentenceDetail: {
@@ -3572,7 +3632,7 @@ export interface components {
       /** Offender Unique Reference */
       offenderNo: string
       /** Offender Sentence Detail Information */
-      sentenceDetail?: components['schemas']['SentenceDetail']
+      sentenceDetail?: components['schemas']['SentenceCalcDates']
     }
     /** Offender Sentence terms details for booking id */
     OffenderSentenceTerms: {
@@ -3675,6 +3735,19 @@ export interface components {
       /** Transaction Type */
       transactionType?: string
     }
+    PageOfAlert: {
+      content?: components['schemas']['Alert'][]
+      empty?: boolean
+      first?: boolean
+      last?: boolean
+      number?: number
+      numberOfElements?: number
+      pageable?: components['schemas']['Pageable']
+      size?: number
+      sort?: components['schemas']['Sort']
+      totalElements?: number
+      totalPages?: number
+    }
     PageOfBedAssignment: {
       content?: components['schemas']['BedAssignment'][]
       empty?: boolean
@@ -3742,6 +3815,19 @@ export interface components {
     }
     PageOfOffenderNumber: {
       content?: components['schemas']['OffenderNumber'][]
+      empty?: boolean
+      first?: boolean
+      last?: boolean
+      number?: number
+      numberOfElements?: number
+      pageable?: components['schemas']['Pageable']
+      size?: number
+      sort?: components['schemas']['Sort']
+      totalElements?: number
+      totalPages?: number
+    }
+    PageOfPrisonerBookingSummary: {
+      content?: components['schemas']['PrisonerBookingSummary'][]
       empty?: boolean
       first?: boolean
       last?: boolean
@@ -3922,6 +4008,49 @@ export interface components {
       fromPrisonLocation: string
       /** The court (agency code) where the offender will moved to. */
       toCourtLocation: string
+    }
+    /** Prisoner Booking Summary */
+    PrisonerBookingSummary: {
+      /** Prisoner's current age. */
+      age: number
+      /** Identifier of agency that prisoner is associated with. */
+      agencyId: string
+      /** Identifier of living unit (e.g. cell) that prisoner is assigned to. */
+      assignedLivingUnitId?: number
+      /** Unique, numeric booking id. */
+      bookingId: number
+      /** Book number. */
+      bookingNo?: string
+      /** Convicted Status */
+      convictedStatus?: 'Convicted' | 'Remand'
+      /** Prisoner's date of birth. */
+      dateOfBirth: string
+      /** Identifier of facial image of prisoner. */
+      facialImageId?: number
+      /** Prisoner first name. */
+      firstName: string
+      /** IEP level of the prisoner */
+      iepLevel?: string
+      /** The imprisonment status of the prisoner */
+      imprisonmentStatus?: string
+      /** Prisoner's last name. */
+      lastName: string
+      /** Legal Status */
+      legalStatus?:
+        | 'CIVIL_PRISONER'
+        | 'CONVICTED_UNSENTENCED'
+        | 'DEAD'
+        | 'IMMIGRATION_DETAINEE'
+        | 'INDETERMINATE_SENTENCE'
+        | 'OTHER'
+        | 'RECALL'
+        | 'REMAND'
+        | 'SENTENCED'
+        | 'UNKNOWN'
+      /** Prisoner's middle name. */
+      middleName?: string
+      /** Prisoner number (e.g. NOMS Number). */
+      offenderNo: string
     }
     /** Prisoner Details */
     PrisonerDetail: {
@@ -4840,8 +4969,8 @@ export interface components {
       /** Number of unused remand days */
       unusedRemand?: number
     }
-    /** Sentence Details */
-    SentenceDetail: {
+    /** Sentence Calculation Dates */
+    SentenceCalcDates: {
       /** APD - the offender's actual parole date. */
       actualParoleDate?: string
       /** ADA - days added to sentence term due to adjustments. */
@@ -6751,6 +6880,49 @@ export interface operations {
       }
     }
   }
+  /** Returns data that is available to the users caseload privileges, at least one attribute of a prisonId, bookingId or offenderNo must be specified */
+  getPrisonerBookingsV2UsingGET: {
+    parameters: {
+      query: {
+        /** Results page you want to retrieve (0..N). Default 0, e.g. the first page */
+        page?: number
+        /** Filter by prison Id */
+        prisonId?: string
+        /** Number of records per page. Default 10 */
+        size?: number
+        /** Sort as combined comma separated property and uppercase direction. Multiple sort params allowed to sort by multiple properties. Default to lastName,firstName,offenderNo ASC */
+        sort?: 'ASC' | 'DESC' | 'bookingId' | 'firstName' | 'lastName' | 'offenderNo' | 'prisonId'
+        /** Filter by a list of booking ids */
+        bookingId?: number
+        /** Filter by a list of offender numbers */
+        offenderNo?: string
+        /** Return IEP level data */
+        iepLevel?: boolean
+        /** Return additional legal information (imprisonmentStatus, legalStatus, convictedStatus) */
+        legalInfo?: boolean
+        /** Return facial ID for latest prisoner image */
+        image?: boolean
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PageOfPrisonerBookingSummary']
+        }
+      }
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Not Found */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
   /** Offender detail. */
   getOffenderBooking: {
     parameters: {
@@ -6997,29 +7169,41 @@ export interface operations {
   getOffenderAlerts: {
     parameters: {
       path: {
-        /** The booking id of offender */
+        /** The booking id for the booking */
         bookingId: number
       }
       query: {
-        /** Search parameters with the format [connector]:&lt;fieldName&gt;:&lt;operator&gt;:&lt;value&gt;:[format],... <p>Connector operators - and, or <p>Supported Operators - eq, neq, gt, gteq, lt, lteq, like, in</p> <p>Supported Fields - alertType, alertCode, dateCreated, dateExpires</p> */
-        query: string
-      }
-      header: {
-        /** Requested offset of first record in returned collection of alert records. */
-        'Page-Offset'?: number
-        /** Requested limit to number of alert records returned. */
-        'Page-Limit'?: number
-        /** Comma separated list of one or more of the following fields - <b>alertType, alertCode, dateCreated, dateExpires</b> */
-        'Sort-Fields'?: string
-        /** Sort order (ASC or DESC) - defaults to ASC. */
-        'Sort-Order'?: 'ASC' | 'DESC'
+        /** Results page you want to retrieve (0..N). Default 0, e.g. the first page */
+        page?: number
+        /** Number of records per page. Default 10 */
+        size?: number
+        /** Sort as combined comma separated property and uppercase direction. Multiple sort params allowed to sort by multiple properties. Default to dateExpires,DESC and dateCreated,DESC */
+        sort?:
+          | 'ASC'
+          | 'DESC'
+          | 'active'
+          | 'alertCode'
+          | 'alertId'
+          | 'alertType'
+          | 'bookingId'
+          | 'comment'
+          | 'dateCreated'
+          | 'dateExpires'
+        /** start alert date to search from */
+        from?: string
+        /** end alert date to search up to (including this date) */
+        to?: string
+        /** Filter by alert type */
+        alertType?: string
+        /** Filter by alert active status */
+        alertStatus?: string
       }
     }
     responses: {
       /** OK */
       200: {
         content: {
-          '*/*': components['schemas']['Alert'][]
+          '*/*': components['schemas']['PageOfAlert']
         }
       }
       /** Invalid request. */
@@ -8335,6 +8519,10 @@ export interface operations {
   /** <h3>Algorithm</h3><ul><li>If there is a confirmed release date, the offender release date is the confirmed release date.</li><li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li><li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li></ul> */
   getBookingSentenceDetail: {
     parameters: {
+      header: {
+        /** Version of Sentence Calc Dates, 1.0 is default */
+        version?: string
+      }
       path: {
         /** The booking id of offender */
         bookingId: number
@@ -8344,7 +8532,7 @@ export interface operations {
       /** OK */
       200: {
         content: {
-          '*/*': components['schemas']['SentenceDetail']
+          '*/*': components['schemas']['SentenceCalcDates']
         }
       }
       /** Invalid request. */
@@ -9339,10 +9527,6 @@ export interface operations {
       path: {
         /** The location id of location */
         locationId: number
-      }
-      query: {
-        /** Search parameters with the format [connector]:&lt;fieldName&gt;:&lt;operator&gt;:&lt;value&gt;:[format],... <p>Connector operators - and, or <p>Supported Operators - eq, neq, gt, gteq, lt, lteq, like, in</p> <p>Supported Fields - bookingNo, bookingId, offenderNo, firstName, lastName, agencyId, or assignedLivingUnitId</p> */
-        query: string
       }
       header: {
         /** Requested offset of first record in returned collection of inmate records. */
@@ -10640,6 +10824,60 @@ export interface operations {
       500: unknown
     }
   }
+  /** This includes suspended activities */
+  getCurrentWorkActivities: {
+    parameters: {
+      path: {
+        /** The offenderNo of the prisoner */
+        offenderNo: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['OffenderActivities']
+        }
+      }
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
+  /** This includes suspended activities */
+  getRecentStartedWorkActivities: {
+    parameters: {
+      path: {
+        /** The offenderNo of the prisoner */
+        offenderNo: string
+      }
+      query: {
+        /** Only include activities that have not ended or have an end date after the given date */
+        earliestEndDate: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['OffenderActivities']
+        }
+      }
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Not Found */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
   getAssessmentsUsingGET: {
     parameters: {
       query: {
@@ -11654,6 +11892,10 @@ export interface operations {
   }
   getOffenderUsingGET_1: {
     parameters: {
+      header: {
+        /** Version of Offender details, default is 1.0, Beta is version 1.1_beta and is WIP (do not use in production) */
+        version?: string
+      }
       path: {
         /** The offenderNo of offender */
         offenderNo: string
@@ -11777,21 +12019,17 @@ export interface operations {
     }
   }
   /** System or cat tool access only */
-  getAlertsByOffenderNoUsingGET: {
+  getAlertsForAllBookingByOffenderNoUsingGET: {
     parameters: {
       path: {
         /** Noms ID or Prisoner number */
         offenderNo: string
       }
       query: {
-        /** Only get alerts for the latest booking (prison term) */
-        latestOnly?: boolean
-        /** Search parameters with the format [connector]:&lt;fieldName&gt;:&lt;operator&gt;:&lt;value&gt;:[format],... <p>Connector operators - and, or <p>Supported Operators - eq, neq, gt, gteq, lt, lteq, like, in</p> <p>Supported Fields - alertId, bookingId, alertType, alertCode, comment, dateCreated, dateExpires, active</p> */
-        query?: string
-      }
-      header: {
+        /** Comma separated list of alertCodes to filter by */
+        alertCodes?: string
         /** Comma separated list of one or more Alert fields */
-        'Sort-Fields'?:
+        sort?:
           | 'active'
           | 'alertCode'
           | 'alertId'
@@ -11801,7 +12039,7 @@ export interface operations {
           | 'dateCreated'
           | 'dateExpires'
         /** Sort order */
-        'Sort-Order'?: 'ASC' | 'DESC'
+        direction?: string
       }
     }
     responses: {
@@ -11854,6 +12092,49 @@ export interface operations {
       content: {
         'application/json': components['schemas']['RequestForNewBooking']
       }
+    }
+  }
+  /** System or cat tool access only */
+  getAlertsForLatestBookingByOffenderNoUsingGET: {
+    parameters: {
+      path: {
+        /** Noms ID or Prisoner number */
+        offenderNo: string
+      }
+      query: {
+        /** Comma separated list of alertCodes to filter by */
+        alertCodes?: string
+        /** Comma separated list of one or more Alert fields */
+        sort?:
+          | 'active'
+          | 'alertCode'
+          | 'alertId'
+          | 'alertType'
+          | 'bookingId'
+          | 'comment'
+          | 'dateCreated'
+          | 'dateExpires'
+        /** Sort order */
+        direction?: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['Alert'][]
+        }
+      }
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
     }
   }
   /** Create case note for offender. Will attach to the latest booking */
@@ -12577,6 +12858,28 @@ export interface operations {
       404: unknown
     }
   }
+  getSentenceAndOffenceDetails: {
+    parameters: {
+      path: {
+        /** The required booking id (mandatory) */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** Sentence and offence details for a prisoner. */
+      200: {
+        content: {
+          '*/*': components['schemas']['OffenderSentenceAndOffences'][]
+        }
+      }
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+    }
+  }
   /** Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists. */
   postOffenderSentencesBookings: {
     responses: {
@@ -12760,7 +13063,7 @@ export interface operations {
         gender?: string
         /** If <i>true</i>, the search will use partial, start-of-name matching of offender names (where provided). For example, if <i>lastName</i> criteria of 'AD' is specified, this will match an offender whose last name is 'ADAMS' but not an offender whose last name is 'HADAD'. This will typically increase the number of matching offenders found. This parameter can be used with any other search processing parameter (e.g. <i>prioritisedMatch</i> or <i>anyMatch</i>). */
         partialNameMatch?: boolean
-        /** If <i>true</i>, search criteria prioritisation is used and searching/matching will stop as soon as one or more matching offenders are found. The criteria priority is:<br/><br/>1. <i>offenderNo</i><br/> 2. <i>pncNumber</i><br/>3. <i>croNumber</i><br/>4. <i>firstName</i>, <i>lastName</i>, <i>dob</i> <br/>5. <i>dobFrom</i>, <i>dobTo</i><br/><br/>As an example of how this works, if this parameter is set <i>true</i> and an <i>offenderNo</i> is specified and an offender having this offender number is found, searching will stop and that offender will be returned immediately. If no offender matching the specified <i>offenderNo</i> is found, the search will be repeated using the next priority criteria (<i>pncNumber</i>) and so on. Note that offender name and date of birth criteria have the same priority and will be used together to search for matching offenders. */
+        /** If <i>true</i>, search criteria prioritisation is used and searching/matching will stop as soon as one or more matching offenders are found. The criteria priority is:<br/><br/>1. <i>offenderNo</i><br/> 2. <i>pncNumber</i><br/>3. <i>croNumber</i><br/>4. <i>firstName</i>, <i>lastName</i>, <i>dob</i> <br/>5. <i>dobFrom</i>, <i>dobTo</i><br/><br/>As an example of how this works, if this parameter is set <i>true</i> and an <i>offenderNo</i> is specified and an offender having this offender number is found, searching will stop and that offender will be returned immediately. If no offender matching the specified <i>offenderNo</i> is found, the search will be repeated using the next priority criteria (<i>pncNumber</i>) and so on. Note that offender name and date of birth criteria have the same priority and will be used together to search for matching offenders (In this case the location filter will be ignored). */
         prioritisedMatch?: boolean
         /** If <i>true</i>, offenders that match any of the specified criteria will be returned. The default search behaviour is to only return offenders that match <i>all</i> of the specified criteria. If the <i>prioritisedMatch</i> parameter is also set <i>true</i>, this parameter will only impact the behaviour of searching using offender name and date of birth criteria. */
         anyMatch?: boolean
@@ -14206,10 +14509,14 @@ export interface operations {
       query: {
         /** Filter results by first name and/or username and/or last name of staff member. */
         nameFilter?: string
-        /** Filter results by access role */
+        /** Filter results by access roles */
         accessRole?: string
         /** Limit to active / inactive / show all users. */
         status?: 'ACTIVE' | 'ALL' | 'INACTIVE'
+        /** Filter results to include only those users that have access to the specified caseload (irrespective of whether it is currently active or not */
+        caseload?: string
+        /** Filter results by user's currently active caseload i.e. the one they have currently selected. */
+        activeCaseload?: string
       }
       header: {
         /** Requested offset of first record in returned collection of user records. */
@@ -14227,35 +14534,6 @@ export interface operations {
       200: {
         content: {
           '*/*': components['schemas']['UserDetail'][]
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
-  /** List of users who have the named role at the named caseload */
-  getAllUsersHavingRoleAtCaseload: {
-    parameters: {
-      path: {
-        /** Caseload Id */
-        caseload: string
-        /** access role code */
-        roleCode: string
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': string[]
         }
       }
       /** Invalid request. */
@@ -14295,49 +14573,6 @@ export interface operations {
       404: unknown
     }
   }
-  /** Get user details by prison. */
-  getUsersByCaseLoad: {
-    parameters: {
-      path: {
-        /** The agency (prison) id. */
-        caseload: string
-      }
-      query: {
-        /** Filter results by first name and/or username and/or last name of staff member. */
-        nameFilter?: string
-        /** Filter results by access role */
-        accessRole?: string
-      }
-      header: {
-        /** Requested offset of first record in returned collection of caseload records. */
-        'Page-Offset'?: number
-        /** Requested limit to number of caseload records returned. */
-        'Page-Limit'?: number
-        /** Comma separated list of one or more of the following fields - <b>firstName, lastName</b> */
-        'Sort-Fields'?: string
-        /** Sort order (ASC or DESC) - defaults to ASC. */
-        'Sort-Order'?: 'ASC' | 'DESC'
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['UserDetail'][]
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
   /** user details for supplied usernames */
   getUserDetailsList: {
     responses: {
@@ -14363,7 +14598,7 @@ export interface operations {
     }
   }
   /** Get user details for local administrator */
-  getStaffUsersForLocalAdministrator_1: {
+  getStaffUsersForLocalAdministrator: {
     parameters: {
       query: {
         /** Filter results by first name and/or username and/or last name of staff member. */
@@ -14372,49 +14607,6 @@ export interface operations {
         accessRole?: string
         /** Limit to active / inactive / show all users. */
         status?: 'ACTIVE' | 'ALL' | 'INACTIVE'
-      }
-      header: {
-        /** Requested offset of first record in returned collection of caseload records. */
-        'Page-Offset'?: number
-        /** Requested limit to number of caseload records returned. */
-        'Page-Limit'?: number
-        /** Comma separated list of one or more of the following fields - <b>firstName, lastName</b> */
-        'Sort-Fields'?: string
-        /** Sort order (ASC or DESC) - defaults to ASC. */
-        'Sort-Order'?: 'ASC' | 'DESC'
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['UserDetail'][]
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
-  /** Deprecated: please use /users/local-administrator/available */
-  getStaffUsersForLocalAdministrator: {
-    parameters: {
-      path: {
-        /** The agency (prison) id. */
-        caseload: string
-      }
-      query: {
-        /** Filter results by first name and/or username and/or last name of staff member. */
-        nameFilter?: string
-        /** Filter results by access role */
-        accessRole?: string
       }
       header: {
         /** Requested offset of first record in returned collection of caseload records. */
@@ -14581,33 +14773,6 @@ export interface operations {
       200: {
         content: {
           '*/*': components['schemas']['UserRole'][]
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
-  /** Deprecated: Use <b>/staff/{staffId}</b> instead. This API will be removed in a future release. */
-  getStaffDetail_1: {
-    parameters: {
-      path: {
-        /** The staff id of the staff member. */
-        staffId: number
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['StaffDetail']
         }
       }
       /** Invalid request. */

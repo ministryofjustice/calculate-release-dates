@@ -56,14 +56,14 @@ export default class OtherRoutes {
     const { username } = res.locals.user
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
-    const sentenceTerms = await this.prisonerService.getSentenceTerms(username, prisonerDetail.bookingId)
+    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(username, prisonerDetail.bookingId)
     const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(username, prisonerDetail.bookingId)
     try {
       const releaseDates = await this.calculateReleaseDatesService.getReleaseDatesForPrisoner(username, nomsId)
       res.render('pages/prisonerDetail', {
         prisonerDetail,
         releaseDates: releaseDates ? JSON.stringify(releaseDates, undefined, 4) : '',
-        sentenceTerms,
+        sentencesAndOffences,
         adjustmentDetails,
       })
     } catch (ex) {
@@ -78,7 +78,7 @@ export default class OtherRoutes {
       res.render('pages/prisonerDetail', {
         prisonerDetail,
         errorSummaryList,
-        sentenceTerms,
+        sentencesAndOffences,
         adjustmentDetails,
       })
     }

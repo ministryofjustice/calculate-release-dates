@@ -1,0 +1,46 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+<table id="sentence-table" class="govuk-table" data-qa="sentence-table">
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Sequence</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Consecutive sequence</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Status</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Category</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Type</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Date Sentenced</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Days</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Weeks</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Months</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Years</th>
+        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Offence Committed Date(s)</th>
+    </tr>
+    </thead>
+    <tbody class="govuk-table__body govuk-body-s">
+    {% for sentence in sentencesAndOffences %}
+        {% set rowClass = 'even' if loop.index % 2 === 0 else 'odd' %}
+        <tr class="govuk-table__row {{ rowClass }}">
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceSequence }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.consecutiveToSequence }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceStatus }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceCategory }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceTypeDescription }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceDate }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.days }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.weeks }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.months }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.years }}</td>
+            <td class="govuk-table__cell govuk-!-padding-top-8">
+                {% if sentence.offences.length === 0 %}
+                    No offences associated
+                {% endif %}
+                {% for offence in sentence.offences %}
+                    {{ offence.offenceDate or 'No offence date' }} <br>
+                {% endfor %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
