@@ -32,9 +32,9 @@ Then:
 
 Start the redis and wiremock containers
 
-`$ docker-compose -f docker-compose-test.yaml pull`
+`$ docker-compose -f docker-compose-test.yml pull`
 
-`$ docker-compose -f docker-compose-test.yaml up`
+`$ docker-compose -f docker-compose-test.yml up`
 
 In a different terminal:
 

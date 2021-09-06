@@ -12,10 +12,13 @@ context('Login', () => {
     cy.visit('/')
     AuthLoginPage.verifyOnPage()
   })
-  it('User name visible in header', () => {
+  it('User is taken to landing page and the content is correct', () => {
     cy.login()
     const landingPage = IndexPage.verifyOnPage()
     landingPage.headerUserName().should('contain.text', 'J. Smith')
+    landingPage.mainHeading().should('contain.text', 'Calculate release dates')
+    landingPage.startNowButton().click()
+    cy.url().should('match', new RegExp(`.+/search/prisoners$`))
   })
   it('Page is accessible', () => {
     cy.login()
