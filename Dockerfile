@@ -19,6 +19,8 @@ RUN apt-get update && \
 
 # Stage: build assets
 FROM base as build
+ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
+ENV GIT_REF ${GIT_REF:-not-available}
 
 RUN apt-get install -y make python g++
 
