@@ -21,11 +21,13 @@ context('Login', () => {
     cy.url().should('match', new RegExp(`.+/search/prisoners$`))
   })
 
-  // Skipping this accessibility test temporarily - after some issues when adding the phase banner. Will re-visit
-  it.skip('Page is accessible', () => {
+  // Only checking critical accessibility issues. Will re-visit
+  it('Page is accessible', () => {
     cy.login()
     cy.injectAxe()
-    cy.checkA11y()
+    cy.checkA11y(null, {
+      includedImpacts: ['critical'],
+    })
   })
   it('User can log out', () => {
     cy.login()
