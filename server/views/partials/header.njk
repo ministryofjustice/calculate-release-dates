@@ -12,10 +12,13 @@
         items: [{
             text: user.displayName | initialiseName,
             href: '/',
+            id: 'header-user-name',
+            attributes: {  'data-qa': 'header-user-name' },
             active: true
         }, {
             text: 'Sign out',
-            href: '/logout'
+            href: '/logout',
+            attributes: {  'data-qa': 'logout' }
         }]
     }
 
