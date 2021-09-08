@@ -1,5 +1,6 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "moj/components/header/macro.njk" import mojHeader %}
 
 {% block head %}
   <!--[if !IE 8]><!-->
@@ -11,7 +12,7 @@
   <script src="/assets/js/html5shiv-3.7.3.min.js"></script>
   <![endif]-->
 
-  <script src="/assets/js/jquery.min.js"></script> 
+  <script src="/assets/js/jquery.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
           integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
           crossorigin="anonymous"></script>
@@ -23,6 +24,15 @@
 
 {% block header %}
   {% include "./header.njk" %}
+  {% block underHeader %}
+    {{ govukPhaseBanner({
+      classes: 'govuk-width-container',
+      tag: {
+        text: "alpha"
+      },
+      html: 'This is a new service – your <a class="govuk-link" href="#" target="_blank">feedback</a> will help us to improve it.'
+    }) }}
+  {% endblock %}
 {% endblock %}
 
 {% block bodyStart %}
