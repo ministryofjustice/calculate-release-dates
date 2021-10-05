@@ -22,7 +22,7 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.post({ path: '/test/calculation-by-booking', data: booking }) as Promise<BookingCalculation>
   }
 
-  getReleaseDatesForPrisoner(prisonerId: string): Promise<BookingCalculation> {
-    return this.restClient.get({ path: `/calculation/by-prisoner-id/${prisonerId}` }) as Promise<BookingCalculation>
+  calculatePreliminaryReleaseDates(prisonerId: string): Promise<BookingCalculation> {
+    return this.restClient.post({ path: `/calculation/${prisonerId}` }) as Promise<BookingCalculation>
   }
 }

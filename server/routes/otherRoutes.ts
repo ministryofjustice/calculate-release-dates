@@ -59,7 +59,7 @@ export default class OtherRoutes {
     const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(username, prisonerDetail.bookingId)
     const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(username, prisonerDetail.bookingId)
     try {
-      const releaseDates = await this.calculateReleaseDatesService.getReleaseDatesForPrisoner(username, nomsId)
+      const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId)
       res.render('pages/prisonerDetail', {
         prisonerDetail,
         releaseDates: releaseDates ? JSON.stringify(releaseDates, undefined, 4) : '',
