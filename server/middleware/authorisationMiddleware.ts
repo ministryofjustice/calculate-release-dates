@@ -1,22 +1,25 @@
 import jwtDecode from 'jwt-decode'
-import { RequestHandler } from 'express'
-
+import { Request, Response, NextFunction } from 'express'
 import logger from '../../logger'
+import AuthorisedRoles from '../enumerations/authorisedRoles'
 
-export default function authorisationMiddleware(authorisedRoles: string[] = []): RequestHandler {
-  return (req, res, next) => {
-    if (res.locals && res.locals.user && res.locals.user.token) {
-      const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
+const isAuthorisedRole = (role: string): boolean =>
+  Object.keys(AuthorisedRoles)
+    .map(key => AuthorisedRoles[key])
+    .includes(role)
 
-      if (authorisedRoles.length && !roles.some(role => authorisedRoles.includes(role))) {
-        logger.error('User is not authorised to access this')
-        return res.redirect('/authError')
-      }
-
-      return next()
+export default function authorisationMiddleware(req: Request, res: Response, next: NextFunction): void {
+  if (res.locals && res.locals.user && res.locals.user.token) {
+    const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
+    if (!roles.some(isAuthorisedRole)) {
+      logger.error('User is not authorised to access this service')
+      return res.redirect('/authError')
     }
 
-    req.session.returnTo = req.originalUrl
-    return res.redirect('/login')
+    res.locals.user.userRoles = roles
+
+    return next()
   }
+  req.session.returnTo = req.originalUrl
+  return res.redirect('/login')
 }

@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
 import type { Request, Response } from 'express'
-
 import authorisationMiddleware from './authorisationMiddleware'
 
 function createToken(authorities: string[]) {
@@ -33,27 +32,21 @@ describe('authorisationMiddleware', () => {
     } as unknown as Response
   }
 
-  it('should return next when no required roles', () => {
+  it('should redirect when no required roles', () => {
     const res = createResWithToken({ authorities: [] })
-
-    const authorisationResponse = authorisationMiddleware()(req, res, next)
-
-    expect(authorisationResponse).toEqual(next())
+    const authorisationResponse = authorisationMiddleware(req, res, next)
+    expect(authorisationResponse).toEqual('/authError')
   })
 
   it('should redirect when user has no authorised roles', () => {
-    const res = createResWithToken({ authorities: [] })
-
-    const authorisationResponse = authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
-
+    const res = createResWithToken({ authorities: ['NOT_IN_THE_LIST'] })
+    const authorisationResponse = authorisationMiddleware(req, res, next)
     expect(authorisationResponse).toEqual('/authError')
   })
 
   it('should return next when user has authorised role', () => {
-    const res = createResWithToken({ authorities: ['SOME_REQUIRED_ROLE'] })
-
-    const authorisationResponse = authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
-
+    const res = createResWithToken({ authorities: ['RELEASE_DATES_CALCULATOR'] })
+    const authorisationResponse = authorisationMiddleware(req, res, next)
     expect(authorisationResponse).toEqual(next())
   })
 })
