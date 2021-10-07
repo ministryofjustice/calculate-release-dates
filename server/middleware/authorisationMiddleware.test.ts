@@ -45,7 +45,7 @@ describe('authorisationMiddleware', () => {
   })
 
   it('should return next when user has authorised role', () => {
-    const res = createResWithToken({ authorities: ['RELEASE_DATES_CALCULATOR'] })
+    const res = createResWithToken({ authorities: ['ROLE_RELEASE_DATES_CALCULATOR'] })
     const authorisationResponse = authorisationMiddleware(req, res, next)
     expect(authorisationResponse).toEqual(next())
   })
