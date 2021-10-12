@@ -32,10 +32,10 @@
                 <td class="govuk-table__cell govuk-!-padding-top-8">{{ prisoner.cellLocation }}</td>
                 <td class="govuk-table__cell govuk-!-padding-top-7">
                     {{ govukButton({
-                        text: "Run calculation",
+                        text: "Check information",
                         value: 'select-prisoner',
                         classes: 'govuk-button--tertiary',
-                        href: '/prisoner/' + prisoner.prisonerNumber + '/detail',
+                        href: '/calculation/' + prisoner.prisonerNumber + '/check-information',
                         preventDoubleClick: true
                     }) }}
                 </td>

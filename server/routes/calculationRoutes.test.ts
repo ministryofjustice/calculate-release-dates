@@ -51,11 +51,11 @@ afterEach(() => {
 })
 
 describe('Prisoner routes', () => {
-  it('GET /prisoner/:nomsId/detail should return prisoner detail', () => {
+  it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getPrisonerImage.mockResolvedValue(null)
     return request(app)
-      .get('/prisoner/A1234AA/detail')
+      .get('/calculation/A1234AA/check-information')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {

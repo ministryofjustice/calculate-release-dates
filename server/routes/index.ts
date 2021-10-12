@@ -5,11 +5,13 @@ import populateCurrentUser from '../middleware/populateCurrentUser'
 import tokenVerifier from '../api/tokenVerification'
 import auth from '../authentication/auth'
 import OtherRoutes from './otherRoutes'
+import CalculationRoutes from './calculationRoutes'
 
 export default function Index({ userService, prisonerService, calculateReleaseDatesService }: Services): Router {
   const router = Router({ mergeParams: true })
 
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
+  const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
 
   const indexRoutes = () =>
@@ -17,10 +19,15 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
       res.render('pages/index')
     })
 
+  const calculationRoutes = () => {
+    get('/calculation/:nomsId/check-information', calculationAccessRoutes.checkInformation)
+    get('/calculation/:nomsId/summary', calculationAccessRoutes.summary)
+    get('/calculation/:nomsId/complete', calculationAccessRoutes.complete)
+  }
+
   const otherRoutes = () => {
-    get('/test/data', otherAccessRoutes.listTestData)
-    get('/test/calculation', otherAccessRoutes.testCalculation)
-    get('/prisoner/:nomsId/detail', otherAccessRoutes.getPrisonerDetail)
+    get('/test/data', otherAccessRoutes.listTestData) // TODO remove this route as it was only for POC testing
+    get('/test/calculation', otherAccessRoutes.testCalculation) // TODO remove this route as it was only for POC testing
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
     get('/search/prisoners', otherAccessRoutes.searchPrisoners)
   }
@@ -35,6 +42,7 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
   })
 
   indexRoutes()
+  calculationRoutes()
   otherRoutes()
 
   return router

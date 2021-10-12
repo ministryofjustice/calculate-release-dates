@@ -1,0 +1,16 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set pageTitle = applicationName + " - calculation complete" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({
+                titleText: "Calculation complete for Joe Bloggs",
+                html: "The calculation has been saved in NOMIS"
+            }) }}
+        </div>
+    </div>
+{% endblock %}
