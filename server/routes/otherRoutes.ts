@@ -52,38 +52,6 @@ export default class OtherRoutes {
     }
   }
 
-  public getPrisonerDetail: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
-    const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
-    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(username, prisonerDetail.bookingId)
-    const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(username, prisonerDetail.bookingId)
-    try {
-      const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId)
-      res.render('pages/prisonerDetail', {
-        prisonerDetail,
-        releaseDates: releaseDates ? JSON.stringify(releaseDates, undefined, 4) : '',
-        sentencesAndOffences,
-        adjustmentDetails,
-      })
-    } catch (ex) {
-      logger.error(ex)
-      const errorSummaryList = [
-        {
-          text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
-          href: '#bookingData',
-        },
-      ]
-
-      res.render('pages/prisonerDetail', {
-        prisonerDetail,
-        errorSummaryList,
-        sentencesAndOffences,
-        adjustmentDetails,
-      })
-    }
-  }
-
   public getPrisonerImage: RequestHandler = async (req, res): Promise<void> => {
     const { username } = res.locals.user
     const { nomsId } = req.params

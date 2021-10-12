@@ -51,20 +51,17 @@ afterEach(() => {
 })
 
 describe('Prisoner routes', () => {
-  it('GET /prisoner/:nomsId/detail should return prisoner detail', () => {
+  it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getPrisonerImage.mockResolvedValue(null)
     return request(app)
-      .get('/prisoner/A1234AA/detail')
+      .get('/calculation/A1234AA/check-information')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Ringo')
         expect(res.text).toContain('Starr')
-        expect(res.text).toContain('12/12/2019') // sentence start
-        expect(res.text).toContain('12/12/2025') // conditional release
-        expect(res.text).toContain('16/12/2030') // licence expiry
       })
   })
 })
