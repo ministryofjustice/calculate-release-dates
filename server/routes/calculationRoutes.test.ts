@@ -62,9 +62,6 @@ describe('Prisoner routes', () => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Ringo')
         expect(res.text).toContain('Starr')
-        expect(res.text).toContain('12/12/2019') // sentence start
-        expect(res.text).toContain('12/12/2025') // conditional release
-        expect(res.text).toContain('16/12/2030') // licence expiry
       })
   })
 })
