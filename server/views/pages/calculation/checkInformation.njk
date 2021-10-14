@@ -1,0 +1,70 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% set pageTitle = applicationName + " - prisoner detail" %}
+{% block beforeContent %}
+    {% include "../partials/phaseBanner.njk" %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+    {{ govukBackLink({
+        text: "Back",
+        href: "/search/prisoners"
+    }) }}
+{% endblock %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds-from-desktop">
+            <h1 class="govuk-heading-xl" id="checkNOMISHeading">Check NOMIS information about {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full govuk-!-margin-top-8">
+            <h2 class="govuk-heading-l">Sentences</h2>
+            <p class="govuk-body govuk-!-margin-top-2">
+                {% set offenceCount = sentencesAndOffences | countOffences %}
+                {% if offenceCount === 1 %}
+                    There is 1 offence included in this calculation.
+                {% else %}
+                    There are {{ offenceCount }} offences included in this calculation.
+                {% endif %}
+            </p>
+            <h3 class="govuk-heading-m govuk-!-margin-top-6">Trial record sheet</h3>
+            {% include "../partials/sentenceTable.njk" %}
+
+            <div class="govuk-grid-row govuk-!-width-three-quarters">
+                <div class="govuk-grid-column-two-thirds-from-desktop">
+                    {% include "../partials/sentenceAdjustmentsTable.njk" %}
+                </div>
+            </div>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds-from-desktop">
+                    <h2 class="govuk-heading-m govuk-!-margin-top-9">Now calculate release dates
+                        for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h2>
+                    <p class="govuk-body">The release dates will not be saved in NOMIS until you have reviewed the
+                        calculation.</p>
+                    {{ govukButton({
+                        text: "Calculate release dates",
+                        value: 'calculate-release-dates',
+                        classes: 'govuk-button--tertiary',
+                        href: '/calculation/' + prisonerDetail.offenderNo + '/summary',
+                        preventDoubleClick: true
+                    }) }}
+                    <details class="govuk-details" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Some information is wrong
+                        </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            You can edit this information in NOMIS and <a href="">reload this page</a>.
+                            If you think the service isn’t working properly, <a href="#">contact the Calculate release
+                                dates team.</a>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

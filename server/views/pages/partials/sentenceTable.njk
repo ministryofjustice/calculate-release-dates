@@ -1,45 +1,44 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-<table id="sentence-table" class="govuk-table" data-qa="sentence-table">
+<table class="govuk-table govuk-!-width-full">
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Sequence</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Consecutive sequence</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Status</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Category</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Type</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Date Sentenced</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Days</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Weeks</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Months</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Years</th>
-        <th scope="col" class="govuk-table__header govuk-!-font-size-16">Offence Committed Date(s)</th>
+        <th class="govuk-table__header">Count</th>
+        <th class="govuk-table__header">Offence</th>
+        <th class="govuk-table__header">Sentence date</th>
+        <th class="govuk-table__header">Sentence length</th>
     </tr>
     </thead>
     <tbody class="govuk-table__body govuk-body-s">
     {% for sentence in sentencesAndOffences %}
-        {% set rowClass = 'even' if loop.index % 2 === 0 else 'odd' %}
-        <tr class="govuk-table__row {{ rowClass }}">
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceSequence }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.consecutiveToSequence }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceStatus }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceCategory }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceTypeDescription }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.sentenceDate }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.days }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.weeks }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.months }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ sentence.years }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">
-                {% if sentence.offences.length === 0 %}
-                    No offences associated
-                {% endif %}
-                {% for offence in sentence.offences %}
-                    {{ offence.offenceDate or 'No offence date' }} <br>
-                {% endfor %}
-            </td>
-        </tr>
+        {% for offence in sentence.offences %}
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ sentence.sentenceSequence }}</td>
+                <td class="govuk-table__cell">{{ offence.offenceDescription }}<br>
+                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                                    {% if (offence.offenceEndDate or offence.offenceStartDate) %}
+                                        Committed on {{ (offence.offenceEndDate or offence.offenceStartDate) | date('DD MMMM YYYY') }}
+                                    {% else %}
+                                        Offence date not entered
+                                    {% endif %}
+                                </span>
+                </td>
+                <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
+                <td class="govuk-table__cell">{{ sentence.years }} years {{ sentence.months }} months <br>
+                                              {{ sentence.weeks }} weeks  {{ sentence.days }} days
+                    <br><span
+                            class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                    {% if sentence.consecutiveToSequence %}
+                        consecutive to {{ sentence.consecutiveToSequence }}</span>
+                    {% else %}
+                        concurrent
+                    {% endif %}
+                    </span>
+                </td>
+
+            </tr>
+        {% endfor %}
     {% endfor %}
     </tbody>
 </table>

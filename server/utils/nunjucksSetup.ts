@@ -2,6 +2,10 @@
 import nunjucks from 'nunjucks'
 import express from 'express'
 import * as pathModule from 'path'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dateFilter = require('nunjucks-date-filter')
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -44,5 +48,13 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
     }
     const array = fullName.split(' ')
     return `${array[0][0]}. ${array.reverse()[0]}`
+  })
+
+  njkEnv.addFilter('date', dateFilter)
+
+  njkEnv.addFilter('countOffences', sentencesAndOffences => {
+    const reducer = (previousValue: number, currentValue: PrisonApiOffenderSentenceAndOffences) =>
+      previousValue + currentValue.offences.length
+    return sentencesAndOffences.reduce(reducer, 0)
   })
 }

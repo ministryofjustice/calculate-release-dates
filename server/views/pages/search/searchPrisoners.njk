@@ -1,4 +1,4 @@
-{% extends "../partials/layout.njk" %}
+{% extends "../../partials/layout.njk" %}
 
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
@@ -9,8 +9,8 @@
     <div class="govuk-grid-column-full">
         <div id="prisoner-search-container">
           <h2 class="govuk-heading-m">Search for prisoners</h2>
-          {% include "./partials/prisonerSearch.njk" %}
-          {% include "./partials/prisonerSearchTable.njk" %}
+          {% include "../partials/prisonerSearch.njk" %}
+          {% include "../partials/prisonerSearchTable.njk" %}
         </div>
     </div>
   </div>
