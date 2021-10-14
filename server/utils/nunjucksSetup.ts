@@ -57,4 +57,6 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
       previousValue + currentValue.offences.length
     return sentencesAndOffences.reduce(reducer, 0)
   })
+
+  njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
 }
