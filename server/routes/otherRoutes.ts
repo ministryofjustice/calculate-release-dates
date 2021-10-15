@@ -83,6 +83,6 @@ export default class OtherRoutes {
       includeAliases: false,
     } as PrisonerSearchCriteria)
 
-    return res.render('pages/prisoners', { prisoners, searchValues })
+    return res.render('pages/search/searchPrisoners', { prisoners, searchValues })
   }
 }
