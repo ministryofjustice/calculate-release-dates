@@ -26,7 +26,7 @@ context('Login', () => {
     cy.login()
     cy.injectAxe()
     cy.checkA11y(null, {
-      includedImpacts: ['critical'],
+      includedImpacts: ['critical', 'serious'],
     })
   })
   it('User can log out', () => {

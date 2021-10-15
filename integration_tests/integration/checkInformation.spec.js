@@ -1,4 +1,3 @@
-const IndexPage = require('../pages/index')
 const CheckInformationPage = require('../pages/checkInformation')
 
 context('Check nomis information', () => {
@@ -16,11 +15,9 @@ context('Check nomis information', () => {
     const checkInformationPage = CheckInformationPage.goTo('A1234AB')
     checkInformationPage.checkUrl('A1234AB')
     checkInformationPage.checkOffenceCountText('There are 3 offences included in this calculation.')
-    cy.url().should('match', new RegExp('/calculation/A1234AB/check-information'))
-    // const landingPage = IndexPage.verifyOnPage()
-    // landingPage.headerUserName().should('contain.text', 'J. Smith')
-    // landingPage.mainHeading().should('contain.text', 'Calculate release dates')
-    // landingPage.startNowButton().click()
-    // cy.url().should('match', new RegExp(`.+/search/prisoners$`))
+    cy.injectAxe()
+    cy.checkA11y(null, {
+      includedImpacts: ['critical', 'serious'],
+    })
   })
 })
