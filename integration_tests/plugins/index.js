@@ -2,6 +2,7 @@ const { resetStubs } = require('../mockApis/wiremock')
 
 const auth = require('../mockApis/auth')
 const tokenVerification = require('../mockApis/tokenVerification')
+const prisonApi = require('../mockApis/prisonApi')
 
 module.exports = on => {
   on('task', {
@@ -14,5 +15,8 @@ module.exports = on => {
     stubAuthPing: auth.stubPing,
 
     stubTokenVerificationPing: tokenVerification.stubPing,
+    stubGetPrisonerDetails: prisonApi.stubGetPrisonerDetails,
+    stubGetSentencesAndOffences: prisonApi.stubGetSentencesAndOffences,
+    stubGetSentenceAdjustments: prisonApi.stubGetSentenceAdjustments,
   })
 }
