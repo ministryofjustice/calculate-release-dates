@@ -73,7 +73,7 @@ export default class OtherRoutes {
     const searchValues = { firstName, lastName, prisonerIdentifier }
 
     if (!(prisonerIdentifier || firstName || lastName)) {
-      return res.render('pages/prisoners')
+      return res.render('pages/search/searchPrisoners')
     }
     const prisoners = await this.prisonerService.searchPrisoners(username, {
       firstName,

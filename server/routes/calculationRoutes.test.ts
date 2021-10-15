@@ -3,7 +3,12 @@ import type { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonApiOffenderOffence,
+  PrisonApiOffenderSentenceAndOffences,
+  PrisonApiPrisoner,
+  PrisonApiSentenceDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 jest.mock('../services/userService')
@@ -42,6 +47,17 @@ const stubbedPrisonerData = {
   } as PrisonApiSentenceDetail,
 } as PrisonApiPrisoner
 
+const stubbedSentencesAndOffences = [
+  {
+    years: 3,
+    offences: [
+      { offenceEndDate: '2021-02-03' } as PrisonApiOffenderOffence,
+      { offenceStartDate: '2021-01-03', offenceEndDate: '2021-01-04' } as PrisonApiOffenderOffence,
+      { offenceStartDate: '2021-03-03' } as PrisonApiOffenderOffence,
+    ],
+  } as PrisonApiOffenderSentenceAndOffences,
+]
+
 beforeEach(() => {
   app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService })
 })
@@ -53,7 +69,7 @@ afterEach(() => {
 describe('Prisoner routes', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getPrisonerImage.mockResolvedValue(null)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     return request(app)
       .get('/calculation/A1234AA/check-information')
       .expect(200)
@@ -62,6 +78,10 @@ describe('Prisoner routes', () => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Ringo')
         expect(res.text).toContain('Starr')
+        expect(res.text).toContain('There are 3 offences included in this calculation')
+        expect(res.text).toContain('Committed on 03 February 2021')
+        expect(res.text).toContain('Committed on 04 January 2021')
+        expect(res.text).toContain('Committed on 03 March 2021')
       })
   })
 })

@@ -1,34 +1,45 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-<table id="adjustments-table" class="govuk-table" data-qa="adjustments-table">
+<h4 class="govuk-heading-m govuk-!-margin-top-2">Adjustments</h4>
+<h5 class="govuk-heading-s govuk-!-margin-bottom-0 ">Deductions</h5>
+<table class="govuk-table">
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">Additional days awarded</th>
-        <th scope="col" class="govuk-table__header">Lawfully at large</th>
-        <th scope="col" class="govuk-table__header">Recall sentence remand</th>
-        <th scope="col" class="govuk-table__header">Recall sentence tagged bail</th>
-        <th scope="col" class="govuk-table__header">Remand</th>
-        <th scope="col" class="govuk-table__header">Restore additional days awarded</th>
-        <th scope="col" class="govuk-table__header">Special remission</th>
-        <th scope="col" class="govuk-table__header">Tagged bail</th>
-        <th scope="col" class="govuk-table__header">Unlawfully at large</th>
-        <th scope="col" class="govuk-table__header">Unused remand</th>
+        <th class="govuk-table__header"></th>
+        <th class="govuk-table__header"></th>
     </tr>
     </thead>
     <tbody class="govuk-table__body govuk-body-s">
-        <tr class="govuk-table__row {{ rowClass }}">
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.additionalDaysAwarded }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.lawfullyAtLarge }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.recallSentenceRemand }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.recallSentenceTaggedBail }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.remand }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.restoredAdditionalDaysAwarded }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.specialRemission }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.taggedBail }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.unlawfullyAtLarge }}</td>
-            <td class="govuk-table__cell govuk-!-padding-top-8">{{ adjustmentDetails.unusedRemand }}</td>
-        </tr>
+    <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Number of days on remand</td>
+        <td class="govuk-table__cell">{{ adjustmentDetails.remand }}</td>
+    </tr>
+    <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Number of days tagged bail</td>
+        <td class="govuk-table__cell">{{ adjustmentDetails.taggedBail }}</td>
+    </tr>
+    <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Restore additional days awarded (RADA)</td>
+        <td class="govuk-table__cell">{{ adjustmentDetails.restoredAdditionalDaysAwarded }}</td>
+    </tr>
     </tbody>
 </table>
-
+<h5 class="govuk-heading-s govuk-!-margin-bottom-0">Additions</h5>
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+        <th class="govuk-table__header"></th>
+        <th class="govuk-table__header"></th>
+    </thead>
+    <tbody class="govuk-table__body govuk-body-s">
+    <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Additional days awarded (ADA)</td>
+        <td class="govuk-table__cell">{{ adjustmentDetails.additionalDaysAwarded }}</td>
+    </tr>
+    <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Number of days unlawfully at large (UAL)</td>
+        <td class="govuk-table__cell">{{ adjustmentDetails.unlawfullyAtLarge }}</td>
+    </tr>
+    </tbody>
+</table>

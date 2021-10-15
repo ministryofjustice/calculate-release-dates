@@ -114,10 +114,6 @@ export interface paths {
   '/api/appointments/{appointmentId}/comment': {
     put: operations['updateAppointmentCommentUsingPUT']
   }
-  '/api/bookings': {
-    /** Summary information for all offenders accessible to current user. */
-    get: operations['getOffenderBookings']
-  }
   '/api/bookings/activities/attendance': {
     /** Update offender attendance and pay. */
     put: operations['updateAttendance_1']
@@ -654,13 +650,12 @@ export interface paths {
   '/api/offences/statute': {
     get: operations['getOffencesByStatuteUsingGET']
   }
-  '/api/offender-activities/{offenderNo}/current-work': {
+  '/api/offender-activities/{offenderNo}/activities-history': {
     /** This includes suspended activities */
-    get: operations['getCurrentWorkActivities']
+    get: operations['getRecentStartedActivities']
   }
-  '/api/offender-activities/{offenderNo}/work-history': {
-    /** This includes suspended activities */
-    get: operations['getRecentStartedWorkActivities']
+  '/api/offender-activities/{offenderNo}/attendance-history': {
+    get: operations['getHistoricalAttendances']
   }
   '/api/offender-assessments/assessments': {
     get: operations['getAssessmentsUsingGET']
@@ -2344,7 +2339,7 @@ export interface components {
     /** HO Code */
     HOCodeDto: {
       /** Active Y/N */
-      activeFlag: 'N' | 'Y'
+      activeFlag: string
       /** HO code */
       code: string
       /** HO code description */
@@ -2809,7 +2804,7 @@ export interface components {
       /** User-friendly location description. */
       userDescription?: string
     }
-    /** Cell Locations are grouped for unlock lists as a 2 level tree. The two levels are referred to as Location and Sub-Location in the prisonstaffhub UI. Each (location/sub-location) group has a name that is understood by prison officers and also serves as a key to retrieve the corresponding Cell Locations and information about their occupants. */
+    /** Cell Locations are grouped for unlock lists as a 2 level tree. The two levels are referred to as Location and Sub-Location in the digital prison services UI. Each (location/sub-location) group has a name that is understood by prison officers and also serves as a key to retrieve the corresponding Cell Locations and information about their occupants. */
     LocationGroup: {
       /** The child groups of this group */
       children: components['schemas']['LocationGroup'][]
@@ -2994,7 +2989,7 @@ export interface components {
     /** Offence */
     OffenceDto: {
       /** Active Y/N */
-      activeFlag: 'N' | 'Y'
+      activeFlag: string
       /** Reference Code */
       code: string
       /** Description of offence */
@@ -3086,13 +3081,6 @@ export interface components {
       /** Title */
       title?: string
     }
-    /** Information about an Offender's activities */
-    OffenderActivities: {
-      /** Display Prisoner Number (UK is NOMS ID) */
-      offenderNo: string
-      /** The current work activities */
-      workActivities?: components['schemas']['OffenderActivitySummary'][]
-    }
     /** Offender activity */
     OffenderActivitySummary: {
       /** The description of the institution where this activity was based */
@@ -3102,8 +3090,16 @@ export interface components {
       bookingId: number
       /** The description of the activity */
       description?: string
+      /** End comment */
+      endCommentText?: string
       /** When the offender stopped this activity */
       endDate?: string
+      /** End reason code */
+      endReasonCode?: string
+      /** End reason description */
+      endReasonDescription?: string
+      /** Whether the offender is currently registered to do this activity */
+      isCurrentActivity?: boolean
       /** When the offender started this activity */
       startDate?: string
     }
@@ -3117,6 +3113,20 @@ export interface components {
       middle_names?: string
       /** Surname */
       surname?: string
+    }
+    /** Information about an Offender's attendance at an activity */
+    OffenderAttendance: {
+      /** The current status for the offender on this activity */
+      activityStatus?: string
+      bookingId: number
+      /** The course code */
+      code?: string
+      /** The course description */
+      description?: string
+      /** The date of this activity */
+      eventDate?: string
+      /** Whether the offender attended */
+      outcome?: string
     }
     /** Offender Booking Summary */
     OffenderBooking: {
@@ -3528,8 +3538,9 @@ export interface components {
     /** Offence details related to an offender */
     OffenderOffence: {
       offenceCode?: string
-      offenceDate?: string
       offenceDescription?: string
+      offenceEndDate?: string
+      offenceStartDate?: string
       offenderChargeId?: number
     }
     /** Summary of an offender 'currently out' according to Establishment Roll */
@@ -3606,6 +3617,8 @@ export interface components {
       firstName: string
       /** Last Name */
       lastName: string
+      /** Is this the most recent active booking */
+      mostRecentActiveBooking: boolean
       /** Offender Unique Reference */
       offenderNo: string
       /** Offender Sentence Detail Information */
@@ -3629,6 +3642,8 @@ export interface components {
       internalLocationDesc: string
       /** Last Name */
       lastName: string
+      /** Is this the most recent active booking */
+      mostRecentActiveBooking: boolean
       /** Offender Unique Reference */
       offenderNo: string
       /** Offender Sentence Detail Information */
@@ -3802,6 +3817,32 @@ export interface components {
     }
     PageOfOffenceDto: {
       content?: components['schemas']['OffenceDto'][]
+      empty?: boolean
+      first?: boolean
+      last?: boolean
+      number?: number
+      numberOfElements?: number
+      pageable?: components['schemas']['Pageable']
+      size?: number
+      sort?: components['schemas']['Sort']
+      totalElements?: number
+      totalPages?: number
+    }
+    PageOfOffenderActivitySummary: {
+      content?: components['schemas']['OffenderActivitySummary'][]
+      empty?: boolean
+      first?: boolean
+      last?: boolean
+      number?: number
+      numberOfElements?: number
+      pageable?: components['schemas']['Pageable']
+      size?: number
+      sort?: components['schemas']['Sort']
+      totalElements?: number
+      totalPages?: number
+    }
+    PageOfOffenderAttendance: {
+      content?: components['schemas']['OffenderAttendance'][]
       empty?: boolean
       first?: boolean
       last?: boolean
@@ -4015,6 +4056,8 @@ export interface components {
       age: number
       /** Identifier of agency that prisoner is associated with. */
       agencyId: string
+      /** Description of living unit (e.g. cell) that prisoner is assigned to. */
+      assignedLivingUnitDesc?: string
       /** Identifier of living unit (e.g. cell) that prisoner is assigned to. */
       assignedLivingUnitId?: number
       /** Unique, numeric booking id. */
@@ -5128,7 +5171,7 @@ export interface components {
     /** Statute */
     StatuteDto: {
       /** Active Y/N */
-      activeFlag: 'N' | 'Y'
+      activeFlag: string
       /** Statute code */
       code: string
       /** Statute code description */
@@ -6335,47 +6378,6 @@ export interface operations {
         'application/json': string
         'text/plain': string
       }
-    }
-  }
-  /** Summary information for all offenders accessible to current user. */
-  getOffenderBookings: {
-    parameters: {
-      query: {
-        /** Search parameters with the format [connector]:&lt;fieldName&gt;:&lt;operator&gt;:&lt;value&gt;:[format],... <p>Connector operators - and, or <p>Supported Operators - eq, neq, gt, gteq, lt, lteq, like, in</p> <p>Supported Fields - bookingNo, bookingId, offenderNo, firstName, lastName, agencyId, assignedLivingUnitId, assignedOfficerUserId</p> */
-        query?: string
-        /** The booking ids of offender */
-        bookingId?: number
-        /** The required offender numbers */
-        offenderNo?: string
-        /** return IEP level data */
-        iepLevel?: boolean
-      }
-      header: {
-        /** Requested offset of first record in returned collection of booking records. */
-        'Page-Offset'?: number
-        /** Requested limit to number of booking records returned. */
-        'Page-Limit'?: number
-        /** Comma separated list of one or more of the following fields - <b>bookingNo, bookingId, offenderNo, firstName, lastName, agencyId, assignedLivingUnitId</b> */
-        'Sort-Fields'?: string
-        /** Sort order (ASC or DESC) - defaults to ASC. */
-        'Sort-Order'?: 'ASC' | 'DESC'
-      }
-    }
-    responses: {
-      /** Summary information for all offenders accessible to current user. */
-      200: {
-        content: {
-          '*/*': components['schemas']['OffenderBooking'][]
-        }
-      }
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Not Found */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
     }
   }
   /** Update offender attendance and pay. */
@@ -10825,38 +10827,20 @@ export interface operations {
     }
   }
   /** This includes suspended activities */
-  getCurrentWorkActivities: {
-    parameters: {
-      path: {
-        /** The offenderNo of the prisoner */
-        offenderNo: string
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['OffenderActivities']
-        }
-      }
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
-  /** This includes suspended activities */
-  getRecentStartedWorkActivities: {
+  getRecentStartedActivities: {
     parameters: {
       path: {
         /** The offenderNo of the prisoner */
         offenderNo: string
       }
       query: {
+        offset?: number
+        pageNumber?: number
+        pageSize?: number
+        paged?: boolean
+        'sort.sorted'?: boolean
+        'sort.unsorted'?: boolean
+        unpaged?: boolean
         /** Only include activities that have not ended or have an end date after the given date */
         earliestEndDate: string
       }
@@ -10865,7 +10849,44 @@ export interface operations {
       /** OK */
       200: {
         content: {
-          '*/*': components['schemas']['OffenderActivities']
+          '*/*': components['schemas']['PageOfOffenderActivitySummary']
+        }
+      }
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Not Found */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
+  getHistoricalAttendances: {
+    parameters: {
+      path: {
+        /** The offenderNo of the prisoner */
+        offenderNo: string
+      }
+      query: {
+        offset?: number
+        pageNumber?: number
+        pageSize?: number
+        paged?: boolean
+        'sort.sorted'?: boolean
+        'sort.unsorted'?: boolean
+        unpaged?: boolean
+        /** Only include attendences on or after this date */
+        fromDate: string
+        /** Only include attendences on or before this date */
+        toDate: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PageOfOffenderAttendance']
         }
       }
       /** Unauthorized */

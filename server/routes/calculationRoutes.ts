@@ -16,7 +16,7 @@ export default class CalculationRoutes {
     const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(username, prisonerDetail.bookingId)
     const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(username, prisonerDetail.bookingId)
     try {
-      res.render('pages/checkInformation', {
+      res.render('pages/calculation/checkInformation', {
         prisonerDetail,
         sentencesAndOffences,
         adjustmentDetails,
@@ -30,7 +30,7 @@ export default class CalculationRoutes {
         },
       ]
 
-      res.render('pages/checkInformation', {
+      res.render('pages/calculation/checkInformation', {
         prisonerDetail,
         errorSummaryList,
         sentencesAndOffences,
@@ -45,7 +45,7 @@ export default class CalculationRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
     try {
       const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId)
-      res.render('pages/calculationSummary', {
+      res.render('pages/calculation/calculationSummary', {
         prisonerDetail,
         releaseDates: releaseDates ? JSON.stringify(releaseDates, undefined, 4) : '',
       })
@@ -58,7 +58,7 @@ export default class CalculationRoutes {
         },
       ]
 
-      res.render('pages/calculationSummary', {
+      res.render('pages/calculation/calculationSummary', {
         prisonerDetail,
         errorSummaryList,
       })
@@ -66,6 +66,6 @@ export default class CalculationRoutes {
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
-    res.render('pages/calculationComplete')
+    res.render('pages/calculation/calculationComplete')
   }
 }

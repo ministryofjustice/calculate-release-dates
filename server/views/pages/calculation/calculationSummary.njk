@@ -1,4 +1,4 @@
-{% extends "../partials/layout.njk" %}
+{% extends "../../partials/layout.njk" %}
 
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -6,7 +6,7 @@
 {% set pageTitle = applicationName + " - prisoner detail" %}
 
 {% block content %}
-    {% include "./partials/formError.njk" %}
+    {% include "../partials/formError.njk" %}
     <div class="govuk-width-container">
         <h1 class="govuk-heading-l govuk-!-margin-top-7">{{ prisonerDetail.lastName | title }}, {{ prisonerDetail.firstName | title }}</h1>
     </div>

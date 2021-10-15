@@ -24,18 +24,13 @@
 
 {% block header %}
   {% include "./header.njk" %}
-  {% block underHeader %}
-    {{ govukPhaseBanner({
-      classes: 'govuk-width-container',
-      tag: {
-        text: "alpha"
-      },
-      html: 'This is a new service – your <a class="govuk-link" href="#" target="_blank">feedback</a> will help us to improve it.'
-    }) }}
-  {% endblock %}
 {% endblock %}
 
 {% block bodyStart %}
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "../pages/partials/phaseBanner.njk" %}
 {% endblock %}
 
 {% block bodyEnd %}

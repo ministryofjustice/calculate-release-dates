@@ -71,7 +71,7 @@ OR
 
 2. Start the redis container.
 
-   `$ docker-compose -f docker-compose-dev.yaml up -d`
+   `$ docker-compose -f docker-compose-dev.yml up -d`
 
 
 4. Start a local `calculate-release-dates` service with `$ npm run start`, which will use the `.env` file to set
