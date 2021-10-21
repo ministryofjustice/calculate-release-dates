@@ -1,0 +1,12 @@
+.custom-card {
+  border: 1px solid #bfc1c3;
+  padding: 20px 20px 0px 20px;
+  margin: 30px 0;
+  background-color: #f3f2f1;
+}
+
+.custom-card-main:after {
+  content: "";
+  display: block;
+  clear: both;
+}

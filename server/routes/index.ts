@@ -2,6 +2,7 @@ import { RequestHandler, Router } from 'express'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { Services } from '../services'
 import populateCurrentUser from '../middleware/populateCurrentUser'
+import flashMessages from '../middleware/flashMessageMiddleware'
 import tokenVerifier from '../api/tokenVerification'
 import auth from '../authentication/auth'
 import OtherRoutes from './otherRoutes'
@@ -11,6 +12,7 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
   const router = Router({ mergeParams: true })
 
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
+  const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
   const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
 
@@ -21,7 +23,8 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
 
   const calculationRoutes = () => {
     get('/calculation/:nomsId/check-information', calculationAccessRoutes.checkInformation)
-    get('/calculation/:nomsId/summary', calculationAccessRoutes.summary)
+    post('/calculation/:nomsId/check-information', calculationAccessRoutes.submitCheckInformation)
+    get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
     get('/calculation/:nomsId/complete', calculationAccessRoutes.complete)
   }
 
@@ -40,6 +43,7 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
     }
     next()
   })
+  router.use(flashMessages())
 
   indexRoutes()
   calculationRoutes()

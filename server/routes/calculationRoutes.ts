@@ -39,15 +39,38 @@ export default class CalculationRoutes {
     }
   }
 
-  public summary: RequestHandler = async (req, res): Promise<void> => {
+  public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {
     const { username } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
     try {
       const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId)
+      res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
+    } catch (ex) {
+      logger.error(ex)
+
+      req.flash(
+        'validationErrors',
+        JSON.stringify([
+          {
+            text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
+            href: '#sentence-table',
+          },
+        ])
+      )
+      res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+  }
+
+  public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
+    const { username } = res.locals.user
+    const { nomsId } = req.params
+    const calculationRequestId = Number(req.params.calculationRequestId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    try {
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
       res.render('pages/calculation/calculationSummary', {
         prisonerDetail,
-        releaseDates: releaseDates ? JSON.stringify(releaseDates, undefined, 4) : '',
+        releaseDates: releaseDates.dates,
       })
     } catch (ex) {
       logger.error(ex)

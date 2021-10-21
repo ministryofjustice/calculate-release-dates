@@ -14,9 +14,11 @@
     }) }}
 {% endblock %}
 {% block content %}
+    {% include "../partials/formError.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
-            <h1 class="govuk-heading-xl" id="check-nomis-heading">Check NOMIS information about {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
+            <h1 class="govuk-heading-xl" id="check-nomis-heading">Check NOMIS information
+                about {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -44,13 +46,16 @@
                         for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h2>
                     <p class="govuk-body">The release dates will not be saved in NOMIS until you have reviewed the
                         calculation.</p>
-                    {{ govukButton({
-                        text: "Calculate release dates",
-                        value: 'calculate-release-dates',
-                        classes: 'govuk-button--tertiary',
-                        href: '/calculation/' + prisonerDetail.offenderNo + '/summary',
-                        preventDoubleClick: true
-                    }) }}
+                    <form method="post">
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                        {{ govukButton({
+                            text: "Calculate release dates",
+                            type: submit,
+                            value: 'calculate-release-dates',
+                            classes: 'govuk-button--tertiary',
+                            preventDoubleClick: true
+                        }) }}
+                    </form>
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
