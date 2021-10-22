@@ -10,6 +10,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -58,6 +59,13 @@ const stubbedSentencesAndOffences = [
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
+const stubbedCalculationResults = {
+  dates: {
+    CRD: '2021-02-03',
+  },
+  calculationRequestId: 123456,
+} as BookingCalculation
+
 beforeEach(() => {
   app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService })
 })
@@ -82,6 +90,20 @@ describe('Prisoner routes', () => {
         expect(res.text).toContain('Committed on 03 February 2021')
         expect(res.text).toContain('Committed on 04 January 2021')
         expect(res.text).toContain('Committed on 03 March 2021')
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the calculation requested', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Conditional release date (CRD)')
+        expect(res.text).toContain('Wednesday, 03 February 2021')
+        expect(res.text).not.toContain('SLED')
       })
   })
 })

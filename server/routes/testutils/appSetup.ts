@@ -3,6 +3,7 @@ import cookieSession from 'cookie-session'
 import createError from 'http-errors'
 import path from 'path'
 
+import flash from 'connect-flash'
 import allRoutes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
@@ -46,6 +47,7 @@ function appSetup({ router, production = false }: { router: Router; production?:
     next()
   })
 
+  app.use(flash())
   app.use(cookieSession({ keys: [''] }))
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))

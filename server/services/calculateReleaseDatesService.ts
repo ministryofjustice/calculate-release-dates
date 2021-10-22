@@ -21,4 +21,9 @@ export default class CalculateReleaseDatesService {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
     return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(prisonerId)
   }
+
+  async getCalculationResults(username: string, calculationRequestId: number): Promise<BookingCalculation> {
+    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+    return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
+  }
 }
