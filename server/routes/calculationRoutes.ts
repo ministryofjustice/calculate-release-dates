@@ -73,6 +73,7 @@ export default class CalculationRoutes {
         releaseDates: releaseDates.dates,
       })
     } catch (ex) {
+      // TODO This is just a generic exception handler at the moment - will evolve to handle specific errors and a general one
       logger.error(ex)
       const errorSummaryList = [
         {

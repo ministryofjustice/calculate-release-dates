@@ -6,6 +6,12 @@ import config from '../config'
 jest.mock('../api/hmppsAuthClient')
 
 const prisonerId = 'A1234AB'
+const calculationRequestId = 123456
+const calculationResults = {
+  dates: {
+    CRD: '2021-02-03',
+  },
+}
 
 describe('User service', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
@@ -22,17 +28,21 @@ describe('User service', () => {
     afterEach(() => {
       nock.cleanAll()
     })
+
     it('Test the running of a preliminary calculation of release dates', async () => {
-      const calculationResults = {
-        dates: {
-          CRD: '2021-02-03',
-        },
-      }
       fakeApi.post(`/calculation/${prisonerId}`).reply(200, calculationResults)
 
       const result = await calculateReleaseDatesService.calculatePreliminaryReleaseDates('user', prisonerId)
 
       expect(result).toEqual(calculationResults)
     })
+  })
+
+  it('Test getting the results of a calculation bu the calculationRequestId', async () => {
+    fakeApi.get(`/calculation/results/${calculationRequestId}`).reply(200, calculationResults)
+
+    const result = await calculateReleaseDatesService.getCalculationResults('user', calculationRequestId)
+
+    expect(result).toEqual(calculationResults)
   })
 })
