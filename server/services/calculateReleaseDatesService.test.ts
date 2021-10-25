@@ -38,10 +38,18 @@ describe('User service', () => {
     })
   })
 
-  it('Test getting the results of a calculation bu the calculationRequestId', async () => {
+  it('Test getting the results of a calculation by the calculationRequestId', async () => {
     fakeApi.get(`/calculation/results/${calculationRequestId}`).reply(200, calculationResults)
 
     const result = await calculateReleaseDatesService.getCalculationResults('user', calculationRequestId)
+
+    expect(result).toEqual(calculationResults)
+  })
+
+  it('Test confirming the results of a calculation', async () => {
+    fakeApi.post(`/calculation/${prisonerId}/confirm`).reply(200, calculationResults)
+
+    const result = await calculateReleaseDatesService.confirmCalculation('user', prisonerId)
 
     expect(result).toEqual(calculationResults)
   })

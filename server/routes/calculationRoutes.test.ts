@@ -106,4 +106,16 @@ describe('Prisoner routes', () => {
         expect(res.text).not.toContain('SLED')
       })
   })
+
+  it('GET /calculation/:nomsId/complete should return details about the calculation requested', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    return request(app)
+      .get('/calculation/A1234AB/complete')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Calculation complete for Ringo Starr')
+      })
+  })
 })
