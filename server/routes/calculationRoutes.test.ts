@@ -115,7 +115,7 @@ describe('Prisoner routes', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Calculation complete for Ringo Starr')
+        expect(res.text).toMatch(/Calculation complete for<br>\s*Ringo Starr/)
       })
   })
 })
