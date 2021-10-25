@@ -3,14 +3,27 @@
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 
 {% set pageTitle = applicationName + " - calculation complete" %}
+{% block beforeContent %}
+    {% include "../partials/phaseBanner.njk" %}
+{% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {{ govukPanel({
-                titleText: "Calculation complete for Joe Bloggs",
-                html: "The calculation has been saved in NOMIS"
-            }) }}
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-panel govuk-panel--confirmation">
+                    <h1 class="govuk-panel__title">
+                        Calculation complete for<br>
+                        {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}
+                    </h1>
+                    <div class="govuk-panel__body govuk-!-font-size-19">
+                        The calculation has been saved in NOMIS.
+                    </div>
+                </div>
+                <div class="govuk-!-margin-top-8">
+                    <p class="govuk-body"><a href="/search/prisoners">Calculate another release date</a></p>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

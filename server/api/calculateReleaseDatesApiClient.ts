@@ -31,4 +31,8 @@ export default class CalculateReleaseDatesApiClient {
   getCalculationResults(calculationRequestId: number): Promise<BookingCalculation> {
     return this.restClient.get({ path: `/calculation/results/${calculationRequestId}` }) as Promise<BookingCalculation>
   }
+
+  confirmCalculation(prisonerId: string): Promise<BookingCalculation> {
+    return this.restClient.post({ path: `/calculation/${prisonerId}/confirm` }) as Promise<BookingCalculation>
+  }
 }

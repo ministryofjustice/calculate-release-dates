@@ -4,7 +4,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
-{% set pageTitle = applicationName + " - prisoner detail" %}
+{% set pageTitle = applicationName + " - calculation summary" %}
 {% block beforeContent %}
     {% include "../partials/phaseBanner.njk" %}
     {% include "../partials/prisonerIdentityBar.njk" %}
@@ -69,9 +69,15 @@
             <h3 class="govuk-heading-m govuk-!-margin-top-9">Confirm and submit to NOMIS</h3>
             <p class="govuk-body">By submitting this calculation you are confirming that, to the best of your knowledge,
                 it is correct. The calculation will be saved in NOMIS.</p>
-            <a href="#">
-                <button class="govuk-button" data-module="govuk-button">Confirm and submit</button>
-            </a>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {{ govukButton({
+                    text: "Confirm and submit",
+                    type: submit,
+                    value: 'confirm-and-submit',
+                    preventDoubleClick: true
+                }) }}
+            </form>
             <p class="govuk-body govuk-!-font-size-16"><a href={{ "/calculation/" + prisonerDetail.offenderNo +
                 "/check-information" }} class="govuk-link">Cancel calculation</a></p>
         </div>

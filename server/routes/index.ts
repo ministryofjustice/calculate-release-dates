@@ -25,6 +25,7 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
     get('/calculation/:nomsId/check-information', calculationAccessRoutes.checkInformation)
     post('/calculation/:nomsId/check-information', calculationAccessRoutes.submitCheckInformation)
     get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
+    post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
     get('/calculation/:nomsId/complete', calculationAccessRoutes.complete)
   }
 
