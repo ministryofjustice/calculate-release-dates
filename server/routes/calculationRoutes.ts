@@ -46,6 +46,7 @@ export default class CalculationRoutes {
       const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId)
       res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
     } catch (ex) {
+      // TODO This is just a generic exception handler at the moment - will evolve to handle specific errors and a general one
       logger.error(ex)
 
       req.flash(
@@ -66,30 +67,40 @@ export default class CalculationRoutes {
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
+    res.render('pages/calculation/calculationSummary', {
+      prisonerDetail,
+      releaseDates: releaseDates.dates,
+    })
+  }
+
+  public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
+    const { username } = res.locals.user
+    const { nomsId, calculationRequestId } = req.params
     try {
-      const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
-      res.render('pages/calculation/calculationSummary', {
-        prisonerDetail,
-        releaseDates: releaseDates.dates,
-      })
+      await this.calculateReleaseDatesService.confirmCalculation(username, nomsId)
+      res.redirect(`/calculation/${nomsId}/complete`)
     } catch (ex) {
       // TODO This is just a generic exception handler at the moment - will evolve to handle specific errors and a general one
       logger.error(ex)
-      const errorSummaryList = [
-        {
-          text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
-          href: '#bookingData',
-        },
-      ]
 
-      res.render('pages/calculation/calculationSummary', {
-        prisonerDetail,
-        errorSummaryList,
-      })
+      req.flash(
+        'validationErrors',
+        JSON.stringify([
+          {
+            text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
+            href: '#sentence-table',
+          },
+        ])
+      )
+      res.redirect(`/calculation/${nomsId}/summary/${calculationRequestId}`)
     }
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
-    res.render('pages/calculation/calculationComplete')
+    const { username } = res.locals.user
+    const { nomsId } = req.params
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    res.render('pages/calculation/calculationComplete', { prisonerDetail })
   }
 }
