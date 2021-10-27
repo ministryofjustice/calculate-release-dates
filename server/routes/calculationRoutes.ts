@@ -74,12 +74,25 @@ export default class CalculationRoutes {
     })
   }
 
+  public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
+    const { username } = res.locals.user
+    const { nomsId } = req.params
+    const calculationRequestId = Number(req.params.calculationRequestId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
+    res.render('pages/calculation/printCalculationSummary', {
+      prisonerDetail,
+      releaseDates: releaseDates.dates,
+      calculationRequestId,
+    })
+  }
+
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { username } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
     try {
-      await this.calculateReleaseDatesService.confirmCalculation(username, nomsId)
-      res.redirect(`/calculation/${nomsId}/complete`)
+      const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(username, nomsId)
+      res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
     } catch (ex) {
       // TODO This is just a generic exception handler at the moment - will evolve to handle specific errors and a general one
       logger.error(ex)
@@ -100,7 +113,8 @@ export default class CalculationRoutes {
   public complete: RequestHandler = async (req, res): Promise<void> => {
     const { username } = res.locals.user
     const { nomsId } = req.params
+    const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
-    res.render('pages/calculation/calculationComplete', { prisonerDetail })
+    res.render('pages/calculation/calculationComplete', { prisonerDetail, calculationRequestId })
   }
 }

@@ -16,13 +16,19 @@
                         Calculation complete for<br>
                         {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}
                     </h1>
-{#                    TODO - uncomment, temporarily commented out as we dont yet write back to NOMIS#}
-{#                    <div class="govuk-panel__body govuk-!-font-size-19">#}
-{#                        The calculation has been saved in NOMIS.#}
-{#                    </div>#}
+                    {#                    TODO - uncomment, temporarily commented out as we dont yet write back to NOMIS#}
+                    {#                    <div class="govuk-panel__body govuk-!-font-size-19">#}
+                    {#                        The calculation has been saved in NOMIS.#}
+                    {#                    </div>#}
                 </div>
                 <div class="govuk-!-margin-top-8">
-                    <p class="govuk-body"><a href="/search/prisoners">Calculate another release date</a></p>
+                    <p class="govuk-body">
+                        <a href={{ "/calculation/" + prisonerDetail.offenderNo +
+                "/summary/" + calculationRequestId + "/print" }}>Print calculation summary</a>
+                    </p>
+                    <p class="govuk-body">
+                        <a href="/search/prisoners">Calculate another release date</a>
+                    </p>
                 </div>
             </div>
         </div>
