@@ -111,11 +111,24 @@ describe('Prisoner routes', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     return request(app)
-      .get('/calculation/A1234AB/complete')
+      .get('/calculation/A1234AB/complete/123456')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toMatch(/Calculation complete for<br>\s*Ringo Starr/)
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId/print should return a printable page about the calculation requested', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456/print')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
+        expect(res.text).toMatch(/Calculation/)
       })
   })
 })

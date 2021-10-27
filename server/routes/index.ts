@@ -26,7 +26,8 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
     post('/calculation/:nomsId/check-information', calculationAccessRoutes.submitCheckInformation)
     get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
     post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
-    get('/calculation/:nomsId/complete', calculationAccessRoutes.complete)
+    get('/calculation/:nomsId/summary/:calculationRequestId/print', calculationAccessRoutes.printCalculationSummary)
+    get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
   }
 
   const otherRoutes = () => {
