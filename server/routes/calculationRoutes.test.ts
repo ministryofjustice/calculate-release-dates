@@ -10,7 +10,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { BookingCalculation, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -62,9 +62,22 @@ const stubbedSentencesAndOffences = [
 const stubbedCalculationResults = {
   dates: {
     CRD: '2021-02-03',
+    HDCED: '2021-10-03',
   },
   calculationRequestId: 123456,
 } as BookingCalculation
+const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
+  CRD: {
+    date: '2021-02-02',
+    adjustedForWeekend: true,
+    adjustedForBankHoliday: false,
+  },
+  HDCED: {
+    date: '2021-10-05',
+    adjustedForWeekend: true,
+    adjustedForBankHoliday: true,
+  },
+}
 
 beforeEach(() => {
   app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService })
@@ -96,13 +109,18 @@ describe('Prisoner routes', () => {
   it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Conditional release date (CRD)')
-        expect(res.text).toContain('Wednesday, 03 February 2021')
+        expect(res.text).toContain('Tuesday, 02 February 2021')
+        expect(res.text).toContain('Sunday, 03 October 2021 adjusted for weekend')
+        expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
+        expect(res.text).toContain('Tuesday, 05 October 2021')
+        expect(res.text).toContain('Sunday, 03 October 2021 adjusted for Bank Holiday')
         expect(res.text).not.toContain('SLED')
       })
   })
@@ -122,6 +140,7 @@ describe('Prisoner routes', () => {
   it('GET /calculation/:nomsId/summary/:calculationRequestId/print should return a printable page about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
     return request(app)
       .get('/calculation/A1234AB/summary/123456/print')
       .expect(200)

@@ -1,6 +1,10 @@
 import config, { ApiConfig } from '../config'
 import RestClient from './restClient'
-import { BookingCalculation, TestData } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  TestData,
+  WorkingDay,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class CalculateReleaseDatesApiClient {
   restClient: RestClient
@@ -34,5 +38,13 @@ export default class CalculateReleaseDatesApiClient {
 
   confirmCalculation(prisonerId: string): Promise<BookingCalculation> {
     return this.restClient.post({ path: `/calculation/${prisonerId}/confirm` }) as Promise<BookingCalculation>
+  }
+
+  getNextWorkingDay(date: string): Promise<WorkingDay> {
+    return this.restClient.get({ path: `/working-day/next/${date}` }) as Promise<WorkingDay>
+  }
+
+  getPreviousWorkingDay(date: string): Promise<WorkingDay> {
+    return this.restClient.get({ path: `/working-day/previous/${date}` }) as Promise<WorkingDay>
   }
 }

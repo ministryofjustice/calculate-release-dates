@@ -68,9 +68,11 @@ export default class CalculationRoutes {
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
+    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
     res.render('pages/calculation/calculationSummary', {
       prisonerDetail,
       releaseDates: releaseDates.dates,
+      weekendAdjustments,
     })
   }
 
@@ -80,9 +82,11 @@ export default class CalculationRoutes {
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
+    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
     res.render('pages/calculation/printCalculationSummary', {
       prisonerDetail,
       releaseDates: releaseDates.dates,
+      weekendAdjustments,
       calculationRequestId,
     })
   }
