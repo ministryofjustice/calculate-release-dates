@@ -89,25 +89,46 @@ export default class CalculationRoutes {
 
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { username } = res.locals.user
-    const { nomsId, calculationRequestId } = req.params
+    const { nomsId } = req.params
+    const calculationRequestId = Number(req.params.calculationRequestId)
     try {
-      const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(username, nomsId)
-      res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
-    } catch (ex) {
-      // TODO This is just a generic exception handler at the moment - will evolve to handle specific errors and a general one
-      logger.error(ex)
-
-      req.flash(
-        'validationErrors',
-        JSON.stringify([
-          {
-            text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
-            href: '#sentence-table',
-          },
-        ])
+      const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
+        username,
+        nomsId,
+        calculationRequestId
       )
+      res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
+    } catch (error) {
+      logger.error(error)
+      if (error.status === 412) {
+        req.flash(
+          'validationErrors',
+          this.getValidationError(
+            'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
+            `/calculation/${nomsId}/check-information`
+          )
+        )
+      } else {
+        // TODO This is just a generic exception handler at the moment - will evolve to handle specific errors
+        req.flash(
+          'validationErrors',
+          this.getValidationError(
+            `There was an error in the calculation API service: ${error.data.userMessage}`,
+            '#sentence-table'
+          )
+        )
+      }
       res.redirect(`/calculation/${nomsId}/summary/${calculationRequestId}`)
     }
+  }
+
+  private getValidationError(text: string, href: string) {
+    return JSON.stringify([
+      {
+        text,
+        href,
+      },
+    ])
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {

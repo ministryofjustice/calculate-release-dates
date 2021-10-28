@@ -131,4 +131,17 @@ describe('Prisoner routes', () => {
         expect(res.text).toMatch(/Calculation/)
       })
   })
+
+  it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect if an error is thrown', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.confirmCalculation.mockImplementation(() => {
+      throw Error('Error occurred')
+    })
+    return request(app)
+      .post('/calculation/A1234AB/summary/123456')
+      .expect(302)
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+      })
+  })
 })
