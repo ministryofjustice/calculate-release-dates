@@ -30,7 +30,7 @@
             <h3 class="govuk-heading-s">Conditional release date (CRD)</h3>
             {% if weekendAdjustments.CRD %}
                 <p class="govuk-body">{{ weekendAdjustments.CRD.date | date('dddd, DD MMMM YYYY') }}</p>
-                <p class="govuk-body govuk-hint govuk-!-font-size-16">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.CRD.adjustedForBankHoliday else "weekend" }}</p>
+                <p class="govuk-body govuk-hint govuk-!-font-size-16">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.CRD.adjustedForBankHoliday else "weekend" }}</p>
             {% else %}
                 <p class="govuk-body">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }}</p>
             {% endif %}
