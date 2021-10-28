@@ -117,7 +117,7 @@ describe('Prisoner routes', () => {
       .expect(res => {
         expect(res.text).toContain('Conditional release date (CRD)')
         expect(res.text).toContain('Tuesday, 02 February 2021')
-        expect(res.text).toContain('Sunday, 03 October 2021 adjusted for weekend')
+        expect(res.text).toContain('Wednesday, 03 February 2021 adjusted for weekend')
         expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
         expect(res.text).toContain('Tuesday, 05 October 2021')
         expect(res.text).toContain('Sunday, 03 October 2021 adjusted for Bank Holiday')
