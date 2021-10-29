@@ -36,8 +36,10 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({ path: `/calculation/results/${calculationRequestId}` }) as Promise<BookingCalculation>
   }
 
-  confirmCalculation(prisonerId: string): Promise<BookingCalculation> {
-    return this.restClient.post({ path: `/calculation/${prisonerId}/confirm` }) as Promise<BookingCalculation>
+  confirmCalculation(prisonerId: string, calculationRequestId: number): Promise<BookingCalculation> {
+    return this.restClient.post({
+      path: `/calculation/${prisonerId}/confirm/${calculationRequestId}`,
+    }) as Promise<BookingCalculation>
   }
 
   getNextWorkingDay(date: string): Promise<WorkingDay> {

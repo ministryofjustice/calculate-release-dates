@@ -49,9 +49,9 @@ describe('User service', () => {
   })
 
   it('Test confirming the results of a calculation', async () => {
-    fakeApi.post(`/calculation/${prisonerId}/confirm`).reply(200, calculationResults)
+    fakeApi.post(`/calculation/${prisonerId}/confirm/${calculationRequestId}`).reply(200, calculationResults)
 
-    const result = await calculateReleaseDatesService.confirmCalculation('user', prisonerId)
+    const result = await calculateReleaseDatesService.confirmCalculation('user', prisonerId, calculationRequestId)
 
     expect(result).toEqual(calculationResults)
   })

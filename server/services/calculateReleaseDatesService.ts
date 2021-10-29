@@ -31,9 +31,13 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
   }
 
-  async confirmCalculation(username: string, prisonerId: string): Promise<BookingCalculation> {
+  async confirmCalculation(
+    username: string,
+    prisonerId: string,
+    calculationRequestId: number
+  ): Promise<BookingCalculation> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    return new CalculateReleaseDatesApiClient(token).confirmCalculation(prisonerId)
+    return new CalculateReleaseDatesApiClient(token).confirmCalculation(prisonerId, calculationRequestId)
   }
 
   async getWeekendAdjustments(

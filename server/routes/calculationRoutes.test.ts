@@ -1,5 +1,6 @@
 import request from 'supertest'
 import type { Express } from 'express'
+import { HttpError } from 'http-errors'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -148,6 +149,24 @@ describe('Prisoner routes', () => {
       .expect(res => {
         expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
         expect(res.text).toMatch(/Calculation/)
+      })
+  })
+
+  it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect if an error is thrown', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    const error = {
+      status: 412,
+      message: 'An error has occurred',
+    } as HttpError
+
+    calculateReleaseDatesService.confirmCalculation.mockImplementation(() => {
+      throw error
+    })
+    return request(app)
+      .post('/calculation/A1234AB/summary/123456')
+      .expect(302)
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
       })
   })
 })
