@@ -5,25 +5,41 @@
  */
 
 export interface paths {
-  '/calculation/{prisonerId}/confirm': {
+  '/calculation/{prisonerId}/confirm/{calculationRequestId}': {
     /** This endpoint will calculate release dates based on a prisoners latest booking */
     post: operations['confirmCalculation']
   }
-  '/calculation/by-prisoner-id/{prisonerId}': {
-    /** This endpoint will calculate release dates based on a prisoners latest booking */
-    get: operations['calculate']
+  '/test/calculation-by-booking': {
+    /** This endpoint will calculate release dates based on a prisoners booking data (e.g. sentences and adjustments) */
+    post: operations['calculate']
   }
-  '/calculation/results/{prisonerId}/{bookingId}': {
-    /** This endpoint will return the confirmed release dates based on a prisoners booking */
-    get: operations['getConfirmedCalculationResults']
+  '/calculation/{prisonerId}': {
+    /** This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS */
+    post: operations['calculate_1']
   }
   '/test/data': {
     /** Just a test API to verify that the full stack of components are working together */
     get: operations['getTestData']
   }
-  '/test/calculation-by-booking': {
-    /** This endpoint will calculate release dates based on a prisoners booking data (e.g. sentences and adjustments) */
-    post: operations['calculate_1']
+  '/calculation/results/{calculationRequestId}': {
+    /** This endpoint will return the  release dates based on a calculationRequestId */
+    get: operations['getCalculationResults']
+  }
+  '/calculation/results/{prisonerId}/{bookingId}': {
+    /** This endpoint will return the confirmed release dates based on a prisoners booking */
+    get: operations['getConfirmedCalculationResults']
+  }
+  '/working-day/next/{date}': {
+    /** Finds the next working day, adjusting for weekends and bank holidays */
+    get: operations['nextWorkingDay']
+  }
+  '/working-day/previous/{date}': {
+    /** Finds the previous working day, adjusting for weekends and bank holidays */
+    get: operations['previousWorkingDay']
+  }
+  '/calculation/{prisonerId}/confirm': {
+    /** This endpoint will calculate release dates based on a prisoners latest booking */
+    post: operations['confirmCalculation_1']
   }
 }
 
@@ -40,6 +56,11 @@ export interface components {
       /** The value */
       value: string
     }
+    WorkingDay: {
+      date: string
+      adjustedForWeekend: boolean
+      adjustedForBankHoliday: boolean
+    }
   }
 }
 
@@ -50,6 +71,65 @@ export interface operations {
       path: {
         /** The prisoners ID (aka nomsId) */
         prisonerId: string
+        /** The calculation request ID of the calculation to be confirmed */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+      /** No preliminary calculation exists for the passed calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+      /** The booking data that was used for the preliminary calculation has changed */
+      412: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+    }
+  }
+  /** This endpoint will calculate release dates based on a prisoners booking data (e.g. sentences and adjustments) */
+  calculate: {
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': string
+      }
+    }
+  }
+  /** This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS */
+  calculate_1: {
+    parameters: {
+      path: {
+        /** The prisoners ID (aka nomsId) */
+        prisonerId: string
       }
     }
     responses: {
@@ -67,12 +147,29 @@ export interface operations {
       }
     }
   }
-  /** This endpoint will calculate release dates based on a prisoners latest booking */
-  calculate: {
+  /** Just a test API to verify that the full stack of components are working together */
+  getTestData: {
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['TestData'][]
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['TestData'][]
+        }
+      }
+    }
+  }
+  /** This endpoint will return the  release dates based on a calculationRequestId */
+  getCalculationResults: {
     parameters: {
       path: {
-        /** The prisoners ID (aka nomsId) */
-        prisonerId: string
+        /** The calculationRequestId of the results */
+        calculationRequestId: number
       }
     }
     responses: {
@@ -84,6 +181,12 @@ export interface operations {
       }
       /** Forbidden, requires an appropriate role */
       403: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+      /** No calculation exists for this calculationRequestId */
+      404: {
         content: {
           'application/json': components['schemas']['BookingCalculation']
         }
@@ -121,25 +224,60 @@ export interface operations {
       }
     }
   }
-  /** Just a test API to verify that the full stack of components are working together */
-  getTestData: {
+  /** Finds the next working day, adjusting for weekends and bank holidays */
+  nextWorkingDay: {
+    parameters: {
+      path: {
+        /** The date to adjust */
+        date: string
+      }
+    }
     responses: {
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['TestData'][]
+          'application/json': components['schemas']['WorkingDay']
         }
       }
       /** Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['TestData'][]
+          'application/json': components['schemas']['WorkingDay']
         }
       }
     }
   }
-  /** This endpoint will calculate release dates based on a prisoners booking data (e.g. sentences and adjustments) */
-  calculate_1: {
+  /** Finds the previous working day, adjusting for weekends and bank holidays */
+  previousWorkingDay: {
+    parameters: {
+      path: {
+        /** The date to adjust */
+        date: string
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['WorkingDay']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['WorkingDay']
+        }
+      }
+    }
+  }
+  /** This endpoint will calculate release dates based on a prisoners latest booking */
+  confirmCalculation_1: {
+    parameters: {
+      path: {
+        /** The prisoners ID (aka nomsId) */
+        prisonerId: string
+      }
+    }
     responses: {
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
@@ -152,11 +290,6 @@ export interface operations {
         content: {
           'application/json': components['schemas']['BookingCalculation']
         }
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': string
       }
     }
   }
