@@ -1,9 +1,9 @@
+import jwt from 'jsonwebtoken'
+import { Response } from 'superagent'
 import AuthorisedRoles from '../../server/enumerations/authorisedRoles'
 
-const jwt = require('jsonwebtoken')
-
-const { stubFor, getRequests } = require('./wiremock')
-const tokenVerification = require('./tokenVerification')
+import { stubFor, getRequests } from './wiremock'
+import tokenVerification from './tokenVerification'
 
 const createToken = () => {
   const payload = {
@@ -18,7 +18,7 @@ const createToken = () => {
   return jwt.sign(payload, 'secret', { expiresIn: '1h' })
 }
 
-const getLoginUrl = () =>
+const getSignInUrl = (): Promise<string> =>
   getRequests().then(data => {
     const { requests } = data.body
     const stateParam = requests[0].request.queryParams.state
@@ -58,13 +58,13 @@ const redirect = () =>
       status: 200,
       headers: {
         'Content-Type': 'text/html',
-        Location: 'http://localhost:3007/login/callback?code=codexxxx&state=stateyyyy',
+        Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
-      body: '<html><body>Login page<h1>Sign in</h1></body></html>',
+      body: '<html><body>SignIn page<h1>Sign in</h1></body></html>',
     },
   })
 
-const logout = () =>
+const signOut = () =>
   stubFor({
     request: {
       method: 'GET',
@@ -75,7 +75,22 @@ const logout = () =>
       headers: {
         'Content-Type': 'text/html',
       },
-      body: '<html><body>Login page<h1>Sign in</h1></body></html>',
+      body: '<html><body>SignIn page<h1>Sign in</h1></body></html>',
+    },
+  })
+
+const manageDetails = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/auth/account-details.*',
+    },
+    response: {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html',
+      },
+      body: '<html><body><h1>Your account details</h1></body></html>',
     },
   })
 
@@ -89,7 +104,7 @@ const token = () =>
       status: 200,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
-        Location: 'http://localhost:3007/login/callback?code=codexxxx&state=stateyyyy',
+        Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
         access_token: createToken(),
@@ -137,9 +152,10 @@ const stubUserRoles = () =>
     },
   })
 
-module.exports = {
-  getLoginUrl,
-  stubPing: () => Promise.all([ping(), tokenVerification.stubPing()]),
-  stubLogin: () => Promise.all([favicon(), redirect(), logout(), token(), tokenVerification.stubVerifyToken()]),
-  stubUser: () => Promise.all([stubUser(), stubUserRoles()]),
+export default {
+  getSignInUrl,
+  stubPing: (): Promise<[Response, Response]> => Promise.all([ping(), tokenVerification.stubPing()]),
+  stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
+  stubUser: (): Promise<[Response, Response]> => Promise.all([stubUser(), stubUserRoles()]),
 }

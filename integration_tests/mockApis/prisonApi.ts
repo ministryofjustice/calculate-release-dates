@@ -1,6 +1,6 @@
-const { stubFor } = require('./wiremock')
+import { stubFor } from './wiremock'
 
-module.exports = {
+export default {
   stubGetPrisonerDetails: () => {
     return stubFor({
       request: {
