@@ -1,7 +1,8 @@
-const { stubFor } = require('./wiremock')
+import { SuperAgentRequest } from 'superagent'
+import { stubFor } from './wiremock'
 
-module.exports = {
-  stubGetPrisonerDetails: () => {
+export default {
+  stubGetPrisonerDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -20,7 +21,7 @@ module.exports = {
       },
     })
   },
-  stubGetSentenceAdjustments: () => {
+  stubGetSentenceAdjustments: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -44,7 +45,7 @@ module.exports = {
       },
     })
   },
-  stubGetSentencesAndOffences: () => {
+  stubGetSentencesAndOffences: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',

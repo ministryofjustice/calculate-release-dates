@@ -1,20 +1,21 @@
-const { resetStubs } = require('../mockApis/wiremock')
+import { resetStubs } from '../mockApis/wiremock'
 
-const auth = require('../mockApis/auth')
-const tokenVerification = require('../mockApis/tokenVerification')
-const prisonApi = require('../mockApis/prisonApi')
+import auth from '../mockApis/auth'
+import tokenVerification from '../mockApis/tokenVerification'
+import prisonApi from '../mockApis/prisonApi'
 
-module.exports = on => {
+export default (on: (string, Record) => void): void => {
   on('task', {
     reset: resetStubs,
 
-    getLoginUrl: auth.getLoginUrl,
-    stubLogin: auth.stubLogin,
+    getSignInUrl: auth.getSignInUrl,
+    stubSignIn: auth.stubSignIn,
 
     stubAuthUser: auth.stubUser,
     stubAuthPing: auth.stubPing,
 
     stubTokenVerificationPing: tokenVerification.stubPing,
+
     stubGetPrisonerDetails: prisonApi.stubGetPrisonerDetails,
     stubGetSentencesAndOffences: prisonApi.stubGetSentencesAndOffences,
     stubGetSentenceAdjustments: prisonApi.stubGetSentenceAdjustments,
