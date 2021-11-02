@@ -8,12 +8,12 @@ context('Calculation complete', () => {
     cy.task('stubGetPrisonerDetails')
   })
 
-  it('Visit Calculation summary page', () => {
+  it('Visit Calculation complete page', () => {
     cy.signIn()
     CalculationCompletePage.goTo('A1234AB', '123')
   })
 
-  it('Calculation summary page is accessible', () => {
+  it('Calculation complete page is accessible', () => {
     cy.signIn()
     CalculationCompletePage.goTo('A1234AB', '123')
     cy.injectAxe()
