@@ -6,7 +6,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/api/offenders/A1234AB',
+        urlPattern: '/prison-api/api/offenders/A1234AB',
       },
       response: {
         status: 200,
@@ -25,7 +25,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/api/bookings/1234/sentenceAdjustments',
+        urlPattern: '/prison-api/api/bookings/1234/sentenceAdjustments',
       },
       response: {
         status: 200,
@@ -49,7 +49,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/api/offender-sentences/booking/1234/sentences-and-offences',
+        urlPattern: '/prison-api/api/offender-sentences/booking/1234/sentences-and-offences',
       },
       response: {
         status: 200,

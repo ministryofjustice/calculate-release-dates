@@ -18,7 +18,7 @@ context('SignIn', () => {
     cy.signIn()
     const indexPage = Page.verifyOnPage(IndexPage)
     indexPage.headerUserName().should('contain.text', 'J. Smith')
-    indexPage.startNowButton()
+    indexPage.startNowButton().should('exist')
   })
 
   it('Page is accessible', () => {

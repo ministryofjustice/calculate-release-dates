@@ -3,15 +3,16 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageTitle = applicationName + " - prisoner search" %}
+{% set pageId = "prisoner-search" %}
 
 {% block content %}
   <div class="govuk-grid-row govuk-!-margin-bottom-4" data-qa="prisoner-search-section">
     <div class="govuk-grid-column-full">
-        <div id="prisoner-search-container">
-          <h2 class="govuk-heading-m">Search for prisoners</h2>
-          {% include "../partials/prisonerSearch.njk" %}
-          {% include "../partials/prisonerSearchTable.njk" %}
-        </div>
+      <div id="prisoner-search-container">
+        <h1 class="govuk-heading-xl">Search for a person</h1>
+        {% include "../partials/prisonerSearch.njk" %}
+        {% include "../partials/prisonerSearchTable.njk" %}
+      </div>
     </div>
   </div>
 {% endblock %}
