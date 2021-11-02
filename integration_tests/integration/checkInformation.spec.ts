@@ -1,6 +1,3 @@
-import IndexPage from '../pages/index'
-import AuthSignInPage from '../pages/authSignIn'
-import Page from '../pages/page'
 import CheckInformationPage from '../pages/checkInformation'
 
 context('Check nomis information', () => {
@@ -22,7 +19,7 @@ context('Check nomis information', () => {
 
   it('Check nomis information page is accessible', () => {
     cy.signIn()
-    const checkInformationPage = CheckInformationPage.goTo('A1234AB', 'Marvin Haggler')
+    CheckInformationPage.goTo('A1234AB', 'Marvin Haggler')
     cy.injectAxe()
     cy.checkA11y(null, {
       includedImpacts: ['critical', 'serious'],

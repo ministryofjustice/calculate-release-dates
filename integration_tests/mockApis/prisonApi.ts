@@ -1,7 +1,8 @@
+import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
 export default {
-  stubGetPrisonerDetails: () => {
+  stubGetPrisonerDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -20,7 +21,7 @@ export default {
       },
     })
   },
-  stubGetSentenceAdjustments: () => {
+  stubGetSentenceAdjustments: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -44,7 +45,7 @@ export default {
       },
     })
   },
-  stubGetSentencesAndOffences: () => {
+  stubGetSentencesAndOffences: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
