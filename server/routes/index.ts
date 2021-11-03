@@ -7,6 +7,7 @@ import tokenVerifier from '../api/tokenVerification'
 import auth from '../authentication/auth'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
+import SearchRoutes from './searchRoutes'
 
 export default function Index({ userService, prisonerService, calculateReleaseDatesService }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -14,6 +15,7 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
   const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService)
+  const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
 
   const indexRoutes = () =>
@@ -30,11 +32,13 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
     get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
   }
 
+  const searchRoutes = () => {
+    get('/search/prisoners', searchAccessRoutes.searchPrisoners)
+  }
+
   const otherRoutes = () => {
-    get('/test/data', otherAccessRoutes.listTestData) // TODO remove this route as it was only for POC testing
     get('/test/calculation', otherAccessRoutes.testCalculation) // TODO remove this route as it was only for POC testing
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
-    get('/search/prisoners', otherAccessRoutes.searchPrisoners)
   }
 
   router.use(auth.authenticationMiddleware(tokenVerifier))
@@ -49,6 +53,7 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
 
   indexRoutes()
   calculationRoutes()
+  searchRoutes()
   otherRoutes()
 
   return router

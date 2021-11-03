@@ -16,6 +16,7 @@ const stubbedTestData: TestData[] = [{ key: 'X', value: 'Y' } as TestData]
 
 describe('Calculate release dates API client tests', () => {
   let fakeApi: nock.Scope
+  const calculationRequestId = 123456
 
   beforeEach(() => {
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
@@ -26,11 +27,11 @@ describe('Calculate release dates API client tests', () => {
     nock.cleanAll()
   })
 
-  describe('Test data', () => {
-    it('Get test data', async () => {
+  describe('Tests for API calls', () => {
+    it('Get calculation results data', async () => {
       hmppsAuthClient.getSystemClientToken.mockResolvedValue('a token')
-      fakeApi.get('/test/data', '').reply(200, stubbedTestData)
-      const data = await calculateReleaseDatesService.getTestData('XTEST1')
+      fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(200, stubbedTestData)
+      const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', calculationRequestId)
       expect(data).toEqual(stubbedTestData)
       expect(nock.isDone()).toBe(true)
       expect(hmppsAuthClient.getSystemClientToken).toBeCalled()
@@ -38,9 +39,9 @@ describe('Calculate release dates API client tests', () => {
 
     it('No client token', async () => {
       hmppsAuthClient.getSystemClientToken.mockResolvedValue('')
-      fakeApi.get('/test/data', '').reply(401)
+      fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(401)
       try {
-        await calculateReleaseDatesService.getTestData('XTEST1')
+        await calculateReleaseDatesService.getCalculationResults('XTEST1', 123456)
       } catch (e) {
         expect(e.message).toContain('Unauthorized')
       }
@@ -50,8 +51,8 @@ describe('Calculate release dates API client tests', () => {
 
     it('Empty data', async () => {
       hmppsAuthClient.getSystemClientToken.mockResolvedValue('a token')
-      fakeApi.get('/test/data', '').reply(200, [])
-      const data = await calculateReleaseDatesService.getTestData('XTEST1')
+      fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(200, [])
+      const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', 123456)
       expect(data).toEqual([])
       expect(nock.isDone()).toBe(true)
       expect(hmppsAuthClient.getSystemClientToken).toBeCalled()

@@ -46,7 +46,7 @@ export default class CalculationRoutes {
       const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId)
       res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
     } catch (ex) {
-      // TODO This is just a generic exception handler at the moment - will evolve to handle specific errors and a general one
+      // TODO Move handling of validation errors from the api into the service layer
       logger.error(ex)
 
       req.flash(
@@ -103,6 +103,7 @@ export default class CalculationRoutes {
       )
       res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
     } catch (error) {
+      // TODO Move handling of validation errors from the api into the service layer
       logger.error(error)
       if (error.status === 412) {
         req.flash(
@@ -113,7 +114,6 @@ export default class CalculationRoutes {
           )
         )
       } else {
-        // TODO This is just a generic exception handler at the moment - will evolve to handle specific errors
         req.flash(
           'validationErrors',
           this.getValidationError(

@@ -1,10 +1,6 @@
 import config, { ApiConfig } from '../config'
 import RestClient from './restClient'
-import {
-  BookingCalculation,
-  TestData,
-  WorkingDay,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { BookingCalculation, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class CalculateReleaseDatesApiClient {
   restClient: RestClient
@@ -15,11 +11,6 @@ export default class CalculateReleaseDatesApiClient {
       config.apis.calculateReleaseDates as ApiConfig,
       token
     )
-  }
-
-  // TODO test method - will be removed
-  getTestData(): Promise<TestData[]> {
-    return this.restClient.get({ path: '/test/data' }) as Promise<TestData[]>
   }
 
   // TODO test method - will be removed

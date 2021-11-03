@@ -2,7 +2,6 @@ import { RequestHandler } from 'express'
 import path from 'path'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
-import { PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 import logger from '../../logger'
 
 export default class OtherRoutes {
@@ -10,12 +9,6 @@ export default class OtherRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService
   ) {}
-
-  public listTestData: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
-    const testData = await this.calculateReleaseDatesService.getTestData(username)
-    res.render('pages/test/testData', { testData })
-  }
 
   public testCalculation: RequestHandler = async (req, res): Promise<void> => {
     const { username } = res.locals.user
@@ -65,24 +58,5 @@ export default class OtherRoutes {
         const placeHolder = path.join(process.cwd(), '/assets/images/image-missing.png')
         res.sendFile(placeHolder)
       })
-  }
-
-  public searchPrisoners: RequestHandler = async (req, res): Promise<void> => {
-    const { firstName, lastName, prisonerIdentifier } = req.query as Record<string, string>
-    const { username } = res.locals.user
-    const searchValues = { firstName, lastName, prisonerIdentifier }
-
-    if (!(prisonerIdentifier || firstName || lastName)) {
-      return res.render('pages/search/searchPrisoners')
-    }
-    const prisoners = await this.prisonerService.searchPrisoners(username, {
-      firstName,
-      lastName,
-      prisonerIdentifier: prisonerIdentifier || null,
-      // prisonIds: ['MDI'], TODO Pass in prisonId's that user has access to
-      includeAliases: false,
-    } as PrisonerSearchCriteria)
-
-    return res.render('pages/search/searchPrisoners', { prisoners, searchValues })
   }
 }
