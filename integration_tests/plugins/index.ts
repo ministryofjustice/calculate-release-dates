@@ -21,6 +21,7 @@ export default (on: (string, Record) => void): void => {
     stubGetPrisonerDetails: prisonApi.stubGetPrisonerDetails,
     stubGetSentencesAndOffences: prisonApi.stubGetSentencesAndOffences,
     stubGetSentenceAdjustments: prisonApi.stubGetSentenceAdjustments,
+    stubGetUserCaseloads: prisonApi.stubGetUserCaseloads,
 
     stubPrisonerSearch: prisonerSearchApi.stubPrisonerSearch,
 
