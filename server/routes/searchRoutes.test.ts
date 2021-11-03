@@ -47,6 +47,7 @@ describe('GET Search routes for /search/prisoners', () => {
 
   it('Should should return no results if user has no caseloads', () => {
     prisonerService.getUsersCaseloads.mockResolvedValue([])
+    prisonerService.searchPrisoners.mockResolvedValue([])
     return request(app)
       .get('/search/prisoners?firstName=oj')
       .expect(200)

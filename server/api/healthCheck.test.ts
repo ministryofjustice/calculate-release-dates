@@ -18,6 +18,12 @@ describe('Service healthcheck', () => {
     nock.cleanAll()
   })
 
+  afterAll(done => {
+    // Prevent detection of open handles at jest shutdown
+    nock.abortPendingRequests()
+    done()
+  })
+
   describe('Check healthy', () => {
     it('Should return data from api', async () => {
       fakeServiceApi.get('/ping').reply(200, 'pong')
