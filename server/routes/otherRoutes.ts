@@ -2,7 +2,6 @@ import { RequestHandler } from 'express'
 import path from 'path'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
-import { PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 import logger from '../../logger'
 
 export default class OtherRoutes {

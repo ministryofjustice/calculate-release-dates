@@ -1,10 +1,6 @@
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import HmppsAuthClient from '../api/hmppsAuthClient'
-import {
-  BookingCalculation,
-  TestData,
-  WorkingDay,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { BookingCalculation, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}

@@ -1,10 +1,6 @@
 import config, { ApiConfig } from '../config'
 import RestClient from './restClient'
-import {
-  BookingCalculation,
-  TestData,
-  WorkingDay,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { BookingCalculation, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class CalculateReleaseDatesApiClient {
   restClient: RestClient
