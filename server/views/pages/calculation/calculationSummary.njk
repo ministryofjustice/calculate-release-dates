@@ -5,8 +5,9 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - calculation summary" %}
+{% set pageId = "calculation-summary" %}
 {% block beforeContent %}
-    {% include "../partials/phaseBanner.njk" %}
+    {{super()}}
     {% include "../partials/prisonerIdentityBar.njk" %}
     {{ govukBackLink({
         text: "Back",
@@ -33,7 +34,8 @@
                         text: "Confirm and submit",
                         type: submit,
                         value: 'confirm-and-submit',
-                        preventDoubleClick: true
+                        preventDoubleClick: true,
+                        attributes: { 'data-qa': 'submit-to-nomis' }   
                     }) }}
             </form>
             <p class="govuk-body govuk-!-font-size-16">

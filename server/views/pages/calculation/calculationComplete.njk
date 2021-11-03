@@ -3,9 +3,7 @@
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 
 {% set pageTitle = applicationName + " - calculation complete" %}
-{% block beforeContent %}
-    {% include "../partials/phaseBanner.njk" %}
-{% endblock %}
+{% set pageId = "calculation-complete" %}
 
 {% block content %}
     <div class="govuk-width-container">

@@ -5,8 +5,9 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - calculation summary" %}
+{% set pageId = "print-calculation-summary" %}
 {% block beforeContent %}
-    {% include "../partials/phaseBanner.njk" %}
+    {{ super() }}
     {% include "../partials/prisonerIdentityBar.njk" %}
     {{ govukBackLink({
         text: "Back",

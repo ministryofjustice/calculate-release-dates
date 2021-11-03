@@ -1,13 +1,13 @@
 import Page from './page'
 
 export default class CheckInformationPage extends Page {
-  constructor(prisonerName: string) {
-    super(`Check NOMIS information about ${prisonerName}`)
+  constructor() {
+    super('check-information')
   }
 
-  public static goTo(prisonerId: string, prisonerName: string): CheckInformationPage {
+  public static goTo(prisonerId: string): CheckInformationPage {
     cy.visit(`/calculation/${prisonerId}/check-information`)
-    return new CheckInformationPage(prisonerName)
+    return new CheckInformationPage()
   }
 
   public checkOffenceCountText(offenceCountText: string): void {
