@@ -5,8 +5,9 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - check information" %}
+{% set pageId = "check-information" %}
 {% block beforeContent %}
-    {% include "../partials/phaseBanner.njk" %}
+    {{ super() }}
     {% include "../partials/prisonerIdentityBar.njk" %}
     {{ govukBackLink({
         text: "Back",
@@ -47,7 +48,7 @@
                     <p class="govuk-body">The release dates will not be saved in NOMIS until you have reviewed the
                         calculation.</p>
                     <form method="post">
-                        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
                         {{ govukButton({
                             text: "Calculate release dates",
                             type: submit,
@@ -58,7 +59,7 @@
                     </form>
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
+                            <span class="govuk-details__summary-text">
                             Some information is wrong
                         </span>
                         </summary>

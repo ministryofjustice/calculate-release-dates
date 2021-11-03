@@ -3,49 +3,49 @@
 
 {% if (prisoners) %}
     {% if (prisoners.length > 0) %}
-        <table id="search-results-table" class="govuk-table" data-qa="search-results-table">
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header"></th>
-                <th scope="col" class="govuk-table__header">Name</th>
-                <th scope="col" class="govuk-table__header">Prison number</th>
-                <th scope="col" class="govuk-table__header">Date of birth</th>
-                <th scope="col" class="govuk-table__header"></th>
+    <table id="search-results-table" class="govuk-table" data-qa="search-results-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header"></th>
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header">Prison number</th>
+            <th scope="col" class="govuk-table__header">Date of birth</th>
+            <th scope="col" class="govuk-table__header"></th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body govuk-body-s">
+        {% for prisoner in prisoners %}
+            <tr class="govuk-table__row" data-qa="{{'prisoner-' + prisoner.prisonerNumber}}">
+                <td class="govuk-table__cell">
+                    <a href="{{ '/calculation/' + prisoner.prisonerNumber + '/check-information' }}">
+                        <img
+                                src="/prisoner/{{ prisoner.prisonerNumber }}/image"
+                                alt="Headshot of {{ prisoner.prisonerNumber }}"
+                                height="110"
+                                width="90"
+                                data-qa="offender-image"
+                        />
+                    </a>
+                </td>
+                <td class="govuk-table__cell govuk-!-padding-top-9"><a
+                            href="{{ '/calculation/' + prisoner.prisonerNumber + '/check-information' }}">{{ (prisoner.firstName + ' ' + prisoner.lastName) | title }}</a>
+                </td>
+                <td class="govuk-table__cell govuk-!-padding-top-9">{{ prisoner.prisonerNumber }}</td>
+                <td class="govuk-table__cell govuk-!-padding-top-9">{{ prisoner.dateOfBirth | date('DD MMMM YYYY') }}</td>
+                <td class="govuk-table__cell govuk-!-padding-top-8">
+                    {{ govukButton({
+                        text: "Check NOMIS information",
+                        value: 'select-prisoner',
+                        classes: 'govuk-button--tertiary',
+                        href: '/calculation/' + prisoner.prisonerNumber + '/check-information',
+                        preventDoubleClick: true
+                    }) }}
+                </td>
             </tr>
-            </thead>
-            <tbody class="govuk-table__body govuk-body-s">
-            {% for prisoner in prisoners %}
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">
-                        <a href="{{ '/calculation/' + prisoner.prisonerNumber + '/check-information' }}">
-                            <img
-                                    src="/prisoner/{{ prisoner.prisonerNumber }}/image"
-                                    alt="Headshot of {{ prisoner.prisonerNumber }}"
-                                    height="110"
-                                    width="90"
-                                    data-qa="offender-image"
-                            />
-                        </a>
-                    </td>
-                    <td class="govuk-table__cell govuk-!-padding-top-9"><a
-                                href="{{ '/calculation/' + prisoner.prisonerNumber + '/check-information' }}">{{ (prisoner.firstName + ' ' + prisoner.lastName) | title }}</a>
-                    </td>
-                    <td class="govuk-table__cell govuk-!-padding-top-9">{{ prisoner.prisonerNumber }}</td>
-                    <td class="govuk-table__cell govuk-!-padding-top-9">{{ prisoner.dateOfBirth | date('DD MMMM YYYY') }}</td>
-                    <td class="govuk-table__cell govuk-!-padding-top-8">
-                        {{ govukButton({
-                            text: "Check NOMIS information",
-                            value: 'select-prisoner',
-                            classes: 'govuk-button--tertiary',
-                            href: '/calculation/' + prisoner.prisonerNumber + '/check-information',
-                            preventDoubleClick: true
-                        }) }}
-                    </td>
-                </tr>
 
-            {% endfor %}
-            </tbody>
-        </table>
+        {% endfor %}
+        </tbody>
+    </table>
     {% else %}
         <p class="govuk-body govuk-!-font-weight-bold">There are no matching results.</p>
     {% endif %}

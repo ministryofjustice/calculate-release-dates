@@ -8,7 +8,7 @@
     <div class="custom-card-main">
         {% if releaseDates.SLED %}
             <h3 class="govuk-heading-s">Sentence and licence expiry date (SLED)</h3>
-            <p class="govuk-body">{{ releaseDates.SLED | date('dddd, DD MMMM YYYY') }}</p>
+            <p class="govuk-body" data-qa="SLED-date">{{ releaseDates.SLED | date('dddd, DD MMMM YYYY') }}</p>
         {% endif %}
         {% if releaseDates.LED %}
             <h3 class="govuk-heading-s">Licence expiry date (LED)</h3>
@@ -29,10 +29,10 @@
         {% if releaseDates.CRD %}
             <h3 class="govuk-heading-s">Conditional release date (CRD)</h3>
             {% if weekendAdjustments.CRD %}
-                <p class="govuk-body">{{ weekendAdjustments.CRD.date | date('dddd, DD MMMM YYYY') }}</p>
-                <p class="govuk-body govuk-hint govuk-!-font-size-16">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.CRD.adjustedForBankHoliday else "weekend" }}</p>
+                <p class="govuk-body" data-qa="CRD-date">{{ weekendAdjustments.CRD.date | date('dddd, DD MMMM YYYY') }}</p>
+                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="CRD-weekend-adjustment">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.CRD.adjustedForBankHoliday else "weekend" }}</p>
             {% else %}
-                <p class="govuk-body">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }}</p>
+                <p class="govuk-body" data-qa="CRD-date">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }}</p>
             {% endif %}
         {% endif %}
         {% if releaseDates.TUSED %}
@@ -46,10 +46,10 @@
         {% if releaseDates.HDCED %}
             <h3 class="govuk-heading-s">Home detention curfew eligibility date (HDCED)</h3>
             {% if weekendAdjustments.HDCED %}
-                <p class="govuk-body">{{ weekendAdjustments.HDCED.date | date('dddd, DD MMMM YYYY') }}</p>
-                <p class="govuk-body govuk-hint govuk-!-font-size-16">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.HDCED.adjustedForBankHoliday else "weekend" }}</p>
+                <p class="govuk-body" data-qa="HDCED-date">{{ weekendAdjustments.HDCED.date | date('dddd, DD MMMM YYYY') }}</p>
+                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="HDCED-weekend-adjustment">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.HDCED.adjustedForBankHoliday else "weekend" }}</p>
             {% else %}
-                <p class="govuk-body">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }}</p>
+                <p class="govuk-body" data-qa="HDCED-date">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }}</p>
             {% endif %}
         {% endif %}
     </div>
