@@ -24,6 +24,8 @@ export default (on: (string, Record) => void): void => {
 
     stubPrisonerSearch: prisonerSearchApi.stubPrisonerSearch,
 
+    stubConfirmCalculation: calculateReleaseDatesApi.stubConfirmCalculation,
+    stubCalculatePreliminaryReleaseDates: calculateReleaseDatesApi.stubCalculatePreliminaryReleaseDates,
     stubGetCalculationResults: calculateReleaseDatesApi.stubGetCalculationResults,
     stubGetNextWorkingDay: calculateReleaseDatesApi.stubGetNextWorkingDay,
     stubGetPreviousWorkingDay: calculateReleaseDatesApi.stubGetPreviousWorkingDay,

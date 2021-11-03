@@ -38,7 +38,8 @@
                         value: 'select-prisoner',
                         classes: 'govuk-button--tertiary',
                         href: '/calculation/' + prisoner.prisonerNumber + '/check-information',
-                        preventDoubleClick: true
+                        preventDoubleClick: true,
+                        attributes: { 'data-qa': 'check-nomis-information' }
                     }) }}
                     </td>
                 </tr>

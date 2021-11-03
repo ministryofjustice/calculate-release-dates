@@ -13,8 +13,9 @@ context('Check nomis information', () => {
   it('Visit check nomis information page', () => {
     cy.signIn()
     const checkInformationPage = CheckInformationPage.goTo('A1234AB')
-    checkInformationPage.checkUrl('A1234AB')
-    checkInformationPage.checkOffenceCountText('There are 3 offences included in this calculation.')
+    checkInformationPage
+      .offenceCountText()
+      .should('contains.text', 'There are 3 offences included in this calculation.')
   })
 
   it('Check nomis information page is accessible', () => {
