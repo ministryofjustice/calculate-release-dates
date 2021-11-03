@@ -13,7 +13,7 @@ context('Prisoner search', () => {
     cy.signIn()
     const prisonerSearchPage = PrisonerSearchPage.goTo()
     prisonerSearchPage.searchForFirstName('Marvin')
-    prisonerSearchPage.checkPrisonerInResults('Marvin Haggler', 'A1234AB')
+    prisonerSearchPage.checkNomisInformationButtonForPrisoner('A1234AB').should('exist')
   })
 
   it('Prisoner search page is accessible', () => {

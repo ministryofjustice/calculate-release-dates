@@ -1,4 +1,4 @@
-import Page from './page'
+import Page, { PageElement } from './page'
 
 export default class CheckInformationPage extends Page {
   constructor() {
@@ -10,11 +10,11 @@ export default class CheckInformationPage extends Page {
     return new CheckInformationPage()
   }
 
-  public checkOffenceCountText(offenceCountText: string): void {
-    cy.get('#offence-count-text').should('contains.text', offenceCountText)
+  public offenceCountText(): PageElement {
+    return cy.get('#offence-count-text')
   }
 
-  public checkUrl(prisonerId: string): void {
-    cy.url().should('match', new RegExp(`/calculation/${prisonerId}/check-information`))
+  public calculateButton(): PageElement {
+    return cy.get('[data-qa=calculate-release-dates]')
   }
 }

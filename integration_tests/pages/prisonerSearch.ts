@@ -15,13 +15,11 @@ export default class PrisonerSearchPage extends Page {
     this.prisonerSearch().click()
   }
 
-  public checkPrisonerInResults(fullName: string, identifer: string): void {
-    this.prisonerResultsTable().within(() => {
-      cy.get(`[data-qa=prisoner-${identifer}]`).within(() => {
-        cy.get(`a:contains(${fullName})`).should('exist')
-      })
-    })
-  }
+  public checkNomisInformationButtonForPrisoner = (prisonerIdentifier: string): PageElement =>
+    cy
+      .get('[data-qa=search-results-table]')
+      .find(`[data-qa=prisoner-${prisonerIdentifier}]`)
+      .find('[data-qa=check-nomis-information]')
 
   private prisonerFirstName = (): PageElement => cy.get('[data-qa=prisoner-first-name]')
 
@@ -30,6 +28,4 @@ export default class PrisonerSearchPage extends Page {
   private prisonerIdentifier = (): PageElement => cy.get('[data-qa=prisoner-identifer]')
 
   private prisonerSearch = (): PageElement => cy.get('[data-qa=search-prisoners]')
-
-  private prisonerResultsTable = (): PageElement => cy.get('[data-qa=search-results-table]')
 }
