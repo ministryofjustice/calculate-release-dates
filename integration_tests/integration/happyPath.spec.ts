@@ -11,6 +11,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
     cy.task('stubPrisonerSearch')
+    cy.task('stubGetUserCaseloads')
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetSentencesAndOffences')
     cy.task('stubGetSentenceAdjustments')
