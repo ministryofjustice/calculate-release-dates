@@ -1,0 +1,39 @@
+{% from "./breakdownDate.njk" import breakdownDates%}
+{% from "./breakdownDate.njk" import effectiveDatesDisplay%}
+
+<h2 class="govuk-heading-l govuk-!-margin-top-9">Calculation breakdown</h2>
+<div class="custom-card">
+    <div class="custom-card-main">
+        <h3 class="govuk-heading-m">Concurrent sentences</h2>
+        <p class="govuk-body">{{calculationBreakdown.concurrentSentences.length}} sentences</p>
+
+        {% for sentence in calculationBreakdown.concurrentSentences %}
+            <div class="govuk-!-margin-top-9">
+                <h4 class="govuk-heading-s">Count {{sentence.sequence}}</h2>
+                <p class="govuk-body">Sentenced at {{ sentence.sentencedAt | date('dddd, DD MMMM YYYY') }}</p>
+                <p class="govuk-body">{{sentence.sentenceLength}} ({{sentence.sentenceLengthDays}} days)</p>
+
+                {{ breakdownDates(sentence.dates, releaseDates) }}
+            </div>
+        {% endfor %}
+
+        <h3 class="govuk-heading-m govuk-!-margin-top-9">Consecutive sentence</h2>
+        <p class="govuk-body">Sentenced at {{ calculationBreakdown.consecutiveSentence.sentencedAt | date('dddd, DD MMMM YYYY') }}</p>
+        {% for sentencePart in calculationBreakdown.consecutiveSentence.sentenceParts %}
+            <div class="govuk-!-margin-top-9">
+                <h4 class="govuk-heading-s">Count {{sentencePart.sequence}}</h2>
+                {% if sentencePart.consecutiveTo %}
+                    <p class="govuk-body govuk-hint">Consecutive to: {{sentencePart.consecutiveTo}}</p>
+                {% endif %}
+                <p class="govuk-body">{{sentencePart.sentenceLength}} ({{sentencePart.sentenceLengthDays}} days)</p>
+            {% endfor %}
+            <div class="govuk-!-margin-top-9">
+                <p class="govuk-body">Aggregated to: {{calculationBreakdown.consecutiveSentence.sentenceLength}} ({{calculationBreakdown.consecutiveSentence.sentenceLengthDays}} days)</p>
+                {{ breakdownDates(calculationBreakdown.consecutiveSentence.dates, releaseDates) }}
+            </div>
+        </div>
+
+        <h3 class="govuk-heading-m govuk-!-margin-top-9">Effective dates</h2>
+        {{effectiveDatesDisplay(effectiveDates)}}
+
+    </div>

@@ -1,6 +1,10 @@
 import config, { ApiConfig } from '../config'
 import RestClient from './restClient'
-import { BookingCalculation, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationBreakdown,
+  WorkingDay,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class CalculateReleaseDatesApiClient {
   restClient: RestClient
@@ -24,7 +28,15 @@ export default class CalculateReleaseDatesApiClient {
   }
 
   getCalculationResults(calculationRequestId: number): Promise<BookingCalculation> {
-    return this.restClient.get({ path: `/calculation/results/${calculationRequestId}` }) as Promise<BookingCalculation>
+    return this.restClient.get({
+      path: `/calculation/results/${calculationRequestId}`,
+    }) as Promise<BookingCalculation>
+  }
+
+  getCalculationBreakdown(calculationRequestId: number): Promise<CalculationBreakdown> {
+    return this.restClient.get({
+      path: `/calculation/breakdown/${calculationRequestId}`,
+    }) as Promise<CalculationBreakdown>
   }
 
   confirmCalculation(prisonerId: string, calculationRequestId: number): Promise<BookingCalculation> {
