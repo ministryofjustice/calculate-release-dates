@@ -1,6 +1,11 @@
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import HmppsAuthClient from '../api/hmppsAuthClient'
-import { BookingCalculation, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationBreakdown,
+  DateBreakdown,
+  WorkingDay,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
@@ -20,6 +25,33 @@ export default class CalculateReleaseDatesService {
   async getCalculationResults(username: string, calculationRequestId: number): Promise<BookingCalculation> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
+  }
+
+  async getCalculationBreakdown(username: string, calculationRequestId: number): Promise<CalculationBreakdown> {
+    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+    return new CalculateReleaseDatesApiClient(token).getCalculationBreakdown(calculationRequestId)
+  }
+
+  // Find which sentence provides effective dates.
+  getEffectiveDates(
+    releaseDates: BookingCalculation,
+    calculationBreakdown: CalculationBreakdown
+  ): { [key: string]: DateBreakdown } {
+    const dates = {}
+    Object.keys(releaseDates.dates).forEach(dateType => {
+      dates[dateType] = this.findDateBreakdown(dateType, releaseDates.dates[dateType], calculationBreakdown)
+    })
+    return dates
+  }
+
+  private findDateBreakdown(dateType: string, date: string, calculationBreakdown: CalculationBreakdown): DateBreakdown {
+    const concurrentFind = calculationBreakdown.concurrentSentences
+      .map(it => it.dates[dateType])
+      .find(it => it?.adjusted === date)
+    if (!concurrentFind) {
+      return calculationBreakdown.consecutiveSentence.dates[dateType]
+    }
+    return concurrentFind
   }
 
   async confirmCalculation(

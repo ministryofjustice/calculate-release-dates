@@ -76,6 +76,27 @@ export default class CalculationRoutes {
     })
   }
 
+  public calculationSummaryBreakdown: RequestHandler = async (req, res): Promise<void> => {
+    const { username } = res.locals.user
+    const { nomsId } = req.params
+    const calculationRequestId = Number(req.params.calculationRequestId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
+    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
+    const calculationBreakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
+      username,
+      calculationRequestId
+    )
+    const effectiveDates = await this.calculateReleaseDatesService.getEffectiveDates(releaseDates, calculationBreakdown)
+    res.render('pages/calculation/calculationSummaryBreakdown', {
+      prisonerDetail,
+      releaseDates: releaseDates.dates,
+      weekendAdjustments,
+      calculationBreakdown,
+      effectiveDates,
+    })
+  }
+
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { username } = res.locals.user
     const { nomsId } = req.params

@@ -11,7 +11,12 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { BookingCalculation, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationBreakdown,
+  DateBreakdown,
+  WorkingDay,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -80,6 +85,32 @@ const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
   },
 }
 
+const stubbedCalculationBreakdown: CalculationBreakdown = {
+  concurrentSentences: [
+    {
+      dates: {
+        CRD: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          daysBetween: 18,
+        },
+      },
+      sentenceLength: '2 years',
+      sentenceLengthDays: 785,
+      sentencedAt: '2020-01-01',
+      sequence: '1',
+    },
+  ],
+}
+
+const stubbedEffectiveDates: { [key: string]: DateBreakdown } = {
+  CRD: {
+    adjusted: '2021-02-03',
+    unadjusted: '2021-01-15',
+    daysBetween: 18,
+  },
+}
+
 beforeEach(() => {
   app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService })
 })
@@ -123,6 +154,26 @@ describe('Prisoner routes', () => {
         expect(res.text).toContain('Tuesday, 05 October 2021')
         expect(res.text).toContain('Sunday, 03 October 2021 adjusted for Bank Holiday')
         expect(res.text).not.toContain('SLED')
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId/breakdown should return details about the calculation requested and its breakdown', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getCalculationBreakdown.mockResolvedValue(stubbedCalculationBreakdown)
+    calculateReleaseDatesService.getEffectiveDates.mockResolvedValue(stubbedEffectiveDates as never) // weird
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456/breakdown')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Concurrent sentences')
+        expect(res.text).toContain('1 sentences')
+        expect(res.text).toContain('Consecutive sentence')
+        expect(res.text).toContain('N/A')
+        expect(res.text).toContain('Effective dates')
+        expect(res.text).toContain('Friday, 15 January 2021 - 18 days = Wednesday, 03 February 2021')
       })
   })
 

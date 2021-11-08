@@ -5,66 +5,129 @@
  */
 
 export interface paths {
-  '/calculation/{prisonerId}/confirm/{calculationRequestId}': {
-    /** This endpoint will calculate release dates based on a prisoners latest booking */
-    post: operations['confirmCalculation']
+  '/working-day/next/{date}': {
+    /** Finds the next working day, adjusting for weekends and bank holidays */
+    get: operations['nextWorkingDay']
   }
   '/test/calculation-by-booking': {
     /** This endpoint will calculate release dates based on a prisoners booking data (e.g. sentences and adjustments) */
     post: operations['calculate']
   }
-  '/calculation/{prisonerId}': {
-    /** This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS */
-    post: operations['calculate_1']
-  }
-  '/test/data': {
-    /** Just a test API to verify that the full stack of components are working together */
-    get: operations['getTestData']
-  }
-  '/calculation/results/{calculationRequestId}': {
-    /** This endpoint will return the  release dates based on a calculationRequestId */
-    get: operations['getCalculationResults']
+  '/calculation/{prisonerId}/confirm/{calculationRequestId}': {
+    /** This endpoint will calculate release dates based on a prisoners latest booking */
+    post: operations['confirmCalculation']
   }
   '/calculation/results/{prisonerId}/{bookingId}': {
     /** This endpoint will return the confirmed release dates based on a prisoners booking */
     get: operations['getConfirmedCalculationResults']
   }
-  '/working-day/next/{date}': {
-    /** Finds the next working day, adjusting for weekends and bank holidays */
-    get: operations['nextWorkingDay']
+  '/calculation/{prisonerId}': {
+    /** This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS */
+    post: operations['calculate_1']
+  }
+  '/calculation/breakdown/{calculationRequestId}': {
+    /** This endpoint will return the breakdown based on a calculationRequestId */
+    get: operations['getCalculationBreakdown']
+  }
+  '/calculation/results/{calculationRequestId}': {
+    /** This endpoint will return the release dates based on a calculationRequestId */
+    get: operations['getCalculationResults']
   }
   '/working-day/previous/{date}': {
     /** Finds the previous working day, adjusting for weekends and bank holidays */
     get: operations['previousWorkingDay']
   }
-  '/calculation/{prisonerId}/confirm': {
-    /** This endpoint will calculate release dates based on a prisoners latest booking */
-    post: operations['confirmCalculation_1']
-  }
 }
 
 export interface components {
   schemas: {
-    BookingCalculation: {
-      dates: { [key: string]: string }
-      calculationRequestId: number
-    }
-    /** Describes a test data object */
-    TestData: {
-      /** The key */
-      key: string
-      /** The value */
-      value: string
-    }
     WorkingDay: {
       date: string
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
     }
+    BookingCalculation: {
+      dates: { [key: string]: string }
+      calculationRequestId: number
+    }
+    CalculationBreakdown: {
+      concurrentSentences: components['schemas']['ConcurrentSentenceBreakdown'][]
+      consecutiveSentence?: components['schemas']['ConsecutiveSentenceBreakdown']
+    }
+    ConcurrentSentenceBreakdown: {
+      sentencedAt: string
+      sentenceLength: string
+      sentenceLengthDays: number
+      dates: { [key: string]: components['schemas']['DateBreakdown'] }
+      sequence: string
+    }
+    ConsecutiveSentenceBreakdown: {
+      sentencedAt: string
+      sentenceLength: string
+      sentenceLengthDays: number
+      dates: { [key: string]: components['schemas']['DateBreakdown'] }
+      sentenceParts: components['schemas']['ConsecutiveSentencePart'][]
+    }
+    ConsecutiveSentencePart: {
+      sequence: string
+      sentenceLength: string
+      sentenceLengthDays: number
+      consecutiveTo?: string
+    }
+    DateBreakdown: {
+      unadjusted: string
+      adjusted: string
+      daysBetween: number
+    }
   }
 }
 
 export interface operations {
+  /** Finds the next working day, adjusting for weekends and bank holidays */
+  nextWorkingDay: {
+    parameters: {
+      path: {
+        /** The date to adjust */
+        date: string
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['WorkingDay']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['WorkingDay']
+        }
+      }
+    }
+  }
+  /** This endpoint will calculate release dates based on a prisoners booking data (e.g. sentences and adjustments) */
+  calculate: {
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': string
+      }
+    }
+  }
   /** This endpoint will calculate release dates based on a prisoners latest booking */
   confirmCalculation: {
     parameters: {
@@ -102,97 +165,6 @@ export interface operations {
       }
     }
   }
-  /** This endpoint will calculate release dates based on a prisoners booking data (e.g. sentences and adjustments) */
-  calculate: {
-    responses: {
-      /** Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['BookingCalculation']
-        }
-      }
-      /** Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['BookingCalculation']
-        }
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': string
-      }
-    }
-  }
-  /** This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS */
-  calculate_1: {
-    parameters: {
-      path: {
-        /** The prisoners ID (aka nomsId) */
-        prisonerId: string
-      }
-    }
-    responses: {
-      /** Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['BookingCalculation']
-        }
-      }
-      /** Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['BookingCalculation']
-        }
-      }
-    }
-  }
-  /** Just a test API to verify that the full stack of components are working together */
-  getTestData: {
-    responses: {
-      /** Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['TestData'][]
-        }
-      }
-      /** Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['TestData'][]
-        }
-      }
-    }
-  }
-  /** This endpoint will return the  release dates based on a calculationRequestId */
-  getCalculationResults: {
-    parameters: {
-      path: {
-        /** The calculationRequestId of the results */
-        calculationRequestId: number
-      }
-    }
-    responses: {
-      /** Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['BookingCalculation']
-        }
-      }
-      /** Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['BookingCalculation']
-        }
-      }
-      /** No calculation exists for this calculationRequestId */
-      404: {
-        content: {
-          'application/json': components['schemas']['BookingCalculation']
-        }
-      }
-    }
-  }
   /** This endpoint will return the confirmed release dates based on a prisoners booking */
   getConfirmedCalculationResults: {
     parameters: {
@@ -224,25 +196,83 @@ export interface operations {
       }
     }
   }
-  /** Finds the next working day, adjusting for weekends and bank holidays */
-  nextWorkingDay: {
+  /** This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS */
+  calculate_1: {
     parameters: {
       path: {
-        /** The date to adjust */
-        date: string
+        /** The prisoners ID (aka nomsId) */
+        prisonerId: string
       }
     }
     responses: {
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['WorkingDay']
+          'application/json': components['schemas']['BookingCalculation']
         }
       }
       /** Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['WorkingDay']
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+    }
+  }
+  /** This endpoint will return the breakdown based on a calculationRequestId */
+  getCalculationBreakdown: {
+    parameters: {
+      path: {
+        /** The calculationRequestId of the breakdown */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CalculationBreakdown']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CalculationBreakdown']
+        }
+      }
+      /** No calculation exists for this calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['CalculationBreakdown']
+        }
+      }
+    }
+  }
+  /** This endpoint will return the release dates based on a calculationRequestId */
+  getCalculationResults: {
+    parameters: {
+      path: {
+        /** The calculationRequestId of the results */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
+        }
+      }
+      /** No calculation exists for this calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['BookingCalculation']
         }
       }
     }
@@ -266,29 +296,6 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['WorkingDay']
-        }
-      }
-    }
-  }
-  /** This endpoint will calculate release dates based on a prisoners latest booking */
-  confirmCalculation_1: {
-    parameters: {
-      path: {
-        /** The prisoners ID (aka nomsId) */
-        prisonerId: string
-      }
-    }
-    responses: {
-      /** Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['BookingCalculation']
-        }
-      }
-      /** Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['BookingCalculation']
         }
       }
     }
