@@ -32,6 +32,7 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getCalculationBreakdown(calculationRequestId)
   }
 
+  // Find which sentence provides effective dates.
   getEffectiveDates(
     releaseDates: BookingCalculation,
     calculationBreakdown: CalculationBreakdown
