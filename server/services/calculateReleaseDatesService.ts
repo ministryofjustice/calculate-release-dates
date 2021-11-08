@@ -38,7 +38,7 @@ export default class CalculateReleaseDatesService {
   ): { [key: string]: DateBreakdown } {
     const dates = {}
     Object.keys(releaseDates.dates).forEach(dateType => {
-      dates[dateType] = this.findDateBreakdown(dateType, releaseDates[dateType], calculationBreakdown)
+      dates[dateType] = this.findDateBreakdown(dateType, releaseDates.dates[dateType], calculationBreakdown)
     })
     return dates
   }
@@ -46,7 +46,7 @@ export default class CalculateReleaseDatesService {
   private findDateBreakdown(dateType: string, date: string, calculationBreakdown: CalculationBreakdown): DateBreakdown {
     const concurrentFind = calculationBreakdown.concurrentSentences
       .map(it => it.dates[dateType])
-      .find(it => it?.unadjusted === date)
+      .find(it => it?.adjusted === date)
     if (!concurrentFind) {
       return calculationBreakdown.consecutiveSentence.dates[dateType]
     }

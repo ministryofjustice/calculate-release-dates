@@ -2,7 +2,11 @@ import nock from 'nock'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import HmppsAuthClient from '../api/hmppsAuthClient'
 import config from '../config'
-import { BookingCalculation, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationBreakdown,
+  WorkingDay,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../api/hmppsAuthClient')
 
@@ -14,6 +18,28 @@ const calculationResults: BookingCalculation = {
     HDCED: '2021-10-28',
   },
   calculationRequestId,
+}
+const calculationBreakdown: CalculationBreakdown = {
+  concurrentSentences: [
+    {
+      dates: {
+        CRD: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          daysBetween: 18,
+        },
+        HDCED: {
+          adjusted: '2021-10-28',
+          unadjusted: '2021-01-15',
+          daysBetween: 18,
+        },
+      },
+      sentenceLength: '2 years',
+      sentenceLengthDays: 785,
+      sentencedAt: '2020-01-01',
+      sequence: '1',
+    },
+  ],
 }
 
 describe('User service', () => {
@@ -76,6 +102,31 @@ describe('User service', () => {
     expect(result).toEqual({
       HDCED: adjustedHdced,
       CRD: adjustedCrd,
+    })
+  })
+
+  it('Test getting calculation breakdown', async () => {
+    fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, calculationBreakdown)
+
+    const result = await calculateReleaseDatesService.getCalculationBreakdown('user', calculationRequestId)
+
+    expect(result).toEqual(calculationBreakdown)
+  })
+
+  it('Test getting effective dates', async () => {
+    const result = calculateReleaseDatesService.getEffectiveDates(calculationResults, calculationBreakdown)
+
+    expect(result).toEqual({
+      CRD: {
+        adjusted: '2021-02-03',
+        unadjusted: '2021-01-15',
+        daysBetween: 18,
+      },
+      HDCED: {
+        adjusted: '2021-10-28',
+        unadjusted: '2021-01-15',
+        daysBetween: 18,
+      },
     })
   })
 })
