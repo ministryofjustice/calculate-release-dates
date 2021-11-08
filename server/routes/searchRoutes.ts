@@ -7,21 +7,20 @@ export default class SearchRoutes {
 
   public searchPrisoners: RequestHandler = async (req, res): Promise<void> => {
     const { firstName, lastName, prisonerIdentifier } = req.query as Record<string, string>
-    const { username } = res.locals.user
+    const { username, caseloads } = res.locals.user
     const searchValues = { firstName, lastName, prisonerIdentifier }
 
     if (!(prisonerIdentifier || firstName || lastName)) {
       return res.render('pages/search/searchPrisoners')
     }
-    const usersCaseloads = await this.prisonerService.getUsersCaseloads(username)
 
     const prisoners =
-      usersCaseloads.length > 0
+      caseloads.length > 0
         ? await this.prisonerService.searchPrisoners(username, {
             firstName,
             lastName,
             prisonerIdentifier: prisonerIdentifier || null,
-            prisonIds: usersCaseloads.map(caseload => caseload.caseLoadId),
+            prisonIds: caseloads,
             includeAliases: false,
           } as PrisonerSearchCriteria)
         : []

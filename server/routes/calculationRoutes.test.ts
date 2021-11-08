@@ -42,6 +42,7 @@ const stubbedPrisonerData = {
   imprisonmentStatus: 'LIFE',
   imprisonmentStatusDescription: 'Serving Life Imprisonment',
   religion: 'Christian',
+  agencyId: 'LEI',
   sentenceDetail: {
     sentenceStartDate: '12/12/2019',
     additionalDaysAwarded: 4,
@@ -215,6 +216,19 @@ describe('Prisoner routes', () => {
     })
     return request(app)
       .post('/calculation/A1234AB/summary/123456')
+      .expect(302)
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+      })
+  })
+})
+
+describe('Error scenarios for calculation routes', () => {
+  it('GET /calculation/:nomsId/check-information should redirect if prisoners location doesnt match the users caseload', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue({ ...stubbedPrisonerData, agencyId: 'MDI' })
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
       .expect(302)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
