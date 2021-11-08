@@ -17,6 +17,7 @@ export default {
           firstName: 'Marvin',
           lastName: 'Haggler',
           dateOfBirth: '1965-02-03',
+          agencyId: 'MDI',
         },
       },
     })
