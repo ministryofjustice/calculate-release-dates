@@ -109,11 +109,6 @@ const stubbedEffectiveDates: { [key: string]: DateBreakdown } = {
     unadjusted: '2021-01-15',
     daysBetween: 18,
   },
-  HDCED: {
-    adjusted: '2021-10-28',
-    unadjusted: '2021-01-15',
-    daysBetween: 18,
-  },
 }
 
 beforeEach(() => {
