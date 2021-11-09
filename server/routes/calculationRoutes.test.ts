@@ -5,7 +5,6 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
-  PrisonApiOffenderOffence,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
@@ -59,9 +58,11 @@ const stubbedSentencesAndOffences = [
   {
     years: 3,
     offences: [
-      { offenceEndDate: '2021-02-03' } as PrisonApiOffenderOffence,
-      { offenceStartDate: '2021-01-03', offenceEndDate: '2021-01-04' } as PrisonApiOffenderOffence,
-      { offenceStartDate: '2021-03-03' } as PrisonApiOffenderOffence,
+      { offenceEndDate: '2021-02-03' },
+      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+      { offenceStartDate: '2021-03-06' },
+      {},
+      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
     ],
   } as PrisonApiOffenderSentenceAndOffences,
 ]
@@ -120,25 +121,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('Prisoner routes', () => {
-  it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    return request(app)
-      .get('/calculation/A1234AA/check-information')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('A1234AA')
-        expect(res.text).toContain('Ringo')
-        expect(res.text).toContain('Starr')
-        expect(res.text).toContain('There are 3 offences included in this calculation')
-        expect(res.text).toContain('Committed on 03 February 2021')
-        expect(res.text).toContain('Committed on 04 January 2021')
-        expect(res.text).toContain('Committed on 03 March 2021')
-      })
-  })
-
+describe('Calculation routes tests', () => {
   it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
@@ -219,6 +202,28 @@ describe('Prisoner routes', () => {
       .expect(302)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
+      })
+  })
+})
+
+describe('Calculation routes tests related to check-information', () => {
+  it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('A1234AA')
+        expect(res.text).toContain('Ringo')
+        expect(res.text).toContain('Starr')
+        expect(res.text).toContain('There are 5 offences included in this calculation')
+        expect(res.text).toContain('Committed on 03 February 2021')
+        expect(res.text).toContain('Committed between 04 January 2021 and 05 January 2021')
+        expect(res.text).toContain('Committed on 06 March 2021')
+        expect(res.text).toContain('Offence date not entered')
+        expect(res.text).toContain('Committed on 07 January 2021')
       })
   })
 })

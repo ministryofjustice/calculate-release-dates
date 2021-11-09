@@ -17,27 +17,28 @@
                 <td class="govuk-table__cell">{{ sentence.sentenceSequence }}</td>
                 <td class="govuk-table__cell">{{ offence.offenceDescription }}<br>
                     <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
-                                    {% if (offence.offenceEndDate or offence.offenceStartDate) %}
-                                        Committed on {{ (offence.offenceEndDate or offence.offenceStartDate) | date('DD MMMM YYYY') }}
-                                    {% else %}
-                                        Offence date not entered
-                                    {% endif %}
-                                </span>
+                        {% if (offence.offenceEndDate and offence.offenceStartDate and offence.offenceEndDate !== offence.offenceStartDate) %}
+                            Committed between {{ offence.offenceStartDate | date('DD MMMM YYYY') }} and {{ offence.offenceEndDate | date('DD MMMM YYYY') }}
+                        {% elseif (offence.offenceEndDate or offence.offenceStartDate) %}
+                            Committed on {{ (offence.offenceEndDate or offence.offenceStartDate) | date('DD MMMM YYYY') }}
+                        {% else %}
+                            Offence date not entered
+                        {% endif %}
+                    </span>
                 </td>
                 <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
                 <td class="govuk-table__cell">{{ sentence.years }} {{ 'year' | pluralise(sentence.years) }} {{ sentence.months }} {{ 'month' | pluralise(sentence.months) }}
                     <br>
                     {{ sentence.weeks }} {{ 'week' | pluralise(sentence.weeks) }} {{ sentence.days }} {{ 'day' | pluralise(sentence.days) }}
-                    <br><span
-                            class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
-                    {% if sentence.consecutiveToSequence %}
-                        consecutive to {{ sentence.consecutiveToSequence }}</span>
-                {% else %}
-                    concurrent
-                    {% endif %}
+                    <br>
+                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                        {% if sentence.consecutiveToSequence %}
+                            consecutive to {{ sentence.consecutiveToSequence }}
+                        {% else %}
+                            concurrent
+                        {% endif %}
                     </span>
                 </td>
-
             </tr>
         {% endfor %}
     {% endfor %}
