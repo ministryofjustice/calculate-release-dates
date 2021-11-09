@@ -42,6 +42,7 @@ const stubbedPrisonerData = {
   imprisonmentStatus: 'LIFE',
   imprisonmentStatusDescription: 'Serving Life Imprisonment',
   religion: 'Christian',
+  agencyId: 'LEI',
   sentenceDetail: {
     sentenceStartDate: '12/12/2019',
     additionalDaysAwarded: 4,

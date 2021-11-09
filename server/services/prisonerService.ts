@@ -18,9 +18,17 @@ export default class PrisonerService {
     return new PrisonApiClient(token).getPrisonerImage(nomsId)
   }
 
-  async getPrisonerDetail(username: string, nomsId: string): Promise<PrisonApiPrisoner> {
+  async getPrisonerDetail(username: string, nomsId: string, userCaseloads: string[]): Promise<PrisonApiPrisoner> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    return new PrisonApiClient(token).getPrisonerDetail(nomsId)
+    const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
+    if (!userCaseloads.includes(prisonerDetail.agencyId)) {
+      const error = {
+        status: 404,
+        message: 'The prisoner details have not been found because the prisoner is not in your caseload',
+      }
+      throw error
+    }
+    return prisonerDetail
   }
 
   async searchPrisoners(username: string, prisonerSearchCriteria: PrisonerSearchCriteria): Promise<Prisoner[]> {

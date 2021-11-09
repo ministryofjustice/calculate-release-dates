@@ -17,6 +17,7 @@ export default {
           firstName: 'Marvin',
           lastName: 'Haggler',
           dateOfBirth: '1965-02-03',
+          agencyId: 'MDI',
         },
       },
     })
@@ -78,7 +79,7 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: [
           {
-            caseloadId: 'MDI',
+            caseLoadId: 'MDI',
           },
         ],
       },

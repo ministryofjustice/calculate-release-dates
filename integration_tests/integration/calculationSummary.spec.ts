@@ -9,6 +9,7 @@ context('Calculation summary', () => {
     cy.task('stubGetCalculationResults')
     cy.task('stubGetNextWorkingDay')
     cy.task('stubGetPreviousWorkingDay')
+    cy.task('stubGetUserCaseloads')
   })
 
   it('Visit Calculation summary page', () => {

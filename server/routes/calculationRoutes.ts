@@ -10,9 +10,9 @@ export default class CalculationRoutes {
   ) {}
 
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
+    const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(username, prisonerDetail.bookingId)
     const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(username, prisonerDetail.bookingId)
     try {
@@ -63,10 +63,10 @@ export default class CalculationRoutes {
   }
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
+    const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
     res.render('pages/calculation/calculationSummary', {
@@ -77,10 +77,10 @@ export default class CalculationRoutes {
   }
 
   public calculationSummaryBreakdown: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
+    const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
     const calculationBreakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
@@ -98,10 +98,10 @@ export default class CalculationRoutes {
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
+    const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
     res.render('pages/calculation/printCalculationSummary', {
@@ -157,10 +157,10 @@ export default class CalculationRoutes {
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
+    const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     res.render('pages/calculation/calculationComplete', { prisonerDetail, calculationRequestId })
   }
 }
