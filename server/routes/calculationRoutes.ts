@@ -12,14 +12,11 @@ export default class CalculationRoutes {
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
-    if (!caseloads.includes(prisonerDetail.agencyId)) {
-      return res.redirect('/error/prisoner-not-accessible')
-    }
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(username, prisonerDetail.bookingId)
     const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(username, prisonerDetail.bookingId)
     try {
-      return res.render('pages/calculation/checkInformation', {
+      res.render('pages/calculation/checkInformation', {
         prisonerDetail,
         sentencesAndOffences,
         adjustmentDetails,
@@ -33,7 +30,7 @@ export default class CalculationRoutes {
         },
       ]
 
-      return res.render('pages/calculation/checkInformation', {
+      res.render('pages/calculation/checkInformation', {
         prisonerDetail,
         errorSummaryList,
         sentencesAndOffences,
@@ -69,13 +66,10 @@ export default class CalculationRoutes {
     const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
-    if (!caseloads.includes(prisonerDetail.agencyId)) {
-      return res.redirect('/error/prisoner-not-accessible')
-    }
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
-    return res.render('pages/calculation/calculationSummary', {
+    res.render('pages/calculation/calculationSummary', {
       prisonerDetail,
       releaseDates: releaseDates.dates,
       weekendAdjustments,
@@ -83,10 +77,10 @@ export default class CalculationRoutes {
   }
 
   public calculationSummaryBreakdown: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
+    const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
     const calculationBreakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
@@ -107,13 +101,10 @@ export default class CalculationRoutes {
     const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
-    if (!caseloads.includes(prisonerDetail.agencyId)) {
-      return res.redirect('/error/prisoner-not-accessible')
-    }
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
-    return res.render('pages/calculation/printCalculationSummary', {
+    res.render('pages/calculation/printCalculationSummary', {
       prisonerDetail,
       releaseDates: releaseDates.dates,
       weekendAdjustments,
@@ -169,7 +160,7 @@ export default class CalculationRoutes {
     const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     if (!caseloads.includes(prisonerDetail.agencyId)) {
       return res.redirect('/error/prisoner-not-accessible')
     }

@@ -222,16 +222,3 @@ describe('Prisoner routes', () => {
       })
   })
 })
-
-describe('Error scenarios for calculation routes', () => {
-  it('GET /calculation/:nomsId/check-information should redirect if prisoners location doesnt match the users caseload', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue({ ...stubbedPrisonerData, agencyId: 'MDI' })
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    return request(app)
-      .get('/calculation/A1234AA/check-information')
-      .expect(302)
-      .expect(res => {
-        expect(res.redirect).toBeTruthy()
-      })
-  })
-})

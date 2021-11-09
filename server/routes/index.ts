@@ -8,7 +8,6 @@ import auth from '../authentication/auth'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
 import SearchRoutes from './searchRoutes'
-import ErrorRoutes from './errorRoutes'
 
 export default function Index({ userService, prisonerService, calculateReleaseDatesService }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -18,7 +17,6 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
   const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService)
   const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
-  const errorAccessRoutes = new ErrorRoutes()
 
   const indexRoutes = () =>
     get('/', (req, res) => {
@@ -47,10 +45,6 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
   }
 
-  const errorRoutes = () => {
-    get('/error/prisoner-not-accessible', errorAccessRoutes.getPrisonerNotAccessiblePage)
-  }
-
   router.use(auth.authenticationMiddleware(tokenVerifier))
   router.use(populateCurrentUser(userService))
   router.use((req, res, next) => {
@@ -65,7 +59,6 @@ export default function Index({ userService, prisonerService, calculateReleaseDa
   calculationRoutes()
   searchRoutes()
   otherRoutes()
-  errorRoutes()
 
   return router
 }
