@@ -161,9 +161,6 @@ export default class CalculationRoutes {
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
-    if (!caseloads.includes(prisonerDetail.agencyId)) {
-      return res.redirect('/error/prisoner-not-accessible')
-    }
-    return res.render('pages/calculation/calculationComplete', { prisonerDetail, calculationRequestId })
+    res.render('pages/calculation/calculationComplete', { prisonerDetail, calculationRequestId })
   }
 }

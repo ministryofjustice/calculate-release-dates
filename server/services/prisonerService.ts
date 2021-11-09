@@ -1,5 +1,4 @@
 import { Readable } from 'stream'
-import httpError from 'http-errors'
 import type HmppsAuthClient from '../api/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
 import {
