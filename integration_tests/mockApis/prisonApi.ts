@@ -79,7 +79,7 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: [
           {
-            caseloadId: 'MDI',
+            caseLoadId: 'MDI',
           },
         ],
       },
