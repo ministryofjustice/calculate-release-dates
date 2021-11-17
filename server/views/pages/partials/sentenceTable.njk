@@ -6,6 +6,7 @@
     <tr class="govuk-table__row">
         <th class="govuk-table__header">Count</th>
         <th class="govuk-table__header">Offence</th>
+        <th class="govuk-table__header">Sentence type</th>
         <th class="govuk-table__header">Sentence date</th>
         <th class="govuk-table__header">Sentence length</th>
     </tr>
@@ -26,6 +27,7 @@
                         {% endif %}
                     </span>
                 </td>
+                <td class="govuk-table__cell">{{ sentence.sentenceTypeDescription }}</td>
                 <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
                 <td class="govuk-table__cell">{{ sentence.years }} {{ 'year' | pluralise(sentence.years) }} {{ sentence.months }} {{ 'month' | pluralise(sentence.months) }}
                     <br>

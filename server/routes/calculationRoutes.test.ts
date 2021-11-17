@@ -57,6 +57,7 @@ const stubbedPrisonerData = {
 const stubbedSentencesAndOffences = [
   {
     years: 3,
+    sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [
       { offenceEndDate: '2021-02-03' },
       { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
@@ -224,6 +225,7 @@ describe('Calculation routes tests related to check-information', () => {
         expect(res.text).toContain('Committed on 06 March 2021')
         expect(res.text).toContain('Offence date not entered')
         expect(res.text).toContain('Committed on 07 January 2021')
+        expect(res.text).toContain('SDS Standard Sentence')
       })
   })
 })
