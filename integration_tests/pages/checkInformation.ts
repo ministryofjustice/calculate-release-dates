@@ -17,4 +17,8 @@ export default class CheckInformationPage extends Page {
   public calculateButton(): PageElement {
     return cy.get('[data-qa=calculate-release-dates]')
   }
+
+  public sentenceTable(caseSequence: number): PageElement {
+    return cy.get(`[data-qa=${caseSequence}-sentence-table]`)
+  }
 }

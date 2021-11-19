@@ -58,11 +58,20 @@ export default {
         jsonBody: [
           {
             years: 3,
-            offences: [
-              { offenceEndDate: '2021-02-03' },
-              { offenceStartDate: '2021-01-03', offenceEndDate: '2021-01-04' },
-              { offenceStartDate: '2021-03-03' },
-            ],
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            caseSequence: 1,
+            lineSequence: 1,
+            sentenceSequence: 1,
+            offences: [{ offenceEndDate: '2021-02-03' }],
+          },
+          {
+            years: 2,
+            caseSequence: 2,
+            lineSequence: 2,
+            sentenceSequence: 2,
+            consecutiveToSequence: 1,
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            offences: [{ offenceEndDate: '2021-02-05' }],
           },
         ],
       },
