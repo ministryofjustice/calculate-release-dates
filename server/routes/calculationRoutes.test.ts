@@ -58,6 +58,9 @@ const stubbedSentencesAndOffences = [
   {
     years: 3,
     sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    sentenceSequence: 1,
     offences: [
       { offenceEndDate: '2021-02-03' },
       { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
@@ -65,6 +68,15 @@ const stubbedSentencesAndOffences = [
       {},
       { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
     ],
+  } as PrisonApiOffenderSentenceAndOffences,
+  {
+    years: 2,
+    caseSequence: 2,
+    lineSequence: 2,
+    sentenceSequence: 2,
+    consecutiveToSequence: 1,
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    offences: [{ offenceEndDate: '2021-02-03' }],
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
@@ -219,13 +231,17 @@ describe('Calculation routes tests related to check-information', () => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Ringo')
         expect(res.text).toContain('Starr')
-        expect(res.text).toContain('There are 5 offences included in this calculation')
+        expect(res.text).toContain('There are 6 sentences from NOMIS to be included in this calculation.')
+        expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
         expect(res.text).toContain('Committed between 04 January 2021 and 05 January 2021')
         expect(res.text).toContain('Committed on 06 March 2021')
         expect(res.text).toContain('Offence date not entered')
         expect(res.text).toContain('Committed on 07 January 2021')
         expect(res.text).toContain('SDS Standard Sentence')
+        expect(res.text).toContain('Court case 2')
+        expect(res.text).toContain('consecutive to')
+        expect(res.text).toContain('court case 1 count 1')
       })
   })
 })

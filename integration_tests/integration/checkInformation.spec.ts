@@ -16,7 +16,14 @@ context('Check nomis information', () => {
     const checkInformationPage = CheckInformationPage.goTo('A1234AB')
     checkInformationPage
       .offenceCountText()
-      .should('contains.text', 'There are 3 offences included in this calculation.')
+      .should('contains.text', 'There are 2 sentences from NOMIS to be included in this calculation.')
+
+    checkInformationPage.sentenceTable(1).should('contain.text', 'Committed on 03 February 2021')
+    checkInformationPage.sentenceTable(1).contains('3 years') // contain.text didn't like the whitespace
+
+    checkInformationPage.sentenceTable(2).should('contain.text', 'Committed on 05 February 2021')
+    checkInformationPage.sentenceTable(2).contains('2 years')
+    checkInformationPage.sentenceTable(2).contains('consecutive to court case 1 count 1')
   })
 
   it('Check nomis information page is accessible', () => {

@@ -2,6 +2,8 @@ import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
+import { groupBy, indexBy } from '../utils/utils'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 
 export default class CalculationRoutes {
   constructor(
@@ -15,11 +17,20 @@ export default class CalculationRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(username, prisonerDetail.bookingId)
     const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(username, prisonerDetail.bookingId)
+
     try {
       res.render('pages/calculation/checkInformation', {
         prisonerDetail,
         sentencesAndOffences,
         adjustmentDetails,
+        caseToSentences: groupBy(
+          sentencesAndOffences,
+          (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence
+        ),
+        sentenceSequenceToSentence: indexBy(
+          sentencesAndOffences,
+          (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
+        ),
       })
     } catch (ex) {
       logger.error(ex)
@@ -54,7 +65,7 @@ export default class CalculationRoutes {
         JSON.stringify([
           {
             text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
-            href: '#sentence-table',
+            href: '#sentences',
           },
         ])
       )
@@ -139,7 +150,7 @@ export default class CalculationRoutes {
           'validationErrors',
           this.getValidationError(
             `There was an error in the calculation API service: ${error.data.userMessage}`,
-            '#sentence-table'
+            '#sentences'
           )
         )
       }

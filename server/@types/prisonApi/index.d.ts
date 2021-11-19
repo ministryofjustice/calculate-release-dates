@@ -5,13 +5,21 @@
  */
 
 export interface paths {
-  '/api/access-roles': {
-    /** List of access roles */
-    get: operations['getAccessRoles']
-    /** Update the access role. */
-    put: operations['updateAccessRole']
-    /** Create new access role. */
-    post: operations['createAccessRole']
+  '/api/adjudications': {
+    /** Requires MAINTAIN_ADJUDICATIONS access */
+    post: operations['getAdjudicationsUsingPOST']
+  }
+  '/api/adjudications/adjudication': {
+    /** Requires MAINTAIN_ADJUDICATIONS access and write scope */
+    post: operations['createAdjudicationUsingPOST']
+  }
+  '/api/adjudications/adjudication/{adjudicationNumber}': {
+    /** Requires MAINTAIN_ADJUDICATIONS access and write scope */
+    get: operations['getAdjudicationUsingGET']
+  }
+  '/api/adjudications/search': {
+    /** Requires MAINTAIN_ADJUDICATIONS access */
+    post: operations['searchUsingPOST']
   }
   '/api/agencies': {
     /** List of active agencies. */
@@ -139,10 +147,6 @@ export interface paths {
   '/api/bookings/offenderNo/{offenderNo}/activities/{activityId}/attendance': {
     put: operations['updateAttendanceUsingPUT']
   }
-  '/api/bookings/offenderNo/{offenderNo}/caseNotes': {
-    /** Create case note for offender. */
-    post: operations['createOffenderCaseNote']
-  }
   '/api/bookings/offenderNo/{offenderNo}/image/data': {
     /** Image data (as bytes). */
     get: operations['getMainBookingImageDataByNo']
@@ -252,14 +256,10 @@ export interface paths {
   '/api/bookings/{bookingId}/caseNotes': {
     /** Offender case notes. */
     get: operations['getOffenderCaseNotesUsingGET']
-    /** Create case note for offender. */
-    post: operations['createBookingCaseNote']
   }
   '/api/bookings/{bookingId}/caseNotes/{caseNoteId}': {
     /** Offender case note detail. */
     get: operations['getOffenderCaseNote']
-    /** Amend offender case note. */
-    put: operations['updateOffenderCaseNote']
   }
   '/api/bookings/{bookingId}/caseNotes/{type}/{subType}/count': {
     /** Count of case notes */
@@ -707,6 +707,10 @@ export interface paths {
     get: operations['getOffenderAssessmentsAssessmentCode']
     post: operations['postOffenderAssessmentsAssessmentCode']
   }
+  '/api/offender-dates/{bookingId}': {
+    /** Requires RELEASE_DATES_CALCULATOR */
+    post: operations['updateOffenderKeyDatesUsingPOST']
+  }
   '/api/events': {
     /**
      * **from** and **to** query params are optional.
@@ -785,7 +789,7 @@ export interface paths {
     get: operations['getAdjudicationsByOffenderNoUsingGET']
   }
   '/api/offenders/{offenderNo}/adjudications/{adjudicationNo}': {
-    get: operations['getAdjudicationUsingGET']
+    get: operations['getAdjudicationUsingGET_1']
   }
   '/api/offenders/{offenderNo}/alerts/v2': {
     /** System or cat tool access only */
@@ -798,10 +802,6 @@ export interface paths {
     /** System or cat tool access only */
     get: operations['getAlertsForLatestBookingByOffenderNoUsingGET']
   }
-  '/api/offenders/{offenderNo}/case-notes': {
-    /** Create case note for offender. Will attach to the latest booking */
-    post: operations['createOffenderCaseNote_1']
-  }
   '/api/offenders/{offenderNo}/case-notes/v2': {
     /** Retrieve an offenders case notes for latest booking */
     get: operations['getOffenderCaseNotesUsingGET_1']
@@ -809,8 +809,10 @@ export interface paths {
   '/api/offenders/{offenderNo}/case-notes/{caseNoteId}': {
     /** Retrieve an single offender case note */
     get: operations['getOffenderCaseNote_1']
-    /** Amend offender case note. */
-    put: operations['updateOffenderCaseNote_1']
+  }
+  '/api/offenders/{offenderNo}/contacts': {
+    /** Active Contacts including restrictions, using latest offender booking */
+    get: operations['getOffenderContacts']
   }
   '/api/offenders/{offenderNo}/damage-obligations': {
     get: operations['getOffenderDamageObligationsUsingGET']
@@ -829,6 +831,14 @@ export interface paths {
   '/api/offenders/{offenderNo}/military-records': {
     /** Military Records */
     get: operations['getMilitaryRecords_1']
+  }
+  '/api/offenders/{offenderNo}/non-association-details': {
+    /** Get offender non-association details by offender No */
+    get: operations['getNonAssociationDetails_1']
+  }
+  '/api/offenders/{offenderNo}/offender-restrictions': {
+    /** Get offender visit restrictions by offender No */
+    get: operations['getOffenderRestrictions']
   }
   '/api/offenders/{offenderNo}/prison-timeline': {
     get: operations['getOffenderPrisonPeriodsUsingGET']
@@ -1003,14 +1013,6 @@ export interface paths {
   '/api/smoketest/offenders/{offenderNo}/release': {
     put: operations['releasePrisonerUsingPUT_1']
   }
-  '/api/staff/access-roles/caseload/{caseload}/access-role/{roleCode}': {
-    /** List access roles for staff by type and caseload */
-    get: operations['getAllStaffAccessRolesForCaseload']
-  }
-  '/api/staff/roles/{agencyId}/position/{position}/role/{role}': {
-    /** Get staff members within agency who are currently assigned the specified position and/or role. */
-    get: operations['getStaffByAgencyPositionRole']
-  }
   '/api/staff/roles/{agencyId}/role/{role}': {
     /** Get staff members within agency who are currently assigned the specified role. */
     get: operations['getStaffByAgencyRole']
@@ -1018,22 +1020,6 @@ export interface paths {
   '/api/staff/{staffId}': {
     /** Staff detail. */
     get: operations['getStaffDetail']
-  }
-  '/api/staff/{staffId}/access-roles': {
-    /** List of access roles for specified staff user and caseload */
-    get: operations['getStaffAccessRoles']
-    /** add access role to staff user for API caseload */
-    post: operations['addStaffAccessRoleForApiCaseload']
-  }
-  '/api/staff/{staffId}/access-roles/caseload/{caseload}': {
-    /** List of access roles for specified staff user and caseload */
-    get: operations['getAccessRolesByCaseload']
-    /** add access role to staff user */
-    post: operations['addStaffAccessRole']
-  }
-  '/api/staff/{staffId}/access-roles/caseload/{caseload}/access-role/{roleCode}': {
-    /** remove access roles from user and specific caseload */
-    delete: operations['removeStaffAccessRole']
   }
   '/api/staff/{staffId}/caseloads': {
     /** List of caseloads for a specified staff user */
@@ -1091,40 +1077,10 @@ export interface paths {
     /** User detail. */
     get: operations['getUserDetails']
   }
-  '/api/users/{username}/access-role': {
-    post: operations['addAccessRoles']
-  }
-  '/api/users/{username}/access-role/{roleCode}': {
-    /** Add the given access role to the user. */
-    put: operations['addAccessRole']
-  }
-  '/api/users/{username}/access-roles/caseload/{caseload}': {
-    /** List of roles for the given user and caseload */
-    get: operations['getRolesForUserAndCaseload']
-  }
-  '/api/users/{username}/caseload/{caseload}/access-role/{roleCode}': {
-    /** Add the given access role to the user and caseload. */
-    put: operations['addAccessRoleByCaseload']
-    /** Remove the given access role from the user. */
-    delete: operations['removeUsersAccessRoleForCaseload']
-  }
 }
 
 export interface components {
   schemas: {
-    /** Access Role */
-    AccessRole: {
-      /** role code of the parent role */
-      parentRoleCode?: string
-      /** unique code for the access role */
-      roleCode: string
-      /** ADMIN or GENERAL */
-      roleFunction?: string
-      /** internal role id */
-      roleId?: number
-      /** name of the access role */
-      roleName?: string
-    }
     /** Prisoner Account Balance */
     Account: {
       /** Cash sub account balance. */
@@ -1279,6 +1235,13 @@ export interface components {
       description?: string
       /** Offence Id */
       id?: string
+    }
+    /** Search for adjudications */
+    AdjudicationSearchRequest: {
+      /** The list of adjudications ids that mask the results */
+      adjudicationIdsMask: number[]
+      /** Agency Id */
+      agencyLocationId?: string
     }
     AdjudicationSearchResponse: {
       /** Complete list of agencies where this offender has had adjudications */
@@ -2951,6 +2914,17 @@ export interface components {
       /** To prov stat code - from offender_external_movements */
       toProvStatCode?: string
     }
+    /** Creation details for a new adjudication */
+    NewAdjudication: {
+      /** The id to indicate where the incident took place */
+      incidentLocationId: number
+      /** When the incident took place */
+      incidentTime: string
+      /** Offender number (NOMS ID) */
+      offenderNo: string
+      /** The adjudication statement */
+      statement: string
+    }
     /** Creation details for a new appointment */
     NewAppointment: {
       /** Corresponds to the scheduled event subType */
@@ -3239,6 +3213,46 @@ export interface components {
       /** Attribute description */
       description?: string
     }
+    /** Offender Contact */
+    OffenderContact: {
+      /** Approved Visitor */
+      approvedVisitor: boolean
+      /** Offender Booking Id for this contact */
+      bookingId: number
+      /** Comments */
+      commentText?: string
+      /** Contact type */
+      contactType: string
+      /** Contact type text */
+      contactTypeDescription?: string
+      /** date of birth */
+      dateOfBirth?: string
+      /** List of emails associated with the contact */
+      emails?: components['schemas']['Email'][]
+      /** Is an emergency contact */
+      emergencyContact: boolean
+      /** First Name */
+      firstName: string
+      /** Last name of the contact */
+      lastName: string
+      /** Middle Names */
+      middleName?: string
+      /** Indicates that the contact is Next of Kin Type */
+      nextOfKin: boolean
+      /** id of the person */
+      personId?: number
+      /** Relationship to prisoner */
+      relationshipCode: string
+      /** Relationship text */
+      relationshipDescription?: string
+      /** List of restrictions associated with the contact */
+      restrictions?: components['schemas']['VisitorRestriction'][]
+    }
+    /** Offender contacts */
+    OffenderContacts: {
+      /** Offender contacts */
+      offenderContacts?: components['schemas']['OffenderContact'][]
+    }
     /** Damage obligation for an offender */
     OffenderDamageObligationModel: {
       /** Amount paid */
@@ -3416,6 +3430,39 @@ export interface components {
       /** Display Prisoner Number */
       offenderNo: string
     }
+    /** Offender Key Dates */
+    OffenderKeyDates: {
+      /** ARD - calculated automatic (unconditional) release date for offender. */
+      automaticReleaseDate?: string
+      /** CRD - calculated conditional release date for offender. */
+      conditionalReleaseDate?: string
+      /** DPRRD - Detention training order post recall release date */
+      dtoPostRecallReleaseDate?: string
+      /** ETD - early term date for offender. */
+      earlyTermDate?: string
+      /** Effective sentence end date. */
+      effectiveSentenceEndDate: string
+      /** HDCED - date on which offender will be eligible for home detention curfew. */
+      homeDetentionCurfewEligibilityDate?: string
+      /** LTD - late term date for offender. */
+      lateTermDate?: string
+      /** LED - date on which offender licence expires. */
+      licenceExpiryDate?: string
+      /** MTD - mid term date for offender. */
+      midTermDate?: string
+      /** NPD - calculated non-parole date for offender (relating to the 1991 act). */
+      nonParoleDate?: string
+      /** PED - date on which offender is eligible for parole. */
+      paroleEligibilityDate?: string
+      /** PRRD - calculated post-recall release date for offender. */
+      postRecallReleaseDate?: string
+      /** SED - date on which sentence expires. */
+      sentenceExpiryDate?: string
+      /** Sentence length in the format 00 years/00 months/00 days. */
+      sentenceLength: string
+      /** TUSED - top-up supervision expiry date for offender. */
+      topupSupervisionExpiryDate?: string
+    }
     /** Offender Key Worker record representation (to facilitate data migration) */
     OffenderKeyWorker: {
       /** Y */
@@ -3578,14 +3625,42 @@ export interface components {
       /** Relationship to inmate (e.g. COM or POM, etc.) */
       relationshipType: string
     }
+    /** Offender restriction */
+    OffenderRestriction: {
+      /** true if restriction is within the start date and optional expiry date range */
+      active: boolean
+      /** Restriction comment text */
+      comment?: string
+      /** Date restriction applies to, or indefinitely if null */
+      expiryDate?: string
+      /** restriction id */
+      restrictionId: number
+      /** code of restriction type */
+      restrictionType: string
+      /** description of restriction type */
+      restrictionTypeDescription: string
+      /** Date from which the restrictions applies */
+      startDate: string
+    }
+    /** Offender restrictions */
+    OffenderRestrictions: {
+      /** Booking id for offender */
+      bookingId?: number
+      /** Offender restrictions */
+      offenderRestrictions?: components['schemas']['OffenderRestriction'][]
+    }
     /** Offender sentence and offence details */
     OffenderSentenceAndOffences: {
       /** The bookingId this sentence and offence(s) relates to */
       bookingId?: number
+      /** Case sequence - a number representing the order of the case this sentence belongs to */
+      caseSequence?: number
       /** This sentence is consecutive to this sequence (if populated) */
       consecutiveToSequence?: number
       /** The sentence duration - days */
       days?: number
+      /** Sentence line sequence - a number representing the order */
+      lineSequence?: number
       /** The sentence duration - months */
       months?: number
       /** The offences related to this sentence (will usually only have one offence per sentence) */
@@ -3596,7 +3671,7 @@ export interface components {
       sentenceCategory?: string
       /** The sentenced date for this sentence (aka court date) */
       sentenceDate?: string
-      /** Sentence sequence - a number representing the order */
+      /** Sentence sequence - a unique identifier a sentence on a booking */
       sentenceSequence?: number
       /** This sentence status: A = Active I = Inactive */
       sentenceStatus?: string
@@ -3749,6 +3824,19 @@ export interface components {
       transactionId?: number
       /** Transaction Type */
       transactionType?: string
+    }
+    PageOfAdjudicationDetail: {
+      content?: components['schemas']['AdjudicationDetail'][]
+      empty?: boolean
+      first?: boolean
+      last?: boolean
+      number?: number
+      numberOfElements?: number
+      pageable?: components['schemas']['Pageable']
+      size?: number
+      sort?: components['schemas']['Sort']
+      totalElements?: number
+      totalPages?: number
     }
     PageOfAlert: {
       content?: components['schemas']['Alert'][]
@@ -4817,6 +4905,17 @@ export interface components {
       /** Long description of the agency */
       longDescription?: string
     }
+    /** Update Offender Dates Request */
+    RequestToUpdateOffenderDates: {
+      /** Timestamp when the calculation was performed */
+      calculationDateTime?: string
+      /** UUID of the calculation performed by CRD. */
+      calculationUuid: string
+      /** Key dates to be updated for the offender. */
+      keyDates: components['schemas']['OffenderKeyDates']
+      /** DPS/NOMIS user who submitted the calculated dates. */
+      submissionUser: string
+    }
     /** Update Phone Request */
     RequestToUpdatePhone: {
       /** Telephone extension number */
@@ -5151,23 +5250,6 @@ export interface components {
       /** Description of staff member's role at agency. */
       roleDescription?: string
     }
-    /** Staff User Role */
-    StaffUserRole: {
-      /** caseload that this role belongs to, (NOMIS only) */
-      caseloadId?: string
-      /** role code of the parent role */
-      parentRoleCode?: string
-      /** code for this role */
-      roleCode: string
-      /** Role Id */
-      roleId: number
-      /** Full text description of the role type */
-      roleName: string
-      /** Staff Id */
-      staffId: number
-      /** Staff username */
-      username: string
-    }
     /** Statute */
     StatuteDto: {
       /** Active Y/N */
@@ -5476,78 +5558,131 @@ export interface components {
       /** Relationship of visitor to offender */
       relationship?: string
     }
+    /** Visitor restriction */
+    VisitorRestriction: {
+      /** Restriction comment text */
+      comment?: string
+      /** Date restriction applies to, or indefinitely if null */
+      expiryDate?: string
+      /** true if applied globally to the contact or false if applied in the context of a visit */
+      globalRestriction: boolean
+      /** restriction id */
+      restrictionId: number
+      /** code of restriction type */
+      restrictionType: string
+      /** description of restriction type */
+      restrictionTypeDescription: string
+      /** Date from which the restrictions applies */
+      startDate: string
+    }
   }
 }
 
 export interface operations {
-  /** List of access roles */
-  getAccessRoles: {
+  /** Requires MAINTAIN_ADJUDICATIONS access */
+  getAdjudicationsUsingPOST: {
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['AdjudicationDetail'][]
+        }
+      }
+      /** Created */
+      201: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Not Found */
+      404: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': number[]
+      }
+    }
+  }
+  /** Requires MAINTAIN_ADJUDICATIONS access and write scope */
+  createAdjudicationUsingPOST: {
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['AdjudicationDetail']
+        }
+      }
+      /** Created */
+      201: unknown
+      /** Invalid request - e.g. because no incident statement was provided. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** No match was found for the provided booking id. */
+      404: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['NewAdjudication']
+      }
+    }
+  }
+  /** Requires MAINTAIN_ADJUDICATIONS access and write scope */
+  getAdjudicationUsingGET: {
     parameters: {
-      query: {
-        /** Include admin roles */
-        includeAdmin: boolean
+      path: {
+        /** The adjudication number */
+        adjudicationNumber: number
       }
     }
     responses: {
       /** OK */
       200: {
         content: {
-          '*/*': components['schemas']['AccessRole'][]
+          '*/*': components['schemas']['AdjudicationDetail']
         }
       }
-      /** Invalid request. */
-      400: unknown
       /** Unauthorized */
       401: unknown
       /** Forbidden */
       403: unknown
       /** Requested resource not found. */
       404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
     }
   }
-  /** Update the access role. */
-  updateAccessRole: {
-    responses: {
-      /** OK */
-      200: unknown
-      /** Created */
-      201: unknown
-      /** Invalid request - e.g. role code not provided. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden - user not authorised to update an access role. */
-      403: unknown
-      /** Access role not found. */
-      404: unknown
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AccessRole']
+  /** Requires MAINTAIN_ADJUDICATIONS access */
+  searchUsingPOST: {
+    parameters: {
+      query: {
+        /** Results page you want to retrieve (0..N). Default 0, e.g. the first page */
+        page?: number
+        /** Number of records per page. Default 20 */
+        size?: number
+        /** Sort as combined comma separated property and uppercase direction. Multiple sort params allowed to sort by multiple properties. Default to incidentDate,incidentTime ASC */
+        sort?: string
       }
     }
-  }
-  /** Create new access role. */
-  createAccessRole: {
     responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PageOfAdjudicationDetail']
+        }
+      }
       /** Created */
       201: unknown
-      /** Invalid request - e.g. role code not provided. */
-      400: unknown
       /** Unauthorized */
       401: unknown
-      /** Forbidden - user not authorised to create an access role. */
+      /** Forbidden */
       403: unknown
-      /** Parent access role not found. */
+      /** Not Found */
       404: unknown
-      /** A role already exists with the provided role code. */
-      409: unknown
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['AccessRole']
+        'application/json': components['schemas']['AdjudicationSearchRequest']
       }
     }
   }
@@ -6582,36 +6717,6 @@ export interface operations {
       }
     }
   }
-  /** Create case note for offender. */
-  createOffenderCaseNote: {
-    parameters: {
-      path: {
-        /** The offenderNo of offender */
-        offenderNo: string
-      }
-    }
-    responses: {
-      /** The Case Note has been recorded. The updated object is returned including the status. */
-      201: {
-        content: {
-          '*/*': components['schemas']['CaseNote']
-        }
-      }
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Not Found */
-      404: unknown
-      /** The case note has already been recorded under the booking. The current unmodified object (including status) is returned. */
-      409: unknown
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['NewCaseNote']
-      }
-    }
-  }
   /** Image data (as bytes). */
   getMainBookingImageDataByNo: {
     parameters: {
@@ -7581,36 +7686,6 @@ export interface operations {
       500: unknown
     }
   }
-  /** Create case note for offender. */
-  createBookingCaseNote: {
-    parameters: {
-      path: {
-        /** The booking id of offender */
-        bookingId: number
-      }
-    }
-    responses: {
-      /** The Case Note has been recorded. The updated object is returned including the status. */
-      201: {
-        content: {
-          '*/*': components['schemas']['CaseNote']
-        }
-      }
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Not Found */
-      404: unknown
-      /** The case note has already been recorded under the booking. The current unmodified object (including status) is returned. */
-      409: unknown
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['NewCaseNote']
-      }
-    }
-  }
   /** Offender case note detail. */
   getOffenderCaseNote: {
     parameters: {
@@ -7634,40 +7709,6 @@ export interface operations {
       403: unknown
       /** Not Found */
       404: unknown
-    }
-  }
-  /** Amend offender case note. */
-  updateOffenderCaseNote: {
-    parameters: {
-      path: {
-        /** The booking id of offender */
-        bookingId: number
-        /** The case note id */
-        caseNoteId: number
-      }
-    }
-    responses: {
-      /** Case Note amendment processed successfully. Updated case note is returned. */
-      201: {
-        content: {
-          '*/*': components['schemas']['CaseNote']
-        }
-      }
-      /** Invalid request - e.g. amendment text not provided. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden - user not authorised to amend case note. */
-      403: unknown
-      /** Resource not found - booking or case note does not exist or is not accessible to user. */
-      404: unknown
-      /** Internal server error. */
-      500: unknown
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateCaseNote']
-      }
     }
   }
   /** Count of case notes */
@@ -11335,6 +11376,40 @@ export interface operations {
       }
     }
   }
+  /** Requires RELEASE_DATES_CALCULATOR */
+  updateOffenderKeyDatesUsingPOST: {
+    parameters: {
+      path: {
+        /** The booking id of offender */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['SentenceCalcDates']
+        }
+      }
+      /** Offender key dates calculation created */
+      201: unknown
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden - user not authorised to update an offender's dates */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RequestToUpdateOffenderDates']
+      }
+    }
+  }
   /**
    * **from** and **to** query params are optional.
    * An awful lot of events occur every day. To guard against unintentionally heavy queries, the following rules are applied:
@@ -12011,7 +12086,7 @@ export interface operations {
       500: unknown
     }
   }
-  getAdjudicationUsingGET: {
+  getAdjudicationUsingGET_1: {
     parameters: {
       path: {
         /** offenderNo */
@@ -12158,38 +12233,6 @@ export interface operations {
       500: unknown
     }
   }
-  /** Create case note for offender. Will attach to the latest booking */
-  createOffenderCaseNote_1: {
-    parameters: {
-      path: {
-        /** The offenderNo of offender */
-        offenderNo: string
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['CaseNote']
-        }
-      }
-      /** The Case Note has been recorded. The updated object is returned including the status. */
-      201: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Not Found */
-      404: unknown
-      /** The case note has already been recorded under the booking. The current unmodified object (including status) is returned. */
-      409: unknown
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['NewCaseNote']
-      }
-    }
-  }
   /** Retrieve an offenders case notes for latest booking */
   getOffenderCaseNotesUsingGET_1: {
     parameters: {
@@ -12257,40 +12300,35 @@ export interface operations {
       404: unknown
     }
   }
-  /** Amend offender case note. */
-  updateOffenderCaseNote_1: {
+  /** Active Contacts including restrictions, using latest offender booking */
+  getOffenderContacts: {
     parameters: {
       path: {
-        /** Noms ID or Prisoner number (also called offenderNo) */
+        /** Offender No */
         offenderNo: string
-        /** The case note id */
-        caseNoteId: number
+      }
+      query: {
+        /** return only contacts approved for visits */
+        approvedVisitorsOnly?: boolean
       }
     }
     responses: {
       /** OK */
       200: {
         content: {
-          '*/*': components['schemas']['CaseNote']
+          '*/*': components['schemas']['OffenderContacts']
         }
       }
-      /** Case Note amendment processed successfully. Updated case note is returned. */
-      201: unknown
-      /** Invalid request - e.g. amendment text not provided. */
+      /** Invalid request. */
       400: unknown
       /** Unauthorized */
       401: unknown
-      /** Forbidden - user not authorised to amend case note. */
+      /** Forbidden */
       403: unknown
-      /** Resource not found - offender or case note does not exist or is not accessible to user. */
+      /** Requested resource not found. */
       404: unknown
-      /** Internal server error. */
+      /** Unrecoverable error occurred whilst processing request. */
       500: unknown
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateCaseNote']
-      }
     }
   }
   getOffenderDamageObligationsUsingGET: {
@@ -12442,6 +12480,64 @@ export interface operations {
       200: {
         content: {
           '*/*': components['schemas']['MilitaryRecords']
+        }
+      }
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
+  /** Get offender non-association details by offender No */
+  getNonAssociationDetails_1: {
+    parameters: {
+      path: {
+        /** Offender No */
+        offenderNo: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['OffenderNonAssociationDetails']
+        }
+      }
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
+  /** Get offender visit restrictions by offender No */
+  getOffenderRestrictions: {
+    parameters: {
+      path: {
+        /** Offender No */
+        offenderNo: string
+      }
+      query: {
+        /** return only restriction that are active (derived from startDate and expiryDate) */
+        activeRestrictionsOnly?: boolean
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['OffenderRestrictions']
         }
       }
       /** Invalid request. */
@@ -14152,84 +14248,6 @@ export interface operations {
       404: unknown
     }
   }
-  /** List access roles for staff by type and caseload */
-  getAllStaffAccessRolesForCaseload: {
-    parameters: {
-      path: {
-        /** Caseload Id */
-        caseload: string
-        /** access role code */
-        roleCode: string
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['StaffUserRole'][]
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
-  /** Get staff members within agency who are currently assigned the specified position and/or role. */
-  getStaffByAgencyPositionRole: {
-    parameters: {
-      path: {
-        /** The agency (prison) id. */
-        agencyId: string
-        /** The staff position. */
-        position: string
-        /** The staff role. */
-        role: string
-      }
-      query: {
-        /** Filter results by first name and/or last name of staff member. */
-        nameFilter?: string
-        /** The staff id of a staff member. */
-        staffId?: number
-        /** Filters results by activeOnly staff members. */
-        activeOnly?: boolean
-      }
-      header: {
-        /** Requested offset of first record in returned collection of role records. */
-        'Page-Offset'?: number
-        /** Requested limit to number of role records returned. */
-        'Page-Limit'?: number
-        /** Comma separated list of one or more of the following fields - <b>firstName, lastName</b> */
-        'Sort-Fields'?: string
-        /** Sort order (ASC or DESC) - defaults to ASC. */
-        'Sort-Order'?: 'ASC' | 'DESC'
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['StaffLocationRole'][]
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
   /** Get staff members within agency who are currently assigned the specified role. */
   getStaffByAgencyRole: {
     parameters: {
@@ -14302,143 +14320,6 @@ export interface operations {
       404: unknown
       /** Unrecoverable error occurred whilst processing request. */
       500: unknown
-    }
-  }
-  /** List of access roles for specified staff user and caseload */
-  getStaffAccessRoles: {
-    parameters: {
-      path: {
-        /** The staff id of the staff user. */
-        staffId: number
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['StaffUserRole'][]
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
-  /** add access role to staff user for API caseload */
-  addStaffAccessRoleForApiCaseload: {
-    parameters: {
-      path: {
-        /** The staff id of the staff user. */
-        staffId: number
-      }
-    }
-    responses: {
-      /** The access role has been created. */
-      201: {
-        content: {
-          '*/*': components['schemas']['StaffUserRole']
-        }
-      }
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Not Found */
-      404: unknown
-    }
-    requestBody: {
-      content: {
-        'application/json': string
-      }
-    }
-  }
-  /** List of access roles for specified staff user and caseload */
-  getAccessRolesByCaseload: {
-    parameters: {
-      path: {
-        /** The staff id of the staff member. */
-        staffId: number
-        /** Caseload Id */
-        caseload: string
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['StaffUserRole'][]
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
-  /** add access role to staff user */
-  addStaffAccessRole: {
-    parameters: {
-      path: {
-        /** The staff id of the staff member. */
-        staffId: number
-        /** Caseload Id */
-        caseload: string
-      }
-    }
-    responses: {
-      /** The access role has been created. */
-      201: {
-        content: {
-          '*/*': components['schemas']['StaffUserRole']
-        }
-      }
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Not Found */
-      404: unknown
-    }
-    requestBody: {
-      content: {
-        'application/json': string
-      }
-    }
-  }
-  /** remove access roles from user and specific caseload */
-  removeStaffAccessRole: {
-    parameters: {
-      path: {
-        /** The staff id of the staff member. */
-        staffId: number
-        /** Caseload Id */
-        caseload: string
-        /** access role code */
-        roleCode: string
-      }
-    }
-    responses: {
-      /** The access role has been removed */
-      200: unknown
-      /** No Content */
-      204: never
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
     }
   }
   /** List of caseloads for a specified staff user */
@@ -14833,137 +14714,6 @@ export interface operations {
       404: unknown
       /** Unrecoverable error occurred whilst processing request. */
       500: unknown
-    }
-  }
-  addAccessRoles: {
-    parameters: {
-      path: {
-        /** The username of the user. */
-        username: string
-      }
-    }
-    responses: {
-      /** Roles have been added or user already had the role(s) */
-      200: unknown
-      /** Created */
-      201: unknown
-      /** Unauthorized */
-      401: unknown
-      /** The current user doesn't have permission to maintain user roles */
-      403: unknown
-      /** The role(s) is not recognised or user cannot access caseload */
-      404: unknown
-    }
-    requestBody: {
-      content: {
-        'application/json': string[]
-      }
-    }
-  }
-  /** Add the given access role to the user. */
-  addAccessRole: {
-    parameters: {
-      path: {
-        /** The username of the user. */
-        username: string
-        /** access role code */
-        roleCode: string
-      }
-    }
-    responses: {
-      /** User already has role */
-      200: unknown
-      /** Role has been successfully added to user */
-      201: unknown
-      /** Unauthorized */
-      401: unknown
-      /** The current user doesn't have permission to maintain user roles */
-      403: unknown
-      /** The role is not recognised or user cannot access caseload */
-      404: unknown
-    }
-  }
-  /** List of roles for the given user and caseload */
-  getRolesForUserAndCaseload: {
-    parameters: {
-      path: {
-        /** user account to filter by */
-        username: string
-        /** Caseload Id */
-        caseload: string
-      }
-      query: {
-        /** Include admin roles */
-        includeAdmin: boolean
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['AccessRole'][]
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Requested resource not found. */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
-  /** Add the given access role to the user and caseload. */
-  addAccessRoleByCaseload: {
-    parameters: {
-      path: {
-        /** The username of the user. */
-        username: string
-        /** Caseload Id */
-        caseload: string
-        /** access role code */
-        roleCode: string
-      }
-    }
-    responses: {
-      /** User already has role */
-      200: unknown
-      /** Role has been successfully added to user */
-      201: unknown
-      /** Unauthorized */
-      401: unknown
-      /** The current user doesn't have permission to maintain user roles */
-      403: unknown
-      /** The role is not recognised or user cannot access caseload */
-      404: unknown
-    }
-  }
-  /** Remove the given access role from the user. */
-  removeUsersAccessRoleForCaseload: {
-    parameters: {
-      path: {
-        /** The username of the user. */
-        username: string
-        /** Caseload Id */
-        caseload: string
-        /** access role code */
-        roleCode: string
-      }
-    }
-    responses: {
-      /** User role has been removed */
-      200: unknown
-      /** No Content */
-      204: never
-      /** Unauthorized */
-      401: unknown
-      /** The current user doesn't have permission to maintain user roles */
-      403: unknown
-      /** The role is not recognised or user does not have role on caseload */
-      404: unknown
     }
   }
 }
