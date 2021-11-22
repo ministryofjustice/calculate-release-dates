@@ -21,4 +21,14 @@ export default class CalculationSummaryPage extends Page {
   public hdcedWeekendAdjustment = (): PageElement => cy.get('[data-qa=HDCED-weekend-adjustment]')
 
   public submitToNomisButton = (): PageElement => cy.get('[data-qa=submit-to-nomis]')
+
+  public concurrentSentenceTable = (): PageElement => cy.get('[data-qa=concurrent-sentence-table]')
+
+  public consecutiveStartDate = (): PageElement => cy.get('[data-qa=consecutive-start-date]')
+
+  public consecutiveSentenceTable = (): PageElement => cy.get('[data-qa=consecutive-sentence-table]')
+
+  public consecutiveDatesTable = (): PageElement => cy.get('[data-qa=consecutive-dates-table]')
+
+  public releaseDatesAdjustmentsTable = (): PageElement => cy.get('[data-qa=release-dates-adjustments-table]')
 }

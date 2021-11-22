@@ -7,7 +7,7 @@
         <h2 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-6">Calculation breakdown</h2>
         <!-- Concurrent sentence breakdown -->
         <h3 class="govuk-heading-m govuk-!-margin-bottom-4">Concurrent sentences</h3>
-        <table class="govuk-table govuk-!-margin-bottom-4" style="table-layout:fixed; width: 100%; border: none;">
+        <table class="govuk-table govuk-!-margin-bottom-4" style="table-layout:fixed; width: 100%; border: none;" data-qa="concurrent-sentence-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Sentence</th>
@@ -40,8 +40,8 @@
     </div>
     {%if calculationBreakdown.consecutiveSentence %}
         <div class="govuk-grid-column-one-half">
-            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-2 govuk-!-margin-bottom-4">Consecutive sentences start date: <span class="govuk-body">{{ calculationBreakdown.consecutiveSentence.sentencedAt | date('DD MMMM YYYY') }}</span></p>
-            <table class="govuk-table govuk-!-margin-bottom-4">
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-2 govuk-!-margin-bottom-4" data-qa="consecutive-start-date">Consecutive sentences start date: <span class="govuk-body">{{ calculationBreakdown.consecutiveSentence.sentencedAt | date('DD MMMM YYYY') }}</span></p>
+            <table class="govuk-table govuk-!-margin-bottom-4" data-qa="consecutive-sentence-table">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header">Sentence</th>
@@ -61,7 +61,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <table class="govuk-table govuk-!-margin-top-6">
+            <table class="govuk-table govuk-!-margin-top-6" data-qa="consecutive-dates-table">
                 <tbody class="govuk-table__body">
                     <tr class="govuk-table__row" style="border-top: none; margin-top: 25px;">
                         <td class="govuk-table__header" style="width: 43.5%;">Total sentence length</td>
@@ -89,17 +89,17 @@
         <h3 class="govuk-heading-m govuk-!-margin-bottom-4 govuk-!-margin-top-6">Release dates with adjustments</h3>
     </div>
     <div class="govuk-grid-column-one-half">
-        <table class="govuk-table govuk-!-margin-bottom-4">
+        <table class="govuk-table govuk-!-margin-bottom-4" data-qa="release-dates-adjustments-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
                     <td class="govuk-table__header" style="width: 61.5%;">Latest SLED with adjustments</td>
                     <td class="govuk-table__cell">{{ effectiveDates.SLED.adjusted | date('DD MMMM YYYY') }}
-                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ effectiveDates.SLED.unadjusted | date('DD MMMM YYYY') }} – {{effectiveDates.SLED.unadjusted}} days</span></td>
+                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ effectiveDates.SLED.unadjusted | date('DD MMMM YYYY') }} – {{effectiveDates.SLED.adjustedByDays}} days</span></td>
                 </tr>
                 <tr class="govuk-table__row">
                     <td class="govuk-table__header">Latest CRD with adjustments</td>
                     <td class="govuk-table__cell">{{ effectiveDates.CRD.adjusted | date('DD MMMM YYYY') }}
-                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ effectiveDates.CRD.unadjusted | date('DD MMMM YYYY') }} – {{effectiveDates.CRD.unadjusted}} days</span></td>
+                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ effectiveDates.CRD.unadjusted | date('DD MMMM YYYY') }} – {{effectiveDates.CRD.adjustedByDays}} days</span></td>
                 </tr>
             </tbody>
         </table>

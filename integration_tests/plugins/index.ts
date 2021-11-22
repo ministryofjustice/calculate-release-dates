@@ -28,6 +28,7 @@ export default (on: (string, Record) => void): void => {
     stubConfirmCalculation: calculateReleaseDatesApi.stubConfirmCalculation,
     stubCalculatePreliminaryReleaseDates: calculateReleaseDatesApi.stubCalculatePreliminaryReleaseDates,
     stubGetCalculationResults: calculateReleaseDatesApi.stubGetCalculationResults,
+    stubGetCalculationBreakdown: calculateReleaseDatesApi.stubGetCalculationBreakdown,
     stubGetNextWorkingDay: calculateReleaseDatesApi.stubGetNextWorkingDay,
     stubGetPreviousWorkingDay: calculateReleaseDatesApi.stubGetPreviousWorkingDay,
   })

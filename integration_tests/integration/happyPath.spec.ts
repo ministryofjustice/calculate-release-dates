@@ -17,6 +17,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubGetSentenceAdjustments')
     cy.task('stubCalculatePreliminaryReleaseDates')
     cy.task('stubGetCalculationResults')
+    cy.task('stubGetCalculationBreakdown')
     cy.task('stubConfirmCalculation')
     cy.task('stubGetNextWorkingDay')
     cy.task('stubGetPreviousWorkingDay')
