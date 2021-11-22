@@ -162,7 +162,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('Consecutive sentence')
         expect(res.text).toContain('Release dates with adjustments')
         expect(res.text).toContain('03 February 2021')
-        expect(res.text).toContain('15 January 2021 – 2021-01-15 days')
+        expect(res.text).toContain('15 January 2021 – 18 days')
       })
   })
 
