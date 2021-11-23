@@ -43,13 +43,14 @@
                                 {{ 'day' | pluralise(sentence.days) }}
                                 <br>
                                 <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                                    {% set offenceCount = sentencesAndOffences | countOffences %}
                                     {% if sentence.consecutiveToSequence %}
 
                                         {% set consecutiveToSequence = sentenceSequenceToSentence.get(sentence.consecutiveToSequence) %}
                             consecutive to
                             <br>
                             court case {{ consecutiveToSequence.caseSequence }} count {{ consecutiveToSequence.lineSequence }}
-                                    {% else %}
+                                    {% elif offenceCount > 1 %}
                             concurrent
                         {% endif %}
                                 </span>
