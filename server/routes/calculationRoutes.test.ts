@@ -107,13 +107,15 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
         CRD: {
           adjusted: '2021-02-03',
           unadjusted: '2021-01-15',
-          daysBetween: 18,
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
         },
       },
       sentenceLength: '2 years',
       sentenceLengthDays: 785,
       sentencedAt: '2020-01-01',
-      sequence: '1',
+      lineSequence: 2,
+      caseSequence: 1,
     },
   ],
 }
@@ -122,7 +124,8 @@ const stubbedEffectiveDates: { [key: string]: DateBreakdown } = {
   CRD: {
     adjusted: '2021-02-03',
     unadjusted: '2021-01-15',
-    daysBetween: 18,
+    adjustedByDays: 18,
+    daysFromSentenceStart: 100,
   },
 }
 
@@ -139,6 +142,8 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getCalculationBreakdown.mockResolvedValue(stubbedCalculationBreakdown)
+    calculateReleaseDatesService.getEffectiveDates.mockResolvedValue(stubbedEffectiveDates as never)
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
       .expect(200)
@@ -150,27 +155,14 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
         expect(res.text).toContain('Tuesday, 05 October 2021')
         expect(res.text).toContain('Sunday, 03 October 2021 adjusted for Bank Holiday')
-        expect(res.text).not.toContain('SLED')
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId/breakdown should return details about the calculation requested and its breakdown', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getCalculationBreakdown.mockResolvedValue(stubbedCalculationBreakdown)
-    calculateReleaseDatesService.getEffectiveDates.mockResolvedValue(stubbedEffectiveDates as never) // weird
-    return request(app)
-      .get('/calculation/A1234AB/summary/123456/breakdown')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
+        // expect(res.text).not.toContain('SLED')
+        // This is now displayed as part of breakdown even IF the dates don't contain a SLED.
+        // The design without SLED will come in time
         expect(res.text).toContain('Concurrent sentences')
-        expect(res.text).toContain('1 sentences')
         expect(res.text).toContain('Consecutive sentence')
-        expect(res.text).toContain('N/A')
-        expect(res.text).toContain('Effective dates')
-        expect(res.text).toContain('Friday, 15 January 2021 - 18 days = Wednesday, 03 February 2021')
+        expect(res.text).toContain('Release dates with adjustments')
+        expect(res.text).toContain('03 February 2021')
+        expect(res.text).toContain('15 January 2021 – 18 days')
       })
   })
 

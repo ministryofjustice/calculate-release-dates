@@ -80,26 +80,12 @@ export default class CalculationRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
-    res.render('pages/calculation/calculationSummary', {
-      prisonerDetail,
-      releaseDates: releaseDates.dates,
-      weekendAdjustments,
-    })
-  }
-
-  public calculationSummaryBreakdown: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads } = res.locals.user
-    const { nomsId } = req.params
-    const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
-    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
-    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
     const calculationBreakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
       username,
       calculationRequestId
     )
     const effectiveDates = await this.calculateReleaseDatesService.getEffectiveDates(releaseDates, calculationBreakdown)
-    res.render('pages/calculation/calculationSummaryBreakdown', {
+    res.render('pages/calculation/calculationSummary', {
       prisonerDetail,
       releaseDates: releaseDates.dates,
       weekendAdjustments,
@@ -115,10 +101,17 @@ export default class CalculationRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
+    const calculationBreakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
+      username,
+      calculationRequestId
+    )
+    const effectiveDates = await this.calculateReleaseDatesService.getEffectiveDates(releaseDates, calculationBreakdown)
     res.render('pages/calculation/printCalculationSummary', {
       prisonerDetail,
       releaseDates: releaseDates.dates,
       weekendAdjustments,
+      calculationBreakdown,
+      effectiveDates,
       calculationRequestId,
     })
   }

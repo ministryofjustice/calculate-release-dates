@@ -26,18 +26,21 @@ const calculationBreakdown: CalculationBreakdown = {
         CRD: {
           adjusted: '2021-02-03',
           unadjusted: '2021-01-15',
-          daysBetween: 18,
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
         },
         HDCED: {
           adjusted: '2021-10-28',
           unadjusted: '2021-01-15',
-          daysBetween: 18,
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
         },
       },
       sentenceLength: '2 years',
       sentenceLengthDays: 785,
       sentencedAt: '2020-01-01',
-      sequence: '1',
+      lineSequence: 2,
+      caseSequence: 1,
     },
   ],
 }
@@ -120,12 +123,14 @@ describe('User service', () => {
       CRD: {
         adjusted: '2021-02-03',
         unadjusted: '2021-01-15',
-        daysBetween: 18,
+        adjustedByDays: 18,
+        daysFromSentenceStart: 100,
       },
       HDCED: {
         adjusted: '2021-10-28',
         unadjusted: '2021-01-15',
-        daysBetween: 18,
+        adjustedByDays: 18,
+        daysFromSentenceStart: 100,
       },
     })
   })
