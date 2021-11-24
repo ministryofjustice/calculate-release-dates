@@ -10,6 +10,8 @@ import {
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
+  private readonly dateTypesForBreakdown: ReadonlyArray<string> = ['SLED', 'SED', 'CRD', 'ARD', 'PED']
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   async calculateReleaseDates(username: string, booking: any): Promise<BookingCalculation> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
@@ -38,9 +40,11 @@ export default class CalculateReleaseDatesService {
     calculationBreakdown: CalculationBreakdown
   ): { [key: string]: DateBreakdown } {
     const dates = {}
-    Object.keys(releaseDates.dates).forEach(dateType => {
-      dates[dateType] = this.findDateBreakdown(dateType, releaseDates.dates[dateType], calculationBreakdown)
-    })
+    Object.keys(releaseDates.dates)
+      .filter(dateType => this.dateTypesForBreakdown.includes(dateType))
+      .forEach(dateType => {
+        dates[dateType] = this.findDateBreakdown(dateType, releaseDates.dates[dateType], calculationBreakdown)
+      })
     return dates
   }
 
@@ -49,7 +53,9 @@ export default class CalculateReleaseDatesService {
       .map(it => it.dates[dateType])
       .find(it => it?.adjusted === date)
     if (!concurrentFind) {
-      return calculationBreakdown.consecutiveSentence.dates[dateType]
+      return calculationBreakdown.consecutiveSentence?.dates
+        ? calculationBreakdown.consecutiveSentence?.dates[dateType]
+        : null
     }
     return concurrentFind
   }

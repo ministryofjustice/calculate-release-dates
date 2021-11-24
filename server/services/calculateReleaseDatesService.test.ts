@@ -15,7 +15,8 @@ const calculationRequestId = 123456
 const calculationResults: BookingCalculation = {
   dates: {
     CRD: '2021-02-03',
-    HDCED: '2021-10-28',
+    SLED: '2021-10-28',
+    HDCED: '2021-10-10',
   },
   calculationRequestId,
 }
@@ -29,7 +30,7 @@ const calculationBreakdown: CalculationBreakdown = {
           adjustedByDays: 18,
           daysFromSentenceStart: 100,
         },
-        HDCED: {
+        SLED: {
           adjusted: '2021-10-28',
           unadjusted: '2021-01-15',
           adjustedByDays: 18,
@@ -126,7 +127,7 @@ describe('User service', () => {
         adjustedByDays: 18,
         daysFromSentenceStart: 100,
       },
-      HDCED: {
+      SLED: {
         adjusted: '2021-10-28',
         unadjusted: '2021-01-15',
         adjustedByDays: 18,
