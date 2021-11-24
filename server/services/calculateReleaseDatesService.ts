@@ -10,7 +10,7 @@ import {
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
-  private dateTypesForBreakdown = ['SLED', 'SED', 'CRD', 'ARD', 'PED']
+  private readonly dateTypesForBreakdown: ReadonlyArray<string> = ['SLED', 'SED', 'CRD', 'ARD', 'PED']
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   async calculateReleaseDates(username: string, booking: any): Promise<BookingCalculation> {
