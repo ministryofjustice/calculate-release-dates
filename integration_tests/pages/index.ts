@@ -5,6 +5,11 @@ export default class IndexPage extends Page {
     super('index')
   }
 
+  public static goTo(prisonerId?: string): IndexPage {
+    cy.visit(prisonerId ? `?prisonId=${prisonerId}` : '/')
+    return new IndexPage()
+  }
+
   headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
 
   mainHeading = (): PageElement => cy.get('[data-qa=main-heading]')

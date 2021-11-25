@@ -23,7 +23,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubGetPreviousWorkingDay')
   })
 
-  it('User journey', () => {
+  it('Standalone user journey', () => {
     cy.signIn()
     const indexPage = Page.verifyOnPage(IndexPage)
     indexPage.startNowButton().click()
@@ -31,6 +31,25 @@ context('End to end happy path of user journey', () => {
     const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.checkNomisInformationButtonForPrisoner('A1234AB').click()
+
+    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
+    checkInformationPage.calculateButton().click()
+
+    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
+    calculationSummaryPage.submitToNomisButton().click()
+
+    const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+
+    calculationCompletePage
+      .title()
+      .should('contain.text', 'Calculation complete for')
+      .should('contain.text', 'Marvin Haggler')
+  })
+
+  it('DPS user journey', () => {
+    cy.signIn()
+    const indexPage = IndexPage.goTo('A1234AB')
+    indexPage.startNowButton().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()

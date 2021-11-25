@@ -15,13 +15,13 @@
             </div>
             <p class="govuk-body">Automatically calculate an offender’s release date using information from NOMIS.</p>
             {% if prisonId %}
-                {% set backlink = "/calculation/" + prisonId + "/check-information" %}
+                {% set startlink = "/calculation/" + prisonId + "/check-information" %}
             {% else %}
-                {% set backlink = "/search/prisoners" %}
+                {% set startlink = "/search/prisoners" %}
             {% endif %}
             {{ govukButton({
                 text: "Start now",
-                href: backlink,
+                href: startlink,
                 classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
                 isStartButton: true,
                 attributes: { 'data-qa': 'start-now-button' }
