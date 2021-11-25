@@ -4,6 +4,7 @@ import path from 'path'
 import createError from 'http-errors'
 
 import csurf from 'csurf'
+import cookieParser from 'cookie-parser'
 import routes from './routes'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
@@ -31,6 +32,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   nunjucksSetup(app, path)
   app.use(setUpAuthentication())
+  app.use(cookieParser())
 
   // CSRF protection
   if (process.env.NODE_ENV !== 'test') {

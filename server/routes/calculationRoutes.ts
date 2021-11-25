@@ -4,11 +4,13 @@ import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
 import { groupBy, indexBy } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
+import EntryPointService from '../services/entrypointService'
 
 export default class CalculationRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly prisonerService: PrisonerService
+    private readonly prisonerService: PrisonerService,
+    private readonly entrypointService: EntryPointService
   ) {}
 
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
@@ -31,6 +33,7 @@ export default class CalculationRoutes {
           sentencesAndOffences,
           (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
         ),
+        dpsEntryPoint: this.entrypointService.isDpsEntryPoint(req),
       })
     } catch (ex) {
       logger.error(ex)
@@ -46,6 +49,7 @@ export default class CalculationRoutes {
         errorSummaryList,
         sentencesAndOffences,
         adjustmentDetails,
+        dpsEntryPoint: this.entrypointService.isDpsEntryPoint(req),
       })
     }
   }
@@ -163,6 +167,7 @@ export default class CalculationRoutes {
   public complete: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
+    this.entrypointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     res.render('pages/calculation/calculationComplete', { prisonerDetail, calculationRequestId })
