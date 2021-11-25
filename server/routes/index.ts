@@ -8,20 +8,28 @@ import auth from '../authentication/auth'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
 import SearchRoutes from './searchRoutes'
+import StartRoutes from './startRoutes'
 
-export default function Index({ userService, prisonerService, calculateReleaseDatesService }: Services): Router {
+export default function Index({
+  userService,
+  prisonerService,
+  calculateReleaseDatesService,
+  entryPointService,
+}: Services): Router {
   const router = Router({ mergeParams: true })
 
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
-  const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService)
+  const calculationAccessRoutes = new CalculationRoutes(
+    calculateReleaseDatesService,
+    prisonerService,
+    entryPointService
+  )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
+  const startRoutes = new StartRoutes(entryPointService)
 
-  const indexRoutes = () =>
-    get('/', (req, res) => {
-      res.render('pages/index')
-    })
+  const indexRoutes = () => get('/', startRoutes.startPage)
 
   const calculationRoutes = () => {
     get('/calculation/:nomsId/check-information', calculationAccessRoutes.checkInformation)

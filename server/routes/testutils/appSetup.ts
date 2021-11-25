@@ -12,6 +12,7 @@ import * as auth from '../../authentication/auth'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import { Services } from '../../services'
 import PrisonerService from '../../services/prisonerService'
+import EntryPointService from '../../services/entryPointService'
 
 const user = {
   name: 'john smith',
@@ -65,6 +66,7 @@ export const appWithAllRoutes = (overrides: Partial<Services> = {}, production?:
     userService: new MockUserService(),
     prisonerService: {} as PrisonerService,
     calculateReleaseDatesService: {} as CalculateReleaseDatesService,
+    entryPointService: {} as EntryPointService,
     ...overrides,
   })
   auth.default.authenticationMiddleware = () => (req, res, next) => next()

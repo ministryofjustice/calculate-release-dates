@@ -16,14 +16,17 @@ import {
   DateBreakdown,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import EntryPointService from '../services/entryPointService'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
+jest.mock('../services/entryPointService')
 
 const userService = new UserService(null) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(null) as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 
 let app: Express
 
@@ -130,7 +133,7 @@ const stubbedEffectiveDates: { [key: string]: DateBreakdown } = {
 }
 
 beforeEach(() => {
-  app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService })
+  app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService, entryPointService })
 })
 
 afterEach(() => {
@@ -175,6 +178,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toMatch(/Calculation complete for<br>\s*Ringo Starr/)
+        expect(entryPointService.clearEntryPoint.mock.calls.length).toBe(1)
       })
   })
 
@@ -215,6 +219,7 @@ describe('Calculation routes tests related to check-information', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
     return request(app)
       .get('/calculation/A1234AA/check-information')
       .expect(200)
@@ -234,6 +239,7 @@ describe('Calculation routes tests related to check-information', () => {
         expect(res.text).toContain('Court case 2')
         expect(res.text).toContain('consecutive to')
         expect(res.text).toContain('court case 1 count 1')
+        expect(res.text).toContain('href="/?prisonId=A1234AA"')
       })
   })
 })

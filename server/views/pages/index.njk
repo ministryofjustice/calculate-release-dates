@@ -14,9 +14,14 @@
                 Only standard determinate sentences (SDS) work with this service currently.
             </div>
             <p class="govuk-body">Automatically calculate an offender’s release date using information from NOMIS.</p>
+            {% if prisonId %}
+                {% set startlink = "/calculation/" + prisonId + "/check-information" %}
+            {% else %}
+                {% set startlink = "/search/prisoners" %}
+            {% endif %}
             {{ govukButton({
                 text: "Start now",
-                href: "/search/prisoners",
+                href: startlink,
                 classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
                 isStartButton: true,
                 attributes: { 'data-qa': 'start-now-button' }

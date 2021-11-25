@@ -9,9 +9,14 @@
 {% block beforeContent %}
     {{ super() }}
     {% include "../partials/prisonerIdentityBar.njk" %}
+    {% if dpsEntryPoint %}
+        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
+    {% else %}
+        {% set backlink = "/search/prisoners" %}
+    {% endif %}
     {{ govukBackLink({
         text: "Back",
-        href: "/search/prisoners"
+        href: backlink
     }) }}
 {% endblock %}
 {% block content %}
