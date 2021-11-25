@@ -4,13 +4,13 @@ import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
 import { groupBy, indexBy } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
-import EntryPointService from '../services/temporaryFileName'
+import EntryPointService from '../services/entryPointService'
 
 export default class CalculationRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entrypointService: EntryPointService
+    private readonly entryPointService: EntryPointService
   ) {}
 
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
@@ -33,7 +33,7 @@ export default class CalculationRoutes {
           sentencesAndOffences,
           (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
         ),
-        dpsEntryPoint: this.entrypointService.isDpsEntryPoint(req),
+        dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
       })
     } catch (ex) {
       logger.error(ex)
@@ -49,7 +49,7 @@ export default class CalculationRoutes {
         errorSummaryList,
         sentencesAndOffences,
         adjustmentDetails,
-        dpsEntryPoint: this.entrypointService.isDpsEntryPoint(req),
+        dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
       })
     }
   }
@@ -167,7 +167,7 @@ export default class CalculationRoutes {
   public complete: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads } = res.locals.user
     const { nomsId } = req.params
-    this.entrypointService.clearEntryPoint(res)
+    this.entryPointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
     res.render('pages/calculation/calculationComplete', { prisonerDetail, calculationRequestId })

@@ -3,7 +3,7 @@ import TokenStore from '../api/tokenStore'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import UserService from './userService'
 import PrisonerService from './prisonerService'
-import EntryPointService from './temporaryFileName'
+import EntryPointService from './entryPointService'
 
 const hmppsAuthClient = new HmppsAuthClient(new TokenStore())
 const userService = new UserService(hmppsAuthClient)

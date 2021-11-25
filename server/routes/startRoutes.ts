@@ -1,15 +1,15 @@
 import { RequestHandler } from 'express'
-import EntryPointService from '../services/temporaryFileName'
+import EntryPointService from '../services/entryPointService'
 
 export default class StartRoutes {
-  constructor(private readonly entrypointService: EntryPointService) {}
+  constructor(private readonly entryPointService: EntryPointService) {}
 
   public startPage: RequestHandler = async (req, res): Promise<void> => {
     const { prisonId } = req.query as Record<string, string>
     if (prisonId) {
-      this.entrypointService.setDpsEntrypointCookie(res)
+      this.entryPointService.setDpsEntrypointCookie(res)
     } else {
-      this.entrypointService.setStandaloneEntrypointCookie(res)
+      this.entryPointService.setStandaloneEntrypointCookie(res)
     }
     return res.render('pages/index', { prisonId })
   }
