@@ -1,7 +1,7 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
-import EntryPointService from '../services/entrypointService'
+import EntryPointService from '../services/temporaryFileName'
 
 jest.mock('../services/entryPointService')
 

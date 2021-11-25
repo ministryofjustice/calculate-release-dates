@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import EntryPointService from '../services/entrypointService'
+import EntryPointService from '../services/temporaryFileName'
 
 export default class StartRoutes {
   constructor(private readonly entrypointService: EntryPointService) {}

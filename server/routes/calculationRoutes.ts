@@ -4,7 +4,7 @@ import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
 import { groupBy, indexBy } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
-import EntryPointService from '../services/entrypointService'
+import EntryPointService from '../services/temporaryFileName'
 
 export default class CalculationRoutes {
   constructor(

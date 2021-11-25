@@ -16,7 +16,7 @@ import {
   DateBreakdown,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import EntryPointService from '../services/entrypointService'
+import EntryPointService from '../services/temporaryFileName'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
