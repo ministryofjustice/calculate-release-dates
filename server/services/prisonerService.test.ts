@@ -41,6 +41,8 @@ const prisonerDetails = {
   } as PrisonApiSentenceDetail,
 } as PrisonApiPrisoner
 
+const token = 'token'
+
 describe('Prisoner service related tests', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
   let prisonerService: PrisonerService
@@ -59,7 +61,7 @@ describe('Prisoner service related tests', () => {
     it('Test fetching user caseloads', async () => {
       fakeApi.get(`/api/users/me/caseLoads`).reply(200, [caseload])
 
-      const result = await prisonerService.getUsersCaseloads('user')
+      const result = await prisonerService.getUsersCaseloads('user', token)
 
       expect(result).toEqual([caseload])
     })
@@ -67,7 +69,7 @@ describe('Prisoner service related tests', () => {
     it('Test getting prisoner details', async () => {
       fakeApi.get(`/api/offenders/A1234AB`).reply(200, prisonerDetails)
 
-      const result = await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'])
+      const result = await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'], token)
 
       expect(result).toEqual(prisonerDetails)
     })
@@ -76,7 +78,7 @@ describe('Prisoner service related tests', () => {
       fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'LEX' })
 
       try {
-        await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'])
+        await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'], token)
       } catch (error) {
         expect(error.status).toEqual(404)
         expect(error.message).toEqual(

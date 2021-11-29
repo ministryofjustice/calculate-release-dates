@@ -45,6 +45,7 @@ const calculationBreakdown: CalculationBreakdown = {
     },
   ],
 }
+const token = 'token'
 
 describe('User service', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
@@ -64,7 +65,7 @@ describe('User service', () => {
     it('Test the running of a preliminary calculation of release dates', async () => {
       fakeApi.post(`/calculation/${prisonerId}`).reply(200, calculationResults)
 
-      const result = await calculateReleaseDatesService.calculatePreliminaryReleaseDates('user', prisonerId)
+      const result = await calculateReleaseDatesService.calculatePreliminaryReleaseDates('user', prisonerId, token)
 
       expect(result).toEqual(calculationResults)
     })
@@ -73,7 +74,7 @@ describe('User service', () => {
   it('Test getting the results of a calculation by the calculationRequestId', async () => {
     fakeApi.get(`/calculation/results/${calculationRequestId}`).reply(200, calculationResults)
 
-    const result = await calculateReleaseDatesService.getCalculationResults('user', calculationRequestId)
+    const result = await calculateReleaseDatesService.getCalculationResults('user', calculationRequestId, token)
 
     expect(result).toEqual(calculationResults)
   })
@@ -81,7 +82,12 @@ describe('User service', () => {
   it('Test confirming the results of a calculation', async () => {
     fakeApi.post(`/calculation/${prisonerId}/confirm/${calculationRequestId}`).reply(200, calculationResults)
 
-    const result = await calculateReleaseDatesService.confirmCalculation('user', prisonerId, calculationRequestId)
+    const result = await calculateReleaseDatesService.confirmCalculation(
+      'user',
+      prisonerId,
+      calculationRequestId,
+      token
+    )
 
     expect(result).toEqual(calculationResults)
   })
@@ -101,7 +107,7 @@ describe('User service', () => {
     fakeApi.get(`/working-day/previous/${calculationResults.dates.CRD}`).reply(200, adjustedCrd)
     fakeApi.get(`/working-day/next/${calculationResults.dates.HDCED}`).reply(200, adjustedHdced)
 
-    const result = await calculateReleaseDatesService.getWeekendAdjustments('user', calculationResults)
+    const result = await calculateReleaseDatesService.getWeekendAdjustments('user', calculationResults, token)
 
     expect(result).toEqual({
       HDCED: adjustedHdced,
@@ -112,7 +118,7 @@ describe('User service', () => {
   it('Test getting calculation breakdown', async () => {
     fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, calculationBreakdown)
 
-    const result = await calculateReleaseDatesService.getCalculationBreakdown('user', calculationRequestId)
+    const result = await calculateReleaseDatesService.getCalculationBreakdown('user', calculationRequestId, token)
 
     expect(result).toEqual(calculationBreakdown)
   })

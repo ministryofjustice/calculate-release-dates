@@ -12,25 +12,34 @@ export default class CalculateReleaseDatesService {
 
   private readonly dateTypesForBreakdown: ReadonlyArray<string> = ['SLED', 'SED', 'CRD', 'ARD', 'PED']
 
+  // TODO test method - will be removed
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
-  async calculateReleaseDates(username: string, booking: any): Promise<BookingCalculation> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+  async calculateReleaseDates(username: string, booking: any, token: string): Promise<BookingCalculation> {
     const bookingData = JSON.parse(booking)
     return new CalculateReleaseDatesApiClient(token).calculateReleaseDates(bookingData)
   }
 
-  async calculatePreliminaryReleaseDates(username: string, prisonerId: string): Promise<BookingCalculation> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+  async calculatePreliminaryReleaseDates(
+    username: string,
+    prisonerId: string,
+    token: string
+  ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(prisonerId)
   }
 
-  async getCalculationResults(username: string, calculationRequestId: number): Promise<BookingCalculation> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+  async getCalculationResults(
+    username: string,
+    calculationRequestId: number,
+    token: string
+  ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
   }
 
-  async getCalculationBreakdown(username: string, calculationRequestId: number): Promise<CalculationBreakdown> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+  async getCalculationBreakdown(
+    username: string,
+    calculationRequestId: number,
+    token: string
+  ): Promise<CalculationBreakdown> {
     return new CalculateReleaseDatesApiClient(token).getCalculationBreakdown(calculationRequestId)
   }
 
@@ -63,17 +72,17 @@ export default class CalculateReleaseDatesService {
   async confirmCalculation(
     username: string,
     prisonerId: string,
-    calculationRequestId: number
+    calculationRequestId: number,
+    token: string
   ): Promise<BookingCalculation> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
     return new CalculateReleaseDatesApiClient(token).confirmCalculation(prisonerId, calculationRequestId)
   }
 
   async getWeekendAdjustments(
     username: string,
-    calculation: BookingCalculation
+    calculation: BookingCalculation,
+    token: string
   ): Promise<{ [key: string]: WorkingDay }> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
     const client = new CalculateReleaseDatesApiClient(token)
     const adjustments: { [key: string]: WorkingDay } = {}
     if (calculation.dates.CRD) {
