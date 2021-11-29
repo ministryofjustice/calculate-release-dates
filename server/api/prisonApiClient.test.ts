@@ -37,6 +37,7 @@ const stubbedPrisonerData = {
 } as PrisonApiPrisoner
 
 const caseloads = ['MDI']
+const token = 'token'
 
 describe('Prison API client tests', () => {
   let fakeApi: nock.Scope
@@ -52,36 +53,20 @@ describe('Prison API client tests', () => {
 
   describe('Prisoner detail', () => {
     it('Get prisoner detail', async () => {
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue('a token')
       fakeApi.get('/api/offenders/AA1234A', '').reply(200, stubbedPrisonerData)
-      const data = await prisonerService.getPrisonerDetail('XTEST1', 'AA1234A', caseloads)
+      const data = await prisonerService.getPrisonerDetail('XTEST1', 'AA1234A', caseloads, token)
       expect(data).toEqual(stubbedPrisonerData)
       expect(nock.isDone()).toBe(true)
-      expect(hmppsAuthClient.getSystemClientToken).toBeCalled()
-    })
-
-    it('No client token', async () => {
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue('')
-      fakeApi.get('/api/offenders/AA1234A', '').reply(401)
-      try {
-        await prisonerService.getPrisonerDetail('XTEST1', 'AA1234A', caseloads)
-      } catch (e) {
-        expect(e.message).toContain('Unauthorized')
-      }
-      expect(nock.isDone()).toBe(true)
-      expect(hmppsAuthClient.getSystemClientToken).toBeCalled()
     })
 
     it('Not found', async () => {
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue('a token')
       fakeApi.get('/api/offenders/AA1234A', '').reply(404)
       try {
-        await prisonerService.getPrisonerDetail('XTEST1', 'AA1234A', caseloads)
+        await prisonerService.getPrisonerDetail('XTEST1', 'AA1234A', caseloads, token)
       } catch (e) {
         expect(e.message).toContain('Not Found')
       }
       expect(nock.isDone()).toBe(true)
-      expect(hmppsAuthClient.getSystemClientToken).toBeCalled()
     })
   })
 })

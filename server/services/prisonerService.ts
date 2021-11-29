@@ -18,8 +18,12 @@ export default class PrisonerService {
     return new PrisonApiClient(token).getPrisonerImage(nomsId)
   }
 
-  async getPrisonerDetail(username: string, nomsId: string, userCaseloads: string[]): Promise<PrisonApiPrisoner> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+  async getPrisonerDetail(
+    username: string,
+    nomsId: string,
+    userCaseloads: string[],
+    token: string
+  ): Promise<PrisonApiPrisoner> {
     const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
     if (!userCaseloads.includes(prisonerDetail.agencyId)) {
       const error = {
@@ -36,18 +40,23 @@ export default class PrisonerService {
     return new PrisonerSearchApiClient(token).searchPrisoners(prisonerSearchCriteria)
   }
 
-  async getSentencesAndOffences(username: string, bookingId: number): Promise<PrisonApiOffenderSentenceAndOffences[]> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+  async getSentencesAndOffences(
+    username: string,
+    bookingId: number,
+    token: string
+  ): Promise<PrisonApiOffenderSentenceAndOffences[]> {
     return new PrisonApiClient(token).getSentencesAndOffences(bookingId)
   }
 
-  async getSentenceAdjustments(username: string, bookingId: number): Promise<PrisonApiSentenceAdjustmentDetail> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+  async getSentenceAdjustments(
+    username: string,
+    bookingId: number,
+    token: string
+  ): Promise<PrisonApiSentenceAdjustmentDetail> {
     return new PrisonApiClient(token).getSentenceAdjustments(bookingId)
   }
 
-  async getUsersCaseloads(username: string): Promise<PrisonApiUserCaseloads[]> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+  async getUsersCaseloads(username: string, token: string): Promise<PrisonApiUserCaseloads[]> {
     return new PrisonApiClient(token).getUsersCaseloads()
   }
 }

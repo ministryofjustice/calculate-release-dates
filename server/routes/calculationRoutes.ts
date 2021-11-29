@@ -14,11 +14,19 @@ export default class CalculationRoutes {
   ) {}
 
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads } = res.locals.user
+    const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
-    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(username, prisonerDetail.bookingId)
-    const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(username, prisonerDetail.bookingId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
+      username,
+      prisonerDetail.bookingId,
+      token
+    )
+    const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(
+      username,
+      prisonerDetail.bookingId,
+      token
+    )
 
     try {
       res.render('pages/calculation/checkInformation', {
@@ -55,10 +63,14 @@ export default class CalculationRoutes {
   }
 
   public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
+    const { username, token } = res.locals.user
     const { nomsId } = req.params
     try {
-      const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId)
+      const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
+        username,
+        nomsId,
+        token
+      )
       res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
     } catch (ex) {
       // TODO Move handling of validation errors from the api into the service layer
@@ -78,15 +90,24 @@ export default class CalculationRoutes {
   }
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads } = res.locals.user
+    const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
-    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
-    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
+      username,
+      calculationRequestId,
+      token
+    )
+    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
+      username,
+      releaseDates,
+      token
+    )
     const calculationBreakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
       username,
-      calculationRequestId
+      calculationRequestId,
+      token
     )
     const effectiveDates = await this.calculateReleaseDatesService.getEffectiveDates(releaseDates, calculationBreakdown)
     res.render('pages/calculation/calculationSummary', {
@@ -99,15 +120,24 @@ export default class CalculationRoutes {
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads } = res.locals.user
+    const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
-    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(username, calculationRequestId)
-    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(username, releaseDates)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
+      username,
+      calculationRequestId,
+      token
+    )
+    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
+      username,
+      releaseDates,
+      token
+    )
     const calculationBreakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
       username,
-      calculationRequestId
+      calculationRequestId,
+      token
     )
     const effectiveDates = await this.calculateReleaseDatesService.getEffectiveDates(releaseDates, calculationBreakdown)
     res.render('pages/calculation/printCalculationSummary', {
@@ -121,14 +151,15 @@ export default class CalculationRoutes {
   }
 
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
+    const { username, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     try {
       const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
         username,
         nomsId,
-        calculationRequestId
+        calculationRequestId,
+        token
       )
       res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
     } catch (error) {
@@ -165,11 +196,11 @@ export default class CalculationRoutes {
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads } = res.locals.user
+    const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     this.entryPointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     res.render('pages/calculation/calculationComplete', { prisonerDetail, calculationRequestId })
   }
 }

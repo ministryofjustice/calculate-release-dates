@@ -13,6 +13,7 @@ interface TestData {
 const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(hmppsAuthClient)
 const stubbedTestData: TestData[] = [{ key: 'X', value: 'Y' } as TestData]
+const token = 'token'
 
 describe('Calculate release dates API client tests', () => {
   let fakeApi: nock.Scope
@@ -31,31 +32,17 @@ describe('Calculate release dates API client tests', () => {
     it('Get calculation results data', async () => {
       hmppsAuthClient.getSystemClientToken.mockResolvedValue('a token')
       fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(200, stubbedTestData)
-      const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', calculationRequestId)
+      const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', calculationRequestId, token)
       expect(data).toEqual(stubbedTestData)
       expect(nock.isDone()).toBe(true)
-      expect(hmppsAuthClient.getSystemClientToken).toBeCalled()
-    })
-
-    it('No client token', async () => {
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue('')
-      fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(401)
-      try {
-        await calculateReleaseDatesService.getCalculationResults('XTEST1', 123456)
-      } catch (e) {
-        expect(e.message).toContain('Unauthorized')
-      }
-      expect(nock.isDone()).toBe(true)
-      expect(hmppsAuthClient.getSystemClientToken).toBeCalled()
     })
 
     it('Empty data', async () => {
       hmppsAuthClient.getSystemClientToken.mockResolvedValue('a token')
       fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(200, [])
-      const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', 123456)
+      const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', 123456, token)
       expect(data).toEqual([])
       expect(nock.isDone()).toBe(true)
-      expect(hmppsAuthClient.getSystemClientToken).toBeCalled()
     })
   })
 })

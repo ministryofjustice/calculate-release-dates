@@ -11,11 +11,11 @@ export default class OtherRoutes {
   ) {}
 
   public testCalculation: RequestHandler = async (req, res): Promise<void> => {
-    const { username } = res.locals.user
+    const { username, token } = res.locals.user
     const { bookingData } = req.query
     try {
       const releaseDates = bookingData
-        ? await this.calculateReleaseDatesService.calculateReleaseDates(username, bookingData)
+        ? await this.calculateReleaseDatesService.calculateReleaseDates(username, bookingData, token)
         : ''
 
       res.render('pages/test-pages/testCalculation', {
