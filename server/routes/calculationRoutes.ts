@@ -47,7 +47,7 @@ export default class CalculationRoutes {
       logger.error(ex)
       const errorSummaryList = [
         {
-          text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
+          text: ex.data.userMessage,
           href: '#bookingData',
         },
       ]
@@ -80,7 +80,7 @@ export default class CalculationRoutes {
         'validationErrors',
         JSON.stringify([
           {
-            text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
+            text: ex.data.userMessage,
             href: '#sentences',
           },
         ])
