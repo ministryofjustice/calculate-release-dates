@@ -1,3 +1,5 @@
+import GovUkError from '../@types/calculateReleaseDates/GovUkError'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -30,6 +32,34 @@ export const indexBy = <T, K>(items: T[], groupingFunction: (item: T) => K): Map
     result.set(key, item)
     return result
   }, new Map<K, T>())
+}
+
+export function serverErrorToGovUkError(serverError: any, href: string): GovUkError[] {
+  return replaceNewLineWithLineBreakHtml([
+    {
+      text: serverError.data.userMessage,
+      href,
+    },
+  ])
+}
+
+export function validationError(text: string, href: string): GovUkError[] {
+  return [
+    {
+      text,
+      href,
+    },
+  ]
+}
+
+function replaceNewLineWithLineBreakHtml(errors: GovUkError[]): GovUkError[] {
+  return errors.map((originalError: GovUkError) => {
+    const err = { ...originalError }
+    if (!err.html && err.text.match(/\n/)) {
+      err.html = err.text.replace(/\n/g, '<br/>')
+    }
+    return err
+  })
 }
 
 export default convertToTitleCase

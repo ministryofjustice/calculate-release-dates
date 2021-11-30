@@ -2,7 +2,7 @@ import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
-import { groupBy, indexBy } from '../utils/utils'
+import { groupBy, indexBy, serverErrorToGovUkError, validationError } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import EntryPointService from '../services/entryPointService'
 
@@ -45,16 +45,11 @@ export default class CalculationRoutes {
       })
     } catch (ex) {
       logger.error(ex)
-      const errorSummaryList = [
-        {
-          text: ex.data.userMessage,
-          href: '#bookingData',
-        },
-      ]
+      const validationErrors = serverErrorToGovUkError(ex, '#bookingData')
 
       res.render('pages/calculation/checkInformation', {
         prisonerDetail,
-        errorSummaryList,
+        validationErrors,
         sentencesAndOffences,
         adjustmentDetails,
         dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
@@ -76,15 +71,7 @@ export default class CalculationRoutes {
       // TODO Move handling of validation errors from the api into the service layer
       logger.error(ex)
 
-      req.flash(
-        'validationErrors',
-        JSON.stringify([
-          {
-            text: ex.data.userMessage,
-            href: '#sentences',
-          },
-        ])
-      )
+      req.flash('validationErrors', JSON.stringify(serverErrorToGovUkError(ex, '#sentences')))
       res.redirect(`/calculation/${nomsId}/check-information`)
     }
   }
@@ -168,31 +155,18 @@ export default class CalculationRoutes {
       if (error.status === 412) {
         req.flash(
           'validationErrors',
-          this.getValidationError(
-            'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
-            `/calculation/${nomsId}/check-information`
+          JSON.stringify(
+            validationError(
+              'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
+              `/calculation/${nomsId}/check-information`
+            )
           )
         )
       } else {
-        req.flash(
-          'validationErrors',
-          this.getValidationError(
-            `There was an error in the calculation API service: ${error.data.userMessage}`,
-            '#sentences'
-          )
-        )
+        req.flash('validationErrors', JSON.stringify(validationError(`${error.data.userMessage}`, '#sentences')))
       }
       res.redirect(`/calculation/${nomsId}/summary/${calculationRequestId}`)
     }
-  }
-
-  private getValidationError(text: string, href: string) {
-    return JSON.stringify([
-      {
-        text,
-        href,
-      },
-    ])
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
