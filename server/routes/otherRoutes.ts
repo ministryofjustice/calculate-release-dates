@@ -24,7 +24,7 @@ export default class OtherRoutes {
       })
     } catch (ex) {
       logger.error(ex)
-      const errorSummaryList =
+      const validationErrors =
         ex.status > 499 && ex.status < 600
           ? [
               {
@@ -40,7 +40,7 @@ export default class OtherRoutes {
             ]
       res.render('pages/test-pages/testCalculation', {
         bookingData,
-        errorSummaryList,
+        validationErrors,
       })
     }
   }
