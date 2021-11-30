@@ -56,8 +56,6 @@ context('Calculation summary', () => {
     cy.signIn()
     CalculationSummaryPage.goTo('A1234AB', '123')
     cy.injectAxe()
-    cy.checkA11y(null, {
-      includedImpacts: ['critical', 'serious'],
-    })
+    cy.checkA11y()
   })
 })

@@ -25,9 +25,7 @@ context('SignIn', () => {
   it('Page is accessible', () => {
     cy.signIn()
     cy.injectAxe()
-    cy.checkA11y(null, {
-      includedImpacts: ['critical', 'serious'],
-    })
+    cy.checkA11y()
   })
 
   it('User can log out', () => {

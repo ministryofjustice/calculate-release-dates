@@ -6,13 +6,19 @@
 
 {% set pageTitle = applicationName + " - calculation summary" %}
 {% set pageId = "print-calculation-summary" %}
+
+{% block aside %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
 {% block beforeContent %}
     {{ super() }}
-    {% include "../partials/prisonerIdentityBar.njk" %}
-    {{ govukBackLink({
+    <nav>
+        {{ govukBackLink({
         text: "Back",
         href: "/calculation/" + prisonerDetail.offenderNo + "/complete/" + calculationRequestId
     }) }}
+    </nav>
 {% endblock %}
 
 {% block content %}

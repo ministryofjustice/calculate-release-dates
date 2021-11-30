@@ -21,8 +21,6 @@ context('Prisoner search', () => {
     const prisonerSearchPage = PrisonerSearchPage.goTo()
     prisonerSearchPage.searchForFirstName('Marvin')
     cy.injectAxe()
-    cy.checkA11y(null, {
-      includedImpacts: ['critical', 'serious'],
-    })
+    cy.checkA11y()
   })
 })
