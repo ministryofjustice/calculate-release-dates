@@ -5,8 +5,8 @@ name: calculate-release-dates
 version: 0.2.0
 dependencies:
   - name: generic-service
-    version: 1.0.10
+    version: 1.1.2
     repository: https://ministryofjustice.github.io/hmpps-helm-charts
   - name: generic-prometheus-alerts
-    version: 0.1.4
+    version: 0.2.7
     repository: https://ministryofjustice.github.io/hmpps-helm-charts
