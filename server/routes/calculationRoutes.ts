@@ -45,7 +45,7 @@ export default class CalculationRoutes {
       })
     } catch (ex) {
       logger.error(ex)
-      const validationErrors = serverErrorToGovUkError(ex, '#bookingData')
+      const validationErrors = serverErrorToGovUkError(ex.data, '#bookingData')
 
       res.render('pages/calculation/checkInformation', {
         prisonerDetail,
@@ -71,7 +71,7 @@ export default class CalculationRoutes {
       // TODO Move handling of validation errors from the api into the service layer
       logger.error(ex)
 
-      req.flash('validationErrors', JSON.stringify(serverErrorToGovUkError(ex, '#sentences')))
+      req.flash('validationErrors', JSON.stringify(serverErrorToGovUkError(ex.data, '#sentences')))
       res.redirect(`/calculation/${nomsId}/check-information`)
     }
   }

@@ -1,3 +1,4 @@
+import ErrorResponse from '../@types/calculateReleaseDates/ErrorResponse'
 import GovUkError from '../@types/calculateReleaseDates/GovUkError'
 
 const properCase = (word: string): string =>
@@ -34,10 +35,10 @@ export const indexBy = <T, K>(items: T[], groupingFunction: (item: T) => K): Map
   }, new Map<K, T>())
 }
 
-export function serverErrorToGovUkError(serverError: any, href: string): GovUkError[] {
+export function serverErrorToGovUkError(errorResponse: ErrorResponse, href: string): GovUkError[] {
   return replaceNewLineWithLineBreakHtml([
     {
-      text: serverError.data.userMessage,
+      text: errorResponse.userMessage,
       href,
     },
   ])
