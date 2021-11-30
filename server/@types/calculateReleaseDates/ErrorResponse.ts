@@ -4,6 +4,7 @@ type ErrorResponse = {
   userMessage?: string
   developerMessage?: string
   moreInfo?: string
+  arguments?: string[]
 }
 
 export default ErrorResponse

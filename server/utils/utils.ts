@@ -35,32 +35,4 @@ export const indexBy = <T, K>(items: T[], groupingFunction: (item: T) => K): Map
   }, new Map<K, T>())
 }
 
-export function serverErrorToGovUkError(errorResponse: ErrorResponse, href: string): GovUkError[] {
-  return replaceNewLineWithLineBreakHtml([
-    {
-      text: errorResponse.userMessage,
-      href,
-    },
-  ])
-}
-
-export function validationError(text: string, href: string): GovUkError[] {
-  return [
-    {
-      text,
-      href,
-    },
-  ]
-}
-
-function replaceNewLineWithLineBreakHtml(errors: GovUkError[]): GovUkError[] {
-  return errors.map((originalError: GovUkError) => {
-    const err = { ...originalError }
-    if (!err.html && err.text.match(/\n/)) {
-      err.html = err.text.replace(/\n/g, '<br/>')
-    }
-    return err
-  })
-}
-
 export default convertToTitleCase

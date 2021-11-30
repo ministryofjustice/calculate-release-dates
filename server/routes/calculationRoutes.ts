@@ -2,9 +2,10 @@ import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
-import { groupBy, indexBy, serverErrorToGovUkError, validationError } from '../utils/utils'
+import { groupBy, indexBy } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import EntryPointService from '../services/entryPointService'
+import { serverErrorToGovUkError, validationError } from '../utils/errorUtils'
 
 export default class CalculationRoutes {
   constructor(
