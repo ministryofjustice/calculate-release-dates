@@ -6,19 +6,26 @@
 
 {% set pageTitle = applicationName + " - check information" %}
 {% set pageId = "check-information" %}
+
+{% block aside %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
 {% block beforeContent %}
     {{ super() }}
-    {% include "../partials/prisonerIdentityBar.njk" %}
     {% if dpsEntryPoint %}
         {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     {% else %}
         {% set backlink = "/search/prisoners" %}
     {% endif %}
-    {{ govukBackLink({
+    <nav>
+        {{ govukBackLink({
         text: "Back",
         href: backlink
     }) }}
+    </nav>
 {% endblock %}
+
 {% block content %}
     {% include "../partials/formError.njk" %}
     <div class="govuk-grid-row">

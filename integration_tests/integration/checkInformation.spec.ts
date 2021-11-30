@@ -30,8 +30,6 @@ context('Check nomis information', () => {
     cy.signIn()
     CheckInformationPage.goTo('A1234AB')
     cy.injectAxe()
-    cy.checkA11y(null, {
-      includedImpacts: ['critical', 'serious'],
-    })
+    cy.checkA11y()
   })
 })

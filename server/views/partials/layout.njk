@@ -55,7 +55,10 @@
 {% block bodyStart %}{% endblock %}
 
 {% block beforeContent %}
-  {% include "../pages/partials/phaseBanner.njk" %}
+  <aside role="complementary">
+    {% include "../pages/partials/phaseBanner.njk" %}
+    {% block aside %}{% endblock %}
+  </aside>
   <span class="govuk-visually-hidden" id="{{ pageId }}"></span>
 {% endblock %}
 
