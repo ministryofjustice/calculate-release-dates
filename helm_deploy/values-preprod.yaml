@@ -6,7 +6,6 @@ generic-service:
 
   ingress:
     host: calculate-release-dates-preprod.hmpps.service.justice.gov.uk
-    contextColour: green
 
   env:
     INGRESS_URL: "https://calculate-release-dates-preprod.hmpps.service.justice.gov.uk"
