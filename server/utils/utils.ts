@@ -1,6 +1,3 @@
-import ErrorResponse from '../@types/calculateReleaseDates/ErrorResponse'
-import GovUkError from '../@types/calculateReleaseDates/GovUkError'
-
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
