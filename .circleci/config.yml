@@ -184,16 +184,16 @@ workflows:
           type: approval
           requires:
             - deploy_preprod
-#      - hmpps/deploy_env:
-#          name: deploy_prod
-#          env: "prod"
-#          slack_notification: true
-#          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
-#          context:
-#            - hmpps-common-vars
-#            - calculate-release-dates-prod
-#          requires:
-#            - request-prod-approval
+      - hmpps/deploy_env:
+          name: deploy_prod
+          env: "prod"
+          slack_notification: true
+          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
+          context:
+            - hmpps-common-vars
+            - calculate-release-dates-prod
+          requires:
+            - request-prod-approval
 
   security:
     triggers:
