@@ -1,0 +1,19 @@
+---
+# Per environment values which override defaults in calculate-release-dates/values.yaml
+
+generic-service:
+  replicaCount: 2
+
+  ingress:
+    host: calculate-release-dates.hmpps.service.justice.gov.uk
+
+  env:
+    INGRESS_URL: "https://calculate-release-dates.hmpps.service.justice.gov.uk"
+    HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
+    TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
+    CALCULATE_RELEASE_DATES_API_URL: "https://calculate-release-dates-api.hmpps.service.justice.gov.uk"
+    PRISON_API_URL: "https://api.prison.service.justice.gov.uk"
+    PRISONER_SEARCH_API_URL: "https://prisoner-offender-search.prison.service.justice.gov.uk"
+
+generic-prometheus-alerts:
+  alertSeverity: digital-prison-service-dev
