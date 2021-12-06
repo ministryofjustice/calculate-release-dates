@@ -1,6 +1,6 @@
 type GovUkError = {
   text: string
-  href: string
+  href?: string
   html?: string
 }
 
