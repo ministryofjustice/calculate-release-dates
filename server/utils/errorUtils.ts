@@ -21,7 +21,6 @@ export function serverErrorToGovUkError(errorResponse: ErrorResponse, href: stri
       {
         html,
         text: html,
-        href,
       },
     ]
   }

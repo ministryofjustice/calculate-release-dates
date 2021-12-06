@@ -6,14 +6,12 @@
 
 {% block content %}
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-xl" data-qa="main-heading">
                 Calculate release dates
             </h1>
-            <div class="govuk-inset-text">
-                Only standard determinate sentences (SDS) work with this service currently.
-            </div>
             <p class="govuk-body">Automatically calculate an offender’s release date using information from NOMIS.</p>
+            <p class="govuk-body">The service currently supports a limited number of sentences. <a href="/supported-sentences">Check supported sentence types</a>.</p>
             {% if prisonId %}
                 {% set startlink = "/calculation/" + prisonId + "/check-information" %}
             {% else %}
@@ -27,7 +25,7 @@
                 attributes: { 'data-qa': 'start-now-button' }
             }) }}
             <h2 class="govuk-heading-m">Before you start</h2>
-            <p class="govuk-body">To use this service, you need to enter information about this offender in NOMIS:</p>
+            <p class="govuk-body">Check in NOMIS that the offender information includes:</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>court cases</li>
                 <li>court dates</li>
