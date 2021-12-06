@@ -24,7 +24,7 @@
         {% endif %}
         {% if releaseDates.ARD %}
             <h3 class="govuk-heading-s">Automatic release date (ARD)</h3>
-            <p class="govuk-body">{{ releaseDates.NPD | date('dddd, DD MMMM YYYY') }}</p>
+            <p class="govuk-body">{{ releaseDates.ARD | date('dddd, DD MMMM YYYY') }}</p>
         {% endif %}
         {% if releaseDates.CRD %}
             <h3 class="govuk-heading-s">Conditional release date (CRD)</h3>
