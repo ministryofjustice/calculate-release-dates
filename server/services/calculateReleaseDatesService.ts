@@ -6,6 +6,8 @@ import {
   DateBreakdown,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
+import ErrorMessage from '../types/ErrorMessage'
 
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
@@ -98,5 +100,30 @@ export default class CalculateReleaseDatesService {
       }
     }
     return adjustments
+  }
+
+  sortByCaseNumberAndLineSequence = (
+    a: PrisonApiOffenderSentenceAndOffences,
+    b: PrisonApiOffenderSentenceAndOffences
+  ) => {
+    if (a.caseSequence > b.caseSequence) return 1
+    if (a.caseSequence < b.caseSequence) return -1
+    return a.lineSequence - b.lineSequence
+  }
+
+  validateNomisInformation(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): ErrorMessage[] {
+    return this.checkForMissingOffenceDates(sentencesAndOffences)
+  }
+
+  private checkForMissingOffenceDates(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): ErrorMessage[] {
+    const sentencesWithoutOffenceDates = sentencesAndOffences.filter(s =>
+      s.offences.some(o => !o.offenceEndDate && !o.offenceStartDate)
+    )
+
+    return sentencesWithoutOffenceDates.sort(this.sortByCaseNumberAndLineSequence).map(s => {
+      return {
+        text: `The calculation must include an offence date for court case ${s.caseSequence} count ${s.lineSequence}`,
+      }
+    })
   }
 }

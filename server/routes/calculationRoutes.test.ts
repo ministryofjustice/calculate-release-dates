@@ -17,6 +17,7 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import EntryPointService from '../services/entryPointService'
+import ErrorMessage from '../types/ErrorMessage'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -240,6 +241,35 @@ describe('Calculation routes tests related to check-information', () => {
         expect(res.text).toContain('consecutive to')
         expect(res.text).toContain('court case 1 count 1')
         expect(res.text).toContain('href="/?prisonId=A1234AA"')
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.validateNomisInformation.mockReturnValue([
+      { text: 'An error occurred with the nomis information' },
+    ])
+    return request(app)
+      .get('/calculation/A1234AA/check-information?hasErrors=true')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('An error occurred with the nomis information')
+        expect(res.text).toContain('You need to return to NOMIS to correct this')
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.validateNomisInformation.mockReturnValue([])
+    return request(app)
+      .get('/calculation/A1234AA/check-information?hasErrors=true')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).not.toContain('You need to return to NOMIS to correct this')
       })
   })
 })

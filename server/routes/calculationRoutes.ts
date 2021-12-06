@@ -5,7 +5,7 @@ import logger from '../../logger'
 import { groupBy, indexBy } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import EntryPointService from '../services/entryPointService'
-import { serverErrorToGovUkError, validationError } from '../utils/errorUtils'
+import { validationError } from '../utils/errorUtils'
 
 export default class CalculationRoutes {
   constructor(
@@ -29,52 +29,42 @@ export default class CalculationRoutes {
       token
     )
 
-    try {
-      res.render('pages/calculation/checkInformation', {
-        prisonerDetail,
+    res.render('pages/calculation/checkInformation', {
+      prisonerDetail,
+      sentencesAndOffences,
+      adjustmentDetails,
+      caseToSentences: groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence),
+      sentenceSequenceToSentence: indexBy(
         sentencesAndOffences,
-        adjustmentDetails,
-        caseToSentences: groupBy(
-          sentencesAndOffences,
-          (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence
-        ),
-        sentenceSequenceToSentence: indexBy(
-          sentencesAndOffences,
-          (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
-        ),
-        dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
-      })
-    } catch (ex) {
-      logger.error(ex)
-      const validationErrors = serverErrorToGovUkError(ex.data, '#bookingData')
-
-      res.render('pages/calculation/checkInformation', {
-        prisonerDetail,
-        validationErrors,
-        sentencesAndOffences,
-        adjustmentDetails,
-        dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
-      })
-    }
+        (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
+      ),
+      dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
+      validationErrors:
+        req.query.hasErrors && this.calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences),
+    })
   }
 
   public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { username, token } = res.locals.user
+    const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    try {
-      const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
-        username,
-        nomsId,
-        token
-      )
-      res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
-    } catch (ex) {
-      // TODO Move handling of validation errors from the api into the service layer
-      logger.error(ex)
 
-      req.flash('validationErrors', JSON.stringify(serverErrorToGovUkError(ex.data, '#sentences')))
-      res.redirect(`/calculation/${nomsId}/check-information`)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
+      username,
+      prisonerDetail.bookingId,
+      token
+    )
+    const errors = this.calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences)
+    if (errors.length > 0) {
+      return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
     }
+
+    const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
+      username,
+      nomsId,
+      token
+    )
+    return res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
   }
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
