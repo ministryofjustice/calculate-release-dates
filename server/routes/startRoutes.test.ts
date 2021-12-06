@@ -46,4 +46,37 @@ describe('Start routes tests', () => {
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
       })
   })
+  it('GET /supported-sentences should return the supported sentence page', () => {
+    entryPointService.isDpsEntryPoint.mockReturnValue(false)
+    return request(app)
+      .get('/supported-sentences')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Supported sentences')
+        expect(res.text).toContain('The sentences currently supported by the Calculates release dates service are:')
+        expect(res.text).toContain('href="/"')
+      })
+      .expect(() => {
+        expect(entryPointService.isDpsEntryPoint.mock.calls.length).toBe(1)
+        expect(entryPointService.getDpsPrisonerId.mock.calls.length).toBe(0)
+      })
+  })
+  it('GET /supported-sentences should return the supported sentence page from DPS', () => {
+    entryPointService.isDpsEntryPoint.mockReturnValue(true)
+    entryPointService.getDpsPrisonerId.mockReturnValue('ASD123')
+    return request(app)
+      .get('/supported-sentences')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Supported sentences')
+        expect(res.text).toContain('The sentences currently supported by the Calculates release dates service are:')
+        expect(res.text).toContain('href="/?prisonId=ASD123"')
+      })
+      .expect(() => {
+        expect(entryPointService.isDpsEntryPoint.mock.calls.length).toBe(1)
+        expect(entryPointService.getDpsPrisonerId.mock.calls.length).toBe(1)
+      })
+  })
 })
