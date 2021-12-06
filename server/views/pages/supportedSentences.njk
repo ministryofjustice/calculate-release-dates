@@ -1,0 +1,43 @@
+{% extends "../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% set pageTitle = applicationName + " - Supported sentences" %}
+{% set pageId = "supported-sentences" %}
+
+{% block beforeContent %}
+    {{super()}}
+    <nav>
+        {% if prisonId %}
+            {% set backlink = "/?prisonId=" + prisonId %}
+        {% else %}
+            {% set backlink = "/" %}
+        {% endif %}
+        {{ govukBackLink({
+        text: "Back",
+        href: backlink
+    }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl" data-qa="main-heading">
+                Supported sentences
+            </h1>
+            <p class="govuk-body">The sentences currently supported by the Calculates release dates service are:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Sentencing Code Standard Determinate Sentence</li>
+                <li>CJA03 Standard Determinate Sentence</li>
+                <li>ORA Sentencing Code Standard Determinate Sentence</li>
+                <li>ORA CJA03 Standard Determinate Sentence</li>
+                <li>Serious Offence Sec 250 Sentencing Code (U18)</li>
+                <li>ORA Serious Offence Sec 250 Sentencing Code (U18)</li>
+                <li>Serious Offence -18 CJA03 POCCA 2000</li>
+                <li>ORA Serious Offence -18 CJA03 POCCA 2000</li>
+                <li>Young Offender Institution</li>
+                <li>ORA Young Offender Institution</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

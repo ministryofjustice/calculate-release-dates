@@ -29,7 +29,10 @@ export default function Index({
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
   const startRoutes = new StartRoutes(entryPointService)
 
-  const indexRoutes = () => get('/', startRoutes.startPage)
+  const indexRoutes = () => {
+    get('/', startRoutes.startPage)
+    get('/supported-sentences', startRoutes.supportedSentences)
+  }
 
   const calculationRoutes = () => {
     get('/calculation/:nomsId/check-information', calculationAccessRoutes.checkInformation)
