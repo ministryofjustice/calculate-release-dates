@@ -1,4 +1,3 @@
-import s from 'connect-redis'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import HmppsAuthClient from '../api/hmppsAuthClient'
 import {
