@@ -184,7 +184,6 @@ describe('Calculate release dates service tests', () => {
     it('Test for missing offence dates', async () => {
       const result = calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences)
 
-      console.log(result)
       expect(result).toEqual([
         { text: 'The calculation must include an offence date for court case 1 count 1' },
         { text: 'The offence date for court case 1 count 2 must be before the sentence date.' },
