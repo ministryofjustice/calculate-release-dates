@@ -51,6 +51,7 @@ const sentencesAndOffences = [
   {
     caseSequence: 2,
     lineSequence: 3,
+    sentenceDate: '2020-02-05',
     offences: [
       { offenceEndDate: '2021-02-03' },
       { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
@@ -62,17 +63,23 @@ const sentencesAndOffences = [
   {
     caseSequence: 1,
     lineSequence: 1,
+    sentenceDate: '2021-02-05',
+    days: 1,
     offences: [{ offenceCode: 'GBH' }],
   } as PrisonApiOffenderSentenceAndOffences,
   {
     caseSequence: 2,
     lineSequence: 2,
-    offences: [{ offenceEndDate: '2021-02-03' }],
+    sentenceDate: '2021-02-05',
+    days: 1,
+    offences: [{ offenceStartDate: '2021-04-03', offenceEndDate: '2021-04-03' }],
   } as PrisonApiOffenderSentenceAndOffences,
   {
     caseSequence: 1,
     lineSequence: 2,
-    offences: [{ offenceCode: 'GBH' }],
+    sentenceDate: '2021-02-05',
+    days: 1,
+    offences: [{ offenceCode: 'GBH', offenceStartDate: '2021-04-03' }],
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
@@ -177,10 +184,16 @@ describe('Calculate release dates service tests', () => {
     it('Test for missing offence dates', async () => {
       const result = calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences)
 
+      console.log(result)
       expect(result).toEqual([
         { text: 'The calculation must include an offence date for court case 1 count 1' },
-        { text: 'The calculation must include an offence date for court case 1 count 2' },
+        { text: 'The offence date for court case 1 count 2 must be before the sentence date.' },
+        { text: 'The offence date for court case 2 count 2 must be before the sentence date.' },
+        { text: 'The offence date range for court case 2 count 2 must be before the sentence date.' },
         { text: 'The calculation must include an offence date for court case 2 count 3' },
+        { text: 'The offence date for court case 2 count 3 must be before the sentence date.' },
+        { text: 'The offence date range for court case 2 count 3 must be before the sentence date.' },
+        { text: 'You must enter a length of time for the term of imprisonment for 2 count 3.' },
       ])
     })
   })
