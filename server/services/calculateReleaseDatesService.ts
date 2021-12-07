@@ -105,7 +105,7 @@ export default class CalculateReleaseDatesService {
   sortByCaseNumberAndLineSequence = (
     a: PrisonApiOffenderSentenceAndOffences,
     b: PrisonApiOffenderSentenceAndOffences
-  ) => {
+  ): number => {
     if (a.caseSequence > b.caseSequence) return 1
     if (a.caseSequence < b.caseSequence) return -1
     return a.lineSequence - b.lineSequence
