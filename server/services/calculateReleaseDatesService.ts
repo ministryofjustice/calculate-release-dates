@@ -102,28 +102,106 @@ export default class CalculateReleaseDatesService {
     return adjustments
   }
 
-  sortByCaseNumberAndLineSequence = (
-    a: PrisonApiOffenderSentenceAndOffences,
-    b: PrisonApiOffenderSentenceAndOffences
-  ): number => {
-    if (a.caseSequence > b.caseSequence) return 1
-    if (a.caseSequence < b.caseSequence) return -1
-    return a.lineSequence - b.lineSequence
+  sortByCaseNumberAndLineSequence = (a: SentenceError, b: SentenceError): number => {
+    if (a.sentence.caseSequence > b.sentence.caseSequence) return 1
+    if (a.sentence.caseSequence < b.sentence.caseSequence) return -1
+    return a.sentence.lineSequence - b.sentence.lineSequence
   }
 
   validateNomisInformation(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): ErrorMessage[] {
-    return this.checkForMissingOffenceDates(sentencesAndOffences)
+    return this.valdiateOffences(sentencesAndOffences)
+      .sort(this.sortByCaseNumberAndLineSequence)
+      .map(e => e.error)
   }
 
-  private checkForMissingOffenceDates(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): ErrorMessage[] {
-    const sentencesWithoutOffenceDates = sentencesAndOffences.filter(s =>
-      s.offences.some(o => !o.offenceEndDate && !o.offenceStartDate)
-    )
-
-    return sentencesWithoutOffenceDates.sort(this.sortByCaseNumberAndLineSequence).map(s => {
-      return {
-        text: `The calculation must include an offence date for court case ${s.caseSequence} count ${s.lineSequence}`,
-      }
+  private valdiateOffences(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): SentenceError[] {
+    let errors: SentenceError[] = []
+    sentencesAndOffences.forEach(sentencesAndOffence => {
+      errors = [
+        ...errors,
+        ...this.validateWithoutOffenceDate(sentencesAndOffence),
+        ...this.validateOffenceDateAfterSentenceDate(sentencesAndOffence),
+        ...this.validateOffenceRangeDateAfterSentenceDate(sentencesAndOffence),
+        ...this.validateDurationNotZero(sentencesAndOffence),
+      ]
     })
+    return errors
   }
+
+  private validateOffenceDateAfterSentenceDate(
+    sentencesAndOffence: PrisonApiOffenderSentenceAndOffences
+  ): SentenceError[] {
+    const invalid = sentencesAndOffence.offences.some(
+      o => o.offenceStartDate && o.offenceStartDate > sentencesAndOffence.sentenceDate
+    )
+    if (invalid) {
+      return [
+        {
+          sentence: sentencesAndOffence,
+          error: {
+            text: `The offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must be before the sentence date.`,
+          },
+        },
+      ]
+    }
+    return []
+  }
+
+  private validateOffenceRangeDateAfterSentenceDate(
+    sentencesAndOffence: PrisonApiOffenderSentenceAndOffences
+  ): SentenceError[] {
+    const invalid = sentencesAndOffence.offences.some(
+      o => o.offenceEndDate && o.offenceEndDate > sentencesAndOffence.sentenceDate
+    )
+    if (invalid) {
+      return [
+        {
+          sentence: sentencesAndOffence,
+          error: {
+            text: `The offence date range for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must be before the sentence date.`,
+          },
+        },
+      ]
+    }
+    return []
+  }
+
+  private validateDurationNotZero(sentencesAndOffence: PrisonApiOffenderSentenceAndOffences): SentenceError[] {
+    const invalid =
+      !sentencesAndOffence.days &&
+      !sentencesAndOffence.weeks &&
+      !sentencesAndOffence.months &&
+      !sentencesAndOffence.years
+    if (invalid) {
+      return [
+        {
+          sentence: sentencesAndOffence,
+          error: {
+            text: `You must enter a length of time for the term of imprisonment for ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}.`,
+          },
+        },
+      ]
+    }
+    return []
+  }
+
+  private validateWithoutOffenceDate(sentencesAndOffence: PrisonApiOffenderSentenceAndOffences): SentenceError[] {
+    const invalid = sentencesAndOffence.offences.some(o => !o.offenceEndDate && !o.offenceStartDate)
+    if (invalid) {
+      return [
+        {
+          sentence: sentencesAndOffence,
+          error: {
+            text: `The calculation must include an offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}`,
+          },
+        },
+      ]
+    }
+    return []
+  }
+}
+
+type SentenceError = {
+  sentence: PrisonApiOffenderSentenceAndOffences
+  error: ErrorMessage
 }
