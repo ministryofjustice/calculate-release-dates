@@ -1,0 +1,19 @@
+{% if validationErrors and validationErrors.length > 0 %}
+    <div class="govuk-error-summary check-information-errors" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                {% for error in validationErrors %}
+                    <li>
+                        <p class="govuk-body govuk-!-font-weight-bold">{{ error.text }}</p>
+                    </li>
+                {% endfor %}
+                <li>
+                    <p class="govuk-body govuk-!-margin-bottom-0">You need to return to NOMIS to correct this, <a href="">then reload this page</a>.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endif %}

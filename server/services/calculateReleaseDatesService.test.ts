@@ -7,6 +7,7 @@ import {
   CalculationBreakdown,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 
 jest.mock('../api/hmppsAuthClient')
 
@@ -45,9 +46,39 @@ const calculationBreakdown: CalculationBreakdown = {
     },
   ],
 }
+
+const sentencesAndOffences = [
+  {
+    caseSequence: 2,
+    lineSequence: 3,
+    offences: [
+      { offenceEndDate: '2021-02-03' },
+      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+      { offenceStartDate: '2021-03-06' },
+      {},
+      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
+    ],
+  } as PrisonApiOffenderSentenceAndOffences,
+  {
+    caseSequence: 1,
+    lineSequence: 1,
+    offences: [{ offenceCode: 'GBH' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+  {
+    caseSequence: 2,
+    lineSequence: 2,
+    offences: [{ offenceEndDate: '2021-02-03' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+  {
+    caseSequence: 1,
+    lineSequence: 2,
+    offences: [{ offenceCode: 'GBH' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+]
+
 const token = 'token'
 
-describe('User service', () => {
+describe('Calculate release dates service tests', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
   let calculateReleaseDatesService: CalculateReleaseDatesService
   let fakeApi: nock.Scope
@@ -139,6 +170,18 @@ describe('User service', () => {
         adjustedByDays: 18,
         daysFromSentenceStart: 100,
       },
+    })
+  })
+
+  describe('Validation tests', () => {
+    it('Test for missing offence dates', async () => {
+      const result = calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences)
+
+      expect(result).toEqual([
+        { text: 'The calculation must include an offence date for court case 1 count 1' },
+        { text: 'The calculation must include an offence date for court case 1 count 2' },
+        { text: 'The calculation must include an offence date for court case 2 count 3' },
+      ])
     })
   })
 })
