@@ -255,7 +255,7 @@ describe('Calculation routes tests related to check-information', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('An error occurred with the nomis information')
-        expect(res.text).toContain('You need to return to NOMIS to correct this')
+        expect(res.text).toContain('Update these details in NOMIS and then')
       })
   })
 
@@ -268,7 +268,7 @@ describe('Calculation routes tests related to check-information', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).not.toContain('You need to return to NOMIS to correct this')
+        expect(res.text).not.toContain('Update these details in NOMIS and then')
       })
   })
 
