@@ -6,9 +6,9 @@ const errorCodeDefintions: Map<number, (e: ErrorResponse) => string> = new Map<n
     1,
     (e: ErrorResponse) => {
       return `
-                One or more of the sentence types in this calculation is not currently supported in this service:<br/><br/>
+                <br/><br/>
                 ${e.arguments.join('<br/>')}<br/><br/>
-                If these sentences are correct, you will need to complete this calculation manually in NOMIS.
+                
                 `.trim()
     },
   ],

@@ -18,6 +18,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import EntryPointService from '../services/entryPointService'
 import { FullPageError } from '../types/FullPageError'
+import { ErrorMessageType } from '../types/ErrorMessages'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -247,9 +248,10 @@ describe('Calculation routes tests related to check-information', () => {
   it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.validateNomisInformation.mockReturnValue([
-      { text: 'An error occurred with the nomis information' },
-    ])
+    calculateReleaseDatesService.validateNomisInformation.mockReturnValue({
+      messages: [{ text: 'An error occurred with the nomis information' }],
+      messageType: ErrorMessageType.VALIDATION,
+    })
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
       .expect(200)
@@ -263,7 +265,7 @@ describe('Calculation routes tests related to check-information', () => {
   it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.validateNomisInformation.mockReturnValue([])
+    calculateReleaseDatesService.validateNomisInformation.mockReturnValue({ messages: [] })
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
       .expect(200)
@@ -276,9 +278,10 @@ describe('Calculation routes tests related to check-information', () => {
   it('POST /calculation/:nomsId/check-information should redirect if validation fails', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.validateNomisInformation.mockReturnValue([
-      { text: 'An error occurred with the nomis information' },
-    ])
+    calculateReleaseDatesService.validateNomisInformation.mockReturnValue({
+      messages: [{ text: 'An error occurred with the nomis information' }],
+      messageType: ErrorMessageType.VALIDATION,
+    })
 
     return request(app)
       .post('/calculation/A1234AA/check-information')

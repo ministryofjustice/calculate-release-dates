@@ -55,7 +55,7 @@ export default class CalculationRoutes {
       token
     )
     const errors = this.calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences)
-    if (errors.length > 0) {
+    if (errors.messages.length > 0) {
       return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
     }
 
