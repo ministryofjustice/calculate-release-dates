@@ -17,6 +17,7 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import EntryPointService from '../services/entryPointService'
+import { FullPageError } from '../types/FullPageError'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -284,6 +285,20 @@ describe('Calculation routes tests related to check-information', () => {
       .expect(302)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should display error page for case load errors.', () => {
+    prisonerService.getPrisonerDetail.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(404)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('There is a problem')
+        expect(res.text).toContain('The details for this person cannot be found.')
       })
   })
 })
