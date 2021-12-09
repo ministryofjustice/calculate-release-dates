@@ -7,6 +7,7 @@ import {
   PrisonApiSentenceDetail,
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
+import { FullPageErrorType } from '../types/FullPageError'
 
 jest.mock('../api/hmppsAuthClient')
 
@@ -80,10 +81,8 @@ describe('Prisoner service related tests', () => {
       try {
         await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'], token)
       } catch (error) {
-        expect(error.status).toEqual(404)
-        expect(error.message).toEqual(
-          'The prisoner details have not been found because the prisoner is not in your caseload'
-        )
+        expect(error.errorKey).toBe(FullPageErrorType.NOT_IN_CASELOAD)
+        expect(error.status).toBe(404)
       }
     })
   })
