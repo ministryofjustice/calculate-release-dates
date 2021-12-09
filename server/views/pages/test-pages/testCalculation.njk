@@ -9,23 +9,24 @@
 {% block content %}
     {% include "../partials/formError.njk" %}
     <div class="test-content">
-        <form method="get">
-            {{ govukTextarea({
-                name: "bookingData",
-                id: "bookingData",
-                value: bookingData,
-                rows: 20,
-                label: {
-                    text: "Enter the booking data for the calculation in JSON format",
-                    classes: "govuk-label--m"
-                }
-            }) }}
+        <form method="post">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+            <div class="govuk-!-width-one-quarter">
+                {{ govukTextarea({
+                    name: "prisonerIds",
+                    id: "prisonerIds",
+                    value: prisonerIds,
+                    rows: 25,
+                    attributes: { 'maxlength': 1000 }
+                }) }}
+            </div>
             <div class="govuk-grid-row  govuk-!-margin-bottom-0 govuk-!-padding-bottom-0">
                 <div class="govuk-grid-column-three-quarters ">
                     {{ govukButton({
                         text: "Calculate",
                         preventDoubleClick: true,
-                        attributes: {  'data-qa': 'continue-reg-lookup' }
+                        type: submit,
+                        attributes: {  'data-qa': 'calculate-button' }
                     }) }}
                 </div>
             </div>

@@ -15,4 +15,11 @@ export default class PrisonerSearchApiClient {
       data: prisonerSearchCriteria,
     }) as Promise<Prisoner[]>
   }
+
+  searchPrisonerNumbers(prisonerNumbers: string[]): Promise<Prisoner[]> {
+    return this.restClient.post({
+      path: '/prisoner-search/prisoner-numbers',
+      data: { prisonerNumbers },
+    }) as Promise<Prisoner[]>
+  }
 }
