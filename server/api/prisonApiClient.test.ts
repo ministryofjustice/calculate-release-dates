@@ -3,6 +3,7 @@ import config from '../config'
 import PrisonerService from '../services/prisonerService'
 import HmppsAuthClient from './hmppsAuthClient'
 import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import { FullPageErrorType } from '../types/FullPageError'
 
 jest.mock('./hmppsAuthClient')
 
@@ -64,7 +65,8 @@ describe('Prison API client tests', () => {
       try {
         await prisonerService.getPrisonerDetail('XTEST1', 'AA1234A', caseloads, token)
       } catch (e) {
-        expect(e.message).toContain('Not Found')
+        expect(e.errorKey).toBe(FullPageErrorType.NOT_IN_CASELOAD)
+        expect(e.status).toBe(404)
       }
       expect(nock.isDone()).toBe(true)
     })

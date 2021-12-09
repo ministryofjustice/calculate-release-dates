@@ -10,6 +10,7 @@ import {
 } from '../@types/prisonApi/prisonClientTypes'
 import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
 import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
+import { FullPageError } from '../types/FullPageError'
 
 export default class PrisonerService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
@@ -25,15 +26,19 @@ export default class PrisonerService {
     userCaseloads: string[],
     token: string
   ): Promise<PrisonApiPrisoner> {
-    const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
-    if (!userCaseloads.includes(prisonerDetail.agencyId)) {
-      const error = {
-        status: 404,
-        message: 'The prisoner details have not been found because the prisoner is not in your caseload',
+    try {
+      const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
+      if (!userCaseloads.includes(prisonerDetail.agencyId)) {
+        throw FullPageError.notInCaseLoadError()
       }
-      throw error
+      return prisonerDetail
+    } catch (error) {
+      if (error?.status === 404) {
+        throw FullPageError.notInCaseLoadError()
+      } else {
+        throw error
+      }
     }
-    return prisonerDetail
   }
 
   async searchPrisoners(username: string, prisonerSearchCriteria: PrisonerSearchCriteria): Promise<Prisoner[]> {

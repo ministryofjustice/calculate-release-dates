@@ -5,9 +5,38 @@
 {% block content %}
 
   <main class="app-container">
-    <h1>{{ message }}</h1>
-    <h2>{{ status }}</h2>
-    <pre>{{ stack }}</pre>
+    {% if errorKey %}
+
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                There is a problem
+            </h1>
+
+          {% if errorKey === 'NOT_IN_CASELOAD' %}
+            <p class="govuk-body">The details for this person cannot be found.</p>
+            <p class="govuk-body"> This could be because this person:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>is not in your caseload</li>
+              <li>has no bookings assigned to them</li>
+              <li>has no active bookings</li>
+              <li>offence dates</li>
+              <li>sentences</li>
+              <li>adjustments </li>
+            </ul>
+
+          {% endif %}
+
+          <p class="govuk-body govuk-!-margin-top-6">            
+            Check the details in NOMIS and then <a href="/">try again</a>.
+          </p>
+        </div>
+      </div>
+    {% else %}
+      <h1>{{ message }}</h1>
+      <h2>{{ status }}</h2>
+      <pre>{{ stack }}</pre>
+    {% endif %}
   </main>
 
 {% endblock %}

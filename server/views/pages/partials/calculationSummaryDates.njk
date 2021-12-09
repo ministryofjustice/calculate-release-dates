@@ -24,7 +24,12 @@
         {% endif %}
         {% if releaseDates.ARD %}
             <h3 class="govuk-heading-s">Automatic release date (ARD)</h3>
-            <p class="govuk-body">{{ releaseDates.ARD | date('dddd, DD MMMM YYYY') }}</p>
+            {% if weekendAdjustments.ARD %}
+                <p class="govuk-body" data-qa="ARD-date">{{ weekendAdjustments.ARD.date | date('dddd, DD MMMM YYYY') }}</p>
+                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="ARD-weekend-adjustment">{{ releaseDates.ARD | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.ARD.adjustedForBankHoliday else "weekend" }}</p>
+            {% else %}
+                <p class="govuk-body" data-qa="ARD-date">{{ releaseDates.ARD | date('dddd, DD MMMM YYYY') }}</p>
+            {% endif %}
         {% endif %}
         {% if releaseDates.CRD %}
             <h3 class="govuk-heading-s">Conditional release date (CRD)</h3>
