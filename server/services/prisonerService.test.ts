@@ -3,6 +3,7 @@ import HmppsAuthClient from '../api/hmppsAuthClient'
 import config from '../config'
 import PrisonerService from './prisonerService'
 import {
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
   PrisonApiUserCaseloads,
@@ -42,6 +43,32 @@ const prisonerDetails = {
   } as PrisonApiSentenceDetail,
 } as PrisonApiPrisoner
 
+const stubbedSentencesAndOffences = [
+  {
+    years: 3,
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    sentenceSequence: 1,
+    offences: [
+      { offenceEndDate: '2021-02-03' },
+      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+      { offenceStartDate: '2021-03-06' },
+      {},
+      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
+    ],
+  } as PrisonApiOffenderSentenceAndOffences,
+  {
+    years: 2,
+    caseSequence: 2,
+    lineSequence: 2,
+    sentenceSequence: 2,
+    consecutiveToSequence: 1,
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    offences: [{ offenceEndDate: '2021-02-03' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+]
+
 const token = 'token'
 
 describe('Prisoner service related tests', () => {
@@ -66,24 +93,45 @@ describe('Prisoner service related tests', () => {
 
       expect(result).toEqual([caseload])
     })
+    describe('getPrisonerDetail', () => {
+      it('Test getting prisoner details', async () => {
+        fakeApi.get(`/api/offenders/A1234AB`).reply(200, prisonerDetails)
 
-    it('Test getting prisoner details', async () => {
-      fakeApi.get(`/api/offenders/A1234AB`).reply(200, prisonerDetails)
+        const result = await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'], token)
 
-      const result = await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'], token)
+        expect(result).toEqual(prisonerDetails)
+      })
 
-      expect(result).toEqual(prisonerDetails)
+      it('Test getting prisoner details when caseload is different', async () => {
+        fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'LEX' })
+
+        try {
+          await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'], token)
+        } catch (error) {
+          expect(error.errorKey).toBe(FullPageErrorType.NOT_IN_CASELOAD)
+          expect(error.status).toBe(404)
+        }
+      })
     })
 
-    it('Test getting prisoner details when caseload is different', async () => {
-      fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'LEX' })
-
-      try {
-        await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'], token)
-      } catch (error) {
-        expect(error.errorKey).toBe(FullPageErrorType.NOT_IN_CASELOAD)
-        expect(error.status).toBe(404)
-      }
+    describe('getSentencesAndOffences', () => {
+      it('Test getting sentences and offences details', async () => {
+        fakeApi
+          .get(`/api/offender-sentences/booking/123/sentences-and-offences`)
+          .reply(200, stubbedSentencesAndOffences)
+        const result = await prisonerService.getSentencesAndOffences('user', 123, token)
+        expect(result).toStrictEqual(stubbedSentencesAndOffences)
+      })
+      it('Test getting sentences and offences with no offences', async () => {
+        fakeApi.get(`/api/offender-sentences/booking/123/sentences-and-offences`).reply(200, [])
+        try {
+          const result = await prisonerService.getSentencesAndOffences('user', 123, token)
+          expect(result).toStrictEqual(stubbedSentencesAndOffences)
+        } catch (error) {
+          expect(error.errorKey).toBe(FullPageErrorType.NO_SENTENCES)
+          expect(error.status).toBe(400)
+        }
+      })
     })
   })
 })
