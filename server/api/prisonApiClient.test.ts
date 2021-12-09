@@ -3,7 +3,7 @@ import config from '../config'
 import PrisonerService from '../services/prisonerService'
 import HmppsAuthClient from './hmppsAuthClient'
 import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
-import { FullPageError, FullPageErrorType } from '../types/FullPageError'
+import { FullPageErrorType } from '../types/FullPageError'
 
 jest.mock('./hmppsAuthClient')
 
