@@ -93,6 +93,12 @@ export default class CalculateReleaseDatesService {
         adjustments.CRD = adjustment
       }
     }
+    if (calculation.dates.ARD) {
+      const adjustment = await client.getPreviousWorkingDay(calculation.dates.ARD)
+      if (adjustment.date !== calculation.dates.ARD) {
+        adjustments.ARD = adjustment
+      }
+    }
     if (calculation.dates.HDCED) {
       const adjustment = await client.getNextWorkingDay(calculation.dates.HDCED)
       if (adjustment.date !== calculation.dates.HDCED) {
