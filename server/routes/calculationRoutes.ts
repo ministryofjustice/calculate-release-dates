@@ -6,6 +6,7 @@ import { groupBy, indexBy } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import EntryPointService from '../services/entryPointService'
 import { validationError } from '../utils/errorUtils'
+import { FullPageError } from '../types/FullPageError'
 
 export default class CalculationRoutes {
   constructor(

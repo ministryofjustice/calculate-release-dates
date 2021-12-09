@@ -301,4 +301,18 @@ describe('Calculation routes tests related to check-information', () => {
         expect(res.text).toContain('The details for this person cannot be found.')
       })
   })
+  it('GET /calculation/:nomsId/check-information should display error page for no sentences.', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockImplementation(() => {
+      throw FullPageError.noSentences()
+    })
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(400)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('There is a problem')
+        expect(res.text).toContain('The calculation must include at least one sentence.')
+      })
+  })
 })
