@@ -16,7 +16,8 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
-    "typeRoots": ["./server/@types", "./node_modules/@types"]
+    "typeRoots": ["./server/@types", "./node_modules/@types"],
+    "lib": ["ES2020.Promise"]
   },
   "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist"],
   "include": ["**/*.js", "**/*.ts"]

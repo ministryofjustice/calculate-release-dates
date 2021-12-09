@@ -48,7 +48,8 @@ export default function Index({
   }
 
   const otherRoutes = () => {
-    get('/test/calculation', otherAccessRoutes.testCalculation) // TODO remove this route as it was only for POC testing
+    get('/test/calculation', otherAccessRoutes.testCalculation) // TODO remove this route as it was only for testing
+    post('/test/calculation', otherAccessRoutes.submitTestCalculation) // TODO remove this route as it was only for testing
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
   }
 
