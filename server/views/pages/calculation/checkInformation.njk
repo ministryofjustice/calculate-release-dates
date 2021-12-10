@@ -30,8 +30,8 @@
     {% include "../partials/checkInformationErrors.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
-            <h1 class="govuk-heading-xl" id="check-nomis-heading">Check NOMIS information
-                about {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
+            <h1 class="govuk-heading-xl" id="check-nomis-heading">Check sentence and offence information
+             for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -78,8 +78,9 @@
                         </summary>
                         <div class="govuk-details__text">
                             You can edit this information in NOMIS and <a href="">reload this page</a>.
-                            If you think the service isn’t working properly, <a href="#">contact the Calculate release
-                                dates team.</a>
+                            If you think the service isn’t working properly, email
+                             <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Check sentence and offence information">calculatereleasedates@digital.justice.gov.uk</a>
+                              for support.
                         </div>
                     </details>
                 </div>
