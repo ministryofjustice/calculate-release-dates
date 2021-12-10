@@ -58,6 +58,7 @@ export default {
         jsonBody: [
           {
             years: 3,
+            sentenceCalculationType: 'ADIMP',
             sentenceTypeDescription: 'SDS Standard Sentence',
             caseSequence: 1,
             lineSequence: 1,
@@ -66,6 +67,7 @@ export default {
           },
           {
             years: 2,
+            sentenceCalculationType: 'ADIMP',
             caseSequence: 2,
             lineSequence: 2,
             sentenceSequence: 2,

@@ -8,11 +8,23 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import ErrorMessage from '../types/ErrorMessage'
+import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
   private readonly dateTypesForBreakdown: ReadonlyArray<string> = ['SLED', 'SED', 'CRD', 'ARD', 'PED']
+
+  private readonly supportedSentences: ReadonlyArray<string> = [
+    'ADIMP',
+    'ADIMP_ORA',
+    'YOI',
+    'YOI_ORA',
+    'SEC91_03',
+    'SEC91_03_ORA',
+    'SEC250',
+    'SEC250_ORA',
+  ]
 
   // TODO test method - will be removed
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
@@ -114,10 +126,36 @@ export default class CalculateReleaseDatesService {
     return a.sentence.lineSequence - b.sentence.lineSequence
   }
 
-  validateNomisInformation(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): ErrorMessage[] {
-    return this.valdiateOffences(sentencesAndOffences)
+  validateNomisInformation(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): ErrorMessages {
+    const unsupportedErrors = this.validateSupportedSentences(sentencesAndOffences)
+    if (unsupportedErrors.messages.length) {
+      return unsupportedErrors
+    }
+    return {
+      messages: this.valdiateOffences(sentencesAndOffences)
+        .sort(this.sortByCaseNumberAndLineSequence)
+        .map(e => e.error),
+      messageType: ErrorMessageType.VALIDATION,
+    }
+  }
+
+  private validateSupportedSentences(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): ErrorMessages {
+    const sentenceErrors: SentenceError[] = sentencesAndOffences
+      .filter(s => !this.supportedSentences.includes(s.sentenceCalculationType))
+      .map(s => {
+        return {
+          sentence: s,
+          error: {
+            text: s.sentenceTypeDescription,
+          },
+        }
+      })
       .sort(this.sortByCaseNumberAndLineSequence)
-      .map(e => e.error)
+
+    return {
+      messages: sentenceErrors.map(e => e.error),
+      messageType: ErrorMessageType.UNSUPPORTED,
+    }
   }
 
   private valdiateOffences(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): SentenceError[] {
