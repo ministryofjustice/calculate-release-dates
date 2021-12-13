@@ -1,9 +1,7 @@
 export class FullPageError extends Error {
   errorKey: FullPageErrorType
 
-  status: number;
-
-  [key: string]: any
+  status: number
 
   static notInCaseLoadError(): FullPageError {
     const error = new FullPageError('Prisoner is in caseload')
