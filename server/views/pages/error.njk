@@ -5,14 +5,18 @@
 {% block content %}
 
   <main class="app-container">
-    {% if errorKey %}
 
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                There is a problem
-            </h1>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+          {% if status === 404 and not errorKey %}
+            Page not found
+          {% else %}
+            There is a problem
+          {% endif %}
+        </h1>
 
+        {% if errorKey %}
           {% if errorKey === 'NOT_IN_CASELOAD' %}
             <p class="govuk-body">The details for this person cannot be found.</p>
             <p class="govuk-body"> This could be because this person:</p>
@@ -32,11 +36,21 @@
           <p class="govuk-body govuk-!-margin-top-6">            
             Check the details in NOMIS and then <a href="/">try again</a>.
           </p>
-        </div>
+        {% elif status === 404 %}
+          <p class="govuk-body">If you typed the web address, check it is correct.</p>
+
+          <p class="govuk-body">If you pasted the web address, check you copied it correctly.</p>
+
+          <p class="govuk-body">Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>
+              if you need support.</p>
+        {% else %}
+          <h1>{{ message }}</h1>
+          <h2>{{ status }}</h2>
+        {% endif %}
+
       </div>
-    {% else %}
-      <h1>{{ message }}</h1>
-      <h2>{{ status }}</h2>
+    </div>
+    {% if stack %}
       <pre>{{ stack }}</pre>
     {% endif %}
   </main>
