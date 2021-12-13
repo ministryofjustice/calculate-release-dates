@@ -221,7 +221,7 @@ export default class CalculateReleaseDatesService {
         {
           sentence: sentencesAndOffence,
           error: {
-            text: `You must enter a length of time for the term of imprisonment for ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}.`,
+            text: `You must enter a length of time for the term of imprisonment for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}.`,
           },
         },
       ]

@@ -197,7 +197,7 @@ describe('Calculate release dates service tests', () => {
         { text: 'The calculation must include an offence date for court case 2 count 3' },
         { text: 'The offence date for court case 2 count 3 must be before the sentence date.' },
         { text: 'The offence date range for court case 2 count 3 must be before the sentence date.' },
-        { text: 'You must enter a length of time for the term of imprisonment for 2 count 3.' },
+        { text: 'You must enter a length of time for the term of imprisonment for court case 2 count 3.' },
       ])
       expect(result.messageType).toBe(ErrorMessageType.VALIDATION)
     })
