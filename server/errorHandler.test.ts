@@ -24,8 +24,10 @@ describe('GET 404', () => {
       .expect(404)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('NotFoundError: Not found')
-        expect(res.text).not.toContain('Something went wrong. The error has been logged. Please try again')
+        expect(res.text).toContain('<pre>')
+        expect(res.text).toContain(
+          'Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>'
+        )
       })
   })
 
@@ -35,8 +37,10 @@ describe('GET 404', () => {
       .expect(404)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Something went wrong. The error has been logged. Please try again')
-        expect(res.text).not.toContain('NotFoundError: Not found')
+        expect(res.text).not.toContain('<pre>')
+        expect(res.text).toContain(
+          'Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>'
+        )
       })
   })
 })

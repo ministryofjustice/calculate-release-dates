@@ -1,20 +1,20 @@
-export class FullPageError {
+export class FullPageError extends Error {
   errorKey: FullPageErrorType
 
   status: number
 
   static notInCaseLoadError(): FullPageError {
-    return {
-      errorKey: FullPageErrorType.NOT_IN_CASELOAD,
-      status: 404,
-    }
+    const error = new FullPageError('Prisoner is in caseload')
+    error.errorKey = FullPageErrorType.NOT_IN_CASELOAD
+    error.status = 404
+    return error
   }
 
   static noSentences(): FullPageError {
-    return {
-      errorKey: FullPageErrorType.NO_SENTENCES,
-      status: 400,
-    }
+    const error = new FullPageError('Prisoner has no sentences')
+    error.errorKey = FullPageErrorType.NO_SENTENCES
+    error.status = 400
+    return error
   }
 }
 
