@@ -91,6 +91,9 @@ export default {
       },
       agent: new AgentConfig(),
     },
+    digitalPrisonServices: {
+      ui_url: get('DIGITAL_PRISON_SERVICES_URL', 'http://localhost:3000/dps', requiredInProduction),
+    },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
 }
