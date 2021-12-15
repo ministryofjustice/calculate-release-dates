@@ -6,6 +6,7 @@ import { groupBy, indexBy } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import EntryPointService from '../services/entryPointService'
 import { validationError } from '../utils/errorUtils'
+import config from '../config'
 
 export default class CalculationRoutes {
   constructor(
@@ -166,6 +167,10 @@ export default class CalculationRoutes {
     this.entryPointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    res.render('pages/calculation/calculationComplete', { prisonerDetail, calculationRequestId })
+    res.render('pages/calculation/calculationComplete', {
+      prisonerDetail,
+      calculationRequestId,
+      digitalPrisonServicesUrl: config.apis.digitalPrisonServices.ui_url,
+    })
   }
 }
