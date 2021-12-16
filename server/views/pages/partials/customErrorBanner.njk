@@ -12,7 +12,13 @@
                 {% endif %}
                 {% for error in validationErrors.messages %}
                     <li>
-                        <p class="govuk-body govuk-!-font-weight-bold">{{ error.text }}</p>
+                        <p class="govuk-body govuk-!-font-weight-bold">
+                            {% if error.href %}
+                                <a href="{{ error.href }}">{{ error.html | safe if error.html else error.text }}</a>
+                            {% else %}
+                                {{ error.html | safe if error.html else error.text }}
+                            {% endif %}
+                        </p>
                     </li>
                 {% endfor %}
 
@@ -23,6 +29,10 @@
                 {% elif validationErrors.messageType === 'VALIDATION' %}
                     <li>
                         <p class="govuk-body govuk-!-margin-bottom-0">Update these details in NOMIS and then <a href="">reload this page</a>.</p>
+                    </li>
+                {% elif validationErrors.messageType === 'SAVE_DATES' %}
+                    <li>
+                        <p class="govuk-body govuk-!-margin-bottom-0"> Review the calculation and try again.</p>
                     </li>
                 {% endif %}
             </ul>
