@@ -169,6 +169,8 @@ export default class OtherRoutes {
       NOMIS_DPRRD: nomisDates.dtoPostRecallReleaseDateOverride || nomisDates.postRecallReleaseDate,
       PRRD: 'error',
       NOMIS_PRRD: nomisDates.postRecallReleaseOverrideDate || nomisDates.postRecallReleaseDate,
+      ESED: 'error',
+      NOMIS_ESED: nomisDates.effectiveSentenceEndDate,
       ARE_DATES_SAME: 'error',
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
@@ -208,13 +210,14 @@ export default class OtherRoutes {
       NOMIS_DPRRD: 'non-crd error',
       PRRD: 'non-crd error',
       NOMIS_PRRD: 'non-crd error',
+      ESED: 'non-crd error',
+      NOMIS_ESED: 'non-crd error',
       ARE_DATES_SAME: 'non-crd error',
       SENTENCES: 'non-crd error',
       ADJUSTMENTS: 'non-crd error',
       error: `${ex.message}: ${JSON.stringify(ex)}`,
     }
   }
-
   /* eslint-enable */
 
   public testCalculation: RequestHandler = async (req, res): Promise<void> => {
