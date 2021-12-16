@@ -5,7 +5,6 @@ import logger from '../../logger'
 import { groupBy, indexBy } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import EntryPointService from '../services/entryPointService'
-import { validationError } from '../utils/errorUtils'
 import config from '../config'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 
