@@ -31,5 +31,7 @@ export default (on: (string, Record) => void): void => {
     stubGetCalculationBreakdown: calculateReleaseDatesApi.stubGetCalculationBreakdown,
     stubGetNextWorkingDay: calculateReleaseDatesApi.stubGetNextWorkingDay,
     stubGetPreviousWorkingDay: calculateReleaseDatesApi.stubGetPreviousWorkingDay,
+    stubConfirmCalculation_errorNomisDataChanged: calculateReleaseDatesApi.stubConfirmCalculation_errorNomisDataChanged,
+    stubConfirmCalculation_errorServerError: calculateReleaseDatesApi.stubConfirmCalculation_errorServerError,
   })
 }

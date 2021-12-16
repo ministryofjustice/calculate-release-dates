@@ -8,4 +8,5 @@ export interface ErrorMessages {
 export enum ErrorMessageType {
   VALIDATION = 'VALIDATION',
   UNSUPPORTED = 'UNSUPPORTED',
+  SAVE_DATES = 'SAVE_DATES',
 }
