@@ -11,6 +11,8 @@ context('Calculation summary', () => {
     cy.task('stubGetNextWorkingDay')
     cy.task('stubGetPreviousWorkingDay')
     cy.task('stubGetUserCaseloads')
+    cy.task('stubConfirmCalculation_errorNomisDataChanged')
+    cy.task('stubConfirmCalculation_errorServerError')
   })
 
   it('Visit Calculation summary page', () => {
@@ -50,6 +52,27 @@ context('Calculation summary', () => {
 
     calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '20 November 2018 – 15 days')
     calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '13 May 2017 – 6 days')
+  })
+
+  it('Error when NOMIS data has changed', () => {
+    cy.signIn()
+    const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '98')
+    calculationSummaryPage.submitToNomisButton().click()
+    const redirectedView = CalculationSummaryPage.verifyOnPage(CalculationSummaryPage)
+    redirectedView
+      .errorSummary()
+      .should(
+        'contain.text',
+        'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes'
+      )
+    redirectedView.errorSummary().find('a').should('have.attr', 'href', '/calculation/A1234AB/check-information')
+  })
+  it('Error when server error', () => {
+    cy.signIn()
+    const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '99')
+    calculationSummaryPage.submitToNomisButton().click()
+    const redirectedView = CalculationSummaryPage.verifyOnPage(CalculationSummaryPage)
+    redirectedView.errorSummary().should('contain.text', 'The calculation could not be saved in NOMIS.')
   })
 
   it('Calculation summary page is accessible', () => {

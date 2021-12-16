@@ -7,6 +7,7 @@ import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prison
 import EntryPointService from '../services/entryPointService'
 import { validationError } from '../utils/errorUtils'
 import config from '../config'
+import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 
 export default class CalculationRoutes {
   constructor(
@@ -147,15 +148,23 @@ export default class CalculationRoutes {
       if (error.status === 412) {
         req.flash(
           'validationErrors',
-          JSON.stringify(
-            validationError(
-              'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
-              `/calculation/${nomsId}/check-information`
-            )
-          )
+          JSON.stringify({
+            messages: [
+              {
+                text: 'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
+                href: `/calculation/${nomsId}/check-information`,
+              },
+            ],
+          } as ErrorMessages)
         )
       } else {
-        req.flash('validationErrors', JSON.stringify(validationError(`${error.data.userMessage}`, '#sentences')))
+        req.flash(
+          'validationErrors',
+          JSON.stringify({
+            messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
+            messageType: ErrorMessageType.SAVE_DATES,
+          } as ErrorMessages)
+        )
       }
       res.redirect(`/calculation/${nomsId}/summary/${calculationRequestId}`)
     }

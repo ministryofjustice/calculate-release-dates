@@ -14,4 +14,6 @@ export default abstract class Page {
   }
 
   signOut = (): PageElement => cy.get('[data-qa=logout]')
+
+  errorSummary = (): PageElement => cy.get('.govuk-error-summary')
 }
