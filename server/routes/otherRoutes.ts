@@ -126,6 +126,7 @@ export default class OtherRoutes {
       areSame(row.MTD, row.NOMIS_MTD) &&
       areSame(row.LTD, row.NOMIS_LTD) &&
       areSame(row.DPRRD, row.NOMIS_DPRRD) &&
+      areSame(row.PRRD, row.NOMIS_PRRD) &&
       areSame(row.ESED, row.NOMIS_ESED)
     )
   }
