@@ -90,7 +90,7 @@
                         <tr class="govuk-table__row">
                             <td class="govuk-table__header" style="width: 43.5%;">{{calculationBreakdown.consecutiveSentence.dates | releaseDateType}}</td>
                             {% set releaseDate = calculationBreakdown.consecutiveSentence.dates | releaseDates %}
-                            <td class="govuk-table__cell">{{ releaseDateunadjusted | date('DD MMMM YYYY') }}
+                            <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}
                                 <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{releaseDate.daysFromSentenceStart}} days<br></span></td>
                         </tr>
                     </tbody>
