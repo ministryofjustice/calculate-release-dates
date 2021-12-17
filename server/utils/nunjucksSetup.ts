@@ -77,7 +77,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   })
 }
 
-const getReleaseDateType = function (dates: { [key: string]: any }) {
+const getReleaseDateType = (dates: { [key: string]: unknown }): string => {
   const crd = dates.CRD
   if (crd) {
     return 'CRD'
@@ -89,7 +89,7 @@ const getReleaseDateType = function (dates: { [key: string]: any }) {
   throw Error(`Couldn't find release date from dates map ${Object.keys(dates)}`)
 }
 
-const getExpiryDateType = function (dates: { [key: string]: any }) {
+const getExpiryDateType = (dates: { [key: string]: unknown }): string => {
   const sled = dates.SLED
   if (sled) {
     return 'SLED'
