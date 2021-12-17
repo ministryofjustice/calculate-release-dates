@@ -1,115 +1,125 @@
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+{% if calculationBreakdown and effectiveDates %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">Calculation breakdown</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Calculation breakdown</h2>
 
-        <!-- Concurrent sentence breakdown -->
-        {% if calculationBreakdown.concurrentSentences.length %}
-            <div class="govuk-!-margin-bottom-8">
-                <h3 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-4">
-                    {% if calculationBreakdown.concurrentSentences.length === 1 and not calculationBreakdown.consecutiveSentence %}
+            <!-- Concurrent sentence breakdown -->
+            {% if calculationBreakdown.concurrentSentences.length %}
+                <div class="govuk-!-margin-bottom-8">
+                    <h3 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-4">
+                        {% if calculationBreakdown.concurrentSentences.length === 1 and not calculationBreakdown.consecutiveSentence %}
             Sentence
             {% else %}
             Concurrent sentences
             {% endif %}
-                </h3>
-                <table class="govuk-table govuk-!-margin-bottom-4" style="table-layout:fixed; width: 100%; border: none;" data-qa="concurrent-sentence-table">
+                    </h3>
+                    <table class="govuk-table govuk-!-margin-bottom-4" style="table-layout:fixed; width: 100%; border: none;" data-qa="concurrent-sentence-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Sentence</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence date</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence length</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--date">Expiry date</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--date">Release date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body calculation-breakdown">
+                            {% for sentence in calculationBreakdown.concurrentSentences %}
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
+                                    <td class="govuk-table__cell">{{ sentence.sentencedAt | date('DD MMMM YYYY') }}</td>
+                                    <td class="govuk-table__cell">{{ sentence.sentenceLength}}</td>
+                                    {% set expiryDate = sentence.dates | expiryDates %}
+                                    <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{expiryDate.daysFromSentenceStart}} days<br></span>
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{sentence.dates | expiryDateType }}<br></span></td>
+                                    {% set releaseDate = sentence.dates | releaseDates %}
+                                    <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{releaseDate.daysFromSentenceStart}} days<br></span>
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{sentence.dates | releaseDateType }}<br></span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+
+        {% if calculationBreakdown.consecutiveSentence %}
+            <div class="govuk-grid-column-full">
+                <h3 class="govuk-heading-m govuk-!-margin-bottom-4">Consecutive sentences</h3>
+            </div>
+            <div class="govuk-grid-column-one-half">
+                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-2 govuk-!-margin-bottom-4" data-qa="consecutive-start-date">Consecutive sentences start date: <span class="govuk-body">{{ calculationBreakdown.consecutiveSentence.sentencedAt | date('DD MMMM YYYY') }}</span></p>
+                <table class="govuk-table govuk-!-margin-bottom-4" data-qa="consecutive-sentence-table">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">Sentence</th>
-                            <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence date</th>
                             <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence length</th>
-                            <th scope="col" class="govuk-table__header govuk-table__header--date">Expiry date</th>
-                            <th scope="col" class="govuk-table__header govuk-table__header--date">Release date</th>
                         </tr>
                     </thead>
                     <tbody class="govuk-table__body calculation-breakdown">
-                        {% for sentence in calculationBreakdown.concurrentSentences %}
+                        {% for sentencePart in calculationBreakdown.consecutiveSentence.sentenceParts %}
                             <tr class="govuk-table__row">
-                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
-                                <td class="govuk-table__cell">{{ sentence.sentencedAt | date('DD MMMM YYYY') }}</td>
-                                <td class="govuk-table__cell">{{sentence.sentenceLength}}</td>
-                                <td class="govuk-table__cell">{{ sentence.dates.SLED.unadjusted | date('DD MMMM YYYY') }}
-                                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{sentence.dates.SLED.daysFromSentenceStart}} days<br></span></td>
-                                <td class="govuk-table__cell">{{ sentence.dates.CRD.unadjusted | date('DD MMMM YYYY') }}
-                                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{sentence.dates.CRD.daysFromSentenceStart}} days<br></span></td>
+                                <td class="govuk-table__cell">Court case {{sentencePart.caseSequence}}, count {{sentencePart.lineSequence}}</td>
+                                <td class="govuk-table__cell">{{sentencePart.sentenceLength}}
+                                    {% if sentencePart.consecutiveToLineSequence and sentencePart.consecutiveToCaseSequence %}
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">consecutive to court case {{sentencePart.consecutiveToCaseSequence}}, count {{sentencePart.consecutiveToLineSequence}}</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
+                    </tbody>
+                </table>
+                <table class="govuk-table govuk-!-margin-top-6" data-qa="consecutive-dates-table">
+                    <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row" style="border-top: none; margin-top: 25px;">
+                            <td class="govuk-table__header" style="width: 43.5%;">Total sentence length</td>
+                            <td class="govuk-table__cell">{{calculationBreakdown.consecutiveSentence.sentenceLengthDays}} days</td>
+                        </tr>
+                        <tr class="govuk-table__row" style="border-top: none; margin-top: 25px;">
+                            <td class="govuk-table__header" style="width: 43.5%;">{{calculationBreakdown.consecutiveSentence.dates | expiryDateType}}</td>
+                            {% set expiryDate = calculationBreakdown.consecutiveSentence.dates | expiryDates %}
+                            <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}
+                                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{expiryDate.daysFromSentenceStart}} days<br></span></td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__header" style="width: 43.5%;">{{calculationBreakdown.consecutiveSentence.dates | releaseDateType}}</td>
+                            {% set releaseDate = calculationBreakdown.consecutiveSentence.dates | releaseDates %}
+                            <td class="govuk-table__cell">{{ releaseDateunadjusted | date('DD MMMM YYYY') }}
+                                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{releaseDate.daysFromSentenceStart}} days<br></span></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         {% endif %}
     </div>
-</div>
 
-<div class="govuk-grid-row">
-
-    {% if calculationBreakdown.consecutiveSentence %}
+    <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-4">Consecutive sentences</h3>
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-4 govuk-!-margin-top-6">Release dates with adjustments</h3>
         </div>
         <div class="govuk-grid-column-one-half">
-            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-2 govuk-!-margin-bottom-4" data-qa="consecutive-start-date">Consecutive sentences start date: <span class="govuk-body">{{ calculationBreakdown.consecutiveSentence.sentencedAt | date('DD MMMM YYYY') }}</span></p>
-            <table class="govuk-table govuk-!-margin-bottom-4" data-qa="consecutive-sentence-table">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Sentence</th>
-                        <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence length</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body calculation-breakdown">
-                    {% for sentencePart in calculationBreakdown.consecutiveSentence.sentenceParts %}
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">Court case {{sentencePart.caseSequence}}, count {{sentencePart.lineSequence}}</td>
-                            <td class="govuk-table__cell">{{sentencePart.sentenceLength}}
-                                {% if sentencePart.consecutiveToLineSequence and sentencePart.consecutiveToCaseSequence %}
-                                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">consecutive to court case {{sentencePart.consecutiveToCaseSequence}}, count {{sentencePart.consecutiveToLineSequence}}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <table class="govuk-table govuk-!-margin-top-6" data-qa="consecutive-dates-table">
+            <table class="govuk-table govuk-!-margin-bottom-4" data-qa="release-dates-adjustments-table">
                 <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row" style="border-top: none; margin-top: 25px;">
-                        <td class="govuk-table__header" style="width: 43.5%;">Total sentence length</td>
-                        <td class="govuk-table__cell">{{calculationBreakdown.consecutiveSentence.sentenceLengthDays}} days</td>
-                    </tr>
-                    <tr class="govuk-table__row" style="border-top: none; margin-top: 25px;">
-                        <td class="govuk-table__header" style="width: 43.5%;">SLED</td>
-                        <td class="govuk-table__cell">{{ calculationBreakdown.consecutiveSentence.dates.SLED.unadjusted | date('DD MMMM YYYY') }}
-                            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{calculationBreakdown.consecutiveSentence.dates.SLED.daysFromSentenceStart}} days<br></span></td>
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__header" style="width: 61.5%;">Latest {{ effectiveDates | expiryDateType}} with adjustments</td>
+                        {% set expiryDate = effectiveDates | expiryDates %}
+                        <td class="govuk-table__cell">{{ expiryDate.adjusted | date('DD MMMM YYYY') }}
+                            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }} – {{ expiryDate.adjustedByDays}} days</span></td>
                     </tr>
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__header" style="width: 43.5%;">CRD</td>
-                        <td class="govuk-table__cell">{{ calculationBreakdown.consecutiveSentence.dates.CRD.unadjusted | date('DD MMMM YYYY') }}
-                            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{calculationBreakdown.consecutiveSentence.dates.CRD.daysFromSentenceStart}} days<br></span></td>
+                        <td class="govuk-table__header">Latest {{ effectiveDates | releaseDateType}} with adjustments</td>
+                        {% set releaseDate = effectiveDates | releaseDates %}
+                        <td class="govuk-table__cell">{{ releaseDate.adjusted | date('DD MMMM YYYY') }}
+                            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }} – {{releaseDate.adjustedByDays}} days</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-    {% endif %}
-</div>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <h3 class="govuk-heading-m govuk-!-margin-bottom-4 govuk-!-margin-top-6">Release dates with adjustments</h3>
     </div>
-    <div class="govuk-grid-column-one-half">
-        <table class="govuk-table govuk-!-margin-bottom-4" data-qa="release-dates-adjustments-table">
-            <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__header" style="width: 61.5%;">Latest SLED with adjustments</td>
-                    <td class="govuk-table__cell">{{ effectiveDates.SLED.adjusted | date('DD MMMM YYYY') }}
-                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ effectiveDates.SLED.unadjusted | date('DD MMMM YYYY') }} – {{effectiveDates.SLED.adjustedByDays}} days</span></td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__header">Latest CRD with adjustments</td>
-                    <td class="govuk-table__cell">{{ effectiveDates.CRD.adjusted | date('DD MMMM YYYY') }}
-                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ effectiveDates.CRD.unadjusted | date('DD MMMM YYYY') }} – {{effectiveDates.CRD.adjustedByDays}} days</span></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+{% endif %}

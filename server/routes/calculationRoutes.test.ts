@@ -88,9 +88,11 @@ const stubbedSentencesAndOffences = [
 const stubbedCalculationResults = {
   dates: {
     CRD: '2021-02-03',
+    SED: '2021-02-03',
     HDCED: '2021-10-03',
   },
   calculationRequestId: 123456,
+  effectiveSentenceLength: {},
 } as BookingCalculation
 const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
   CRD: {
@@ -115,6 +117,12 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
           adjustedByDays: 18,
           daysFromSentenceStart: 100,
         },
+        SED: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
+        },
       },
       sentenceLength: '2 years',
       sentenceLengthDays: 785,
@@ -127,6 +135,12 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
 
 const stubbedEffectiveDates: { [key: string]: DateBreakdown } = {
   CRD: {
+    adjusted: '2021-02-03',
+    unadjusted: '2021-01-15',
+    adjustedByDays: 18,
+    daysFromSentenceStart: 100,
+  },
+  SED: {
     adjusted: '2021-02-03',
     unadjusted: '2021-01-15',
     adjustedByDays: 18,
@@ -147,8 +161,10 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getCalculationBreakdown.mockResolvedValue(stubbedCalculationBreakdown)
-    calculateReleaseDatesService.getEffectiveDates.mockResolvedValue(stubbedEffectiveDates as never)
+    calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      effectiveDates: stubbedEffectiveDates,
+    })
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
       .expect(200)

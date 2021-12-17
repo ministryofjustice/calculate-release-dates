@@ -83,18 +83,15 @@ export default class CalculationRoutes {
       releaseDates,
       token
     )
-    const calculationBreakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
-      username,
-      calculationRequestId,
-      token
-    )
-    const effectiveDates = await this.calculateReleaseDatesService.getEffectiveDates(releaseDates, calculationBreakdown)
     res.render('pages/calculation/calculationSummary', {
       prisonerDetail,
       releaseDates: releaseDates.dates,
       weekendAdjustments,
-      calculationBreakdown,
-      effectiveDates,
+      ...(await this.calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
+        calculationRequestId,
+        token,
+        releaseDates
+      )),
     })
   }
 
@@ -113,18 +110,15 @@ export default class CalculationRoutes {
       releaseDates,
       token
     )
-    const calculationBreakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
-      username,
-      calculationRequestId,
-      token
-    )
-    const effectiveDates = await this.calculateReleaseDatesService.getEffectiveDates(releaseDates, calculationBreakdown)
     res.render('pages/calculation/printCalculationSummary', {
       prisonerDetail,
       releaseDates: releaseDates.dates,
       weekendAdjustments,
-      calculationBreakdown,
-      effectiveDates,
+      ...(await this.calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
+        calculationRequestId,
+        token,
+        releaseDates
+      )),
       calculationRequestId,
     })
   }

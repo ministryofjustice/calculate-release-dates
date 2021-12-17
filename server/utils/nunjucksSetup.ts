@@ -59,4 +59,44 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   })
 
   njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
+
+  njkEnv.addFilter('releaseDates', dates => {
+    return dates[getReleaseDateType(dates)]
+  })
+
+  njkEnv.addFilter('expiryDates', dates => {
+    return dates[getExpiryDateType(dates)]
+  })
+
+  njkEnv.addFilter('releaseDateType', dates => {
+    return getReleaseDateType(dates)
+  })
+
+  njkEnv.addFilter('expiryDateType', dates => {
+    return getExpiryDateType(dates)
+  })
+}
+
+const getReleaseDateType = function (dates: { [key: string]: any }) {
+  const crd = dates.CRD
+  if (crd) {
+    return 'CRD'
+  }
+  const ard = dates.ARD
+  if (ard) {
+    return 'ARD'
+  }
+  throw Error(`Couldn't find release date from dates map ${Object.keys(dates)}`)
+}
+
+const getExpiryDateType = function (dates: { [key: string]: any }) {
+  const sled = dates.SLED
+  if (sled) {
+    return 'SLED'
+  }
+  const sed = dates.SED
+  if (sed) {
+    return 'SED'
+  }
+  throw Error(`Couldn't find expiry date from dates map ${Object.keys(dates)}`)
 }
