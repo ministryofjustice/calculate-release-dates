@@ -9,6 +9,14 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessageType } from '../types/ErrorMessages'
+import {
+  breakdownAndEffectiveDateMismatchBreakdown,
+  breakdownAndEffectiveDateMismatchCalc,
+  psiExample16CalculationBreakdown,
+  psiExample16CalculationResults,
+  psiExample25CalculationBreakdown,
+  psiExample25CalculationResults,
+} from './breakdownExamplesTestData'
 
 jest.mock('../api/hmppsAuthClient')
 
@@ -158,30 +166,91 @@ describe('Calculate release dates service tests', () => {
     })
   })
 
-  it('Test getting calculation breakdown', async () => {
-    fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, calculationBreakdown)
+  describe('Test getting effective dates and breakdown', () => {
+    it('Test data', async () => {
+      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, calculationBreakdown)
 
-    const result = await calculateReleaseDatesService.getCalculationBreakdown('user', calculationRequestId, token)
+      const result = await calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
+        calculationRequestId,
+        token,
+        calculationResults
+      )
 
-    expect(result).toEqual(calculationBreakdown)
-  })
+      expect(result.calculationBreakdown).toEqual(calculationBreakdown)
+      expect(result.effectiveDates).toEqual({
+        CRD: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
+        },
+        SLED: {
+          adjusted: '2021-10-28',
+          unadjusted: '2021-01-15',
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
+        },
+      })
+    })
 
-  it('Test getting effective dates', async () => {
-    const result = calculateReleaseDatesService.getEffectiveDates(calculationResults, calculationBreakdown)
+    it('Missmatch between release dates and breakdown result in empty effective dates', async () => {
+      fakeApi
+        .get(`/calculation/breakdown/${calculationRequestId}`)
+        .reply(200, breakdownAndEffectiveDateMismatchBreakdown())
 
-    expect(result).toEqual({
-      CRD: {
-        adjusted: '2021-02-03',
-        unadjusted: '2021-01-15',
-        adjustedByDays: 18,
-        daysFromSentenceStart: 100,
-      },
-      SLED: {
-        adjusted: '2021-10-28',
-        unadjusted: '2021-01-15',
-        adjustedByDays: 18,
-        daysFromSentenceStart: 100,
-      },
+      const result = await calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
+        calculationRequestId,
+        token,
+        breakdownAndEffectiveDateMismatchCalc()
+      )
+
+      expect(result.calculationBreakdown).toEqual(breakdownAndEffectiveDateMismatchBreakdown())
+      expect(result.effectiveDates).toEqual({
+        CRD: {
+          adjusted: '2015-05-29',
+          unadjusted: '',
+          adjustedByDays: 0,
+          daysFromSentenceStart: 0,
+        },
+        SLED: {
+          adjusted: '2015-09-27',
+          unadjusted: '',
+          adjustedByDays: 0,
+          daysFromSentenceStart: 0,
+        },
+      })
+    })
+
+    it('PSI example 16', async () => {
+      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, psiExample16CalculationBreakdown())
+
+      const result = await calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
+        calculationRequestId,
+        token,
+        psiExample16CalculationResults()
+      )
+
+      expect(result.calculationBreakdown).toEqual(psiExample16CalculationBreakdown())
+      expect(result.effectiveDates).toEqual({
+        SED: { unadjusted: '2015-10-11', adjusted: '2015-09-27', daysFromSentenceStart: 242, adjustedByDays: 14 },
+        CRD: { unadjusted: '2015-06-12', adjusted: '2015-05-29', daysFromSentenceStart: 121, adjustedByDays: 14 },
+      })
+    })
+
+    it('PSI example 25', async () => {
+      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, psiExample25CalculationBreakdown())
+
+      const result = await calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
+        calculationRequestId,
+        token,
+        psiExample25CalculationResults()
+      )
+
+      expect(result.calculationBreakdown).toEqual(psiExample25CalculationBreakdown())
+      expect(result.effectiveDates).toEqual({
+        SED: { unadjusted: '2015-12-21', adjusted: '2015-12-21', daysFromSentenceStart: 303, adjustedByDays: 0 },
+        CRD: { unadjusted: '2015-07-23', adjusted: '2015-07-23', daysFromSentenceStart: 152, adjustedByDays: 0 },
+      })
     })
   })
 

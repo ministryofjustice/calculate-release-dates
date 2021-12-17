@@ -9,11 +9,14 @@ import {
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import ErrorMessage from '../types/ErrorMessage'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import logger from '../../logger'
 
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
-  private readonly dateTypesForBreakdown: ReadonlyArray<string> = ['SLED', 'SED', 'CRD', 'ARD', 'PED']
+  private readonly expiryDateTypesForBreakdown: ReadonlyArray<string> = ['SLED', 'SED']
+
+  private readonly releaseDateTypesForBreakdown: ReadonlyArray<string> = ['CRD', 'ARD']
 
   private readonly supportedSentences: ReadonlyArray<string> = [
     'ADIMP',
@@ -49,38 +52,115 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
   }
 
-  async getCalculationBreakdown(
-    username: string,
+  async getCalculationBreakdownAndEffectiveDates(
     calculationRequestId: number,
-    token: string
-  ): Promise<CalculationBreakdown> {
+    token: string,
+    releaseDates: BookingCalculation
+  ): Promise<{
+    calculationBreakdown?: CalculationBreakdown
+    effectiveDates?: { [key: string]: DateBreakdown }
+  }> {
+    try {
+      const breakdown = await this.getCalculationBreakdown(calculationRequestId, token)
+      return {
+        calculationBreakdown: breakdown,
+        effectiveDates: this.getEffectiveDates(releaseDates, breakdown),
+      }
+    } catch (error) {
+      // If an error happens in this breakdown, still display the release dates.
+      logger.error(error)
+      return {
+        calculationBreakdown: null,
+        effectiveDates: null,
+      }
+    }
+  }
+
+  private async getCalculationBreakdown(calculationRequestId: number, token: string): Promise<CalculationBreakdown> {
     return new CalculateReleaseDatesApiClient(token).getCalculationBreakdown(calculationRequestId)
   }
 
   // Find which sentence provides effective dates.
-  getEffectiveDates(
+  private getEffectiveDates(
     releaseDates: BookingCalculation,
     calculationBreakdown: CalculationBreakdown
   ): { [key: string]: DateBreakdown } {
     const dates = {}
     Object.keys(releaseDates.dates)
-      .filter(dateType => this.dateTypesForBreakdown.includes(dateType))
+      .filter(
+        dateType =>
+          this.expiryDateTypesForBreakdown.includes(dateType) || this.releaseDateTypesForBreakdown.includes(dateType)
+      )
       .forEach(dateType => {
-        dates[dateType] = this.findDateBreakdown(dateType, releaseDates.dates[dateType], calculationBreakdown)
+        dates[dateType] = this.findEffectiveDateBreakdownForGivenReleaseDateType(
+          dateType,
+          releaseDates.dates[dateType],
+          calculationBreakdown
+        )
       })
     return dates
   }
 
-  private findDateBreakdown(dateType: string, date: string, calculationBreakdown: CalculationBreakdown): DateBreakdown {
+  private findEffectiveDateBreakdownForGivenReleaseDateType(
+    dateType: string,
+    date: string,
+    calculationBreakdown: CalculationBreakdown
+  ): DateBreakdown {
     const concurrentFind = calculationBreakdown.concurrentSentences
-      .map(it => it.dates[dateType])
-      .find(it => it?.adjusted === date)
-    if (!concurrentFind) {
-      return calculationBreakdown.consecutiveSentence?.dates
-        ? calculationBreakdown.consecutiveSentence?.dates[dateType]
-        : null
+      .map(it => this.isSentenceProvidingTheEffectiveDate(dateType, date, it.dates))
+      .find(it => !!it)
+    if (concurrentFind) {
+      return concurrentFind
     }
-    return concurrentFind
+    if (calculationBreakdown.consecutiveSentence?.dates) {
+      const consecutiveFind = this.isSentenceProvidingTheEffectiveDate(
+        dateType,
+        date,
+        calculationBreakdown.consecutiveSentence.dates
+      )
+      if (consecutiveFind) {
+        return consecutiveFind
+      }
+    }
+    logger.error(`Couldn't find the DateBreakdown for effective date type ${dateType}`)
+    // If we can't find the breakdown for the effective date, just return a blank date
+    // breakdown so that the rest of the breakdown still renders
+    return {
+      adjusted: date,
+      adjustedByDays: 0,
+      daysFromSentenceStart: 0,
+      unadjusted: '',
+    }
+  }
+
+  /*
+  We need to find which sentence is providing the effective dates.
+  Firstly check if sentence contains the same type of date and that it matches
+  Seccondly check if it contains a matching release/expiry date
+  */
+  private isSentenceProvidingTheEffectiveDate(
+    dateType: string,
+    date: string,
+    dates: { [key: string]: DateBreakdown }
+  ): DateBreakdown {
+    const sameType = dates[dateType]
+    if (sameType) {
+      if (sameType.adjusted === date) {
+        return sameType
+      }
+      // If the sentence doesn't contain the exact same type i.e SLED. Then check if it contains the same expiry date (i.e it could be a SED in the effective dates)
+    } else if (this.expiryDateTypesForBreakdown.includes(dateType)) {
+      const expiry = dates[this.expiryDateTypesForBreakdown.find(type => dates[type])]
+      if (expiry && expiry.adjusted === date) {
+        return expiry
+      }
+    } else if (this.releaseDateTypesForBreakdown.includes(dateType)) {
+      const release = dates[this.releaseDateTypesForBreakdown.find(type => dates[type])]
+      if (release && release.adjusted === date) {
+        return release
+      }
+    }
+    return null
   }
 
   async confirmCalculation(
