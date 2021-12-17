@@ -24,7 +24,7 @@ export default class OtherRoutes {
     const { username, token } = res.locals.user
     const { prisonerIds } = req.body
     const nomsIds = prisonerIds.split(/\r?\n/)
-    if (nomsIds.length > 100) return res.redirect(`/test/calculation`)
+    if (nomsIds.length > 500) return res.redirect(`/test/calculation`)
 
     const nomisResults = await this.prisonerService.searchPrisonerNumbers(username, nomsIds)
 
@@ -32,16 +32,20 @@ export default class OtherRoutes {
 
     // This is just temporary code therefore the iterative loop rather than an async approach (was easier to develop and easier to debug)
     for (const nomsId of nomsIds) {
-      const nomisRecord = nomisResults.find(a => a.prisonerNumber === nomsId)
-      const bookingId = nomisRecord.bookingId as unknown as number
-      const nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
-      const sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
-      const adjustments = await this.prisonerService.getSentenceAdjustments(username, bookingId, token)
       try {
-        const calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, token)
-        csvData.push(this.addRow(nomisRecord, calc, nomisDates, sentenceAndOffences, adjustments))
+        const nomisRecord = nomisResults.find(a => a.prisonerNumber === nomsId)
+        const bookingId = nomisRecord.bookingId as unknown as number
+        const nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
+        const sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
+        const adjustments = await this.prisonerService.getSentenceAdjustments(username, bookingId, token)
+        try {
+          const calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, token)
+          csvData.push(this.addRow(nomisRecord, calc, nomisDates, sentenceAndOffences, adjustments))
+        } catch (ex) {
+          csvData.push(this.addErrorRow(nomisRecord, nomisDates, sentenceAndOffences, adjustments, ex))
+        }
       } catch (ex) {
-        csvData.push(this.addErrorRow(nomisRecord, nomisDates, sentenceAndOffences, adjustments, ex))
+        csvData.push(OtherRoutes.addNonCrdErrorRow(nomsId, ex))
       }
     }
 
@@ -89,6 +93,8 @@ export default class OtherRoutes {
       NOMIS_DPRRD: nomisDates.dtoPostRecallReleaseDateOverride || nomisDates.postRecallReleaseDate,
       PRRD: calc.dates.PRRD,
       NOMIS_PRRD: nomisDates.postRecallReleaseOverrideDate || nomisDates.postRecallReleaseDate,
+      ESED: calc.dates.ESED,
+      NOMIS_ESED: nomisDates.effectiveSentenceEndDate,
     }
     return {
       ...row,
@@ -120,7 +126,8 @@ export default class OtherRoutes {
       areSame(row.MTD, row.NOMIS_MTD) &&
       areSame(row.LTD, row.NOMIS_LTD) &&
       areSame(row.DPRRD, row.NOMIS_DPRRD) &&
-      areSame(row.PRRD, row.NOMIS_PRRD)
+      areSame(row.PRRD, row.NOMIS_PRRD) &&
+      areSame(row.ESED, row.NOMIS_ESED)
     )
   }
 
@@ -162,10 +169,53 @@ export default class OtherRoutes {
       NOMIS_DPRRD: nomisDates.dtoPostRecallReleaseDateOverride || nomisDates.postRecallReleaseDate,
       PRRD: 'error',
       NOMIS_PRRD: nomisDates.postRecallReleaseOverrideDate || nomisDates.postRecallReleaseDate,
+      ESED: 'error',
+      NOMIS_ESED: nomisDates.effectiveSentenceEndDate,
       ARE_DATES_SAME: 'error',
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       error: ex,
+    }
+  }
+
+  private static addNonCrdErrorRow(nomsId: string, ex: any) {
+    return {
+      NOMS_ID: nomsId,
+      DOB: 'non-crd error',
+      REQUEST_ID: 'non-crd error',
+      CALCULATED_DATES: 'non-crd error',
+      CRD: 'non-crd error',
+      NOMIS_CRD: 'non-crd error',
+      LED: 'non-crd error',
+      NOMIS_LED: 'non-crd error',
+      SED: 'non-crd error',
+      NOMIS_SED: 'non-crd error',
+      NPD: 'non-crd error',
+      NOMIS_NPD: 'non-crd error',
+      ARD: 'non-crd error',
+      NOMIS_ARD: 'non-crd error',
+      TUSED: 'non-crd error',
+      NOMIS_TUSED: 'non-crd error',
+      PED: 'non-crd error',
+      NOMIS_PED: 'non-crd error',
+      HDCED: 'non-crd error',
+      NOMIS_HDCED: 'non-crd error',
+      ETD: 'non-crd error',
+      NOMIS_ETD: 'non-crd error',
+      MTD: 'non-crd error',
+      NOMIS_MTD: 'non-crd error',
+      LTD: 'non-crd error',
+      NOMIS_LTD: 'non-crd error',
+      DPRRD: 'non-crd error',
+      NOMIS_DPRRD: 'non-crd error',
+      PRRD: 'non-crd error',
+      NOMIS_PRRD: 'non-crd error',
+      ESED: 'non-crd error',
+      NOMIS_ESED: 'non-crd error',
+      ARE_DATES_SAME: 'non-crd error',
+      SENTENCES: 'non-crd error',
+      ADJUSTMENTS: 'non-crd error',
+      error: `${ex.message}: ${JSON.stringify(ex)}`,
     }
   }
   /* eslint-enable */

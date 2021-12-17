@@ -26,7 +26,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/calculate-release-dates/calculation/results/123`,
+        urlPattern: `/calculate-release-dates/calculation/results/([0-9]*)`,
       },
       response: {
         status: 200,
@@ -59,6 +59,30 @@ export default {
           },
           calculationRequestId: 123,
         },
+      },
+    })
+  },
+  stubConfirmCalculation_errorNomisDataChanged: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: `/calculate-release-dates/calculation/A1234AB/confirm/98`,
+      },
+      response: {
+        status: 412,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
+  stubConfirmCalculation_errorServerError: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: `/calculate-release-dates/calculation/A1234AB/confirm/99`,
+      },
+      response: {
+        status: 500,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       },
     })
   },
@@ -100,7 +124,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/calculate-release-dates/calculation/breakdown/123`,
+        urlPattern: `/calculate-release-dates/calculation/breakdown/([0-9]*)`,
       },
       response: {
         status: 200,
