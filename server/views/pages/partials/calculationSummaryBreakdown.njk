@@ -31,13 +31,13 @@
                                     <td class="govuk-table__cell">{{ sentence.sentencedAt | date('DD MMMM YYYY') }}</td>
                                     <td class="govuk-table__cell">{{ sentence.sentenceLength}}</td>
                                     {% set expiryDate = sentence.dates | expiryDates %}
-                                    <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}
-                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{expiryDate.daysFromSentenceStart}} days<br></span>
-                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{sentence.dates | expiryDateType }}<br></span></td>
+                                    <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{expiryDate.daysFromSentenceStart}} days</span><br/>
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{sentence.dates | expiryDateType }}</span></td>
                                     {% set releaseDate = sentence.dates | releaseDates %}
-                                    <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}
-                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{releaseDate.daysFromSentenceStart}} days<br></span>
-                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{sentence.dates | releaseDateType }}<br></span></td>
+                                    <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{releaseDate.daysFromSentenceStart}} days</span><br/>
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{sentence.dates | releaseDateType }}</span></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -66,7 +66,7 @@
                         {% for sentencePart in calculationBreakdown.consecutiveSentence.sentenceParts %}
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">Court case {{sentencePart.caseSequence}}, count {{sentencePart.lineSequence}}</td>
-                                <td class="govuk-table__cell">{{sentencePart.sentenceLength}}
+                                <td class="govuk-table__cell">{{sentencePart.sentenceLength}}<br/>
                                     {% if sentencePart.consecutiveToLineSequence and sentencePart.consecutiveToCaseSequence %}
                                         <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">consecutive to court case {{sentencePart.consecutiveToCaseSequence}}, count {{sentencePart.consecutiveToLineSequence}}</span>
                                     {% endif %}
@@ -84,14 +84,14 @@
                         <tr class="govuk-table__row" style="border-top: none; margin-top: 25px;">
                             <td class="govuk-table__header" style="width: 43.5%;">{{calculationBreakdown.consecutiveSentence.dates | expiryDateType}}</td>
                             {% set expiryDate = calculationBreakdown.consecutiveSentence.dates | expiryDates %}
-                            <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}
-                                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{expiryDate.daysFromSentenceStart}} days<br></span></td>
+                            <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+                                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{expiryDate.daysFromSentenceStart}} days</span></td>
                         </tr>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__header" style="width: 43.5%;">{{calculationBreakdown.consecutiveSentence.dates | releaseDateType}}</td>
                             {% set releaseDate = calculationBreakdown.consecutiveSentence.dates | releaseDates %}
-                            <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}
-                                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{releaseDate.daysFromSentenceStart}} days<br></span></td>
+                            <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+                                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{releaseDate.daysFromSentenceStart}} days</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -109,13 +109,13 @@
                     <tr class="govuk-table__row">
                         <td class="govuk-table__header" style="width: 61.5%;">Latest {{ effectiveDates | expiryDateType}} with adjustments</td>
                         {% set expiryDate = effectiveDates | expiryDates %}
-                        <td class="govuk-table__cell">{{ expiryDate.adjusted | date('DD MMMM YYYY') }}
+                        <td class="govuk-table__cell">{{ expiryDate.adjusted | date('DD MMMM YYYY') }}<br/>
                             <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }} – {{ expiryDate.adjustedByDays}} days</span></td>
                     </tr>
                     <tr class="govuk-table__row">
                         <td class="govuk-table__header">Latest {{ effectiveDates | releaseDateType}} with adjustments</td>
                         {% set releaseDate = effectiveDates | releaseDates %}
-                        <td class="govuk-table__cell">{{ releaseDate.adjusted | date('DD MMMM YYYY') }}
+                        <td class="govuk-table__cell">{{ releaseDate.adjusted | date('DD MMMM YYYY') }}<br/>
                             <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }} – {{releaseDate.adjustedByDays}} days</span></td>
                     </tr>
                 </tbody>
