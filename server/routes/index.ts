@@ -9,6 +9,7 @@ import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
 import SearchRoutes from './searchRoutes'
 import StartRoutes from './startRoutes'
+import CheckInformationRoutes from './checkInformationRoutes'
 
 export default function Index({
   userService,
@@ -25,6 +26,11 @@ export default function Index({
     prisonerService,
     entryPointService
   )
+  const checkInformationAccessRoutes = new CheckInformationRoutes(
+    calculateReleaseDatesService,
+    prisonerService,
+    entryPointService
+  )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
   const startRoutes = new StartRoutes(entryPointService)
@@ -34,9 +40,11 @@ export default function Index({
     get('/supported-sentences', startRoutes.supportedSentences)
   }
 
+  const checkInformationRoutes = () => {
+    get('/calculation/:nomsId/check-information', checkInformationAccessRoutes.checkInformation)
+    post('/calculation/:nomsId/check-information', checkInformationAccessRoutes.submitCheckInformation)
+  }
   const calculationRoutes = () => {
-    get('/calculation/:nomsId/check-information', calculationAccessRoutes.checkInformation)
-    post('/calculation/:nomsId/check-information', calculationAccessRoutes.submitCheckInformation)
     get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
     post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
     get('/calculation/:nomsId/summary/:calculationRequestId/print', calculationAccessRoutes.printCalculationSummary)
@@ -65,6 +73,7 @@ export default function Index({
 
   indexRoutes()
   calculationRoutes()
+  checkInformationRoutes()
   searchRoutes()
   otherRoutes()
 
