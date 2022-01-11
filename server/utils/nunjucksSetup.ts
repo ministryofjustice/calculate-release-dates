@@ -3,6 +3,7 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import * as pathModule from 'path'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
+import config from '../config'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const dateFilter = require('nunjucks-date-filter')
@@ -40,6 +41,13 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
       express: app,
     }
   )
+
+  // Expose the google tag manager container ID to the nunjucks environment
+  const {
+    analytics: { tagManagerContainerId },
+  } = config
+
+  njkEnv.addGlobal('tagManagerContainerId', tagManagerContainerId)
 
   njkEnv.addFilter('initialiseName', (fullName: string) => {
     // this check is for the authError page
