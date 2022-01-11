@@ -13,29 +13,6 @@ export default class CalculationRoutes {
     private readonly entryPointService: EntryPointService
   ) {}
 
-  public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
-    const { nomsId } = req.params
-
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
-      username,
-      prisonerDetail.bookingId,
-      token
-    )
-    const errors = this.calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences)
-    if (errors.messages.length > 0) {
-      return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
-    }
-
-    const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
-      username,
-      nomsId,
-      token
-    )
-    return res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
-  }
-
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params

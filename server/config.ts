@@ -96,4 +96,7 @@ export default {
     },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  analytics: {
+    tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', ''),
+  },
 }
