@@ -104,35 +104,54 @@ export default class OtherRoutes {
     return {
       ...row,
       ARE_DATES_SAME: OtherRoutes.areDatesSame(row) ? 'Y' : 'N',
+      ARE_DATES_SAME_USING_OVERRIDES: OtherRoutes.areDatesSameUsingOverrides(row) ? 'Y' : 'N',
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       error: null as string,
     }
   }
 
-  private static areDatesSame(row: any) {
-    const areSame = (nomisDate: string, calculatedDate: string) => {
-      if (!nomisDate && !calculatedDate) return true
-      if (!nomisDate && calculatedDate) return false
-      if (nomisDate && !calculatedDate) return false
-      return nomisDate === calculatedDate
-    }
+  private static areSame = (nomisDate: string, calculatedDate: string) => {
+    if (!nomisDate && !calculatedDate) return true
+    if (!nomisDate && calculatedDate) return false
+    if (nomisDate && !calculatedDate) return false
+    return nomisDate === calculatedDate
+  }
 
+  private static areDatesSame(row: any) {
     return (
-      areSame(row.CRD, row.NOMIS_CRD) &&
-      areSame(row.SED, row.NOMIS_SED) &&
-      areSame(row.LED, row.NOMIS_LED) &&
-      areSame(row.NPD, row.NOMIS_NPD) &&
-      areSame(row.ARD, row.NOMIS_ARD) &&
-      areSame(row.TUSED, row.NOMIS_TUSED) &&
-      areSame(row.PED, row.NOMIS_PED) &&
-      areSame(row.HDCED, row.NOMIS_HDCED) &&
-      areSame(row.ETD, row.NOMIS_ETD) &&
-      areSame(row.MTD, row.NOMIS_MTD) &&
-      areSame(row.LTD, row.NOMIS_LTD) &&
-      areSame(row.DPRRD, row.NOMIS_DPRRD) &&
-      areSame(row.PRRD, row.NOMIS_PRRD) &&
-      areSame(row.ESED, row.NOMIS_ESED)
+      OtherRoutes.areSame(row.CRD, row.NOMIS_CRD_OVERRIDE) &&
+      OtherRoutes.areSame(row.SED, row.NOMIS_SED) &&
+      OtherRoutes.areSame(row.LED, row.NOMIS_LED) &&
+      OtherRoutes.areSame(row.NPD, row.NOMIS_NPD_OVERRIDE) &&
+      OtherRoutes.areSame(row.ARD, row.NOMIS_ARD_OVERRIDE) &&
+      OtherRoutes.areSame(row.TUSED, row.NOMIS_TUSED) &&
+      OtherRoutes.areSame(row.PED, row.NOMIS_PED) &&
+      OtherRoutes.areSame(row.HDCED, row.NOMIS_HDCED) &&
+      OtherRoutes.areSame(row.ETD, row.NOMIS_ETD) &&
+      OtherRoutes.areSame(row.MTD, row.NOMIS_MTD) &&
+      OtherRoutes.areSame(row.LTD, row.NOMIS_LTD) &&
+      OtherRoutes.areSame(row.DPRRD, row.NOMIS_DPRRD_OVERRIDE) &&
+      OtherRoutes.areSame(row.PRRD, row.NOMIS_PRRD_OVERRIDE) &&
+      OtherRoutes.areSame(row.ESED, row.NOMIS_ESED)
+    )
+  }
+  private static areDatesSameUsingOverrides(row: any) {
+    return (
+      OtherRoutes.areSame(row.CRD, row.NOMIS_CRD) &&
+      OtherRoutes.areSame(row.SED, row.NOMIS_SED) &&
+      OtherRoutes.areSame(row.LED, row.NOMIS_LED) &&
+      OtherRoutes.areSame(row.NPD, row.NOMIS_NPD) &&
+      OtherRoutes.areSame(row.ARD, row.NOMIS_ARD) &&
+      OtherRoutes.areSame(row.TUSED, row.NOMIS_TUSED) &&
+      OtherRoutes.areSame(row.PED, row.NOMIS_PED) &&
+      OtherRoutes.areSame(row.HDCED, row.NOMIS_HDCED) &&
+      OtherRoutes.areSame(row.ETD, row.NOMIS_ETD) &&
+      OtherRoutes.areSame(row.MTD, row.NOMIS_MTD) &&
+      OtherRoutes.areSame(row.LTD, row.NOMIS_LTD) &&
+      OtherRoutes.areSame(row.DPRRD, row.NOMIS_DPRRD) &&
+      OtherRoutes.areSame(row.PRRD, row.NOMIS_PRRD) &&
+      OtherRoutes.areSame(row.ESED, row.NOMIS_ESED)
     )
   }
 
@@ -182,6 +201,7 @@ export default class OtherRoutes {
       ESED: 'error',
       NOMIS_ESED: nomisDates.effectiveSentenceEndDate,
       ARE_DATES_SAME: 'error',
+      ARE_DATES_SAME_USING_OVERRIDES: 'error',
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       error: ex,
@@ -228,6 +248,7 @@ export default class OtherRoutes {
       ESED: 'non-crd error',
       NOMIS_ESED: 'non-crd error',
       ARE_DATES_SAME: 'non-crd error',
+      ARE_DATES_SAME_USING_OVERRIDES: 'non-crd error',
       SENTENCES: 'non-crd error',
       ADJUSTMENTS: 'non-crd error',
       error: `${ex.message}: ${JSON.stringify(ex)}`,
