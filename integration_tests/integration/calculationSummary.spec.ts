@@ -20,8 +20,8 @@ context('Calculation summary', () => {
     const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
     calculationSummaryPage.submitToNomisButton().should('exist')
     calculationSummaryPage.sledDate().should('contain.text', 'Monday, 05 November 2018')
-    calculationSummaryPage.crdDate().should('contain.text', 'Friday, 05 May 2017')
-    calculationSummaryPage.crdWeekendAdjustment().should('contain.text', 'Sunday, 07 May 2017 adjusted for weekend')
+    calculationSummaryPage.crdDate().should('contain.text', 'Sunday, 07 May 2017')
+    calculationSummaryPage.crdWeekendAdjustment().should('contain.text', 'Friday, 05 May 2017 adjusted for weekend')
     calculationSummaryPage.hdcedDate().should('contain.text', 'Wednesday, 28 December 2016')
     calculationSummaryPage
       .hdcedWeekendAdjustment()
