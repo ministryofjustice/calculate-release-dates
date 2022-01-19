@@ -25,8 +25,8 @@
         {% if releaseDates.ARD %}
             <h3 class="govuk-heading-s">Automatic release date (ARD)</h3>
             {% if weekendAdjustments.ARD %}
-                <p class="govuk-body" data-qa="ARD-date">{{ weekendAdjustments.ARD.date | date('dddd, DD MMMM YYYY') }}</p>
-                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="ARD-weekend-adjustment">{{ releaseDates.ARD | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.ARD.adjustedForBankHoliday else "weekend" }}</p>
+                <p class="govuk-body" data-qa="ARD-date">{{ releaseDates.ARD | date('dddd, DD MMMM YYYY') }}</p>
+                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="ARD-weekend-adjustment">{{ weekendAdjustments.ARD.date | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.ARD.adjustedForBankHoliday else "weekend" }}</p>
             {% else %}
                 <p class="govuk-body" data-qa="ARD-date">{{ releaseDates.ARD | date('dddd, DD MMMM YYYY') }}</p>
             {% endif %}
@@ -34,8 +34,8 @@
         {% if releaseDates.CRD %}
             <h3 class="govuk-heading-s">Conditional release date (CRD)</h3>
             {% if weekendAdjustments.CRD %}
-                <p class="govuk-body" data-qa="CRD-date">{{ weekendAdjustments.CRD.date | date('dddd, DD MMMM YYYY') }}</p>
-                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="CRD-weekend-adjustment">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.CRD.adjustedForBankHoliday else "weekend" }}</p>
+                <p class="govuk-body" data-qa="CRD-date">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }}</p>
+                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="CRD-weekend-adjustment">{{ weekendAdjustments.CRD.date | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.CRD.adjustedForBankHoliday else "weekend" }}</p>
             {% else %}
                 <p class="govuk-body" data-qa="CRD-date">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }}</p>
             {% endif %}
@@ -51,8 +51,8 @@
         {% if releaseDates.HDCED %}
             <h3 class="govuk-heading-s">Home detention curfew eligibility date (HDCED)</h3>
             {% if weekendAdjustments.HDCED %}
-                <p class="govuk-body" data-qa="HDCED-date">{{ weekendAdjustments.HDCED.date | date('dddd, DD MMMM YYYY') }}</p>
-                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="HDCED-weekend-adjustment">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.HDCED.adjustedForBankHoliday else "weekend" }}</p>
+                <p class="govuk-body" data-qa="HDCED-date">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }}</p>
+                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="HDCED-weekend-adjustment">{{ weekendAdjustments.HDCED.date | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.HDCED.adjustedForBankHoliday else "weekend" }}</p>
             {% else %}
                 <p class="govuk-body" data-qa="HDCED-date">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }}</p>
             {% endif %}
