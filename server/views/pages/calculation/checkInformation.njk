@@ -30,8 +30,8 @@
     {% include "../partials/customErrorBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
-            <h1 class="govuk-heading-xl" id="check-nomis-heading">Check sentence and offence information
-             for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
+            <h1 class="govuk-heading-xl" id="check-nomis-heading">Check sentence and offence information for
+                {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -39,11 +39,7 @@
             <h2 class="govuk-heading-l">Sentences</h2>
             <p class="govuk-body govuk-!-margin-top-2" id="offence-count-text">
                 {% set offenceCount = sentencesAndOffences | countOffences %}
-                {% if offenceCount === 1 %}
-                    There is 1 sentence from NOMIS to be included in this calculation.
-                {% else %}
-                    There are {{ offenceCount }} sentences from NOMIS to be included in this calculation.
-                {% endif %}
+                This calculation will include {% if offenceCount === 1 %}1 sentence{% else %}{{ offenceCount }} sentences{% endif %} from NOMIS.
             </p>
             <h2 class="govuk-heading-l govuk-!-margin-top-6">Court cases</h2>
             {% include "../partials/sentenceTable.njk" %}
@@ -65,7 +61,6 @@
                             text: "Calculate release dates",
                             type: submit,
                             value: 'calculate-release-dates',
-                            classes: 'govuk-button--tertiary',
                             preventDoubleClick: true,
                             attributes: {  'data-qa': 'calculate-release-dates' }
                         }) }}
