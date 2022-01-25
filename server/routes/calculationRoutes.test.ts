@@ -248,7 +248,7 @@ describe('Calculation routes tests related to check-information', () => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Ringo')
         expect(res.text).toContain('Starr')
-        expect(res.text).toContain('There are 6 sentences from NOMIS to be included in this calculation.')
+        expect(res.text).toContain('This calculation will include 6 sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
         expect(res.text).toContain('Committed between 04 January 2021 and 05 January 2021')

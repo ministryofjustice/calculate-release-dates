@@ -39,13 +39,7 @@
             <h2 class="govuk-heading-l">Sentences</h2>
             <p class="govuk-body govuk-!-margin-top-2" id="offence-count-text">
                 {% set offenceCount = sentencesAndOffences | countOffences %}
-                This calculation will include
-                {% if offenceCount === 1 %}
-                    1 sentence
-                {% else %}
-                    {{ offenceCount }} sentences
-                {% endif %}
-                from NOMIS.
+                This calculation will include {% if offenceCount === 1 %}1 sentence{% else %}{{ offenceCount }} sentences{% endif %} from NOMIS.
             </p>
             <h2 class="govuk-heading-l govuk-!-margin-top-6">Court cases</h2>
             {% include "../partials/sentenceTable.njk" %}
