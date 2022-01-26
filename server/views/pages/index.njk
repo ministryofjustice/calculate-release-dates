@@ -16,7 +16,7 @@
             </h1>
             <p class="govuk-body">Automatically calculate a prisoner’s release dates using information from NOMIS.</p>
             <p class="govuk-body">This service currently supports a limited number of sentences.
-                <a href="/supported-sentences">Check supported sentence types</a>.</p>
+                <a href="/supported-sentences" class="govuk-link">Check supported sentence types</a>.</p>
             {% if prisonId %}
                 {% set startlink = "/calculation/" + prisonId + "/check-information" %}
             {% else %}
