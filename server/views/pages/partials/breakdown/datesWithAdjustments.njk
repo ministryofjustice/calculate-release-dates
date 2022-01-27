@@ -17,7 +17,7 @@
             <tbody class="govuk-table__body">
             {# TODO the next two lines to be removed subject to a refactor (all dates will be in releaseDatesWithAdjustments) #}
             {{ addAdjustmentRow(effectiveDates | expiryDateType, (effectiveDates | expiryDates).adjusted, (effectiveDates | expiryDates).unadjusted | date('DD MMMM YYYY') + ' minus ' + (effectiveDates | expiryDates).adjustedByDays + ' days') }}
-            {{ addAdjustmentRow(effectiveDates | releaseDateType, (effectiveDates | releaseDates).adjusted, (effectiveDates | releaseDates).unadjusted | date('DD MMMM YYYY') + ' minus ' + (effectiveDates | expiryDates).adjustedByDays + ' days') }}
+            {{ addAdjustmentRow(effectiveDates | releaseDateType, (effectiveDates | releaseDates).adjusted, (effectiveDates | releaseDates).unadjusted | date('DD MMMM YYYY') + ' minus ' + (effectiveDates | releaseDates).adjustedByDays + ' days') }}
             {% for releaseDatesWithAdjustment in releaseDatesWithAdjustments %}
                 {{ addAdjustmentRow(releaseDatesWithAdjustment.releaseDateType, releaseDatesWithAdjustment.releaseDate, releaseDatesWithAdjustment.hintText) }}
             {% endfor %}
