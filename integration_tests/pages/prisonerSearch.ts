@@ -19,13 +19,13 @@ export default class PrisonerSearchPage extends Page {
     cy
       .get('[data-qa=search-results-table]')
       .find(`[data-qa=prisoner-${prisonerIdentifier}]`)
-      .find('[data-qa=check-nomis-information]')
+      .find('[data-qa=prisoner-link]')
 
   private prisonerFirstName = (): PageElement => cy.get('[data-qa=prisoner-first-name]')
 
   private prisonerLastName = (): PageElement => cy.get('[data-qa=prisoner-last-name]')
 
-  private prisonerIdentifier = (): PageElement => cy.get('[data-qa=prisoner-identifer]')
+  private prisonerIdentifier = (): PageElement => cy.get('[data-qa=prisoner-identifier]')
 
   private prisonerSearch = (): PageElement => cy.get('[data-qa=search-prisoners]')
 }

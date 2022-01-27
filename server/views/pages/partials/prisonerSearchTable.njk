@@ -16,7 +16,7 @@
         {% for prisoner in prisoners %}
             <tr class="govuk-table__row" data-qa="{{'prisoner-' + prisoner.prisonerNumber}}">
                 <td class="govuk-table__cell"><a class="govuk-link"
-                            href="{{ '/calculation/' + prisoner.prisonerNumber + '/check-information' }}">{{ (prisoner.lastName + ', ' +prisoner.firstName ) | title }}</a>
+                            href="{{ '/calculation/' + prisoner.prisonerNumber + '/check-information' }}" data-qa="prisoner-link">{{ (prisoner.lastName + ', ' +prisoner.firstName ) | title }}</a>
                 </td>
                 <td class="govuk-table__cell">{{ prisoner.prisonerNumber }}</td>
                 <td class="govuk-table__cell">{{ prisoner.dateOfBirth | date('DD MMMM YYYY') }}</td>
