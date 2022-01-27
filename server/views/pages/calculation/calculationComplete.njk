@@ -5,6 +5,10 @@
 {% set pageTitle = applicationName + " - calculation complete" %}
 {% set pageId = "calculation-complete" %}
 
+{% block aside %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
 {% block content %}
     <div class="govuk-width-container">
         <div class="govuk-grid-row">
@@ -20,14 +24,14 @@
                 </div>
                 <div class="govuk-!-margin-top-8">
                     <p class="govuk-body">
-                        <a href={{ "/calculation/" + prisonerDetail.offenderNo +
+                        <a class="govuk-link" href={{ "/calculation/" + prisonerDetail.offenderNo +
                 "/summary/" + calculationRequestId + "/print" }}>Print calculation summary</a>
                     </p>
                     <p class="govuk-body">
-                        <a href="/search/prisoners">Calculate another release date</a>
+                        <a class="govuk-link" href="/search/prisoners">Calculate another release date</a>
                     </p>
                     <p class="govuk-body">
-                        <a href={{digitalPrisonServicesUrl}}>Return to Digital Prison Service (DPS)</a>
+                        <a class="govuk-link" href={{digitalPrisonServicesUrl}}>Return to Digital Prison Service (DPS)</a>
                     </p>
                 </div>
             </div>
