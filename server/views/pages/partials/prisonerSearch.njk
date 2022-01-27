@@ -3,6 +3,17 @@
 
 <form method="get">
     <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+            {{ govukInput({
+                label: {
+                    text: "Prison number"
+                },
+                id: "prisonerIdentifier",
+                value: searchValues.prisonerIdentifier,
+                name: "prisonerIdentifier",
+                attributes: {  'data-qa': 'prisoner-identifier' }
+            }) }}
+        </div>
         <div class="govuk-grid-column-one-third">
             {{ govukInput({
                 label: {
@@ -23,17 +34,6 @@
                 value: searchValues.lastName,
                 name: "lastName",
                 attributes: {  'data-qa': 'prisoner-last-name' }
-            }) }}
-        </div>
-        <div class="govuk-grid-column-one-quarter">
-            {{ govukInput({
-                label: {
-                    text: "Prisoner identifier"
-                },
-                id: "prisonerIdentifier",
-                value: searchValues.prisonerIdentifier,
-                name: "prisonerIdentifier",
-                attributes: {  'data-qa': 'prisoner-identifier' }
             }) }}
         </div>
     </div>
