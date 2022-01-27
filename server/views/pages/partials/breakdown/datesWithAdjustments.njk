@@ -1,0 +1,27 @@
+{% macro addAdjustmentRow(releaseType, releaseDate, hintText) %}
+    <tr class="govuk-table__row">
+        <td class="govuk-table__header">{{ releaseType }} with adjustments</td>
+        <td class="govuk-table__cell">
+            {{ releaseDate | date('DD MMMM YYYY') }}
+            <div class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                {{ hintText }}
+            </div>
+        </td>
+    </tr>
+{% endmacro %}
+
+<h3 class="govuk-heading-m govuk-!-margin-bottom-4 govuk-!-margin-top-6">Release dates with adjustments</h3>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+        <table class="govuk-table govuk-!-margin-bottom-4" data-qa="release-dates-adjustments-table">
+            <tbody class="govuk-table__body">
+            {# TODO the next two lines to be removed subject to a refactor (all dates will be in releaseDatesWithAdjustments) #}
+            {{ addAdjustmentRow(effectiveDates | expiryDateType, (effectiveDates | expiryDates).adjusted, (effectiveDates | expiryDates).unadjusted | date('DD MMMM YYYY') + ' minus ' + (effectiveDates | expiryDates).adjustedByDays + ' days') }}
+            {{ addAdjustmentRow(effectiveDates | releaseDateType, (effectiveDates | releaseDates).adjusted, (effectiveDates | releaseDates).unadjusted | date('DD MMMM YYYY') + ' minus ' + (effectiveDates | expiryDates).adjustedByDays + ' days') }}
+            {% for releaseDatesWithAdjustment in releaseDatesWithAdjustments %}
+                {{ addAdjustmentRow(releaseDatesWithAdjustment.releaseDateType, releaseDatesWithAdjustment.releaseDate, releaseDatesWithAdjustment.hintText) }}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

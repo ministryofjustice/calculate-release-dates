@@ -99,27 +99,5 @@
         {% endif %}
     </div>
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-4 govuk-!-margin-top-6">Release dates with adjustments</h3>
-        </div>
-        <div class="govuk-grid-column-one-half">
-            <table class="govuk-table govuk-!-margin-bottom-4" data-qa="release-dates-adjustments-table">
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__header" style="width: 61.5%;">Latest {{ effectiveDates | expiryDateType}} with adjustments</td>
-                        {% set expiryDate = effectiveDates | expiryDates %}
-                        <td class="govuk-table__cell">{{ expiryDate.adjusted | date('DD MMMM YYYY') }}<br/>
-                            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }} – {{ expiryDate.adjustedByDays}} days</span></td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__header">Latest {{ effectiveDates | releaseDateType}} with adjustments</td>
-                        {% set releaseDate = effectiveDates | releaseDates %}
-                        <td class="govuk-table__cell">{{ releaseDate.adjusted | date('DD MMMM YYYY') }}<br/>
-                            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom:0;">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }} – {{releaseDate.adjustedByDays}} days</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    {% include "./breakdown/datesWithAdjustments.njk" %}
 {% endif %}
