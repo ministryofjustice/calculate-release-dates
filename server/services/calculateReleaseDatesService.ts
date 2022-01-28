@@ -4,6 +4,7 @@ import {
   BookingCalculation,
   CalculationBreakdown,
   DateBreakdown,
+  ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
@@ -329,25 +330,15 @@ export default class CalculateReleaseDatesService {
   }
 
   private mapServerErrorToString(
-    e: {
-      message: string
-      code:
-        | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE'
-        | 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE'
-        | 'SENTENCE_HAS_NO_DURATION'
-        | 'OFFENCE_MISSING_DATE'
-        | 'REMAND_FROM_TO_DATES_REQUIRED'
-      sentenceSequence?: number
-      arguments: string[]
-    },
+    validationMessage: ValidationMessage,
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
   ): string {
     const sentencesAndOffence =
-      e.sentenceSequence && sentencesAndOffences.find(s => s.sentenceSequence === e.sentenceSequence)
-    switch (e.code) {
+      validationMessage.sentenceSequence &&
+      sentencesAndOffences.find(s => s.sentenceSequence === validationMessage.sentenceSequence)
+    switch (validationMessage.code) {
       case 'UNSUPPORTED_SENTENCE_TYPE':
-        return e.arguments[0]
+        return validationMessage.arguments[0]
       case 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE':
         return `The offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must be before the sentence date.`
       case 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE':
@@ -359,7 +350,7 @@ export default class CalculateReleaseDatesService {
       case 'REMAND_FROM_TO_DATES_REQUIRED':
         return `Remand periods must have a from and to date`
       default:
-        throw new Error(`Uknown validation code ${e.code}`)
+        throw new Error(`Uknown validation code ${validationMessage.code}`)
     }
   }
 }
