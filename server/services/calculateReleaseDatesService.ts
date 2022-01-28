@@ -10,6 +10,11 @@ import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prison
 import ErrorMessage from '../types/ErrorMessage'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import logger from '../../logger'
+import CalculationRule from '../enumerations/calculationRule'
+import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
+import { longDateFormat, arithmeticToWords, daysArithmeticToWords } from '../utils/utils'
+import ReleaseDateType from '../enumerations/releaseDateType'
+import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 
 type TemporaryValidationMessages = {
   type: 'UNSUPPORTED' | 'VALIDATION' | 'VALID'
@@ -75,12 +80,14 @@ export default class CalculateReleaseDatesService {
   ): Promise<{
     calculationBreakdown?: CalculationBreakdown
     effectiveDates?: { [key: string]: DateBreakdown }
+    releaseDatesWithAdjustments: ReleaseDateWithAdjustments[]
   }> {
     try {
       const breakdown = await this.getCalculationBreakdown(calculationRequestId, token)
       return {
         calculationBreakdown: breakdown,
         effectiveDates: this.getEffectiveDates(releaseDates, breakdown),
+        releaseDatesWithAdjustments: this.extractReleaseDatesWithAdjustments(breakdown),
       }
     } catch (error) {
       // If an error happens in this breakdown, still display the release dates.
@@ -88,7 +95,109 @@ export default class CalculateReleaseDatesService {
       return {
         calculationBreakdown: null,
         effectiveDates: null,
+        releaseDatesWithAdjustments: null,
       }
+    }
+  }
+
+  // TODO expand this functionality to retrieve the 'other key dates with adjustments' based on the rules from the
+  //  api call, e.g. CRD and SLED
+  private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
+    const releaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = []
+    if (breakdown.breakdownByReleaseDateType.HDCED) {
+      const hdcedDetails = breakdown.breakdownByReleaseDateType.HDCED
+      releaseDatesWithAdjustments.push(
+        this.hdcedRulesToAdjustmentRow(
+          hdcedDetails.rules,
+          hdcedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
+          hdcedDetails.releaseDate,
+          hdcedDetails.unadjustedDate,
+          hdcedDetails.adjustedDays
+        )
+      )
+    }
+    if (breakdown.breakdownByReleaseDateType.TUSED) {
+      const tusedDetails = breakdown.breakdownByReleaseDateType.TUSED
+      releaseDatesWithAdjustments.push(
+        this.tusedRulesToAdjustmentRow(
+          tusedDetails.rules,
+          tusedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
+          tusedDetails.releaseDate,
+          tusedDetails.unadjustedDate,
+          tusedDetails.adjustedDays
+        )
+      )
+    }
+    return releaseDatesWithAdjustments
+  }
+
+  private hdcedRulesToAdjustmentRow(
+    rules: string[],
+    rulesWithExtraAdjustments: RulesWithExtraAdjustments,
+    releaseDate: string,
+    unadjustedDate: string,
+    adjustedDays: number
+  ): ReleaseDateWithAdjustments {
+    if (rules.includes(CalculationRule.HDCED_MINIMUM_14D)) {
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_MINIMUM_14D
+      return this.createHDCEDAdjustmentRow(
+        releaseDate,
+        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`
+      )
+    }
+
+    if (rules.includes(CalculationRule.HDCED_GE_12W_LT_18M)) {
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_GE_12W_LT_18M
+      return this.createHDCEDAdjustmentRow(
+        releaseDate,
+        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
+          adjustedDays
+        )}`
+      )
+    }
+
+    if (rules.includes(CalculationRule.HDCED_GE_18M_LT_4Y)) {
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_GE_18M_LT_4Y
+      return this.createHDCEDAdjustmentRow(
+        releaseDate,
+        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`
+      )
+    }
+    return null
+  }
+
+  private tusedRulesToAdjustmentRow(
+    rules: string[],
+    rulesWithExtraAdjustments: RulesWithExtraAdjustments,
+    releaseDate: string,
+    unadjustedDate: string,
+    adjustedDays: number
+  ): ReleaseDateWithAdjustments {
+    if (rules.includes(CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y)) {
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments[CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y]
+      return this.createTUSEDAdjustmentRow(
+        releaseDate,
+        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
+          adjustedDays
+        )}`
+      )
+    }
+    return null
+  }
+
+  private createHDCEDAdjustmentRow(releaseDate: string, hintText: string): ReleaseDateWithAdjustments {
+    return {
+      releaseDate,
+      releaseDateType: ReleaseDateType.HDCED,
+      hintText,
+    }
+  }
+
+  private createTUSEDAdjustmentRow(releaseDate: string, hintText: string): ReleaseDateWithAdjustments {
+    return {
+      releaseDate,
+      releaseDateType: ReleaseDateType.TUSED,
+      hintText,
     }
   }
 

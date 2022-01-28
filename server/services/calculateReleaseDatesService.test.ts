@@ -28,6 +28,7 @@ const calculationResults: BookingCalculation = {
     SLED: '2021-10-28',
     HDCED: '2021-10-10',
   },
+  effectiveSentenceLength: null,
   calculationRequestId,
 }
 const calculationBreakdown: CalculationBreakdown = {
@@ -54,6 +55,7 @@ const calculationBreakdown: CalculationBreakdown = {
       caseSequence: 1,
     },
   ],
+  breakdownByReleaseDateType: {},
 }
 
 const sentencesAndOffences = [
@@ -235,6 +237,18 @@ describe('Calculate release dates service tests', () => {
         SED: { unadjusted: '2015-10-11', adjusted: '2015-09-27', daysFromSentenceStart: 242, adjustedByDays: 14 },
         CRD: { unadjusted: '2015-06-12', adjusted: '2015-05-29', daysFromSentenceStart: 121, adjustedByDays: 14 },
       })
+      expect(result.releaseDatesWithAdjustments).toEqual([
+        {
+          releaseDate: '2015-03-28',
+          releaseDateType: 'HDCED',
+          hintText: '16 February 2015 plus 61 days minus 21 days',
+        },
+        {
+          releaseDate: '2016-05-26',
+          releaseDateType: 'TUSED',
+          hintText: '16 June 2015 plus 12 months minus 21 days',
+        },
+      ])
     })
 
     it('PSI example 25', async () => {
@@ -251,6 +265,18 @@ describe('Calculate release dates service tests', () => {
         SED: { unadjusted: '2015-12-21', adjusted: '2015-12-21', daysFromSentenceStart: 303, adjustedByDays: 0 },
         CRD: { unadjusted: '2015-07-23', adjusted: '2015-07-23', daysFromSentenceStart: 152, adjustedByDays: 0 },
       })
+      expect(result.releaseDatesWithAdjustments).toEqual([
+        {
+          releaseDate: '2015-03-28',
+          releaseDateType: 'HDCED',
+          hintText: '16 February 2015 plus 61 days minus 21 days',
+        },
+        {
+          releaseDate: '2016-05-26',
+          releaseDateType: 'TUSED',
+          hintText: '16 June 2015 plus 12 months minus 21 days',
+        },
+      ])
     })
   })
 
