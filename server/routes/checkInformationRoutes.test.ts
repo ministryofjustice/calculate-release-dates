@@ -117,10 +117,10 @@ describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.validateNomisInformation.mockReturnValue({
+    calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
       messageType: ErrorMessageType.VALIDATION,
-    })
+    } as never)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
       .expect(200)
@@ -134,7 +134,7 @@ describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.validateNomisInformation.mockReturnValue({ messages: [] })
+    calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
       .expect(200)
@@ -147,10 +147,10 @@ describe('Check information routes tests', () => {
   it('POST /calculation/:nomsId/check-information should redirect if validation fails', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.validateNomisInformation.mockReturnValue({
+    calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
       messageType: ErrorMessageType.VALIDATION,
-    })
+    } as never)
 
     return request(app)
       .post('/calculation/A1234AA/check-information')

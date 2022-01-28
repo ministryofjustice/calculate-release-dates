@@ -18,7 +18,6 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import EntryPointService from '../services/entryPointService'
 import { FullPageError } from '../types/FullPageError'
-import { ErrorMessageType } from '../types/ErrorMessages'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 
 jest.mock('../services/userService')
@@ -272,52 +271,6 @@ describe('Calculation routes tests related to check-information', () => {
         expect(res.text).toContain('consecutive to')
         expect(res.text).toContain('court case 1 count 1')
         expect(res.text).toContain('href="/?prisonId=A1234AA"')
-      })
-  })
-
-  it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.validateNomisInformation.mockReturnValue({
-      messages: [{ text: 'An error occurred with the nomis information' }],
-      messageType: ErrorMessageType.VALIDATION,
-    })
-    return request(app)
-      .get('/calculation/A1234AA/check-information?hasErrors=true')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('An error occurred with the nomis information')
-        expect(res.text).toContain('Update these details in NOMIS and then')
-      })
-  })
-
-  it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.validateNomisInformation.mockReturnValue({ messages: [] })
-    return request(app)
-      .get('/calculation/A1234AA/check-information?hasErrors=true')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).not.toContain('Update these details in NOMIS and then')
-      })
-  })
-
-  it('POST /calculation/:nomsId/check-information should redirect if validation fails', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.validateNomisInformation.mockReturnValue({
-      messages: [{ text: 'An error occurred with the nomis information' }],
-      messageType: ErrorMessageType.VALIDATION,
-    })
-
-    return request(app)
-      .post('/calculation/A1234AA/check-information')
-      .expect(302)
-      .expect(res => {
-        expect(res.redirect).toBeTruthy()
       })
   })
 

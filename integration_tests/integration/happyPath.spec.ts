@@ -21,6 +21,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubConfirmCalculation')
     cy.task('stubGetNextWorkingDay')
     cy.task('stubGetPreviousWorkingDay')
+    cy.task('stubValidate')
   })
 
   it('Standalone user journey', () => {

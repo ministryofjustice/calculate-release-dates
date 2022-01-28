@@ -38,7 +38,8 @@ export default class CheckInformationRoutes {
       ),
       dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
       validationErrors:
-        req.query.hasErrors && this.calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences),
+        req.query.hasErrors &&
+        (await this.calculateReleaseDatesService.validateBackend(nomsId, sentencesAndOffences, token)),
     })
   }
 
@@ -52,7 +53,7 @@ export default class CheckInformationRoutes {
       prisonerDetail.bookingId,
       token
     )
-    const errors = this.calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences)
+    const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, sentencesAndOffences, token)
     if (errors.messages.length > 0) {
       return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
     }
