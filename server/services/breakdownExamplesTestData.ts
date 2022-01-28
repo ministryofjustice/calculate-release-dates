@@ -7,6 +7,7 @@ export function breakdownAndEffectiveDateMismatchCalc(): BookingCalculation {
   return {
     dates: { SLED: '2015-09-27', CRD: '2015-05-29' },
     calculationRequestId: 920,
+    effectiveSentenceLength: null,
   }
 }
 
@@ -26,12 +27,14 @@ export function breakdownAndEffectiveDateMismatchBreakdown(): CalculationBreakdo
       },
     ],
     consecutiveSentence: null,
+    breakdownByReleaseDateType: {},
   }
 }
 export function psiExample16CalculationResults(): BookingCalculation {
   return {
     dates: { SED: '2015-09-27', LED: '2015-07-28', CRD: '2015-05-29', HDCED: '2015-03-31', ESED: '2015-10-11' },
     calculationRequestId: 920,
+    effectiveSentenceLength: null,
   }
 }
 
@@ -62,6 +65,22 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
       },
     ],
     consecutiveSentence: null,
+    breakdownByReleaseDateType: {
+      TUSED: {
+        rules: ['TUSED_LICENCE_PERIOD_LT_1Y'],
+        rulesWithExtraAdjustments: { TUSED_LICENCE_PERIOD_LT_1Y: { adjustmentValue: 12, type: 'Months' } },
+        adjustedDays: -21,
+        releaseDate: '2016-05-26',
+        unadjustedDate: '2015-06-16',
+      },
+      HDCED: {
+        rules: ['HDCED_GE_12W_LT_18M'],
+        rulesWithExtraAdjustments: { HDCED_GE_12W_LT_18M: { adjustmentValue: 61, type: 'Days' } },
+        adjustedDays: -21,
+        releaseDate: '2015-03-28',
+        unadjustedDate: '2015-02-16',
+      },
+    },
   }
 }
 
@@ -76,6 +95,7 @@ export function psiExample25CalculationResults(): BookingCalculation {
       ESED: '2015-12-21',
     },
     calculationRequestId: 923,
+    effectiveSentenceLength: null,
   }
 }
 
@@ -108,6 +128,22 @@ export function psiExample25CalculationBreakdown(): CalculationBreakdown {
           consecutiveToCaseSequence: 1,
         },
       ],
+    },
+    breakdownByReleaseDateType: {
+      TUSED: {
+        rules: ['TUSED_LICENCE_PERIOD_LT_1Y'],
+        rulesWithExtraAdjustments: { TUSED_LICENCE_PERIOD_LT_1Y: { adjustmentValue: 12, type: 'Months' } },
+        adjustedDays: -21,
+        releaseDate: '2016-05-26',
+        unadjustedDate: '2015-06-16',
+      },
+      HDCED: {
+        rules: ['HDCED_GE_12W_LT_18M'],
+        rulesWithExtraAdjustments: { HDCED_GE_12W_LT_18M: { adjustmentValue: 61, type: 'Days' } },
+        adjustedDays: -21,
+        releaseDate: '2015-03-28',
+        unadjustedDate: '2015-02-16',
+      },
     },
   }
 }

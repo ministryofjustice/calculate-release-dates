@@ -50,8 +50,8 @@ context('Calculation summary', () => {
     calculationSummaryPage.consecutiveDatesTable().should('contain.text', '20 November 2018')
     calculationSummaryPage.consecutiveDatesTable().should('contain.text', '13 May 2017')
 
-    calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '20 November 2018 – 15 days')
-    calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '13 May 2017 – 6 days')
+    calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '20 November 2018 minus 15 days')
+    calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '13 May 2017 minus 6 days')
   })
 
   it('Error when NOMIS data has changed', () => {

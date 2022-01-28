@@ -1,3 +1,6 @@
+import dayjs from 'dayjs'
+import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -31,5 +34,23 @@ export const indexBy = <T, K>(items: T[], groupingFunction: (item: T) => K): Map
     return result
   }, new Map<K, T>())
 }
+
+export const longDateFormat = (dateString: string): string => dayjs(dateString).format('DD MMMM YYYY')
+
+function pluraliseDuration(values: number, units = 'DAYS') {
+  return values !== 1 ? units.toLowerCase() : units.toLowerCase().slice(0, -1)
+}
+
+export const arithmeticToWords = (adjustmentDuration: AdjustmentDuration): string => {
+  const { adjustmentValue, type } = adjustmentDuration
+  return adjustmentValue < 0
+    ? `minus ${Math.abs(adjustmentValue)} ${pluraliseDuration(Math.abs(adjustmentValue), type)}`
+    : `plus ${Math.abs(adjustmentValue)} ${pluraliseDuration(Math.abs(adjustmentValue), type)}`
+}
+
+export const daysArithmeticToWords = (n: number): string =>
+  n < 0
+    ? `minus ${Math.abs(n)} ${pluraliseDuration(Math.abs(n))}`
+    : `plus ${Math.abs(n)} ${pluraliseDuration(Math.abs(n))}`
 
 export default convertToTitleCase

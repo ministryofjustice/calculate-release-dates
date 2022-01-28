@@ -19,6 +19,7 @@ import {
 import EntryPointService from '../services/entryPointService'
 import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
+import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -131,6 +132,7 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
       caseSequence: 1,
     },
   ],
+  breakdownByReleaseDateType: {},
 }
 
 const stubbedEffectiveDates: { [key: string]: DateBreakdown } = {
@@ -146,6 +148,12 @@ const stubbedEffectiveDates: { [key: string]: DateBreakdown } = {
     adjustedByDays: 18,
     daysFromSentenceStart: 100,
   },
+}
+
+const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments = {
+  releaseDateType: 'HDCED',
+  releaseDate: '13 May 2029',
+  hintText: '14 May 2029 minus 1 day',
 }
 
 beforeEach(() => {
@@ -164,6 +172,7 @@ describe('Calculation routes tests', () => {
     calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       effectiveDates: stubbedEffectiveDates,
+      releaseDatesWithAdjustments: [stubbedReleaseDatesWithAdjustments],
     })
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
@@ -184,7 +193,10 @@ describe('Calculation routes tests', () => {
         expect(res.text).not.toContain('Consecutive sentence')
         expect(res.text).toContain('Release dates with adjustments')
         expect(res.text).toContain('03 February 2021')
-        expect(res.text).toContain('15 January 2021 – 18 days')
+        expect(res.text).toContain('15 January 2021 minus 18 days')
+        expect(res.text).toContain('HDCED with adjustments')
+        expect(res.text).toContain('13 May 2029')
+        expect(res.text).toContain('14 May 2029 minus 1 day')
       })
   })
 
