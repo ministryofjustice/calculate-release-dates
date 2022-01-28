@@ -11,6 +11,22 @@ import ErrorMessage from '../types/ErrorMessage'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import logger from '../../logger'
 
+type TemporaryValidationMessages = {
+  type: 'UNSUPPORTED' | 'VALIDATION' | 'VALID'
+  messages: {
+    message: string
+    code:
+      | 'UNSUPPORTED_SENTENCE_TYPE'
+      | 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE'
+      | 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE'
+      | 'SENTENCE_HAS_NO_DURATION'
+      | 'OFFENCE_MISSING_DATE'
+      | 'REMAND_FROM_TO_DATES_REQUIRED'
+    sentenceSequence?: number
+    arguments: string[]
+  }[]
+}
+
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
@@ -204,6 +220,60 @@ export default class CalculateReleaseDatesService {
     if (a.sentence.caseSequence > b.sentence.caseSequence) return 1
     if (a.sentence.caseSequence < b.sentence.caseSequence) return -1
     return a.sentence.lineSequence - b.sentence.lineSequence
+  }
+
+  async validateBackend(
+    prisonId: string,
+    sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
+  ): Promise<ErrorMessages> {
+    const errors: TemporaryValidationMessages = {
+      type: 'UNSUPPORTED',
+      messages: [],
+    }
+
+    return {
+      messageType: errors.type === 'UNSUPPORTED' ? ErrorMessageType.UNSUPPORTED : ErrorMessageType.VALIDATION,
+      messages: errors.messages.map(e => {
+        return {
+          text: this.mapServerErrorToString(e, sentencesAndOffences),
+        }
+      }),
+    }
+  }
+
+  private mapServerErrorToString(
+    e: {
+      message: string
+      code:
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE'
+        | 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE'
+        | 'SENTENCE_HAS_NO_DURATION'
+        | 'OFFENCE_MISSING_DATE'
+        | 'REMAND_FROM_TO_DATES_REQUIRED'
+      sentenceSequence?: number
+      arguments: string[]
+    },
+    sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
+  ): string {
+    const sentencesAndOffence =
+      e.sentenceSequence && sentencesAndOffences.find(s => s.sentenceSequence === e.sentenceSequence)
+    switch (e.code) {
+      case 'UNSUPPORTED_SENTENCE_TYPE':
+        return e.arguments[0]
+      case 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE':
+        return `The offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must be before the sentence date.`
+      case 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE':
+        return `The offence date range for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must be before the sentence date.`
+      case 'SENTENCE_HAS_NO_DURATION':
+        return `You must enter a length of time for the term of imprisonment for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}.`
+      case 'OFFENCE_MISSING_DATE':
+        return `The calculation must include an offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}`
+      case 'REMAND_FROM_TO_DATES_REQUIRED':
+        return `Remand periods must have a from and to date`
+      default:
+        throw new Error(`Uknown validation code ${e.code}`)
+    }
   }
 
   validateNomisInformation(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]): ErrorMessages {
