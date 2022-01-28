@@ -27,6 +27,8 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Review calculation before submitting</h1>
             {% include "../partials/calculationSummaryDates.njk" %}
+            {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
+            {% include "../partials/calculationSummary/howDatesCalculatedInset.njk" %}
         </div>
     </div>
 
@@ -48,8 +50,8 @@
                     }) }}
             </form>
             <p class="govuk-body govuk-!-font-size-16">
-                <a href={{ "/calculation/" + prisonerDetail.offenderNo +
-                    "/check-information" }} class="govuk-link">Cancel calculation</a>
+                <a class="govuk-link" href={{ "/calculation/" + prisonerDetail.offenderNo +
+                    "/check-information" }}>Cancel calculation</a>
             </p>
 
         </div>
