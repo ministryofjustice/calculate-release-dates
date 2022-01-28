@@ -5,6 +5,7 @@ import config from '../config'
 import {
   BookingCalculation,
   CalculationBreakdown,
+  ValidationMessages,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
@@ -71,6 +72,7 @@ const sentencesAndOffences = [
       {},
       { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
     ],
+    sentenceSequence: 4,
   } as PrisonApiOffenderSentenceAndOffences,
   {
     caseSequence: 1,
@@ -79,6 +81,7 @@ const sentencesAndOffences = [
     sentenceCalculationType: 'ADIMP_ORA',
     days: 1,
     offences: [{ offenceCode: 'GBH' }],
+    sentenceSequence: 1,
   } as PrisonApiOffenderSentenceAndOffences,
   {
     caseSequence: 2,
@@ -87,6 +90,7 @@ const sentencesAndOffences = [
     sentenceCalculationType: 'ADIMP_ORA',
     days: 1,
     offences: [{ offenceStartDate: '2021-04-03', offenceEndDate: '2021-04-03' }],
+    sentenceSequence: 3,
   } as PrisonApiOffenderSentenceAndOffences,
   {
     caseSequence: 1,
@@ -95,8 +99,85 @@ const sentencesAndOffences = [
     sentenceCalculationType: 'ADIMP_ORA',
     days: 1,
     offences: [{ offenceCode: 'GBH', offenceStartDate: '2021-04-03' }],
+    sentenceSequence: 2,
   } as PrisonApiOffenderSentenceAndOffences,
 ]
+
+const invalidValidationResult: ValidationMessages = {
+  type: 'VALIDATION',
+  messages: [
+    {
+      code: 'OFFENCE_MISSING_DATE',
+      sentenceSequence: 1,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE',
+      sentenceSequence: 2,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE',
+      sentenceSequence: 3,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE',
+      sentenceSequence: 3,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'OFFENCE_MISSING_DATE',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'SENTENCE_HAS_NO_DURATION',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'REMAND_FROM_TO_DATES_REQUIRED',
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'REMAND_FROM_TO_DATES_REQUIRED',
+      message: '',
+      arguments: [],
+    },
+  ],
+}
+
+const unsupportedValidationResult: ValidationMessages = {
+  type: 'UNSUPPORTED',
+  messages: [
+    {
+      code: 'UNSUPPORTED_SENTENCE_TYPE',
+      sentenceSequence: 1,
+      message: '',
+      arguments: ['This sentence is unsupported'],
+    },
+  ],
+}
 
 const token = 'token'
 
@@ -281,8 +362,16 @@ describe('Calculate release dates service tests', () => {
   })
 
   describe('Validation tests', () => {
+    it('Test validation passes', async () => {
+      fakeApi.get(`/calculation/${prisonerId}/validate`).reply(204)
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, sentencesAndOffences, token)
+      expect(result.messages).toEqual([])
+    })
+
     it('Test for missing offence dates', async () => {
-      const result = calculateReleaseDatesService.validateNomisInformation(sentencesAndOffences)
+      fakeApi.get(`/calculation/${prisonerId}/validate`).reply(200, invalidValidationResult)
+
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, sentencesAndOffences, token)
 
       expect(result.messages).toEqual([
         { text: 'The calculation must include an offence date for court case 1 count 1' },
@@ -293,16 +382,25 @@ describe('Calculate release dates service tests', () => {
         { text: 'The offence date for court case 2 count 3 must be before the sentence date.' },
         { text: 'The offence date range for court case 2 count 3 must be before the sentence date.' },
         { text: 'You must enter a length of time for the term of imprisonment for court case 2 count 3.' },
+        { text: 'Remand periods must have a from and to date' },
+        { text: 'Remand periods must have a from and to date' },
       ])
       expect(result.messageType).toBe(ErrorMessageType.VALIDATION)
     })
     it('Test for unsupported sentences', async () => {
-      const result = calculateReleaseDatesService.validateNomisInformation([
-        {
-          sentenceCalculationType: 'UNSUPORTED',
-          sentenceTypeDescription: 'This sentence is unsupported',
-        },
-      ])
+      fakeApi.get(`/calculation/${prisonerId}/validate`).reply(200, unsupportedValidationResult)
+
+      const result = await calculateReleaseDatesService.validateBackend(
+        prisonerId,
+        [
+          {
+            sentenceCalculationType: 'UNSUPORTED',
+            sentenceTypeDescription: 'This sentence is unsupported',
+            sentenceSequence: 1,
+          },
+        ],
+        token
+      )
 
       expect(result.messages).toEqual([{ text: 'This sentence is unsupported' }])
       expect(result.messageType).toBe(ErrorMessageType.UNSUPPORTED)

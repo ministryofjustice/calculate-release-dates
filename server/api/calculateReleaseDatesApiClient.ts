@@ -3,6 +3,7 @@ import RestClient from './restClient'
 import {
   BookingCalculation,
   CalculationBreakdown,
+  ValidationMessages,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
@@ -51,5 +52,9 @@ export default class CalculateReleaseDatesApiClient {
 
   getPreviousWorkingDay(date: string): Promise<WorkingDay> {
     return this.restClient.get({ path: `/working-day/previous/${date}` }) as Promise<WorkingDay>
+  }
+
+  validate(prisonerId: string): Promise<ValidationMessages> {
+    return this.restClient.get({ path: `/calculation/${prisonerId}/validate` }) as Promise<ValidationMessages>
   }
 }

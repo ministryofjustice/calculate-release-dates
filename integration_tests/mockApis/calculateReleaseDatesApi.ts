@@ -120,6 +120,17 @@ export default {
       },
     })
   },
+  stubValidate: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/A1234AB/validate`,
+      },
+      response: {
+        status: 204,
+      },
+    })
+  },
   stubGetCalculationBreakdown: (): SuperAgentRequest => {
     return stubFor({
       request: {

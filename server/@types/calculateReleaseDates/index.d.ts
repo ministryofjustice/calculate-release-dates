@@ -25,6 +25,10 @@ export interface paths {
     /** Finds the next working day, adjusting for weekends and bank holidays */
     get: operations['nextWorkingDay']
   }
+  '/calculation/{prisonerId}/validate': {
+    /** This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine */
+    get: operations['validate']
+  }
   '/calculation/results/{prisonerId}/{bookingId}': {
     /** This endpoint will return the confirmed release dates based on a prisoners booking */
     get: operations['getConfirmedCalculationResults']
@@ -43,14 +47,10 @@ export interface components {
   schemas: {
     BookingCalculation: {
       dates: { [key: string]: string }
-      /** Format: int64 */
       calculationRequestId: number
       effectiveSentenceLength: {
-        /** Format: int32 */
         years?: number
-        /** Format: int32 */
         months?: number
-        /** Format: int32 */
         days?: number
         negative?: boolean
         zero?: boolean
@@ -62,9 +62,7 @@ export interface components {
           dateBased?: boolean
           timeBased?: boolean
           duration?: {
-            /** Format: int64 */
             seconds?: number
-            /** Format: int32 */
             nano?: number
             negative?: boolean
             zero?: boolean
@@ -74,22 +72,31 @@ export interface components {
       }
     }
     WorkingDay: {
-      /** Format: date */
       date: string
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
     }
-    /** @description Adjustments details associated that are specifically added as part of a rule */
+    ValidationMessage: {
+      message: string
+      code:
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE'
+        | 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE'
+        | 'SENTENCE_HAS_NO_DURATION'
+        | 'OFFENCE_MISSING_DATE'
+        | 'REMAND_FROM_TO_DATES_REQUIRED'
+      sentenceSequence?: number
+      arguments: string[]
+    }
+    ValidationMessages: {
+      type: 'UNSUPPORTED' | 'VALIDATION' | 'VALID'
+      messages: components['schemas']['ValidationMessage'][]
+    }
+    /** Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
-      /**
-       * Format: int32
-       * @description Amount of adjustment
-       */
+      /** Amount of adjustment */
       adjustmentValue: number
-      /**
-       * @description Unit of adjustment
-       * @example DAYS
-       */
+      /** Unit of adjustment */
       type:
         | 'Nanos'
         | 'Micros'
@@ -108,84 +115,57 @@ export interface components {
         | 'Eras'
         | 'Forever'
     }
-    /** @description Calculation breakdown details */
+    /** Calculation breakdown details */
     CalculationBreakdown: {
       concurrentSentences: components['schemas']['ConcurrentSentenceBreakdown'][]
       consecutiveSentence?: components['schemas']['ConsecutiveSentenceBreakdown']
-      /** @description Breakdown details in a map keyed by release date type */
+      /** Breakdown details in a map keyed by release date type */
       breakdownByReleaseDateType: {
         [key: string]: components['schemas']['ReleaseDateCalculationBreakdown']
       }
     }
     ConcurrentSentenceBreakdown: {
-      /** Format: date */
       sentencedAt: string
       sentenceLength: string
-      /** Format: int32 */
       sentenceLengthDays: number
       dates: { [key: string]: components['schemas']['DateBreakdown'] }
-      /** Format: int32 */
       lineSequence: number
-      /** Format: int32 */
       caseSequence: number
     }
     ConsecutiveSentenceBreakdown: {
-      /** Format: date */
       sentencedAt: string
       sentenceLength: string
-      /** Format: int32 */
       sentenceLengthDays: number
       dates: { [key: string]: components['schemas']['DateBreakdown'] }
       sentenceParts: components['schemas']['ConsecutiveSentencePart'][]
     }
     ConsecutiveSentencePart: {
-      /** Format: int32 */
       lineSequence: number
-      /** Format: int32 */
       caseSequence: number
       sentenceLength: string
-      /** Format: int32 */
       sentenceLengthDays: number
-      /** Format: int32 */
       consecutiveToLineSequence?: number
-      /** Format: int32 */
       consecutiveToCaseSequence?: number
     }
     DateBreakdown: {
-      /** Format: date */
       unadjusted: string
-      /** Format: date */
       adjusted: string
-      /** Format: int64 */
       daysFromSentenceStart: number
-      /** Format: int64 */
       adjustedByDays: number
     }
-    /** @description Calculation breakdown details for a release date type */
+    /** Calculation breakdown details for a release date type */
     ReleaseDateCalculationBreakdown: {
-      /**
-       * @description Calculation rules used to determine this calculation.
-       * @example [HDCED_LT_18_MONTHS]
-       */
+      /** Calculation rules used to determine this calculation. */
       rules: ('HDCED_GE_12W_LT_18M' | 'HDCED_GE_18M_LT_4Y' | 'HDCED_MINIMUM_14D' | 'TUSED_LICENCE_PERIOD_LT_1Y')[]
-      /** @description Adjustments details associated that are specifically added as part of a rule */
+      /** Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
         [key: string]: components['schemas']['AdjustmentDuration']
       }
-      /**
-       * Format: int32
-       * @description Amount of adjustment in days (excluding rule specific adjustments)
-       */
+      /** Amount of adjustment in days (excluding rule specific adjustments) */
       adjustedDays: number
-      /**
-       * Format: date
-       * @description Final release date (after all adjustments have been applied)
-       */
+      /** Final release date (after all adjustments have been applied) */
       releaseDate: string
-      /**
-       * Format: date
-       * @description Based on the screen design, the unadjusted date isn't derived in a consistent manner but is set as per the screen design
-       */
+      /** Based on the screen design, the unadjusted date isn't derived in a consistent manner but is set as per the screen design */
       unadjustedDate: string
     }
   }
@@ -316,6 +296,29 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['WorkingDay']
+        }
+      }
+    }
+  }
+  /** This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine */
+  validate: {
+    parameters: {
+      path: {
+        /** The prisoners ID (aka nomsId) */
+        prisonerId: string
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ValidationMessages']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ValidationMessages']
         }
       }
     }
