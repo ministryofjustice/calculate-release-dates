@@ -118,7 +118,7 @@ export default class OtherRoutes {
     return nomisDate === calculatedDate
   }
 
-  private static areDatesSame(row: any) {
+  private static areDatesSameUsingOverrides(row: any) {
     return (
       OtherRoutes.areSame(row.CRD, row.NOMIS_CRD_OVERRIDE) &&
       OtherRoutes.areSame(row.SED, row.NOMIS_SED) &&
@@ -136,7 +136,7 @@ export default class OtherRoutes {
       OtherRoutes.areSame(row.ESED, row.NOMIS_ESED)
     )
   }
-  private static areDatesSameUsingOverrides(row: any) {
+  private static areDatesSame(row: any) {
     return (
       OtherRoutes.areSame(row.CRD, row.NOMIS_CRD) &&
       OtherRoutes.areSame(row.SED, row.NOMIS_SED) &&
