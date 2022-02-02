@@ -16,10 +16,11 @@ export interface paths {
   '/api/adjudications/adjudication/{adjudicationNumber}': {
     /** Requires MAINTAIN_ADJUDICATIONS access and write scope */
     get: operations['getAdjudicationUsingGET']
+    /** Requires MAINTAIN_ADJUDICATIONS access and write scope */
+    put: operations['updateAdjudicationUsingPUT']
   }
-  '/api/adjudications/search': {
-    /** Requires MAINTAIN_ADJUDICATIONS access */
-    post: operations['searchUsingPOST']
+  '/api/adjustments/{bookingId}/sentence-and-booking': {
+    get: operations['getBookingSentenceAdjustments']
   }
   '/api/agencies': {
     /** List of active agencies. */
@@ -126,6 +127,10 @@ export interface paths {
     /** Update offender attendance and pay. */
     put: operations['updateAttendance_1']
   }
+  '/api/bookings/iepSummary': {
+    /** Must have prisoner in users caseload access data */
+    post: operations['getBookingIEPSummaryDetailForBookingIdsUsingPOST']
+  }
   '/api/bookings/mainOffence': {
     /** Post version to allow specifying a large number of bookingIds. */
     post: operations['getMainOffenceUsingPOST']
@@ -180,6 +185,9 @@ export interface paths {
   '/api/bookings/offenders/{agencyId}/list': {
     /** Basic offender details by booking ids */
     post: operations['getBasicInmateDetailsForOffendersByBookingIds']
+  }
+  '/api/bookings/proven-adjudications': {
+    post: operations['getProvenAdjudicationSummaryForBookingsUsingPOST']
   }
   '/api/bookings/v2': {
     /** Returns data that is available to the users caseload privileges, at least one attribute of a prisonId, bookingId or offenderNo must be specified */
@@ -371,7 +379,7 @@ export interface paths {
     get: operations['getSecondaryLanguages']
   }
   '/api/bookings/{bookingId}/sentenceAdjustments': {
-    get: operations['getBookingSentenceAdjustments']
+    get: operations['getBookingSentenceAdjustments_1']
   }
   '/api/bookings/{bookingId}/sentenceDetail': {
     /** <h3>Algorithm</h3><ul><li>If there is a confirmed release date, the offender release date is the confirmed release date.</li><li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li><li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li></ul> */
@@ -385,13 +393,17 @@ export interface paths {
     /** visits with visitor list for offender. */
     get: operations['getBookingVisitsWithVisitor']
   }
-  '/api/bookings/{bookingId}/visits/last': {
-    /** The most recent visit for the offender. */
-    get: operations['getBookingVisitsLast']
-  }
   '/api/bookings/{bookingId}/visits/next': {
-    /** The next visit for the offender. */
+    /** The next visit for the offender. Will return 200 with no body if no next visit is scheduled */
     get: operations['getBookingVisitsNext']
+  }
+  '/api/bookings/{bookingId}/visits/prisons': {
+    /** To be used for filtering visits by prison */
+    get: operations['getBookingVisitsPrisons']
+  }
+  '/api/bookings/{bookingId}/visits/summary': {
+    /** Will return whether there are any visits and also the date of the next scheduled visit */
+    get: operations['getBookingVisitsSummary']
   }
   '/api/bookings/{bookingId}/visits/today': {
     /** Today's scheduled visits for offender. */
@@ -422,9 +434,6 @@ export interface paths {
   '/api/cell/{locationId}/history': {
     get: operations['getBedAssignmentsHistoryUsingGET']
   }
-  '/api/data-compliance/offenders-with-images': {
-    get: operations['getOffendersWithImagesCapturedInRangeUsingGET']
-  }
   '/api/education/prisoner/{offenderNo}': {
     /** A list of offender educations. */
     get: operations['getPrisonerEducations']
@@ -441,8 +450,13 @@ export interface paths {
     /** Empty list will be returned for no matches */
     get: operations['getOffenderIdentifiersByTypeAndValue']
   }
+  '/api/images/offenders': {
+    get: operations['getOffendersWithImagesCapturedInRangeUsingGET']
+  }
   '/api/images/offenders/{offenderNo}': {
     get: operations['getImagesByOffender']
+    /** Requires ROLE_IMAGE_UPLOAD. */
+    post: operations['putImageMultiPartUsingPOST']
   }
   '/api/images/{imageId}': {
     /** Image detail (with image data). */
@@ -484,6 +498,9 @@ export interface paths {
     /** Specified key worker's currently assigned offenders. */
     get: operations['getAllocationsForKeyworker']
   }
+  '/api/locations/code/{code}': {
+    get: operations['getLocationByCodeUsingGET']
+  }
   '/api/locations/description/{locationPrefix}/inmates': {
     /** List of offenders at location. */
     get: operations['getOffendersAtLocationDescription']
@@ -504,6 +521,9 @@ export interface paths {
   '/api/movements/agency/{agencyId}/currently-out': {
     /** Information on offenders currently out. */
     get: operations['getOffendersCurrentlyOut_1']
+  }
+  '/api/movements/agency/{agencyId}/temporary-absences': {
+    get: operations['getTemporaryAbsencesUsingGET']
   }
   '/api/movements/livingUnit/{livingUnitId}/currently-out': {
     /** Information on offenders currently out. */
@@ -798,6 +818,10 @@ export interface paths {
   '/api/offenders/{offenderNo}/booking': {
     post: operations['newBookingUsingPOST']
   }
+  '/api/offenders/{offenderNo}/booking/latest/sentence-summary': {
+    /** Retrieve an single offender sentence details */
+    get: operations['getLatestSentenceSummaryUsingGET']
+  }
   '/api/offenders/{offenderNo}/bookings/latest/alerts': {
     /** System or cat tool access only */
     get: operations['getAlertsForLatestBookingByOffenderNoUsingGET']
@@ -813,6 +837,9 @@ export interface paths {
   '/api/offenders/{offenderNo}/contacts': {
     /** Active Contacts including restrictions, using latest offender booking */
     get: operations['getOffenderContacts']
+  }
+  '/api/offenders/{offenderNo}/court-transfer-in': {
+    put: operations['courtTransferInUsingPUT']
   }
   '/api/offenders/{offenderNo}/damage-obligations': {
     get: operations['getOffenderDamageObligationsUsingGET']
@@ -852,6 +879,9 @@ export interface paths {
   '/api/offenders/{offenderNo}/sentences': {
     /** Retrieve an single offender sentence details */
     get: operations['getOffenderSentenceDetails']
+  }
+  '/api/offenders/{offenderNo}/temporary-absence-arrival': {
+    put: operations['temporaryAbsenceArrivalUsingPUT']
   }
   '/api/offenders/{offenderNo}/transaction-history': {
     /** Transactions are returned in order of entryDate descending and sequence ascending).<br/>All transaction amounts are represented as pence values. */
@@ -893,6 +923,9 @@ export interface paths {
   '/api/offender-sentences/home-detention-curfew-candidates': {
     /** Version 1 */
     get: operations['getOffenderSentencesHomeDetentionCurfewCandidates']
+  }
+  '/api/offender-sentences/home-detention-curfews/latest': {
+    post: operations['getBatchLatestHomeDetentionCurfewUsingPOST']
   }
   '/api/persons/{personId}/addresses': {
     /** The addresses for person */
@@ -1236,13 +1269,6 @@ export interface components {
       /** Offence Id */
       id?: string
     }
-    /** Search for adjudications */
-    AdjudicationSearchRequest: {
-      /** The list of adjudications ids that mask the results */
-      adjudicationIdsMask: number[]
-      /** Agency Id */
-      agencyLocationId?: string
-    }
     AdjudicationSearchResponse: {
       /** Complete list of agencies where this offender has had adjudications */
       agencies?: components['schemas']['Agency'][]
@@ -1583,6 +1609,8 @@ export interface components {
     }
     /** Adjudication award / sanction */
     Award: {
+      /** Id of booking */
+      bookingId: number
       /** Optional details */
       comment?: string
       /** Number of days duration */
@@ -1696,6 +1724,31 @@ export interface components {
     BookingActivity: {
       activityId?: number
       bookingId?: number
+    }
+    /** Sentence Adjustment values */
+    BookingAdjustment: {
+      /** Boolean flag showing if the adjustment is active */
+      active?: boolean
+      /** The 'from date' of the adjustment */
+      fromDate?: string
+      /** Number of days to adjust */
+      numberOfDays?: number
+      /** The 'to date' of the adjustment */
+      toDate?: string
+      /** Adjustment type */
+      type?:
+        | 'ADDITIONAL_DAYS_AWARDED'
+        | 'LAWFULLY_AT_LARGE'
+        | 'RESTORED_ADDITIONAL_DAYS_AWARDED'
+        | 'SPECIAL_REMISSION'
+        | 'UNLAWFULLY_AT_LARGE'
+    }
+    /** Adjustments associated at a booking level and a sentence level */
+    BookingAndSentenceAdjustments: {
+      /** Adjustments associated at a booking level (of type SPECIAL_REMISSION, ADDITIONAL_DAYS_AWARDED, RESTORED_ADDITIONAL_DAYS_AWARDED, UNLAWFULLY_AT_LARGE, LAWFULLY_AT_LARGE) */
+      bookingAdjustments?: components['schemas']['BookingAdjustment'][]
+      /** Adjustments associated at a sentence level (of type RECALL_SENTENCE_REMAND, TAGGED_BAIL, RECALL_SENTENCE_TAGGED_BAIL, REMAND or UNUSED_REMAND) */
+      sentenceAdjustments?: components['schemas']['SentenceAdjustmentValues'][]
     }
     /** Bookings */
     Bookings: {
@@ -2143,6 +2196,31 @@ export interface components {
     CourtHearings: {
       hearings?: components['schemas']['CourtHearing'][]
     }
+    /** Court case details */
+    CourtSentences: {
+      /** The begin date of the court hearings */
+      beginDate?: string
+      /** The case information number */
+      caseInfoNumber?: string
+      /** The prefix of the case number */
+      caseInfoPrefix?: string
+      /** The case sequence number for the offender */
+      caseSeq?: number
+      /** The case status */
+      caseStatus?: 'ACTIVE' | 'CLOSED' | 'INACTIVE'
+      /** The case type */
+      caseType?: string
+      /** Court details */
+      court?: components['schemas']['Agency']
+      /** The case identifier (internal) */
+      id?: number
+      /** Issuing Court Details */
+      issuingCourt?: components['schemas']['Agency']
+      /** Issuing Court Date */
+      issuingCourtDate?: string
+      /** Court sentences associated with the court case */
+      sentences?: components['schemas']['SentencesOffencesTerms'][]
+    }
     /** Create new alert */
     CreateAlert: {
       /** Code identifying the sub type of alert */
@@ -2377,6 +2455,8 @@ export interface components {
       approvalStatus?: string
       /** Approval status date. ISO-8601 format. YYYY-MM-DD */
       approvalStatusDate: string
+      /** Offender booking ID */
+      bookingId?: number
       /** HDC Checks passed date. ISO-8601 format. YYYY-MM-DD */
       checksPassedDate?: string
       /** HDC Checks passed flag */
@@ -2674,6 +2754,65 @@ export interface components {
       /** Levels */
       levels?: components['schemas']['TypeValue'][]
     }
+    /** Key Dates */
+    KeyDates: {
+      /** APD - the offender's actual parole date. */
+      actualParoleDate?: string
+      /** ADA - days added to sentence term due to adjustments. */
+      additionalDaysAwarded?: number
+      /** ARD - calculated automatic (unconditional) release date for offender. */
+      automaticReleaseDate?: string
+      /** CRD - calculated conditional release date for offender. */
+      conditionalReleaseDate?: string
+      /** Confirmed release date for offender. */
+      confirmedReleaseDate?: string
+      /** DPRRD - Detention training order post recall release date */
+      dtoPostRecallReleaseDate?: string
+      /** ERSED - the date on which offender will be eligible for early removal (under the Early Removal Scheme for foreign nationals). */
+      earlyRemovalSchemeEligibilityDate?: string
+      /** ETD - early term date for offender. */
+      earlyTermDate?: string
+      /** Effective sentence end date */
+      effectiveSentenceEndDate?: string
+      /** HDCAD - the offender's actual home detention curfew date. */
+      homeDetentionCurfewActualDate?: string
+      /** HDCED - date on which offender will be eligible for home detention curfew. */
+      homeDetentionCurfewEligibilityDate?: string
+      /** Offender's home detention curfew end date - calculated as one day before the releaseDate. */
+      homeDetentionCurfewEndDate?: string
+      /** LTD - late term date for offender. */
+      lateTermDate?: string
+      /** LED - date on which offender licence expires. */
+      licenceExpiryDate?: string
+      /** MTD - mid term date for offender. */
+      midTermDate?: string
+      /** Release date for non-DTO sentence (if applicable). This will be based on one of ARD, CRD, NPD or PRRD. */
+      nonDtoReleaseDate?: string
+      /** Indicates which type of non-DTO release date is the effective release date. One of 'ARD', 'CRD', 'NPD' or 'PRRD'. */
+      nonDtoReleaseDateType: 'ARD' | 'CRD' | 'NPD' | 'PRRD'
+      /** NPD - calculated non-parole date for offender (relating to the 1991 act). */
+      nonParoleDate?: string
+      /** PED - date on which offender is eligible for parole. */
+      paroleEligibilityDate?: string
+      /** PRRD - calculated post-recall release date for offender. */
+      postRecallReleaseDate?: string
+      /** Confirmed, actual, approved, provisional or calculated release date for offender, according to offender release date algorithm.<h3>Algorithm</h3><ul><li>If there is a confirmed release date, the offender release date is the confirmed release date.</li><li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li><li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li></ul> */
+      releaseDate?: string
+      /** ROTL - the date on which offender will be released on temporary licence. */
+      releaseOnTemporaryLicenceDate?: string
+      /** SED - date on which sentence expires. */
+      sentenceExpiryDate?: string
+      /** Sentence start date. */
+      sentenceStartDate: string
+      /** Date on which minimum term is reached for parole (indeterminate/life sentences). */
+      tariffDate?: string
+      /** TERSED - Tariff early removal scheme eligibility date */
+      tariffEarlyRemovalSchemeEligibilityDate?: string
+      /** TUSED - top-up supervision expiry date for offender. */
+      topupSupervisionExpiryDate?: string
+      /** Top-up supervision start date for offender - calculated as licence end date + 1 day or releaseDate if licence end date not set. */
+      topupSupervisionStartDate?: string
+    }
     /** Key worker allocation details */
     KeyWorkerAllocationDetail: {
       /** Agency Id */
@@ -2916,14 +3055,24 @@ export interface components {
     }
     /** Creation details for a new adjudication */
     NewAdjudication: {
+      /** The id of the agency related to this incident */
+      agencyId: string
+      /** The list of offender numbers of the offenders who were connected */
+      connectedOffenderIds?: string[]
       /** The id to indicate where the incident took place */
       incidentLocationId: number
       /** When the incident took place */
       incidentTime: string
+      /** The list of offence codes the offender may be charged with */
+      offenceCodes?: string[]
       /** Offender number (NOMS ID) */
       offenderNo: string
       /** The adjudication statement */
       statement: string
+      /** The list of offender numbers of offenders who were victims */
+      victimOffenderIds?: string[]
+      /** The list of staff ids who were victims */
+      victimStaffIds?: number[]
     }
     /** Creation details for a new appointment */
     NewAppointment: {
@@ -3090,17 +3239,23 @@ export interface components {
     }
     /** Information about an Offender's attendance at an activity */
     OffenderAttendance: {
+      /** Activity name */
+      activity?: string
       /** The current status for the offender on this activity */
       activityStatus?: string
       bookingId: number
       /** The course code */
       code?: string
+      /** Attendance comment */
+      comment?: string
       /** The course description */
       description?: string
       /** The date of this activity */
       eventDate?: string
       /** Whether the offender attended */
-      outcome?: string
+      outcome?: 'ABS' | 'ACCAB' | 'ATT' | 'CANC' | 'NREQ' | 'REST' | 'SUS' | 'UNACAB'
+      /** The Prison ID */
+      prisonId?: string
     }
     /** Offender Booking Summary */
     OffenderBooking: {
@@ -3584,10 +3739,17 @@ export interface components {
     }
     /** Offence details related to an offender */
     OffenderOffence: {
+      /** Offence Indicators */
+      indicators?: string[]
+      /** Offence Code */
       offenceCode?: string
+      /** Offence Description */
       offenceDescription?: string
+      /** Offence End Date */
       offenceEndDate?: string
+      /** Offence Start Date */
       offenceStartDate?: string
+      /** Internal ID for charge relating to offender */
       offenderChargeId?: number
     }
     /** Summary of an offender 'currently out' according to Establishment Roll */
@@ -3825,18 +3987,30 @@ export interface components {
       /** Transaction Type */
       transactionType?: string
     }
-    PageOfAdjudicationDetail: {
-      content?: components['schemas']['AdjudicationDetail'][]
-      empty?: boolean
-      first?: boolean
-      last?: boolean
-      number?: number
-      numberOfElements?: number
-      pageable?: components['schemas']['Pageable']
-      size?: number
-      sort?: components['schemas']['Sort']
-      totalElements?: number
-      totalPages?: number
+    /** Summary data for a completed movement */
+    OutOnTemporaryAbsenceSummary: {
+      /** Comment */
+      commentText?: string
+      /** Prisoner's date of birth. */
+      dateOfBirth: string
+      /** Prisoner first name. */
+      firstName: string
+      /** Prisoner's last name. */
+      lastName: string
+      /** Description of movement reason */
+      movementReason: string
+      /** The movement reason code */
+      movementReasonCode: string
+      /** Movement date and time in Europe/London local time format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS. */
+      movementTime: string
+      /** Offender number (NOMS ID) */
+      offenderNo: string
+      /** Agency travelling to */
+      toAgency?: string
+      /** Description of the agency travelling to */
+      toAgencyDescription?: string
+      /** City offender was sent to */
+      toCity?: string
     }
     PageOfAlert: {
       content?: components['schemas']['Alert'][]
@@ -4114,6 +4288,13 @@ export interface components {
       /** The Prison name. */
       premise: string
     }
+    /** Prison details */
+    PrisonDetails: {
+      /** Name of prison */
+      prison?: string
+      /** ID of prison */
+      prisonId?: string
+    }
     /** Captures what is needed for cancellation of a scheduled prison to prison move. */
     PrisonMoveCancellation: {
       /** The reason code for cancellation of the move. */
@@ -4126,6 +4307,18 @@ export interface components {
       entryDate?: string
       movementDates?: components['schemas']['MovementDate'][]
       releaseDate?: string
+    }
+    /** Prison Term */
+    PrisonTerm: {
+      /** Book Number (Prison) / Prison Number (Probation) */
+      bookNumber: string
+      /** Booking Identifier (internal) */
+      bookingId: number
+      courtSentences?: components['schemas']['CourtSentences'][]
+      keyDates?: components['schemas']['KeyDates']
+      /** Licence sentences */
+      licenceSentences?: components['schemas']['SentencesOffencesTerms'][]
+      sentenceAdjustments?: components['schemas']['SentenceAdjustmentDetail']
     }
     /** Represents the data required to schedule a prison to court hearing for an offender. */
     PrisonToCourtHearing: {
@@ -4461,6 +4654,13 @@ export interface components {
       /** The case sequence number for the offender */
       sealMark?: string
     }
+    /** Proven Adjudication Summary for offender */
+    ProvenAdjudicationSummary: {
+      /** Offender Booking Id */
+      bookingId: number
+      /** Number of proven adjudications */
+      provenAdjudicationCount: number
+    }
     /** Questionnaire */
     Questionnaire: {
       /** Code to identify this questionnaire */
@@ -4620,6 +4820,17 @@ export interface components {
       /** The period at which the appointment should repeat. */
       repeatPeriod: 'DAILY' | 'FORTNIGHTLY' | 'MONTHLY' | 'WEEKDAYS' | 'WEEKLY'
     }
+    /** Represents the data required for registering court return */
+    RequestForCourtTransferIn: {
+      /** Agency identifier */
+      agencyId: string
+      /** Additional comments */
+      commentText?: string
+      /** The date and time the movement occurred, if not supplied it will be the current time */
+      dateTime: string
+      /** Movement Reason Code */
+      movementReasonCode?: string
+    }
     /** Represents the data required receiving a prisoner under a new booking */
     RequestForNewBooking: {
       /** The time the booking in occurred, if not supplied it will be the current time */
@@ -4636,6 +4847,17 @@ export interface components {
       prisonId?: string
       /** Is this offender a youth */
       youthOffender?: boolean
+    }
+    /** Represents the data required for registering temporary absence arrival */
+    RequestForTemporaryAbsenceArrival: {
+      /** Agency identifier */
+      agencyId: string
+      /** Additional comments */
+      commentText?: string
+      /** The date and time the movement occurred, if not supplied it will be the current time */
+      dateTime: string
+      /** Movement Reason Code */
+      movementReasonCode?: string
     }
     /** Request move offender to cell swap */
     RequestMoveToCellSwap: {
@@ -5111,6 +5333,21 @@ export interface components {
       /** Number of unused remand days */
       unusedRemand?: number
     }
+    /** Sentence Adjustment values */
+    SentenceAdjustmentValues: {
+      /** Boolean flag showing if the adjustment is active */
+      active?: boolean
+      /** The 'from date' of the adjustment */
+      fromDate?: string
+      /** Number of days to adjust */
+      numberOfDays?: number
+      /** Sentence sequence */
+      sentenceSequence?: number
+      /** The 'to date' of the adjustment */
+      toDate?: string
+      /** Adjustment type */
+      type?: 'RECALL_SENTENCE_REMAND' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'TAGGED_BAIL' | 'UNUSED_REMAND'
+    }
     /** Sentence Calculation Dates */
     SentenceCalcDates: {
       /** APD - the offender's actual parole date. */
@@ -5181,6 +5418,42 @@ export interface components {
       topupSupervisionExpiryDate?: string
       /** Top-up supervision start date for offender - calculated as licence end date + 1 day or releaseDate if licence end date not set. */
       topupSupervisionStartDate?: string
+    }
+    /** Sentence Summary */
+    SentenceSummary: {
+      /** Most recent term in prison */
+      latestPrisonTerm?: components['schemas']['PrisonTerm']
+      /** Other prison terms */
+      previousPrisonTerms?: components['schemas']['PrisonTerm'][]
+      /** Prisoner Identifier */
+      prisonerNumber: string
+    }
+    /** Offender sentence and offence details */
+    SentencesOffencesTerms: {
+      /** This sentence is consecutive to this sequence (if populated) */
+      consecutiveToSequence?: number
+      /** Fine amount. */
+      fineAmount: number
+      /** Sentence line number */
+      lineSeq: number
+      /** The offences related to this sentence (will usually only have one offence per sentence) */
+      offences?: components['schemas']['OffenderOffence'][]
+      /** The sentence calculation type e.g. R or ADIMP_ORA */
+      sentenceCalculationType?: string
+      /** The sentence category e.g. 2003 or Licence */
+      sentenceCategory?: string
+      /** The sentence end date for this sentence */
+      sentenceEndDate?: string
+      /** Sentence sequence - a number representing the order */
+      sentenceSequence?: number
+      /** The sentence start date for this sentence (aka court date) */
+      sentenceStartDate?: string
+      /** This sentence status: A = Active I = Inactive */
+      sentenceStatus?: string
+      /** The sentence type description e.g. Standard Determinate Sentence */
+      sentenceTypeDescription?: string
+      /** The terms related to this sentence (will usually only have one term per sentence) */
+      terms?: components['schemas']['Terms'][]
     }
     Sort: {
       empty?: boolean
@@ -5282,6 +5555,31 @@ export interface components {
       phoneId?: number
       /** Telephone type */
       type: string
+    }
+    /** Offender Sentence terms details for booking id */
+    Terms: {
+      /** Sentence number which this sentence follows if consecutive, otherwise concurrent. */
+      consecutiveTo?: number
+      /** Sentence length days. */
+      days?: number
+      /** Whether this is a life sentence. */
+      lifeSentence: boolean
+      /** Sentence length months. */
+      months?: number
+      /** Sentence term code. */
+      sentenceTermCode: string
+      /** Sentence type, using reference data from table SENTENCE_CALC_TYPES. */
+      sentenceType?: string
+      /** Sentence type description. */
+      sentenceTypeDescription?: string
+      /** Start date of sentence term. */
+      startDate: string
+      /** Sentence term number within sentence. */
+      termSequence: number
+      /** Sentence length weeks. */
+      weeks?: number
+      /** Sentence length years. */
+      years?: number
     }
     /** Transaction Response */
     Transaction: {
@@ -5393,6 +5691,23 @@ export interface components {
       /** Out of Vo */
       out_of_vo?: boolean
     }
+    /** Update details for an existing adjudication */
+    UpdateAdjudication: {
+      /** The list of offender numbers of the offenders who were connected */
+      connectedOffenderIds?: string[]
+      /** The id to indicate where the incident took place */
+      incidentLocationId: number
+      /** When the incident took place */
+      incidentTime: string
+      /** The list of offence codes the offender may be charged with */
+      offenceCodes?: string[]
+      /** The adjudication statement */
+      statement: string
+      /** The list of offender numbers of offenders who were victims */
+      victimOffenderIds?: string[]
+      /** The list of staff ids who were victims */
+      victimStaffIds?: number[]
+    }
     /** Attendance details.  This is used to update the attendance details of an offender */
     UpdateAttendance: {
       /** Attendance outcome, possible values are the codes in the 'PS_PA_OC' reference domain. */
@@ -5467,6 +5782,10 @@ export interface components {
     }
     /** Balances of visit orders and privilege visit orders */
     VisitBalances: {
+      /** Date of last IEP adjustment for Visit orders */
+      latestIepAdjustDate?: string
+      /** Date of last IEP adjustment for Privilege Visit orders */
+      latestPrivIepAdjustDate?: string
       /** Balance of privilege visit orders remaining */
       remainingPvo: number
       /** Balance of visit orders remaining */
@@ -5474,34 +5793,48 @@ export interface components {
     }
     /** Visit details */
     VisitDetails: {
+      /** Whether the visit was attended. Translation of eventOutcome into boolean. Defaults in NOMIS to true when the visit is created */
+      attended?: boolean
       /** Description of cancellationReason code */
       cancelReasonDescription?: string
-      /** Reason if not attended */
+      /** Reason for cancellation if not attended (MOVE_CANC_RS reference code) */
       cancellationReason?: string
+      /** Completion status of visit (VIS_COMPLETE reference code) */
+      completionStatus: 'CANC' | 'HMPOP' | 'NORM' | 'OFFEND' | 'SCH' | 'VDE' | 'VISITOR'
+      /** Description of completionStatus code */
+      completionStatusDescription?: string
       /** Date and time at which event ends */
       endTime?: string
-      /** Whether attended or not */
-      eventOutcome: string
+      /** Whether attended (ATT) or not (ABS) (OUTCOMES reference code) */
+      eventOutcome: 'ABS' | 'ATT'
       /** Description of eventOutcome code */
       eventOutcomeDescription?: string
-      /** Status of event */
-      eventStatus: string
+      /** Status of event (EVENT_STS reference code) */
+      eventStatus: 'CANC' | 'COMP' | 'EXP' | 'SCH'
       /** Description of eventStatus code */
       eventStatusDescription?: string
-      /** Name of main visitor */
+      /** Name of lead visitor (blank if there was no visiting order for this visit) */
       leadVisitor?: string
       /** Location at which event takes place (could be an internal location, agency or external address). */
       location?: string
-      /** Relationship of main visitor to offender */
+      /** Prison at which event takes place */
+      prison?: string
+      /** Relationship of lead visitor to offender */
       relationship?: string
       /** Description of relationship code */
       relationshipDescription?: string
+      /** Type of search performed - mandatory if visit completed (SEARCH_LEVEL reference code) */
+      searchType?: string
+      /** Description of searchType code */
+      searchTypeDescription?: string
       /** Date and time at which event starts */
       startTime: string
-      /** Social or official */
-      visitType: string
-      /** Description of visitType code */
-      visitTypeDescription?: string
+      /** Code for social (SCON) or official (OFFI) type of visit (VISIT_TYPE reference code) */
+      visitType: 'OFFI' | 'SCON'
+      /** Description of social or official visit */
+      visitTypeDescription?: 'Official Visit' | 'Social Contact'
+      /** List of visitors on visit */
+      visitors?: components['schemas']['Visitor'][]
     }
     /** Visit Restriction */
     VisitRestriction: {
@@ -5536,6 +5869,13 @@ export interface components {
       /** List of visit slots with capacity */
       slots?: components['schemas']['VisitSlotCapacity'][]
     }
+    /** Visit summary */
+    VisitSummary: {
+      /** Whether the prisoner has any visits (previous or next) */
+      hasVisits: boolean
+      /** Date and time at which next scheduled (i.e. not cancelled) event starts (if any) */
+      startDateTime?: string
+    }
     /** List of visitors for a visit */
     VisitWithVisitors: {
       /** Visit Information */
@@ -5545,13 +5885,15 @@ export interface components {
     }
     /** Visitor */
     Visitor: {
+      /** Whether the visitor attended.  Defaults in NOMIS to true when the visit is created so of limited value. */
+      attended?: boolean
       /** Date of birth of visitor */
       dateOfBirth?: string
       /** First name of visitor */
       firstName?: string
       /** Last name of visitor */
       lastName?: string
-      /** Flag marking the visitor as main or not */
+      /** Flag marking the visitor as lead visitor or not (only set for visit orders) */
       leadVisitor?: boolean
       /** Person id of visitor */
       personId?: number
@@ -5652,38 +5994,62 @@ export interface operations {
       404: unknown
     }
   }
-  /** Requires MAINTAIN_ADJUDICATIONS access */
-  searchUsingPOST: {
+  /** Requires MAINTAIN_ADJUDICATIONS access and write scope */
+  updateAdjudicationUsingPUT: {
     parameters: {
-      query: {
-        /** Results page you want to retrieve (0..N). Default 0, e.g. the first page */
-        page?: number
-        /** Number of records per page. Default 20 */
-        size?: number
-        /** Sort as combined comma separated property and uppercase direction. Multiple sort params allowed to sort by multiple properties. Default to incidentDate,incidentTime ASC */
-        sort?: string
+      path: {
+        /** The adjudication number */
+        adjudicationNumber: number
       }
     }
     responses: {
       /** OK */
       200: {
         content: {
-          '*/*': components['schemas']['PageOfAdjudicationDetail']
+          '*/*': components['schemas']['AdjudicationDetail']
         }
       }
-      /** Created */
+      /** Updated */
       201: unknown
+      /** Invalid request - e.g. because no incident statement was provided. */
+      400: unknown
       /** Unauthorized */
       401: unknown
       /** Forbidden */
       403: unknown
-      /** Not Found */
+      /** No match was found for the provided booking id. */
       404: unknown
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['AdjudicationSearchRequest']
+        'application/json': components['schemas']['UpdateAdjudication']
       }
+    }
+  }
+  getBookingSentenceAdjustments: {
+    parameters: {
+      path: {
+        /** The booking id of the offender */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['BookingAndSentenceAdjustments']
+        }
+      }
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
     }
   }
   /** List of active agencies. */
@@ -6537,6 +6903,34 @@ export interface operations {
       }
     }
   }
+  /** Must have prisoner in users caseload access data */
+  getBookingIEPSummaryDetailForBookingIdsUsingPOST: {
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PrivilegeSummary'][]
+        }
+      }
+      /** Created */
+      201: unknown
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': number[]
+      }
+    }
+  }
   /** Post version to allow specifying a large number of bookingIds. */
   getMainOffenceUsingPOST: {
     responses: {
@@ -6966,6 +7360,39 @@ export interface operations {
       200: {
         content: {
           '*/*': components['schemas']['InmateBasicDetails'][]
+        }
+      }
+      /** Created */
+      201: unknown
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': number[]
+      }
+    }
+  }
+  getProvenAdjudicationSummaryForBookingsUsingPOST: {
+    parameters: {
+      query: {
+        /** Only proved adjudications ending on or after this date (in YYYY-MM-DD format) will be counted. Default is 3 months */
+        adjudicationCutoffDate?: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['ProvenAdjudicationSummary'][]
         }
       }
       /** Created */
@@ -8018,7 +8445,7 @@ export interface operations {
       }
       query: {
         /** Toggle to return IEP detail entries in response (or not). */
-        withDetails: boolean
+        withDetails?: boolean
       }
     }
     responses: {
@@ -8533,7 +8960,7 @@ export interface operations {
       500: unknown
     }
   }
-  getBookingSentenceAdjustments: {
+  getBookingSentenceAdjustments_1: {
     parameters: {
       path: {
         /** The booking id of offender */
@@ -8648,7 +9075,11 @@ export interface operations {
         /** Type of visit */
         visitType?: 'OFFI' | 'SCON'
         /** visitStatus */
-        'Status of visit. code from VIS_STS domain, e.g: Cancelled (CANC) or Scheduled (SCH)'?: string
+        'Status of visit. code from VIS_COMPLETE domain, e.g: CANC (Cancelled) or SCH (Scheduled)'?: string
+        /** cancellationReason */
+        'Reason for cancellation. code from MOVE_CANC_RS domain, e.g: VISCANC (Visitor Cancelled) or NO_VO (No Visiting Order)'?: string
+        /** The prison id */
+        prisonId?: string
         /** Target page number, zero being the first page */
         page?: number
         /** The number of results per page */
@@ -8674,12 +9105,16 @@ export interface operations {
       500: unknown
     }
   }
-  /** The most recent visit for the offender. */
-  getBookingVisitsLast: {
+  /** The next visit for the offender. Will return 200 with no body if no next visit is scheduled */
+  getBookingVisitsNext: {
     parameters: {
       path: {
         /** The offender booking id */
         bookingId: number
+      }
+      query: {
+        /** Toggle to return Visitors in response (or not). */
+        withVisitors?: boolean
       }
     }
     responses: {
@@ -8689,6 +9124,8 @@ export interface operations {
           '*/*': components['schemas']['VisitDetails']
         }
       }
+      /** Invalid request. */
+      204: never
       /** Invalid request. */
       400: unknown
       /** Unauthorized */
@@ -8701,8 +9138,8 @@ export interface operations {
       500: unknown
     }
   }
-  /** The next visit for the offender. */
-  getBookingVisitsNext: {
+  /** To be used for filtering visits by prison */
+  getBookingVisitsPrisons: {
     parameters: {
       path: {
         /** The offender booking id */
@@ -8713,7 +9150,36 @@ export interface operations {
       /** OK */
       200: {
         content: {
-          '*/*': components['schemas']['VisitDetails']
+          '*/*': components['schemas']['PrisonDetails'][]
+        }
+      }
+      /** Invalid request. */
+      204: never
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
+  /** Will return whether there are any visits and also the date of the next scheduled visit */
+  getBookingVisitsSummary: {
+    parameters: {
+      path: {
+        /** The offender booking id */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['VisitSummary']
         }
       }
       /** Invalid request. */
@@ -8722,7 +9188,7 @@ export interface operations {
       401: unknown
       /** Forbidden */
       403: unknown
-      /** Requested resource not found. */
+      /** Requested resource not found or no permissions to see it. */
       404: unknown
       /** Unrecoverable error occurred whilst processing request. */
       500: unknown
@@ -9004,39 +9470,6 @@ export interface operations {
       500: unknown
     }
   }
-  getOffendersWithImagesCapturedInRangeUsingGET: {
-    parameters: {
-      query: {
-        /** fromDateTime */
-        fromDateTime: string
-        offset?: number
-        pageNumber?: number
-        pageSize?: number
-        paged?: boolean
-        'sort.sorted'?: boolean
-        'sort.unsorted'?: boolean
-        unpaged?: boolean
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['PageOfOffenderNumber']
-        }
-      }
-      /** Invalid request. */
-      400: unknown
-      /** Unauthorized */
-      401: unknown
-      /** Forbidden */
-      403: unknown
-      /** Not Found */
-      404: unknown
-      /** Unrecoverable error occurred whilst processing request. */
-      500: unknown
-    }
-  }
   /** A list of offender educations. */
   getPrisonerEducations: {
     parameters: {
@@ -9174,6 +9607,39 @@ export interface operations {
       500: unknown
     }
   }
+  getOffendersWithImagesCapturedInRangeUsingGET: {
+    parameters: {
+      query: {
+        /** fromDateTime */
+        fromDateTime: string
+        offset?: number
+        pageNumber?: number
+        pageSize?: number
+        paged?: boolean
+        'sort.sorted'?: boolean
+        'sort.unsorted'?: boolean
+        unpaged?: boolean
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PageOfOffenderNumber']
+        }
+      }
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Not Found */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
   getImagesByOffender: {
     parameters: {
       path: {
@@ -9196,6 +9662,60 @@ export interface operations {
       404: unknown
       /** Unrecoverable error occurred whilst processing request. */
       500: unknown
+    }
+  }
+  /** Requires ROLE_IMAGE_UPLOAD. */
+  putImageMultiPartUsingPOST: {
+    parameters: {
+      path: {
+        /** The offender number relating to this image. */
+        offenderNo: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['ImageDetail']
+          'multipart/form-data': components['schemas']['ImageDetail']
+        }
+      }
+      /** Created */
+      201: unknown
+      /** Invalid request. */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** Unauthorized */
+      401: unknown
+      /** IMAGE_UPLOAD role required to access endpoint */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** The offender number could not be found or has no bookings. */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** Unrecoverable error occurred whilst processing request. */
+      500: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** The image as a file to upload */
+          file: string
+        }
+      }
     }
   }
   /** Image detail (with image data). */
@@ -9478,6 +9998,32 @@ export interface operations {
       500: unknown
     }
   }
+  getLocationByCodeUsingGET: {
+    parameters: {
+      path: {
+        /** code */
+        code: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['Location']
+        }
+      }
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
   /** List of offenders at location. */
   getOffendersAtLocationDescription: {
     parameters: {
@@ -9681,6 +10227,30 @@ export interface operations {
       /** Forbidden */
       403: unknown
       /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
+  getTemporaryAbsencesUsingGET: {
+    parameters: {
+      path: {
+        /** The prison id */
+        agencyId: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['OutOnTemporaryAbsenceSummary'][]
+        }
+      }
+      /** The token presented did not contain the necessary role to access this resource. */
+      401: unknown
+      /** The token presented has expired. */
+      403: unknown
+      /** Not Found */
       404: unknown
       /** Unrecoverable error occurred whilst processing request. */
       500: unknown
@@ -10921,6 +11491,8 @@ export interface operations {
         fromDate: string
         /** Only include attendences on or before this date */
         toDate: string
+        /** Only include attendences which have this outcome (default all) */
+        outcome?: 'ABS' | 'ACCAB' | 'ATT' | 'CANC' | 'NREQ' | 'REST' | 'SUS' | 'UNACAB'
       }
     }
     responses: {
@@ -12190,6 +12762,33 @@ export interface operations {
       }
     }
   }
+  /** Retrieve an single offender sentence details */
+  getLatestSentenceSummaryUsingGET: {
+    parameters: {
+      path: {
+        /** Noms ID or Prisoner number (also called offenderNo) */
+        offenderNo: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['SentenceSummary']
+        }
+      }
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Not Found */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+  }
   /** System or cat tool access only */
   getAlertsForLatestBookingByOffenderNoUsingGET: {
     parameters: {
@@ -12329,6 +12928,39 @@ export interface operations {
       404: unknown
       /** Unrecoverable error occurred whilst processing request. */
       500: unknown
+    }
+  }
+  courtTransferInUsingPUT: {
+    parameters: {
+      path: {
+        /** The offenderNo of prisoner */
+        offenderNo: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['InmateDetail']
+        }
+      }
+      /** Created */
+      201: unknown
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden - user not authorised to transfer a prisoner */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RequestForCourtTransferIn']
+      }
     }
   }
   getOffenderDamageObligationsUsingGET: {
@@ -12665,6 +13297,39 @@ export interface operations {
       403: unknown
       /** Not Found */
       404: unknown
+    }
+  }
+  temporaryAbsenceArrivalUsingPUT: {
+    parameters: {
+      path: {
+        /** The offenderNo of prisoner */
+        offenderNo: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['InmateDetail']
+        }
+      }
+      /** Created */
+      201: unknown
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden - user not authorised to transfer a prisoner */
+      403: unknown
+      /** Requested resource not found. */
+      404: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RequestForTemporaryAbsenceArrival']
+      }
     }
   }
   /** Transactions are returned in order of entryDate descending and sequence ascending).<br/>All transaction amounts are represented as pence values. */
@@ -13040,6 +13705,31 @@ export interface operations {
       404: unknown
       /** Unrecoverable error occurred whilst processing request. */
       500: unknown
+    }
+  }
+  getBatchLatestHomeDetentionCurfewUsingPOST: {
+    responses: {
+      /** List of HDC status information */
+      200: {
+        content: {
+          '*/*': components['schemas']['HomeDetentionCurfew'][]
+        }
+      }
+      /** Created */
+      201: unknown
+      /** Invalid request. */
+      400: unknown
+      /** Unauthorized */
+      401: unknown
+      /** Forbidden */
+      403: unknown
+      /** Not Found */
+      404: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': number[]
+      }
     }
   }
   /** The addresses for person */

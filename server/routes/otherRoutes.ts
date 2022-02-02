@@ -37,7 +37,7 @@ export default class OtherRoutes {
         const bookingId = nomisRecord.bookingId as unknown as number
         const nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
         const sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
-        const adjustments = await this.prisonerService.getSentenceAdjustments(username, bookingId, token)
+        const adjustments = await this.prisonerService.getBookingAndSentenceAdjustments(bookingId, token)
         try {
           const calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, token)
           csvData.push(this.addRow(nomisRecord, calc, nomisDates, sentenceAndOffences, adjustments))

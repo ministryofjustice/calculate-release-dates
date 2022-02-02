@@ -46,4 +46,10 @@ export default class PrisonApiClient {
       path: `/api/bookings/${bookingId}/sentenceDetail`,
     }) as Promise<PrisonApiSentenceCalcDates>
   }
+
+  async getBookingAndSentenceAdjustments(bookingId: number): Promise<PrisonApiSentenceAdjustmentDetail> {
+    return this.restClient.get({
+      path: `/api/adjustments/${bookingId}/sentence-and-booking`,
+    }) as Promise<PrisonApiSentenceAdjustmentDetail>
+  }
 }
