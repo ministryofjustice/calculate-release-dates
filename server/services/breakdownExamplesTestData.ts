@@ -1,42 +1,4 @@
-import {
-  BookingCalculation,
-  CalculationBreakdown,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-
-export function breakdownAndEffectiveDateMismatchCalc(): BookingCalculation {
-  return {
-    dates: { SLED: '2015-09-27', CRD: '2015-05-29' },
-    calculationRequestId: 920,
-    effectiveSentenceLength: null,
-  }
-}
-
-export function breakdownAndEffectiveDateMismatchBreakdown(): CalculationBreakdown {
-  return {
-    concurrentSentences: [
-      {
-        sentencedAt: '2015-02-12',
-        sentenceLength: '6 months',
-        sentenceLengthDays: 181,
-        dates: {
-          SLED: { unadjusted: '2000-08-11', adjusted: '2000-07-28', daysFromSentenceStart: 181, adjustedByDays: 14 },
-          CRD: { unadjusted: '2000-05-13', adjusted: '2000-04-29', daysFromSentenceStart: 91, adjustedByDays: 14 },
-        },
-        lineSequence: 1,
-        caseSequence: 1,
-      },
-    ],
-    consecutiveSentence: null,
-    breakdownByReleaseDateType: {},
-  }
-}
-export function psiExample16CalculationResults(): BookingCalculation {
-  return {
-    dates: { SED: '2015-09-27', LED: '2015-07-28', CRD: '2015-05-29', HDCED: '2015-03-31', ESED: '2015-10-11' },
-    calculationRequestId: 920,
-    effectiveSentenceLength: null,
-  }
-}
+import { CalculationBreakdown } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export function psiExample16CalculationBreakdown(): CalculationBreakdown {
   return {
@@ -66,6 +28,20 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
     ],
     consecutiveSentence: null,
     breakdownByReleaseDateType: {
+      SED: {
+        rules: [],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: -14,
+        releaseDate: '2015-09-27',
+        unadjustedDate: '2015-10-11',
+      },
+      CRD: {
+        rules: [],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: -14,
+        releaseDate: '2015-05-29',
+        unadjustedDate: '2015-06-12',
+      },
       TUSED: {
         rules: ['TUSED_LICENCE_PERIOD_LT_1Y'],
         rulesWithExtraAdjustments: { TUSED_LICENCE_PERIOD_LT_1Y: { adjustmentValue: 12, type: 'Months' } },
@@ -81,21 +57,6 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
         unadjustedDate: '2015-02-16',
       },
     },
-  }
-}
-
-export function psiExample25CalculationResults(): BookingCalculation {
-  return {
-    dates: {
-      SED: '2015-12-21',
-      CRD: '2015-07-23',
-      LED: '2015-09-05',
-      TUSED: '2016-07-23',
-      HDCED: '2015-05-09',
-      ESED: '2015-12-21',
-    },
-    calculationRequestId: 923,
-    effectiveSentenceLength: null,
   }
 }
 
@@ -130,6 +91,20 @@ export function psiExample25CalculationBreakdown(): CalculationBreakdown {
       ],
     },
     breakdownByReleaseDateType: {
+      CRD: {
+        rules: [],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2015-07-23',
+        unadjustedDate: '2015-07-23',
+      },
+      SED: {
+        rules: [],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2015-12-21',
+        unadjustedDate: '2015-12-21',
+      },
       TUSED: {
         rules: ['TUSED_LICENCE_PERIOD_LT_1Y'],
         rulesWithExtraAdjustments: { TUSED_LICENCE_PERIOD_LT_1Y: { adjustmentValue: 12, type: 'Months' } },

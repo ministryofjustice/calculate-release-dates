@@ -13,7 +13,6 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import {
   BookingCalculation,
   CalculationBreakdown,
-  DateBreakdown,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import EntryPointService from '../services/entryPointService'
@@ -26,7 +25,7 @@ jest.mock('../services/prisonerService')
 jest.mock('../services/entryPointService')
 
 const userService = new UserService(null) as jest.Mocked<UserService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService(null) as jest.Mocked<CalculateReleaseDatesService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 
@@ -134,26 +133,18 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
   breakdownByReleaseDateType: {},
 }
 
-const stubbedEffectiveDates: { [key: string]: DateBreakdown } = {
-  CRD: {
-    adjusted: '2021-02-03',
-    unadjusted: '2021-01-15',
-    adjustedByDays: 18,
-    daysFromSentenceStart: 100,
+const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
+  {
+    releaseDateType: 'CRD',
+    releaseDate: '2021-02-03',
+    hintText: '15 January 2021 minus 18 days',
   },
-  SED: {
-    adjusted: '2021-02-03',
-    unadjusted: '2021-01-15',
-    adjustedByDays: 18,
-    daysFromSentenceStart: 100,
+  {
+    releaseDateType: 'HDCED',
+    releaseDate: '13 May 2029',
+    hintText: '14 May 2029 minus 1 day',
   },
-}
-
-const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments = {
-  releaseDateType: 'HDCED',
-  releaseDate: '13 May 2029',
-  hintText: '14 May 2029 minus 1 day',
-}
+]
 
 beforeEach(() => {
   app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService, entryPointService })
@@ -168,10 +159,9 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates.mockResolvedValue({
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
-      effectiveDates: stubbedEffectiveDates,
-      releaseDatesWithAdjustments: [stubbedReleaseDatesWithAdjustments],
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     return request(app)
       .get('/calculation/A1234AB/summary/123456')

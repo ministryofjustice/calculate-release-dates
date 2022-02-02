@@ -1,6 +1,5 @@
 import nock from 'nock'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
-import HmppsAuthClient from '../api/hmppsAuthClient'
 import config from '../config'
 import {
   BookingCalculation,
@@ -10,14 +9,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessageType } from '../types/ErrorMessages'
-import {
-  breakdownAndEffectiveDateMismatchBreakdown,
-  breakdownAndEffectiveDateMismatchCalc,
-  psiExample16CalculationBreakdown,
-  psiExample16CalculationResults,
-  psiExample25CalculationBreakdown,
-  psiExample25CalculationResults,
-} from './breakdownExamplesTestData'
+import { psiExample16CalculationBreakdown, psiExample25CalculationBreakdown } from './breakdownExamplesTestData'
 
 jest.mock('../api/hmppsAuthClient')
 
@@ -182,14 +174,12 @@ const unsupportedValidationResult: ValidationMessages = {
 const token = 'token'
 
 describe('Calculate release dates service tests', () => {
-  let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
   let calculateReleaseDatesService: CalculateReleaseDatesService
   let fakeApi: nock.Scope
   beforeEach(() => {
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.calculateReleaseDates.url)
-    hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-    calculateReleaseDatesService = new CalculateReleaseDatesService(hmppsAuthClient)
+    calculateReleaseDatesService = new CalculateReleaseDatesService()
   })
   afterEach(() => {
     nock.cleanAll()
@@ -253,72 +243,29 @@ describe('Calculate release dates service tests', () => {
     it('Test data', async () => {
       fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, calculationBreakdown)
 
-      const result = await calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
-        calculationRequestId,
-        token,
-        calculationResults
-      )
+      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
 
       expect(result.calculationBreakdown).toEqual(calculationBreakdown)
-      expect(result.effectiveDates).toEqual({
-        CRD: {
-          adjusted: '2021-02-03',
-          unadjusted: '2021-01-15',
-          adjustedByDays: 18,
-          daysFromSentenceStart: 100,
-        },
-        SLED: {
-          adjusted: '2021-10-28',
-          unadjusted: '2021-01-15',
-          adjustedByDays: 18,
-          daysFromSentenceStart: 100,
-        },
-      })
-    })
-
-    it('Missmatch between release dates and breakdown result in empty effective dates', async () => {
-      fakeApi
-        .get(`/calculation/breakdown/${calculationRequestId}`)
-        .reply(200, breakdownAndEffectiveDateMismatchBreakdown())
-
-      const result = await calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
-        calculationRequestId,
-        token,
-        breakdownAndEffectiveDateMismatchCalc()
-      )
-
-      expect(result.calculationBreakdown).toEqual(breakdownAndEffectiveDateMismatchBreakdown())
-      expect(result.effectiveDates).toEqual({
-        CRD: {
-          adjusted: '2015-05-29',
-          unadjusted: '',
-          adjustedByDays: 0,
-          daysFromSentenceStart: 0,
-        },
-        SLED: {
-          adjusted: '2015-09-27',
-          unadjusted: '',
-          adjustedByDays: 0,
-          daysFromSentenceStart: 0,
-        },
-      })
     })
 
     it('PSI example 16', async () => {
       fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, psiExample16CalculationBreakdown())
 
-      const result = await calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
-        calculationRequestId,
-        token,
-        psiExample16CalculationResults()
-      )
+      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
 
       expect(result.calculationBreakdown).toEqual(psiExample16CalculationBreakdown())
-      expect(result.effectiveDates).toEqual({
-        SED: { unadjusted: '2015-10-11', adjusted: '2015-09-27', daysFromSentenceStart: 242, adjustedByDays: 14 },
-        CRD: { unadjusted: '2015-06-12', adjusted: '2015-05-29', daysFromSentenceStart: 121, adjustedByDays: 14 },
-      })
+
       expect(result.releaseDatesWithAdjustments).toEqual([
+        {
+          hintText: '11 October 2015 minus 14 days',
+          releaseDate: '2015-09-27',
+          releaseDateType: 'SED',
+        },
+        {
+          hintText: '12 June 2015 minus 14 days',
+          releaseDate: '2015-05-29',
+          releaseDateType: 'CRD',
+        },
         {
           releaseDate: '2015-03-28',
           releaseDateType: 'HDCED',
@@ -335,18 +282,21 @@ describe('Calculate release dates service tests', () => {
     it('PSI example 25', async () => {
       fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, psiExample25CalculationBreakdown())
 
-      const result = await calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
-        calculationRequestId,
-        token,
-        psiExample25CalculationResults()
-      )
+      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
 
       expect(result.calculationBreakdown).toEqual(psiExample25CalculationBreakdown())
-      expect(result.effectiveDates).toEqual({
-        SED: { unadjusted: '2015-12-21', adjusted: '2015-12-21', daysFromSentenceStart: 303, adjustedByDays: 0 },
-        CRD: { unadjusted: '2015-07-23', adjusted: '2015-07-23', daysFromSentenceStart: 152, adjustedByDays: 0 },
-      })
+
       expect(result.releaseDatesWithAdjustments).toEqual([
+        {
+          hintText: '21 December 2015 plus 0 days',
+          releaseDate: '2015-12-21',
+          releaseDateType: 'SED',
+        },
+        {
+          hintText: '23 July 2015 plus 0 days',
+          releaseDate: '2015-07-23',
+          releaseDateType: 'CRD',
+        },
         {
           releaseDate: '2015-03-28',
           releaseDateType: 'HDCED',
