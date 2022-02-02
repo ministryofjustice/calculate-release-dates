@@ -230,7 +230,22 @@ export default {
               },
             ],
           },
-          breakdownByReleaseDateType: {},
+          breakdownByReleaseDateType: {
+            CRD: {
+              rules: [],
+              rulesWithExtraAdjustments: {},
+              adjustedDays: -15,
+              releaseDate: '2015-07-23',
+              unadjustedDate: '2018-11-20',
+            },
+            SED: {
+              rules: [],
+              rulesWithExtraAdjustments: {},
+              adjustedDays: -6,
+              releaseDate: '2015-12-21',
+              unadjustedDate: '2017-05-13',
+            },
+          },
         },
       },
     })
