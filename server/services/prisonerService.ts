@@ -78,4 +78,8 @@ export default class PrisonerService {
   async getSentenceDetail(username: string, bookingId: number, token: string): Promise<PrisonApiSentenceDetail> {
     return new PrisonApiClient(token).getSentenceDetail(bookingId)
   }
+
+  async getBookingAndSentenceAdjustments(bookingId: number, token: string): Promise<PrisonApiSentenceAdjustmentDetail> {
+    return new PrisonApiClient(token).getBookingAndSentenceAdjustments(bookingId)
+  }
 }
