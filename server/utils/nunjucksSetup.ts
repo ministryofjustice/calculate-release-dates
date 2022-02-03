@@ -59,6 +59,10 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
     return `${array[0][0]}. ${array.reverse()[0]}`
   })
 
+  njkEnv.addFilter('formatListAsString', (list?: string[]) => {
+    return list ? `[${list.map(i => `'${i}'`).join(',')}]` : '[]'
+  })
+
   njkEnv.addFilter('date', dateFilter)
 
   njkEnv.addFilter('countOffences', sentencesAndOffences => {

@@ -21,6 +21,7 @@ const user = {
   username: 'user1',
   displayName: 'John Smith',
   caseloads: ['LEI'],
+  caseloadDescriptions: ['Leicester (HMP)'],
 }
 
 class MockUserService extends UserService {

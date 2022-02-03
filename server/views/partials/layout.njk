@@ -5,9 +5,27 @@
 {% block head %}
 
   {% if tagManagerContainerId %}
+    <!-- Tag manager dataLayer -->
+    <script nonce="{{ cspNonce }}">
+      window.dataLayer = window.dataLayer || [];
+    </script>
+
+    <!-- Add user details to the dataLayer if present on this page load -->
+    {% if user %}
+      <script nonce="{{ cspNonce }}">
+        window
+          .dataLayer
+          .push({
+            'user': {
+              'prisons': {{ user.caseloads | formatListAsString | safe }},
+              'prisonDescriptions': {{ user.caseloadDescriptions | formatListAsString | safe }}
+            }
+          })
+      </script>
+    {% endif %}
+
     <!-- Google Tag Manager -->
-    <script nonce="{{cspNonce}}">
-      ;
+    <script nonce="{{ cspNonce }}">
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
         w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
@@ -16,16 +34,14 @@
           dl = l != 'dataLayer'
             ? '&l=' + l
             : '';
-
         j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl + '{{ tagManagerEnvironment | safe }}';
-
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
         var n = d.querySelector('[nonce]');
         n && j.setAttribute('nonce', n.nonce || n.getAttribute('nonce'));
         f
           .parentNode
           .insertBefore(j, f);
-      })(window, document, 'script', 'dataLayer', '{{tagManagerContainerId}}');
+      })(window, document, 'script', 'dataLayer', '{{ tagManagerContainerId }}');
     </script>
     <!-- End Google Tag Manager -->
   {% endif %}
