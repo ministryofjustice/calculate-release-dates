@@ -32,11 +32,7 @@ export default class CalculationRoutes {
       prisonerDetail,
       releaseDates: releaseDates.dates,
       weekendAdjustments,
-      ...(await this.calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
-        calculationRequestId,
-        token,
-        releaseDates
-      )),
+      ...(await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)),
     })
   }
 
@@ -59,11 +55,7 @@ export default class CalculationRoutes {
       prisonerDetail,
       releaseDates: releaseDates.dates,
       weekendAdjustments,
-      ...(await this.calculateReleaseDatesService.getCalculationBreakdownAndEffectiveDates(
-        calculationRequestId,
-        token,
-        releaseDates
-      )),
+      ...(await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)),
       calculationRequestId,
     })
   }

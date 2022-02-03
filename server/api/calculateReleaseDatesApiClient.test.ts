@@ -1,7 +1,6 @@
 import nock from 'nock'
 import config from '../config'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import HmppsAuthClient from './hmppsAuthClient'
 
 jest.mock('./hmppsAuthClient')
 
@@ -10,8 +9,7 @@ interface TestData {
   value: string
 }
 
-const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-const calculateReleaseDatesService = new CalculateReleaseDatesService(hmppsAuthClient)
+const calculateReleaseDatesService = new CalculateReleaseDatesService()
 const stubbedTestData: TestData[] = [{ key: 'X', value: 'Y' } as TestData]
 const token = 'token'
 
@@ -30,7 +28,6 @@ describe('Calculate release dates API client tests', () => {
 
   describe('Tests for API calls', () => {
     it('Get calculation results data', async () => {
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue('a token')
       fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(200, stubbedTestData)
       const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', calculationRequestId, token)
       expect(data).toEqual(stubbedTestData)
@@ -38,7 +35,6 @@ describe('Calculate release dates API client tests', () => {
     })
 
     it('Empty data', async () => {
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue('a token')
       fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(200, [])
       const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', 123456, token)
       expect(data).toEqual([])

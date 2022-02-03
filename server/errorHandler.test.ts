@@ -5,7 +5,7 @@ import CalculateReleaseDatesService from './services/calculateReleaseDatesServic
 
 jest.mock('./services/calculateReleaseDatesService')
 
-const calculateReleaseDatesService = new CalculateReleaseDatesService(null) as jest.Mocked<CalculateReleaseDatesService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 
 let app: Express
 

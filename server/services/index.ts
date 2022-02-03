@@ -7,7 +7,7 @@ import EntryPointService from './entryPointService'
 
 const hmppsAuthClient = new HmppsAuthClient(new TokenStore())
 const userService = new UserService(hmppsAuthClient)
-const calculateReleaseDatesService = new CalculateReleaseDatesService(hmppsAuthClient)
+const calculateReleaseDatesService = new CalculateReleaseDatesService()
 const prisonerService = new PrisonerService(hmppsAuthClient)
 const entryPointService = new EntryPointService()
 

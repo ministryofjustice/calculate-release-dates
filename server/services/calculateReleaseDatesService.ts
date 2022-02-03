@@ -1,9 +1,8 @@
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
-import HmppsAuthClient from '../api/hmppsAuthClient'
 import {
   BookingCalculation,
   CalculationBreakdown,
-  DateBreakdown,
+  ReleaseDateCalculationBreakdown,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -12,28 +11,11 @@ import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import logger from '../../logger'
 import CalculationRule from '../enumerations/calculationRule'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
-import { longDateFormat, arithmeticToWords, daysArithmeticToWords } from '../utils/utils'
+import { arithmeticToWords, daysArithmeticToWords, longDateFormat } from '../utils/utils'
 import ReleaseDateType from '../enumerations/releaseDateType'
 import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 
 export default class CalculateReleaseDatesService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
-
-  private readonly expiryDateTypesForBreakdown: ReadonlyArray<string> = ['SLED', 'SED']
-
-  private readonly releaseDateTypesForBreakdown: ReadonlyArray<string> = ['CRD', 'ARD']
-
-  private readonly supportedSentences: ReadonlyArray<string> = [
-    'ADIMP',
-    'ADIMP_ORA',
-    'YOI',
-    'YOI_ORA',
-    'SEC91_03',
-    'SEC91_03_ORA',
-    'SEC250',
-    'SEC250_ORA',
-  ]
-
   // TODO test method - will be removed
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   async calculateReleaseDates(username: string, booking: any, token: string): Promise<BookingCalculation> {
@@ -57,20 +39,17 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
   }
 
-  async getCalculationBreakdownAndEffectiveDates(
+  async getBreakdown(
     calculationRequestId: number,
-    token: string,
-    releaseDates: BookingCalculation
+    token: string
   ): Promise<{
     calculationBreakdown?: CalculationBreakdown
-    effectiveDates?: { [key: string]: DateBreakdown }
     releaseDatesWithAdjustments: ReleaseDateWithAdjustments[]
   }> {
     try {
       const breakdown = await this.getCalculationBreakdown(calculationRequestId, token)
       return {
         calculationBreakdown: breakdown,
-        effectiveDates: this.getEffectiveDates(releaseDates, breakdown),
         releaseDatesWithAdjustments: this.extractReleaseDatesWithAdjustments(breakdown),
       }
     } catch (error) {
@@ -78,16 +57,27 @@ export default class CalculateReleaseDatesService {
       logger.error(error)
       return {
         calculationBreakdown: null,
-        effectiveDates: null,
         releaseDatesWithAdjustments: null,
       }
     }
   }
 
-  // TODO expand this functionality to retrieve the 'other key dates with adjustments' based on the rules from the
-  //  api call, e.g. CRD and SLED
   private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
     const releaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = []
+    if (breakdown.breakdownByReleaseDateType.SLED || breakdown.breakdownByReleaseDateType.SED) {
+      CalculateReleaseDatesService.standardAdjustmentRow(
+        breakdown.breakdownByReleaseDateType.SLED ? ReleaseDateType.SLED : ReleaseDateType.SED,
+        breakdown.breakdownByReleaseDateType.SLED || breakdown.breakdownByReleaseDateType.SED,
+        releaseDatesWithAdjustments
+      )
+    }
+    if (breakdown.breakdownByReleaseDateType.CRD || breakdown.breakdownByReleaseDateType.ARD) {
+      CalculateReleaseDatesService.standardAdjustmentRow(
+        breakdown.breakdownByReleaseDateType.CRD ? ReleaseDateType.CRD : ReleaseDateType.ARD,
+        breakdown.breakdownByReleaseDateType.CRD || breakdown.breakdownByReleaseDateType.ARD,
+        releaseDatesWithAdjustments
+      )
+    }
     if (breakdown.breakdownByReleaseDateType.HDCED) {
       const hdcedDetails = breakdown.breakdownByReleaseDateType.HDCED
       releaseDatesWithAdjustments.push(
@@ -115,6 +105,22 @@ export default class CalculateReleaseDatesService {
     return releaseDatesWithAdjustments
   }
 
+  private static standardAdjustmentRow(
+    releaseDateType: ReleaseDateType,
+    releaseDateCalculationBreakdown: ReleaseDateCalculationBreakdown,
+    releaseDatesWithAdjustments: ReleaseDateWithAdjustments[]
+  ) {
+    releaseDatesWithAdjustments.push(
+      CalculateReleaseDatesService.createAdjustmentRow(
+        releaseDateCalculationBreakdown.releaseDate,
+        releaseDateType,
+        `${longDateFormat(releaseDateCalculationBreakdown.unadjustedDate)} ${daysArithmeticToWords(
+          releaseDateCalculationBreakdown.adjustedDays
+        )}`
+      )
+    )
+  }
+
   private hdcedRulesToAdjustmentRow(
     rules: string[],
     rulesWithExtraAdjustments: RulesWithExtraAdjustments,
@@ -124,16 +130,18 @@ export default class CalculateReleaseDatesService {
   ): ReleaseDateWithAdjustments {
     if (rules.includes(CalculationRule.HDCED_MINIMUM_14D)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_MINIMUM_14D
-      return this.createHDCEDAdjustmentRow(
+      return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
+        ReleaseDateType.HDCED,
         `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`
       )
     }
 
     if (rules.includes(CalculationRule.HDCED_GE_12W_LT_18M)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_GE_12W_LT_18M
-      return this.createHDCEDAdjustmentRow(
+      return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
+        ReleaseDateType.HDCED,
         `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
           adjustedDays
         )}`
@@ -142,8 +150,9 @@ export default class CalculateReleaseDatesService {
 
     if (rules.includes(CalculationRule.HDCED_GE_18M_LT_4Y)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_GE_18M_LT_4Y
-      return this.createHDCEDAdjustmentRow(
+      return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
+        ReleaseDateType.HDCED,
         `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`
       )
     }
@@ -159,8 +168,9 @@ export default class CalculateReleaseDatesService {
   ): ReleaseDateWithAdjustments {
     if (rules.includes(CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments[CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y]
-      return this.createTUSEDAdjustmentRow(
+      return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
+        ReleaseDateType.TUSED,
         `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
           adjustedDays
         )}`
@@ -169,107 +179,20 @@ export default class CalculateReleaseDatesService {
     return null
   }
 
-  private createHDCEDAdjustmentRow(releaseDate: string, hintText: string): ReleaseDateWithAdjustments {
+  private static createAdjustmentRow(
+    releaseDate: string,
+    releaseDateType: ReleaseDateType,
+    hintText: string
+  ): ReleaseDateWithAdjustments {
     return {
       releaseDate,
-      releaseDateType: ReleaseDateType.HDCED,
-      hintText,
-    }
-  }
-
-  private createTUSEDAdjustmentRow(releaseDate: string, hintText: string): ReleaseDateWithAdjustments {
-    return {
-      releaseDate,
-      releaseDateType: ReleaseDateType.TUSED,
+      releaseDateType,
       hintText,
     }
   }
 
   private async getCalculationBreakdown(calculationRequestId: number, token: string): Promise<CalculationBreakdown> {
     return new CalculateReleaseDatesApiClient(token).getCalculationBreakdown(calculationRequestId)
-  }
-
-  // Find which sentence provides effective dates.
-  private getEffectiveDates(
-    releaseDates: BookingCalculation,
-    calculationBreakdown: CalculationBreakdown
-  ): { [key: string]: DateBreakdown } {
-    const dates = {}
-    Object.keys(releaseDates.dates)
-      .filter(
-        dateType =>
-          this.expiryDateTypesForBreakdown.includes(dateType) || this.releaseDateTypesForBreakdown.includes(dateType)
-      )
-      .forEach(dateType => {
-        dates[dateType] = this.findEffectiveDateBreakdownForGivenReleaseDateType(
-          dateType,
-          releaseDates.dates[dateType],
-          calculationBreakdown
-        )
-      })
-    return dates
-  }
-
-  private findEffectiveDateBreakdownForGivenReleaseDateType(
-    dateType: string,
-    date: string,
-    calculationBreakdown: CalculationBreakdown
-  ): DateBreakdown {
-    const concurrentFind = calculationBreakdown.concurrentSentences
-      .map(it => this.isSentenceProvidingTheEffectiveDate(dateType, date, it.dates))
-      .find(it => !!it)
-    if (concurrentFind) {
-      return concurrentFind
-    }
-    if (calculationBreakdown.consecutiveSentence?.dates) {
-      const consecutiveFind = this.isSentenceProvidingTheEffectiveDate(
-        dateType,
-        date,
-        calculationBreakdown.consecutiveSentence.dates
-      )
-      if (consecutiveFind) {
-        return consecutiveFind
-      }
-    }
-    logger.error(`Couldn't find the DateBreakdown for effective date type ${dateType}`)
-    // If we can't find the breakdown for the effective date, just return a blank date
-    // breakdown so that the rest of the breakdown still renders
-    return {
-      adjusted: date,
-      adjustedByDays: 0,
-      daysFromSentenceStart: 0,
-      unadjusted: '',
-    }
-  }
-
-  /*
-  We need to find which sentence is providing the effective dates.
-  Firstly check if sentence contains the same type of date and that it matches
-  Seccondly check if it contains a matching release/expiry date
-  */
-  private isSentenceProvidingTheEffectiveDate(
-    dateType: string,
-    date: string,
-    dates: { [key: string]: DateBreakdown }
-  ): DateBreakdown {
-    const sameType = dates[dateType]
-    if (sameType) {
-      if (sameType.adjusted === date) {
-        return sameType
-      }
-      // If the sentence doesn't contain the exact same type i.e SLED. Then check if it contains the same expiry date (i.e it could be a SED in the effective dates)
-    } else if (this.expiryDateTypesForBreakdown.includes(dateType)) {
-      const expiry = dates[this.expiryDateTypesForBreakdown.find(type => dates[type])]
-      if (expiry && expiry.adjusted === date) {
-        return expiry
-      }
-    } else if (this.releaseDateTypesForBreakdown.includes(dateType)) {
-      const release = dates[this.releaseDateTypesForBreakdown.find(type => dates[type])]
-      if (release && release.adjusted === date) {
-        return release
-      }
-    }
-    return null
   }
 
   async confirmCalculation(
