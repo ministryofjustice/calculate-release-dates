@@ -17,7 +17,7 @@
           .dataLayer
           .push({
             'user': {
-              'prisons': {{ user.caseloads | formatListAsString | safe }}
+              'prisons': {{ user.caseloads | formatListAsString | safe }},
               'prisonDescriptions': {{ user.caseloadDescriptions | formatListAsString | safe }}
             }
           })
