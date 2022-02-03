@@ -17,11 +17,8 @@
           .dataLayer
           .push({
             'user': {
-              'authSource': '{{ user.authSource }}',
-              'roles': {{ user.userRoles | formatListAsString | safe }},
-              'username': '{{ user.username }}',
-              'name': '{{ user.name }}',
               'prisons': {{ user.caseloads | formatListAsString | safe }}
+              'prisonDescriptions': {{ user.caseloadDescriptions | formatListAsString | safe }}
             }
           })
       </script>

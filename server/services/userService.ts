@@ -6,6 +6,7 @@ interface UserDetails {
   name: string
   displayName: string
   caseloads: string[]
+  caseloadDescriptions: string[]
 }
 
 export default class UserService {
@@ -18,6 +19,7 @@ export default class UserService {
       ...user,
       displayName: convertToTitleCase(user.name as string),
       caseloads: userCaseloads.map(uc => uc.caseLoadId),
+      caseloadDescriptions: userCaseloads.map(uc => uc.description),
     }
   }
 }
