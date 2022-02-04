@@ -81,7 +81,6 @@ export default class PrisonerService {
 
   async getAggregatedBookingAndSentenceAdjustments(bookingId: number, token: string): Promise<AggregatedAdjustments> {
     const adjustments = await this.getBookingAndSentenceAdjustments(bookingId, token)
-    console.log(JSON.stringify(adjustments, null, 2))
     return {
       additionalDaysAwarded: this.aggregateAdjustments(
         adjustments.bookingAdjustments.filter(a => a.type === 'ADDITIONAL_DAYS_AWARDED')
