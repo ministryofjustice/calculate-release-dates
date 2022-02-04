@@ -7,8 +7,8 @@ import logger from '../../logger'
 import { Prisoner } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
+  PrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderSentenceAndOffences,
-  PrisonApiSentenceAdjustmentDetail,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 
@@ -60,7 +60,7 @@ export default class OtherRoutes {
     calc: BookingCalculation,
     nomisDates: PrisonApiSentenceDetail,
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
-    adjustments: PrisonApiSentenceAdjustmentDetail
+    adjustments: PrisonApiBookingAndSentenceAdjustments
   ) {
     const row = {
       NOMS_ID: prisoner.prisonerNumber,
@@ -159,7 +159,7 @@ export default class OtherRoutes {
     prisoner: Prisoner,
     nomisDates: PrisonApiSentenceDetail,
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
-    adjustments: PrisonApiSentenceAdjustmentDetail,
+    adjustments: PrisonApiBookingAndSentenceAdjustments,
     ex: any
   ) {
     return {

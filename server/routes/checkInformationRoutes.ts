@@ -21,8 +21,7 @@ export default class CheckInformationRoutes {
       prisonerDetail.bookingId,
       token
     )
-    const adjustmentDetails = await this.prisonerService.getSentenceAdjustments(
-      username,
+    const adjustmentDetails = await this.prisonerService.getAggregatedBookingAndSentenceAdjustments(
       prisonerDetail.bookingId,
       token
     )
