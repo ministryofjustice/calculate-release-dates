@@ -12,8 +12,8 @@ const prisonerService = new PrisonerService(hmppsAuthClient)
 
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
-  firstName: 'Ringo',
-  lastName: 'Starr',
+  firstName: 'Anon',
+  lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
   dateOfBirth: '24/06/2000',
