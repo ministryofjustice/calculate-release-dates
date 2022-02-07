@@ -32,13 +32,13 @@ describe('User service', () => {
       userService = new UserService(hmppsAuthClient)
     })
 
-    it('Retrieves and formats user name also has correct cseloads', async () => {
-      hmppsAuthClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
+    it('Retrieves and formats user name also has correct caseloads', async () => {
+      hmppsAuthClient.getUser.mockResolvedValue({ name: 'anon nobody' } as User)
       fakeApi.get(`/api/users/me/caseLoads`).reply(200, [caseload])
 
       const result = await userService.getUser(token)
 
-      expect(result.displayName).toEqual('John Smith')
+      expect(result.displayName).toEqual('Anon Nobody')
       expect(result.caseloads).toEqual(['MDI'])
     })
     it('Propagates error', async () => {

@@ -33,8 +33,8 @@ let app: Express
 
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
-  firstName: 'Ringo',
-  lastName: 'Starr',
+  firstName: 'Anon',
+  lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
   dateOfBirth: '24/06/2000',
@@ -197,7 +197,7 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toMatch(/Calculation complete for<br>\s*Ringo Starr/)
+        expect(res.text).toMatch(/Calculation complete for<br>\s*Anon Nobody/)
         expect(res.text).toContain('Return to Digital Prison Service (DPS)')
         expect(entryPointService.clearEntryPoint.mock.calls.length).toBe(1)
       })
@@ -247,8 +247,8 @@ describe('Calculation routes tests related to check-information', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('A1234AA')
-        expect(res.text).toContain('Ringo')
-        expect(res.text).toContain('Starr')
+        expect(res.text).toContain('Anon')
+        expect(res.text).toContain('Nobody')
         expect(res.text).toContain('This calculation will include 6 sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')

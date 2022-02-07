@@ -117,7 +117,7 @@ const stubUser = () =>
         staffId: 231232,
         username: 'USER1',
         active: true,
-        name: 'john smith',
+        name: 'anon nobody',
       },
     },
   })

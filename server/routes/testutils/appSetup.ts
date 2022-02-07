@@ -15,11 +15,11 @@ import PrisonerService from '../../services/prisonerService'
 import EntryPointService from '../../services/entryPointService'
 
 const user = {
-  name: 'john smith',
-  firstName: 'john',
-  lastName: 'smith',
+  name: 'anon nobody',
+  firstName: 'anon',
+  lastName: 'nobody',
   username: 'user1',
-  displayName: 'John Smith',
+  displayName: 'Anon Nobody',
   caseloads: ['LEI'],
   caseloadDescriptions: ['Leicester (HMP)'],
 }
