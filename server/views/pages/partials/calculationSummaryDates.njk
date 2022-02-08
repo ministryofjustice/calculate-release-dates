@@ -1,56 +1,50 @@
+{% macro releaseDateLine(heading, dataQa, releaseDate) %}
+    <h3 class="govuk-heading-s">{{ heading }}</h3>
+    <p class="govuk-body" data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }}</p>
+{% endmacro %}
+
+{% macro holidayLine(dataQa, releaseDate, isBankHoliday) %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa={{ data-qa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if isBankHoliday else "weekend" }}</p>
+{% endmacro %}
+
 <h2 class="govuk-heading-l govuk-!-margin-top-9">Final release dates</h2>
 <div class="custom-card">
     <div class="custom-card-main">
         {% if releaseDates.SLED %}
-            <h3 class="govuk-heading-s">Sentence and licence expiry date (SLED)</h3>
-            <p class="govuk-body" data-qa="SLED-date">{{ releaseDates.SLED | date('dddd, DD MMMM YYYY') }}</p>
+            {{ releaseDateLine('Sentence and licence expiry date (SLED)', 'SLED-date', releaseDates.SLED) }}
         {% endif %}
         {% if releaseDates.LED %}
-            <h3 class="govuk-heading-s">Licence expiry date (LED)</h3>
-            <p class="govuk-body">{{ releaseDates.LED | date('dddd, DD MMMM YYYY') }}</p>
+            {{ releaseDateLine('Licence expiry date (LED)', 'LED-date', releaseDates.LED) }}
         {% endif %}
         {% if releaseDates.SED %}
-            <h3 class="govuk-heading-s">Sentence expiry date (SED)</h3>
-            <p class="govuk-body">{{ releaseDates.SED | date('dddd, DD MMMM YYYY') }}</p>
+            {{ releaseDateLine('Sentence expiry date (SED)', 'SED-date', releaseDates.SED) }}
         {% endif %}
         {% if releaseDates.NPD %}
-            <h3 class="govuk-heading-s">Non parole date (NPD)</h3>
-            <p class="govuk-body">{{ releaseDates.NPD | date('dddd, DD MMMM YYYY') }}</p>
+            {{ releaseDateLine('Non parole date (NPD)', 'NPD-date', releaseDates.NPD) }}
         {% endif %}
         {% if releaseDates.ARD %}
-            <h3 class="govuk-heading-s">Automatic release date (ARD)</h3>
+            {{ releaseDateLine('Automatic release date (ARD)', 'ARD-date', releaseDates.ARD) }}
             {% if weekendAdjustments.ARD %}
-                <p class="govuk-body" data-qa="ARD-date">{{ releaseDates.ARD | date('dddd, DD MMMM YYYY') }}</p>
-                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="ARD-weekend-adjustment">{{ weekendAdjustments.ARD.date | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.ARD.adjustedForBankHoliday else "weekend" }}</p>
-            {% else %}
-                <p class="govuk-body" data-qa="ARD-date">{{ releaseDates.ARD | date('dddd, DD MMMM YYYY') }}</p>
+                {{ holidayLine('ARD-weekend-adjustment', weekendAdjustments.ARD.date, weekendAdjustments.ARD.adjustedForBankHoliday) }}
             {% endif %}
         {% endif %}
         {% if releaseDates.CRD %}
-            <h3 class="govuk-heading-s">Conditional release date (CRD)</h3>
+            {{ releaseDateLine('Conditional release date (CRD)', 'CRD-date', releaseDates.CRD) }}
             {% if weekendAdjustments.CRD %}
-                <p class="govuk-body" data-qa="CRD-date">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }}</p>
-                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="CRD-weekend-adjustment">{{ weekendAdjustments.CRD.date | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.CRD.adjustedForBankHoliday else "weekend" }}</p>
-            {% else %}
-                <p class="govuk-body" data-qa="CRD-date">{{ releaseDates.CRD | date('dddd, DD MMMM YYYY') }}</p>
+                {{ holidayLine('CRD-weekend-adjustment', weekendAdjustments.CRD.date, weekendAdjustments.CRD.adjustedForBankHoliday) }}
             {% endif %}
         {% endif %}
         {% if releaseDates.PED %}
-            <h3 class="govuk-heading-s">Parole eligibility date (PED)</h3>
-            <p class="govuk-body">{{ releaseDates.PED | date('dddd, DD MMMM YYYY') }}</p>
+            {{ releaseDateLine('Parole eligibility date (PED)', 'PED-date', releaseDates.PED) }}
         {% endif %}
         {% if releaseDates.HDCED %}
-            <h3 class="govuk-heading-s">Home detention curfew eligibility date (HDCED)</h3>
+            {{ releaseDateLine('Home detention curfew eligibility date (HDCED)', 'HDCED-date', releaseDates.HDCED) }}
             {% if weekendAdjustments.HDCED %}
-                <p class="govuk-body" data-qa="HDCED-date">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }}</p>
-                <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="HDCED-weekend-adjustment">{{ weekendAdjustments.HDCED.date | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if weekendAdjustments.HDCED.adjustedForBankHoliday else "weekend" }}</p>
-            {% else %}
-                <p class="govuk-body" data-qa="HDCED-date">{{ releaseDates.HDCED | date('dddd, DD MMMM YYYY') }}</p>
+                {{ holidayLine('HDCED-weekend-adjustment', weekendAdjustments.HDCED.date, weekendAdjustments.HDCED.adjustedForBankHoliday) }}
             {% endif %}
         {% endif %}
         {% if releaseDates.TUSED %}
-            <h3 class="govuk-heading-s">Top up supervision end date (TUSED)</h3>
-            <p class="govuk-body">{{ releaseDates.TUSED | date('dddd, DD MMMM YYYY') }}</p>
+            {{ releaseDateLine('Top up supervision end date (TUSED)', 'TUSED-date', releaseDates.TUSED) }}
         {% endif %}
     </div>
 </div>

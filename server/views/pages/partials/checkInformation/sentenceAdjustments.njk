@@ -1,0 +1,9 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set nilIndicator = "0" %}
+<h4 class="govuk-heading-m govuk-!-margin-top-2">Adjustments</h4>
+<h5 class="govuk-heading-s govuk-!-margin-bottom-0 ">Deductions</h5>
+{% include "./sentenceAdjustmentDeductions.njk" %}
+<h5 class="govuk-heading-s govuk-!-margin-bottom-0">Additions</h5>
+{% include "./sentenceAdjustmentAdditions.njk" %}

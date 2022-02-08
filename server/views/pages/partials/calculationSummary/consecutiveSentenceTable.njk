@@ -1,0 +1,22 @@
+<table class="govuk-table govuk-!-margin-bottom-4" data-qa="consecutive-sentence-table">
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Sentence</th>
+        <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence length</th>
+    </tr>
+    </thead>
+    <tbody class="govuk-table__body calculation-breakdown">
+    {% for sentencePart in calculationBreakdown.consecutiveSentence.sentenceParts %}
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Court case {{ sentencePart.caseSequence }},
+                count {{ sentencePart.lineSequence }}</td>
+            <td class="govuk-table__cell">{{ sentencePart.sentenceLength }}<br />
+                {% if sentencePart.consecutiveToLineSequence and sentencePart.consecutiveToCaseSequence %}
+                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
+                          style="margin-bottom:0;">consecutive to court case {{ sentencePart.consecutiveToCaseSequence }}, count {{ sentencePart.consecutiveToLineSequence }}</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
