@@ -4,7 +4,7 @@
 {% endmacro %}
 
 {% macro holidayLine(dataQa, releaseDate, isBankHoliday) %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa={{ data-qa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if isBankHoliday else "weekend" }}</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if isBankHoliday else "weekend" }}</p>
 {% endmacro %}
 
 <h2 class="govuk-heading-l govuk-!-margin-top-9">Final release dates</h2>
