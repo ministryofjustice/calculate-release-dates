@@ -42,7 +42,15 @@ export default class OtherRoutes {
           const calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, token)
           csvData.push(this.addRow(nomisRecord, calc, nomisDates, sentenceAndOffences, adjustments))
         } catch (ex) {
-          csvData.push(this.addErrorRow(nomisRecord, nomisDates, sentenceAndOffences, adjustments, ex))
+          if (ex?.status === 422) {
+            csvData.push(
+              this.addErrorRow(nomisRecord, nomisDates, sentenceAndOffences, adjustments, ex, 'Validation Error')
+            )
+          } else {
+            csvData.push(
+              this.addErrorRow(nomisRecord, nomisDates, sentenceAndOffences, adjustments, ex, 'Server error')
+            )
+          }
         }
       } catch (ex) {
         csvData.push(OtherRoutes.addNonCrdErrorRow(nomsId, ex))
@@ -160,48 +168,49 @@ export default class OtherRoutes {
     nomisDates: PrisonApiSentenceDetail,
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
-    ex: any
+    ex: any,
+    errorText: string
   ) {
     return {
       NOMS_ID: prisoner.prisonerNumber,
       DOB: prisoner.dateOfBirth,
-      REQUEST_ID: 'error',
-      CALCULATED_DATES: 'error',
-      CRD: 'error',
+      REQUEST_ID: errorText,
+      CALCULATED_DATES: errorText,
+      CRD: errorText,
       NOMIS_CRD: nomisDates.conditionalReleaseDate,
       NOMIS_CRD_OVERRIDE: nomisDates.nonParoleOverrideDate,
-      LED: 'error',
+      LED: errorText,
       NOMIS_LED: nomisDates.licenceExpiryDate,
-      SED: 'error',
+      SED: errorText,
       NOMIS_SED: nomisDates.sentenceExpiryDate,
-      NPD: 'error',
+      NPD: errorText,
       NOMIS_NPD: nomisDates.nonParoleDate,
       NOMIS_NPD_OVERRIDE: nomisDates.nonParoleOverrideDate,
-      ARD: 'error',
+      ARD: errorText,
       NOMIS_ARD: nomisDates.automaticReleaseDate,
       NOMIS_ARD_OVERRIDE: nomisDates.automaticReleaseOverrideDate,
-      TUSED: 'error',
+      TUSED: errorText,
       NOMIS_TUSED: nomisDates.topupSupervisionExpiryDate,
-      PED: 'error',
+      PED: errorText,
       NOMIS_PED: nomisDates.paroleEligibilityDate,
-      HDCED: 'error',
+      HDCED: errorText,
       NOMIS_HDCED: nomisDates.homeDetentionCurfewEligibilityDate,
-      ETD: 'error',
+      ETD: errorText,
       NOMIS_ETD: nomisDates.earlyTermDate,
-      MTD: 'error',
+      MTD: errorText,
       NOMIS_MTD: nomisDates.midTermDate,
-      LTD: 'error',
+      LTD: errorText,
       NOMIS_LTD: nomisDates.lateTermDate,
-      DPRRD: 'error',
+      DPRRD: errorText,
       NOMIS_DPRRD: nomisDates.postRecallReleaseDate,
       NOMIS_DPRRD_OVERRIDE: nomisDates.dtoPostRecallReleaseDateOverride,
-      PRRD: 'error',
+      PRRD: errorText,
       NOMIS_PRRD: nomisDates.postRecallReleaseDate,
       NOMIS_PRRD_OVERRIDE: nomisDates.postRecallReleaseOverrideDate,
-      ESED: 'error',
+      ESED: errorText,
       NOMIS_ESED: nomisDates.effectiveSentenceEndDate,
-      ARE_DATES_SAME: 'error',
-      ARE_DATES_SAME_USING_OVERRIDES: 'error',
+      ARE_DATES_SAME: errorText,
+      ARE_DATES_SAME_USING_OVERRIDES: errorText,
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       error: ex,
