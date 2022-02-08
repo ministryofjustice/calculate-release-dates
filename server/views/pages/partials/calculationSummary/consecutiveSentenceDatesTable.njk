@@ -1,0 +1,26 @@
+<table class="govuk-table govuk-!-margin-top-6" data-qa="consecutive-dates-table">
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row" style="border-top: none; margin-top: 25px;">
+        <td class="govuk-table__header" style="width: 43.5%;">Total sentence length</td>
+        <td class="govuk-table__cell">{{ calculationBreakdown.consecutiveSentence.sentenceLengthDays }}
+            days
+        </td>
+    </tr>
+    <tr class="govuk-table__row" style="border-top: none; margin-top: 25px;">
+        <td class="govuk-table__header"
+            style="width: 43.5%;">{{ calculationBreakdown.consecutiveSentence.dates | expiryDateType }}</td>
+        {% set expiryDate = calculationBreakdown.consecutiveSentence.dates | expiryDates %}
+        <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}<br />
+            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
+                  style="margin-bottom:0;">{{ expiryDate.daysFromSentenceStart }} days</span></td>
+    </tr>
+    <tr class="govuk-table__row">
+        <td class="govuk-table__header"
+            style="width: 43.5%;">{{ calculationBreakdown.consecutiveSentence.dates | releaseDateType }}</td>
+        {% set releaseDate = calculationBreakdown.consecutiveSentence.dates | releaseDates %}
+        <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}<br />
+            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
+                  style="margin-bottom:0;">{{ releaseDate.daysFromSentenceStart }} days</span></td>
+    </tr>
+    </tbody>
+</table>

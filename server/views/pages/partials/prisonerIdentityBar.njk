@@ -1,11 +1,10 @@
 {%- from "moj/components/identity-bar/macro.njk" import mojIdentityBar -%}
-
  {% if prisonerDetail %}
-{{ mojIdentityBar({
-    title: {
-        html: '<span class="govuk-!-margin-right-5"><strong>Prisoner name: </strong>' + prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title + '</span>' +
-        '<strong> Date of birth: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.dateOfBirth | date("DD MMMM YYYY")  + '</span>' +
-        '<strong>Prison number: </strong>' + prisonerDetail.offenderNo
-    }
-}) }}
-{%  endif %}
+     {{ mojIdentityBar({
+         title: {
+             html: '<span class="govuk-!-margin-right-5"><strong>Prisoner name: </strong>' + prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title + '</span>' +
+             '<strong> Date of birth: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.dateOfBirth | date("DD MMMM YYYY")  + '</span>' +
+             '<strong>Prison number: </strong>' + prisonerDetail.offenderNo
+         }
+     }) }}
+ {% endif %}
