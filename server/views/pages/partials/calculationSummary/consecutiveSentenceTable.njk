@@ -8,8 +8,7 @@
     <tbody class="govuk-table__body calculation-breakdown">
     {% for sentencePart in calculationBreakdown.consecutiveSentence.sentenceParts %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell">Court case {{ sentencePart.caseSequence }},
-                count {{ sentencePart.lineSequence }}</td>
+            <td class="govuk-table__cell">Court case {{ sentencePart.caseSequence }}, count {{ sentencePart.lineSequence }}</td>
             <td class="govuk-table__cell">{{ sentencePart.sentenceLength }}<br />
                 {% if sentencePart.consecutiveToLineSequence and sentencePart.consecutiveToCaseSequence %}
                     <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"

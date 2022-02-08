@@ -12,8 +12,7 @@
     <tbody class="govuk-table__body calculation-breakdown">
     {% for sentence in calculationBreakdown.concurrentSentences %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell">Court case {{ sentence.caseSequence }},
-                count {{ sentence.lineSequence }}</td>
+            <td class="govuk-table__cell">Court case {{ sentence.caseSequence }}, count {{ sentence.lineSequence }}</td>
             <td class="govuk-table__cell">{{ sentence.sentencedAt | date('DD MMMM YYYY') }}</td>
             <td class="govuk-table__cell">{{ sentence.sentenceLength }}</td>
             {% set expiryDate = sentence.dates | expiryDates %}
