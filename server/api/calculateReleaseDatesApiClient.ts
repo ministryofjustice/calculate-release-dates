@@ -40,9 +40,17 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<CalculationBreakdown>
   }
 
-  confirmCalculation(prisonerId: string, calculationRequestId: number): Promise<BookingCalculation> {
+  confirmCalculation(
+    prisonerId: string,
+    calculationRequestId: number,
+    body: {
+      sentencesAndOffencesHtml: string
+      breakdownHtml: string
+    }
+  ): Promise<BookingCalculation> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}/confirm/${calculationRequestId}`,
+      data: body,
     }) as Promise<BookingCalculation>
   }
 

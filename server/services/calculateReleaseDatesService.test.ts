@@ -210,7 +210,11 @@ describe('Calculate release dates service tests', () => {
       'user',
       prisonerId,
       calculationRequestId,
-      token
+      token,
+      {
+        breakdownHtml: '',
+        sentencesAndOffencesHtml: '',
+      }
     )
 
     expect(result).toEqual(calculationResults)

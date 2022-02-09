@@ -10,6 +10,12 @@ const dateFilter = require('nunjucks-date-filter')
 
 const production = process.env.NODE_ENV === 'production'
 
+let njkEnv: nunjucks.Environment
+
+export function nunjucksEnv() {
+  return njkEnv
+}
+
 export default function nunjucksSetup(app: express.Express, path: pathModule.PlatformPath): void {
   app.set('view engine', 'njk')
 
@@ -28,7 +34,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
     })
   }
 
-  const njkEnv = nunjucks.configure(
+  njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
       'node_modules/govuk-frontend/',

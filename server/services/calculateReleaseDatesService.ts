@@ -199,9 +199,13 @@ export default class CalculateReleaseDatesService {
     username: string,
     prisonerId: string,
     calculationRequestId: number,
-    token: string
+    token: string,
+    body: {
+      sentencesAndOffencesHtml: string
+      breakdownHtml: string
+    }
   ): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).confirmCalculation(prisonerId, calculationRequestId)
+    return new CalculateReleaseDatesApiClient(token).confirmCalculation(prisonerId, calculationRequestId, body)
   }
 
   async getWeekendAdjustments(

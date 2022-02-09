@@ -1,6 +1,7 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import { HttpError } from 'http-errors'
+import exp from 'constants'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -219,6 +220,8 @@ describe('Calculation routes tests', () => {
 
   it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect if an error is thrown', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     const error = {
       status: 412,
       message: 'An error has occurred',
@@ -234,61 +237,21 @@ describe('Calculation routes tests', () => {
         expect(res.redirect).toBeTruthy()
       })
   })
-})
-
-describe('Calculation routes tests related to check-information', () => {
-  it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
+  it('POST /calculation/:nomsId/summary/:calculationRequestId should submit release dates', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
-    return request(app)
-      .get('/calculation/A1234AA/check-information')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('A1234AA')
-        expect(res.text).toContain('Anon')
-        expect(res.text).toContain('Nobody')
-        expect(res.text).toContain('This calculation will include 6 sentences from NOMIS.')
-        expect(res.text).toContain('Court case 1')
-        expect(res.text).toContain('Committed on 03 February 2021')
-        expect(res.text).toContain('Committed between 04 January 2021 and 05 January 2021')
-        expect(res.text).toContain('Committed on 06 March 2021')
-        expect(res.text).toContain('Offence date not entered')
-        expect(res.text).toContain('Committed on 07 January 2021')
-        expect(res.text).toContain('SDS Standard Sentence')
-        expect(res.text).toContain('Court case 2')
-        expect(res.text).toContain('consecutive to')
-        expect(res.text).toContain('court case 1 count 1')
-        expect(res.text).toContain('href="/?prisonId=A1234AA"')
-      })
-  })
-
-  it('GET /calculation/:nomsId/check-information should display error page for case load errors.', () => {
-    prisonerService.getPrisonerDetail.mockImplementation(() => {
-      throw FullPageError.notInCaseLoadError()
-    })
-    return request(app)
-      .get('/calculation/A1234AA/check-information')
-      .expect(404)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('There is a problem')
-        expect(res.text).toContain('The details for this person cannot be found.')
-      })
-  })
-  it('GET /calculation/:nomsId/check-information should display error page for no sentences.', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockImplementation(() => {
-      throw FullPageError.noSentences()
+    calculateReleaseDatesService.confirmCalculation.mockResolvedValue({
+      dates: {},
+      calculationRequestId: 654321,
+      effectiveSentenceLength: {},
     })
     return request(app)
-      .get('/calculation/A1234AA/check-information')
-      .expect(400)
-      .expect('Content-Type', /html/)
+      .post('/calculation/A1234AB/summary/123456')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AB/complete/654321')
       .expect(res => {
-        expect(res.text).toContain('There is a problem')
-        expect(res.text).toContain('The calculation must include at least one sentence.')
+        expect(res.redirect).toBeTruthy()
       })
   })
 })
