@@ -1,7 +1,6 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import { HttpError } from 'http-errors'
-import exp from 'constants'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -17,7 +16,6 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import EntryPointService from '../services/entryPointService'
-import { FullPageError } from '../types/FullPageError'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 
 jest.mock('../services/userService')

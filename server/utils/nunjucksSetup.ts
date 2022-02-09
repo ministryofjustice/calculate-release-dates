@@ -12,7 +12,7 @@ const production = process.env.NODE_ENV === 'production'
 
 let njkEnv: nunjucks.Environment
 
-export function nunjucksEnv() {
+export function nunjucksEnv(): nunjucks.Environment {
   return njkEnv
 }
 
