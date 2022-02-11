@@ -1,5 +1,9 @@
 @media print {
-    .govuk-back-link {
-        display: none;
-    }
+  .govuk-back-link {
+    display: none;
+  }
+
+  .no-print {
+    display: none;
+  }
 }
