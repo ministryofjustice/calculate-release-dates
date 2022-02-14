@@ -33,7 +33,7 @@ export default function Index({
   )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
-  const startRoutes = new StartRoutes(entryPointService)
+  const startRoutes = new StartRoutes(entryPointService, prisonerService)
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
