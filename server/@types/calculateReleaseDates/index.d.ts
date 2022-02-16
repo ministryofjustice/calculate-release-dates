@@ -29,6 +29,10 @@ export interface paths {
     /** This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine */
     get: operations['validate']
   }
+  '/calculation/sentence-and-offences/{calculationRequestId}': {
+    /** This endpoint will return the sentences and offences based on a calculationRequestId */
+    get: operations['getSentencesAndOffence']
+  }
   '/calculation/results/{prisonerId}/{bookingId}': {
     /** This endpoint will return the confirmed release dates based on a prisoners booking */
     get: operations['getConfirmedCalculationResults']
@@ -37,14 +41,59 @@ export interface paths {
     /** This endpoint will return the release dates based on a calculationRequestId */
     get: operations['getCalculationResults']
   }
+  '/calculation/prisoner-details/{calculationRequestId}': {
+    /** This endpoint will return the prisoner details based on a calculationRequestId */
+    get: operations['getPrisonerDetails']
+  }
   '/calculation/breakdown/{calculationRequestId}': {
     /** This endpoint will return the breakdown based on a calculationRequestId */
     get: operations['getCalculationBreakdown']
+  }
+  '/calculation/adjustments/{calculationRequestId}': {
+    /** This endpoint will return the adjustments based on a calculationRequestId */
+    get: operations['get']
   }
 }
 
 export interface components {
   schemas: {
+    Adjustment: {
+      appliesToSentencesFrom: string
+      numberOfDays: number
+      fromDate?: string
+      toDate?: string
+    }
+    Adjustments: {
+      adjustments?: { [key: string]: components['schemas']['Adjustment'][] }
+    }
+    Booking: {
+      offender: components['schemas']['Offender']
+      sentences: components['schemas']['Sentence'][]
+      adjustments: components['schemas']['Adjustments']
+      bookingId: number
+    }
+    Duration: {
+      durationElements: { [key: string]: number }
+    }
+    Offence: {
+      committedAt: string
+      isScheduleFifteen: boolean
+      isScheduleFifteenMaximumLife: boolean
+    }
+    Offender: {
+      reference: string
+      dateOfBirth: string
+      isActiveSexOffender: boolean
+    }
+    Sentence: {
+      offence: components['schemas']['Offence']
+      duration: components['schemas']['Duration']
+      sentencedAt: string
+      identifier: string
+      consecutiveSentenceUUIDs: string[]
+      caseSequence?: number
+      lineSequence?: number
+    }
     BookingCalculation: {
       dates: { [key: string]: string }
       calculationRequestId: number
@@ -70,6 +119,10 @@ export interface components {
           durationEstimated?: boolean
         }[]
       }
+      calculationFragments?: components['schemas']['CalculationFragments']
+    }
+    CalculationFragments: {
+      breakdownHtml: string
     }
     WorkingDay: {
       date: string
@@ -91,6 +144,45 @@ export interface components {
     ValidationMessages: {
       type: 'UNSUPPORTED' | 'VALIDATION' | 'VALID'
       messages: components['schemas']['ValidationMessage'][]
+    }
+    OffenderOffence: {
+      offenderChargeId: number
+      offenceStartDate?: string
+      offenceEndDate?: string
+      offenceCode: string
+      offenceDescription: string
+      indicators: string[]
+    }
+    SentenceAndOffences: {
+      bookingId: number
+      sentenceSequence: number
+      lineSequence: number
+      caseSequence: number
+      consecutiveToSequence?: number
+      sentenceStatus: string
+      sentenceCategory: string
+      sentenceCalculationType: string
+      sentenceTypeDescription: string
+      sentenceDate: string
+      years: number
+      months: number
+      weeks: number
+      days: number
+      offences: components['schemas']['OffenderOffence'][]
+    }
+    Alert: {
+      dateCreated: string
+      dateExpires?: string
+      alertType: string
+      alertCode: string
+    }
+    PrisonerDetails: {
+      bookingId: number
+      offenderNo: string
+      firstName: string
+      lastName: string
+      dateOfBirth: string
+      alerts: components['schemas']['Alert'][]
     }
     /** Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
@@ -161,12 +253,36 @@ export interface components {
       rulesWithExtraAdjustments: {
         [key: string]: components['schemas']['AdjustmentDuration']
       }
-      /** Amount of adjustment in days (excluding rule specific adjustments) */
+      /** Amount of adjustment in days */
       adjustedDays: number
       /** Final release date (after all adjustments have been applied) */
       releaseDate: string
       /** Based on the screen design, the unadjusted date isn't derived in a consistent manner but is set as per the screen design */
       unadjustedDate: string
+    }
+    BookingAdjustments: {
+      active: boolean
+      fromDate: string
+      toDate?: string
+      numberOfDays: number
+      type:
+        | 'ADDITIONAL_DAYS_AWARDED'
+        | 'LAWFULLY_AT_LARGE'
+        | 'RESTORED_ADDITIONAL_DAYS_AWARDED'
+        | 'SPECIAL_REMISSION'
+        | 'UNLAWFULLY_AT_LARGE'
+    }
+    BookingAndSentenceAdjustments: {
+      bookingAdjustments: components['schemas']['BookingAdjustments'][]
+      sentenceAdjustments: components['schemas']['SentenceAdjustments'][]
+    }
+    SentenceAdjustments: {
+      sentenceSequence: number
+      active: boolean
+      fromDate?: string
+      toDate?: string
+      numberOfDays: number
+      type: 'RECALL_SENTENCE_REMAND' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'TAGGED_BAIL' | 'UNUSED_REMAND'
     }
   }
 }
@@ -190,7 +306,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': string
+        'application/json': components['schemas']['Booking']
       }
     }
   }
@@ -251,6 +367,11 @@ export interface operations {
         content: {
           'application/json': components['schemas']['BookingCalculation']
         }
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CalculationFragments']
       }
     }
   }
@@ -323,6 +444,35 @@ export interface operations {
       }
     }
   }
+  /** This endpoint will return the sentences and offences based on a calculationRequestId */
+  getSentencesAndOffence: {
+    parameters: {
+      path: {
+        /** The calculationRequestId of the calculation */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['SentenceAndOffences'][]
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['SentenceAndOffences'][]
+        }
+      }
+      /** No calculation exists for this calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['SentenceAndOffences'][]
+        }
+      }
+    }
+  }
   /** This endpoint will return the confirmed release dates based on a prisoners booking */
   getConfirmedCalculationResults: {
     parameters: {
@@ -383,6 +533,35 @@ export interface operations {
       }
     }
   }
+  /** This endpoint will return the prisoner details based on a calculationRequestId */
+  getPrisonerDetails: {
+    parameters: {
+      path: {
+        /** The calculationRequestId of the calculation */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['PrisonerDetails']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['PrisonerDetails']
+        }
+      }
+      /** No calculation exists for this calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['PrisonerDetails']
+        }
+      }
+    }
+  }
   /** This endpoint will return the breakdown based on a calculationRequestId */
   getCalculationBreakdown: {
     parameters: {
@@ -408,6 +587,35 @@ export interface operations {
       404: {
         content: {
           'application/json': components['schemas']['CalculationBreakdown']
+        }
+      }
+    }
+  }
+  /** This endpoint will return the adjustments based on a calculationRequestId */
+  get: {
+    parameters: {
+      path: {
+        /** The calculationRequestId of the calculation */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['BookingAndSentenceAdjustments']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['BookingAndSentenceAdjustments']
+        }
+      }
+      /** No calculation exists for this calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['BookingAndSentenceAdjustments']
         }
       }
     }

@@ -3,6 +3,7 @@ import RestClient from './restClient'
 import {
   BookingCalculation,
   CalculationBreakdown,
+  CalculationFragments,
   ValidationMessages,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -43,9 +44,7 @@ export default class CalculateReleaseDatesApiClient {
   confirmCalculation(
     prisonerId: string,
     calculationRequestId: number,
-    body: {
-      breakdownHtml: string
-    }
+    body: CalculationFragments
   ): Promise<BookingCalculation> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}/confirm/${calculationRequestId}`,

@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express'
+import { release } from 'os'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
@@ -47,6 +48,7 @@ export default class CalculationRoutes {
       calculationRequestId,
       token
     )
+    console.log(JSON.stringify(releaseDates, null, 2))
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,
