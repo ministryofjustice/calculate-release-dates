@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express'
-import { release } from 'os'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
@@ -48,7 +47,6 @@ export default class CalculationRoutes {
       calculationRequestId,
       token
     )
-    console.log(JSON.stringify(releaseDates, null, 2))
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,
@@ -64,7 +62,7 @@ export default class CalculationRoutes {
   }
 
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
+    const { username, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const breakdownHtml = await this.getBreakdownFragment(calculationRequestId, token)
