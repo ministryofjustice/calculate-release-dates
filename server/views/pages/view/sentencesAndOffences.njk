@@ -12,24 +12,18 @@
 
 {% block beforeContent %}
     {{ super() }}
-    {% if dpsEntryPoint %}
-        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
-    {% else %}
-        {% set backlink = "/search/prisoners" %}
-    {% endif %}
     <nav>
         {{ govukBackLink({
         text: "Back",
-        href: backlink
+        href: "/view/search/prisoners"
     }) }}
     </nav>
 {% endblock %}
 
 {% block content %}
-    {% include "../partials/customErrorBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
-            <h1 class="govuk-heading-xl" id="check-nomis-heading">Check sentence and offence information for
+            <h1 class="govuk-heading-xl" id="check-nomis-heading">Sentence and offence information for
                 {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
         </div>
     </div>

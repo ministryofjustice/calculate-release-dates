@@ -78,28 +78,4 @@ export default class PrisonerService {
   ): Promise<PrisonApiBookingAndSentenceAdjustments> {
     return new PrisonApiClient(token).getBookingAndSentenceAdjustments(bookingId)
   }
-
-  async getAggregatedBookingAndSentenceAdjustments(bookingId: number, token: string): Promise<AggregatedAdjustments> {
-    const adjustments = await this.getBookingAndSentenceAdjustments(bookingId, token)
-    return {
-      additionalDaysAwarded: this.aggregateAdjustments(
-        adjustments.bookingAdjustments.filter(a => a.type === 'ADDITIONAL_DAYS_AWARDED')
-      ),
-      remand: this.aggregateAdjustments(adjustments.sentenceAdjustments.filter(a => a.type === 'REMAND')),
-      restoredAdditionalDaysAwarded: this.aggregateAdjustments(
-        adjustments.bookingAdjustments.filter(a => a.type === 'RESTORED_ADDITIONAL_DAYS_AWARDED')
-      ),
-      taggedBail: this.aggregateAdjustments(adjustments.sentenceAdjustments.filter(a => a.type === 'TAGGED_BAIL')),
-      unlawfullyAtLarge: this.aggregateAdjustments(
-        adjustments.bookingAdjustments.filter(a => a.type === 'UNLAWFULLY_AT_LARGE')
-      ),
-    }
-  }
-
-  private aggregateAdjustments(adjustments: { numberOfDays?: number; active?: boolean }[]): number {
-    return adjustments
-      .filter(a => a.active)
-      .map(a => a.numberOfDays)
-      .reduce((sum, current) => sum + current, 0)
-  }
 }

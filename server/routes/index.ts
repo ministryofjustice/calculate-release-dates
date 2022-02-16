@@ -10,12 +10,14 @@ import CalculationRoutes from './calculationRoutes'
 import SearchRoutes from './searchRoutes'
 import StartRoutes from './startRoutes'
 import CheckInformationRoutes from './checkInformationRoutes'
+import ViewRoutes from './viewRoutes'
 
 export default function Index({
   userService,
   prisonerService,
   calculateReleaseDatesService,
   entryPointService,
+  viewReleaseDatesService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -34,6 +36,7 @@ export default function Index({
   const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
   const startRoutes = new StartRoutes(entryPointService, prisonerService)
+  const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, prisonerService)
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
@@ -53,6 +56,11 @@ export default function Index({
 
   const searchRoutes = () => {
     get('/search/prisoners', searchAccessRoutes.searchPrisoners)
+  }
+
+  const viewRoutes = () => {
+    get('/view/:nomsId', viewAccessRoutes.startViewJourney)
+    get('/view/:calculationRequestId/sentences-and-offences', viewAccessRoutes.sentencesAndOffences)
   }
 
   const otherRoutes = () => {
@@ -75,6 +83,7 @@ export default function Index({
   calculationRoutes()
   checkInformationRoutes()
   searchRoutes()
+  viewRoutes()
   otherRoutes()
 
   return router

@@ -240,18 +240,4 @@ describe('Prisoner service related tests', () => {
       })
     })
   })
-
-  describe('getAggregatedBookingAndSentenceAdjustments', () => {
-    it('Test aggregated adjustments', async () => {
-      fakeApi.get(`/api/adjustments/123/sentence-and-booking`).reply(200, stubbedAdjustments)
-      const result = await prisonerService.getAggregatedBookingAndSentenceAdjustments(123, token)
-      expect(result).toStrictEqual({
-        additionalDaysAwarded: 9,
-        remand: 13,
-        restoredAdditionalDaysAwarded: 5,
-        taggedBail: 13,
-        unlawfullyAtLarge: 20,
-      })
-    })
-  })
 })
