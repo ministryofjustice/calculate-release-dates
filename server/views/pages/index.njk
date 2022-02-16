@@ -29,6 +29,10 @@
                 isStartButton: true,
                 attributes: { 'data-qa': 'start-now-button' }
             }) }}
+            {% if featureToggles.viewJourney %}
+                <p class="govuk-body">Or <a href="/view/search/prisoners">look up a person</a> to see their release dates</p>
+            {% endif %}
+
             <h2 class="govuk-heading-m">Before you start</h2>
             <p class="govuk-body">Check in NOMIS that the prisoner’s information includes:</p>
             <ul class="govuk-list govuk-list--bullet">

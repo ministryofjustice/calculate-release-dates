@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
+import config from '../config'
 
 export default class StartRoutes {
   constructor(

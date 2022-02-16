@@ -97,6 +97,9 @@ export default {
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   analytics: {
-    tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', ''),
+    tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),
+  },
+  featureToggles: {
+    viewJourney: get('VIEW_JOURNEY_FEATURE_TOGGLE', false) === 'true',
   },
 }

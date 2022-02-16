@@ -1,4 +1,5 @@
 import { RequestHandler, Router } from 'express'
+import { search } from 'superagent'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { Services } from '../services'
 import populateCurrentUser from '../middleware/populateCurrentUser'
@@ -52,7 +53,8 @@ export default function Index({
   }
 
   const searchRoutes = () => {
-    get('/search/prisoners', searchAccessRoutes.searchPrisoners)
+    get('/search/prisoners', searchAccessRoutes.searchCalculatePrisoners)
+    get('/view/search/prisoners', searchAccessRoutes.searchViewPrisoners)
   }
 
   const otherRoutes = () => {

@@ -52,6 +52,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   njkEnv.addGlobal('tagManagerContainerId', tagManagerContainerId)
   njkEnv.addGlobal('authUrl', config.apis.hmppsAuth.url)
+  njkEnv.addGlobal('featureToggles', config.featureToggles)
 
   njkEnv.addFilter('initialiseName', (fullName: string) => {
     // this check is for the authError page
