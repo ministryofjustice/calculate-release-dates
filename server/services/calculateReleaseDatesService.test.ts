@@ -213,7 +213,6 @@ describe('Calculate release dates service tests', () => {
       token,
       {
         breakdownHtml: '',
-        sentencesAndOffencesHtml: '',
       }
     )
 

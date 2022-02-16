@@ -44,7 +44,6 @@ export default class CalculateReleaseDatesApiClient {
     prisonerId: string,
     calculationRequestId: number,
     body: {
-      sentencesAndOffencesHtml: string
       breakdownHtml: string
     }
   ): Promise<BookingCalculation> {

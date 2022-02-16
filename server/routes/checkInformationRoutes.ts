@@ -4,7 +4,6 @@ import PrisonerService from '../services/prisonerService'
 import { groupBy, indexBy } from '../utils/utils'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import EntryPointService from '../services/entryPointService'
-import SentenceAndOffenceViewModel from '../@types/calculateReleaseDates/SentenceAndOffenceViewModel'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -40,7 +39,7 @@ export default class CheckInformationRoutes {
       validationErrors:
         req.query.hasErrors &&
         (await this.calculateReleaseDatesService.validateBackend(nomsId, sentencesAndOffences, token)),
-    } as SentenceAndOffenceViewModel)
+    })
   }
 
   public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {

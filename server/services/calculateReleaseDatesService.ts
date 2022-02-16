@@ -201,7 +201,6 @@ export default class CalculateReleaseDatesService {
     calculationRequestId: number,
     token: string,
     body: {
-      sentencesAndOffencesHtml: string
       breakdownHtml: string
     }
   ): Promise<BookingCalculation> {

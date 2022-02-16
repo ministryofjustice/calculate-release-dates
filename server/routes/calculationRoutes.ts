@@ -6,9 +6,6 @@ import EntryPointService from '../services/entryPointService'
 import config from '../config'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
-import { groupBy, indexBy } from '../utils/utils'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
-import SentenceAndOffenceViewModel from '../@types/calculateReleaseDates/SentenceAndOffenceViewModel'
 
 export default class CalculationRoutes {
   constructor(
@@ -69,7 +66,6 @@ export default class CalculationRoutes {
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const breakdownHtml = await this.getBreakdownFragment(calculationRequestId, token)
-    const sentencesAndOffencesHtml = await this.getSentenceAndOffenceFragment(username, nomsId, caseloads, token)
     try {
       const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
         username,
@@ -78,7 +74,6 @@ export default class CalculationRoutes {
         token,
         {
           breakdownHtml,
-          sentencesAndOffencesHtml,
         }
       )
       res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
@@ -128,33 +123,5 @@ export default class CalculationRoutes {
       'pages/fragments/breakdownFragment.njk',
       await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
     )
-  }
-
-  private async getSentenceAndOffenceFragment(
-    username: string,
-    nomsId: string,
-    caseloads: string[],
-    token: string
-  ): Promise<string> {
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
-      username,
-      prisonerDetail.bookingId,
-      token
-    )
-    const adjustmentDetails = await this.prisonerService.getAggregatedBookingAndSentenceAdjustments(
-      prisonerDetail.bookingId,
-      token
-    )
-    return nunjucksEnv().render('pages/fragments/sentenceAndOffenceFragment.njk', {
-      prisonerDetail,
-      sentencesAndOffences,
-      adjustmentDetails,
-      caseToSentences: groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence),
-      sentenceSequenceToSentence: indexBy(
-        sentencesAndOffences,
-        (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
-      ),
-    } as SentenceAndOffenceViewModel)
   }
 }
