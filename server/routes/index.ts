@@ -1,5 +1,4 @@
 import { RequestHandler, Router } from 'express'
-import { search } from 'superagent'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { Services } from '../services'
 import populateCurrentUser from '../middleware/populateCurrentUser'
