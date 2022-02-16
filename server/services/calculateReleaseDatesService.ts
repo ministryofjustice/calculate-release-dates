@@ -2,6 +2,7 @@ import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClien
 import {
   BookingCalculation,
   CalculationBreakdown,
+  CalculationFragments,
   ReleaseDateCalculationBreakdown,
   ValidationMessage,
   WorkingDay,
@@ -199,9 +200,10 @@ export default class CalculateReleaseDatesService {
     username: string,
     prisonerId: string,
     calculationRequestId: number,
-    token: string
+    token: string,
+    body: CalculationFragments
   ): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).confirmCalculation(prisonerId, calculationRequestId)
+    return new CalculateReleaseDatesApiClient(token).confirmCalculation(prisonerId, calculationRequestId, body)
   }
 
   async getWeekendAdjustments(

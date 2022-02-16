@@ -5,6 +5,7 @@ import logger from '../../logger'
 import EntryPointService from '../services/entryPointService'
 import config from '../config'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import { nunjucksEnv } from '../utils/nunjucksSetup'
 
 export default class CalculationRoutes {
   constructor(
@@ -64,12 +65,16 @@ export default class CalculationRoutes {
     const { username, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
+    const breakdownHtml = await this.getBreakdownFragment(calculationRequestId, token)
     try {
       const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
         username,
         nomsId,
         calculationRequestId,
-        token
+        token,
+        {
+          breakdownHtml,
+        }
       )
       res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
     } catch (error) {
@@ -111,5 +116,12 @@ export default class CalculationRoutes {
       calculationRequestId,
       digitalPrisonServicesUrl: config.apis.digitalPrisonServices.ui_url,
     })
+  }
+
+  private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {
+    return nunjucksEnv().render(
+      'pages/fragments/breakdownFragment.njk',
+      await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+    )
   }
 }
