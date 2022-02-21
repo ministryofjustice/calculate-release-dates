@@ -1,8 +1,6 @@
 import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
-import { groupBy, indexBy } from '../utils/utils'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import EntryPointService from '../services/entryPointService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 

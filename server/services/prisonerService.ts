@@ -11,7 +11,6 @@ import {
 import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
 import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 import { FullPageError } from '../types/FullPageError'
-import AggregatedAdjustments from '../@types/calculateReleaseDates/AggregatedAdjustments'
 
 export default class PrisonerService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
