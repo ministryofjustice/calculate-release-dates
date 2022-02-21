@@ -14,9 +14,7 @@ context('Check nomis information', () => {
   it('Visit check nomis information page', () => {
     cy.signIn()
     const checkInformationPage = CheckInformationPage.goTo('A1234AB')
-    checkInformationPage
-      .offenceCountText()
-      .should('contains.text', 'This calculation will include 2 sentences from NOMIS.')
+    checkInformationPage.offenceCountText().contains('This calculation will include 2 sentences from NOMIS.') // contain.text didn't like the whitespace
 
     checkInformationPage.sentenceTable(1).should('contain.text', 'Committed on 03 February 2021')
     checkInformationPage.sentenceTable(1).contains('3 years') // contain.text didn't like the whitespace
