@@ -1,9 +1,5 @@
 import { RequestHandler } from 'express'
-import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
-import { groupBy, indexBy } from '../utils/utils'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
-import EntryPointService from '../services/entryPointService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 
@@ -38,13 +34,16 @@ export default class ViewRoutes {
         calculationRequestId,
         token
       )
-      const adjustmentDetails = await this.prisonerService.getBookingAndSentenceAdjustments(calculationRequestId, token)
+      const adjustmentDetails = await this.viewReleaseDatesService.getBookingAndSentenceAdjustments(
+        calculationRequestId,
+        token
+      )
 
       res.render('pages/view/sentencesAndOffences', {
         ...SentenceAndOffenceViewModel.from(prisonerDetail, sentencesAndOffences, adjustmentDetails),
+        calculationRequestId,
       })
     } catch (error) {
-      console.log(JSON.stringify(error), null, 2)
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
         res.redirect(`/view/${calculationRequestId}/calculation-summary`)
       } else {

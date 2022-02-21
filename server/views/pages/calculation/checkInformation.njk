@@ -33,5 +33,15 @@
                 {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
         </div>
     </div>
-    {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full govuk-!-margin-top-8">
+            {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds-from-desktop">
+                    {% include "../partials/checkInformation/calculateDates.njk" %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

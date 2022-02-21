@@ -59,7 +59,7 @@ export default function Index({
   }
 
   const viewRoutes = () => {
-    get('/view/:nomsId', viewAccessRoutes.startViewJourney)
+    get('/view/:nomsId/latest', viewAccessRoutes.startViewJourney)
     get('/view/:calculationRequestId/sentences-and-offences', viewAccessRoutes.sentencesAndOffences)
   }
 

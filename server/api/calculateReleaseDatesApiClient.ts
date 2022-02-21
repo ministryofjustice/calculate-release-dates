@@ -81,7 +81,7 @@ export default class CalculateReleaseDatesApiClient {
 
   getBookingAndSentenceAdjustments(calculationId: number): Promise<PrisonApiBookingAndSentenceAdjustments> {
     return this.restClient.get({
-      path: `/calculation/sentence-and-offences/${calculationId}`,
+      path: `/calculation/adjustments/${calculationId}`,
     }) as Promise<PrisonApiBookingAndSentenceAdjustments>
   }
 
