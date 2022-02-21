@@ -3,7 +3,6 @@ import HmppsAuthClient from '../api/hmppsAuthClient'
 import config from '../config'
 import PrisonerService from './prisonerService'
 import {
-  PrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
@@ -82,99 +81,6 @@ const inactiveSentence = {
   offences: [{ offenceEndDate: '2021-02-03' }],
 } as PrisonApiOffenderSentenceAndOffences
 
-const stubbedAdjustments = {
-  sentenceAdjustments: [
-    {
-      sentenceSequence: 1,
-      type: 'UNUSED_REMAND',
-      numberOfDays: 2,
-      fromDate: '2021-02-01',
-      toDate: '2021-02-02',
-      active: true,
-    },
-    {
-      sentenceSequence: 1,
-      type: 'REMAND',
-      numberOfDays: 34,
-      fromDate: '2021-02-03',
-      toDate: '2021-03-08',
-      active: false,
-    },
-    {
-      sentenceSequence: 1,
-      type: 'TAGGED_BAIL',
-      numberOfDays: 6,
-      active: true,
-    },
-    {
-      sentenceSequence: 2,
-      type: 'REMAND',
-      numberOfDays: 13,
-      fromDate: '2021-01-03',
-      toDate: '2021-01-15',
-      active: true,
-    },
-    {
-      sentenceSequence: 2,
-      type: 'TAGGED_BAIL',
-      numberOfDays: 7,
-      active: true,
-    },
-    {
-      sentenceSequence: 2,
-      type: 'UNUSED_REMAND',
-      numberOfDays: 3,
-      fromDate: '2021-01-16',
-      toDate: '2021-01-18',
-      active: true,
-    },
-  ],
-  bookingAdjustments: [
-    {
-      type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
-      numberOfDays: 2,
-      fromDate: '2021-03-07',
-      toDate: '2021-03-08',
-      active: true,
-    },
-    {
-      type: 'UNLAWFULLY_AT_LARGE',
-      numberOfDays: 10,
-      fromDate: '2021-06-01',
-      toDate: '2021-06-10',
-      active: true,
-    },
-    {
-      type: 'UNLAWFULLY_AT_LARGE',
-      numberOfDays: 10,
-      fromDate: '2021-08-01',
-      toDate: '2021-08-10',
-      active: true,
-    },
-    {
-      type: 'ADDITIONAL_DAYS_AWARDED',
-      numberOfDays: 4,
-      fromDate: '2021-03-05',
-      toDate: '2021-03-08',
-      active: true,
-    },
-    {
-      type: 'ADDITIONAL_DAYS_AWARDED',
-      numberOfDays: 5,
-      fromDate: '2021-07-06',
-      toDate: '2021-07-10',
-      active: true,
-    },
-    {
-      type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
-      numberOfDays: 3,
-      fromDate: '2021-07-08',
-      toDate: '2021-07-10',
-      active: true,
-    },
-  ],
-} as PrisonApiBookingAndSentenceAdjustments
-
 const token = 'token'
 
 describe('Prisoner service related tests', () => {
@@ -237,20 +143,6 @@ describe('Prisoner service related tests', () => {
           expect(error.errorKey).toBe(FullPageErrorType.NO_SENTENCES)
           expect(error.status).toBe(400)
         }
-      })
-    })
-  })
-
-  describe('getAggregatedBookingAndSentenceAdjustments', () => {
-    it('Test aggregated adjustments', async () => {
-      fakeApi.get(`/api/adjustments/123/sentence-and-booking`).reply(200, stubbedAdjustments)
-      const result = await prisonerService.getAggregatedBookingAndSentenceAdjustments(123, token)
-      expect(result).toStrictEqual({
-        additionalDaysAwarded: 9,
-        remand: 13,
-        restoredAdditionalDaysAwarded: 5,
-        taggedBail: 13,
-        unlawfullyAtLarge: 20,
       })
     })
   })

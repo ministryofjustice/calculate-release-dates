@@ -1,9 +1,8 @@
 import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
-import { groupBy, indexBy } from '../utils/utils'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import EntryPointService from '../services/entryPointService'
+import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -21,20 +20,13 @@ export default class CheckInformationRoutes {
       prisonerDetail.bookingId,
       token
     )
-    const adjustmentDetails = await this.prisonerService.getAggregatedBookingAndSentenceAdjustments(
+    const adjustmentDetails = await this.prisonerService.getBookingAndSentenceAdjustments(
       prisonerDetail.bookingId,
       token
     )
 
     res.render('pages/calculation/checkInformation', {
-      prisonerDetail,
-      sentencesAndOffences,
-      adjustmentDetails,
-      caseToSentences: groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence),
-      sentenceSequenceToSentence: indexBy(
-        sentencesAndOffences,
-        (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
-      ),
+      ...SentenceAndOffenceViewModel.from(prisonerDetail, sentencesAndOffences, adjustmentDetails),
       dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
       validationErrors:
         req.query.hasErrors &&

@@ -35,18 +35,8 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full govuk-!-margin-top-8">
-            <p class="govuk-body govuk-!-margin-top-2" id="offence-count-text">
-                {% set offenceCount = sentencesAndOffences | countOffences %}
-                This calculation will include {{ offenceCount }} {{ 'sentence' | pluralise(offenceCount) }} from NOMIS.
-            </p>
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Court cases</h2>
-            {% include "../partials/checkInformation/sentenceTable.njk" %}
+            {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
 
-            <div class="govuk-grid-row govuk-!-width-three-quarters">
-                <div class="govuk-grid-column-two-thirds-from-desktop">
-                    {% include "../partials/checkInformation/sentenceAdjustments.njk" %}
-                </div>
-            </div>
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds-from-desktop">
                     {% include "../partials/checkInformation/calculateDates.njk" %}

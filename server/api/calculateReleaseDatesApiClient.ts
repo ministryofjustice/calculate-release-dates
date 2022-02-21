@@ -7,6 +7,11 @@ import {
   ValidationMessages,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiOffenderSentenceAndOffences,
+  PrisonApiPrisoner,
+} from '../@types/prisonApi/prisonClientTypes'
 
 export default class CalculateReleaseDatesApiClient {
   restClient: RestClient
@@ -62,5 +67,27 @@ export default class CalculateReleaseDatesApiClient {
 
   validate(prisonerId: string): Promise<ValidationMessages> {
     return this.restClient.get({ path: `/calculation/${prisonerId}/validate` }) as Promise<ValidationMessages>
+  }
+
+  getPrisonerDetail(calculationId: number): Promise<PrisonApiPrisoner> {
+    return this.restClient.get({ path: `/calculation/prisoner-details/${calculationId}` }) as Promise<PrisonApiPrisoner>
+  }
+
+  getSentencesAndOffences(calculationId: number): Promise<PrisonApiOffenderSentenceAndOffences[]> {
+    return this.restClient.get({
+      path: `/calculation/sentence-and-offences/${calculationId}`,
+    }) as Promise<PrisonApiOffenderSentenceAndOffences[]>
+  }
+
+  getBookingAndSentenceAdjustments(calculationId: number): Promise<PrisonApiBookingAndSentenceAdjustments> {
+    return this.restClient.get({
+      path: `/calculation/adjustments/${calculationId}`,
+    }) as Promise<PrisonApiBookingAndSentenceAdjustments>
+  }
+
+  getLatestCalculation(prisonerId: string, bookingId: number): Promise<BookingCalculation> {
+    return this.restClient.get({
+      path: `/calculation/results/${prisonerId}/${bookingId}`,
+    }) as Promise<BookingCalculation>
   }
 }

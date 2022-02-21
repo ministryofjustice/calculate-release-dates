@@ -7,7 +7,6 @@ import { FullPageError, FullPageErrorType } from './types/FullPageError'
 export default function createErrorHandler(production: boolean) {
   return (error: HTTPError | FullPageError | HttpError, req: Request, res: Response, next: NextFunction): void => {
     logger.error(`Error handling request for '${req.originalUrl}', user '${res.locals.user?.username}'`, error)
-
     if ('errorKey' in error) {
       res.locals.errorKey = FullPageErrorType[error.errorKey]
     } else {

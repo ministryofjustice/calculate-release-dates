@@ -4,6 +4,7 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
+  PrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
@@ -78,6 +79,28 @@ const stubbedSentencesAndOffences = [
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
+const stubbedAdjustments = {
+  sentenceAdjustments: [
+    {
+      sentenceSequence: 1,
+      type: 'UNUSED_REMAND',
+      numberOfDays: 2,
+      fromDate: '2021-02-01',
+      toDate: '2021-02-02',
+      active: true,
+    },
+  ],
+  bookingAdjustments: [
+    {
+      type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
+      numberOfDays: 2,
+      fromDate: '2021-03-07',
+      toDate: '2021-03-08',
+      active: true,
+    },
+  ],
+} as PrisonApiBookingAndSentenceAdjustments
+
 beforeEach(() => {
   app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService, entryPointService })
 })
@@ -90,6 +113,7 @@ describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
     return request(app)
       .get('/calculation/A1234AA/check-information')
@@ -99,7 +123,8 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Anon')
         expect(res.text).toContain('Nobody')
-        expect(res.text).toContain('This calculation will include 6 sentences from NOMIS.')
+        expect(res.text).toContain('This calculation will include 6')
+        expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
         expect(res.text).toContain('Committed between 04 January 2021 and 05 January 2021')
@@ -111,12 +136,15 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('consecutive to')
         expect(res.text).toContain('court case 1 count 1')
         expect(res.text).toContain('href="/?prisonId=A1234AA"')
+        expect(res.text).toContain('Restore additional days awarded (RADA)')
+        expect(res.text).toContain('2')
       })
   })
 
   it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
       messageType: ErrorMessageType.VALIDATION,
@@ -134,6 +162,7 @@ describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
@@ -147,6 +176,7 @@ describe('Check information routes tests', () => {
   it('POST /calculation/:nomsId/check-information should redirect if validation fails', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
       messageType: ErrorMessageType.VALIDATION,
