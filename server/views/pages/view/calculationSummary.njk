@@ -1,0 +1,38 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% set pageTitle = applicationName + " - calculation summary" %}
+{% set pageId = "calculation-summary" %}
+
+{% block aside %}
+    {% if prisonerDetails %}
+        {% include "../partials/prisonerIdentityBar.njk" %}
+    {% endif %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{super()}}
+    <nav>
+        {{ govukBackLink({
+        text: "Back",
+        href: "/calculation/" + prisonerDetail.offenderNo + "/check-information"
+    }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% include "../partials/customErrorBanner.njk" %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Release dates for </h1>
+            {% include "../partials/calculationSummaryDates.njk" %}
+            {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
+            {% include "../partials/calculationSummary/howDatesCalculatedInset.njk" %}
+        </div>
+    </div>
+
+    {% include "../partials/calculationSummaryBreakdown.njk" %}
+{% endblock %}
