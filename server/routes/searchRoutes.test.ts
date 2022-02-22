@@ -45,6 +45,17 @@ describe('GET Search routes for /search/prisoners', () => {
       })
   })
 
+  it('Should display default view search page if no search params entered', () => {
+    return request(app)
+      .get('/view/search/prisoners')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Look up a person to see their release dates')
+        expect(res.text).not.toContain('There are no matching results')
+      })
+  })
+
   it('Should should return no results if user has no caseloads', () => {
     prisonerService.getUsersCaseloads.mockResolvedValue([])
     prisonerService.searchPrisoners.mockResolvedValue([])
