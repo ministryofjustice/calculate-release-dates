@@ -7,13 +7,19 @@
 
 {% block content %}
   <div class="govuk-grid-row govuk-!-margin-bottom-4" data-qa="prisoner-search-section">
-    <div class="govuk-grid-column-full">
-      <div id="prisoner-search-container">
-        <h1 class="govuk-heading-xl">Search for a prisoner</h1>
+    <div id="prisoner-search-container">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+          {% if view %}Look up a person to see their release dates{% else %}Search for a prisoner{% endif %}
+        </h1>
+      </div>
+
+      <div class="govuk-grid-column-full">
         <p class="govuk-body">You can search using a person’s name or prison number.</p>
         {% include "../partials/prisonerSearch.njk" %}
         {% include "../partials/prisonerSearchTable.njk" %}
       </div>
     </div>
   </div>
+</div>
 {% endblock %}
