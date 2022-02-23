@@ -1,0 +1,68 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% set pageTitle = applicationName + " - calculation summary" %}
+{% set pageId = "view-calculation-summary" %}
+
+{% block aside %}
+    {% if prisonerDetail %}
+        {% include "../partials/prisonerIdentityBar.njk" %}
+    {% endif %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{super()}}
+
+    {% if calculationSummaryUnavailable %}
+        <nav>
+            {{ govukBackLink({
+        text: "Back",
+        href: "/view/search/prisoners"
+    }) }}
+        </nav>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% include "../partials/customErrorBanner.njk" %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Release dates {% if prisonerDetail %} for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}
+                {% endif %}
+            </h1>
+            <p class="govuk-body govuk-!-margin-top-8 govuk-!-margin-bottom-0">
+                <a href={{"/view/" + calculationRequestId + "/calculation-summary/print"}}>Print calculation summary</a>
+            </p>
+            {% include "../partials/calculationSummaryDates.njk" %}
+            {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
+            {% include "../partials/calculationSummary/howDatesCalculatedInset.njk" %}
+        </div>
+    </div>
+
+    {% include "../partials/calculationSummaryBreakdown.njk" %}
+
+    {% if calculationSummaryUnavailable %}
+    {% else %}
+        <div class="govuk-grid-row">
+            <nav class="pagination" role="navigation" aria-label="Pagination">
+                <ul class="pagination__list">
+                    <li class="pagination__item pagination__item--previous">
+                        <a href={{"/view/" + calculationRequestId + "/sentences-and-offences"}} class="govuk-link pagination__link" data-qa="previous-page-button">
+                            <span class="pagination__link-title">
+                                <svg class="gem-c-pagination__link-icon" xmlns="http://www.w3.org/2000/svg" height="13" width="17" viewBox="0 0 17 13">
+                                    <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+                                </svg>
+                                <span class="pagination__link-text">Previous page</span>
+                            </span>
+                            <span class="pagination__link-divider visually-hidden">:</span>
+                            <span class="pagination__link-label">Release dates</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -4,11 +4,7 @@ import { HttpError } from 'http-errors'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
-import {
-  PrisonApiOffenderSentenceAndOffences,
-  PrisonApiPrisoner,
-  PrisonApiSentenceDetail,
-} from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
   BookingCalculation,
@@ -56,32 +52,6 @@ const stubbedPrisonerData = {
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
 } as PrisonApiPrisoner
-
-const stubbedSentencesAndOffences = [
-  {
-    years: 3,
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    caseSequence: 1,
-    lineSequence: 1,
-    sentenceSequence: 1,
-    offences: [
-      { offenceEndDate: '2021-02-03' },
-      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-      { offenceStartDate: '2021-03-06' },
-      {},
-      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
-    ],
-  } as PrisonApiOffenderSentenceAndOffences,
-  {
-    years: 2,
-    caseSequence: 2,
-    lineSequence: 2,
-    sentenceSequence: 2,
-    consecutiveToSequence: 1,
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03' }],
-  } as PrisonApiOffenderSentenceAndOffences,
-]
 
 const stubbedCalculationResults = {
   dates: {
@@ -217,9 +187,6 @@ describe('Calculation routes tests', () => {
   })
 
   it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect if an error is thrown', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     const error = {
       status: 412,
       message: 'An error has occurred',
@@ -236,9 +203,6 @@ describe('Calculation routes tests', () => {
       })
   })
   it('POST /calculation/:nomsId/summary/:calculationRequestId should submit release dates', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.confirmCalculation.mockResolvedValue({
       dates: {},
       calculationRequestId: 654321,

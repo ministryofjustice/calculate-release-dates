@@ -5,10 +5,12 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - calculation summary" %}
-{% set pageId = "print-calculation-summary" %}
+{% set pageId = "view-print-calculation-summary" %}
 
 {% block aside %}
-    {% include "../partials/prisonerIdentityBar.njk" %}
+    {% if prisonerDetail %}
+        {% include "../partials/prisonerIdentityBar.njk" %}
+    {% endif %}
 {% endblock %}
 
 {% block beforeContent %}
@@ -16,15 +18,18 @@
     <nav>
         {{ govukBackLink({
         text: "Back",
-        href: "/calculation/" + prisonerDetail.offenderNo + "/complete/" + calculationRequestId
+        href: "/view/" + calculationRequestId + "/calculation-summary/"
     }) }}
     </nav>
 {% endblock %}
 
 {% block content %}
+    {% include "../partials/formError.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Calculation</h1>
+            <h1 class="govuk-heading-xl">Release dates {% if prisonerDetail %} for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}
+                {% endif %}
+            </h1>
             {% include "../partials/calculationSummaryDates.njk" %}
         </div>
     </div>

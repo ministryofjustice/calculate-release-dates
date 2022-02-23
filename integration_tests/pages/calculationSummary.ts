@@ -1,6 +1,7 @@
-import Page, { PageElement } from './page'
+import CalculationSummaryCommon from './calculationSummaryCommon'
+import { PageElement } from './page'
 
-export default class CalculationSummaryPage extends Page {
+export default class CalculationSummaryPage extends CalculationSummaryCommon {
   constructor() {
     super('calculation-summary')
   }
@@ -10,25 +11,5 @@ export default class CalculationSummaryPage extends Page {
     return new CalculationSummaryPage()
   }
 
-  public sledDate = (): PageElement => cy.get('[data-qa=SLED-date]')
-
-  public crdDate = (): PageElement => cy.get('[data-qa=CRD-date]')
-
-  public crdWeekendAdjustment = (): PageElement => cy.get('[data-qa=CRD-weekend-adjustment]')
-
-  public hdcedDate = (): PageElement => cy.get('[data-qa=HDCED-date]')
-
-  public hdcedWeekendAdjustment = (): PageElement => cy.get('[data-qa=HDCED-weekend-adjustment]')
-
   public submitToNomisButton = (): PageElement => cy.get('[data-qa=submit-to-nomis]')
-
-  public concurrentSentenceTable = (): PageElement => cy.get('[data-qa=concurrent-sentence-table]')
-
-  public consecutiveStartDate = (): PageElement => cy.get('[data-qa=consecutive-start-date]')
-
-  public consecutiveSentenceTable = (): PageElement => cy.get('[data-qa=consecutive-sentence-table]')
-
-  public consecutiveDatesTable = (): PageElement => cy.get('[data-qa=consecutive-dates-table]')
-
-  public releaseDatesAdjustmentsTable = (): PageElement => cy.get('[data-qa=release-dates-adjustments-table]')
 }

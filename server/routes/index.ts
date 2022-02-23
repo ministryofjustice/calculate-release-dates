@@ -36,7 +36,7 @@ export default function Index({
   const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
   const startRoutes = new StartRoutes(entryPointService, prisonerService)
-  const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, prisonerService)
+  const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
@@ -62,6 +62,8 @@ export default function Index({
   const viewRoutes = () => {
     get('/view/:nomsId/latest', viewAccessRoutes.startViewJourney)
     get('/view/:calculationRequestId/sentences-and-offences', viewAccessRoutes.sentencesAndOffences)
+    get('/view/:calculationRequestId/calculation-summary', viewAccessRoutes.calculationSummary)
+    get('/view/:calculationRequestId/calculation-summary/print', viewAccessRoutes.printCalculationSummary)
   }
 
   const otherRoutes = () => {

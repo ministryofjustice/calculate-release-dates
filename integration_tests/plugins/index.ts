@@ -34,5 +34,9 @@ export default (on: (string, Record) => void): void => {
     stubValidate: calculateReleaseDatesApi.stubValidate,
     stubConfirmCalculation_errorNomisDataChanged: calculateReleaseDatesApi.stubConfirmCalculation_errorNomisDataChanged,
     stubConfirmCalculation_errorServerError: calculateReleaseDatesApi.stubConfirmCalculation_errorServerError,
+    stubAdjustments: calculateReleaseDatesApi.stubAdjustments,
+    stubSentencesAndOffences: calculateReleaseDatesApi.stubSentencesAndOffences,
+    stubPrisonerDetails: calculateReleaseDatesApi.stubPrisonerDetails,
+    stubLatestCalculation: calculateReleaseDatesApi.stubLatestCalculation,
   })
 }

@@ -1,5 +1,6 @@
 import request from 'supertest'
 import type { Express } from 'express'
+import { HttpError } from 'http-errors'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -12,7 +13,12 @@ import {
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import EntryPointService from '../services/entryPointService'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
-import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationBreakdown,
+  WorkingDay,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -81,16 +87,6 @@ const stubbedSentencesAndOffences = [
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
-const stubbedCalculationResults = {
-  dates: {
-    CRD: '2021-02-03',
-    SED: '2021-02-03',
-    HDCED: '2021-10-03',
-  },
-  calculationRequestId: 123456,
-  effectiveSentenceLength: {},
-} as BookingCalculation
-
 const stubbedAdjustments = {
   sentenceAdjustments: [
     {
@@ -113,6 +109,67 @@ const stubbedAdjustments = {
   ],
 } as PrisonApiBookingAndSentenceAdjustments
 
+const stubbedCalculationResults = {
+  dates: {
+    CRD: '2021-02-03',
+    SED: '2021-02-03',
+    HDCED: '2021-10-03',
+  },
+  calculationRequestId: 123456,
+  effectiveSentenceLength: {},
+} as BookingCalculation
+const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
+  CRD: {
+    date: '2021-02-02',
+    adjustedForWeekend: true,
+    adjustedForBankHoliday: false,
+  },
+  HDCED: {
+    date: '2021-10-05',
+    adjustedForWeekend: true,
+    adjustedForBankHoliday: true,
+  },
+}
+
+const stubbedCalculationBreakdown: CalculationBreakdown = {
+  concurrentSentences: [
+    {
+      dates: {
+        CRD: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
+        },
+        SED: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
+        },
+      },
+      sentenceLength: '2 years',
+      sentenceLengthDays: 785,
+      sentencedAt: '2020-01-01',
+      lineSequence: 2,
+      caseSequence: 1,
+    },
+  ],
+  breakdownByReleaseDateType: {},
+}
+
+const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
+  {
+    releaseDateType: 'CRD',
+    releaseDate: '2021-02-03',
+    hintText: '15 January 2021 minus 18 days',
+  },
+  {
+    releaseDateType: 'HDCED',
+    releaseDate: '13 May 2029',
+    hintText: '14 May 2029 minus 1 day',
+  },
+]
 beforeEach(() => {
   app = appWithAllRoutes({
     userService,
@@ -168,6 +225,72 @@ describe('View journey routesroutes tests', () => {
           expect(res.text).toContain('consecutive to')
           expect(res.text).toContain('court case 1 count 1')
           expect(res.text).toContain('/view/123456/calculation-summary')
+        })
+    })
+  })
+
+  describe('View calculation tests', () => {
+    it('GET /view/:calculationRequestId/calculation-summary should return detail about the the calculation', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
+      return request(app)
+        .get('/view/123456/calculation-summary')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Conditional release date (CRD)')
+          expect(res.text).toContain('Wednesday, 03 February 2021')
+          expect(res.text).toContain('Tuesday, 02 February 2021 adjusted for weekend')
+          expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
+          expect(res.text).toContain('Sunday, 03 October 2021')
+          expect(res.text).toContain('Tuesday, 05 October 2021 adjusted for Bank Holiday')
+          // expect(res.text).not.toContain('SLED')
+          // This is now displayed as part of breakdown even IF the dates don't contain a SLED.
+          // The design without SLED will come in time
+          expect(res.text).toContain('Sentence')
+          expect(res.text).not.toContain('Concurrent sentences')
+          expect(res.text).not.toContain('Consecutive sentence')
+          expect(res.text).toContain('Release dates with adjustments')
+          expect(res.text).toContain('03 February 2021')
+          expect(res.text).toContain('15 January 2021 minus 18 days')
+          expect(res.text).toContain('HDCED with adjustments')
+          expect(res.text).toContain('13 May 2029')
+          expect(res.text).toContain('14 May 2029 minus 1 day')
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary should display results even if prison-api data is not available', () => {
+      const error = {
+        status: 404,
+        message: 'An error has occurred',
+        data: {
+          errorCode: 'PRISON_API_DATA_MISSING',
+        },
+      } as HttpError & { data: unknown }
+
+      viewReleaseDatesService.getPrisonerDetail.mockImplementation(() => {
+        throw error
+      })
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      return request(app)
+        .get('/view/123456/calculation-summary')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Conditional release date (CRD)')
+          expect(res.text).toContain('Wednesday, 03 February 2021')
+          expect(res.text).toContain('Tuesday, 02 February 2021 adjusted for weekend')
+          expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
+          expect(res.text).toContain('Sunday, 03 October 2021')
+          expect(res.text).toContain('Tuesday, 05 October 2021 adjusted for Bank Holiday')
+          // Should not contain breakdown
+          expect(res.text).not.toContain('Calculation breakdown')
+          expect(res.text).toContain('Missing data in order to display calculation breakdown or sentences and offences')
         })
     })
   })
