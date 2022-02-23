@@ -250,4 +250,160 @@ export default {
       },
     })
   },
+  stubPrisonerDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/prisoner-details/([0-9]*)`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          offenderNo: 'A1234AB',
+          bookingId: '1234',
+          firstName: 'Marvin',
+          lastName: 'Haggler',
+          dateOfBirth: '1965-02-03',
+          agencyId: 'MDI',
+        },
+      },
+    })
+  },
+  stubAdjustments: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/adjustments/([0-9]*)`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          sentenceAdjustments: [
+            {
+              sentenceSequence: 1,
+              type: 'REMAND',
+              numberOfDays: 28,
+              fromDate: '2021-02-03',
+              toDate: '2021-03-08',
+              active: true,
+            },
+            {
+              sentenceSequence: 1,
+              type: 'TAGGED_BAIL',
+              numberOfDays: 11,
+              active: true,
+            },
+            {
+              sentenceSequence: 2,
+              type: 'REMAND',
+              numberOfDays: 13,
+              fromDate: '2021-01-03',
+              toDate: '2021-01-15',
+              active: false,
+            },
+            {
+              sentenceSequence: 2,
+              type: 'TAGGED_BAIL',
+              numberOfDays: 7,
+              active: false,
+            },
+          ],
+          bookingAdjustments: [
+            {
+              type: 'UNLAWFULLY_AT_LARGE',
+              numberOfDays: 29,
+              fromDate: '2021-06-01',
+              toDate: '2021-06-10',
+              active: true,
+            },
+            {
+              type: 'UNLAWFULLY_AT_LARGE',
+              numberOfDays: 10,
+              fromDate: '2021-08-01',
+              toDate: '2021-08-10',
+              active: false,
+            },
+            {
+              type: 'ADDITIONAL_DAYS_AWARDED',
+              numberOfDays: 4,
+              fromDate: '2021-03-05',
+              toDate: '2021-03-08',
+              active: false,
+            },
+            {
+              type: 'ADDITIONAL_DAYS_AWARDED',
+              numberOfDays: 5,
+              fromDate: '2021-07-06',
+              toDate: '2021-07-10',
+              active: false,
+            },
+            {
+              type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
+              numberOfDays: 3,
+              fromDate: '2021-07-08',
+              toDate: '2021-07-10',
+              active: false,
+            },
+          ],
+        },
+      },
+    })
+  },
+  stubSentencesAndOffences: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/sentence-and-offences/([0-9]*)`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            years: 3,
+            sentenceCalculationType: 'ADIMP',
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            caseSequence: 1,
+            lineSequence: 1,
+            sentenceSequence: 1,
+            sentenceStatus: 'A',
+            offences: [{ offenceEndDate: '2021-02-03' }],
+          },
+          {
+            years: 2,
+            sentenceCalculationType: 'ADIMP',
+            caseSequence: 2,
+            lineSequence: 2,
+            sentenceSequence: 2,
+            consecutiveToSequence: 1,
+            sentenceStatus: 'A',
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            offences: [{ offenceEndDate: '2021-02-05' }],
+          },
+        ],
+      },
+    })
+  },
+  stubLatestCalculation: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/results/A1234AB/1234`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          dates: {
+            SLED: '2018-11-05',
+            CRD: '2017-05-07',
+            HDCED: '2016-12-24',
+          },
+          calculationRequestId: 123,
+        },
+      },
+    })
+  },
 }

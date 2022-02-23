@@ -51,7 +51,7 @@ describe('GET Search routes for /search/prisoners', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Look up a person to see their release dates')
+        expect(res.text).toContain('Lookup a person to see their release dates')
         expect(res.text).not.toContain('There are no matching results')
       })
   })

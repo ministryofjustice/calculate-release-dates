@@ -15,7 +15,7 @@
                 Calculate release dates
             </h1>
             <p class="govuk-body">Automatically calculate a prisoner’s release dates using information from NOMIS.<br/>
-                {% if featureToggles.viewJourney %} You can view previous calculations using the <a href="/view/search/prisoners">calculation look up service.</a>
+                {% if featureToggles.viewJourney %} You can view previous calculations using the <a href="/view/search/prisoners">calculation lookup service.</a>
                 {% endif %}
             </p>
             <p class="govuk-body">This service currently supports a limited number of sentences.
@@ -33,7 +33,7 @@
                 attributes: { 'data-qa': 'start-now-button' }
             }) }}
             {% if featureToggles.viewJourney %}
-                <p class="govuk-body">Or <a href="/view/search/prisoners">look up a person</a> to see their release dates</p>
+                <p class="govuk-body">Or <a href="/view/search/prisoners" data-qa="view-journey-start">lookup a person</a> to see their release dates</p>
             {% endif %}
 
             <h2 class="govuk-heading-m">Before you start</h2>

@@ -15,7 +15,7 @@ export default class PrisonerSearchPage extends Page {
     this.prisonerSearch().click()
   }
 
-  public checkNomisInformationButtonForPrisoner = (prisonerIdentifier: string): PageElement =>
+  public prisonerLinkFor = (prisonerIdentifier: string): PageElement =>
     cy
       .get('[data-qa=search-results-table]')
       .find(`[data-qa=prisoner-${prisonerIdentifier}]`)

@@ -18,7 +18,7 @@
                         <td class="govuk-table__cell">
                             {% set prisonerLink = "/calculation/" + prisoner.prisonerNumber + "/check-information" %}
                             {% if view %}
-                                {% set prisonerLink = "/view" + prisonerLink %}
+                                {% set prisonerLink = "/view/" + prisoner.prisonerNumber + "/latest" %}
                             {% endif %}
                             <a class="govuk-link"
                             href="{{prisonerLink}}" data-qa="prisoner-link">{{ (prisoner.lastName + ', ' +prisoner.firstName ) | title }}</a>

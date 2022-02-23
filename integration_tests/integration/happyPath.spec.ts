@@ -4,6 +4,8 @@ import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
 import PrisonerSearchPage from '../pages/prisonerSearch'
+import ViewCalculationSummary from '../pages/viewCalculationSummary'
+import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
 
 context('End to end happy path of user journey', () => {
   beforeEach(() => {
@@ -22,6 +24,10 @@ context('End to end happy path of user journey', () => {
     cy.task('stubGetNextWorkingDay')
     cy.task('stubGetPreviousWorkingDay')
     cy.task('stubValidate')
+    cy.task('stubAdjustments')
+    cy.task('stubSentencesAndOffences')
+    cy.task('stubPrisonerDetails')
+    cy.task('stubLatestCalculation')
   })
 
   it('Standalone user journey', () => {
@@ -31,7 +37,7 @@ context('End to end happy path of user journey', () => {
 
     const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
     prisonerSearchPage.searchForFirstName('Marvin')
-    prisonerSearchPage.checkNomisInformationButtonForPrisoner('A1234AB').click()
+    prisonerSearchPage.prisonerLinkFor('A1234AB').click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
@@ -64,5 +70,22 @@ context('End to end happy path of user journey', () => {
       .title()
       .should('contain.text', 'Calculation complete for')
       .should('contain.text', 'Marvin Haggler')
+  })
+
+  it('View journey', () => {
+    cy.signIn()
+    const indexPage = Page.verifyOnPage(IndexPage)
+    indexPage.viewJourneyLink().click()
+
+    const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
+    prisonerSearchPage.searchForFirstName('Marvin')
+    prisonerSearchPage.prisonerLinkFor('A1234AB').click()
+
+    const checkInformationPage = Page.verifyOnPage(ViewSentencesAndOffencesPage)
+    checkInformationPage.offenceCountText().contains('This calculation will include 2 sentences from NOMIS.')
+    checkInformationPage.nextPage().click()
+
+    const calculationSummaryPage = Page.verifyOnPage(ViewCalculationSummary)
+    calculationSummaryPage.previousPage()
   })
 })
