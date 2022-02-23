@@ -33,8 +33,14 @@
             <h1 class="govuk-heading-xl">Release dates {% if prisonerDetail %} for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}
                 {% endif %}
             </h1>
-            <p class="govuk-body govuk-!-margin-top-8 govuk-!-margin-bottom-0">
+            <p class="govuk-body govuk-!-margin-top-8">
                 <a href={{"/view/" + calculationRequestId + "/calculation-summary/print"}}>Print calculation summary</a>
+            </p>
+            <p class="govuk-body">
+                <a class="govuk-link" href="/view/search/prisoners">View previous calculation for another person</a>
+            </p>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+                <a class="govuk-link" href={{digitalPrisonServicesUrl}}>Return to Digital Prison Service (DPS)</a>
             </p>
             {% include "../partials/calculationSummaryDates.njk" %}
             {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
