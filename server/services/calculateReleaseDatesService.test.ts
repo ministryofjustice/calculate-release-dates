@@ -333,17 +333,17 @@ describe('Calculate release dates service tests', () => {
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, sentencesAndOffences, token)
 
       expect(result.messages).toEqual([
-        { text: 'The calculation must include an offence date for court case 1 count 1' },
+        { text: 'The calculation must include an offence date for court case 1 count 1.' },
         { text: 'The offence date for court case 1 count 2 must be before the sentence date.' },
         { text: 'The offence date for court case 2 count 2 must be before the sentence date.' },
         { text: 'The offence date range for court case 2 count 2 must be before the sentence date.' },
-        { text: 'The calculation must include an offence date for court case 2 count 3' },
+        { text: 'The calculation must include an offence date for court case 2 count 3.' },
         { text: 'The offence date for court case 2 count 3 must be before the sentence date.' },
         { text: 'The offence date range for court case 2 count 3 must be before the sentence date.' },
         { text: 'You must enter a length of time for the term of imprisonment for court case 2 count 3.' },
         { text: 'Each sentence must only have one term in NOMIS.' },
-        { text: 'Remand periods must have a from and to date' },
-        { text: 'Remand periods must have a from and to date' },
+        { text: 'Remand periods must have a from and to date.' },
+        { text: 'Remand periods must have a from and to date.' },
       ])
       expect(result.messageType).toBe(ErrorMessageType.VALIDATION)
     })
