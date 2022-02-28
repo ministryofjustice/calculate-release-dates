@@ -138,6 +138,7 @@ export interface components {
         | 'SENTENCE_HAS_NO_DURATION'
         | 'OFFENCE_MISSING_DATE'
         | 'REMAND_FROM_TO_DATES_REQUIRED'
+        | 'SENTENCE_HAS_MULTIPLE_TERMS'
       sentenceSequence?: number
       arguments: string[]
     }
@@ -168,7 +169,14 @@ export interface components {
       months: number
       weeks: number
       days: number
+      terms: components['schemas']['SentenceTerms'][]
       offences: components['schemas']['OffenderOffence'][]
+    }
+    SentenceTerms: {
+      years: number
+      months: number
+      weeks: number
+      days: number
     }
     Alert: {
       dateCreated: string
