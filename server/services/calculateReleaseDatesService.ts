@@ -274,6 +274,8 @@ export default class CalculateReleaseDatesService {
         return `The calculation must include an offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}`
       case 'REMAND_FROM_TO_DATES_REQUIRED':
         return `Remand periods must have a from and to date`
+      case 'SENTENCE_HAS_MULTIPLE_TERMS':
+        return `Each sentence must only have one term in NOMIS`
       default:
         throw new Error(`Uknown validation code ${validationMessage.code}`)
     }
