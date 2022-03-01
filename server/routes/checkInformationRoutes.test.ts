@@ -228,7 +228,7 @@ describe('Check information routes tests', () => {
     return request(app)
       .post('/calculation/A1234AA/check-information')
       .expect(302)
-      .expect('Location', '/calculation/A1234AA/summary/123')
+      .expect('Location', '/calculation/A1234AA/check-information')
       .expect(res => {
         expect(res.redirect).toBeTruthy()
       })
