@@ -6,8 +6,8 @@ export default class ViewCalculationSummary extends CalculationSummaryCommon {
     super('view-calculation-summary')
   }
 
-  public static goTo(calculationRequestId: string): ViewCalculationSummary {
-    cy.visit(`/view/${calculationRequestId}/calculation-summary`)
+  public static goTo(nomsId: string, calculationRequestId: string): ViewCalculationSummary {
+    cy.visit(`/view/${nomsId}/calculation-summary/${calculationRequestId}`)
     return new ViewCalculationSummary()
   }
 

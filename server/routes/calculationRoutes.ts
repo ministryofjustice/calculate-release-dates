@@ -114,7 +114,6 @@ export default class CalculationRoutes {
     res.render('pages/calculation/calculationComplete', {
       prisonerDetail,
       calculationRequestId,
-      digitalPrisonServicesUrl: config.apis.digitalPrisonServices.ui_url,
     })
   }
 

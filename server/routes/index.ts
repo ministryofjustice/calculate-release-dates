@@ -61,9 +61,9 @@ export default function Index({
 
   const viewRoutes = () => {
     get('/view/:nomsId/latest', viewAccessRoutes.startViewJourney)
-    get('/view/:calculationRequestId/sentences-and-offences', viewAccessRoutes.sentencesAndOffences)
-    get('/view/:calculationRequestId/calculation-summary', viewAccessRoutes.calculationSummary)
-    get('/view/:calculationRequestId/calculation-summary/print', viewAccessRoutes.printCalculationSummary)
+    get('/view/:nomsId/sentences-and-offences/:calculationRequestId', viewAccessRoutes.sentencesAndOffences)
+    get('/view/:nomsId/calculation-summary/:calculationRequestId', viewAccessRoutes.calculationSummary)
+    get('/view/:nomsId/calculation-summary/:calculationRequestId//print', viewAccessRoutes.printCalculationSummary)
   }
 
   const otherRoutes = () => {
