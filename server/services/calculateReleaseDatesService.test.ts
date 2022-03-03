@@ -341,7 +341,7 @@ describe('Calculate release dates service tests', () => {
         { text: 'The offence date for court case 2 count 3 must be before the sentence date.' },
         { text: 'The offence date range for court case 2 count 3 must be before the sentence date.' },
         { text: 'You must enter a length of time for the term of imprisonment for court case 2 count 3.' },
-        { text: 'Each sentence must only have one term in NOMIS.' },
+        { text: 'Court case 2 count 3 must only have one term in NOMIS.' },
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand periods must have a from and to date.' },
       ])
