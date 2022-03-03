@@ -6,8 +6,8 @@ export default class ViewSentencesAndOffencesPage extends ViewSentencesAndOffenc
     super('view-sentences-and-offences')
   }
 
-  public static goTo(calculationRequestId: number): ViewSentencesAndOffencesPage {
-    cy.visit(`/view/${calculationRequestId}/sentences-and-offences`)
+  public static goTo(nomsId: string, calculationRequestId: number): ViewSentencesAndOffencesPage {
+    cy.visit(`/view/${nomsId}/sentences-and-offences/${calculationRequestId}`)
     return new ViewSentencesAndOffencesPage()
   }
 

@@ -1,7 +1,11 @@
 {% if validationErrors and validationErrors.messages.length > 0 %}
-    <div class="govuk-error-summary check-information-errors" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+    <div class="govuk-error-summary check-information-errors {% if validationErrors.messageType === 'MISSING_PRISON_API_DATA' %}information-summary{% endif %}" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
         <h2 class="govuk-error-summary__title" id="error-summary-title">
+            {% if validationErrors.messageType === 'MISSING_PRISON_API_DATA' %}
+            The calculation breakdown cannot be shown on this page.
+            {% else %}
             There is a problem
+            {% endif %}
         </h2>
         <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">

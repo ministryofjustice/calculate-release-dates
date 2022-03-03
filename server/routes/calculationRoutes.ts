@@ -3,7 +3,6 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
 import EntryPointService from '../services/entryPointService'
-import config from '../config'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
 
@@ -114,7 +113,6 @@ export default class CalculationRoutes {
     res.render('pages/calculation/calculationComplete', {
       prisonerDetail,
       calculationRequestId,
-      digitalPrisonServicesUrl: config.apis.digitalPrisonServices.ui_url,
     })
   }
 

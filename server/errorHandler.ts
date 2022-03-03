@@ -9,6 +9,8 @@ export default function createErrorHandler(production: boolean) {
     logger.error(`Error handling request for '${req.originalUrl}', user '${res.locals.user?.username}'`, error)
     if ('errorKey' in error) {
       res.locals.errorKey = FullPageErrorType[error.errorKey]
+      res.locals.nomsId = error.nomsId
+      res.locals.prisonerDetails = error.prisonerDetails
     } else {
       if (error.status === 401 || error.status === 403) {
         logger.info('Logging user out')

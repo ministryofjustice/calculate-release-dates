@@ -192,7 +192,7 @@ describe('View journey routesroutes tests', () => {
       return request(app)
         .get('/view/A1234AA/latest')
         .expect(302)
-        .expect('Location', '/view/123456/sentences-and-offences')
+        .expect('Location', '/view/A1234AA/sentences-and-offences/123456')
         .expect(res => {
           expect(res.redirect).toBeTruthy()
         })
@@ -205,7 +205,7 @@ describe('View journey routesroutes tests', () => {
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       return request(app)
-        .get('/view/123456/sentences-and-offences')
+        .get('/view/A1234AA/sentences-and-offences/123456')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -224,7 +224,7 @@ describe('View journey routesroutes tests', () => {
           expect(res.text).toContain('Court case 2')
           expect(res.text).toContain('consecutive to')
           expect(res.text).toContain('court case 1 count 1')
-          expect(res.text).toContain('/view/123456/calculation-summary')
+          expect(res.text).toContain('/view/A1234AA/calculation-summary/123456')
         })
     })
   })
@@ -239,7 +239,7 @@ describe('View journey routesroutes tests', () => {
         releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
       })
       return request(app)
-        .get('/view/123456/calculation-summary')
+        .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -278,7 +278,7 @@ describe('View journey routesroutes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       return request(app)
-        .get('/view/123456/calculation-summary')
+        .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -290,7 +290,10 @@ describe('View journey routesroutes tests', () => {
           expect(res.text).toContain('Tuesday, 05 October 2021 adjusted for Bank Holiday')
           // Should not contain breakdown
           expect(res.text).not.toContain('Calculation breakdown')
-          expect(res.text).toContain('Missing data in order to display calculation breakdown or sentences and offences')
+          expect(res.text).toContain('The calculation breakdown cannot be shown on this page.')
+          expect(res.text).toContain(
+            'To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/A1234AA/check-information">calculate release dates again.'
+          )
         })
     })
   })

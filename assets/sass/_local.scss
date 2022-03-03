@@ -8,3 +8,7 @@ div.govuk-width-container {
   max-width: 1150px;
   margin-top: 15px;
 }
+
+.govuk-error-summary.information-summary {
+  border-color: govuk-colour('blue');
+}
