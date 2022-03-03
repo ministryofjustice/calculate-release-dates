@@ -1,12 +1,6 @@
-import { verify } from 'crypto'
 import IndexPage from '../pages'
-import CalculationCompletePage from '../pages/calculationComplete'
-import CalculationSummaryPage from '../pages/calculationSummary'
-import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
 import PrisonerSearchPage from '../pages/prisonerSearch'
-import ViewCalculationSummary from '../pages/viewCalculationSummary'
-import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
 
 context('View journey tests', () => {
   beforeEach(() => {
