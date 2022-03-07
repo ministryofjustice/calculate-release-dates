@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express'
 import path from 'path'
 import { stringify } from 'csv-stringify'
-import s from 'connect-redis'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
