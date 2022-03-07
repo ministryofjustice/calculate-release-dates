@@ -274,6 +274,8 @@ export default class CalculateReleaseDatesService {
         return `The calculation must include an offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}.`
       case 'REMAND_FROM_TO_DATES_REQUIRED':
         return `Remand periods must have a from and to date.`
+      case 'REMAND_OVERLAPS_WITH_REMAND':
+        return `Remand time can only be added once, it can cannot overlap with other remand dates.`
       case 'SENTENCE_HAS_MULTIPLE_TERMS':
         return `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must only have one term in NOMIS.`
       default:

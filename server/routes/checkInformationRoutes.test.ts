@@ -173,6 +173,25 @@ describe('Check information routes tests', () => {
       })
   })
 
+  it('POST /calculation/:nomsId/check-information pass', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.validateBackend.mockResolvedValue({ messages: [] })
+    calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue({
+      calculationRequestId: 123,
+      dates: {},
+      effectiveSentenceLength: {},
+    })
+    return request(app)
+      .post('/calculation/A1234AA/check-information')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/summary/123')
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+      })
+  })
+
   it('POST /calculation/:nomsId/check-information should redirect if validation fails', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
@@ -189,7 +208,31 @@ describe('Check information routes tests', () => {
         expect(res.redirect).toBeTruthy()
       })
   })
+  it('POST /calculation/:nomsId/check-information remand overlapping with custodial', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.validateBackend.mockResolvedValue({ messages: [] })
 
+    const error = {
+      status: 422,
+      data: {
+        errorCode: 'REMAND_OVERLAPS_WITH_SENTENCE',
+      },
+    }
+
+    calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockImplementation(() => {
+      throw error
+    })
+
+    return request(app)
+      .post('/calculation/A1234AA/check-information')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/check-information')
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+      })
+  })
   it('GET /calculation/:nomsId/check-information should display error page for case load errors.', () => {
     prisonerService.getPrisonerDetail.mockImplementation(() => {
       throw FullPageError.notInCaseLoadError()

@@ -139,6 +139,7 @@ export interface components {
         | 'OFFENCE_MISSING_DATE'
         | 'REMAND_FROM_TO_DATES_REQUIRED'
         | 'SENTENCE_HAS_MULTIPLE_TERMS'
+        | 'REMAND_OVERLAPS_WITH_REMAND'
       sentenceSequence?: number
       arguments: string[]
     }
