@@ -4,6 +4,7 @@ import RestClient from './restClient'
 import type {
   PrisonApiBookingAndSentenceAdjustments,
   PrisonApiPrisoner,
+  PrisonApiReturnToCustodyDate,
   PrisonApiSentenceAdjustmentDetail,
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -52,5 +53,11 @@ export default class PrisonApiClient {
     return this.restClient.get({
       path: `/api/adjustments/${bookingId}/sentence-and-booking`,
     }) as Promise<PrisonApiBookingAndSentenceAdjustments>
+  }
+
+  async getReturnToCustodyDate(bookingId: number): Promise<PrisonApiReturnToCustodyDate> {
+    return this.restClient.get({
+      path: `/api/bookings/${bookingId}/return-to-custody`,
+    }) as Promise<PrisonApiReturnToCustodyDate>
   }
 }

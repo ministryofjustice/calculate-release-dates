@@ -9,6 +9,7 @@ import { BookingCalculation } from '../@types/calculateReleaseDates/calculateRel
 import {
   PrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderSentenceAndOffences,
+  PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 
@@ -26,6 +27,7 @@ export default class OtherRoutes {
     const nomsIds = prisonerIds.split(/\r?\n/)
     if (nomsIds.length > 500) return res.redirect(`/test/calculation`)
 
+    const fixedTermRecallTypes = ['14FTR_ORA', '14FTRHDC_ORA', 'FTR', 'FTR_ORA']
     const nomisResults = await this.prisonerService.searchPrisonerNumbers(username, nomsIds)
 
     const csvData = []
@@ -38,17 +40,38 @@ export default class OtherRoutes {
         const nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
         const sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
         const adjustments = await this.prisonerService.getBookingAndSentenceAdjustments(bookingId, token)
+        const returnToCustody = sentenceAndOffences.filter(s =>
+          fixedTermRecallTypes.includes(s.sentenceCalculationType)
+        ).length
+          ? await this.prisonerService.getReturnToCustodyDate(bookingId, token)
+          : null
         try {
           const calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, token)
-          csvData.push(this.addRow(nomisRecord, calc, nomisDates, sentenceAndOffences, adjustments))
+          csvData.push(this.addRow(nomisRecord, calc, nomisDates, sentenceAndOffences, adjustments, returnToCustody))
         } catch (ex) {
           if (ex?.status === 422) {
             csvData.push(
-              this.addErrorRow(nomisRecord, nomisDates, sentenceAndOffences, adjustments, ex, 'Validation Error')
+              this.addErrorRow(
+                nomisRecord,
+                nomisDates,
+                sentenceAndOffences,
+                adjustments,
+                returnToCustody,
+                ex,
+                'Validation Error'
+              )
             )
           } else {
             csvData.push(
-              this.addErrorRow(nomisRecord, nomisDates, sentenceAndOffences, adjustments, ex, 'Server error')
+              this.addErrorRow(
+                nomisRecord,
+                nomisDates,
+                sentenceAndOffences,
+                adjustments,
+                returnToCustody,
+                ex,
+                'Server error'
+              )
             )
           }
         }
@@ -68,7 +91,8 @@ export default class OtherRoutes {
     calc: BookingCalculation,
     nomisDates: PrisonApiSentenceDetail,
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
-    adjustments: PrisonApiBookingAndSentenceAdjustments
+    adjustments: PrisonApiBookingAndSentenceAdjustments,
+    returnToCustody: PrisonApiReturnToCustodyDate
   ) {
     const row = {
       NOMS_ID: prisoner.prisonerNumber,
@@ -115,6 +139,7 @@ export default class OtherRoutes {
       ARE_DATES_SAME_USING_OVERRIDES: OtherRoutes.areDatesSameUsingOverrides(row) ? 'Y' : 'N',
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
+      RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
       error: null as string,
     }
   }
@@ -168,6 +193,7 @@ export default class OtherRoutes {
     nomisDates: PrisonApiSentenceDetail,
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
+    returnToCustody: PrisonApiReturnToCustodyDate,
     ex: any,
     errorText: string
   ) {
@@ -213,6 +239,7 @@ export default class OtherRoutes {
       ARE_DATES_SAME_USING_OVERRIDES: errorText,
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
+      RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
       error: ex,
     }
   }
@@ -260,6 +287,7 @@ export default class OtherRoutes {
       ARE_DATES_SAME_USING_OVERRIDES: 'non-crd error',
       SENTENCES: 'non-crd error',
       ADJUSTMENTS: 'non-crd error',
+      RETURN_TO_CUSTODY: 'non-crd error',
       error: `${ex.message}: ${JSON.stringify(ex)}`,
     }
   }

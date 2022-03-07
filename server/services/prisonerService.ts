@@ -5,6 +5,7 @@ import {
   PrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
+  PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -76,5 +77,9 @@ export default class PrisonerService {
     token: string
   ): Promise<PrisonApiBookingAndSentenceAdjustments> {
     return new PrisonApiClient(token).getBookingAndSentenceAdjustments(bookingId)
+  }
+
+  async getReturnToCustodyDate(bookingId: number, token: string): Promise<PrisonApiReturnToCustodyDate> {
+    return new PrisonApiClient(token).getReturnToCustodyDate(bookingId)
   }
 }
