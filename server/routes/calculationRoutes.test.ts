@@ -61,6 +61,8 @@ const stubbedCalculationResults = {
   },
   calculationRequestId: 123456,
   effectiveSentenceLength: {},
+  prisonerId: 'A1234AA',
+  bookingId: 123,
 } as BookingCalculation
 const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
   CRD: {
@@ -207,6 +209,8 @@ describe('Calculation routes tests', () => {
       dates: {},
       calculationRequestId: 654321,
       effectiveSentenceLength: {},
+      prisonerId: 'A1234AA',
+      bookingId: 123,
     })
     return request(app)
       .post('/calculation/A1234AB/summary/123456')

@@ -182,6 +182,8 @@ describe('Check information routes tests', () => {
       calculationRequestId: 123,
       dates: {},
       effectiveSentenceLength: {},
+      prisonerId: 'A1234AA',
+      bookingId: 123,
     })
     return request(app)
       .post('/calculation/A1234AA/check-information')

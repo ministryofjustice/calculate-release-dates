@@ -23,6 +23,8 @@ const calculationResults: BookingCalculation = {
   },
   effectiveSentenceLength: null,
   calculationRequestId,
+  prisonerId,
+  bookingId: 123,
 }
 const calculationBreakdown: CalculationBreakdown = {
   concurrentSentences: [

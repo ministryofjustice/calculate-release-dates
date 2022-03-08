@@ -117,6 +117,8 @@ const stubbedCalculationResults = {
   },
   calculationRequestId: 123456,
   effectiveSentenceLength: {},
+  prisonerId: 'A1234AA',
+  bookingId: 123,
 } as BookingCalculation
 const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
   CRD: {
