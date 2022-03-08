@@ -18,7 +18,6 @@ export default class CalculationRoutes {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    console.log(`HERE ${nomsId}    ${calculationRequestId}`)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,

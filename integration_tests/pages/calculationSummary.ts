@@ -15,7 +15,7 @@ export default class CalculationSummaryPage extends CalculationSummaryCommon {
     return new CalculationSummaryPage()
   }
 
-  public static visit(prisonerId: string, calculationRequestId: string, failOnStatusCode?: boolean) {
+  public static visit(prisonerId: string, calculationRequestId: string, failOnStatusCode?: boolean): void {
     cy.visit(`/calculation/${prisonerId}/summary/${calculationRequestId}`, {
       failOnStatusCode: failOnStatusCode !== false,
     })
