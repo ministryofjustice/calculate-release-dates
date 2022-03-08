@@ -18,6 +18,8 @@ export default {
             HDCED: '2016-12-24',
           },
           calculationRequestId: 123,
+          prisonerId: 'A1234AB',
+          bookingId: 1234,
         },
       },
     })
@@ -38,6 +40,8 @@ export default {
             HDCED: '2016-12-24',
           },
           calculationRequestId: 123,
+          prisonerId: 'A1234AB',
+          bookingId: 1234,
         },
       },
     })
@@ -58,6 +62,8 @@ export default {
             HDCED: '2016-12-24',
           },
           calculationRequestId: 123,
+          prisonerId: 'A1234AB',
+          bookingId: 1234,
         },
       },
     })

@@ -120,6 +120,8 @@ export interface components {
         }[]
       }
       calculationFragments?: components['schemas']['CalculationFragments']
+      bookingId: number
+      prisonerId: string
     }
     CalculationFragments: {
       breakdownHtml: string

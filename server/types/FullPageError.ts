@@ -31,10 +31,18 @@ export class FullPageError extends Error {
     error.prisonerDetails = prisonerDetails
     return error
   }
+
+  static notFoundError(): FullPageError {
+    const error = new FullPageError('Not found')
+    error.errorKey = FullPageErrorType.NOT_FOUND
+    error.status = 404
+    return error
+  }
 }
 
 export enum FullPageErrorType {
   NOT_IN_CASELOAD,
   NO_SENTENCES,
   NO_CALCULATION_SUBMITTED,
+  NOT_FOUND,
 }

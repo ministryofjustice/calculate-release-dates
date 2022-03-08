@@ -5,6 +5,7 @@ import logger from '../../logger'
 import EntryPointService from '../services/entryPointService'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
+import { FullPageError } from '../types/FullPageError'
 
 export default class CalculationRoutes {
   constructor(
@@ -17,12 +18,15 @@ export default class CalculationRoutes {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,
       token
     )
+    if (releaseDates.prisonerId !== nomsId) {
+      throw FullPageError.notFoundError()
+    }
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,
@@ -46,6 +50,9 @@ export default class CalculationRoutes {
       calculationRequestId,
       token
     )
+    if (releaseDates.prisonerId !== nomsId) {
+      throw FullPageError.notFoundError()
+    }
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,
