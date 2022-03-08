@@ -50,6 +50,9 @@ export default class CalculationRoutes {
       calculationRequestId,
       token
     )
+    if (releaseDates.prisonerId !== nomsId) {
+      throw FullPageError.notFoundError()
+    }
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,
