@@ -65,6 +65,12 @@ export default class CalculateReleaseDatesService {
 
   private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
     const releaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = []
+    if (breakdown.breakdownByReleaseDateType.LED) {
+      const ledDetails = breakdown.breakdownByReleaseDateType.LED
+      releaseDatesWithAdjustments.push(
+        this.ledRulesToAdjustmentRow(ledDetails.releaseDate, ledDetails.unadjustedDate, ledDetails.adjustedDays)
+      )
+    }
     if (breakdown.breakdownByReleaseDateType.SLED || breakdown.breakdownByReleaseDateType.SED) {
       CalculateReleaseDatesService.standardAdjustmentRow(
         breakdown.breakdownByReleaseDateType.SLED ? ReleaseDateType.SLED : ReleaseDateType.SED,
@@ -178,6 +184,18 @@ export default class CalculateReleaseDatesService {
       )
     }
     return null
+  }
+
+  private ledRulesToAdjustmentRow(
+    releaseDate: string,
+    unadjustedDate: string,
+    adjustedDays: number
+  ): ReleaseDateWithAdjustments {
+    return CalculateReleaseDatesService.createAdjustmentRow(
+      releaseDate,
+      ReleaseDateType.LED,
+      `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)}`
+    )
   }
 
   private static createAdjustmentRow(

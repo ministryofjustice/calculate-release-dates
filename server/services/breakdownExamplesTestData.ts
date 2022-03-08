@@ -56,6 +56,13 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
         releaseDate: '2015-03-28',
         unadjustedDate: '2015-02-16',
       },
+      LED: {
+        rules: [],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: -14,
+        releaseDate: '2015-07-28',
+        unadjustedDate: '2015-08-11',
+      },
     },
   }
 }
@@ -118,6 +125,13 @@ export function psiExample25CalculationBreakdown(): CalculationBreakdown {
         adjustedDays: -21,
         releaseDate: '2015-03-28',
         unadjustedDate: '2015-02-16',
+      },
+      LED: {
+        rules: ['LED_CONSEC_ORA_AND_NON_ORA'],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 44,
+        releaseDate: '2015-08-27',
+        unadjustedDate: '2015-07-14',
       },
     },
   }

@@ -259,7 +259,13 @@ export interface components {
     /** Calculation breakdown details for a release date type */
     ReleaseDateCalculationBreakdown: {
       /** Calculation rules used to determine this calculation. */
-      rules: ('HDCED_GE_12W_LT_18M' | 'HDCED_GE_18M_LT_4Y' | 'HDCED_MINIMUM_14D' | 'TUSED_LICENCE_PERIOD_LT_1Y')[]
+      rules: (
+        | 'HDCED_GE_12W_LT_18M'
+        | 'HDCED_GE_18M_LT_4Y'
+        | 'HDCED_MINIMUM_14D'
+        | 'TUSED_LICENCE_PERIOD_LT_1Y'
+        | 'LED_CONSEC_ORA_AND_NON_ORA'
+      )[]
       /** Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
         [key: string]: components['schemas']['AdjustmentDuration']
