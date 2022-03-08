@@ -1,4 +1,6 @@
 import CalculationSummaryPage from '../pages/calculationSummary'
+import ErrorPage from '../pages/error'
+import Page from '../pages/page'
 
 context('Calculation summary', () => {
   beforeEach(() => {
@@ -73,6 +75,13 @@ context('Calculation summary', () => {
     calculationSummaryPage.submitToNomisButton().click()
     const redirectedView = CalculationSummaryPage.verifyOnPage(CalculationSummaryPage)
     redirectedView.errorSummary().should('contain.text', 'The calculation could not be saved in NOMIS.')
+  })
+
+  it('Error when calc id doesnt match prisoner id', () => {
+    cy.signIn()
+    const calculationSummaryPage = CalculationSummaryPage.visit('NOTMATCHING', '97', false)
+    const errorPage = Page.verifyOnPage(ErrorPage)
+    errorPage.heading().contains('There is a problem')
   })
 
   it('Calculation summary page is accessible', () => {

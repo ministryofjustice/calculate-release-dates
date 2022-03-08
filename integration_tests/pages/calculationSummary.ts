@@ -6,9 +6,19 @@ export default class CalculationSummaryPage extends CalculationSummaryCommon {
     super('calculation-summary')
   }
 
-  public static goTo(prisonerId: string, calculationRequestId: string): CalculationSummaryPage {
-    cy.visit(`/calculation/${prisonerId}/summary/${calculationRequestId}`)
+  public static goTo(
+    prisonerId: string,
+    calculationRequestId: string,
+    failOnStatusCode?: boolean
+  ): CalculationSummaryPage {
+    this.visit(prisonerId, calculationRequestId, failOnStatusCode)
     return new CalculationSummaryPage()
+  }
+
+  public static visit(prisonerId: string, calculationRequestId: string, failOnStatusCode?: boolean) {
+    cy.visit(`/calculation/${prisonerId}/summary/${calculationRequestId}`, {
+      failOnStatusCode: failOnStatusCode !== false,
+    })
   }
 
   public submitToNomisButton = (): PageElement => cy.get('[data-qa=submit-to-nomis]')

@@ -18,7 +18,7 @@ export default class CalculationRoutes {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    console.log(`HERE ${nomsId}    ${calculationRequestId}`)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,
@@ -27,6 +27,7 @@ export default class CalculationRoutes {
     if (releaseDates.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
     }
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,

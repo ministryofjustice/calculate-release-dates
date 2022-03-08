@@ -61,7 +61,7 @@ const stubbedCalculationResults = {
   },
   calculationRequestId: 123456,
   effectiveSentenceLength: {},
-  prisonerId: 'A1234AA',
+  prisonerId: 'A1234AB',
   bookingId: 123,
 } as BookingCalculation
 const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {

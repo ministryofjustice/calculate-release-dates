@@ -1,4 +1,5 @@
 import IndexPage from '../pages'
+import ErrorPage from '../pages/error'
 import Page from '../pages/page'
 import PrisonerSearchPage from '../pages/prisonerSearch'
 
@@ -12,7 +13,7 @@ context('View journey tests', () => {
     cy.task('stubGetPrisonerDetails')
   })
 
-  it('View journey', () => {
+  it('View journey search for prisoner without calculation submitted', () => {
     cy.signIn()
     const indexPage = Page.verifyOnPage(IndexPage)
     indexPage.viewJourneyLink().click()
@@ -20,6 +21,7 @@ context('View journey tests', () => {
     const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
-    cy.get('.govuk-heading-xl').contains('No calculation submitted')
+    const errorPage = Page.verifyOnPage(ErrorPage)
+    errorPage.heading().contains('No calculation submitted')
   })
 })
