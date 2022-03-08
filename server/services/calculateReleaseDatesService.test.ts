@@ -268,6 +268,11 @@ describe('Calculate release dates service tests', () => {
 
       expect(result.releaseDatesWithAdjustments).toEqual([
         {
+          releaseDate: '2015-07-28',
+          releaseDateType: 'LED',
+          hintText: '11 August 2015 minus 14 days',
+        },
+        {
           hintText: '11 October 2015 minus 14 days',
           releaseDate: '2015-09-27',
           releaseDateType: 'SED',
@@ -298,6 +303,11 @@ describe('Calculate release dates service tests', () => {
       expect(result.calculationBreakdown).toEqual(psiExample25CalculationBreakdown())
 
       expect(result.releaseDatesWithAdjustments).toEqual([
+        {
+          hintText: '14 July 2015 plus 44 days',
+          releaseDate: '2015-08-27',
+          releaseDateType: 'LED',
+        },
         {
           hintText: '21 December 2015 plus 0 days',
           releaseDate: '2015-12-21',
