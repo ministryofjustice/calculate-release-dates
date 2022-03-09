@@ -265,6 +265,25 @@ describe('View journey routesroutes tests', () => {
           expect(res.text).toContain('14 May 2029 minus 1 day')
         })
     })
+
+    it('GET /view/:calculationRequestId/calculation-summary/print should return a printable page about the calculation requested', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456/print')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
+          expect(res.text).toMatch(/Calculation/)
+        })
+    })
+
     it('GET /view/:calculationRequestId/calculation-summary should display results even if prison-api data is not available', () => {
       const error = {
         status: 404,
