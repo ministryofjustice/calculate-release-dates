@@ -110,6 +110,10 @@ const getReleaseDateType = (dates: { [key: string]: unknown }): string => {
   if (ard) {
     return 'ARD'
   }
+  const prrd = dates.PRRD
+  if (prrd) {
+    return 'PRRD'
+  }
   throw Error(`Couldn't find release date from dates map ${Object.keys(dates)}`)
 }
 
