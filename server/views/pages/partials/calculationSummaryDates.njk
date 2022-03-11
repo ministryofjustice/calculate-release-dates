@@ -37,6 +37,9 @@
         {% if releaseDates.PED %}
             {{ releaseDateLine('Parole eligibility date (PED)', 'PED-date', releaseDates.PED) }}
         {% endif %}
+        {% if releaseDates.PRRD %}
+            {{ releaseDateLine('Post recall release date (PRRD)', 'PRRD-date', releaseDates.PRRD) }}
+        {% endif %}
         {% if releaseDates.HDCED %}
             {{ releaseDateLine('Home detention curfew eligibility date (HDCED)', 'HDCED-date', releaseDates.HDCED) }}
             {% if weekendAdjustments.HDCED %}
