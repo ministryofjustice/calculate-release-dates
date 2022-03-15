@@ -93,6 +93,7 @@ export interface components {
       consecutiveSentenceUUIDs: string[]
       caseSequence?: number
       lineSequence?: number
+      sentenceType: 'STANDARD_DETERMINATE' | 'STANDARD_RECALL'
     }
     BookingCalculation: {
       dates: { [key: string]: string }
@@ -142,6 +143,7 @@ export interface components {
         | 'REMAND_FROM_TO_DATES_REQUIRED'
         | 'SENTENCE_HAS_MULTIPLE_TERMS'
         | 'REMAND_OVERLAPS_WITH_REMAND'
+        | 'REMAND_OVERLAPS_WITH_SENTENCE'
       sentenceSequence?: number
       arguments: string[]
     }
@@ -168,10 +170,6 @@ export interface components {
       sentenceCalculationType: string
       sentenceTypeDescription: string
       sentenceDate: string
-      years: number
-      months: number
-      weeks: number
-      days: number
       terms: components['schemas']['SentenceTerms'][]
       offences: components['schemas']['OffenderOffence'][]
     }
