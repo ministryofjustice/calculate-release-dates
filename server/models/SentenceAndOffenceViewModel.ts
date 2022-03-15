@@ -1,9 +1,7 @@
 import AggregatedAdjustments from '../@types/calculateReleaseDates/AggregatedAdjustments'
-import {
-  PrisonApiBookingAndSentenceAdjustments,
-  PrisonApiOffenderSentenceAndOffences,
-  PrisonApiPrisoner,
-} from '../@types/prisonApi/prisonClientTypes'
+import AggregatedTerms from '../@types/calculateReleaseDates/AggregatedTerms'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
+import { PrisonApiBookingAndSentenceAdjustments, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { groupBy, indexBy } from '../utils/utils'
 
 export default class SentenceAndOffenceViewModel {
@@ -16,6 +14,8 @@ export default class SentenceAndOffenceViewModel {
   public caseToSentences: Map<number, PrisonApiOffenderSentenceAndOffences[]>
 
   public sentenceSequenceToSentence: Map<number, PrisonApiOffenderSentenceAndOffences>
+
+  public sentenceSequenceToTermsAggregate: Map<number, AggregatedTerms>
 
   public static from(
     prisonerDetail: PrisonApiPrisoner,
@@ -30,6 +30,18 @@ export default class SentenceAndOffenceViewModel {
       sentenceSequenceToSentence: indexBy(
         sentencesAndOffences,
         (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
+      ),
+      sentenceSequenceToTermsAggregate: sentencesAndOffences.reduce(
+        (map: Map<number, AggregatedTerms>, sent: PrisonApiOffenderSentenceAndOffences) => {
+          map.set(sent.sentenceSequence, {
+            years: sent.terms.map(t => t.years).reduce((sum, current) => sum + current, 0),
+            months: sent.terms.map(t => t.months).reduce((sum, current) => sum + current, 0),
+            weeks: sent.terms.map(t => t.weeks).reduce((sum, current) => sum + current, 0),
+            days: sent.terms.map(t => t.days).reduce((sum, current) => sum + current, 0),
+          } as AggregatedTerms)
+          return map
+        },
+        new Map<number, AggregatedTerms>()
       ),
     }
   }

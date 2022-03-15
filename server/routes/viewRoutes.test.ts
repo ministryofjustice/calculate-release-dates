@@ -6,7 +6,6 @@ import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
   PrisonApiBookingAndSentenceAdjustments,
-  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -19,6 +18,7 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -63,7 +63,11 @@ const stubbedPrisonerData = {
 
 const stubbedSentencesAndOffences = [
   {
-    years: 3,
+    terms: [
+      {
+        years: 3,
+      },
+    ],
     sentenceTypeDescription: 'SDS Standard Sentence',
     caseSequence: 1,
     lineSequence: 1,
@@ -77,7 +81,11 @@ const stubbedSentencesAndOffences = [
     ],
   } as PrisonApiOffenderSentenceAndOffences,
   {
-    years: 2,
+    terms: [
+      {
+        years: 2,
+      },
+    ],
     caseSequence: 2,
     lineSequence: 2,
     sentenceSequence: 2,

@@ -7,7 +7,6 @@ import {
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import logger from '../../logger'
 import CalculationRule from '../enumerations/calculationRule'
@@ -15,6 +14,7 @@ import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseD
 import { arithmeticToWords, daysArithmeticToWords, longDateFormat } from '../utils/utils'
 import ReleaseDateType from '../enumerations/releaseDateType'
 import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
