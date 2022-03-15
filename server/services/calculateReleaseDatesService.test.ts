@@ -164,6 +164,16 @@ const invalidValidationResult: ValidationMessages = {
       message: '',
       arguments: [],
     },
+    {
+      code: 'REMAND_OVERLAPS_WITH_REMAND',
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'REMAND_OVERLAPS_WITH_SENTENCE',
+      message: '',
+      arguments: [],
+    },
   ],
 }
 
@@ -356,6 +366,8 @@ describe('Calculate release dates service tests', () => {
         { text: 'Court case 2 count 3 must only have one term in NOMIS.' },
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand periods must have a from and to date.' },
+        { text: 'Remand time can only be added once, it can cannot overlap with other remand dates.' },
+        { text: 'Remand time cannot be credited when a custodial sentence is being served.' },
       ])
       expect(result.messageType).toBe(ErrorMessageType.VALIDATION)
     })
