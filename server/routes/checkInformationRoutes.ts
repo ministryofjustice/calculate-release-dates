@@ -3,7 +3,7 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import PrisonerService from '../services/prisonerService'
 import EntryPointService from '../services/entryPointService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
-import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import { ErrorMessages } from '../types/ErrorMessages'
 
 export default class CheckInformationRoutes {
   constructor(
