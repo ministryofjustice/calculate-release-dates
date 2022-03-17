@@ -30,11 +30,13 @@ context('Calculation summary', () => {
       .should('contain.text', 'Wednesday, 28 December 2016 adjusted for Bank Holiday')
 
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', 'Court case 2, count 2')
+    calculationSummaryPage.concurrentSentenceTable().should('contain.text', 'Court case number: ABC123')
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', '16 July 2021')
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', '365 days')
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', '15 January 2021')
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', '183 days')
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', 'Court case 4, count 4')
+    calculationSummaryPage.concurrentSentenceTable().should('contain.text', 'Court case number: ABC234')
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', '12 February 2021')
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', '62 days')
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', '12 January 2021')
@@ -43,9 +45,12 @@ context('Calculation summary', () => {
     calculationSummaryPage.consecutiveStartDate().should('contain.text', '20 March 2020')
 
     calculationSummaryPage.consecutiveSentenceTable().should('contain.text', 'Court case 1, count 1')
+    calculationSummaryPage.consecutiveSentenceTable().should('contain.text', 'Court case number: ABC345')
     calculationSummaryPage.consecutiveSentenceTable().should('contain.text', 'Court case 3, count 3')
+    calculationSummaryPage.consecutiveSentenceTable().should('contain.text', 'Court case number: ABC567')
     calculationSummaryPage.consecutiveSentenceTable().should('contain.text', 'consecutive to court case 1, count 1')
     calculationSummaryPage.consecutiveSentenceTable().should('contain.text', 'Court case 5, count 5')
+    calculationSummaryPage.consecutiveSentenceTable().should('contain.text', 'Court case number: ABC678')
     calculationSummaryPage.consecutiveSentenceTable().should('contain.text', 'consecutive to court case 3, count 3')
 
     calculationSummaryPage.consecutiveDatesTable().should('contain.text', '2071 days')
