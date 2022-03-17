@@ -34,10 +34,10 @@ export default class SentenceAndOffenceViewModel {
       sentenceSequenceToTermsAggregate: sentencesAndOffences.reduce(
         (map: Map<number, AggregatedTerms>, sent: PrisonApiOffenderSentenceAndOffences) => {
           map.set(sent.sentenceSequence, {
-            years: sent.terms.map(t => t.years).reduce((sum, current) => sum + current, 0),
-            months: sent.terms.map(t => t.months).reduce((sum, current) => sum + current, 0),
-            weeks: sent.terms.map(t => t.weeks).reduce((sum, current) => sum + current, 0),
-            days: sent.terms.map(t => t.days).reduce((sum, current) => sum + current, 0),
+            years: sent.terms.map(t => t.years).reduce((sum, current) => sum + current, 0) || 0,
+            months: sent.terms.map(t => t.months).reduce((sum, current) => sum + current, 0) || 0,
+            weeks: sent.terms.map(t => t.weeks).reduce((sum, current) => sum + current, 0) || 0,
+            days: sent.terms.map(t => t.days).reduce((sum, current) => sum + current, 0) || 0,
           } as AggregatedTerms)
           return map
         },

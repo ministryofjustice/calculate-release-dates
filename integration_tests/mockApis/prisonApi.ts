@@ -151,7 +151,7 @@ export default {
             sentenceCalculationType: 'ADIMP',
             caseSequence: 2,
             lineSequence: 2,
-            sentenceSequence: 2,
+            sentenceSequence: 3,
             consecutiveToSequence: 1,
             sentenceStatus: 'I',
             sentenceTypeDescription: 'SDS Standard Sentence',

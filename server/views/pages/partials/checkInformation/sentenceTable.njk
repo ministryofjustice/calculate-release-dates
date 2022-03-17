@@ -34,7 +34,7 @@
                             <td class="govuk-table__cell">{{ sentence.sentenceTypeDescription }}</td>
                             <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
                             <td class="govuk-table__cell">
-                                {% set aggregateTerms = sentenceSequenceToTermsAggregate[sentence.sentenceSequence] %}
+                                {% set aggregateTerms = sentenceSequenceToTermsAggregate.get(sentence.sentenceSequence) %}
                                 {{ aggregateTerms.years }}
                                 {{ 'year' | pluralise(aggregateTerms.years) }}
                                 {{ aggregateTerms.months }}
