@@ -7,47 +7,48 @@
         <table class="govuk-table govuk-!-width-full" id="{{ case }}-sentence-table"
                data-qa="{{ case }}-sentence-table">
             <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header">Count</th>
-                <th class="govuk-table__header">Offence</th>
-                <th class="govuk-table__header">Sentence type</th>
-                <th class="govuk-table__header">Sentence date</th>
-                <th class="govuk-table__header">Sentence length</th>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header">Count</th>
+                    <th class="govuk-table__header">Offence</th>
+                    <th class="govuk-table__header">Sentence type</th>
+                    <th class="govuk-table__header">Sentence date</th>
+                    <th class="govuk-table__header">Sentence length</th>
+                </tr>
             </thead>
             <tbody class="govuk-table__body govuk-body-s">
-            {% for sentence in caseSentencesAndOffences %}
-                {% for offence in sentence.offences %}
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">{{ sentence.lineSequence }}</td>
-                        <td class="govuk-table__cell">{{ offence.offenceDescription }}<br>
-                            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
-                                {% if (offence.offenceEndDate and offence.offenceStartDate and offence.offenceEndDate !== offence.offenceStartDate) %}
+                {% for sentence in caseSentencesAndOffences %}
+                    {% for offence in sentence.offences %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">{{ sentence.lineSequence }}</td>
+                            <td class="govuk-table__cell">{{ offence.offenceDescription }}<br>
+                                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                                    {% if (offence.offenceEndDate and offence.offenceStartDate and offence.offenceEndDate !== offence.offenceStartDate) %}
                                     Committed between {{ offence.offenceStartDate | date('DD MMMM YYYY') }} and {{ offence.offenceEndDate | date('DD MMMM YYYY') }}
-                                {% elseif (offence.offenceEndDate or offence.offenceStartDate) %}
+                                    {% elseif (offence.offenceEndDate or offence.offenceStartDate) %}
                                     Committed on {{ (offence.offenceEndDate or offence.offenceStartDate) | date('DD MMMM YYYY') }}
-                                {% else %}
+                                    {% else %}
                                     Offence date not entered
                                 {% endif %}
                                 </span>
-                        </td>
-                        <td class="govuk-table__cell">{{ sentence.sentenceTypeDescription }}</td>
-                        <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
-                        <td class="govuk-table__cell">
-                            {{ sentence.years }}
-                            {{ 'year' | pluralise(sentence.years) }}
-                            {{ sentence.months }}
-                            {{ 'month' | pluralise(sentence.months) }}
-                            <br>
-                            {{ sentence.weeks }}
-                            {{ 'week' | pluralise(sentence.weeks) }}
-                            {{ sentence.days }}
-                            {{ 'day' | pluralise(sentence.days) }}
-                            <br>
-                            <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
-                                {% set offenceCount = sentencesAndOffences | countOffences %}
-                                {% if sentence.consecutiveToSequence %}
-                                    {% set consecutiveToSequence = sentenceSequenceToSentence.get(sentence.consecutiveToSequence) %}
+                            </td>
+                            <td class="govuk-table__cell">{{ sentence.sentenceTypeDescription }}</td>
+                            <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
+                            <td class="govuk-table__cell">
+                                {% set aggregateTerms = sentenceSequenceToTermsAggregate.get(sentence.sentenceSequence) %}
+                                {{ aggregateTerms.years }}
+                                {{ 'year' | pluralise(aggregateTerms.years) }}
+                                {{ aggregateTerms.months }}
+                                {{ 'month' | pluralise(aggregateTerms.months) }}
+                                <br>
+                                {{ aggregateTerms.weeks }}
+                                {{ 'week' | pluralise(aggregateTerms.weeks) }}
+                                {{ aggregateTerms.days }}
+                                {{ 'day' | pluralise(aggregateTerms.days) }}
+                                <br>
+                                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                                    {% set offenceCount = sentencesAndOffences | countOffences %}
+                                    {% if sentence.consecutiveToSequence %}
+                                        {% set consecutiveToSequence = sentenceSequenceToSentence.get(sentence.consecutiveToSequence) %}
                                     consecutive to
                                     <br>
                                     court case {{ consecutiveToSequence.caseSequence }} count {{ consecutiveToSequence.lineSequence }}
@@ -55,10 +56,10 @@
                                     concurrent
                                 {% endif %}
                                 </span>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
             </tbody>
         </table>
     {% endfor %}

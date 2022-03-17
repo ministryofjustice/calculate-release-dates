@@ -368,7 +368,11 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: [
           {
-            years: 3,
+            terms: [
+              {
+                years: 3,
+              },
+            ],
             sentenceCalculationType: 'ADIMP',
             sentenceTypeDescription: 'SDS Standard Sentence',
             caseSequence: 1,
@@ -378,7 +382,11 @@ export default {
             offences: [{ offenceEndDate: '2021-02-03' }],
           },
           {
-            years: 2,
+            terms: [
+              {
+                years: 2,
+              },
+            ],
             sentenceCalculationType: 'ADIMP',
             caseSequence: 2,
             lineSequence: 2,

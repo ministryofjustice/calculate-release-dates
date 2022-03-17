@@ -8,10 +8,10 @@ import { Prisoner } from '../@types/prisonerOffenderSearch/prisonerSearchClientT
 import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   PrisonApiBookingAndSentenceAdjustments,
-  PrisonApiOffenderSentenceAndOffences,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 export default class OtherRoutes {
   constructor(

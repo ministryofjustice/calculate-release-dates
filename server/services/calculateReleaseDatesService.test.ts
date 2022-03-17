@@ -7,9 +7,9 @@ import {
   ValidationMessages,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import { psiExample16CalculationBreakdown, psiExample25CalculationBreakdown } from './breakdownExamplesTestData'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 jest.mock('../api/hmppsAuthClient')
 
@@ -73,7 +73,11 @@ const sentencesAndOffences = [
     lineSequence: 1,
     sentenceDate: '2021-02-05',
     sentenceCalculationType: 'ADIMP_ORA',
-    days: 1,
+    terms: [
+      {
+        days: 1,
+      },
+    ],
     offences: [{ offenceCode: 'GBH' }],
     sentenceSequence: 1,
   } as PrisonApiOffenderSentenceAndOffences,
@@ -82,7 +86,11 @@ const sentencesAndOffences = [
     lineSequence: 2,
     sentenceDate: '2021-02-05',
     sentenceCalculationType: 'ADIMP_ORA',
-    days: 1,
+    terms: [
+      {
+        days: 1,
+      },
+    ],
     offences: [{ offenceStartDate: '2021-04-03', offenceEndDate: '2021-04-03' }],
     sentenceSequence: 3,
   } as PrisonApiOffenderSentenceAndOffences,
@@ -91,7 +99,11 @@ const sentencesAndOffences = [
     lineSequence: 2,
     sentenceDate: '2021-02-05',
     sentenceCalculationType: 'ADIMP_ORA',
-    days: 1,
+    terms: [
+      {
+        days: 1,
+      },
+    ],
     offences: [{ offenceCode: 'GBH', offenceStartDate: '2021-04-03' }],
     sentenceSequence: 2,
   } as PrisonApiOffenderSentenceAndOffences,
