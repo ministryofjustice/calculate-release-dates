@@ -38,15 +38,16 @@
                             <td class="govuk-table__cell">{{ sentence.sentenceTypeDescription }}</td>
                             <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
                             <td class="govuk-table__cell">
-                                {{ sentence.years }}
-                                {{ 'year' | pluralise(sentence.years) }}
-                                {{ sentence.months }}
-                                {{ 'month' | pluralise(sentence.months) }}
+                                {% set aggregateTerms = sentenceSequenceToTermsAggregate.get(sentence.sentenceSequence) %}
+                                {{ aggregateTerms.years }}
+                                {{ 'year' | pluralise(aggregateTerms.years) }}
+                                {{ aggregateTerms.months }}
+                                {{ 'month' | pluralise(aggregateTerms.months) }}
                                 <br>
-                                {{ sentence.weeks }}
-                                {{ 'week' | pluralise(sentence.weeks) }}
-                                {{ sentence.days }}
-                                {{ 'day' | pluralise(sentence.days) }}
+                                {{ aggregateTerms.weeks }}
+                                {{ 'week' | pluralise(aggregateTerms.weeks) }}
+                                {{ aggregateTerms.days }}
+                                {{ 'day' | pluralise(aggregateTerms.days) }}
                                 <br>
                                 <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
                                     {% set offenceCount = sentencesAndOffences | countOffences %}

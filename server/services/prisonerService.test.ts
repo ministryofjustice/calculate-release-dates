@@ -3,12 +3,12 @@ import HmppsAuthClient from '../api/hmppsAuthClient'
 import config from '../config'
 import PrisonerService from './prisonerService'
 import {
-  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
 import { FullPageErrorType } from '../types/FullPageError'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 jest.mock('../api/hmppsAuthClient')
 
@@ -45,7 +45,11 @@ const prisonerDetails = {
 
 const activeSentences = [
   {
-    years: 3,
+    terms: [
+      {
+        years: 3,
+      },
+    ],
     sentenceTypeDescription: 'SDS Standard Sentence',
     caseSequence: 1,
     lineSequence: 1,
@@ -60,7 +64,11 @@ const activeSentences = [
     ],
   } as PrisonApiOffenderSentenceAndOffences,
   {
-    years: 2,
+    terms: [
+      {
+        years: 2,
+      },
+    ],
     caseSequence: 2,
     lineSequence: 2,
     sentenceSequence: 2,
@@ -71,7 +79,11 @@ const activeSentences = [
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 const inactiveSentence = {
-  years: 10,
+  terms: [
+    {
+      years: 10,
+    },
+  ],
   caseSequence: 3,
   lineSequence: 3,
   sentenceSequence: 2,

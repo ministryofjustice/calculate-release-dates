@@ -8,7 +8,8 @@ import type {
   PrisonApiSentenceAdjustmentDetail,
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
-import { PrisonApiOffenderSentenceAndOffences, PrisonApiSentenceCalcDates } from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiSentenceCalcDates } from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 export default class PrisonApiClient {
   restClient: RestClient
