@@ -1,7 +1,7 @@
 import {
   PrisonApiBookingAdjustment,
   PrisonApiBookingAndSentenceAdjustments,
-  PrisonApiSentenceSentenceAdjustmentValues,
+  PrisonApiSentenceAdjustmentValues,
 } from '../@types/prisonApi/prisonClientTypes'
 
 type AdjustmentViewModel = {
@@ -65,7 +65,7 @@ export default class AdjustmentsViewModel {
   }
 
   private adjustmentViewModel(
-    adjustments: PrisonApiBookingAdjustment[] | PrisonApiSentenceSentenceAdjustmentValues[]
+    adjustments: PrisonApiBookingAdjustment[] | PrisonApiSentenceAdjustmentValues[]
   ): AdjustmentViewModel {
     return {
       aggregate: this.aggregateAdjustment(adjustments),

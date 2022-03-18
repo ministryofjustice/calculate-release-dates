@@ -8,7 +8,7 @@ export type PrisonApiUserCaseloads = components['schemas']['CaseLoad']
 export type PrisonApiSentenceCalcDates = components['schemas']['SentenceCalcDates']
 export type PrisonApiBookingAndSentenceAdjustments = components['schemas']['BookingAndSentenceAdjustments']
 export type PrisonApiBookingAdjustment = components['schemas']['BookingAdjustment']
-export type PrisonApiSentenceSentenceAdjustmentValues = components['schemas']['SentenceAdjustmentValues']
+export type PrisonApiSentenceAdjustmentValues = components['schemas']['SentenceAdjustmentValues']
 // TODO replace with generated definition when prison-api is fixed.
 export type PrisonApiReturnToCustodyDate = {
   bookingId: number
