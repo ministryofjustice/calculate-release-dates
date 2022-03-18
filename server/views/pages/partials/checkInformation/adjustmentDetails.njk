@@ -1,0 +1,254 @@
+<div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="detailed">
+    {% if not adjustments.hasAnyAdjustments() %}
+        <p class="govuk-body">There are no detailed adjustments for {{prisonerDetail.firstName}}
+            {{prisonerDetail.lastName}}</p>
+    {% else %}
+        {% if adjustments.hasAnyDeductionAdjustments() %}
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-6">Deductions</h3>
+            {% if adjustments.recallSentenceRemand.aggregate != 0 %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Recall remand</h4>
+                <table class="govuk-table govuk-!-margin-bottom-8">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col" style="width: 90%">Dates</th>
+                            <th class="govuk-table__header" scope="col" style="width: 10%">Days</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for adjustment in adjustments.recallSentenceRemand.details %}
+                            <tr class="govuk-table__row">
+                                <!-- Dates -->
+                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <!-- Days -->
+                                <td class="govuk-table__cell">{{adjustment.days}}</td>
+                            </tr>
+                        {% endfor %}
+                        <!-- Total -->
+                        <tr class="govuk-table__row">
+                            <!-- Dates -->
+                            <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
+                            <!-- Days -->
+                            <td class="govuk-table__cell">{{adjustments.recallSentenceRemand.aggregate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+            {% if adjustments.remand.aggregate != 0 %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Remand</h4>
+                <table class="govuk-table govuk-!-margin-bottom-8">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col" style="width: 90%">Dates</th>
+                            <th class="govuk-table__header" scope="col" style="width: 10%">Days</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for adjustment in adjustments.remand.details %}
+                            <tr class="govuk-table__row">
+                                <!-- Dates -->
+                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <!-- Days -->
+                                <td class="govuk-table__cell">{{adjustment.days}}</td>
+                            </tr>
+                        {% endfor %}
+                        <!-- Total -->
+                        <tr class="govuk-table__row">
+                            <!-- Dates -->
+                            <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
+                            <!-- Days -->
+                            <td class="govuk-table__cell">{{adjustments.remand.aggregate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+            {% if adjustments.recallSentenceTaggedBail.aggregate != 0 %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Recall tagged bail</h4>
+                <!-- Dates -->
+                <table class="govuk-table govuk-!-margin-bottom-8">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col" style="width: 90%"></th>
+                            <th class="govuk-table__header" scope="col" style="width: 10%"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for adjustment in adjustments.recallSentenceTaggedBail.details %}
+                            <tr class="govuk-table__row">
+                                {% set sentence = sentenceSequenceToSentence.get(adjustment.sentence) %}
+                                <!-- Dates -->
+                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
+                                <!-- Days -->
+                                <td class="govuk-table__cell">{{adjustment.days}}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        <!-- Total -->
+                        <tr class="govuk-table__row">
+                            <!-- Dates -->
+                            <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
+                            <!-- Days -->
+                            <td class="govuk-table__cell">{{adjustments.recallSentenceTaggedBail.aggregate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+            {% if adjustments.taggedBail.aggregate != 0 %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Tagged bail</h4>
+                <!-- Dates -->
+                <table class="govuk-table govuk-!-margin-bottom-8">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col" style="width: 90%"></th>
+                            <th class="govuk-table__header" scope="col" style="width: 10%"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for adjustment in adjustments.taggedBail.details %}
+                            <tr class="govuk-table__row">
+                                {% set sentence = sentenceSequenceToSentence.get(adjustment.sentence) %}
+                                <!-- Dates -->
+                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
+                                <!-- Days -->
+                                <td class="govuk-table__cell">{{adjustment.days}}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        <!-- Total -->
+                        <tr class="govuk-table__row">
+                            <!-- Dates -->
+                            <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
+                            <!-- Days -->
+                            <td class="govuk-table__cell">{{adjustments.taggedBail.aggregate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+            {% if adjustments.restoredAdditionalDaysAwarded.aggregate != 0 %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Restore additional days awarded (RADA)</h4>
+                <table class="govuk-table govuk-!-margin-bottom-8">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col" style="width: 90%">Dates</th>
+                            <th class="govuk-table__header" scope="col" style="width: 10%">Days</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for adjustment in adjustments.restoredAdditionalDaysAwarded.details %}
+                            <tr class="govuk-table__row">
+                                <!-- Dates -->
+                                <td class="govuk-table__cell">Remitted {{ adjustment.from | date('DD MMMM YYYY') }}</td>
+                                <!-- Days -->
+                                <td class="govuk-table__cell">{{adjustment.days}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <!-- Total -->
+                        <tr class="govuk-table__row">
+                            <!-- Dates -->
+                            <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
+                            <!-- Days -->
+                            <td class="govuk-table__cell">{{adjustments.restoredAdditionalDaysAwarded.aggregate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+            {% if adjustments.unusedRemand.aggregate != 0 %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Unused remand</h4>
+                <table class="govuk-table govuk-!-margin-bottom-8">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col" style="width: 90%">Dates</th>
+                            <th class="govuk-table__header" scope="col" style="width: 10%">Days</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for adjustment in adjustments.unusedRemand.details %}
+                            <tr class="govuk-table__row">
+                                <!-- Dates -->
+                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <!-- Days -->
+                                <td class="govuk-table__cell">{{adjustment.days}}</td>
+                            </tr>
+                        {% endfor %}
+                        <!-- Total -->
+                        <tr class="govuk-table__row">
+                            <!-- Dates -->
+                            <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
+                            <!-- Days -->
+                            <td class="govuk-table__cell">{{adjustments.unusedRemand.aggregate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endif %}
+        {% if adjustments.hasAnyAdditionAdjustments() %}
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-6">Additions</h3>
+            {% if adjustments.additionalDaysAwarded.aggregate != 0 %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Additional days awarded (ADA)</h4>
+                <table class="govuk-table govuk-!-margin-bottom-8">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col" style="width: 90%">Dates</th>
+                            <th class="govuk-table__header" scope="col" style="width: 10%">Days</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for adjustment in adjustments.additionalDaysAwarded.details %}
+                            <tr class="govuk-table__row">
+                                <!-- Dates -->
+                                <td class="govuk-table__cell">Awarded {{ adjustment.from | date('DD MMMM YYYY') }}</td>
+                                <!-- Days -->
+                                <td class="govuk-table__cell">{{adjustment.days}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <!-- Total -->
+                        <tr class="govuk-table__row">
+                            <!-- Dates -->
+                            <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
+                            <!-- Days -->
+                            <td class="govuk-table__cell">{{adjustments.additionalDaysAwarded.aggregate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+            {% if adjustments.unlawfullyAtLarge.aggregate != 0 %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Unlawfully at large (UAL)</h4>
+                <table class="govuk-table govuk-!-margin-bottom-8">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col" style="width: 90%">Dates</th>
+                            <th class="govuk-table__header" scope="col" style="width: 10%">Days</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for adjustment in adjustments.unlawfullyAtLarge.details %}
+                            <tr class="govuk-table__row">
+                                <!-- Dates -->
+                                <td class="govuk-table__cell">{{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <!-- Days -->
+                                <td class="govuk-table__cell">{{adjustment.days}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <!-- Total -->
+                        <tr class="govuk-table__row">
+                            <!-- Dates -->
+                            <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
+                            <!-- Days -->
+                            <td class="govuk-table__cell">{{adjustments.unlawfullyAtLarge.aggregate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</div>

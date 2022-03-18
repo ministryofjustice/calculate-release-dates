@@ -22,6 +22,12 @@ context('Check nomis information', () => {
     checkInformationPage.sentenceTable(2).should('contain.text', 'Committed on 05 February 2021')
     checkInformationPage.sentenceTable(2).contains('2 years')
     checkInformationPage.sentenceTable(2).contains('consecutive to court case 1 count 1')
+
+    checkInformationPage.adjustmentSummary().should('contain.text', 'Remand')
+    checkInformationPage.adjustmentSummary().should('contain.text', '28')
+
+    checkInformationPage.adjustmentDetailedTabLink().click()
+    checkInformationPage.adjustmentDetailed().should('contain.text', 'From 03 February 2021 to 08 March 2021')
   })
 
   it('Check nomis information page is accessible', () => {
