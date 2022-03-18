@@ -109,6 +109,11 @@ const stubbedAdjustments = {
   ],
 } as PrisonApiBookingAndSentenceAdjustments
 
+const stubbedEmptyAdjustments = {
+  sentenceAdjustments: [],
+  bookingAdjustments: [],
+} as PrisonApiBookingAndSentenceAdjustments
+
 beforeEach(() => {
   app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService, entryPointService })
 })
@@ -146,9 +151,24 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('href="/?prisonId=A1234AA"')
         expect(res.text).toContain('Restore additional days awarded (RADA)')
         expect(res.text).toContain('2')
+        expect(res.text).toContain('Detailed')
+        expect(res.text).toContain('From 01 February 2021 to 02 February 2021')
       })
   })
-
+  it('GET /calculation/:nomsId/check-information should return detail about the prisoner without adjustments', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedEmptyAdjustments)
+    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Detailed')
+        expect(res.text).toContain('There are no detailed adjustments for')
+      })
+  })
   it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
