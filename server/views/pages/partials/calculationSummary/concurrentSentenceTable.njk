@@ -1,33 +1,38 @@
 <table class="govuk-table govuk-!-margin-bottom-4"
        style="table-layout:fixed; width: 100%; border: none;" data-qa="concurrent-sentence-table">
     <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">Sentence</th>
-        <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence date</th>
-        <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence length</th>
-        <th scope="col" class="govuk-table__header govuk-table__header--date">Expiry date</th>
-        <th scope="col" class="govuk-table__header govuk-table__header--date">Release date</th>
-    </tr>
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Sentence</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence date</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--date">Sentence length</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--date">Expiry date</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--date">Release date</th>
+        </tr>
     </thead>
     <tbody class="govuk-table__body calculation-breakdown">
-    {% for sentence in calculationBreakdown.concurrentSentences %}
-        <tr class="govuk-table__row">
-            <td class="govuk-table__cell">Court case {{ sentence.caseSequence }}, count {{ sentence.lineSequence }}</td>
-            <td class="govuk-table__cell">{{ sentence.sentencedAt | date('DD MMMM YYYY') }}</td>
-            <td class="govuk-table__cell">{{ sentence.sentenceLength }}</td>
-            {% set expiryDate = sentence.dates | expiryDates %}
-            <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}<br />
-                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
-                      style="margin-bottom:0;">{{ expiryDate.daysFromSentenceStart }} days</span><br />
-                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
+        {% for sentence in calculationBreakdown.concurrentSentences %}
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Court case {{ sentence.caseSequence }}, count {{ sentence.lineSequence }}
+                    {% if sentence.caseReference %}
+                        <br>
+                        <p class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">Court case number: {{sentence.caseReference}}</p>
+                    {% endif %}
+                </td>
+                <td class="govuk-table__cell">{{ sentence.sentencedAt | date('DD MMMM YYYY') }}</td>
+                <td class="govuk-table__cell">{{ sentence.sentenceLength }}</td>
+                {% set expiryDate = sentence.dates | expiryDates %}
+                <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
+                      style="margin-bottom:0;">{{ expiryDate.daysFromSentenceStart }} days</span><br/>
+                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
                       style="margin-bottom:0;">{{ sentence.dates | expiryDateType }}</span></td>
-            {% set releaseDate = sentence.dates | releaseDates %}
-            <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}<br />
-                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
-                      style="margin-bottom:0;">{{ releaseDate.daysFromSentenceStart }} days</span><br />
-                <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
+                {% set releaseDate = sentence.dates | releaseDates %}
+                <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
+                      style="margin-bottom:0;">{{ releaseDate.daysFromSentenceStart }} days</span><br/>
+                    <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16"
                       style="margin-bottom:0;">{{ sentence.dates | releaseDateType }}</span></td>
-        </tr>
-    {% endfor %}
+            </tr>
+        {% endfor %}
     </tbody>
 </table>

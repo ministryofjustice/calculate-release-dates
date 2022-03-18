@@ -8,4 +8,8 @@ export default class ViewSentencesAndOffencesCommon extends Page {
   public sentenceTable(caseSequence: number): PageElement {
     return cy.get(`[data-qa=${caseSequence}-sentence-table]`)
   }
+
+  public caseNumber(caseSequence: number): PageElement {
+    return cy.get(`[data-qa=${caseSequence}-case-number]`)
+  }
 }

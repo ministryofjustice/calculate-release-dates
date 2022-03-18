@@ -3,7 +3,11 @@
 
 <div id="sentences">
     {% for case, caseSentencesAndOffences in caseToSentences %}
-        <h3 class="govuk-heading-m">Court case {{ case }}</h3>
+        {% set courtCaseRef = caseSentencesAndOffences[0].caseReference %}
+        <h3 class="govuk-heading-m {% if courtCaseRef  %}govuk-!-margin-bottom-1{% endif %}">Court case {{ case }}</h3>
+        {% if courtCaseRef %}
+            <p class="govuk-body" data-qa="{{ case }}-case-number">Court case number: {{courtCaseRef }}</p>
+        {% endif %}
         <table class="govuk-table govuk-!-width-full" id="{{ case }}-sentence-table"
                data-qa="{{ case }}-sentence-table">
             <thead class="govuk-table__head">

@@ -18,10 +18,12 @@ context('Check nomis information', () => {
 
     checkInformationPage.sentenceTable(1).should('contain.text', 'Committed on 03 February 2021')
     checkInformationPage.sentenceTable(1).contains('3 years') // contain.text didn't like the whitespace
+    checkInformationPage.caseNumber(1).contains('Court case number: ABC123')
 
     checkInformationPage.sentenceTable(2).should('contain.text', 'Committed on 05 February 2021')
     checkInformationPage.sentenceTable(2).contains('2 years')
     checkInformationPage.sentenceTable(2).contains('consecutive to court case 1 count 1')
+    checkInformationPage.caseNumber(2).contains('Court case number: ABC234')
   })
 
   it('Check nomis information page is accessible', () => {
