@@ -33,6 +33,10 @@ export interface paths {
     /** This endpoint will return the sentences and offences based on a calculationRequestId */
     get: operations['getSentencesAndOffence']
   }
+  '/calculation/return-to-custody/{calculationRequestId}': {
+    /** This endpoint will return the return to custody date based on a calculationRequestId */
+    get: operations['getReturnToCustodyDate']
+  }
   '/calculation/results/{prisonerId}/{bookingId}': {
     /** This endpoint will return the confirmed release dates based on a prisoners booking */
     get: operations['getConfirmedCalculationResults']
@@ -70,6 +74,7 @@ export interface components {
       offender: components['schemas']['Offender']
       sentences: components['schemas']['Sentence'][]
       adjustments: components['schemas']['Adjustments']
+      returnToCustodyDate?: string
       bookingId: number
     }
     Duration: {
@@ -93,7 +98,8 @@ export interface components {
       consecutiveSentenceUUIDs: string[]
       caseSequence?: number
       lineSequence?: number
-      sentenceType: 'STANDARD_DETERMINATE' | 'STANDARD_RECALL'
+      caseReference?: string
+      sentenceType: 'STANDARD_DETERMINATE' | 'STANDARD_RECALL' | 'FIXED_TERM_RECALL_14' | 'FIXED_TERM_RECALL_28'
     }
     BookingCalculation: {
       dates: { [key: string]: string }
@@ -172,12 +178,17 @@ export interface components {
       sentenceDate: string
       terms: components['schemas']['SentenceTerms'][]
       offences: components['schemas']['OffenderOffence'][]
+      caseReference?: string
     }
     SentenceTerms: {
       years: number
       months: number
       weeks: number
       days: number
+    }
+    ReturnToCustodyDate: {
+      bookingId: number
+      returnToCustodyDate: string
     }
     Alert: {
       dateCreated: string
@@ -232,6 +243,7 @@ export interface components {
       dates: { [key: string]: components['schemas']['DateBreakdown'] }
       lineSequence: number
       caseSequence: number
+      caseReference?: string
     }
     ConsecutiveSentenceBreakdown: {
       sentencedAt: string
@@ -243,6 +255,7 @@ export interface components {
     ConsecutiveSentencePart: {
       lineSequence: number
       caseSequence: number
+      caseReference?: string
       sentenceLength: string
       sentenceLengthDays: number
       consecutiveToLineSequence?: number
@@ -484,6 +497,35 @@ export interface operations {
       404: {
         content: {
           'application/json': components['schemas']['SentenceAndOffences'][]
+        }
+      }
+    }
+  }
+  /** This endpoint will return the return to custody date based on a calculationRequestId */
+  getReturnToCustodyDate: {
+    parameters: {
+      path: {
+        /** The calculationRequestId of the calculation */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ReturnToCustodyDate']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ReturnToCustodyDate']
+        }
+      }
+      /** No calculation exists for this calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['ReturnToCustodyDate']
         }
       }
     }

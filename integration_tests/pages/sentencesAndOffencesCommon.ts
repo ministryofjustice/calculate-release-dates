@@ -9,6 +9,10 @@ export default class ViewSentencesAndOffencesCommon extends Page {
     return cy.get(`[data-qa=${caseSequence}-sentence-table]`)
   }
 
+  public caseNumber(caseSequence: number): PageElement {
+    return cy.get(`[data-qa=${caseSequence}-case-number]`)
+  }
+
   public adjustmentSummaryTabLink(): PageElement {
     return cy.get(`[data-qa=summary-tab-link]`)
   }

@@ -168,6 +168,7 @@ export default {
               },
               lineSequence: 2,
               caseSequence: 2,
+              caseReference: 'ABC123',
             },
             {
               sentencedAt: '2020-12-13',
@@ -189,6 +190,7 @@ export default {
               },
               lineSequence: 4,
               caseSequence: 4,
+              caseReference: 'ABC234',
             },
           ],
           consecutiveSentence: {
@@ -213,6 +215,7 @@ export default {
               {
                 lineSequence: 1,
                 caseSequence: 1,
+                caseReference: 'ABC345',
                 sentenceLength: '2 years',
                 sentenceLengthDays: 730,
                 consecutiveToLineSequence: null,
@@ -221,6 +224,7 @@ export default {
               {
                 lineSequence: 3,
                 caseSequence: 3,
+                caseReference: 'ABC567',
                 sentenceLength: '8 months',
                 sentenceLengthDays: 242,
                 consecutiveToLineSequence: 1,
@@ -229,6 +233,7 @@ export default {
               {
                 lineSequence: 5,
                 caseSequence: 5,
+                caseReference: 'ABC678',
                 sentenceLength: '3 years',
                 sentenceLengthDays: 1095,
                 consecutiveToLineSequence: 3,
@@ -377,6 +382,7 @@ export default {
             sentenceTypeDescription: 'SDS Standard Sentence',
             caseSequence: 1,
             lineSequence: 1,
+            caseReference: 'ABC123',
             sentenceSequence: 1,
             sentenceStatus: 'A',
             offences: [{ offenceEndDate: '2021-02-03' }],
@@ -390,6 +396,7 @@ export default {
             sentenceCalculationType: 'ADIMP',
             caseSequence: 2,
             lineSequence: 2,
+            caseReference: 'ABC123',
             sentenceSequence: 2,
             consecutiveToSequence: 1,
             sentenceStatus: 'A',

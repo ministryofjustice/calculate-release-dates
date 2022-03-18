@@ -25,6 +25,8 @@ export type PrisonApiOffenderSentenceAndOffences = {
   sentenceStatus?: string
   /** The sentence type description e.g. Standard Determinate Sentence */
   sentenceTypeDescription?: string
+  /** The reference for the court case */
+  caseReference?: string
 
   terms?: PrisonApiSentenceTerms[]
 }

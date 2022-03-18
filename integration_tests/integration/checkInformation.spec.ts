@@ -18,6 +18,7 @@ context('Check nomis information', () => {
 
     checkInformationPage.sentenceTable(1).should('contain.text', 'Committed on 03 February 2021')
     checkInformationPage.sentenceTable(1).contains('3 years') // contain.text didn't like the whitespace
+    checkInformationPage.caseNumber(1).contains('Court case number: ABC123')
 
     checkInformationPage.sentenceTable(2).should('contain.text', 'Committed on 05 February 2021')
     checkInformationPage.sentenceTable(2).contains('2 years')
@@ -25,6 +26,7 @@ context('Check nomis information', () => {
 
     checkInformationPage.adjustmentSummary().should('contain.text', 'Remand')
     checkInformationPage.adjustmentSummary().should('contain.text', '28')
+    checkInformationPage.caseNumber(2).contains('Court case number: ABC234')
 
     checkInformationPage.adjustmentDetailedTabLink().click()
     checkInformationPage.adjustmentDetailed().should('contain.text', 'From 03 February 2021 to 08 March 2021')
