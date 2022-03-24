@@ -150,6 +150,7 @@ export interface components {
         | 'SENTENCE_HAS_MULTIPLE_TERMS'
         | 'REMAND_OVERLAPS_WITH_REMAND'
         | 'REMAND_OVERLAPS_WITH_SENTENCE'
+        | 'CUSTODIAL_PERIOD_EXTINGUISHED'
       sentenceSequence?: number
       arguments: string[]
     }

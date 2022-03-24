@@ -298,6 +298,12 @@ export default class CalculateReleaseDatesService {
         return `Remand time cannot be credited when a custodial sentence is being served.`
       case 'SENTENCE_HAS_MULTIPLE_TERMS':
         return `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must only have one term in NOMIS.`
+      case 'CUSTODIAL_PERIOD_EXTINGUISHED':
+        return `The release date cannot be before the sentence date. Go back to NOMIS and reduce the amount of ${validationMessage.arguments
+          .map(a => {
+            return a === 'REMAND' ? 'remand' : 'tagged bail'
+          })
+          .join(' and ')} entered.`
       default:
         throw new Error(`Uknown validation code ${validationMessage.code}`)
     }
