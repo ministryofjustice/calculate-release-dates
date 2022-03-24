@@ -101,10 +101,14 @@ export interface components {
       caseReference?: string
       sentenceType: 'STANDARD_DETERMINATE' | 'STANDARD_RECALL' | 'FIXED_TERM_RECALL_14' | 'FIXED_TERM_RECALL_28'
     }
-    BookingCalculation: {
+    CalculatedReleaseDates: {
       dates: { [key: string]: string }
       calculationRequestId: number
-      effectiveSentenceLength: {
+      bookingId: number
+      prisonerId: string
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR'
+      calculationFragments?: components['schemas']['CalculationFragments']
+      effectiveSentenceLength?: {
         years?: number
         months?: number
         days?: number
@@ -126,9 +130,6 @@ export interface components {
           durationEstimated?: boolean
         }[]
       }
-      calculationFragments?: components['schemas']['CalculationFragments']
-      bookingId: number
-      prisonerId: string
     }
     CalculationFragments: {
       breakdownHtml: string
@@ -323,13 +324,13 @@ export interface operations {
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
@@ -351,13 +352,13 @@ export interface operations {
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
@@ -376,25 +377,25 @@ export interface operations {
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** No calculation exists for the passed calculationRequestId or the write to NOMIS has failed */
       404: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** The booking data that was used for the preliminary calculation has changed */
       412: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
@@ -545,19 +546,19 @@ export interface operations {
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** No confirmed calculation exists for this prisoner and booking */
       404: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
@@ -574,19 +575,19 @@ export interface operations {
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** No calculation exists for this calculationRequestId */
       404: {
         content: {
-          'application/json': components['schemas']['BookingCalculation']
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }

@@ -25,6 +25,7 @@ const calculationResults: BookingCalculation = {
   calculationRequestId,
   prisonerId,
   bookingId: 123,
+  calculationStatus: 'CONFIRMED',
 }
 const calculationBreakdown: CalculationBreakdown = {
   concurrentSentences: [

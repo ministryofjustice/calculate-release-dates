@@ -117,6 +117,14 @@ export default class CalculationRoutes {
     this.entryPointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const calculation = await this.calculateReleaseDatesService.getCalculationResults(
+      username,
+      calculationRequestId,
+      token
+    )
+    if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
+      throw FullPageError.notFoundError()
+    }
     res.render('pages/calculation/calculationComplete', {
       prisonerDetail,
       calculationRequestId,
