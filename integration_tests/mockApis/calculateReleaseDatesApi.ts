@@ -20,6 +20,7 @@ export default {
           calculationRequestId: 123,
           prisonerId: 'A1234AB',
           bookingId: 1234,
+          calculationStatus: 'PRELIMINARY',
         },
       },
     })
@@ -42,6 +43,7 @@ export default {
           calculationRequestId: 123,
           prisonerId: 'A1234AB',
           bookingId: 1234,
+          calculationStatus: 'CONFIRMED',
         },
       },
     })
@@ -64,6 +66,7 @@ export default {
           calculationRequestId: 123,
           prisonerId: 'A1234AB',
           bookingId: 1234,
+          calculationStatus: 'CONFIRMED',
         },
       },
     })

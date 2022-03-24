@@ -7,6 +7,7 @@ context('Calculation complete', () => {
     cy.task('stubAuthUser')
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetUserCaseloads')
+    cy.task('stubGetCalculationResults')
   })
 
   it('Visit Calculation complete page', () => {

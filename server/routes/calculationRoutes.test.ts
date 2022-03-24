@@ -62,6 +62,7 @@ const stubbedCalculationResults = {
   calculationRequestId: 123456,
   effectiveSentenceLength: {},
   prisonerId: 'A1234AB',
+  calculationStatus: 'CONFIRMED',
   bookingId: 123,
 } as BookingCalculation
 const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
@@ -174,6 +175,14 @@ describe('Calculation routes tests', () => {
       })
   })
 
+  it('GET /calculation/:nomsId/complete should error if calculation is not confirmed', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue({
+      ...stubbedCalculationResults,
+      calculationStatus: 'PRELIMINARY',
+    })
+    return request(app).get('/calculation/A1234AB/complete/123456').expect(404).expect('Content-Type', /html/)
+  })
   it('GET /calculation/:nomsId/summary/:calculationRequestId/print should return a printable page about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
@@ -211,6 +220,7 @@ describe('Calculation routes tests', () => {
       effectiveSentenceLength: {},
       prisonerId: 'A1234AA',
       bookingId: 123,
+      calculationStatus: 'PRELIMINARY',
     })
     return request(app)
       .post('/calculation/A1234AB/summary/123456')
