@@ -186,6 +186,21 @@ const invalidValidationResult: ValidationMessages = {
       message: '',
       arguments: [],
     },
+    {
+      code: 'CUSTODIAL_PERIOD_EXTINGUISHED',
+      message: '',
+      arguments: ['REMAND'],
+    },
+    {
+      code: 'CUSTODIAL_PERIOD_EXTINGUISHED',
+      message: '',
+      arguments: ['TAGGED BAIL'],
+    },
+    {
+      code: 'CUSTODIAL_PERIOD_EXTINGUISHED',
+      message: '',
+      arguments: ['REMAND', 'TAGGED BAIL'],
+    },
   ],
 }
 
@@ -380,6 +395,15 @@ describe('Calculate release dates service tests', () => {
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand time can only be added once, it can cannot overlap with other remand dates.' },
         { text: 'Remand time cannot be credited when a custodial sentence is being served.' },
+        {
+          text: 'The release date cannot be before the sentence date. Go back to NOMIS and reduce the amount of remand entered.',
+        },
+        {
+          text: 'The release date cannot be before the sentence date. Go back to NOMIS and reduce the amount of tagged bail entered.',
+        },
+        {
+          text: 'The release date cannot be before the sentence date. Go back to NOMIS and reduce the amount of remand and tagged bail entered.',
+        },
       ])
       expect(result.messageType).toBe(ErrorMessageType.VALIDATION)
     })
