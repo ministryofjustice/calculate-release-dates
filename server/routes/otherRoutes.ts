@@ -34,15 +34,18 @@ export default class OtherRoutes {
 
     // This is just temporary code therefore the iterative loop rather than an async approach (was easier to develop and easier to debug)
     for (const nomsId of nomsIds) {
+      let nomisRecord, bookingId, nomisDates, sentenceAndOffences, adjustments, returnToCustody
       try {
-        const nomisRecord = nomisResults.find(a => a.prisonerNumber === nomsId)
-        const bookingId = nomisRecord.bookingId as unknown as number
-        const nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
-        const sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
-        const adjustments = await this.prisonerService.getBookingAndSentenceAdjustments(bookingId, token)
-        const returnToCustody = sentenceAndOffences.filter(s =>
-          fixedTermRecallTypes.includes(s.sentenceCalculationType)
-        ).length
+        nomisRecord = nomisResults.find(a => a.prisonerNumber === nomsId)
+        if (!nomisRecord) {
+          throw Error(`Search API returned no prisoner for id ${nomsId}`)
+        }
+        bookingId = nomisRecord.bookingId as unknown as number
+        nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
+        sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
+        adjustments = await this.prisonerService.getBookingAndSentenceAdjustments(bookingId, token)
+        returnToCustody = sentenceAndOffences.filter(s => fixedTermRecallTypes.includes(s.sentenceCalculationType))
+          .length
           ? await this.prisonerService.getReturnToCustodyDate(bookingId, token)
           : null
         try {
@@ -52,6 +55,7 @@ export default class OtherRoutes {
           if (ex?.status === 422) {
             csvData.push(
               this.addErrorRow(
+                nomisRecord.prisonId,
                 nomisRecord,
                 nomisDates,
                 sentenceAndOffences,
@@ -64,6 +68,7 @@ export default class OtherRoutes {
           } else {
             csvData.push(
               this.addErrorRow(
+                nomisRecord.prisonId,
                 nomisRecord,
                 nomisDates,
                 sentenceAndOffences,
@@ -76,7 +81,19 @@ export default class OtherRoutes {
           }
         }
       } catch (ex) {
-        csvData.push(OtherRoutes.addNonCrdErrorRow(nomsId, ex))
+        console.log(ex.message)
+        csvData.push(
+          this.addErrorRow(
+            nomsId,
+            nomisRecord,
+            nomisDates,
+            sentenceAndOffences,
+            adjustments,
+            returnToCustody,
+            ex,
+            'Prison API Error'
+          )
+        )
       }
     }
 
@@ -140,7 +157,8 @@ export default class OtherRoutes {
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
-      error: null as string,
+      ERROR_TEXT: null as string,
+      ERROR_JSON: null as string,
     }
   }
 
@@ -189,6 +207,7 @@ export default class OtherRoutes {
   }
 
   private addErrorRow(
+    nomsId: string,
     prisoner: Prisoner,
     nomisDates: PrisonApiSentenceDetail,
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
@@ -198,97 +217,50 @@ export default class OtherRoutes {
     errorText: string
   ) {
     return {
-      NOMS_ID: prisoner.prisonerNumber,
-      DOB: prisoner.dateOfBirth,
+      NOMS_ID: nomsId,
+      DOB: prisoner?.dateOfBirth,
       REQUEST_ID: errorText,
       CALCULATED_DATES: errorText,
       CRD: errorText,
-      NOMIS_CRD: nomisDates.conditionalReleaseDate,
-      NOMIS_CRD_OVERRIDE: nomisDates.nonParoleOverrideDate,
+      NOMIS_CRD: nomisDates?.conditionalReleaseDate,
+      NOMIS_CRD_OVERRIDE: nomisDates?.nonParoleOverrideDate,
       LED: errorText,
-      NOMIS_LED: nomisDates.licenceExpiryDate,
+      NOMIS_LED: nomisDates?.licenceExpiryDate,
       SED: errorText,
-      NOMIS_SED: nomisDates.sentenceExpiryDate,
+      NOMIS_SED: nomisDates?.sentenceExpiryDate,
       NPD: errorText,
-      NOMIS_NPD: nomisDates.nonParoleDate,
-      NOMIS_NPD_OVERRIDE: nomisDates.nonParoleOverrideDate,
+      NOMIS_NPD: nomisDates?.nonParoleDate,
+      NOMIS_NPD_OVERRIDE: nomisDates?.nonParoleOverrideDate,
       ARD: errorText,
-      NOMIS_ARD: nomisDates.automaticReleaseDate,
-      NOMIS_ARD_OVERRIDE: nomisDates.automaticReleaseOverrideDate,
+      NOMIS_ARD: nomisDates?.automaticReleaseDate,
+      NOMIS_ARD_OVERRIDE: nomisDates?.automaticReleaseOverrideDate,
       TUSED: errorText,
-      NOMIS_TUSED: nomisDates.topupSupervisionExpiryDate,
+      NOMIS_TUSED: nomisDates?.topupSupervisionExpiryDate,
       PED: errorText,
-      NOMIS_PED: nomisDates.paroleEligibilityDate,
+      NOMIS_PED: nomisDates?.paroleEligibilityDate,
       HDCED: errorText,
-      NOMIS_HDCED: nomisDates.homeDetentionCurfewEligibilityDate,
+      NOMIS_HDCED: nomisDates?.homeDetentionCurfewEligibilityDate,
       ETD: errorText,
-      NOMIS_ETD: nomisDates.earlyTermDate,
+      NOMIS_ETD: nomisDates?.earlyTermDate,
       MTD: errorText,
-      NOMIS_MTD: nomisDates.midTermDate,
+      NOMIS_MTD: nomisDates?.midTermDate,
       LTD: errorText,
-      NOMIS_LTD: nomisDates.lateTermDate,
+      NOMIS_LTD: nomisDates?.lateTermDate,
       DPRRD: errorText,
-      NOMIS_DPRRD: nomisDates.postRecallReleaseDate,
-      NOMIS_DPRRD_OVERRIDE: nomisDates.dtoPostRecallReleaseDateOverride,
+      NOMIS_DPRRD: nomisDates?.postRecallReleaseDate,
+      NOMIS_DPRRD_OVERRIDE: nomisDates?.dtoPostRecallReleaseDateOverride,
       PRRD: errorText,
-      NOMIS_PRRD: nomisDates.postRecallReleaseDate,
-      NOMIS_PRRD_OVERRIDE: nomisDates.postRecallReleaseOverrideDate,
+      NOMIS_PRRD: nomisDates?.postRecallReleaseDate,
+      NOMIS_PRRD_OVERRIDE: nomisDates?.postRecallReleaseOverrideDate,
       ESED: errorText,
-      NOMIS_ESED: nomisDates.effectiveSentenceEndDate,
+      NOMIS_ESED: nomisDates?.effectiveSentenceEndDate,
       ARE_DATES_SAME: errorText,
       ARE_DATES_SAME_USING_OVERRIDES: errorText,
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
-      error: ex,
-    }
-  }
-
-  private static addNonCrdErrorRow(nomsId: string, ex: any) {
-    return {
-      NOMS_ID: nomsId,
-      DOB: 'non-crd error',
-      REQUEST_ID: 'non-crd error',
-      CALCULATED_DATES: 'non-crd error',
-      CRD: 'non-crd error',
-      NOMIS_CRD: 'non-crd error',
-      NOMIS_CRD_OVERRIDE: 'non-crd error',
-      LED: 'non-crd error',
-      NOMIS_LED: 'non-crd error',
-      SED: 'non-crd error',
-      NOMIS_SED: 'non-crd error',
-      NPD: 'non-crd error',
-      NOMIS_NPD: 'non-crd error',
-      NOMIS_NPD_OVERRIDE: 'non-crd error',
-      ARD: 'non-crd error',
-      NOMIS_ARD: 'non-crd error',
-      NOMIS_ARD_OVERRIDE: 'non-crd error',
-      TUSED: 'non-crd error',
-      NOMIS_TUSED: 'non-crd error',
-      PED: 'non-crd error',
-      NOMIS_PED: 'non-crd error',
-      HDCED: 'non-crd error',
-      NOMIS_HDCED: 'non-crd error',
-      ETD: 'non-crd error',
-      NOMIS_ETD: 'non-crd error',
-      MTD: 'non-crd error',
-      NOMIS_MTD: 'non-crd error',
-      LTD: 'non-crd error',
-      NOMIS_LTD: 'non-crd error',
-      DPRRD: 'non-crd error',
-      NOMIS_DPRRD: 'non-crd error',
-      NOMIS_DPRRD_OVERRIDE: 'non-crd error',
-      PRRD: 'non-crd error',
-      NOMIS_PRRD: 'non-crd error',
-      NOMIS_PRRD_OVERRIDE: 'non-crd error',
-      ESED: 'non-crd error',
-      NOMIS_ESED: 'non-crd error',
-      ARE_DATES_SAME: 'non-crd error',
-      ARE_DATES_SAME_USING_OVERRIDES: 'non-crd error',
-      SENTENCES: 'non-crd error',
-      ADJUSTMENTS: 'non-crd error',
-      RETURN_TO_CUSTODY: 'non-crd error',
-      error: `${ex.message}: ${JSON.stringify(ex)}`,
+      ERROR_TEXT: ex.message,
+      ERROR_JSON: JSON.stringify(ex),
     }
   }
   /* eslint-enable */
