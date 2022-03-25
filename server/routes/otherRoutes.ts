@@ -81,7 +81,6 @@ export default class OtherRoutes {
           }
         }
       } catch (ex) {
-        console.log(ex.message)
         csvData.push(
           this.addErrorRow(
             nomsId,
