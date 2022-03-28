@@ -4,10 +4,10 @@ import { stringify } from 'csv-stringify'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
-import { Prisoner } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -22,25 +22,24 @@ export default class OtherRoutes {
   // TODO Remove this submitTestCalculation method and associated code - only in place to aid bulk testing of the calculation algorithm
   /* eslint-disable */
   public submitTestCalculation: RequestHandler = async (req, res) => {
-    const { username, token } = res.locals.user
+    const { username, caseloads, token } = res.locals.user
     const { prisonerIds } = req.body
     const nomsIds = prisonerIds.split(/\r?\n/)
     if (nomsIds.length > 500) return res.redirect(`/test/calculation`)
 
     const fixedTermRecallTypes = ['14FTR_ORA', '14FTRHDC_ORA', 'FTR', 'FTR_ORA']
-    const nomisResults = await this.prisonerService.searchPrisonerNumbers(username, nomsIds)
 
     const csvData = []
 
     // This is just temporary code therefore the iterative loop rather than an async approach (was easier to develop and easier to debug)
     for (const nomsId of nomsIds) {
-      let nomisRecord, bookingId, nomisDates, sentenceAndOffences, adjustments, returnToCustody
+      let prisonDetails, bookingId, nomisDates, sentenceAndOffences, adjustments, returnToCustody
       try {
-        nomisRecord = nomisResults.find(a => a.prisonerNumber === nomsId)
-        if (!nomisRecord) {
+        prisonDetails = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+        if (!prisonDetails) {
           throw Error(`Search API returned no prisoner for id ${nomsId}`)
         }
-        bookingId = nomisRecord.bookingId as unknown as number
+        bookingId = prisonDetails.bookingId
         nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
         sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
         adjustments = await this.prisonerService.getBookingAndSentenceAdjustments(bookingId, token)
@@ -50,13 +49,13 @@ export default class OtherRoutes {
           : null
         try {
           const calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, token)
-          csvData.push(this.addRow(nomisRecord, calc, nomisDates, sentenceAndOffences, adjustments, returnToCustody))
+          csvData.push(this.addRow(prisonDetails, calc, nomisDates, sentenceAndOffences, adjustments, returnToCustody))
         } catch (ex) {
           if (ex?.status === 422) {
             csvData.push(
               this.addErrorRow(
-                nomisRecord.prisonId,
-                nomisRecord,
+                nomsId,
+                prisonDetails,
                 nomisDates,
                 sentenceAndOffences,
                 adjustments,
@@ -68,8 +67,8 @@ export default class OtherRoutes {
           } else {
             csvData.push(
               this.addErrorRow(
-                nomisRecord.prisonId,
-                nomisRecord,
+                nomsId,
+                prisonDetails,
                 nomisDates,
                 sentenceAndOffences,
                 adjustments,
@@ -84,7 +83,7 @@ export default class OtherRoutes {
         csvData.push(
           this.addErrorRow(
             nomsId,
-            nomisRecord,
+            prisonDetails,
             nomisDates,
             sentenceAndOffences,
             adjustments,
@@ -103,7 +102,7 @@ export default class OtherRoutes {
   }
 
   private addRow(
-    prisoner: Prisoner,
+    prisoner: PrisonApiPrisoner,
     calc: BookingCalculation,
     nomisDates: PrisonApiSentenceDetail,
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
@@ -111,7 +110,7 @@ export default class OtherRoutes {
     returnToCustody: PrisonApiReturnToCustodyDate
   ) {
     const row = {
-      NOMS_ID: prisoner.prisonerNumber,
+      NOMS_ID: prisoner.offenderNo,
       DOB: prisoner.dateOfBirth,
       REQUEST_ID: calc.calculationRequestId,
       CALCULATED_DATES: calc.dates,
@@ -207,7 +206,7 @@ export default class OtherRoutes {
 
   private addErrorRow(
     nomsId: string,
-    prisoner: Prisoner,
+    prisoner: PrisonApiPrisoner,
     nomisDates: PrisonApiSentenceDetail,
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
