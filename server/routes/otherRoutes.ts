@@ -36,9 +36,6 @@ export default class OtherRoutes {
       let prisonDetails, bookingId, nomisDates, sentenceAndOffences, adjustments, returnToCustody
       try {
         prisonDetails = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-        if (!prisonDetails) {
-          throw Error(`Search API returned no prisoner for id ${nomsId}`)
-        }
         bookingId = prisonDetails.bookingId
         nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
         sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
