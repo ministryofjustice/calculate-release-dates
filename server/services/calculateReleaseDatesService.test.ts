@@ -52,6 +52,7 @@ const calculationBreakdown: CalculationBreakdown = {
     },
   ],
   breakdownByReleaseDateType: {},
+  otherDates: {},
 }
 
 const sentencesAndOffences = [

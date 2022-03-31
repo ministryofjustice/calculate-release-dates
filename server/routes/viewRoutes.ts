@@ -4,22 +4,8 @@ import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
-import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
-import { CalculationBreakdown, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { FullPageError } from '../types/FullPageError'
-
-type ViewCalculationSummaryViewModel = {
-  prisonerDetail?: PrisonApiPrisoner
-  releaseDates: { [key: string]: string }
-  weekendAdjustments: { [key: string]: WorkingDay }
-  calculationRequestId: number
-  nomsId: string
-  calculationBreakdown?: CalculationBreakdown
-  releaseDatesWithAdjustments?: ReleaseDateWithAdjustments[]
-  validationErrors?: ErrorMessages
-  calculationSummaryUnavailable?: boolean
-}
+import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 
 export default class ViewRoutes {
   constructor(
@@ -85,7 +71,7 @@ export default class ViewRoutes {
     username: string,
     token: string,
     caseloads: string[]
-  ): Promise<ViewCalculationSummaryViewModel> {
+  ): Promise<CalculationSummaryViewModel> {
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,
@@ -102,21 +88,28 @@ export default class ViewRoutes {
         caseloads,
         token
       )
-      return {
-        prisonerDetail,
-        releaseDates: releaseDates.dates,
+      const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+      return new CalculationSummaryViewModel(
+        releaseDates.dates,
         weekendAdjustments,
-        ...(await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)),
         calculationRequestId,
         nomsId,
-      }
+        prisonerDetail,
+        breakdown?.calculationBreakdown,
+        breakdown?.releaseDatesWithAdjustments
+      )
     } catch (error) {
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
         const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-        return {
-          releaseDates: releaseDates.dates,
+        return new CalculationSummaryViewModel(
+          releaseDates.dates,
           weekendAdjustments,
-          validationErrors: {
+          calculationRequestId,
+          nomsId,
+          prisonerDetail,
+          null,
+          null,
+          {
             messages: [
               {
                 html: `To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/${nomsId}/check-information">calculate release dates again.</a>`,
@@ -124,11 +117,8 @@ export default class ViewRoutes {
             ],
             messageType: ErrorMessageType.MISSING_PRISON_API_DATA,
           } as ErrorMessages,
-          prisonerDetail,
-          calculationRequestId,
-          nomsId,
-          calculationSummaryUnavailable: true,
-        }
+          true
+        )
       }
       throw error
     }

@@ -64,6 +64,7 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
         unadjustedDate: '2015-08-11',
       },
     },
+    otherDates: {},
   }
 }
 
@@ -134,5 +135,6 @@ export function psiExample25CalculationBreakdown(): CalculationBreakdown {
         unadjustedDate: '2015-07-14',
       },
     },
+    otherDates: {},
   }
 }
