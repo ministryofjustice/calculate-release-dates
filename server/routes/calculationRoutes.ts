@@ -33,6 +33,11 @@ export default class CalculationRoutes {
       releaseDates,
       token
     )
+    const serverErrors = req.flash('serverErrors')
+    let validationErrors = null
+    if (serverErrors && serverErrors[0]) {
+      validationErrors = JSON.parse(serverErrors[0])
+    }
 
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
     const viewModel = new CalculationSummaryViewModel(
@@ -42,7 +47,8 @@ export default class CalculationRoutes {
       nomsId,
       prisonerDetail,
       breakdown?.calculationBreakdown,
-      breakdown?.releaseDatesWithAdjustments
+      breakdown?.releaseDatesWithAdjustments,
+      validationErrors
     )
 
     res.render('pages/calculation/calculationSummary', viewModel)
@@ -100,7 +106,7 @@ export default class CalculationRoutes {
       logger.error(error)
       if (error.status === 412) {
         req.flash(
-          'validationErrors',
+          'serverErrors',
           JSON.stringify({
             messages: [
               {
@@ -112,7 +118,7 @@ export default class CalculationRoutes {
         )
       } else {
         req.flash(
-          'validationErrors',
+          'serverErrors',
           JSON.stringify({
             messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
             messageType: ErrorMessageType.SAVE_DATES,
