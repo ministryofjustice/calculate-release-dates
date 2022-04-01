@@ -62,9 +62,13 @@ export interface paths {
 export interface components {
   schemas: {
     Adjustment: {
+      /** Format: date */
       appliesToSentencesFrom: string
+      /** Format: int32 */
       numberOfDays: number
+      /** Format: date */
       fromDate?: string
+      /** Format: date */
       toDate?: string
     }
     Adjustments: {
@@ -74,43 +78,56 @@ export interface components {
       offender: components['schemas']['Offender']
       sentences: components['schemas']['Sentence'][]
       adjustments: components['schemas']['Adjustments']
+      /** Format: date */
       returnToCustodyDate?: string
+      /** Format: int64 */
       bookingId: number
     }
     Duration: {
       durationElements: { [key: string]: number }
     }
     Offence: {
+      /** Format: date */
       committedAt: string
       isScheduleFifteen: boolean
       isScheduleFifteenMaximumLife: boolean
     }
     Offender: {
       reference: string
+      /** Format: date */
       dateOfBirth: string
       isActiveSexOffender: boolean
     }
     Sentence: {
       offence: components['schemas']['Offence']
       duration: components['schemas']['Duration']
+      /** Format: date */
       sentencedAt: string
+      /** Format: uuid */
       identifier: string
       consecutiveSentenceUUIDs: string[]
+      /** Format: int32 */
       caseSequence?: number
+      /** Format: int32 */
       lineSequence?: number
       caseReference?: string
       sentenceType: 'STANDARD_DETERMINATE' | 'STANDARD_RECALL' | 'FIXED_TERM_RECALL_14' | 'FIXED_TERM_RECALL_28'
     }
     CalculatedReleaseDates: {
       dates: { [key: string]: string }
+      /** Format: int64 */
       calculationRequestId: number
+      /** Format: int64 */
       bookingId: number
       prisonerId: string
       calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR'
       calculationFragments?: components['schemas']['CalculationFragments']
       effectiveSentenceLength?: {
+        /** Format: int32 */
         years?: number
+        /** Format: int32 */
         months?: number
+        /** Format: int32 */
         days?: number
         negative?: boolean
         zero?: boolean
@@ -122,7 +139,9 @@ export interface components {
           dateBased?: boolean
           timeBased?: boolean
           duration?: {
+            /** Format: int64 */
             seconds?: number
+            /** Format: int32 */
             nano?: number
             negative?: boolean
             zero?: boolean
@@ -135,6 +154,7 @@ export interface components {
       breakdownHtml: string
     }
     WorkingDay: {
+      /** Format: date */
       date: string
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
@@ -152,6 +172,7 @@ export interface components {
         | 'REMAND_OVERLAPS_WITH_REMAND'
         | 'REMAND_OVERLAPS_WITH_SENTENCE'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED'
+      /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]
     }
@@ -160,57 +181,82 @@ export interface components {
       messages: components['schemas']['ValidationMessage'][]
     }
     OffenderOffence: {
+      /** Format: int64 */
       offenderChargeId: number
+      /** Format: date */
       offenceStartDate?: string
+      /** Format: date */
       offenceEndDate?: string
       offenceCode: string
       offenceDescription: string
       indicators: string[]
     }
     SentenceAndOffences: {
+      /** Format: int64 */
       bookingId: number
+      /** Format: int32 */
       sentenceSequence: number
+      /** Format: int32 */
       lineSequence: number
+      /** Format: int32 */
       caseSequence: number
+      /** Format: int32 */
       consecutiveToSequence?: number
       sentenceStatus: string
       sentenceCategory: string
       sentenceCalculationType: string
       sentenceTypeDescription: string
+      /** Format: date */
       sentenceDate: string
       terms: components['schemas']['SentenceTerms'][]
       offences: components['schemas']['OffenderOffence'][]
       caseReference?: string
     }
     SentenceTerms: {
+      /** Format: int32 */
       years: number
+      /** Format: int32 */
       months: number
+      /** Format: int32 */
       weeks: number
+      /** Format: int32 */
       days: number
     }
     ReturnToCustodyDate: {
+      /** Format: int64 */
       bookingId: number
+      /** Format: date */
       returnToCustodyDate: string
     }
     Alert: {
+      /** Format: date */
       dateCreated: string
+      /** Format: date */
       dateExpires?: string
       alertType: string
       alertCode: string
     }
     PrisonerDetails: {
+      /** Format: int64 */
       bookingId: number
       offenderNo: string
       firstName: string
       lastName: string
+      /** Format: date */
       dateOfBirth: string
       alerts: components['schemas']['Alert'][]
     }
-    /** Adjustments details associated that are specifically added as part of a rule */
+    /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
-      /** Amount of adjustment */
+      /**
+       * Format: int32
+       * @description Amount of adjustment
+       */
       adjustmentValue: number
-      /** Unit of adjustment */
+      /**
+       * @description Unit of adjustment
+       * @example DAYS
+       */
       type:
         | 'Nanos'
         | 'Micros'
@@ -229,49 +275,68 @@ export interface components {
         | 'Eras'
         | 'Forever'
     }
-    /** Calculation breakdown details */
+    /** @description Calculation breakdown details */
     CalculationBreakdown: {
       concurrentSentences: components['schemas']['ConcurrentSentenceBreakdown'][]
       consecutiveSentence?: components['schemas']['ConsecutiveSentenceBreakdown']
-      /** Breakdown details in a map keyed by release date type */
+      /** @description Breakdown details in a map keyed by release date type */
       breakdownByReleaseDateType: {
         [key: string]: components['schemas']['ReleaseDateCalculationBreakdown']
       }
+      otherDates: { [key: string]: string }
     }
     ConcurrentSentenceBreakdown: {
+      /** Format: date */
       sentencedAt: string
       sentenceLength: string
+      /** Format: int32 */
       sentenceLengthDays: number
       dates: { [key: string]: components['schemas']['DateBreakdown'] }
+      /** Format: int32 */
       lineSequence: number
+      /** Format: int32 */
       caseSequence: number
       caseReference?: string
     }
     ConsecutiveSentenceBreakdown: {
+      /** Format: date */
       sentencedAt: string
       sentenceLength: string
+      /** Format: int32 */
       sentenceLengthDays: number
       dates: { [key: string]: components['schemas']['DateBreakdown'] }
       sentenceParts: components['schemas']['ConsecutiveSentencePart'][]
     }
     ConsecutiveSentencePart: {
+      /** Format: int32 */
       lineSequence: number
+      /** Format: int32 */
       caseSequence: number
       caseReference?: string
       sentenceLength: string
+      /** Format: int32 */
       sentenceLengthDays: number
+      /** Format: int32 */
       consecutiveToLineSequence?: number
+      /** Format: int32 */
       consecutiveToCaseSequence?: number
     }
     DateBreakdown: {
+      /** Format: date */
       unadjusted: string
+      /** Format: date */
       adjusted: string
+      /** Format: int64 */
       daysFromSentenceStart: number
+      /** Format: int64 */
       adjustedByDays: number
     }
-    /** Calculation breakdown details for a release date type */
+    /** @description Calculation breakdown details for a release date type */
     ReleaseDateCalculationBreakdown: {
-      /** Calculation rules used to determine this calculation. */
+      /**
+       * @description Calculation rules used to determine this calculation.
+       * @example [HDCED_LT_18_MONTHS]
+       */
       rules: (
         | 'HDCED_GE_12W_LT_18M'
         | 'HDCED_GE_18M_LT_4Y'
@@ -279,21 +344,33 @@ export interface components {
         | 'TUSED_LICENCE_PERIOD_LT_1Y'
         | 'LED_CONSEC_ORA_AND_NON_ORA'
       )[]
-      /** Adjustments details associated that are specifically added as part of a rule */
+      /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
         [key: string]: components['schemas']['AdjustmentDuration']
       }
-      /** Amount of adjustment in days */
+      /**
+       * Format: int32
+       * @description Amount of adjustment in days
+       */
       adjustedDays: number
-      /** Final release date (after all adjustments have been applied) */
+      /**
+       * Format: date
+       * @description Final release date (after all adjustments have been applied)
+       */
       releaseDate: string
-      /** Based on the screen design, the unadjusted date isn't derived in a consistent manner but is set as per the screen design */
+      /**
+       * Format: date
+       * @description Based on the screen design, the unadjusted date isn't derived in a consistent manner but is set as per the screen design
+       */
       unadjustedDate: string
     }
     BookingAdjustments: {
       active: boolean
+      /** Format: date */
       fromDate: string
+      /** Format: date */
       toDate?: string
+      /** Format: int32 */
       numberOfDays: number
       type:
         | 'ADDITIONAL_DAYS_AWARDED'
@@ -307,10 +384,14 @@ export interface components {
       sentenceAdjustments: components['schemas']['SentenceAdjustments'][]
     }
     SentenceAdjustments: {
+      /** Format: int32 */
       sentenceSequence: number
       active: boolean
+      /** Format: date */
       fromDate?: string
+      /** Format: date */
       toDate?: string
+      /** Format: int32 */
       numberOfDays: number
       type: 'RECALL_SENTENCE_REMAND' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'TAGGED_BAIL' | 'UNUSED_REMAND'
     }

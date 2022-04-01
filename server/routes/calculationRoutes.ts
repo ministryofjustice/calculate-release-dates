@@ -6,6 +6,7 @@ import EntryPointService from '../services/entryPointService'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
 import { FullPageError } from '../types/FullPageError'
+import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 
 export default class CalculationRoutes {
   constructor(
@@ -32,12 +33,25 @@ export default class CalculationRoutes {
       releaseDates,
       token
     )
-    res.render('pages/calculation/calculationSummary', {
-      prisonerDetail,
-      releaseDates: releaseDates.dates,
+    const serverErrors = req.flash('serverErrors')
+    let validationErrors = null
+    if (serverErrors && serverErrors[0]) {
+      validationErrors = JSON.parse(serverErrors[0])
+    }
+
+    const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+    const viewModel = new CalculationSummaryViewModel(
+      releaseDates.dates,
       weekendAdjustments,
-      ...(await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)),
-    })
+      calculationRequestId,
+      nomsId,
+      prisonerDetail,
+      breakdown?.calculationBreakdown,
+      breakdown?.releaseDatesWithAdjustments,
+      validationErrors
+    )
+
+    res.render('pages/calculation/calculationSummary', viewModel)
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
@@ -58,13 +72,17 @@ export default class CalculationRoutes {
       releaseDates,
       token
     )
-    res.render('pages/calculation/printCalculationSummary', {
-      prisonerDetail,
-      releaseDates: releaseDates.dates,
+    const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+    const viewModel = new CalculationSummaryViewModel(
+      releaseDates.dates,
       weekendAdjustments,
-      ...(await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)),
       calculationRequestId,
-    })
+      nomsId,
+      prisonerDetail,
+      breakdown?.calculationBreakdown,
+      breakdown?.releaseDatesWithAdjustments
+    )
+    res.render('pages/calculation/printCalculationSummary', viewModel)
   }
 
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
@@ -88,7 +106,7 @@ export default class CalculationRoutes {
       logger.error(error)
       if (error.status === 412) {
         req.flash(
-          'validationErrors',
+          'serverErrors',
           JSON.stringify({
             messages: [
               {
@@ -100,7 +118,7 @@ export default class CalculationRoutes {
         )
       } else {
         req.flash(
-          'validationErrors',
+          'serverErrors',
           JSON.stringify({
             messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
             messageType: ErrorMessageType.SAVE_DATES,

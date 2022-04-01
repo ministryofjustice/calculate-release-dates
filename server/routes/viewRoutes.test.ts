@@ -167,6 +167,7 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
     },
   ],
   breakdownByReleaseDateType: {},
+  otherDates: {},
 }
 
 const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [

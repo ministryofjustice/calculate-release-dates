@@ -260,6 +260,7 @@ export default {
               unadjustedDate: '2017-05-13',
             },
           },
+          otherDates: {},
         },
       },
     })

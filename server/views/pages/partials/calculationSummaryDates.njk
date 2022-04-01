@@ -7,6 +7,10 @@
     <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if isBankHoliday else "weekend" }}</p>
 {% endmacro %}
 
+{% macro hdcedBeforePrrdLine(prrd) %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">Release on HDC must not take place before the PRRD {{ prrd | date('dddd, DD MMMM YYYY') }}</p>
+{% endmacro %}
+
 <h2 class="govuk-heading-l govuk-!-margin-top-9">Final release dates</h2>
 <div class="custom-card">
     <div class="custom-card-main">
@@ -44,6 +48,9 @@
             {{ releaseDateLine('Home detention curfew eligibility date (HDCED)', 'HDCED-date', releaseDates.HDCED) }}
             {% if weekendAdjustments.HDCED %}
                 {{ holidayLine('HDCED-weekend-adjustment', weekendAdjustments.HDCED.date, weekendAdjustments.HDCED.adjustedForBankHoliday) }}
+            {% endif %}
+            {% if hdcedBeforePRRD(releaseDates, calculationBreakdown) %}
+                {{ hdcedBeforePrrdLine(calculationBreakdown.otherDates.PRRD)}}
             {% endif %}
         {% endif %}
         {% if releaseDates.TUSED %}

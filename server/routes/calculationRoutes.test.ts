@@ -103,6 +103,9 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
     },
   ],
   breakdownByReleaseDateType: {},
+  otherDates: {
+    PRRD: '2021-10-04',
+  },
 }
 
 const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
@@ -158,6 +161,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('HDCED with adjustments')
         expect(res.text).toContain('13 May 2029')
         expect(res.text).toContain('14 May 2029 minus 1 day')
+        expect(res.text).toContain('Release on HDC must not take place before the PRRD Monday, 04 October 2021')
       })
   })
 
