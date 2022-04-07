@@ -1,8 +1,7 @@
-# Stage: base image
-ARG BUILD_NUMBER=1_0_0
-ARG GIT_REF=not-available
-
 FROM node:14.17-buster-slim as base
+
+ARG BUILD_NUMBER
+ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
 
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
