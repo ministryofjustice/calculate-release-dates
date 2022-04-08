@@ -26,7 +26,7 @@ context('Check nomis information', () => {
 
     checkInformationPage.adjustmentSummary().should('contain.text', 'Remand')
     checkInformationPage.adjustmentSummary().should('contain.text', '28')
-    checkInformationPage.caseNumber(2).contains('Court case number: ABC234')
+    checkInformationPage.caseNumber(2).contains('ABC234')
 
     checkInformationPage.adjustmentDetailedTabLink().click()
     checkInformationPage.adjustmentDetailed().should('contain.text', 'From 03 February 2021 to 08 March 2021')
