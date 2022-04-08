@@ -4,9 +4,28 @@
 <div id="sentences">
     {% for case, caseSentencesAndOffences in caseToSentences %}
         {% set courtCaseRef = caseSentencesAndOffences[0].caseReference %}
-        <h3 class="govuk-heading-m {% if courtCaseRef  %}govuk-!-margin-bottom-1{% endif %}">Court case {{ case }}</h3>
-        {% if courtCaseRef %}
-            <p class="govuk-body" data-qa="{{ case }}-case-number">Court case number: {{courtCaseRef }}</p>
+        {% set courtDescription = caseSentencesAndOffences[0].courtDescription %}
+        {% set displayCaseDetails = courtCaseRef or courtDescription %}
+        <h3 class="govuk-heading-m {% if displayCaseDetails  %}govuk-!-margin-bottom-2{% endif %}">Court case {{ case }}</h3>
+        {% if displayCaseDetails %}
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <dl class="govuk-summary-list govuk-summary-list--no-border">
+                        {% if courtCaseRef %}
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Court case number</dt>
+                                <dd class="govuk-summary-list__value">{{courtCaseRef}}</dd>
+                            </div>
+                        {% endif %}
+                        {% if courtDescription %}
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Court name</dt>
+                                <dd class="govuk-summary-list__value">{{courtDescription}}</dd>
+                            </div>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
         {% endif %}
         <table class="govuk-table govuk-!-width-full" id="{{ case }}-sentence-table"
                data-qa="{{ case }}-sentence-table">
