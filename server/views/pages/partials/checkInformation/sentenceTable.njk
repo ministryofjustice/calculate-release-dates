@@ -14,7 +14,7 @@
                         {% if courtCaseRef %}
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">Court case number</dt>
-                                <dd class="govuk-summary-list__value">{{courtCaseRef}}</dd>
+                                <dd class="govuk-summary-list__value" data-qa="{{ case }}-case-number">{{courtCaseRef}}</dd>
                             </div>
                         {% endif %}
                         {% if courtDescription %}
