@@ -63,6 +63,8 @@ const stubbedSentencesAndOffences = [
     sentenceTypeDescription: 'SDS Standard Sentence',
     caseSequence: 1,
     lineSequence: 1,
+    caseReference: 'CASE001',
+    courtDescription: 'Court 1',
     sentenceSequence: 1,
     offences: [
       { offenceEndDate: '2021-02-03' },
@@ -80,6 +82,8 @@ const stubbedSentencesAndOffences = [
     ],
     caseSequence: 2,
     lineSequence: 2,
+    caseReference: 'CASE002',
+    courtDescription: 'Court 2',
     sentenceSequence: 2,
     consecutiveToSequence: 1,
     sentenceTypeDescription: 'SDS Standard Sentence',
@@ -153,6 +157,8 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('2')
         expect(res.text).toContain('Detailed')
         expect(res.text).toContain('From 01 February 2021 to 02 February 2021')
+        expect(res.text).toContain('CASE001')
+        expect(res.text).toContain('Court 1')
       })
   })
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner without adjustments', () => {
