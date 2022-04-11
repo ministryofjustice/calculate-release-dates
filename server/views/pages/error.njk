@@ -43,16 +43,17 @@
             </p>
           {% elif errorKey === 'NO_CALCULATION_SUBMITTED' %}
             <p> Release dates for {{prisonerDetails.firstName}}
-              {{prisonerDetails.lastName}} have not been submitted using the calculate release dates service.</p>
+              {{prisonerDetails.lastName}} have not been submitted using the Calculate release dates service.</p>
             <p class="govuk-body">
-                <a class="govuk-link" href={{ "/calculation/" + prisonerDetails.offenderNo +
+              <a class="govuk-link" href={{ "/calculation/" + prisonerDetails.offenderNo +
                 "/check-information" }}>Calculate release dates for {{prisonerDetails.firstName}}
-                  {{prisonerDetails.lastName}}</a></p>
-            <p class="govuk-body">
-                <a class="govuk-link" href="/search/prisoners">View release dates for another person</a>
+                {{prisonerDetails.lastName}}</a>
             </p>
             <p class="govuk-body">
-                <a class="govuk-link" href={{digitalPrisonServicesUrl}}>Return to Digital Prison Service (DPS)</a>
+              <a class="govuk-link" href="/search/prisoners">View release dates for another person</a>
+            </p>
+            <p class="govuk-body">
+              <a class="govuk-link" href={{digitalPrisonServicesUrl}}>Return to Digital Prison Service (DPS)</a>
             </p>
           {% endif %}
         {% elif status === 404 %}
