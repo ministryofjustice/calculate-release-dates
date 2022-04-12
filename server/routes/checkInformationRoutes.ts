@@ -4,6 +4,7 @@ import PrisonerService from '../services/prisonerService'
 import EntryPointService from '../services/entryPointService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import { ErrorMessages } from '../types/ErrorMessages'
+import SentenceRowViewModel from '../models/SentenceRowViewModel'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -25,6 +26,9 @@ export default class CheckInformationRoutes {
       prisonerDetail.bookingId,
       token
     )
+    const returnToCustody = sentencesAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
+      ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
+      : null
 
     let validationMessages: ErrorMessages
     if (req.query.hasErrors) {
@@ -34,7 +38,7 @@ export default class CheckInformationRoutes {
     }
 
     res.render('pages/calculation/checkInformation', {
-      ...SentenceAndOffenceViewModel.from(prisonerDetail, sentencesAndOffences, adjustmentDetails),
+      ...new SentenceAndOffenceViewModel(prisonerDetail, sentencesAndOffences, adjustmentDetails, returnToCustody),
       dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
       validationErrors: validationMessages,
     })

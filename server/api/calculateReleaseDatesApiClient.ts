@@ -7,7 +7,11 @@ import {
   ValidationMessages,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { PrisonApiBookingAndSentenceAdjustments, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiPrisoner,
+  PrisonApiReturnToCustodyDate,
+} from '../@types/prisonApi/prisonClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 export default class CalculateReleaseDatesApiClient {
@@ -74,6 +78,12 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/calculation/sentence-and-offences/${calculationId}`,
     }) as Promise<PrisonApiOffenderSentenceAndOffences[]>
+  }
+
+  getReturnToCustodyDate(calculationId: number): Promise<PrisonApiReturnToCustodyDate> {
+    return this.restClient.get({
+      path: `/calculation/return-to-custody/${calculationId}`,
+    }) as Promise<PrisonApiReturnToCustodyDate>
   }
 
   getBookingAndSentenceAdjustments(calculationId: number): Promise<PrisonApiBookingAndSentenceAdjustments> {

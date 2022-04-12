@@ -76,12 +76,6 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   njkEnv.addFilter('date', dateFilter)
 
-  njkEnv.addFilter('countOffences', sentencesAndOffences => {
-    const reducer = (previousValue: number, currentValue: PrisonApiOffenderSentenceAndOffences) =>
-      previousValue + currentValue.offences.length
-    return sentencesAndOffences.reduce(reducer, 0)
-  })
-
   njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
 
   njkEnv.addFilter('releaseDates', dates => {

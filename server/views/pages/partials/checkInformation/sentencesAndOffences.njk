@@ -1,5 +1,4 @@
 <p class="govuk-body govuk-!-margin-top-2" id="offence-count-text">
-    {% set offenceCount = sentencesAndOffences | countOffences %}
                 This calculation will include {{ offenceCount }}
     {{ 'sentence' | pluralise(offenceCount) }} from NOMIS.
             </p>
