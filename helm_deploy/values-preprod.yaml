@@ -16,6 +16,7 @@ generic-service:
     PRISONER_SEARCH_API_URL: "https://prisoner-offender-search-preprod.prison.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital-preprod.prison.service.justice.gov.uk"
     VIEW_JOURNEY_FEATURE_TOGGLE: "true"
+    RECALL_FEATURE_TOGGLE: "false"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

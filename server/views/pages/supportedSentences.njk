@@ -27,16 +27,34 @@
             </h1>
             <p class="govuk-body">The sentences currently supported by the Calculates release dates service are:</p>
             <ul class="govuk-list govuk-list--bullet">
-                <li>Sentencing Code Standard Determinate Sentence</li>
                 <li>CJA03 Standard Determinate Sentence</li>
-                <li>ORA Sentencing Code Standard Determinate Sentence</li>
+                {% if featureToggles.recall %}
+                    <li>FTR Schedule 15 Offender</li>
+                    <li>FTR Schedule 18 Sentencing Code Offender</li>
+                    <li>Fixed Term Recall Pre ORA Sentence</li>
+                    <li>Licence Recall</li>
+                {% endif %}
                 <li>ORA CJA03 Standard Determinate Sentence</li>
-                <li>Serious Offence Sec 250 Sentencing Code (U18)</li>
-                <li>ORA Serious Offence Sec 250 Sentencing Code (U18)</li>
-                <li>Serious Offence -18 CJA03 POCCA 2000</li>
+                {% if featureToggles.recall %}
+                    <li>ORA 14 Day Fixed Term Recall</li>
+                    <li>ORA 28 Day Fixed Term Recall</li>
+                    <li>ORA FTR Schedule 15 Offender</li>
+                    <li>ORA FTR Sch 18 Sentencing Code Offender</li>
+                    <li>ORA Licence Recall</li>
+                {% endif %}
+                <li>ORA Sentencing Code Standard Determinate Sentence</li>
                 <li>ORA Serious Offence -18 CJA03 POCCA 2000</li>
-                <li>Young Offender Institution</li>
+                <li>ORA Serious Offence Sec 250 Sentencing Code (U18)</li>
                 <li>ORA Young Offender Institution</li>
+                {% if featureToggles.recall %}
+                    <li>Recall from YOI</li>
+                    <li>Recall Serious Offence - 18 CJA03 POCCA 2000</li>
+                    <li>Recall Serious Offence Sec 250 Sentencing Code (U18)</li>
+                {% endif %}
+                <li>Sentencing Code Standard Determinate Sentence</li>
+                <li>Serious Offence -18 CJA03 POCCA 2000</li>
+                <li>Serious Offence Sec 250 Sentencing Code (U18)</li>
+                <li>Young Offender Institution</li>
             </ul>
         </div>
     </div>
