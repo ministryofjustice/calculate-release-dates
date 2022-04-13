@@ -152,9 +152,7 @@ export default class CalculationRoutes {
   private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {
     return nunjucksEnv().render('pages/fragments/breakdownFragment.njk', {
       ...(await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)),
-      showBreakdown() {
-        return true
-      },
+      showBreakdown: () => true,
     })
   }
 }
