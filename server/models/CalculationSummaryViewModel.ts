@@ -22,6 +22,13 @@ export default class CalculationSummaryViewModel {
     return false
   }
 
+  public showBreakdown = function showBreakdown(
+    releaseDates: { [key: string]: string },
+    calculationBreakdown?: CalculationBreakdown
+  ): boolean {
+    return !!calculationBreakdown && !releaseDates.PRRD && !calculationBreakdown?.otherDates?.PRRD
+  }
+
   constructor(
     public releaseDates: { [key: string]: string },
     public weekendAdjustments: { [key: string]: WorkingDay },
