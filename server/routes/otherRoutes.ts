@@ -12,6 +12,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
+import SentenceRowViewModel from '../models/SentenceRowViewModel'
 
 export default class OtherRoutes {
   constructor(
@@ -27,8 +28,6 @@ export default class OtherRoutes {
     const nomsIds = prisonerIds.split(/\r?\n/)
     if (nomsIds.length > 500) return res.redirect(`/test/calculation`)
 
-    const fixedTermRecallTypes = ['14FTR_ORA', '14FTRHDC_ORA', 'FTR', 'FTR_ORA']
-
     const csvData = []
 
     // This is just temporary code therefore the iterative loop rather than an async approach (was easier to develop and easier to debug)
@@ -40,8 +39,7 @@ export default class OtherRoutes {
         nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
         sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
         adjustments = await this.prisonerService.getBookingAndSentenceAdjustments(bookingId, token)
-        returnToCustody = sentenceAndOffences.filter(s => fixedTermRecallTypes.includes(s.sentenceCalculationType))
-          .length
+        returnToCustody = sentenceAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
           ? await this.prisonerService.getReturnToCustodyDate(bookingId, token)
           : null
         try {

@@ -22,4 +22,8 @@ export default class ViewReleaseDatesService {
   async getPrisonerDetail(calculationId: number, userCaseloads: string[], token: string): Promise<PrisonApiPrisoner> {
     return new CalculateReleaseDatesApiClient(token).getPrisonerDetail(calculationId)
   }
+
+  async getReturnToCustodyDate(calculationId: number, token: string) {
+    return new CalculateReleaseDatesApiClient(token).getReturnToCustodyDate(calculationId)
+  }
 }

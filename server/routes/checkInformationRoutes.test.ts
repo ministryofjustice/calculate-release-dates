@@ -6,6 +6,7 @@ import UserService from '../services/userService'
 import {
   PrisonApiBookingAndSentenceAdjustments,
   PrisonApiPrisoner,
+  PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
@@ -89,6 +90,33 @@ const stubbedSentencesAndOffences = [
     sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [{ offenceEndDate: '2021-02-03' }],
   } as PrisonApiOffenderSentenceAndOffences,
+  {
+    sentenceSequence: 3,
+    lineSequence: 3,
+    caseSequence: 3,
+    courtDescription: 'Preston Crown Court',
+    sentenceStatus: 'A',
+    sentenceCategory: '2020',
+    sentenceCalculationType: '14FTR_ORA',
+    sentenceTypeDescription: 'ORA 14 Day Fixed Term Recall',
+    sentenceDate: '2021-09-03',
+    terms: [
+      {
+        years: 0,
+        months: 2,
+        weeks: 0,
+        days: 0,
+      },
+    ],
+    offences: [
+      {
+        offenderChargeId: 1,
+        offenceStartDate: '2020-01-01',
+        offenceCode: 'RL05016',
+        offenceDescription: 'Access / exit by unofficial route - railway bye-law',
+      },
+    ],
+  },
 ]
 
 const stubbedAdjustments = {
@@ -118,6 +146,10 @@ const stubbedEmptyAdjustments = {
   bookingAdjustments: [],
 } as PrisonApiBookingAndSentenceAdjustments
 
+const stubbedReturnToCustodyDate = {
+  returnToCustodyDate: '2022-04-12',
+} as PrisonApiReturnToCustodyDate
+
 beforeEach(() => {
   app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService, entryPointService })
 })
@@ -131,6 +163,7 @@ describe('Check information routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
     entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
     return request(app)
       .get('/calculation/A1234AA/check-information')
@@ -140,7 +173,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Anon')
         expect(res.text).toContain('Nobody')
-        expect(res.text).toContain('This calculation will include 6')
+        expect(res.text).toContain('This calculation will include 7')
         expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
@@ -159,6 +192,8 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('From 01 February 2021 to 02 February 2021')
         expect(res.text).toContain('CASE001')
         expect(res.text).toContain('Court 1')
+        expect(res.text).toContain('Returned to custody on')
+        expect(res.text).toContain('12 April 2022')
       })
   })
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner without adjustments', () => {

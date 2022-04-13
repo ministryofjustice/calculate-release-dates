@@ -3,7 +3,6 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import * as pathModule from 'path'
 import config from '../config'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 // TODO the use of nunjucks-date-filter is raising a deprecation warning, some dates are in this format 12/12/2030 ->
 // Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable
@@ -75,12 +74,6 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   })
 
   njkEnv.addFilter('date', dateFilter)
-
-  njkEnv.addFilter('countOffences', sentencesAndOffences => {
-    const reducer = (previousValue: number, currentValue: PrisonApiOffenderSentenceAndOffences) =>
-      previousValue + currentValue.offences.length
-    return sentencesAndOffences.reduce(reducer, 0)
-  })
 
   njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
 
