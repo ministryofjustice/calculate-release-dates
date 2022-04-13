@@ -43,6 +43,9 @@
         {% endif %}
         {% if releaseDates.PRRD %}
             {{ releaseDateLine('Post recall release date (PRRD)', 'PRRD-date', releaseDates.PRRD) }}
+            {% if weekendAdjustments.PRRD %}
+                {{ holidayLine('PRRD-weekend-adjustment', weekendAdjustments.PRRD.date, weekendAdjustments.PRRD.adjustedForBankHoliday) }}
+            {% endif %}
         {% endif %}
         {% if releaseDates.HDCED %}
             {{ releaseDateLine('Home detention curfew eligibility date (HDCED)', 'HDCED-date', releaseDates.HDCED) }}
