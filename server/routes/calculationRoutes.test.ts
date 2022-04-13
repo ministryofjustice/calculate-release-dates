@@ -103,6 +103,34 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
     },
   ],
   breakdownByReleaseDateType: {},
+  otherDates: {},
+}
+
+const stubbedLicenceCalculationBreakdown: CalculationBreakdown = {
+  concurrentSentences: [
+    {
+      dates: {
+        CRD: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
+        },
+        SED: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
+        },
+      },
+      sentenceLength: '2 years',
+      sentenceLengthDays: 785,
+      sentencedAt: '2020-01-01',
+      lineSequence: 2,
+      caseSequence: 1,
+    },
+  ],
+  breakdownByReleaseDateType: {},
   otherDates: {
     PRRD: '2021-10-04',
   },
@@ -161,6 +189,22 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('HDCED with adjustments')
         expect(res.text).toContain('13 May 2029')
         expect(res.text).toContain('14 May 2029 minus 1 day')
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the calculation requested with license recall', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedLicenceCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
         expect(res.text).toContain('Release on HDC must not take place before the PRRD Monday, 04 October 2021')
       })
   })
