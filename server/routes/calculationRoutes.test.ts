@@ -174,7 +174,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toMatch(/Calculation complete for<br>\s*Anon Nobody/)
-        expect(res.text).toContain('Return to Digital Prison Service (DPS)')
+        expect(res.text).toContain('Back to Digital Prison Service (DPS) search')
         expect(entryPointService.clearEntryPoint.mock.calls.length).toBe(1)
       })
   })
