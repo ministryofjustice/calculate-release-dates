@@ -61,6 +61,21 @@ export interface paths {
 
 export interface components {
   schemas: {
+    AbstractSentence: {
+      offence: components['schemas']['Offence']
+      /** Format: date */
+      sentencedAt: string
+      /** Format: uuid */
+      identifier: string
+      consecutiveSentenceUUIDs: string[]
+      /** Format: int32 */
+      caseSequence?: number
+      /** Format: int32 */
+      lineSequence?: number
+      caseReference?: string
+      recallType?: 'STANDARD_RECALL' | 'FIXED_TERM_RECALL_14' | 'FIXED_TERM_RECALL_28'
+      type: string
+    }
     Adjustment: {
       /** Format: date */
       appliesToSentencesFrom: string
@@ -76,7 +91,7 @@ export interface components {
     }
     Booking: {
       offender: components['schemas']['Offender']
-      sentences: components['schemas']['Sentence'][]
+      sentences: (components['schemas']['ExtendedDeterminateSentence'] | components['schemas']['StandardSentence'])[]
       adjustments: components['schemas']['Adjustments']
       /** Format: date */
       returnToCustodyDate?: string
@@ -85,6 +100,26 @@ export interface components {
     }
     Duration: {
       durationElements: { [key: string]: number }
+    }
+    ExtendedDeterminateSentence: components['schemas']['AbstractSentence'] & {
+      custodialDuration?: components['schemas']['Duration']
+      extensionDuration?: components['schemas']['Duration']
+      /** Format: date */
+      startOfExtension?: string
+      /** Format: int32 */
+      custodialLengthInDays?: number
+      /** Format: int32 */
+      extensionLengthInDays?: number
+    } & {
+      consecutiveSentenceUUIDs: unknown
+      custodialDuration: unknown
+      custodialLengthInDays: unknown
+      extensionDuration: unknown
+      extensionLengthInDays: unknown
+      identifier: unknown
+      offence: unknown
+      sentencedAt: unknown
+      startOfExtension: unknown
     }
     Offence: {
       /** Format: date */
@@ -98,20 +133,14 @@ export interface components {
       dateOfBirth: string
       isActiveSexOffender: boolean
     }
-    Sentence: {
-      offence: components['schemas']['Offence']
-      duration: components['schemas']['Duration']
-      /** Format: date */
-      sentencedAt: string
-      /** Format: uuid */
-      identifier: string
-      consecutiveSentenceUUIDs: string[]
-      /** Format: int32 */
-      caseSequence?: number
-      /** Format: int32 */
-      lineSequence?: number
-      caseReference?: string
-      sentenceType: 'STANDARD_DETERMINATE' | 'STANDARD_RECALL' | 'FIXED_TERM_RECALL_14' | 'FIXED_TERM_RECALL_28'
+    StandardSentence: components['schemas']['AbstractSentence'] & {
+      duration?: components['schemas']['Duration']
+    } & {
+      consecutiveSentenceUUIDs: unknown
+      duration: unknown
+      identifier: unknown
+      offence: unknown
+      sentencedAt: unknown
     }
     CalculatedReleaseDates: {
       dates: { [key: string]: string }
@@ -172,6 +201,7 @@ export interface components {
         | 'REMAND_OVERLAPS_WITH_REMAND'
         | 'REMAND_OVERLAPS_WITH_SENTENCE'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED'
+        | 'ADJUSTMENT_AFTER_RELEASE'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]
@@ -211,6 +241,7 @@ export interface components {
       terms: components['schemas']['SentenceTerms'][]
       offences: components['schemas']['OffenderOffence'][]
       caseReference?: string
+      courtDescription?: string
     }
     SentenceTerms: {
       /** Format: int32 */
@@ -343,6 +374,7 @@ export interface components {
         | 'HDCED_MINIMUM_14D'
         | 'TUSED_LICENCE_PERIOD_LT_1Y'
         | 'LED_CONSEC_ORA_AND_NON_ORA'
+        | 'UNUSED_ADA'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {

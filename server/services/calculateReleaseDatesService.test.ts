@@ -203,6 +203,11 @@ const invalidValidationResult: ValidationMessages = {
       message: '',
       arguments: ['REMAND', 'TAGGED BAIL'],
     },
+    {
+      code: 'ADJUSTMENT_AFTER_RELEASE',
+      message: '',
+      arguments: ['ADDITIONAL_DAYS_AWARDED', 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED', 'UNLAWFULLY_AT_LARGE'],
+    },
   ],
 }
 
@@ -405,6 +410,15 @@ describe('Calculate release dates service tests', () => {
         },
         {
           text: 'The release date cannot be before the sentence date. Go back to NOMIS and reduce the amount of remand and tagged bail entered.',
+        },
+        {
+          text: 'The from date for Additional days awarded (ADA) should be the date of the adjudication hearing.',
+        },
+        {
+          text: 'The from date for Restored additional days awarded (RADA) must be the date the additional days were remitted.',
+        },
+        {
+          text: 'The from date for Unlawfully at large (UAL) must be the first day the prisoner was deemed UAL.',
         },
       ])
       expect(result.messageType).toBe(ErrorMessageType.VALIDATION)
