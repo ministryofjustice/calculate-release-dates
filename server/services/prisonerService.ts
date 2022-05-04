@@ -12,6 +12,7 @@ import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
 import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 import { FullPageError } from '../types/FullPageError'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
+import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffenderKeyDates'
 
 export default class PrisonerService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
@@ -70,6 +71,10 @@ export default class PrisonerService {
 
   async getSentenceDetail(username: string, bookingId: number, token: string): Promise<PrisonApiSentenceDetail> {
     return new PrisonApiClient(token).getSentenceDetail(bookingId)
+  }
+
+  async getOffenderKeyDates(bookingId: number, token: string): Promise<PrisonApiOffenderKeyDates> {
+    return new PrisonApiClient(token).getOffenderKeyDates(bookingId)
   }
 
   async getBookingAndSentenceAdjustments(
