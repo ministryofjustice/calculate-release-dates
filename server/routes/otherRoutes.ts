@@ -112,6 +112,7 @@ export default class OtherRoutes {
     returnToCustody: PrisonApiReturnToCustodyDate,
     keyDates: PrisonApiOffenderKeyDates
   ) {
+    const sentenceLength = OtherRoutes.sentenceLength(calc)
     const row = {
       NOMS_ID: prisoner.offenderNo,
       DOB: prisoner.dateOfBirth,
@@ -150,7 +151,7 @@ export default class OtherRoutes {
       NOMIS_PRRD_OVERRIDE: nomisDates.postRecallReleaseOverrideDate,
       ESED: calc.dates.ESED,
       NOMIS_ESED: nomisDates.effectiveSentenceEndDate,
-      SENTENCE_LENGTH: OtherRoutes.sentenceLength(calc),
+      SENTENCE_LENGTH: sentenceLength,
       NOMIS_ESL: keyDates.sentenceLength,
       NOMIS_JSL: keyDates.judiciallyImposedSentenceLength,
     }
@@ -158,6 +159,8 @@ export default class OtherRoutes {
       ...row,
       ARE_DATES_SAME: OtherRoutes.areDatesSame(row) ? 'Y' : 'N',
       ARE_DATES_SAME_USING_OVERRIDES: OtherRoutes.areDatesSameUsingOverrides(row) ? 'Y' : 'N',
+      IS_ESL_SAME: sentenceLength === keyDates.sentenceLength ? 'Y' : 'N',
+      IS_JSL_SAME: sentenceLength === keyDates.judiciallyImposedSentenceLength ? 'Y' : 'N',
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
@@ -297,6 +300,8 @@ export default class OtherRoutes {
       NOMIS_JSL: keyDates.judiciallyImposedSentenceLength,
       ARE_DATES_SAME: errorText,
       ARE_DATES_SAME_USING_OVERRIDES: errorText,
+      IS_ESL_SAME: errorText,
+      IS_JSL_SAME: errorText,
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
