@@ -13,6 +13,7 @@ import {
 } from '../@types/prisonApi/prisonClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import SentenceRowViewModel from '../models/SentenceRowViewModel'
+import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffenderKeyDates'
 
 export default class OtherRoutes {
   constructor(
@@ -32,11 +33,12 @@ export default class OtherRoutes {
 
     // This is just temporary code therefore the iterative loop rather than an async approach (was easier to develop and easier to debug)
     for (const nomsId of nomsIds) {
-      let prisonDetails, bookingId, nomisDates, sentenceAndOffences, adjustments, returnToCustody
+      let prisonDetails, bookingId, nomisDates, sentenceAndOffences, adjustments, returnToCustody, keyDates
       try {
         prisonDetails = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
         bookingId = prisonDetails.bookingId
         nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
+        keyDates = await this.prisonerService.getOffenderKeyDates(bookingId, token)
         sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
         adjustments = await this.prisonerService.getBookingAndSentenceAdjustments(bookingId, token)
         returnToCustody = sentenceAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
@@ -44,7 +46,9 @@ export default class OtherRoutes {
           : null
         try {
           const calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, token)
-          csvData.push(this.addRow(prisonDetails, calc, nomisDates, sentenceAndOffences, adjustments, returnToCustody))
+          csvData.push(
+            this.addRow(prisonDetails, calc, nomisDates, sentenceAndOffences, adjustments, returnToCustody, keyDates)
+          )
         } catch (ex) {
           if (ex?.status === 422) {
             csvData.push(
@@ -55,6 +59,7 @@ export default class OtherRoutes {
                 sentenceAndOffences,
                 adjustments,
                 returnToCustody,
+                keyDates,
                 ex,
                 'Validation Error'
               )
@@ -68,6 +73,7 @@ export default class OtherRoutes {
                 sentenceAndOffences,
                 adjustments,
                 returnToCustody,
+                keyDates,
                 ex,
                 'Server error'
               )
@@ -83,6 +89,7 @@ export default class OtherRoutes {
             sentenceAndOffences,
             adjustments,
             returnToCustody,
+            keyDates,
             ex,
             'Prison API Error'
           )
@@ -102,8 +109,10 @@ export default class OtherRoutes {
     nomisDates: PrisonApiSentenceDetail,
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
-    returnToCustody: PrisonApiReturnToCustodyDate
+    returnToCustody: PrisonApiReturnToCustodyDate,
+    keyDates: PrisonApiOffenderKeyDates
   ) {
+    const sentenceLength = OtherRoutes.sentenceLength(calc)
     const row = {
       NOMS_ID: prisoner.offenderNo,
       DOB: prisoner.dateOfBirth,
@@ -142,17 +151,55 @@ export default class OtherRoutes {
       NOMIS_PRRD_OVERRIDE: nomisDates.postRecallReleaseOverrideDate,
       ESED: calc.dates.ESED,
       NOMIS_ESED: nomisDates.effectiveSentenceEndDate,
+      SENTENCE_LENGTH: sentenceLength,
+      NOMIS_ESL: keyDates.sentenceLength,
+      NOMIS_JSL: keyDates.judiciallyImposedSentenceLength,
     }
     return {
       ...row,
       ARE_DATES_SAME: OtherRoutes.areDatesSame(row) ? 'Y' : 'N',
       ARE_DATES_SAME_USING_OVERRIDES: OtherRoutes.areDatesSameUsingOverrides(row) ? 'Y' : 'N',
+      IS_ESL_SAME: sentenceLength === keyDates.sentenceLength ? 'Y' : 'N',
+      IS_JSL_SAME: sentenceLength === keyDates.judiciallyImposedSentenceLength ? 'Y' : 'N',
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
       ERROR_TEXT: null as string,
       ERROR_JSON: null as string,
     }
+  }
+
+  private static sentenceLength = (calc: BookingCalculation) => {
+    const sentenceLength: string = calc.effectiveSentenceLength as string
+    if (!sentenceLength) {
+      return 'Unknown'
+    }
+    let years = 0,
+      months = 0,
+      days = 0
+    let workingLength = sentenceLength.substring(1)
+
+    const yearsSplit = workingLength.split('Y')
+    const hasYears = yearsSplit.length > 1
+    if (hasYears) {
+      years = +yearsSplit[0]
+      workingLength = yearsSplit[1]
+    }
+
+    const monthsSplit = workingLength.split('M')
+    const hasMonths = monthsSplit.length > 1
+    if (hasMonths) {
+      months = +monthsSplit[0]
+      workingLength = monthsSplit[1]
+    }
+
+    const daysSplit = workingLength.split('D')
+    const hasDays = daysSplit.length > 1
+    if (hasDays) {
+      days = +daysSplit[0]
+      workingLength = daysSplit[1]
+    }
+    return `${String(years).padStart(2, '0')}/${String(months).padStart(2, '0')}/${String(days).padStart(2, '0')}`
   }
 
   private static areSame = (nomisDate: string, calculatedDate: string) => {
@@ -206,6 +253,7 @@ export default class OtherRoutes {
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
     returnToCustody: PrisonApiReturnToCustodyDate,
+    keyDates: PrisonApiOffenderKeyDates,
     ex: any,
     errorText: string
   ) {
@@ -247,8 +295,13 @@ export default class OtherRoutes {
       NOMIS_PRRD_OVERRIDE: nomisDates?.postRecallReleaseOverrideDate,
       ESED: errorText,
       NOMIS_ESED: nomisDates?.effectiveSentenceEndDate,
+      SENTENCE_LENGTH: errorText,
+      NOMIS_ESL: keyDates.sentenceLength,
+      NOMIS_JSL: keyDates.judiciallyImposedSentenceLength,
       ARE_DATES_SAME: errorText,
       ARE_DATES_SAME_USING_OVERRIDES: errorText,
+      IS_ESL_SAME: errorText,
+      IS_JSL_SAME: errorText,
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
