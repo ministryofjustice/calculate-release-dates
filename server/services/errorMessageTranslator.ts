@@ -58,6 +58,10 @@ export default function translateErrorToText(
             return ''
         }
       })
+    case 'MULTIPLE_SENTENCES_CONSECUTIVE_TO':
+      return [
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} has multiple sentences that have been made consecutive to it. A sentence should only have one other sentence consecutive to it.`,
+      ]
     default:
       throw new Error(`Uknown validation code ${validationMessage.code}`)
   }
