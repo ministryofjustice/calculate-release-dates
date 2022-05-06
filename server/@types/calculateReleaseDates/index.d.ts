@@ -202,6 +202,7 @@ export interface components {
         | 'REMAND_OVERLAPS_WITH_SENTENCE'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED'
         | 'ADJUSTMENT_AFTER_RELEASE'
+        | 'MULTIPLE_SENTENCES_CONSECUTIVE_TO'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]

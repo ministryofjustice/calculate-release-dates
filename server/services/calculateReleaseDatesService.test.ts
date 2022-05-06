@@ -169,6 +169,12 @@ const invalidValidationResult: ValidationMessages = {
       arguments: [],
     },
     {
+      code: 'MULTIPLE_SENTENCES_CONSECUTIVE_TO',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
       code: 'REMAND_FROM_TO_DATES_REQUIRED',
       message: '',
       arguments: [],
@@ -398,6 +404,9 @@ describe('Calculate release dates service tests', () => {
         { text: 'The offence date range for court case 2 count 3 must be before the sentence date.' },
         { text: 'You must enter a length of time for the term of imprisonment for court case 2 count 3.' },
         { text: 'Court case 2 count 3 must only have one term in NOMIS.' },
+        {
+          text: 'Court case 2 count 3 has multiple sentences that have been made consecutive to it. A sentence should only have one other sentence consecutive to it.',
+        },
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand time can only be added once, it can cannot overlap with other remand dates.' },
