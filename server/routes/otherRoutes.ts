@@ -123,8 +123,12 @@ export default class OtherRoutes {
       NOMIS_CRD_OVERRIDE: nomisDates.conditionalReleaseOverrideDate,
       LED: calc.dates.LED || calc.dates.SLED,
       NOMIS_LED: nomisDates.licenceExpiryDate,
+      NOMIS_LED_CALCULATED: nomisDates.licenseExpiryCalculatedDate,
+      NOMIS_LED_OVERRIDE: nomisDates.licenseExpiryOverrideDate,
       SED: calc.dates.SED || calc.dates.SLED,
       NOMIS_SED: nomisDates.sentenceExpiryDate,
+      NOMIS_SED_CALCULATED: nomisDates.sentenceExpiryCalculatedDate,
+      NOMIS_SED_OVERRIDE: nomisDates.sentenceExpiryOverrideDate,
       NPD: calc.dates.NPD,
       NOMIS_NPD: nomisDates.nonParoleDate,
       NOMIS_NPD_OVERRIDE: nomisDates.nonParoleOverrideDate,
@@ -135,6 +139,8 @@ export default class OtherRoutes {
       NOMIS_TUSED: nomisDates.topupSupervisionExpiryDate,
       PED: calc.dates.PED,
       NOMIS_PED: nomisDates.paroleEligibilityDate,
+      NOMIS_PED_CALCULATED: nomisDates.paroleEligibilityCalculatedDate,
+      NOMIS_PED_OVERRIDE: nomisDates.paroleEligibilityCalculatedDate,
       HDCED: calc.dates.HDCED,
       NOMIS_HDCED: nomisDates.homeDetentionCurfewEligibilityDate,
       ETD: calc.dates.ETD,
@@ -212,12 +218,12 @@ export default class OtherRoutes {
   private static areDatesSameUsingOverrides(row: any) {
     return (
       OtherRoutes.areSame(row.CRD, row.NOMIS_CRD_OVERRIDE) &&
-      OtherRoutes.areSame(row.SED, row.NOMIS_SED) &&
-      OtherRoutes.areSame(row.LED, row.NOMIS_LED) &&
+      OtherRoutes.areSame(row.SED, row.NOMIS_SED_OVERRIDE) &&
+      OtherRoutes.areSame(row.LED, row.NOMIS_LED_OVERRIDE) &&
       OtherRoutes.areSame(row.NPD, row.NOMIS_NPD_OVERRIDE) &&
       OtherRoutes.areSame(row.ARD, row.NOMIS_ARD_OVERRIDE) &&
       OtherRoutes.areSame(row.TUSED, row.NOMIS_TUSED) &&
-      OtherRoutes.areSame(row.PED, row.NOMIS_PED) &&
+      OtherRoutes.areSame(row.PED, row.NOMIS_PED_OVERRIDE) &&
       OtherRoutes.areSame(row.HDCED, row.NOMIS_HDCED) &&
       OtherRoutes.areSame(row.ETD, row.NOMIS_ETD) &&
       OtherRoutes.areSame(row.MTD, row.NOMIS_MTD) &&
@@ -267,8 +273,12 @@ export default class OtherRoutes {
       NOMIS_CRD_OVERRIDE: nomisDates?.nonParoleOverrideDate,
       LED: errorText,
       NOMIS_LED: nomisDates?.licenceExpiryDate,
+      NOMIS_LED_CALCULATED: nomisDates?.licenseExpiryCalculatedDate,
+      NOMIS_LED_OVERRIDE: nomisDates?.licenseExpiryOverrideDate,
       SED: errorText,
       NOMIS_SED: nomisDates?.sentenceExpiryDate,
+      NOMIS_SED_CALCULATED: nomisDates?.sentenceExpiryCalculatedDate,
+      NOMIS_SED_OVERRIDE: nomisDates?.sentenceExpiryOverrideDate,
       NPD: errorText,
       NOMIS_NPD: nomisDates?.nonParoleDate,
       NOMIS_NPD_OVERRIDE: nomisDates?.nonParoleOverrideDate,
@@ -279,6 +289,8 @@ export default class OtherRoutes {
       NOMIS_TUSED: nomisDates?.topupSupervisionExpiryDate,
       PED: errorText,
       NOMIS_PED: nomisDates?.paroleEligibilityDate,
+      NOMIS_PED_CALCULATED: nomisDates?.paroleEligibilityCalculatedDate,
+      NOMIS_PED_OVERRIDE: nomisDates?.paroleEligibilityCalculatedDate,
       HDCED: errorText,
       NOMIS_HDCED: nomisDates?.homeDetentionCurfewEligibilityDate,
       ETD: errorText,
