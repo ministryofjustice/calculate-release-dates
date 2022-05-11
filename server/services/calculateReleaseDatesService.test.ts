@@ -405,7 +405,7 @@ describe('Calculate release dates service tests', () => {
         { text: 'You must enter a length of time for the term of imprisonment for court case 2 count 3.' },
         { text: 'Court case 2 count 3 must only have one term in NOMIS.' },
         {
-          text: 'Court case 2 count 3 has multiple sentences that have been made consecutive to it. A sentence should only have one other sentence consecutive to it.',
+          text: 'There are multiple sentences that are consecutive to court case 2 count 3. A sentence should only have one other sentence consecutive to it.',
         },
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand periods must have a from and to date.' },
