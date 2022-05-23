@@ -129,6 +129,14 @@ const stubbedAdjustments = {
       toDate: '2021-02-02',
       active: true,
     },
+    {
+      sentenceSequence: 8,
+      type: 'REMAND',
+      numberOfDays: 98765,
+      fromDate: '2021-02-01',
+      toDate: '2021-02-02',
+      active: true,
+    },
   ],
   bookingAdjustments: [
     {
@@ -194,6 +202,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Court 1')
         expect(res.text).toContain('Returned to custody on')
         expect(res.text).toContain('12 April 2022')
+        expect(res.text).not.toContain('98765')
       })
   })
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner without adjustments', () => {
