@@ -25,7 +25,7 @@ export default class SentenceAndOffenceViewModel {
     adjustments: PrisonApiBookingAndSentenceAdjustments,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate
   ) {
-    this.adjustments = new AdjustmentsViewModel(adjustments)
+    this.adjustments = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
       groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values()
     )

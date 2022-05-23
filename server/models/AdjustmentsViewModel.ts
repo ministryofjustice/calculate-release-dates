@@ -1,3 +1,4 @@
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import {
   PrisonApiBookingAdjustment,
   PrisonApiBookingAndSentenceAdjustments,
@@ -41,35 +42,61 @@ export default class AdjustmentsViewModel {
   /** Number of unused remand days */
   public unusedRemand: AdjustmentViewModel
 
-  constructor(adjustments: PrisonApiBookingAndSentenceAdjustments) {
+  constructor(
+    adjustments: PrisonApiBookingAndSentenceAdjustments,
+    sententencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
+  ) {
     this.additionalDaysAwarded = this.adjustmentViewModel(
-      adjustments.bookingAdjustments.filter(a => a.type === 'ADDITIONAL_DAYS_AWARDED')
+      adjustments.bookingAdjustments.filter(a => a.type === 'ADDITIONAL_DAYS_AWARDED'),
+      sententencesAndOffences
     )
     this.recallSentenceRemand = this.adjustmentViewModel(
-      adjustments.sentenceAdjustments.filter(a => a.type === 'RECALL_SENTENCE_REMAND')
+      adjustments.sentenceAdjustments.filter(a => a.type === 'RECALL_SENTENCE_REMAND'),
+      sententencesAndOffences
     )
     this.recallSentenceTaggedBail = this.adjustmentViewModel(
-      adjustments.sentenceAdjustments.filter(a => a.type === 'RECALL_SENTENCE_TAGGED_BAIL')
+      adjustments.sentenceAdjustments.filter(a => a.type === 'RECALL_SENTENCE_TAGGED_BAIL'),
+      sententencesAndOffences
     )
-    this.remand = this.adjustmentViewModel(adjustments.sentenceAdjustments.filter(a => a.type === 'REMAND'))
+    this.remand = this.adjustmentViewModel(
+      adjustments.sentenceAdjustments.filter(a => a.type === 'REMAND'),
+      sententencesAndOffences
+    )
     this.unusedRemand = this.adjustmentViewModel(
-      adjustments.sentenceAdjustments.filter(a => a.type === 'UNUSED_REMAND')
+      adjustments.sentenceAdjustments.filter(a => a.type === 'UNUSED_REMAND'),
+      sententencesAndOffences
     )
     this.restoredAdditionalDaysAwarded = this.adjustmentViewModel(
-      adjustments.bookingAdjustments.filter(a => a.type === 'RESTORED_ADDITIONAL_DAYS_AWARDED')
+      adjustments.bookingAdjustments.filter(a => a.type === 'RESTORED_ADDITIONAL_DAYS_AWARDED'),
+      sententencesAndOffences
     )
-    this.taggedBail = this.adjustmentViewModel(adjustments.sentenceAdjustments.filter(a => a.type === 'TAGGED_BAIL'))
+    this.taggedBail = this.adjustmentViewModel(
+      adjustments.sentenceAdjustments.filter(a => a.type === 'TAGGED_BAIL'),
+      sententencesAndOffences
+    )
     this.unlawfullyAtLarge = this.adjustmentViewModel(
-      adjustments.bookingAdjustments.filter(a => a.type === 'UNLAWFULLY_AT_LARGE')
+      adjustments.bookingAdjustments.filter(a => a.type === 'UNLAWFULLY_AT_LARGE'),
+      sententencesAndOffences
     )
   }
 
   private adjustmentViewModel(
-    adjustments: PrisonApiBookingAdjustment[] | PrisonApiSentenceAdjustmentValues[]
+    adjustments: (PrisonApiBookingAdjustment | PrisonApiSentenceAdjustmentValues)[],
+    sententencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
   ): AdjustmentViewModel {
+    // Filter any sentence adjustments linked to a sentence thats not present on the booking (inactive).
+    const filteredAdjustments = adjustments.filter(a => {
+      if ('sentenceSequence' in a) {
+        const sentence = sententencesAndOffences.find(s => {
+          return s.sentenceSequence === a.sentenceSequence
+        })
+        return !!sentence
+      }
+      return true
+    })
     return {
-      aggregate: this.aggregateAdjustment(adjustments),
-      details: adjustments.map(a => {
+      aggregate: this.aggregateAdjustment(filteredAdjustments),
+      details: filteredAdjustments.map(a => {
         return {
           from: a.fromDate,
           to: a.toDate,
