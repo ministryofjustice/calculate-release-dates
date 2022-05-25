@@ -384,13 +384,13 @@ describe('Calculate release dates service tests', () => {
 
   describe('Validation tests', () => {
     it('Test validation passes', async () => {
-      fakeApi.get(`/calculation/${prisonerId}/validate`).reply(204)
+      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(204)
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, sentencesAndOffences, token)
       expect(result.messages).toEqual([])
     })
 
     it('Test for missing offence dates', async () => {
-      fakeApi.get(`/calculation/${prisonerId}/validate`).reply(200, invalidValidationResult)
+      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, invalidValidationResult)
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, sentencesAndOffences, token)
 
@@ -433,7 +433,7 @@ describe('Calculate release dates service tests', () => {
       expect(result.messageType).toBe(ErrorMessageType.VALIDATION)
     })
     it('Test for unsupported sentences', async () => {
-      fakeApi.get(`/calculation/${prisonerId}/validate`).reply(200, unsupportedValidationResult)
+      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, unsupportedValidationResult)
 
       const result = await calculateReleaseDatesService.validateBackend(
         prisonerId,

@@ -67,7 +67,7 @@ export default class CalculateReleaseDatesApiClient {
   }
 
   validate(prisonerId: string): Promise<ValidationMessages> {
-    return this.restClient.get({ path: `/calculation/${prisonerId}/validate` }) as Promise<ValidationMessages>
+    return this.restClient.post({ path: `/calculation/${prisonerId}/validate` }) as Promise<ValidationMessages>
   }
 
   getPrisonerDetail(calculationId: number): Promise<PrisonApiPrisoner> {
