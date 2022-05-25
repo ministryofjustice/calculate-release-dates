@@ -132,7 +132,7 @@ export default {
   stubValidate: (): SuperAgentRequest => {
     return stubFor({
       request: {
-        method: 'GET',
+        method: 'POST',
         urlPattern: `/calculate-release-dates/calculation/A1234AB/validate`,
       },
       response: {
