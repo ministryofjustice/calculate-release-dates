@@ -25,15 +25,15 @@
                 </div>
             </div>
         {% endif %}
-        <table class="govuk-table govuk-!-width-full" id="{{ case.caseSequence }}-sentence-table"
+        <table class="govuk-table govuk-!-width-full fixed-layout-table" id="{{ case.caseSequence }}-sentence-table"
                data-qa="{{ case.caseSequence }}-sentence-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header">Count</th>
-                    <th class="govuk-table__header">Offence</th>
-                    <th class="govuk-table__header">Sentence type</th>
-                    <th class="govuk-table__header">Sentence date</th>
-                    <th class="govuk-table__header">Sentence length</th>
+                    <th class="govuk-table__header column-width-five-percent" scope="col">Count</th>
+                    <th class="govuk-table__header" scope="col">Offence</th>
+                    <th class="govuk-table__header column-width-fifteen-percent" scope="col">Sentence type</th>
+                    <th class="govuk-table__header column-width-ten-percent" scope="col">Sentence date</th>
+                    <th class="govuk-table__header column-width-thirty-percent" scope="col">Sentence length</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body govuk-body-s">

@@ -12,3 +12,31 @@ div.govuk-width-container {
 .govuk-error-summary.information-summary {
   border-color: govuk-colour('blue');
 }
+
+.fixed-layout-table {
+  table-layout: fixed;
+}
+
+.column-width-five-percent {
+  width: 5%; 
+}
+
+.column-width-ten-percent {
+  width: 10%; 
+}
+
+.column-width-fifteen-percent {
+  width: 15%; 
+}
+
+.column-width-twenty-percent {
+  width: 20%; 
+}
+
+.column-width-thirty-percent {
+  width: 30%; 
+}
+
+.column-width-fourty {
+  width: 40%; 
+}
