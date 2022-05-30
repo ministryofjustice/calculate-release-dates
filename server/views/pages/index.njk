@@ -21,7 +21,7 @@
                 <p class="govuk-body">
                     {% if prisonId %}
                         You can view previous calculations for {{prisonerDetail.firstName}}
-                            {{prisonerDetail.lastName}} using the
+                        {{prisonerDetail.lastName}} using the
                         <a data-qa="view-journey-start" href="{{ "/view/" + prisonId + "/latest" }}">calculation lookup service.</a>
                     {% else %}
                         You can view previous calculations using the
@@ -33,7 +33,7 @@
             <p class="govuk-body">This service currently supports a limited number of sentences.
                 <a href="/supported-sentences" class="govuk-link">Check supported sentence types</a>.</p>
             {% if prisonId %}
-                {% set startlink = "/calculation/" + prisonId + "/check-information" %}
+                {% set startlink = "/calculation/" + prisonId + "/pre-calculation-questions" %}
             {% else %}
                 {% set startlink = "/search/prisoners" %}
             {% endif %}

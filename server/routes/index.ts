@@ -11,6 +11,7 @@ import SearchRoutes from './searchRoutes'
 import StartRoutes from './startRoutes'
 import CheckInformationRoutes from './checkInformationRoutes'
 import ViewRoutes from './viewRoutes'
+import CalculationQuestionRoutes from './calculationQuestionRoutes'
 
 export default function Index({
   userService,
@@ -37,6 +38,11 @@ export default function Index({
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
   const startRoutes = new StartRoutes(entryPointService, prisonerService)
   const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
+  const calculationQuestionRoutes = new CalculationQuestionRoutes(
+    calculateReleaseDatesService,
+    prisonerService,
+    entryPointService
+  )
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
@@ -52,6 +58,10 @@ export default function Index({
     post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
     get('/calculation/:nomsId/summary/:calculationRequestId/print', calculationAccessRoutes.printCalculationSummary)
     get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
+  }
+
+  const questionRoutes = () => {
+    get('/calculation/:nomsId/pre-calculation-questions', calculationQuestionRoutes.calculationQuestions)
   }
 
   const searchRoutes = () => {
@@ -84,6 +94,7 @@ export default function Index({
 
   indexRoutes()
   calculationRoutes()
+  questionRoutes()
   checkInformationRoutes()
   searchRoutes()
   viewRoutes()

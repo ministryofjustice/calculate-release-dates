@@ -3,6 +3,7 @@ import {
   BookingCalculation,
   CalculationBreakdown,
   CalculationFragments,
+  CalculationUserQuestions,
   ReleaseDateCalculationBreakdown,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -39,6 +40,10 @@ export default class CalculateReleaseDatesService {
     token: string
   ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
+  }
+
+  async getCalculationUserQuestions(prisonId: string, token: string): Promise<CalculationUserQuestions> {
+    return new CalculateReleaseDatesApiClient(token).getCalculationUserQuestions(prisonId)
   }
 
   async getBreakdown(

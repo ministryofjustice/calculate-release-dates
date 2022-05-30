@@ -4,6 +4,7 @@ import {
   BookingCalculation,
   CalculationBreakdown,
   CalculationFragments,
+  CalculationUserQuestions,
   ValidationMessages,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -99,5 +100,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/calculation/results/${prisonerId}/${bookingId}`,
     }) as Promise<BookingCalculation>
+  }
+
+  getCalculationUserQuestions(prisonerId: string): Promise<CalculationUserQuestions> {
+    return this.restClient.get({
+      path: `/calculation/${prisonerId}/user-questions`,
+    }) as Promise<CalculationUserQuestions>
   }
 }
