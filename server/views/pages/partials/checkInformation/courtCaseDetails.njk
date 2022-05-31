@@ -2,7 +2,7 @@
     {% set case = params.case %}
     {% set hasCaseDetails = params.case.caseReference or params.case.courtDescription%}
     {% set displayCaseDetails = params.includeCaseDetails and hasCaseDetails %}
-    <h3 class="govuk-heading-m {% if displayCaseDetails %}govuk-!-margin-bottom-2{% endif %}">Court case {{ case.caseSequence }}</h3>
+    <h2 class="govuk-heading-m {% if displayCaseDetails %}govuk-!-margin-bottom-2{% endif %}">Court case {{ case.caseSequence }}</h2>
     {% if displayCaseDetails %}
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">

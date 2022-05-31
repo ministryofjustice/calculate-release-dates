@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
-import EntryPointService from '../services/entryPointService'
 import CalculationQuestionsViewModel from '../models/CalculationQuestionsViewModel'
 import {
   CalculationSentenceUserInput,
@@ -57,13 +56,19 @@ export default class CalculationQuestionRoutes {
       .reduce((acc, value) => acc.concat(value), [])
 
     const userInput = {
-      sentenceCalculationUserInputs: offences.map(it => {
-        return {
-          offenceCode: it.offence.offenceCode,
-          sentenceSequence: it.sentence.sentenceSequence,
-          isScheduleFifteenMaximumLife: !!req.body[it.offence.offenderChargeId],
-        } as CalculationSentenceUserInput
-      }),
+      sentenceCalculationUserInputs: Object.keys(req.body)
+        .map((it: string) => {
+          const item = offences.find(o => !!Number(it) && o.offence.offenderChargeId === Number(it))
+          if (item) {
+            return {
+              offenceCode: item.offence.offenceCode,
+              sentenceSequence: item.sentence.sentenceSequence,
+              isScheduleFifteenMaximumLife: !!req.body[item.offence.offenderChargeId],
+            } as CalculationSentenceUserInput
+          }
+          return null
+        })
+        .filter((it: CalculationSentenceUserInput) => !!it),
     } as CalculationUserInputs
 
     this.userInputService.setCalculationUserInputForPrisoner(req, nomsId, userInput)

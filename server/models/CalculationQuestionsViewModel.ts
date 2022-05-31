@@ -35,4 +35,12 @@ export default class CalculationQuestionsViewModel {
       })
     return input && input.isScheduleFifteenMaximumLife
   }
+
+  public isSelectAllChecked(): boolean {
+    return (
+      this.userInputs &&
+      this.userInputs.sentenceCalculationUserInputs.filter(it => it.isScheduleFifteenMaximumLife).length ===
+        this.userInputs.sentenceCalculationUserInputs.length
+    )
+  }
 }

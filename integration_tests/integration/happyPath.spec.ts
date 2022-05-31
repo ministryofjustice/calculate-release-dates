@@ -1,5 +1,6 @@
 import IndexPage from '../pages'
 import CalculationCompletePage from '../pages/calculationComplete'
+import CalculationQuestionPage from '../pages/calculationQuestions'
 import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
@@ -28,6 +29,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
     cy.task('stubLatestCalculation')
+    cy.task('stubCalculationQuestions')
   })
 
   it('Standalone user journey', () => {
@@ -38,6 +40,9 @@ context('End to end happy path of user journey', () => {
     const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
+
+    const calculationQuestionPage = Page.verifyOnPage(CalculationQuestionPage)
+    calculationQuestionPage.continueButton().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
@@ -57,6 +62,9 @@ context('End to end happy path of user journey', () => {
     cy.signIn()
     const indexPage = IndexPage.goTo('A1234AB')
     indexPage.startNowButton().click()
+
+    const calculationQuestionPage = Page.verifyOnPage(CalculationQuestionPage)
+    calculationQuestionPage.continueButton().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()

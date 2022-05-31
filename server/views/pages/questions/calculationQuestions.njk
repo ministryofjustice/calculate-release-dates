@@ -60,7 +60,7 @@
             <div class="govuk-grid-column-two-thirds">
                 <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" value="select-all">
+                        <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" value="select-all" {{ "checked" if model.isSelectAllChecked(sentence, offence) }}>
                         <label class="govuk-label govuk-checkboxes__label" for="select-all" style="padding-top: 5px; padding-left:10px">
           Select all
         </label>
@@ -69,11 +69,13 @@
             </div>
         </div>
 
-        <div id="sentences">
-            {% for case in model.cases %}
-                {{ courtCaseDetails({case: case, includeCaseDetails: false}) }}
-                {{ sentenceTable({case: case, includeCheckboxes: true, includeConurrentOrConsecutiveText: false, isCheckboxChecked: model.isCheckboxChecked}) }}
-            {% endfor %}
+        <div>
+            <div id="sentences">
+                {% for case in model.cases %}
+                    {{ courtCaseDetails({case: case, includeCaseDetails: false}) }}
+                    {{ sentenceTable({case: case, includeCheckboxes: true, includeConurrentOrConsecutiveText: false, isCheckboxChecked: model.isCheckboxChecked}) }}
+                {% endfor %}
+            </div>
         </div>
         <!-- Call to action -->
         <div class="govuk-grid-row">

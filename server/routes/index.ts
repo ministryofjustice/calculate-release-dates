@@ -12,7 +12,6 @@ import StartRoutes from './startRoutes'
 import CheckInformationRoutes from './checkInformationRoutes'
 import ViewRoutes from './viewRoutes'
 import CalculationQuestionRoutes from './calculationQuestionRoutes'
-import UserInputService from '../services/userInputService'
 
 export default function Index({
   userService,

@@ -3,16 +3,9 @@ import type { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
-import {
-  PrisonApiBookingAndSentenceAdjustments,
-  PrisonApiPrisoner,
-  PrisonApiReturnToCustodyDate,
-  PrisonApiSentenceDetail,
-} from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import EntryPointService from '../services/entryPointService'
-import { FullPageError } from '../types/FullPageError'
-import { ErrorMessageType } from '../types/ErrorMessages'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import UserInputService from '../services/userInputService'
 import {

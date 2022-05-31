@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request } from 'express'
 import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class UserInputService {
