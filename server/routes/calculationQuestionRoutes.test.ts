@@ -14,6 +14,7 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -148,6 +149,7 @@ afterEach(() => {
 
 describe('Calculation question routes tests', () => {
   it('GET /calculation/:nomsId/pre-calculation-questions should return detail about the sds+ questions', () => {
+    config.featureToggles.sdsPlusQuestion = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
