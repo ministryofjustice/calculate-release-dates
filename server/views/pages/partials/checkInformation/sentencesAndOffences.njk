@@ -10,7 +10,7 @@
 <div id="sentences">
         {% for case in cases %}
                 {{ courtCaseDetails({case: case, includeCaseDetails: true}) }}
-                {{ sentenceTable({case: case, includeCheckboxes: false, includeConcurrentOrConsecutiveText: true, sentenceSequenceToSentence: sentenceSequenceToSentence, offenceCount:offenceCount}) }}
+                {{ sentenceTable({case: case, includeCheckboxes: false, includeConcurrentOrConsecutiveText: true, sentenceSequenceToSentence: sentenceSequenceToSentence, offenceCount:offenceCount, returnToCustodyDate:returnToCustodyDate}) }}
         {% endfor %}
 </div>
 

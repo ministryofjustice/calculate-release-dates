@@ -56,7 +56,7 @@ export default class CalculationQuestionRoutes {
       .reduce((acc, value) => acc.concat(value), [])
 
     const userInput = {
-      sentenceCalculationUserInputs: Object.keys(req.body)
+      sentenceCalculationUserInputs: req.body.charges
         .map((it: string) => {
           const item = offences.find(o => !!Number(it) && o.offence.offenderChargeId === Number(it))
           if (item) {

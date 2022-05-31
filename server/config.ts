@@ -70,8 +70,8 @@ export default {
     calculateReleaseDates: {
       url: get('CALCULATE_RELEASE_DATES_API_URL', 'http://localhost:8089', requiredInProduction),
       timeout: {
-        response: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE', 5000)),
       },
       agent: new AgentConfig(),
     },

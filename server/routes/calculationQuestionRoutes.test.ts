@@ -180,22 +180,12 @@ describe('Calculation question routes tests', () => {
     return request(app)
       .post('/calculation/A1234AA/pre-calculation-questions')
       .type('form')
-      .send({ '999': true })
+      .send({ '999': true, charges: ['999'] })
       .expect(302)
       .expect('Location', '/calculation/A1234AA/check-information')
       .expect(res => {
         expect(userInputService.setCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AA', {
           sentenceCalculationUserInputs: [
-            {
-              isScheduleFifteenMaximumLife: false,
-              offenceCode: 'abc',
-              sentenceSequence: 1,
-            } as CalculationSentenceUserInput,
-            {
-              isScheduleFifteenMaximumLife: false,
-              offenceCode: 'def',
-              sentenceSequence: 2,
-            } as CalculationSentenceUserInput,
             {
               isScheduleFifteenMaximumLife: true,
               offenceCode: 'RL05016',
