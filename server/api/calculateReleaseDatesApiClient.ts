@@ -4,6 +4,7 @@ import {
   BookingCalculation,
   CalculationBreakdown,
   CalculationFragments,
+  CalculationUserInputs,
   CalculationUserQuestions,
   ValidationMessages,
   WorkingDay,
@@ -32,8 +33,8 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.post({ path: '/test/calculation-by-booking', data: booking }) as Promise<BookingCalculation>
   }
 
-  calculatePreliminaryReleaseDates(prisonerId: string): Promise<BookingCalculation> {
-    return this.restClient.post({ path: `/calculation/${prisonerId}`, data: null }) as Promise<BookingCalculation>
+  calculatePreliminaryReleaseDates(prisonerId: string, userInput: CalculationUserInputs): Promise<BookingCalculation> {
+    return this.restClient.post({ path: `/calculation/${prisonerId}`, data: userInput }) as Promise<BookingCalculation>
   }
 
   getCalculationResults(calculationRequestId: number): Promise<BookingCalculation> {
@@ -67,10 +68,10 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({ path: `/working-day/previous/${date}` }) as Promise<WorkingDay>
   }
 
-  validate(prisonerId: string): Promise<ValidationMessages> {
+  validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessages> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}/validate`,
-      data: null,
+      data: userInput,
     }) as Promise<ValidationMessages>
   }
 

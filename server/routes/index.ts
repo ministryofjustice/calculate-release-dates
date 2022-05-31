@@ -12,6 +12,7 @@ import StartRoutes from './startRoutes'
 import CheckInformationRoutes from './checkInformationRoutes'
 import ViewRoutes from './viewRoutes'
 import CalculationQuestionRoutes from './calculationQuestionRoutes'
+import UserInputService from '../services/userInputService'
 
 export default function Index({
   userService,
@@ -19,6 +20,7 @@ export default function Index({
   calculateReleaseDatesService,
   entryPointService,
   viewReleaseDatesService,
+  userInputService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -32,16 +34,18 @@ export default function Index({
   const checkInformationAccessRoutes = new CheckInformationRoutes(
     calculateReleaseDatesService,
     prisonerService,
-    entryPointService
+    entryPointService,
+    userInputService
   )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
   const startRoutes = new StartRoutes(entryPointService, prisonerService)
   const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
+
   const calculationQuestionRoutes = new CalculationQuestionRoutes(
     calculateReleaseDatesService,
     prisonerService,
-    entryPointService
+    userInputService
   )
 
   const indexRoutes = () => {
@@ -62,6 +66,7 @@ export default function Index({
 
   const questionRoutes = () => {
     get('/calculation/:nomsId/pre-calculation-questions', calculationQuestionRoutes.calculationQuestions)
+    post('/calculation/:nomsId/pre-calculation-questions', calculationQuestionRoutes.submitUserInput)
   }
 
   const searchRoutes = () => {

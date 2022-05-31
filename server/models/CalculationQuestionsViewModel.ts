@@ -1,17 +1,38 @@
-import { CalculationUserQuestions } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  CalculationUserInputs,
+  CalculationUserQuestions,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
+import { PrisonApiOffenderOffence } from '../@types/prisonApi/prisonClientTypes'
+import { groupBy } from '../utils/utils'
+import CourtCaseTableViewModel from './CourtCaseTableViewModel'
 
 export default class CalculationQuestionsViewModel {
-  public sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
+  public cases: CourtCaseTableViewModel[]
 
   constructor(
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
-    calculationQuestions: CalculationUserQuestions
+    calculationQuestions: CalculationUserQuestions,
+    private userInputs: CalculationUserInputs
   ) {
-    this.sentencesAndOffences = sentencesAndOffences.filter(sentence => {
+    const filteredSentences = sentencesAndOffences.filter(sentence => {
       return !!calculationQuestions.sentenceQuestions.find(
         question => question.sentenceSequence === sentence.sentenceSequence
       )
     })
+    this.cases = Array.from(
+      groupBy(filteredSentences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values()
+    )
+      .map(sentences => new CourtCaseTableViewModel(sentences))
+      .sort((a, b) => a.caseSequence - b.caseSequence)
+  }
+
+  public isCheckboxChecked(sentence: PrisonApiOffenderSentenceAndOffences, offence: PrisonApiOffenderOffence) {
+    const input =
+      this.userInputs &&
+      this.userInputs.sentenceCalculationUserInputs.find(it => {
+        return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
+      })
+    return input && input.isScheduleFifteenMaximumLife
   }
 }

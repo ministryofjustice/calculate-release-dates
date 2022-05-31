@@ -3,6 +3,7 @@ import {
   BookingCalculation,
   CalculationBreakdown,
   CalculationFragments,
+  CalculationUserInputs,
   CalculationUserQuestions,
   ReleaseDateCalculationBreakdown,
   WorkingDay,
@@ -29,9 +30,10 @@ export default class CalculateReleaseDatesService {
   async calculatePreliminaryReleaseDates(
     username: string,
     prisonerId: string,
+    userInput: CalculationUserInputs,
     token: string
   ): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(prisonerId)
+    return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(prisonerId, userInput)
   }
 
   async getCalculationResults(
@@ -266,10 +268,11 @@ export default class CalculateReleaseDatesService {
 
   async validateBackend(
     prisonId: string,
+    userInput: CalculationUserInputs,
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     token: string
   ): Promise<ErrorMessages> {
-    const errors = await new CalculateReleaseDatesApiClient(token).validate(prisonId)
+    const errors = await new CalculateReleaseDatesApiClient(token).validate(prisonId, userInput)
 
     if (Object.keys(errors).length) {
       const messages: ErrorMessage[] = []

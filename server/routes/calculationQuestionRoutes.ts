@@ -3,12 +3,17 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import PrisonerService from '../services/prisonerService'
 import EntryPointService from '../services/entryPointService'
 import CalculationQuestionsViewModel from '../models/CalculationQuestionsViewModel'
+import {
+  CalculationSentenceUserInput,
+  CalculationUserInputs,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import UserInputService from '../services/userInputService'
 
 export default class CalculationQuestionRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entryPointService: EntryPointService
+    private readonly userInputService: UserInputService
   ) {}
 
   public calculationQuestions: RequestHandler = async (req, res): Promise<void> => {
@@ -25,7 +30,41 @@ export default class CalculationQuestionRoutes {
       prisonerDetail.bookingId,
       token
     )
-    const model = new CalculationQuestionsViewModel(sentencesAndOffences, calculationQuestions)
+    const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
+    const model = new CalculationQuestionsViewModel(sentencesAndOffences, calculationQuestions, userInputs)
     return res.render('pages/questions/calculationQuestions', { model })
+  }
+
+  public submitUserInput: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
+      username,
+      prisonerDetail.bookingId,
+      token
+    )
+
+    const offences = sentencesAndOffences
+      .map(sentence =>
+        sentence.offences.map(offence => {
+          return { sentence, offence }
+        })
+      )
+      .reduce((acc, value) => acc.concat(value), [])
+
+    const userInput = {
+      sentenceCalculationUserInputs: offences.map(it => {
+        return {
+          offenceCode: it.offence.offenceCode,
+          sentenceSequence: it.sentence.sentenceSequence,
+          isScheduleFifteenMaximumLife: !!req.body[it.offence.offenderChargeId],
+        } as CalculationSentenceUserInput
+      }),
+    } as CalculationUserInputs
+
+    this.userInputService.setCalculationUserInputForPrisoner(req, nomsId, userInput)
+
+    return res.redirect(`/calculation/${nomsId}/check-information`)
   }
 }

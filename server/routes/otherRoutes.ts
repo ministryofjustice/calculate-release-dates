@@ -45,7 +45,12 @@ export default class OtherRoutes {
           ? await this.prisonerService.getReturnToCustodyDate(bookingId, token)
           : null
         try {
-          const calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, token)
+          const calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
+            username,
+            nomsId,
+            null,
+            token
+          )
           csvData.push(
             this.addRow(prisonDetails, calc, nomisDates, sentenceAndOffences, adjustments, returnToCustody, keyDates)
           )

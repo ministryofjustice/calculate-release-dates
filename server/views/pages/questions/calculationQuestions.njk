@@ -2,9 +2,11 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "../partials/checkInformation/courtCaseDetails.njk" import courtCaseDetails %}
+{% from "../partials/checkInformation/sentenceTable.njk" import sentenceTable %}
 
-{% set pageTitle = applicationName + " - check information" %}
-{% set pageId = "check-information" %}
+{% set pageTitle = applicationName + " - Does this calculation include an SDS+?" %}
+{% set pageId = "calculation-questions" %}
 
 {% block aside %}
     {% include "../partials/prisonerIdentityBar.njk" %}
@@ -51,115 +53,47 @@
             </details>
         </div>
     </div>
-    <div class="govuk-grid-row govuk-!-margin-bottom-6">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-                <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" value="select-all">
-                    <label class="govuk-label govuk-checkboxes__label" for="select-all" style="padding-top: 5px; padding-left:10px">
+
+    <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+        <div class="govuk-grid-row govuk-!-margin-bottom-6">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" value="select-all">
+                        <label class="govuk-label govuk-checkboxes__label" for="select-all" style="padding-top: 5px; padding-left:10px">
           Select all
         </label>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h3 class="govuk-heading-m">Court case 1</h3>
-            <table class="govuk-table" data-module="moj-multi-select" data-multi-select-checkbox="#select-all" style="width: 100%">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="col" style="width: 4%"></th>
-                        <th class="govuk-table__header" scope="col" style="width: 4%">Count</th>
-                        <th class="govuk-table__header" scope="col" style="width: 35%">Offence</th>
-                        <th class="govuk-table__header" scope="col" style="width: 18%">Sentence type</th>
-                        <th class="govuk-table__header" scope="col" style="width: 18%">Sentence date</th>
-                        <th class="govuk-table__header" scope="col" style="width: 21%">Sentence length</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row govuk-table__row--selected">
-                        <td class="govuk-table__cell">
-                            <div class="govuk-checkboxes__item govuk-checkboxes--small moj-multi-select__checkbox">
-                                <input type="checkbox" class="govuk-checkboxes__input" id="count-1" value="count-2">
-                                <label class="govuk-label govuk-checkboxes__label" for="count-1">
-                                    <span class="govuk-visually-hidden">Select count 1</span>
-                                </label>
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell">1.</td>
-                        <td class="govuk-table__cell">Hijacking of ships<br>
-                            <div class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom: 0;">Committed on 20 June 2021</div>
-                        </td>
-                        <td class="govuk-table__cell">ORA CJA03 Standard Determinate Sentence</td>
-                        <td class="govuk-table__cell">1 July 2021</td>
-                        <td class="govuk-table__cell">8 years 0 months<br>
-                    0 weeks 0 days </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h3 class="govuk-heading-m">Court case 2</h3>
-            <table class="govuk-table" data-module="moj-multi-select" data-multi-select-checkbox="#select-all" style="width: 100%">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="col" style="width: 4%"></th>
-                        <th class="govuk-table__header" scope="col" style="width: 4%">Count</th>
-                        <th class="govuk-table__header" scope="col" style="width: 35%">Offence</th>
-                        <th class="govuk-table__header" scope="col" style="width: 18%">Sentence type</th>
-                        <th class="govuk-table__header" scope="col" style="width: 18%">Sentence date</th>
-                        <th class="govuk-table__header" scope="col" style="width: 21%">Sentence length</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            <div class="govuk-checkboxes__item govuk-checkboxes--small moj-multi-select__checkbox">
-                                <input type="checkbox" class="govuk-checkboxes__input" id="count-2" value="count-2">
-                                <label class="govuk-label govuk-checkboxes__label" for="count-2">
-                                    <span class="govuk-visually-hidden">Select count 2</span>
-                                </label>
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell">1.</td>
-                        <td class="govuk-table__cell">Soliciting murder <br>
-                            <div class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom: 0">Committed on 15 November 2020</div>
-                        </td>
-                        <td class="govuk-table__cell">ORA CJA03 Standard Determinate Sentence</td>
-                        <td class="govuk-table__cell">21 September 2021</td>
-                        <td class="govuk-table__cell">7 years 0 months<br>0 weeks 0 days</td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            <div class="govuk-checkboxes__item govuk-checkboxes--small moj-multi-select__checkbox">
-                                <input type="checkbox" class="govuk-checkboxes__input" id="count-2" value="count-2">
-                                <label class="govuk-label govuk-checkboxes__label" for="count-2">
-                                    <span class="govuk-visually-hidden">Select count 2</span>
-                                </label>
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell">2.</td>
-                        <td class="govuk-table__cell">Hostage taking <br>
-                            <div class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16" style="margin-bottom: 0">Committed on 15 November 2020</div>
-                        </td>
-                        <td class="govuk-table__cell">ORA CJA03 Standard Determinate Sentence</td>
-                        <td class="govuk-table__cell">21 September 2021</td>
-                        <td class="govuk-table__cell">7 years 0 months<br>0 weeks 0 days</td>
-                    </tr>
-                </tbody>
-            </table>
+
+        <div id="sentences">
+            {% for case in model.cases %}
+                {{ courtCaseDetails({case: case, includeCaseDetails: false}) }}
+                {{ sentenceTable({case: case, includeCheckboxes: true, includeConurrentOrConsecutiveText: false, isCheckboxChecked: model.isCheckboxChecked}) }}
+            {% endfor %}
         </div>
         <!-- Call to action -->
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <a href="check-sentence-and-offence-information.html" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                Continue
-            </a>
+                {{ govukButton({
+        text: "Continue",
+        type: submit,
+        value: 'submit-user-input',
+        preventDoubleClick: true,
+        attributes: {  'data-qa': 'submit-user-input' }
+    }) }}
+
             </div>
         </div>
-    </div>
+    </form>
+</div>
 
+{% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+<script src="/assets/selectAll.js"></script>
 {% endblock %}
