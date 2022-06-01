@@ -51,12 +51,22 @@ export default class ViewRoutes {
         calculationRequestId,
         token
       )
+      const CalculationUserInputs = await this.viewReleaseDatesService.getCalculationUserInputs(
+        calculationRequestId,
+        token
+      )
       const returnToCustody = sentencesAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
         ? await this.viewReleaseDatesService.getReturnToCustodyDate(calculationRequestId, token)
         : null
 
       res.render('pages/view/sentencesAndOffences', {
-        ...new SentenceAndOffenceViewModel(prisonerDetail, sentencesAndOffences, adjustmentDetails, returnToCustody),
+        ...new SentenceAndOffenceViewModel(
+          prisonerDetail,
+          CalculationUserInputs,
+          sentencesAndOffences,
+          adjustmentDetails,
+          returnToCustody
+        ),
         calculationRequestId,
         nomsId,
       })

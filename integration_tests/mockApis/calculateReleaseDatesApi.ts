@@ -285,6 +285,27 @@ export default {
       },
     })
   },
+  stubCalculationUserInputs: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/calculation-user-input/([0-9]*)`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          sentenceCalculationUserInputs: [
+            {
+              isScheduleFifteenMaximumLife: true,
+              offenceCode: '123',
+              sentenceSequence: 1,
+            },
+          ],
+        },
+      },
+    })
+  },
   stubAdjustments: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -389,7 +410,7 @@ export default {
             caseReference: 'ABC123',
             sentenceSequence: 1,
             sentenceStatus: 'A',
-            offences: [{ offenceEndDate: '2021-02-03' }],
+            offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
           },
           {
             terms: [

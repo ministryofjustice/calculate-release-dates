@@ -30,6 +30,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubPrisonerDetails')
     cy.task('stubLatestCalculation')
     cy.task('stubCalculationQuestions')
+    cy.task('stubCalculationUserInputs')
   })
 
   it('Standalone user journey', () => {

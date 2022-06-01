@@ -49,6 +49,10 @@
                                     {{ params.returnToCustodyDate | date('DD MMMM YYYY') }}
                                 </div>
                                 {%endif%}
+                                {% if params.includeSDSPlusBadge and params.rowIsSdsPlus(params.userInputs, sentence, offence)%}
+                                    <div class="govuk-!-margin-top-2">
+                                        <span class="moj-badge">SDS+</span></div>
+                                {% endif %}
                             </td>
                             <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
                             <td class="govuk-table__cell">

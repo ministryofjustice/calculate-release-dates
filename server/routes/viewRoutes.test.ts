@@ -15,6 +15,8 @@ import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import {
   BookingCalculation,
   CalculationBreakdown,
+  CalculationSentenceUserInput,
+  CalculationUserInputs,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
@@ -91,7 +93,7 @@ const stubbedSentencesAndOffences = [
     sentenceSequence: 2,
     consecutiveToSequence: 1,
     sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03' }],
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
@@ -182,6 +184,16 @@ const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
     hintText: '14 May 2029 minus 1 day',
   },
 ]
+const stubbedUserInput = {
+  sentenceCalculationUserInputs: [
+    {
+      isScheduleFifteenMaximumLife: true,
+      offenceCode: '123',
+      sentenceSequence: 2,
+    } as CalculationSentenceUserInput,
+  ],
+} as CalculationUserInputs
+
 beforeEach(() => {
   app = appWithAllRoutes({
     userService,
@@ -216,6 +228,7 @@ describe('View journey routesroutes tests', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue(stubbedUserInput)
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')
         .expect(200)
@@ -237,6 +250,7 @@ describe('View journey routesroutes tests', () => {
           expect(res.text).toContain('consecutive to')
           expect(res.text).toContain('court case 1 count 1')
           expect(res.text).toContain('/view/A1234AA/calculation-summary/123456')
+          expect(res.text).toContain('SDS+')
         })
     })
   })

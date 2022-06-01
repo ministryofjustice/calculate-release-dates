@@ -129,8 +129,8 @@ const stubbedUserInput = {
   sentenceCalculationUserInputs: [
     {
       isScheduleFifteenMaximumLife: true,
-      offenceCode: '123',
-      sentenceSequence: 1,
+      offenceCode: 'RL05016',
+      sentenceSequence: 3,
     } as CalculationSentenceUserInput,
   ],
 } as CalculationUserInputs
@@ -194,6 +194,7 @@ describe('Check information routes tests', () => {
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
     return request(app)
       .get('/calculation/A1234AA/check-information')
@@ -215,7 +216,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Court case 2')
         expect(res.text).toContain('consecutive to')
         expect(res.text).toContain('court case 1 count 1')
-        expect(res.text).toContain('href="/?prisonId=A1234AA"')
+        expect(res.text).toContain('href="/calculation/A1234AA/pre-calculation-questions"')
         expect(res.text).toContain('Restore additional days awarded (RADA)')
         expect(res.text).toContain('2')
         expect(res.text).toContain('Detailed')
@@ -224,9 +225,26 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Court 1')
         expect(res.text).toContain('Returned to custody on')
         expect(res.text).toContain('12 April 2022')
+        expect(res.text).toContain('SDS+')
         expect(res.text).not.toContain('98765')
       })
   })
+
+  it('GET /calculation/:nomsId/check-information back button should reutrn to dps start page if no calc questions', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
+    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('href="/?prisonId=A1234AA"')
+      })
+  })
+
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner without adjustments', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)

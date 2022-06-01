@@ -1,6 +1,11 @@
+import {
+  CalculationSentenceUserInput,
+  CalculationUserInputs,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import {
   PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiOffenderOffence,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -21,6 +26,7 @@ export default class SentenceAndOffenceViewModel {
 
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
+    public userInputs: CalculationUserInputs,
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate
@@ -39,5 +45,18 @@ export default class SentenceAndOffenceViewModel {
       previousValue + currentValue.offences.length
     this.offenceCount = sentencesAndOffences.reduce(reducer, 0)
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
+  }
+
+  public rowIsSdsPlus = function rowIsSdsPlus(
+    userInputs: CalculationUserInputs,
+    sentence: PrisonApiOffenderSentenceAndOffences,
+    offence: PrisonApiOffenderOffence
+  ): boolean {
+    const input =
+      userInputs &&
+      userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
+        return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
+      })
+    return input && input.isScheduleFifteenMaximumLife
   }
 }
