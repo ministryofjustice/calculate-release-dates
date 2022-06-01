@@ -108,4 +108,10 @@ export default class CalculateReleaseDatesApiClient {
       path: `/calculation/${prisonerId}/user-questions`,
     }) as Promise<CalculationUserQuestions>
   }
+
+  getCalculationUserInputs(calculationId: number): Promise<CalculationUserInputs> {
+    return this.restClient.get({
+      path: `/calculation/calculation-user-input/${calculationId}`,
+    }) as Promise<CalculationUserInputs>
+  }
 }

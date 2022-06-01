@@ -1,6 +1,13 @@
-import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationUserInputs,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
-import { PrisonApiBookingAndSentenceAdjustments, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiPrisoner,
+  PrisonApiReturnToCustodyDate,
+} from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 
 export default class ViewReleaseDatesService {
@@ -23,7 +30,11 @@ export default class ViewReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getPrisonerDetail(calculationId)
   }
 
-  async getReturnToCustodyDate(calculationId: number, token: string) {
+  async getReturnToCustodyDate(calculationId: number, token: string): Promise<PrisonApiReturnToCustodyDate> {
     return new CalculateReleaseDatesApiClient(token).getReturnToCustodyDate(calculationId)
+  }
+
+  async getCalculationUserInputs(calculationId: number, token: string): Promise<CalculationUserInputs> {
+    return new CalculateReleaseDatesApiClient(token).getCalculationUserInputs(calculationId)
   }
 }
