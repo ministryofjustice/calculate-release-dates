@@ -52,7 +52,6 @@ export default class SentenceAndOffenceViewModel {
     sentence: PrisonApiOffenderSentenceAndOffences,
     offence: PrisonApiOffenderOffence
   ): boolean {
-    console.log('here')
     const input =
       userInputs &&
       userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
