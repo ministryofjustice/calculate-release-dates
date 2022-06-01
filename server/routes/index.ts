@@ -67,6 +67,7 @@ export default function Index({
   const questionRoutes = () => {
     get('/calculation/:nomsId/pre-calculation-questions', calculationQuestionRoutes.calculationQuestions)
     post('/calculation/:nomsId/pre-calculation-questions', calculationQuestionRoutes.submitUserInput)
+    get('/schedule-fifteen', calculationQuestionRoutes.scheduleFifteen)
   }
 
   const searchRoutes = () => {
