@@ -11,6 +11,7 @@ context('View journey tests', () => {
     cy.task('stubPrisonerSearch')
     cy.task('stubGetUserCaseloads')
     cy.task('stubGetPrisonerDetails')
+    cy.task('stubCalculationUserInputs')
   })
 
   it('View journey search for prisoner without calculation submitted', () => {
