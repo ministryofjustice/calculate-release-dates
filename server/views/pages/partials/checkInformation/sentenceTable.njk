@@ -1,13 +1,13 @@
 {% macro sentenceTable(params) %}
-    <table class="govuk-table govuk-!-width-full" id="{{ params.case.caseSequence }}-sentence-table"
+    <table class="govuk-table govuk-!-width-full fixed-layout-table" id="{{ params.case.caseSequence }}-sentence-table"
                data-qa="{{ params.case.caseSequence }}-sentence-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 {% if params.includeCheckboxes %}
-                    <th class="govuk-table__header"></th>
+                    <th class="govuk-table__header column-width-five-percent" scope="col"></th>
                 {% endif %}
                 <th class="govuk-table__header column-width-five-percent" scope="col">Count</th>
-                <th class="govuk-table__header column-width-fourty-percent" scope="col">Offence</th>
+                <th class="govuk-table__header {% if params.includeCheckboxes %}column-width-thiry-five-percent{% else %}column-width-fourty-percent{% endif %}" scope="col">Offence</th>
                 <th class="govuk-table__header column-width-fifteen-percent" scope="col">Sentence type</th>
                 <th class="govuk-table__header column-width-fifteen-percent" scope="col">Sentence date</th>
                 <th class="govuk-table__header column-width-twenty-five-percent" scope="col">Sentence length</th>

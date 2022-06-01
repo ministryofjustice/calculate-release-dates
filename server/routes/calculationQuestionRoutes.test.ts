@@ -197,4 +197,13 @@ describe('Calculation question routes tests', () => {
         } as CalculationUserInputs)
       })
   })
+
+  it('GET /schedule-fifteen should display details of schedule 15 offences', () => {
+    return request(app)
+      .get('/schedule-fifteen')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Schedule 15 offences which attract a life sentence as maximum penalty')
+      })
+  })
 })

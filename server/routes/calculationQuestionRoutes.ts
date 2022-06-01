@@ -61,6 +61,10 @@ export default class CalculationQuestionRoutes {
       )
       .reduce((acc, value) => acc.concat(value), [])
 
+    if (typeof req.body.charges === 'string') {
+      // Charges comes through as a string if there is only 1 row.
+      req.body.charges = [req.body.charges]
+    }
     const userInput = {
       sentenceCalculationUserInputs: req.body.charges
         .map((it: string) => {
@@ -80,5 +84,9 @@ export default class CalculationQuestionRoutes {
     this.userInputService.setCalculationUserInputForPrisoner(req, nomsId, userInput)
 
     return res.redirect(`/calculation/${nomsId}/check-information`)
+  }
+
+  public scheduleFifteen: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/questions/schedule15')
   }
 }
