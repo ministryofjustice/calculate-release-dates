@@ -44,6 +44,7 @@ export default function Index({
   const calculationQuestionRoutes = new CalculationQuestionRoutes(
     calculateReleaseDatesService,
     prisonerService,
+    entryPointService,
     userInputService
   )
 

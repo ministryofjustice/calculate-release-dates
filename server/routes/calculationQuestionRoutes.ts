@@ -8,11 +8,13 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import UserInputService from '../services/userInputService'
 import config from '../config'
+import EntryPointService from '../services/entryPointService'
 
 export default class CalculationQuestionRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
+    private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService
   ) {}
 
@@ -34,7 +36,11 @@ export default class CalculationQuestionRoutes {
     )
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     const model = new CalculationQuestionsViewModel(sentencesAndOffences, calculationQuestions, userInputs)
-    return res.render('pages/questions/calculationQuestions', { model })
+    return res.render('pages/questions/calculationQuestions', {
+      model,
+      dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
+      prisonerDetail,
+    })
   }
 
   public submitUserInput: RequestHandler = async (req, res): Promise<void> => {

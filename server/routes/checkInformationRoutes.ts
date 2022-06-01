@@ -31,10 +31,10 @@ export default class CheckInformationRoutes {
     const returnToCustody = sentencesAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
       ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
       : null
+    const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
 
     let validationMessages: ErrorMessages
     if (req.query.hasErrors) {
-      const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
       validationMessages = await this.calculateReleaseDatesService.validateBackend(
         nomsId,
         userInputs,
@@ -49,6 +49,7 @@ export default class CheckInformationRoutes {
       ...new SentenceAndOffenceViewModel(prisonerDetail, sentencesAndOffences, adjustmentDetails, returnToCustody),
       dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
       validationErrors: validationMessages,
+      userInputs,
     })
   }
 
