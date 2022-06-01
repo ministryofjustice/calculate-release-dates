@@ -126,7 +126,7 @@ export default {
             caseReference: 'ABC123',
             sentenceSequence: 1,
             sentenceStatus: 'A',
-            offences: [{ offenceEndDate: '2021-02-03' }],
+            offences: [{ offenceEndDate: '2021-02-03', offenceCode: 'abc', offenderChargeId: 111 }],
           },
           {
             terms: [
@@ -142,7 +142,7 @@ export default {
             consecutiveToSequence: 1,
             sentenceStatus: 'A',
             sentenceTypeDescription: 'SDS Standard Sentence',
-            offences: [{ offenceEndDate: '2021-02-05' }],
+            offences: [{ offenceEndDate: '2021-02-05', offenceCode: 'def', offenderChargeId: 222 }],
           },
           {
             terms: [

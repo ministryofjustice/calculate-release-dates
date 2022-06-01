@@ -1,0 +1,101 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "../partials/checkInformation/courtCaseDetails.njk" import courtCaseDetails %}
+{% from "../partials/checkInformation/sentenceTable.njk" import sentenceTable %}
+
+{% set pageTitle = applicationName + " - Does this calculation include an SDS+?" %}
+{% set pageId = "calculation-questions" %}
+
+{% block aside %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {% if dpsEntryPoint %}
+        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
+    {% else %}
+        {% set backlink = "/search/prisoners" %}
+    {% endif %}
+    <nav>
+        {{ govukBackLink({
+        text: "Back",
+        href: backlink
+    }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% include "../partials/customErrorBanner.njk" %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds-from-desktop">
+            <h1 class="govuk-heading-xl" id="check-nomis-heading">Does this calculation include an SDS+?</h1>
+            <p class="govuk-body">Select which sentences fall under an SDS+ calculation.</p>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        What is an SDS+?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">An SDS+ is a sentence where prisoners have to serve two thirds of their sentence in custody. For an SDS+ to apply, the prisoner must:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>be 18 years or over</li>
+                        <li>be sentenced for a Schedule 15 offence that may attract a maximum of life imprisonment</li>
+                        <li>be sentenced on or after 1 April 2020</li>
+                        <li>receive 7 years or more from a single Standard Determinate Sentence or Detention in a Young Offender Institution</li>
+                    </ul>
+                    <p class="govuk-body">
+                        <a href="schedule-15-offence-list" target="_blank">Read more information on SDS+ sentences (opens in a new tab)</a>.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+        <div class="govuk-grid-row govuk-!-margin-bottom-6">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" value="select-all" {{ "checked" if model.isSelectAllChecked(sentence, offence) }}>
+                        <label class="govuk-label govuk-checkboxes__label" for="select-all" style="padding-top: 5px; padding-left:10px">
+          Select all
+        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div id="sentences">
+                {% for case in model.cases %}
+                    {{ courtCaseDetails({case: case, includeCaseDetails: false}) }}
+                    {{ sentenceTable({case: case, includeCheckboxes: true, includeConurrentOrConsecutiveText: false, isCheckboxChecked: model.isCheckboxChecked}) }}
+                {% endfor %}
+            </div>
+        </div>
+        <!-- Call to action -->
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                {{ govukButton({
+        text: "Continue",
+        type: submit,
+        value: 'submit-user-input',
+        preventDoubleClick: true,
+        attributes: {  'data-qa': 'submit-user-input' }
+    }) }}
+
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+<script src="/assets/selectAll.js"></script>
+{% endblock %}

@@ -12,7 +12,9 @@
 
 {% block beforeContent %}
     {{ super() }}
-    {% if dpsEntryPoint %}
+    {% if userInputs %}
+        {% set backlink = "/calculation/" + prisonerDetail.offenderNo + "/pre-calculation-questions" %}
+    {% elif dpsEntryPoint %}
         {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     {% else %}
         {% set backlink = "/search/prisoners" %}

@@ -247,7 +247,12 @@ describe('Calculate release dates service tests', () => {
     it('Test the running of a preliminary calculation of release dates', async () => {
       fakeApi.post(`/calculation/${prisonerId}`).reply(200, calculationResults)
 
-      const result = await calculateReleaseDatesService.calculatePreliminaryReleaseDates('user', prisonerId, token)
+      const result = await calculateReleaseDatesService.calculatePreliminaryReleaseDates(
+        'user',
+        prisonerId,
+        null,
+        token
+      )
 
       expect(result).toEqual(calculationResults)
     })
@@ -385,14 +390,14 @@ describe('Calculate release dates service tests', () => {
   describe('Validation tests', () => {
     it('Test validation passes', async () => {
       fakeApi.post(`/calculation/${prisonerId}/validate`).reply(204)
-      const result = await calculateReleaseDatesService.validateBackend(prisonerId, sentencesAndOffences, token)
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, sentencesAndOffences, token)
       expect(result.messages).toEqual([])
     })
 
     it('Test for missing offence dates', async () => {
       fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, invalidValidationResult)
 
-      const result = await calculateReleaseDatesService.validateBackend(prisonerId, sentencesAndOffences, token)
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, sentencesAndOffences, token)
 
       expect(result.messages).toEqual([
         { text: 'The calculation must include an offence date for court case 1 count 1.' },
@@ -437,6 +442,7 @@ describe('Calculate release dates service tests', () => {
 
       const result = await calculateReleaseDatesService.validateBackend(
         prisonerId,
+        null,
         [
           {
             sentenceCalculationType: 'UNSUPORTED',

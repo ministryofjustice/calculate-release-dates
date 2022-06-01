@@ -71,7 +71,7 @@ describe('Start routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Start')
-        expect(res.text).toContain('href="/calculation/123/check-information"')
+        expect(res.text).toContain('href="/calculation/123/pre-calculation-questions"')
         expect(res.text).toContain('A1234AA')
       })
       .expect(() => {

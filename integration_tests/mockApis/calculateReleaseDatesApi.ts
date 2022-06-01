@@ -431,4 +431,28 @@ export default {
       },
     })
   },
+  stubCalculationQuestions: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/A1234AB/user-questions`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          sentenceQuestions: [
+            {
+              sentenceSequence: 1,
+              userInputType: 'SCHEDULE_15_ATTRACTING_LIFE',
+            },
+            {
+              sentenceSequence: 2,
+              userInputType: 'SCHEDULE_15_ATTRACTING_LIFE',
+            },
+          ],
+        },
+      },
+    })
+  },
 }

@@ -1,0 +1,26 @@
+{% macro courtCaseDetails(params) %}
+    {% set case = params.case %}
+    {% set hasCaseDetails = params.case.caseReference or params.case.courtDescription%}
+    {% set displayCaseDetails = params.includeCaseDetails and hasCaseDetails %}
+    <h2 class="govuk-heading-m {% if displayCaseDetails %}govuk-!-margin-bottom-2{% endif %}">Court case {{ case.caseSequence }}</h2>
+    {% if displayCaseDetails %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <dl class="govuk-summary-list govuk-summary-list--no-border">
+                    {% if case.caseReference %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Court case number</dt>
+                            <dd class="govuk-summary-list__value" data-qa="{{ case.caseSequence }}-case-number">{{case.caseReference}}</dd>
+                        </div>
+                    {% endif %}
+                    {% if case.courtDescription %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Court name</dt>
+                            <dd class="govuk-summary-list__value">{{case.courtDescription}}</dd>
+                        </div>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}

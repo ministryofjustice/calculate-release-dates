@@ -1,8 +1,17 @@
+{% from "./courtCaseDetails.njk" import courtCaseDetails %}
+{% from "./sentenceTable.njk" import sentenceTable %}
+
 <p class="govuk-body govuk-!-margin-top-2" id="offence-count-text">
                 This calculation will include {{ offenceCount }}
-    {{ 'sentence' | pluralise(offenceCount) }} from NOMIS.
+        {{ 'sentence' | pluralise(offenceCount) }} from NOMIS.
             </p>
 <h2 class="govuk-heading-l govuk-!-margin-top-6">Court cases</h2>
-{% include "./sentenceTable.njk" %}
+
+<div id="sentences">
+        {% for case in cases %}
+                {{ courtCaseDetails({case: case, includeCaseDetails: true}) }}
+                {{ sentenceTable({case: case, includeCheckboxes: false, includeConcurrentOrConsecutiveText: true, sentenceSequenceToSentence: sentenceSequenceToSentence, offenceCount:offenceCount, returnToCustodyDate:returnToCustodyDate}) }}
+        {% endfor %}
+</div>
 
 {% include "./sentenceAdjustments.njk" %}

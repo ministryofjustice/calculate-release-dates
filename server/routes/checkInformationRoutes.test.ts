@@ -14,16 +14,23 @@ import EntryPointService from '../services/entryPointService'
 import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
+import UserInputService from '../services/userInputService'
+import {
+  CalculationSentenceUserInput,
+  CalculationUserInputs,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/entryPointService')
+jest.mock('../services/userInputService')
 
 const userService = new UserService(null) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
+const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 
 let app: Express
 
@@ -118,6 +125,15 @@ const stubbedSentencesAndOffences = [
     ],
   },
 ]
+const stubbedUserInput = {
+  sentenceCalculationUserInputs: [
+    {
+      isScheduleFifteenMaximumLife: true,
+      offenceCode: '123',
+      sentenceSequence: 1,
+    } as CalculationSentenceUserInput,
+  ],
+} as CalculationUserInputs
 
 const stubbedAdjustments = {
   sentenceAdjustments: [
@@ -159,7 +175,13 @@ const stubbedReturnToCustodyDate = {
 } as PrisonApiReturnToCustodyDate
 
 beforeEach(() => {
-  app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService, entryPointService })
+  app = appWithAllRoutes({
+    userService,
+    prisonerService,
+    calculateReleaseDatesService,
+    entryPointService,
+    userInputService,
+  })
 })
 
 afterEach(() => {
@@ -256,6 +278,7 @@ describe('Check information routes tests', () => {
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.validateBackend.mockResolvedValue({ messages: [] })
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue({
       calculationRequestId: 123,
       dates: {},
@@ -270,6 +293,18 @@ describe('Check information routes tests', () => {
       .expect('Location', '/calculation/A1234AA/summary/123')
       .expect(res => {
         expect(res.redirect).toBeTruthy()
+        expect(calculateReleaseDatesService.validateBackend).toBeCalledWith(
+          expect.anything(),
+          stubbedUserInput,
+          expect.anything(),
+          expect.anything()
+        )
+        expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
+          expect.anything(),
+          'A1234AA',
+          stubbedUserInput,
+          expect.anything()
+        )
       })
   })
 
