@@ -17,7 +17,7 @@ generic-service:
     DIGITAL_PRISON_SERVICES_URL: "https://digital.prison.service.justice.gov.uk"
     VIEW_JOURNEY_FEATURE_TOGGLE: "true"
     RECALL_FEATURE_TOGGLE: "true"
-    SDS_PLUS_QUESTION: "false"
+    SDS_PLUS_QUESTION: "true"
 
 
 generic-prometheus-alerts:
