@@ -14,7 +14,6 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -123,6 +122,18 @@ const stubbedUserQuestions = {
     } as CalculationSentenceQuestion,
   ],
 } as CalculationUserQuestions
+const stubbedUserQuestionsPcsc = {
+  sentenceQuestions: [
+    {
+      sentenceSequence: 1,
+      userInputType: 'FOUR_TO_UNDER_SEVEN',
+    } as CalculationSentenceQuestion,
+    {
+      sentenceSequence: 3,
+      userInputType: 'ORIGINAL',
+    } as CalculationSentenceQuestion,
+  ],
+} as CalculationUserQuestions
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
     {
@@ -149,7 +160,6 @@ afterEach(() => {
 
 describe('Calculation question routes tests', () => {
   it('GET /calculation/:nomsId/pre-calculation-questions should return detail about the sds+ questions', () => {
-    config.featureToggles.sdsPlusQuestion = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
@@ -164,6 +174,24 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain('Court case 3')
         expect(res.text).toContain('id="checkbox-999" name="999" value="true" checked')
         expect(res.text).toContain('Continue')
+      })
+  })
+
+  it('GET /calculation/:nomsId/alternative-release-arangements should return detail the alternative release arrangements', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestionsPcsc)
+
+    return request(app)
+      .get('/calculation/A1234AA/alternative-release-arangements')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Some sentences could have alternative release arrangements')
+        expect(res.text).toContain('List A')
+        expect(res.text).toContain('List B')
+        expect(res.text).not.toContain('List C')
+        expect(res.text).not.toContain('List D')
+        expect(res.text).toContain('On the next pages, you must select the offences with SDS+ release')
       })
   })
 

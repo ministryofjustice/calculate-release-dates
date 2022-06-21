@@ -1,0 +1,115 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "../partials/checkInformation/courtCaseDetails.njk" import courtCaseDetails %}
+{% from "../partials/checkInformation/sentenceTable.njk" import sentenceTable %}
+
+{% set pageTitle = applicationName + " - Does this calculation include an SDS+?" %}
+{% set pageId = "alternative-release-intro" %}
+
+{% block aside %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {% if dpsEntryPoint %}
+        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
+    {% else %}
+        {% set backlink = "/search/prisoners" %}
+    {% endif %}
+    <nav>
+        {{ govukBackLink({
+        text: "Back",
+        href: backlink
+    }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                Some sentences could have alternative release arrangements
+            </h1>
+            <p class="govuk-body">This service has identified that some sentences in this calculation could be affected by:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    <a href="https://www.legislation.gov.uk/uksi/2020/158/made">The Release of Prisoners (Alteration of Relevant Proportion of Sentence) Order 2020 (SDS+)</a>
+                </li>
+                <li>
+                    <a href="https://www.legislation.gov.uk/ukpga/2022/32/contents/enacted">Police, Crime, Sentencing and Courts Act 2022</a>
+                </li>
+            </ul>
+            <p class="govuk-body">Where an offence can attract a maximum life sentence, the release dates for some sentences are calculated at two thirds. This is also known as an SDS+ arrangement.</p>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        What are the criteria for an SDS+ arrangement?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">SDS+ release arrangements can depend on the:
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>offence</li>
+                        <li>sentence type</li>
+                        <li>sentence length</li>
+                        <li>sentence date</li>
+                        <li>age of the person at the point of sentence</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-l govuk-!-margin-top-4">What you need to do</h2>
+            <p class="govuk-body">On the next page{% if model.hasMoreThanOneQuestion() %}s{% endif %}, you must select the offences with SDS+ release arrangements, from the relevant lists:</p>
+
+            {% if model.hasOriginal() %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List A</h4>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>SDS, DYOPI, SEC250 sentence types</li>
+                    <li>sentenced before 28 June 2022</li>
+                    <li>7 years or over</li>
+                </ul>
+            {% endif %}
+            {% if model.hasFourToUnderSeven() %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List B</h4>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>SDS, DYOPI sentence types</li>
+                    <li>sentenced from 28 June 2022</li>
+                    <li>4 years or over and less than 7 years</li>
+                </ul>
+            {% endif %}
+            {% if model.hasSection250() %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List C</h4>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>SEC250 sentence types</li>
+                    <li>sentenced from 28 June 2022</li>
+                    <li>7 years or over</li>
+                </ul>
+            {% endif %}
+            {% if model.hasUpdated() %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List D</h4>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>SDS, DYOPI sentence types</li>
+                    <li>sentenced from 28 June 2022</li>
+                    <li>7 years or over</li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Call to action -->
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <a href="{{"/calcuation/" + "/somewhere/" + model.firstQuestion()}}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                Continue
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
