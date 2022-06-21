@@ -213,6 +213,7 @@ export interface components {
         | 'CUSTODIAL_PERIOD_EXTINGUISHED'
         | 'ADJUSTMENT_AFTER_RELEASE'
         | 'MULTIPLE_SENTENCES_CONSECUTIVE_TO'
+        | 'PRISONER_SUBJECT_TO_PTD'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]
@@ -230,7 +231,7 @@ export interface components {
     CalculationSentenceQuestion: {
       /** Format: int32 */
       sentenceSequence: number
-      userInputType: 'SCHEDULE_15_ATTRACTING_LIFE'
+      userInputType: 'SCHEDULE_15_ATTRACTING_LIFE' | 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
     }
     CalculationUserQuestions: {
       sentenceQuestions: components['schemas']['CalculationSentenceQuestion'][]
@@ -402,6 +403,7 @@ export interface components {
         | 'TUSED_LICENCE_PERIOD_LT_1Y'
         | 'LED_CONSEC_ORA_AND_NON_ORA'
         | 'UNUSED_ADA'
+        | 'IMMEDIATE_RELEASE'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {

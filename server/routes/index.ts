@@ -68,6 +68,8 @@ export default function Index({
     get('/calculation/:nomsId/pre-calculation-questions', calculationQuestionRoutes.calculationQuestions)
     post('/calculation/:nomsId/pre-calculation-questions', calculationQuestionRoutes.submitUserInput)
     get('/schedule-fifteen', calculationQuestionRoutes.scheduleFifteen)
+
+    get('/calculation/:nomsId/alternative-release-arangements', calculationQuestionRoutes.alternativeReleaseIntro)
   }
 
   const searchRoutes = () => {

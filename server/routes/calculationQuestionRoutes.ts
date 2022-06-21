@@ -7,8 +7,8 @@ import {
   CalculationUserInputs,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import UserInputService from '../services/userInputService'
-import config from '../config'
 import EntryPointService from '../services/entryPointService'
+import AlternativeReleaseIntroViewModel from '../models/AlternativeReleaseIntroViewModel'
 
 export default class CalculationQuestionRoutes {
   constructor(
@@ -18,13 +18,28 @@ export default class CalculationQuestionRoutes {
     private readonly userInputService: UserInputService
   ) {}
 
+  public alternativeReleaseIntro: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
+
+    if (calculationQuestions.sentenceQuestions.length === 0) {
+      return res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const model = new AlternativeReleaseIntroViewModel(calculationQuestions)
+    return res.render('pages/questions/alternativeReleaseIntro', {
+      model,
+      prisonerDetail,
+    })
+  }
+
   public calculationQuestions: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    if (!config.featureToggles.sdsPlusQuestion) {
-      return res.redirect(`/calculation/${nomsId}/check-information`)
-    }
     const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
+
     if (calculationQuestions.sentenceQuestions.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }

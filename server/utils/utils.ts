@@ -54,3 +54,7 @@ export const daysArithmeticToWords = (n: number): string =>
     : `plus ${Math.abs(n)} ${pluraliseDuration(Math.abs(n))}`
 
 export default convertToTitleCase
+
+export const unique = <T>(value: T, index: number, self: T[]) => {
+  return self.indexOf(value) === index
+}
