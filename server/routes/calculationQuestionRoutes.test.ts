@@ -189,6 +189,8 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain('Some sentences could have alternative release arrangements')
         expect(res.text).toContain('List A')
         expect(res.text).toContain('List B')
+        expect(res.text).not.toContain('List C')
+        expect(res.text).not.toContain('List D')
         expect(res.text).toContain('On the next pages, you must select the offences with SDS+ release')
       })
   })
