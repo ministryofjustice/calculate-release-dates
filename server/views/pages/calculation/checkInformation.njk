@@ -12,8 +12,8 @@
 
 {% block beforeContent %}
     {{ super() }}
-    {% if userInputs %}
-        {% set backlink = "/calculation/" + prisonerDetail.offenderNo + "/pre-calculation-questions" %}
+    {% if lastUserQuestion(userInputs) %}
+        {% set backlink = "/calculation/" + prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + lastUserQuestion(userInputs).url %}
     {% elif dpsEntryPoint %}
         {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     {% else %}

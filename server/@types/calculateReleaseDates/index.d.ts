@@ -133,6 +133,9 @@ export interface components {
       committedAt: string
       isScheduleFifteen: boolean
       isScheduleFifteenMaximumLife: boolean
+      isPcscSds: boolean
+      isPcscSec250: boolean
+      isPcscSdsPlus: boolean
     }
     Offender: {
       reference: string
@@ -142,11 +145,13 @@ export interface components {
     }
     StandardDeterminateSentence: components['schemas']['AbstractSentence'] & {
       duration?: components['schemas']['Duration']
+      section250?: boolean
     } & {
       consecutiveSentenceUUIDs: unknown
       duration: unknown
       identifier: unknown
       offence: unknown
+      section250: unknown
       sentencedAt: unknown
     }
     CalculatedReleaseDates: {
@@ -193,7 +198,8 @@ export interface components {
       /** Format: int32 */
       sentenceSequence: number
       offenceCode: string
-      isScheduleFifteenMaximumLife: boolean
+      userInputType: 'SCHEDULE_15_ATTRACTING_LIFE' | 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
+      userChoice: boolean
     }
     CalculationUserInputs: {
       sentenceCalculationUserInputs: components['schemas']['CalculationSentenceUserInput'][]
@@ -246,6 +252,9 @@ export interface components {
       offenceCode: string
       offenceDescription: string
       indicators: string[]
+      pcscSec250: boolean
+      pcscSds: boolean
+      pcscSdsPlus: boolean
       scheduleFifteenMaximumLife: boolean
     }
     SentenceAndOffences: {

@@ -137,7 +137,8 @@ const stubbedUserQuestionsPcsc = {
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
     {
-      isScheduleFifteenMaximumLife: true,
+      userInputType: 'SCHEDULE_15_ATTRACTING_LIFE',
+      userChoice: true,
       offenceCode: 'RL05016',
       sentenceSequence: 3,
     } as CalculationSentenceUserInput,
@@ -217,7 +218,8 @@ describe('Calculation question routes tests', () => {
         expect(userInputService.setCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AA', {
           sentenceCalculationUserInputs: [
             {
-              isScheduleFifteenMaximumLife: true,
+              userInputType: 'SCHEDULE_15_ATTRACTING_LIFE',
+              userChoice: true,
               offenceCode: 'RL05016',
               sentenceSequence: 3,
             } as CalculationSentenceUserInput,

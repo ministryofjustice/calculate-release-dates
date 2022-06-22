@@ -11,6 +11,7 @@ import {
 } from '../@types/prisonApi/prisonClientTypes'
 import { groupBy, indexBy } from '../utils/utils'
 import AdjustmentsViewModel from './AdjustmentsViewModel'
+import CalculationQuestionTypes from './CalculationQuestionTypes'
 import CourtCaseTableViewModel from './CourtCaseTableViewModel'
 
 export default class SentenceAndOffenceViewModel {
@@ -57,6 +58,14 @@ export default class SentenceAndOffenceViewModel {
       userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
-    return input && input.isScheduleFifteenMaximumLife
+    return input && input.userChoice
+  }
+
+  public lastUserQuestion = function lastUserQuestion(userInputs: CalculationUserInputs): CalculationQuestionTypes {
+    if (userInputs) {
+      const userInputTypes = CalculationQuestionTypes.getOrderedQuestionTypesFromInputs(userInputs)
+      return userInputTypes[userInputTypes.length - 1]
+    }
+    return null
   }
 }

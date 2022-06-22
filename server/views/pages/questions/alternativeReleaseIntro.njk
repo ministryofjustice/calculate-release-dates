@@ -5,7 +5,7 @@
 {% from "../partials/checkInformation/courtCaseDetails.njk" import courtCaseDetails %}
 {% from "../partials/checkInformation/sentenceTable.njk" import sentenceTable %}
 
-{% set pageTitle = applicationName + " - Does this calculation include an SDS+?" %}
+{% set pageTitle = applicationName + " - Some sentences could have alternative release arrangements" %}
 {% set pageId = "alternative-release-intro" %}
 
 {% block aside %}
@@ -37,10 +37,10 @@
             <p class="govuk-body">This service has identified that some sentences in this calculation could be affected by:</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>
-                    <a href="https://www.legislation.gov.uk/uksi/2020/158/made">The Release of Prisoners (Alteration of Relevant Proportion of Sentence) Order 2020 (SDS+)</a>
+                    <a target="_blank" href="https://www.legislation.gov.uk/uksi/2020/158/made">The Release of Prisoners (Alteration of Relevant Proportion of Sentence) Order 2020 (SDS+)</a>
                 </li>
                 <li>
-                    <a href="https://www.legislation.gov.uk/ukpga/2022/32/contents/enacted">Police, Crime, Sentencing and Courts Act 2022</a>
+                    <a target="_blank" href="https://www.legislation.gov.uk/ukpga/2022/32/contents/enacted">Police, Crime, Sentencing and Courts Act 2022</a>
                 </li>
             </ul>
             <p class="govuk-body">Where an offence can attract a maximum life sentence, the release dates for some sentences are calculated at two thirds. This is also known as an SDS+ arrangement.</p>
@@ -67,10 +67,11 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h2 class="govuk-heading-l govuk-!-margin-top-4">What you need to do</h2>
-            <p class="govuk-body">On the next page{% if model.hasMoreThanOneQuestion() %}s{% endif %}, you must select the offences with SDS+ release arrangements, from the relevant lists:</p>
+            <p class="govuk-body">On the following page{% if model.hasMoreThanOneQuestion() %}s{% endif %}, you must select the offences with SDS+ release arrangements, from the relevant lists:</p>
 
             {% if model.hasOriginal() %}
                 <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List A</h4>
+                <p class="govuk-body">The Schedule 15 offences in list A are applicable to:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SDS, DYOPI, SEC250 sentence types</li>
                     <li>sentenced before 28 June 2022</li>
@@ -79,6 +80,7 @@
             {% endif %}
             {% if model.hasFourToUnderSeven() %}
                 <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List B</h4>
+                <p class="govuk-body">The Schedule 15 offences in list B are applicable to:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SDS, DYOPI sentence types</li>
                     <li>sentenced from 28 June 2022</li>
@@ -87,6 +89,7 @@
             {% endif %}
             {% if model.hasSection250() %}
                 <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List C</h4>
+                <p class="govuk-body">The Schedule 15 offences in list C are applicable to:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SEC250 sentence types</li>
                     <li>sentenced from 28 June 2022</li>
@@ -95,8 +98,9 @@
             {% endif %}
             {% if model.hasUpdated() %}
                 <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List D</h4>
+                <p class="govuk-body">The Schedule 15 offences in list D are applicable to:</p>
                 <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS, DYOPI sentence types</li>
+                    <li>SDS, DYOI sentence types</li>
                     <li>sentenced from 28 June 2022</li>
                     <li>7 years or over</li>
                 </ul>
@@ -106,7 +110,7 @@
     <!-- Call to action -->
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <a href="{{"/calcuation/" + "/somewhere/" + model.firstQuestion()}}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            <a href="{{"/calculation/" + prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + model.firstQuestion().url}}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                 Continue
             </a>
         </div>
