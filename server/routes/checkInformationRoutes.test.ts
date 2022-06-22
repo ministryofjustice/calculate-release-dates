@@ -128,7 +128,7 @@ const stubbedSentencesAndOffences = [
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
     {
-      userInputType: 'SCHEDULE_15_ATTRACTING_LIFE',
+      userInputType: 'ORIGINAL',
       userChoice: true,
       offenceCode: 'RL05016',
       sentenceSequence: 3,
@@ -217,7 +217,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Court case 2')
         expect(res.text).toContain('consecutive to')
         expect(res.text).toContain('court case 1 count 1')
-        expect(res.text).toContain('href="/calculation/A1234AA/pre-calculation-questions"')
+        expect(res.text).toContain('href="/calculation/A1234AA/select-offences-that-appear-in-list-a"')
         expect(res.text).toContain('Restore additional days awarded (RADA)')
         expect(res.text).toContain('2')
         expect(res.text).toContain('Detailed')

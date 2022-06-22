@@ -187,7 +187,7 @@ const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
     {
-      userInputType: 'SCHEDULE_15_ATTRACTING_LIFE',
+      userInputType: 'ORIGINAL',
       userChoice: true,
       offenceCode: '123',
       sentenceSequence: 2,

@@ -297,7 +297,8 @@ export default {
         jsonBody: {
           sentenceCalculationUserInputs: [
             {
-              isScheduleFifteenMaximumLife: true,
+              userInputType: 'ORIGINAL',
+              userChoice: true,
               offenceCode: '123',
               sentenceSequence: 1,
             },
@@ -465,11 +466,11 @@ export default {
           sentenceQuestions: [
             {
               sentenceSequence: 1,
-              userInputType: 'SCHEDULE_15_ATTRACTING_LIFE',
+              userInputType: 'ORIGINAL',
             },
             {
               sentenceSequence: 2,
-              userInputType: 'SCHEDULE_15_ATTRACTING_LIFE',
+              userInputType: 'ORIGINAL',
             },
           ],
         },
