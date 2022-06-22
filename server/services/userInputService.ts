@@ -12,4 +12,8 @@ export default class UserInputService {
   public getCalculationUserInputForPrisoner(req: Request, nomsId: string): CalculationUserInputs {
     return req.session.userInputs && req.session.userInputs[nomsId]
   }
+
+  public getCalculationUserInputForPrisonerOrBlank(req: Request, nomsId: string): CalculationUserInputs {
+    return req.session.userInputs && req.session.userInputs[nomsId]
+  }
 }

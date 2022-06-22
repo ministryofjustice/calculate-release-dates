@@ -65,11 +65,16 @@ export default function Index({
   }
 
   const questionRoutes = () => {
-    get('/calculation/:nomsId/pre-calculation-questions', calculationQuestionRoutes.calculationQuestions)
-    post('/calculation/:nomsId/pre-calculation-questions', calculationQuestionRoutes.submitUserInput)
-    get('/schedule-fifteen', calculationQuestionRoutes.scheduleFifteen)
+    get('/calculation/:nomsId/alternative-release-arrangements', calculationQuestionRoutes.alternativeReleaseIntro)
+    get('/calculation/:nomsId/select-offences-that-appear-in-list-a', calculationQuestionRoutes.selectOffencesInListA)
+    get('/calculation/:nomsId/select-offences-that-appear-in-list-b', calculationQuestionRoutes.selectOffencesInListB)
+    get('/calculation/:nomsId/select-offences-that-appear-in-list-c', calculationQuestionRoutes.selectOffencesInListC)
+    get('/calculation/:nomsId/select-offences-that-appear-in-list-d', calculationQuestionRoutes.selectOffencesInListD)
 
-    get('/calculation/:nomsId/alternative-release-arangements', calculationQuestionRoutes.alternativeReleaseIntro)
+    post('/calculation/:nomsId/select-offences-that-appear-in-list-a', calculationQuestionRoutes.submitOffencesInListA)
+    post('/calculation/:nomsId/select-offences-that-appear-in-list-b', calculationQuestionRoutes.submitOffencesInListB)
+    post('/calculation/:nomsId/select-offences-that-appear-in-list-c', calculationQuestionRoutes.submitOffencesInListC)
+    post('/calculation/:nomsId/select-offences-that-appear-in-list-d', calculationQuestionRoutes.submitOffencesInListD)
   }
 
   const searchRoutes = () => {

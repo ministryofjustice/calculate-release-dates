@@ -1,36 +1,28 @@
-import { CalculationUserQuestions } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { unique } from '../utils/utils'
+import AbstractSelectOffencesViewModel from './AbstractSelectOffencesViewModel'
+import CalculationQuestionTypes from './CalculationQuestionTypes'
 
-export default class AlternativeReleaseIntroViewModel {
-  private userInputTypes: Array<'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'>
-
-  constructor(calculationQuestions: CalculationUserQuestions) {
-    this.userInputTypes = calculationQuestions.sentenceQuestions
-      .map(question => question.userInputType)
-      .filter(unique) as Array<'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'>
-  }
-
+export default class AlternativeReleaseIntroViewModel extends AbstractSelectOffencesViewModel {
   public hasOriginal(): boolean {
-    return this.userInputTypes.includes('ORIGINAL')
+    return this.userInputTypes.includes(CalculationQuestionTypes.ORIGINAL)
   }
 
   public hasFourToUnderSeven(): boolean {
-    return this.userInputTypes.includes('FOUR_TO_UNDER_SEVEN')
+    return this.userInputTypes.includes(CalculationQuestionTypes.FOUR_TO_UNDER_SEVEN)
   }
 
   public hasSection250(): boolean {
-    return this.userInputTypes.includes('SECTION_250')
+    return this.userInputTypes.includes(CalculationQuestionTypes.SECTION_250)
   }
 
   public hasUpdated(): boolean {
-    return this.userInputTypes.includes('UPDATED')
+    return this.userInputTypes.includes(CalculationQuestionTypes.UPDATED)
   }
 
   public hasMoreThanOneQuestion(): boolean {
     return this.userInputTypes.length > 1
   }
 
-  public firstQuestion(): string {
+  public firstQuestion(): CalculationQuestionTypes {
     return this.userInputTypes[0]
   }
 }

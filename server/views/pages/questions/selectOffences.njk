@@ -1,0 +1,106 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "../partials/checkInformation/courtCaseDetails.njk" import courtCaseDetails %}
+{% from "../partials/checkInformation/sentenceTable.njk" import sentenceTable %}
+
+{% set pageTitle = applicationName + " - Select offences that appear in " + model.calculationQuestionType.text %}
+{% set pageId = "calculation-questions" %}
+
+{% block aside %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {% if model.previousQuestion() %}
+        {% set backlink = "/calculation/" + prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + model.previousQuestion().url %}
+    {% else %}
+        {% set backlink = "/calculation/" + prisonerDetail.offenderNo + "/alternative-release-arrangements" %}
+    {% endif %}
+    <nav>
+        {{ govukBackLink({
+        text: "Back",
+        href: backlink
+    }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% include "../partials/customErrorBanner.njk" %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                Select offences that appear in {{model.calculationQuestionType.text}}
+            </h1>
+            <h2>
+                <a href="/{{model.calculationQuestionType.url}}">{{model.calculationQuestionType.text}}</a>
+            </h2>
+            <p class="govuk-body">The Schedule 15 offences in {{model.calculationQuestionType.textLower}} are applicable to:
+                </p>
+            {% if model.isOriginal() %}
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>SDS, DYOPI, SEC250 sentence types</li>
+                    <li>sentenced before 28 June 2022</li>
+                    <li>7 years or over</li>
+                </ul>
+            {% endif %}
+            {% if model.isFourToUnderSeven() %}
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>SDS, DYOPI sentence types</li>
+                    <li>sentenced from 28 June 2022</li>
+                    <li>4 years or over and less than 7 years</li>
+                </ul>
+            {% endif %}
+            {% if model.isSection250() %}
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>SEC250 sentence types</li>
+                    <li>sentenced from 28 June 2022</li>
+                    <li>7 years or over</li>
+                </ul>
+            {% endif %}
+            {% if model.isUpdated() %}
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>SDS, DYOI sentence types</li>
+                    <li>sentenced from 28 June 2022</li>
+                    <li>7 years or over</li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <form method="post">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+            <div>
+                <div id="sentences">
+                    {% for case in model.cases %}
+                        {{ courtCaseDetails({case: case, includeCaseDetails: false}) }}
+                        {{ sentenceTable({case: case, includeCheckboxes: true, includeConurrentOrConsecutiveText: false, isCheckboxChecked: model.isCheckboxChecked}) }}
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Call to action -->
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    {{ govukButton({
+        text: "Continue",
+        type: submit,
+        value: 'submit-user-input',
+        preventDoubleClick: true,
+        attributes: {  'data-qa': 'submit-user-input' }
+    }) }}
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block bodyEnd %}
+    {{ super() }}
+    <script src="/assets/selectAll.js"></script>
+{% endblock %}
