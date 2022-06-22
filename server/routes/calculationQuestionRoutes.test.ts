@@ -164,12 +164,12 @@ afterEach(() => {
 })
 
 describe('Calculation question routes tests', () => {
-  it('GET /calculation/:nomsId/alternative-release-arangements should return detail the alternative release arrangements', () => {
+  it('GET /calculation/:nomsId/alternative-release-arrangements should return detail the alternative release arrangements', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
 
     return request(app)
-      .get('/calculation/A1234AA/alternative-release-arangements')
+      .get('/calculation/A1234AA/alternative-release-arrangements')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -178,14 +178,14 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain('List B')
         expect(res.text).not.toContain('List C')
         expect(res.text).not.toContain('List D')
-        expect(res.text).toContain('On the next pages, you must select the offences with SDS+ release')
+        expect(res.text).toContain('On the following pages, you must select the offences with SDS+ release')
       })
   })
 
-  it('GET /calculation/:nomsId/alternative-release-arangements should redirect if no questions', () => {
+  it('GET /calculation/:nomsId/alternative-release-arrangements should redirect if no questions', () => {
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
     return request(app)
-      .get('/calculation/A1234AA/alternative-release-arangements')
+      .get('/calculation/A1234AA/alternative-release-arrangements')
       .expect(302)
       .expect('Location', '/calculation/A1234AA/check-information')
   })
@@ -201,9 +201,7 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain(
-          '<a href="/calculation/A1234AA/alternative-release-arrangements" class="govuk-back-link">Back</a>'
-        )
+        expect(res.text).toContain('href="/calculation/A1234AA/alternative-release-arrangements"')
         expect(res.text).toContain('Select offences that appear in List A')
         expect(res.text).toContain('Court case 3')
         expect(res.text).toContain('id="checkbox-999" name="999" value="true" checked')
@@ -222,9 +220,7 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain(
-          '<a href="/calculation/A1234AA/select-offences-that-appear-in-list-a" class="govuk-back-link">Back</a>'
-        )
+        expect(res.text).toContain('href="/calculation/A1234AA/select-offences-that-appear-in-list-a"')
         expect(res.text).toContain('Select offences that appear in List B')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('id="checkbox-777" name="777" value="true"')
