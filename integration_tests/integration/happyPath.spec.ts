@@ -1,9 +1,11 @@
 import IndexPage from '../pages'
+import AlternativeReleaseIntroPage from '../pages/alternativeReleaseIntro'
 import CalculationCompletePage from '../pages/calculationComplete'
 import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
 import PrisonerSearchPage from '../pages/prisonerSearch'
+import SelectOffencesPage from '../pages/selectOffences'
 import ViewCalculationSummary from '../pages/viewCalculationSummary'
 import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
 
@@ -41,8 +43,14 @@ context('End to end happy path of user journey', () => {
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
 
-    // const calculationQuestionPage = Page.verifyOnPage(CalculationQuestionPage)
-    // calculationQuestionPage.continueButton().click()
+    const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
+    alternativeReleaseIntro.continueButton().click()
+
+    const listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
+    listAPage.checkboxByIndex(0).click()
+    listAPage.continueButton().click()
+    const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
+    listCPage.continueButton().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
@@ -63,9 +71,14 @@ context('End to end happy path of user journey', () => {
     const indexPage = IndexPage.goTo('A1234AB')
     indexPage.startNowButton().click()
 
-    // const calculationQuestionPage = Page.verifyOnPage(CalculationQuestionPage)
-    // calculationQuestionPage.continueButton().click()
+    const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
+    alternativeReleaseIntro.continueButton().click()
 
+    const listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
+    listAPage.checkboxByIndex(0).click()
+    listAPage.continueButton().click()
+    const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
+    listCPage.continueButton().click()
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
 

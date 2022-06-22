@@ -6,7 +6,7 @@
 {% from "../partials/checkInformation/sentenceTable.njk" import sentenceTable %}
 
 {% set pageTitle = applicationName + " - Select offences that appear in " + model.calculationQuestionType.text %}
-{% set pageId = "calculation-questions" %}
+{% set pageId = "select-offences-" + model.calculationQuestionType.url  %}
 
 {% block aside %}
     {% include "../partials/prisonerIdentityBar.njk" %}
@@ -22,7 +22,8 @@
     <nav>
         {{ govukBackLink({
         text: "Back",
-        href: backlink
+        href: backlink,
+        attributes: {  'data-qa': 'backlink' }
     }) }}
     </nav>
 {% endblock %}
@@ -35,7 +36,7 @@
                 Select offences that appear in {{model.calculationQuestionType.text}}
             </h1>
             <h2>
-                <a href="/{{model.calculationQuestionType.url}}">{{model.calculationQuestionType.text}}</a>
+                <a href="/{{model.calculationQuestionType.url}}" data-qa="offence-list-link">{{model.calculationQuestionType.text}}</a>
             </h2>
             <p class="govuk-body">The Schedule 15 offences in {{model.calculationQuestionType.textLower}} are applicable to:
                 </p>
@@ -98,9 +99,4 @@
         </form>
     </div>
 
-{% endblock %}
-
-{% block bodyEnd %}
-    {{ super() }}
-    <script src="/assets/selectAll.js"></script>
 {% endblock %}

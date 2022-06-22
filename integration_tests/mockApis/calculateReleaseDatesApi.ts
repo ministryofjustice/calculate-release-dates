@@ -464,14 +464,14 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           sentenceQuestions: [
-            // {
-            //   sentenceSequence: 1,
-            //   userInputType: 'ORIGINAL',
-            // },
-            // {
-            //   sentenceSequence: 2,
-            //   userInputType: 'ORIGINAL',
-            // },
+            {
+              sentenceSequence: 1,
+              userInputType: 'ORIGINAL',
+            },
+            {
+              sentenceSequence: 2,
+              userInputType: 'SECTION_250',
+            },
           ],
         },
       },
