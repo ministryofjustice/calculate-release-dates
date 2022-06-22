@@ -42,8 +42,8 @@ context('End to end happy path of user journey', () => {
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
 
-    const calculationQuestionPage = Page.verifyOnPage(CalculationQuestionPage)
-    calculationQuestionPage.continueButton().click()
+    // const calculationQuestionPage = Page.verifyOnPage(CalculationQuestionPage)
+    // calculationQuestionPage.continueButton().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
@@ -64,8 +64,8 @@ context('End to end happy path of user journey', () => {
     const indexPage = IndexPage.goTo('A1234AB')
     indexPage.startNowButton().click()
 
-    const calculationQuestionPage = Page.verifyOnPage(CalculationQuestionPage)
-    calculationQuestionPage.continueButton().click()
+    // const calculationQuestionPage = Page.verifyOnPage(CalculationQuestionPage)
+    // calculationQuestionPage.continueButton().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
