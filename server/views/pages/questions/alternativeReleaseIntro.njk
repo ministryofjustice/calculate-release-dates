@@ -58,7 +58,7 @@
                         <li>sentence type</li>
                         <li>sentence length</li>
                         <li>sentence date</li>
-                        <li>age of the person at the point of sentence</li>
+                        <li>age of the person at the point of sentencing</li>
                     </ul>
                 </div>
             </details>
@@ -67,7 +67,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h2 class="govuk-heading-l govuk-!-margin-top-4">What you need to do</h2>
-            <p class="govuk-body">On the following page{% if model.hasMoreThanOneQuestion() %}s{% endif %}, you must select the offences with SDS+ release arrangements, from the relevant lists:</p>
+            <p class="govuk-body">On the following page{% if model.hasMoreThanOneQuestion() %}s{% endif %}, you must select the offences with SDS+ release arrangements, from the relevant lists.</p>
 
             {% if model.hasOriginal() %}
                 <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List A</h4>
@@ -75,7 +75,7 @@
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SDS, DYOPI, SEC250 sentence types</li>
                     <li>sentenced before 28 June 2022</li>
-                    <li>7 years or over</li>
+                    <li>sentence lengths of 7 years or over</li>
                 </ul>
             {% endif %}
             {% if model.hasFourToUnderSeven() %}
@@ -84,7 +84,7 @@
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SDS, DYOPI sentence types</li>
                     <li>sentenced from 28 June 2022</li>
-                    <li>4 years or over and less than 7 years</li>
+                    <li>sentence lengths of 4 years or over, but less than 7 years</li>
                 </ul>
             {% endif %}
             {% if model.hasSection250() %}
@@ -93,7 +93,7 @@
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SEC250 sentence types</li>
                     <li>sentenced from 28 June 2022</li>
-                    <li>7 years or over</li>
+                    <li>sentence lengths of 7 years or over</li>
                 </ul>
             {% endif %}
             {% if model.hasUpdated() %}
@@ -102,7 +102,7 @@
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SDS, DYOI sentence types</li>
                     <li>sentenced from 28 June 2022</li>
-                    <li>7 years or over</li>
+                    <li>sentence lengths of 7 years or over</li>
                 </ul>
             {% endif %}
         </div>
