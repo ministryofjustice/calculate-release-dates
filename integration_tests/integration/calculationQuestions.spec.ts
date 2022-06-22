@@ -1,5 +1,4 @@
 import AlternativeReleaseIntroPage from '../pages/alternativeReleaseIntro'
-import CheckInformationPage from '../pages/checkInformation'
 import SelectOffencesPage from '../pages/selectOffences'
 
 context('Calculation questions page', () => {
