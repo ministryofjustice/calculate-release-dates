@@ -70,7 +70,7 @@
             <p class="govuk-body">On the following page{% if model.hasMoreThanOneQuestion() %}s{% endif %}, you must select the offences with SDS+ release arrangements, from the relevant lists:</p>
 
             {% if model.hasOriginal() %}
-                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List A</h4>
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="list-a">List A</h4>
                 <p class="govuk-body">The Schedule 15 offences in list A are applicable to:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SDS, DYOPI, SEC250 sentence types</li>
@@ -79,7 +79,7 @@
                 </ul>
             {% endif %}
             {% if model.hasFourToUnderSeven() %}
-                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List B</h4>
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="list-b">List B</h4>
                 <p class="govuk-body">The Schedule 15 offences in list B are applicable to:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SDS, DYOPI sentence types</li>
@@ -88,7 +88,7 @@
                 </ul>
             {% endif %}
             {% if model.hasSection250() %}
-                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List C</h4>
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="list-c">List C</h4>
                 <p class="govuk-body">The Schedule 15 offences in list C are applicable to:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SEC250 sentence types</li>
@@ -97,7 +97,7 @@
                 </ul>
             {% endif %}
             {% if model.hasUpdated() %}
-                <h4 class="govuk-heading-s govuk-!-margin-bottom-1">List D</h4>
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="list-d">List D</h4>
                 <p class="govuk-body">The Schedule 15 offences in list D are applicable to:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>SDS, DYOI sentence types</li>
@@ -110,7 +110,7 @@
     <!-- Call to action -->
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <a href="{{"/calculation/" + prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + model.firstQuestion().url}}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            <a href="{{"/calculation/" + prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + model.firstQuestion().url}}" role="button" draggable="false" class="govuk-button" data-module="govuk-button" data-qa="continue">
                 Continue
             </a>
         </div>
