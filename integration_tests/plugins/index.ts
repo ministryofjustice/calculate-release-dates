@@ -39,6 +39,7 @@ export default (on: (string, Record) => void): void => {
     stubPrisonerDetails: calculateReleaseDatesApi.stubPrisonerDetails,
     stubLatestCalculation: calculateReleaseDatesApi.stubLatestCalculation,
     stubCalculationQuestions: calculateReleaseDatesApi.stubCalculationQuestions,
+    stubEmptyCalculationQuestions: calculateReleaseDatesApi.stubEmptyCalculationQuestions,
     stubCalculationUserInputs: calculateReleaseDatesApi.stubCalculationUserInputs,
   })
 }

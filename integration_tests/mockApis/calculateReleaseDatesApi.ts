@@ -477,4 +477,19 @@ export default {
       },
     })
   },
+  stubEmptyCalculationQuestions: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/A1234AB/user-questions`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          sentenceQuestions: [],
+        },
+      },
+    })
+  },
 }
