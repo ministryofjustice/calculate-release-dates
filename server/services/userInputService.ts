@@ -9,6 +9,13 @@ export default class UserInputService {
     req.session.userInputs[nomsId] = userInputs
   }
 
+  public resetCalculationUserInputForPrisoner(req: Request, nomsId: string): void {
+    if (!req.session.userInputs) {
+      req.session.userInputs = {}
+    }
+    req.session.userInputs[nomsId] = undefined
+  }
+
   public getCalculationUserInputForPrisoner(req: Request, nomsId: string): CalculationUserInputs {
     return req.session.userInputs && req.session.userInputs[nomsId]
   }

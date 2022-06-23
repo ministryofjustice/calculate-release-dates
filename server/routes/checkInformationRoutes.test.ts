@@ -16,8 +16,10 @@ import { ErrorMessageType } from '../types/ErrorMessages'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import UserInputService from '../services/userInputService'
 import {
+  CalculationSentenceQuestion,
   CalculationSentenceUserInput,
   CalculationUserInputs,
+  CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../services/userService')
@@ -136,6 +138,15 @@ const stubbedUserInput = {
   ],
 } as CalculationUserInputs
 
+const stubbedQuestion = {
+  sentenceQuestions: [
+    {
+      userInputType: 'ORIGINAL',
+      sentenceSequence: 3,
+    } as CalculationSentenceQuestion,
+  ],
+} as CalculationUserQuestions
+
 const stubbedAdjustments = {
   sentenceAdjustments: [
     {
@@ -195,6 +206,7 @@ describe('Check information routes tests', () => {
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
     return request(app)
@@ -236,7 +248,9 @@ describe('Check information routes tests', () => {
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
-    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(null)
+    entryPointService.isDpsEntryPoint.mockReturnValue(true)
     return request(app)
       .get('/calculation/A1234AA/check-information')
       .expect(200)
@@ -250,7 +264,9 @@ describe('Check information routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedEmptyAdjustments)
-    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    entryPointService.isDpsEntryPoint.mockReturnValue(true)
     return request(app)
       .get('/calculation/A1234AA/check-information')
       .expect(200)
@@ -264,6 +280,8 @@ describe('Check information routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
       messageType: ErrorMessageType.VALIDATION,
@@ -282,6 +300,8 @@ describe('Check information routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
@@ -345,6 +365,8 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information should display error page for case load errors.', () => {
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     prisonerService.getPrisonerDetail.mockImplementation(() => {
       throw FullPageError.notInCaseLoadError()
     })
@@ -358,6 +380,8 @@ describe('Check information routes tests', () => {
       })
   })
   it('GET /calculation/:nomsId/check-information should display error page for no sentences.', () => {
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockImplementation(() => {
       throw FullPageError.noSentences()
@@ -369,6 +393,30 @@ describe('Check information routes tests', () => {
       .expect(res => {
         expect(res.text).toContain('There is a problem')
         expect(res.text).toContain('The calculation must include at least one sentence.')
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information will redirect user if they have unanswered questions', () => {
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(null)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/alternative-release-arrangements')
+      .expect(res => {
+        expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AA')
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information will redirect user if they have answered questions no longer applicable', () => {
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/alternative-release-arrangements')
+      .expect(res => {
+        expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AA')
       })
   })
 })
