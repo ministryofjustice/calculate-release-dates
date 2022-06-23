@@ -167,12 +167,14 @@ describe('Calculation question routes tests', () => {
   it('GET /calculation/:nomsId/alternative-release-arrangements should return detail the alternative release arrangements', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
+    entryPointService.isDpsEntryPoint.mockReturnValue(true)
 
     return request(app)
       .get('/calculation/A1234AA/alternative-release-arrangements')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        expect(res.text).toContain('/?prisonId=A1234AA')
         expect(res.text).toContain('Some sentences could have alternative release arrangements')
         expect(res.text).toContain('List A')
         expect(res.text).toContain('List B')
