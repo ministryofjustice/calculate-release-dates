@@ -155,4 +155,20 @@ export default class CalculationQuestionRoutes {
       dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
     })
   }
+
+  public offenceListA: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/questions/offence-list-a')
+  }
+
+  public offenceListB: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/questions/offence-list-b')
+  }
+
+  public offenceListC: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/questions/offence-list-c')
+  }
+
+  public offenceListD: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/questions/offence-list-d')
+  }
 }
