@@ -6,6 +6,11 @@ import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import { ErrorMessages } from '../types/ErrorMessages'
 import SentenceRowViewModel from '../models/SentenceRowViewModel'
 import UserInputService from '../services/userInputService'
+import {
+  CalculationUserInputs,
+  CalculationUserQuestions,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { arraysContainSameItemsAsStrings } from '../utils/utils'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -18,6 +23,18 @@ export default class CheckInformationRoutes {
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
+    const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
+    const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
+    const aQuestionIsRequiredOrHasBeenAnswered =
+      calculationQuestions.sentenceQuestions.length || userInputs?.sentenceCalculationUserInputs?.length
+    if (
+      aQuestionIsRequiredOrHasBeenAnswered &&
+      !(await this.allQuestionsHaveBeenAnswered(calculationQuestions, userInputs))
+    ) {
+      this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
+      return res.redirect(`/calculation/${nomsId}/alternative-release-arrangements`)
+    }
+
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
       username,
@@ -31,7 +48,6 @@ export default class CheckInformationRoutes {
     const returnToCustody = sentencesAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
       ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
       : null
-    const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
 
     let validationMessages: ErrorMessages
     if (req.query.hasErrors) {
@@ -45,7 +61,7 @@ export default class CheckInformationRoutes {
       validationMessages = null
     }
 
-    res.render('pages/calculation/checkInformation', {
+    return res.render('pages/calculation/checkInformation', {
       ...new SentenceAndOffenceViewModel(
         prisonerDetail,
         userInputs,
@@ -86,5 +102,29 @@ export default class CheckInformationRoutes {
       token
     )
     return res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
+  }
+
+  private async allQuestionsHaveBeenAnswered(
+    calculationQuestions: CalculationUserQuestions,
+    userInputs: CalculationUserInputs
+  ): Promise<boolean> {
+    if (!userInputs) {
+      return calculationQuestions.sentenceQuestions.length === 0
+    }
+    const questions: {
+      sentenceSequence: number
+      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
+    }[] = calculationQuestions.sentenceQuestions.map(it => {
+      return { sentenceSequence: it.sentenceSequence, userInputType: it.userInputType }
+    })
+
+    const inputs: {
+      sentenceSequence: number
+      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
+    }[] = userInputs.sentenceCalculationUserInputs.map(it => {
+      return { sentenceSequence: it.sentenceSequence, userInputType: it.userInputType }
+    })
+
+    return arraysContainSameItemsAsStrings(questions, inputs)
   }
 }

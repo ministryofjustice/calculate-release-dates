@@ -34,7 +34,7 @@ export default class CalculationQuestionTypes {
 
   private static getOrderedQuestionTypes(
     questions: {
-      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED' | 'SCHEDULE_15_ATTRACTING_LIFE'
+      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
     }[]
   ): CalculationQuestionTypes[] {
     return questions

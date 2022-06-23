@@ -58,3 +58,16 @@ export default convertToTitleCase
 export const unique = <T>(value: T, index: number, self: T[]) => {
   return self.indexOf(value) === index
 }
+
+export const arraysContainSameItemsAsStrings = <T>(array1: T[], array2: T[]) => {
+  return (
+    array1
+      .map(it => JSON.stringify(it))
+      .sort()
+      .join(',') ===
+    array2
+      .map(it => JSON.stringify(it))
+      .sort()
+      .join(',')
+  )
+}

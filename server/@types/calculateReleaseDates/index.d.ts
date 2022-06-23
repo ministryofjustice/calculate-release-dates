@@ -198,7 +198,7 @@ export interface components {
       /** Format: int32 */
       sentenceSequence: number
       offenceCode: string
-      userInputType: 'SCHEDULE_15_ATTRACTING_LIFE' | 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
+      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
       userChoice: boolean
     }
     CalculationUserInputs: {
@@ -237,7 +237,7 @@ export interface components {
     CalculationSentenceQuestion: {
       /** Format: int32 */
       sentenceSequence: number
-      userInputType: 'SCHEDULE_15_ATTRACTING_LIFE' | 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
+      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
     }
     CalculationUserQuestions: {
       sentenceQuestions: components['schemas']['CalculationSentenceQuestion'][]
