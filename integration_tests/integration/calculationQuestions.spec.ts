@@ -38,9 +38,44 @@ context('Calculation questions page', () => {
     listCPageRevisited.checkboxByIndex(0).should('not.be.checked')
   })
 
-  it('Alternative release intro page page is accessible', () => {
+  it('Alternative release intro page is accessible', () => {
     cy.signIn()
     AlternativeReleaseIntroPage.goTo('A1234AB')
+    cy.injectAxe()
+    cy.checkA11y()
+  })
+
+  it('Select offence page is accessible', () => {
+    cy.signIn()
+    SelectOffencesPage.goTo('A1234AB', 'list-a')
+    cy.injectAxe()
+    cy.checkA11y()
+  })
+
+  it('Offence list a is accessible', () => {
+    cy.signIn()
+    cy.visit('/list-a')
+    cy.injectAxe()
+    cy.checkA11y()
+  })
+
+  it('Offence list b is accessible', () => {
+    cy.signIn()
+    cy.visit('/list-b')
+    cy.injectAxe()
+    cy.checkA11y()
+  })
+
+  it('Offence list c is accessible', () => {
+    cy.signIn()
+    cy.visit('/list-c')
+    cy.injectAxe()
+    cy.checkA11y()
+  })
+
+  it('Offence list d is accessible', () => {
+    cy.signIn()
+    cy.visit('/list-d')
     cy.injectAxe()
     cy.checkA11y()
   })

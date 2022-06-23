@@ -300,4 +300,44 @@ describe('Calculation question routes tests', () => {
         } as CalculationUserInputs)
       })
   })
+
+  it('GET /list-a should return the list of offences in List A', () => {
+    return request(app)
+      .get('/list-a')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('List A')
+      })
+  })
+
+  it('GET /list-b should return the list of offences in List B', () => {
+    return request(app)
+      .get('/list-b')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('List B')
+      })
+  })
+
+  it('GET /list-c should return the list of offences in List C', () => {
+    return request(app)
+      .get('/list-c')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('List C')
+      })
+  })
+
+  it('GET /list-d should return the list of offences in List D', () => {
+    return request(app)
+      .get('/list-d')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('List D')
+      })
+  })
 })
