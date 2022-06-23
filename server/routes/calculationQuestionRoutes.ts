@@ -152,6 +152,7 @@ export default class CalculationQuestionRoutes {
     return res.render('pages/questions/alternativeReleaseIntro', {
       model,
       prisonerDetail,
+      dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
     })
   }
 }
