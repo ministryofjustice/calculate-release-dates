@@ -75,6 +75,11 @@ export default function Index({
     post('/calculation/:nomsId/select-offences-that-appear-in-list-b', calculationQuestionRoutes.submitOffencesInListB)
     post('/calculation/:nomsId/select-offences-that-appear-in-list-c', calculationQuestionRoutes.submitOffencesInListC)
     post('/calculation/:nomsId/select-offences-that-appear-in-list-d', calculationQuestionRoutes.submitOffencesInListD)
+
+    get('/list-a', calculationQuestionRoutes.offenceListA)
+    get('/list-b', calculationQuestionRoutes.offenceListB)
+    get('/list-c', calculationQuestionRoutes.offenceListC)
+    get('/list-d', calculationQuestionRoutes.offenceListD)
   }
 
   const searchRoutes = () => {
