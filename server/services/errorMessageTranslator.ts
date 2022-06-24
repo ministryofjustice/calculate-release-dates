@@ -62,6 +62,10 @@ export default function translateErrorToText(
       return [
         `There are multiple sentences that are consecutive to court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}. A sentence should only have one other sentence consecutive to it.`,
       ]
+    case 'SEC_91_SENTENCE_TYPE_INCORRECT':
+      return [
+        `The sentence type for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} is invalid for the sentence date entered.`,
+      ]
     default:
       throw new Error(`Uknown validation code ${validationMessage.code}`)
   }
