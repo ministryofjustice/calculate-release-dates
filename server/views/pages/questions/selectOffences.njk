@@ -33,39 +33,48 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">
-                Select offences that appear in {{model.calculationQuestionType.text}}
+                Select offences that appear in {{model.calculationQuestionType.textLower}}
             </h1>
+            <p class="govuk-body">For each sentence, select the offences that have alternative release date arrangements.</p>
             <h2>
-                <a href="/{{model.calculationQuestionType.url}}" data-qa="offence-list-link">{{model.calculationQuestionType.text}}</a>
+                <a target="_blank" href="/schedule-15-{{model.calculationQuestionType.url}}" data-qa="offence-list-link">{{model.calculationQuestionType.text}}</a>
             </h2>
             <p class="govuk-body">The Schedule 15 offences in {{model.calculationQuestionType.textLower}} are applicable to:
                 </p>
             {% if model.isOriginal() %}
                 <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS, DYOPI, SEC250 sentence types</li>
-                    <li>sentenced before 28 June 2022</li>
-                    <li>7 years or over</li>
+                    <li>SDS, DYOPI, SEC91 and SEC250 sentence types</li>
+                    <li>sentences imposed on or after 01 April 2020</li>
+                    <li>sentences imposed before 28 June 2022</li>
+                    <li>individual sentences of 7 years or over</li>
+                    <li>people aged 18 years or over when sentenced</li>
+                    <li>a maximum sentence of life</li>
                 </ul>
             {% endif %}
             {% if model.isFourToUnderSeven() %}
                 <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS, DYOPI sentence types</li>
-                    <li>sentenced from 28 June 2022</li>
-                    <li>4 years or over and less than 7 years</li>
+                    <li>SDS and DYOI sentence types</li>
+                    <li>sentences imposed on or after 28 June 2022</li>
+                    <li>individual sentences of 4 years or over, but less than 7 years</li>
+                    <li>people aged 18 years or over when sentenced</li>
+                    <li>a maximum sentence of life</li>
                 </ul>
             {% endif %}
             {% if model.isSection250() %}
                 <ul class="govuk-list govuk-list--bullet">
-                    <li>SEC250 sentence types</li>
-                    <li>sentenced from 28 June 2022</li>
-                    <li>7 years or over</li>
+                    <li>SEC250 sentences</li>
+                    <li>sentences imposed on or after 28 June 2022</li>
+                    <li>individual sentences of 7 years or over</li>
+                    <li>a maximum sentence of life</li>
                 </ul>
             {% endif %}
             {% if model.isUpdated() %}
                 <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS, DYOI sentence types</li>
-                    <li>sentenced from 28 June 2022</li>
-                    <li>7 years or over</li>
+                    <li>SDS and DYOI sentence types</li>
+                    <li>sentences imposed on or after 28 June 2022</li>
+                    <li>individual sentences of 7 years or over</li>
+                    <li>people aged 18 years or over when sentenced</li>
+                    <li>a maximum sentence of life</li>
                 </ul>
             {% endif %}
         </div>
@@ -79,7 +88,7 @@
                 <div id="sentences">
                     {% for case in model.cases %}
                         {{ courtCaseDetails({case: case, includeCaseDetails: false}) }}
-                        {{ sentenceTable({case: case, includeCheckboxes: true, includeConurrentOrConsecutiveText: false, isCheckboxChecked: model.isCheckboxChecked}) }}
+                        {{ sentenceTable({case: case, includeCheckboxes: true, includeConurrentOrConsecutiveText: false, isCheckboxChecked: model.isCheckboxChecked, includeSentenceType: false}) }}
                     {% endfor %}
                 </div>
             </div>

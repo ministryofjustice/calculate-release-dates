@@ -180,7 +180,9 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain('List B')
         expect(res.text).not.toContain('List C')
         expect(res.text).not.toContain('List D')
-        expect(res.text).toContain('On the following pages, you must select the offences with SDS+ release')
+        expect(res.text).toContain(
+          'On the following pages, you must select the Schedule 15 offences with SDS+ release arrangements, from the relevant lists.'
+        )
       })
   })
 
@@ -301,9 +303,9 @@ describe('Calculation question routes tests', () => {
       })
   })
 
-  it('GET /list-a should return the list of offences in List A', () => {
+  it('GET /schedule-15-list-a should return the list of offences in List A', () => {
     return request(app)
-      .get('/list-a')
+      .get('/schedule-15-list-a')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -311,9 +313,9 @@ describe('Calculation question routes tests', () => {
       })
   })
 
-  it('GET /list-b should return the list of offences in List B', () => {
+  it('GET /schedule-15-list-b should return the list of offences in List B', () => {
     return request(app)
-      .get('/list-b')
+      .get('/schedule-15-list-b')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -321,9 +323,9 @@ describe('Calculation question routes tests', () => {
       })
   })
 
-  it('GET /list-c should return the list of offences in List C', () => {
+  it('GET /schedule-15-list-c should return the list of offences in List C', () => {
     return request(app)
-      .get('/list-c')
+      .get('/schedule-15-list-c')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -331,9 +333,9 @@ describe('Calculation question routes tests', () => {
       })
   })
 
-  it('GET /list-d should return the list of offences in List D', () => {
+  it('GET /schedule-15-list-d should return the list of offences in List D', () => {
     return request(app)
-      .get('/list-d')
+      .get('/schedule-15-list-d')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
