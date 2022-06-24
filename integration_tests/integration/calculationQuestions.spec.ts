@@ -24,12 +24,12 @@ context('Calculation questions page', () => {
     alternativeReleaseIntro.continueButton().click()
 
     const listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
-    listAPage.offenceListLink().should('have.attr', 'href').should('not.be.empty').and('equals', '/list-a')
+    listAPage.offenceListLink().should('have.attr', 'href').should('not.be.empty').and('equals', '/schedule-15-list-a')
     listAPage.checkboxByIndex(0).click()
     listAPage.checkboxByIndex(0).should('be.checked')
     listAPage.continueButton().click()
     const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
-    listCPage.offenceListLink().should('have.attr', 'href').should('not.be.empty').and('equals', '/list-c')
+    listCPage.offenceListLink().should('have.attr', 'href').should('not.be.empty').and('equals', '/schedule-15-list-c')
     listCPage.backLink().click()
     const listAPageRevisited = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
     listAPageRevisited.checkboxByIndex(0).should('be.checked')
@@ -54,28 +54,28 @@ context('Calculation questions page', () => {
 
   it('Offence list a is accessible', () => {
     cy.signIn()
-    cy.visit('/list-a')
+    cy.visit('/schedule-15-list-a')
     cy.injectAxe()
     cy.checkA11y()
   })
 
   it('Offence list b is accessible', () => {
     cy.signIn()
-    cy.visit('/list-b')
+    cy.visit('/schedule-15-list-b')
     cy.injectAxe()
     cy.checkA11y()
   })
 
   it('Offence list c is accessible', () => {
     cy.signIn()
-    cy.visit('/list-c')
+    cy.visit('/schedule-15-list-c')
     cy.injectAxe()
     cy.checkA11y()
   })
 
   it('Offence list d is accessible', () => {
     cy.signIn()
-    cy.visit('/list-d')
+    cy.visit('/schedule-15-list-d')
     cy.injectAxe()
     cy.checkA11y()
   })
