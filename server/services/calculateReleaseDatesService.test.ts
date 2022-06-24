@@ -175,6 +175,12 @@ const invalidValidationResult: ValidationMessages = {
       arguments: [],
     },
     {
+      code: 'SEC_91_SENTENCE_TYPE_INCORRECT',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
       code: 'REMAND_FROM_TO_DATES_REQUIRED',
       message: '',
       arguments: [],
@@ -411,6 +417,9 @@ describe('Calculate release dates service tests', () => {
         { text: 'Court case 2 count 3 must only have one term in NOMIS.' },
         {
           text: 'There are multiple sentences that are consecutive to court case 2 count 3. A sentence should only have one other sentence consecutive to it.',
+        },
+        {
+          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
         },
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand periods must have a from and to date.' },
