@@ -70,3 +70,22 @@ div.govuk-width-container {
 .list-style-none {
   list-style-type: none;
 }
+
+
+.list-alphanum {
+  list-style-type: none;
+}
+
+.list-alphanum::before {
+  position: absolute;
+  margin-left: -60px;
+  content: attr(data-para-num);
+}
+
+.offence-list > li {
+  padding-left: 20px;
+}
+
+.list-no-padding-left {
+  padding-left: 0;
+}
