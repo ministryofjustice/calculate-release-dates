@@ -10,7 +10,7 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { arraysContainSameItemsAsStrings } from '../utils/utils'
+import { arraysContainSameItemsAsStrings, unique } from '../utils/utils'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -111,19 +111,18 @@ export default class CheckInformationRoutes {
     if (!userInputs) {
       return calculationQuestions.sentenceQuestions.length === 0
     }
-    const questions: {
-      sentenceSequence: number
-      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
-    }[] = calculationQuestions.sentenceQuestions.map(it => {
-      return { sentenceSequence: it.sentenceSequence, userInputType: it.userInputType }
-    })
 
-    const inputs: {
-      sentenceSequence: number
-      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
-    }[] = userInputs.sentenceCalculationUserInputs.map(it => {
-      return { sentenceSequence: it.sentenceSequence, userInputType: it.userInputType }
-    })
+    const questions: string[] = calculationQuestions.sentenceQuestions
+      .map(it => {
+        return `${it.sentenceSequence}${it.userInputType}`
+      })
+      .filter(unique)
+
+    const inputs: string[] = userInputs.sentenceCalculationUserInputs
+      .map(it => {
+        return `${it.sentenceSequence}${it.userInputType}`
+      })
+      .filter(unique)
 
     return arraysContainSameItemsAsStrings(questions, inputs)
   }
