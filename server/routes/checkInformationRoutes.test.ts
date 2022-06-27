@@ -124,11 +124,23 @@ const stubbedSentencesAndOffences = [
         offenceCode: 'RL05016',
         offenceDescription: 'Access / exit by unofficial route - railway bye-law',
       },
+      {
+        offenderChargeId: 2,
+        offenceStartDate: '2020-01-01',
+        offenceCode: 'RL05016',
+        offenceDescription: 'Access / exit by unofficial route - railway bye-law',
+      },
     ],
   },
 ]
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
+    {
+      userInputType: 'ORIGINAL',
+      userChoice: true,
+      offenceCode: 'RL05016',
+      sentenceSequence: 3,
+    } as CalculationSentenceUserInput,
     {
       userInputType: 'ORIGINAL',
       userChoice: true,
@@ -217,7 +229,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Anon')
         expect(res.text).toContain('Nobody')
-        expect(res.text).toContain('This calculation will include 7')
+        expect(res.text).toContain('This calculation will include 8')
         expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
