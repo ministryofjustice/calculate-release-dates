@@ -303,7 +303,7 @@ describe('Calculation question routes tests', () => {
       })
   })
 
-  it('POST /calculation/:nomsId/select-offences-that-appear-in-list-b without selecting any offences OR none apply', () => {
+  it('POST /calculation/:nomsId/select-offences-that-appear-in-list-b without selecting any offences but selecting none apply', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
