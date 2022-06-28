@@ -303,6 +303,54 @@ describe('Calculation question routes tests', () => {
       })
   })
 
+  it('POST /calculation/:nomsId/select-offences-that-appear-in-list-b without selecting any offences OR none apply', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    return request(app)
+      .post('/calculation/A1234AA/select-offences-that-appear-in-list-b')
+      .type('form')
+      .send({ none: true, charges: ['777'] })
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/check-information')
+      .expect(res => {
+        expect(userInputService.setCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AA', {
+          sentenceCalculationUserInputs: [
+            {
+              userInputType: 'ORIGINAL',
+              userChoice: true,
+              offenceCode: 'RL05016',
+              sentenceSequence: 3,
+            } as CalculationSentenceUserInput,
+            {
+              userInputType: 'FOUR_TO_UNDER_SEVEN',
+              userChoice: false,
+              offenceCode: 'abc',
+              sentenceSequence: 1,
+            } as CalculationSentenceUserInput,
+          ],
+        } as CalculationUserInputs)
+      })
+  })
+
+  it('POST /calculation/:nomsId/select-offences-that-appear-in-list-b without selecting any offences OR none apply', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    return request(app)
+      .post('/calculation/A1234AA/select-offences-that-appear-in-list-b')
+      .type('form')
+      .send({ charges: ['777'] })
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain(
+          `<a href="#unselect-all">You must select at least one offence. If none apply, select &#39;None of the sentences include Schedule 15 offences from list B&#39;.</a>`
+        )
+      })
+  })
+
   it('GET /schedule-15-list-a should return the list of offences in List A', () => {
     return request(app)
       .get('/schedule-15-list-a')

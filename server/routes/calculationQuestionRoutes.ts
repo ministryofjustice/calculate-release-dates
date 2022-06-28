@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express'
+import { RequestHandler, Response } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import {
@@ -11,6 +11,9 @@ import EntryPointService from '../services/entryPointService'
 import AlternativeReleaseIntroViewModel from '../models/AlternativeReleaseIntroViewModel'
 import CalculationQuestionTypes from '../models/CalculationQuestionTypes'
 import SelectOffencesViewModel from '../models/SelectOffencesViewModel'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
+import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
+import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 
 export default class CalculationQuestionRoutes {
   constructor(
@@ -39,12 +42,25 @@ export default class CalculationQuestionRoutes {
         token
       )
       const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-      const model = new SelectOffencesViewModel(sentencesAndOffences, calculationQuestions, type, userInputs)
-      return res.render('pages/questions/selectOffences', {
-        model,
-        prisonerDetail,
-      })
+      return this.renderSelectPage(res, sentencesAndOffences, calculationQuestions, prisonerDetail, type, userInputs)
     }
+  }
+
+  private renderSelectPage(
+    res: Response,
+    sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
+    calculationQuestions: CalculationUserQuestions,
+    prisonerDetail: PrisonApiPrisoner,
+    type: CalculationQuestionTypes,
+    userInputs: CalculationUserInputs,
+    validationErrors?: ErrorMessages
+  ): void {
+    const model = new SelectOffencesViewModel(sentencesAndOffences, calculationQuestions, type, userInputs)
+    return res.render('pages/questions/selectOffences', {
+      model,
+      prisonerDetail,
+      validationErrors,
+    })
   }
 
   public selectOffencesInListA: RequestHandler = this.handleListRequest(CalculationQuestionTypes.ORIGINAL)
@@ -78,6 +94,35 @@ export default class CalculationQuestionRoutes {
       if (typeof req.body.charges === 'string') {
         // Charges comes through as a string if there is only 1 row.
         req.body.charges = [req.body.charges]
+      }
+
+      const anyChecked =
+        req.body.charges.filter((charge: number) => {
+          return req.body[charge]
+        }).length > 0
+
+      if (!anyChecked) {
+        if (!req.body.none) {
+          return this.renderSelectPage(
+            res,
+            sentencesAndOffences,
+            calculationQuestions,
+            prisonerDetail,
+            type,
+            {
+              sentenceCalculationUserInputs: [],
+            } as CalculationUserInputs,
+            {
+              messageType: ErrorMessageType.USER_FORM_ERROR,
+              messages: [
+                {
+                  text: `You must select at least one offence. If none apply, select 'None of the sentences include Schedule 15 offences from ${type.textLower}'.`,
+                  id: 'unselect-all',
+                },
+              ],
+            }
+          )
+        }
       }
 
       const userInputs =
