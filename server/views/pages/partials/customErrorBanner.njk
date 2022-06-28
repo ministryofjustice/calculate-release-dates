@@ -19,6 +19,8 @@
                         <p class="govuk-body govuk-!-font-weight-bold">
                             {% if error.href %}
                                 <a href="{{ error.href }}">{{ error.html | safe if error.html else error.text }}</a>
+                            {% elif error.id %}
+                                <a href="#{{ error.id }}">{{ error.html | safe if error.html else error.text }}</a>
                             {% else %}
                                 {{ error.html | safe if error.html else error.text }}
                             {% endif %}

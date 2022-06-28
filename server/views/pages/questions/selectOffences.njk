@@ -80,11 +80,11 @@
         </div>
     </div>
 
-    <div class="govuk-grid-row">
-        <form method="post">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+    <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+        <div class="govuk-grid-row">
 
-            <div>
+            <div class="govuk-grid-column-full govuk-!-margin-top-2">
                 <div id="sentences">
                     {% for case in model.cases %}
                         {{ courtCaseDetails({case: case, includeCaseDetails: false}) }}
@@ -92,20 +92,35 @@
                     {% endfor %}
                 </div>
             </div>
-            <!-- Call to action -->
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    {{ govukButton({
+            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="unselect-all" name="none" type="checkbox" value="unselect-all">
+                        <label class="govuk-label govuk-checkboxes__label" for="unselect-all">
+                            None of the sentences include Schedule 15 offences
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Call to action -->
+        <div class="govuk-grid-row govuk-!-margin-top-8">
+            <div class="govuk-grid-column-two-thirds">
+                {{ govukButton({
         text: "Continue",
         type: submit,
         value: 'submit-user-input',
         preventDoubleClick: true,
         attributes: {  'data-qa': 'submit-user-input' }
     }) }}
-
-                </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
+</div>
 
+{% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+<script src="/assets/unselectAll.js"></script>
 {% endblock %}

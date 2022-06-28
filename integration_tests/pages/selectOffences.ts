@@ -22,6 +22,10 @@ export default class SelectOffencesPage extends Page {
     return cy.get(`.row-checkbox:eq(${index})`)
   }
 
+  public noneSelectedCheckbox(): PageElement {
+    return cy.get('#unselect-all')
+  }
+
   public continueButton(): PageElement {
     return cy.get(`[data-qa=submit-user-input]`)
   }

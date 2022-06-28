@@ -36,6 +36,14 @@ context('Calculation questions page', () => {
     listAPageRevisited.continueButton().click()
     const listCPageRevisited = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
     listCPageRevisited.checkboxByIndex(0).should('not.be.checked')
+    listCPageRevisited.continueButton().click()
+    listCPageRevisited.checkOnPage()
+    listCPageRevisited
+      .errorSummary()
+      .should(
+        'contain.text',
+        `You must select at least one offence. If none apply, select 'None of the sentences include Schedule 15 offences from list C'.`
+      )
   })
 
   it('Alternative release intro page is accessible', () => {
