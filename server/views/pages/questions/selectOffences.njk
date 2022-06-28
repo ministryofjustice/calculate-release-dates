@@ -36,9 +36,22 @@
                 Select offences that appear in {{model.calculationQuestionType.textLower}}
             </h1>
             <p class="govuk-body">For each sentence, select the offences that have alternative release date arrangements.</p>
-            <h2>
-                <a target="_blank" href="/schedule-15-{{model.calculationQuestionType.url}}" data-qa="offence-list-link">{{model.calculationQuestionType.text}}</a>
-            </h2>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+            <a target="_blank" href="/schedule-15-{{model.calculationQuestionType.url}}" data-qa="offence-list-link">
+                <div class="card-group card-group__item govuk-!-margin-top-6">
+                    <div class="card card--clickable">
+                        <h2 class="govuk-heading-s card__heading govuk-!-margin-bottom-0">{{model.calculationQuestionType.text}}</h2>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             <p class="govuk-body">The Schedule 15 offences in {{model.calculationQuestionType.textLower}} are applicable to:
                 </p>
             {% if model.isOriginal() %}
