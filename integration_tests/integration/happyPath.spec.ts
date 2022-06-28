@@ -50,6 +50,7 @@ context('End to end happy path of user journey', () => {
     listAPage.checkboxByIndex(0).click()
     listAPage.continueButton().click()
     const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
+    listCPage.noneSelectedCheckbox().click()
     listCPage.continueButton().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
@@ -78,6 +79,7 @@ context('End to end happy path of user journey', () => {
     listAPage.checkboxByIndex(0).click()
     listAPage.continueButton().click()
     const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
+    listCPage.noneSelectedCheckbox().click()
     listCPage.continueButton().click()
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
