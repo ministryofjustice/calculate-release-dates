@@ -23,27 +23,35 @@ context('Calculation questions page', () => {
 
     alternativeReleaseIntro.continueButton().click()
 
-    const listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
+    let listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
     listAPage.offenceListLink().should('have.attr', 'href').should('not.be.empty').and('equals', '/schedule-15-list-a')
     listAPage.checkboxByIndex(0).click()
     listAPage.checkboxByIndex(0).should('be.checked')
     listAPage.continueButton().click()
-    const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
+    let listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
     listCPage.offenceListLink().should('have.attr', 'href').should('not.be.empty').and('equals', '/schedule-15-list-c')
     listCPage.backLink().click()
-    const listAPageRevisited = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
-    listAPageRevisited.checkboxByIndex(0).should('be.checked')
-    listAPageRevisited.continueButton().click()
-    const listCPageRevisited = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
-    listCPageRevisited.checkboxByIndex(0).should('not.be.checked')
-    listCPageRevisited.continueButton().click()
-    listCPageRevisited.checkOnPage()
-    listCPageRevisited
+    listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
+    listAPage.checkboxByIndex(0).should('be.checked') // checkbox should remain checked, saved to session
+    listAPage.noneSelectedCheckbox().click()
+    listAPage.checkboxByIndex(0).should('not.be.checked') // None selected checkbox should reset all other checkboxes
+    listAPage.continueButton().click()
+    listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
+    listCPage.backLink().click()
+    listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
+    listAPage.noneSelectedCheckbox().should('be.checked') // None selected checkbox should remain checked, saved to session
+    listAPage.continueButton().click()
+    listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
+    listCPage.checkboxByIndex(0).should('not.be.checked')
+    listCPage.noneSelectedCheckbox().should('not.be.checked')
+    listCPage.continueButton().click()
+    listCPage.checkOnPage()
+    listCPage
       .errorSummary()
       .should(
         'contain.text',
         `You must select at least one offence. If none apply, select 'None of the sentences include Schedule 15 offences from list C'.`
-      )
+      ) // Validation on not selecting anything
   })
 
   it('Alternative release intro page is accessible', () => {

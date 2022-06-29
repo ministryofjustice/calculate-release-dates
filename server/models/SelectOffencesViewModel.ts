@@ -42,6 +42,20 @@ export default class SelectOffencesViewModel extends AbstractSelectOffencesViewM
     return input && input.userInputType === this.calculationQuestionType.apiType && input.userChoice
   }
 
+  public isNoneCheckboxChecked(): boolean {
+    const sentences = this.cases
+      .map(it => it.sentences.map(sentence => sentence.sentencesAndOffence.sentenceSequence))
+      .reduce((acc, value) => acc.concat(value), [])
+    const userInputsForThisQuestion =
+      this.userInputs &&
+      this.userInputs.sentenceCalculationUserInputs.filter(it => sentences.includes(it.sentenceSequence))
+    return (
+      userInputsForThisQuestion &&
+      userInputsForThisQuestion.length > 0 &&
+      !this.userInputs.sentenceCalculationUserInputs.find(it => it.userChoice)
+    )
+  }
+
   public previousQuestion(): CalculationQuestionTypes {
     const index = this.userInputTypes.indexOf(this.calculationQuestionType)
 
