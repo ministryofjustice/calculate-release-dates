@@ -28,7 +28,8 @@ export default function Index({
   const calculationAccessRoutes = new CalculationRoutes(
     calculateReleaseDatesService,
     prisonerService,
-    entryPointService
+    entryPointService,
+    userInputService
   )
   const checkInformationAccessRoutes = new CheckInformationRoutes(
     calculateReleaseDatesService,

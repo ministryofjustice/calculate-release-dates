@@ -13,16 +13,19 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import EntryPointService from '../services/entryPointService'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
+import UserInputService from '../services/userInputService'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/entryPointService')
+jest.mock('../services/userInputService')
 
 const userService = new UserService(null) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
+const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 
 let app: Express
 
@@ -150,7 +153,13 @@ const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
 ]
 
 beforeEach(() => {
-  app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService, entryPointService })
+  app = appWithAllRoutes({
+    userService,
+    prisonerService,
+    calculateReleaseDatesService,
+    entryPointService,
+    userInputService,
+  })
 })
 
 afterEach(() => {
@@ -219,7 +228,8 @@ describe('Calculation routes tests', () => {
       .expect(res => {
         expect(res.text).toMatch(/Calculation complete for<br>\s*Anon Nobody/)
         expect(res.text).toContain('Back to Digital Prison Service (DPS) search')
-        expect(entryPointService.clearEntryPoint.mock.calls.length).toBe(1)
+        expect(entryPointService.clearEntryPoint).toBeCalled()
+        expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
       })
   })
 
