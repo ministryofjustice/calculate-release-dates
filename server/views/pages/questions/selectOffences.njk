@@ -110,7 +110,7 @@
                     <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="unselect-all" name="none" type="checkbox" value="unselect-all"  {{ "checked" if model.isNoneCheckboxChecked() }}>
                         <label class="govuk-label govuk-checkboxes__label" for="unselect-all">
-                            None of the sentences include Schedule 15 offences
+                            None of the sentences include Schedule 15 offences from {{model.calculationQuestionType.textLower}}.
                         </label>
                     </div>
                 </div>
