@@ -52,7 +52,7 @@ export default class SelectOffencesViewModel extends AbstractSelectOffencesViewM
     return (
       userInputsForThisQuestion &&
       userInputsForThisQuestion.length > 0 &&
-      !this.userInputs.sentenceCalculationUserInputs.find(it => it.userChoice)
+      !userInputsForThisQuestion.find(it => it.userChoice)
     )
   }
 
