@@ -7,12 +7,14 @@ import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
 import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
+import UserInputService from '../services/userInputService'
 
 export default class CalculationRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entryPointService: EntryPointService
+    private readonly entryPointService: EntryPointService,
+    private readonly userInputService: UserInputService
   ) {}
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
@@ -143,6 +145,7 @@ export default class CalculationRoutes {
     if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
       throw FullPageError.notFoundError()
     }
+    this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
     res.render('pages/calculation/calculationComplete', {
       prisonerDetail,
       calculationRequestId,
