@@ -1,3 +1,5 @@
+// eslint-disable-next-line
+import { HTTPError } from 'superagent' // eslint thinks this is unused.
 import {
   BookingCalculation,
   CalculationUserInputs,
@@ -35,6 +37,20 @@ export default class ViewReleaseDatesService {
   }
 
   async getCalculationUserInputs(calculationId: number, token: string): Promise<CalculationUserInputs> {
-    return new CalculateReleaseDatesApiClient(token).getCalculationUserInputs(calculationId)
+    try {
+      // await the result, so we can catch a 404 error.
+      const result = await new CalculateReleaseDatesApiClient(token).getCalculationUserInputs(calculationId)
+      return result
+      // eslint-disable-next-line
+    } catch (error: HTTPError | any) {
+      // eslint doesn't like any, but unknown is a primitive
+      if ('status' in error) {
+        if (error.status === 404) {
+          // If the calculation didn't have an user inputs, return null and continue.
+          return null
+        }
+      }
+      throw error
+    }
   }
 }
