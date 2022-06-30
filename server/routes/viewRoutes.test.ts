@@ -254,6 +254,18 @@ describe('View journey routesroutes tests', () => {
           expect(res.text).toContain('SDS+')
         })
     })
+    it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences of the calculation if there is no user inputs', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).not.toContain('SDS+')
+        })
+    })
   })
 
   describe('View calculation tests', () => {
