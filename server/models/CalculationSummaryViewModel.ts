@@ -10,7 +10,7 @@ import { ErrorMessages } from '../types/ErrorMessages'
 export default class CalculationSummaryViewModel {
   public hdcedBeforePRRD = function hdcedBeforePRRD(
     releaseDates: { [key: string]: string },
-    calculationBreakdown?: CalculationBreakdown
+    calculationBreakdown?: CalculationBreakdown,
   ): boolean {
     if (releaseDates?.HDCED && calculationBreakdown?.otherDates?.PRRD) {
       const hdced = dayjs(releaseDates?.HDCED)
@@ -24,7 +24,7 @@ export default class CalculationSummaryViewModel {
 
   public showBreakdown = function showBreakdown(
     releaseDates: { [key: string]: string },
-    calculationBreakdown?: CalculationBreakdown
+    calculationBreakdown?: CalculationBreakdown,
   ): boolean {
     return !!calculationBreakdown && !releaseDates.PRRD && !calculationBreakdown?.otherDates?.PRRD
   }
@@ -38,6 +38,6 @@ export default class CalculationSummaryViewModel {
     public calculationBreakdown?: CalculationBreakdown,
     public releaseDatesWithAdjustments?: ReleaseDateWithAdjustments[],
     public validationErrors?: ErrorMessages,
-    public calculationSummaryUnavailable?: boolean
+    public calculationSummaryUnavailable?: boolean,
   ) {}
 }

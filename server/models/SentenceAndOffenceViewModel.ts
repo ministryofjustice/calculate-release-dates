@@ -30,17 +30,17 @@ export default class SentenceAndOffenceViewModel {
     public userInputs: CalculationUserInputs,
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
-    returnToCustodyDate?: PrisonApiReturnToCustodyDate
+    returnToCustodyDate?: PrisonApiReturnToCustodyDate,
   ) {
     this.adjustments = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
-      groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values()
+      groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values(),
     )
       .map(sentences => new CourtCaseTableViewModel(sentences))
       .sort((a, b) => a.caseSequence - b.caseSequence)
     this.sentenceSequenceToSentence = indexBy(
       sentencesAndOffences,
-      (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
+      (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence,
     )
     const reducer = (previousValue: number, currentValue: PrisonApiOffenderSentenceAndOffences) =>
       previousValue + currentValue.offences.length
@@ -51,7 +51,7 @@ export default class SentenceAndOffenceViewModel {
   public rowIsSdsPlus = function rowIsSdsPlus(
     userInputs: CalculationUserInputs,
     sentence: PrisonApiOffenderSentenceAndOffences,
-    offence: PrisonApiOffenderOffence
+    offence: PrisonApiOffenderOffence,
   ): boolean {
     const input =
       userInputs &&

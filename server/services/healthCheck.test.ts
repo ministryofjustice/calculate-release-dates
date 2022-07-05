@@ -10,7 +10,7 @@ describe('Healthcheck', () => {
         expect.objectContaining({
           healthy: true,
           checks: { check1: 'some message', check2: 'some message' },
-        })
+        }),
       )
       done()
     }
@@ -25,7 +25,7 @@ describe('Healthcheck', () => {
         expect.objectContaining({
           healthy: false,
           checks: { check1: 'some message', check2: 'some error' },
-        })
+        }),
       )
       done()
     }
@@ -37,21 +37,23 @@ describe('Healthcheck', () => {
 function successfulCheck(name: string): HealthCheckService {
   return () =>
     new Promise((resolve, _reject) =>
+      // eslint-disable-next-line no-promise-executor-return
       resolve({
         name: `${name}`,
         status: 'ok',
         message: 'some message',
-      })
+      }),
     )
 }
 
 function erroredCheck(name: string): HealthCheckService {
   return () =>
     new Promise((resolve, _reject) =>
+      // eslint-disable-next-line no-promise-executor-return
       resolve({
         name: `${name}`,
         status: 'ERROR',
         message: 'some error',
-      })
+      }),
     )
 }

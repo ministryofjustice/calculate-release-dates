@@ -12,7 +12,7 @@ export default class ViewRoutes {
   constructor(
     private readonly viewReleaseDatesService: ViewReleaseDatesService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly prisonerService: PrisonerService
+    private readonly prisonerService: PrisonerService,
   ) {}
 
   public startViewJourney: RequestHandler = async (req, res): Promise<void> => {
@@ -23,7 +23,7 @@ export default class ViewRoutes {
       const latestCalculation = await this.viewReleaseDatesService.getLatestCalculation(
         nomsId,
         prisonerDetail.bookingId,
-        token
+        token,
       )
       res.redirect(`/view/${nomsId}/sentences-and-offences/${latestCalculation.calculationRequestId}`)
     } catch (error) {
@@ -41,19 +41,19 @@ export default class ViewRoutes {
       const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
         calculationRequestId,
         caseloads,
-        token
+        token,
       )
       const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(
         calculationRequestId,
-        token
+        token,
       )
       const adjustmentDetails = await this.viewReleaseDatesService.getBookingAndSentenceAdjustments(
         calculationRequestId,
-        token
+        token,
       )
       const CalculationUserInputs = await this.viewReleaseDatesService.getCalculationUserInputs(
         calculationRequestId,
-        token
+        token,
       )
       const returnToCustody = sentencesAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
         ? await this.viewReleaseDatesService.getReturnToCustodyDate(calculationRequestId, token)
@@ -65,7 +65,7 @@ export default class ViewRoutes {
           CalculationUserInputs,
           sentencesAndOffences,
           adjustmentDetails,
-          returnToCustody
+          returnToCustody,
         ),
         calculationRequestId,
         nomsId,
@@ -84,23 +84,23 @@ export default class ViewRoutes {
     nomsId: string,
     username: string,
     token: string,
-    caseloads: string[]
+    caseloads: string[],
   ): Promise<CalculationSummaryViewModel> {
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,
-      token
+      token,
     )
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,
-      token
+      token,
     )
     try {
       const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
         calculationRequestId,
         caseloads,
-        token
+        token,
       )
       const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
       return new CalculationSummaryViewModel(
@@ -110,7 +110,7 @@ export default class ViewRoutes {
         nomsId,
         prisonerDetail,
         breakdown?.calculationBreakdown,
-        breakdown?.releaseDatesWithAdjustments
+        breakdown?.releaseDatesWithAdjustments,
       )
     } catch (error) {
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
@@ -131,7 +131,7 @@ export default class ViewRoutes {
             ],
             messageType: ErrorMessageType.MISSING_PRISON_API_DATA,
           } as ErrorMessages,
-          true
+          true,
         )
       }
       throw error
@@ -144,7 +144,7 @@ export default class ViewRoutes {
     const calculationRequestId = Number(req.params.calculationRequestId)
     res.render(
       'pages/view/calculationSummary',
-      await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads)
+      await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads),
     )
   }
 
@@ -154,7 +154,7 @@ export default class ViewRoutes {
     const calculationRequestId = Number(req.params.calculationRequestId)
     res.render(
       'pages/view/printCalculationSummary',
-      await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads)
+      await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads),
     )
   }
 }

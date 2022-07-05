@@ -14,7 +14,7 @@ export default class CalculationRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly entryPointService: EntryPointService,
-    private readonly userInputService: UserInputService
+    private readonly userInputService: UserInputService,
   ) {}
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
@@ -24,7 +24,7 @@ export default class CalculationRoutes {
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,
-      token
+      token,
     )
     if (releaseDates.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
@@ -33,7 +33,7 @@ export default class CalculationRoutes {
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,
-      token
+      token,
     )
     const serverErrors = req.flash('serverErrors')
     let validationErrors = null
@@ -50,7 +50,7 @@ export default class CalculationRoutes {
       prisonerDetail,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments,
-      validationErrors
+      validationErrors,
     )
 
     res.render('pages/calculation/calculationSummary', viewModel)
@@ -64,7 +64,7 @@ export default class CalculationRoutes {
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,
-      token
+      token,
     )
     if (releaseDates.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
@@ -72,7 +72,7 @@ export default class CalculationRoutes {
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,
-      token
+      token,
     )
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
     const viewModel = new CalculationSummaryViewModel(
@@ -82,7 +82,7 @@ export default class CalculationRoutes {
       nomsId,
       prisonerDetail,
       breakdown?.calculationBreakdown,
-      breakdown?.releaseDatesWithAdjustments
+      breakdown?.releaseDatesWithAdjustments,
     )
     res.render('pages/calculation/printCalculationSummary', viewModel)
   }
@@ -100,7 +100,7 @@ export default class CalculationRoutes {
         token,
         {
           breakdownHtml,
-        }
+        },
       )
       res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
     } catch (error) {
@@ -116,7 +116,7 @@ export default class CalculationRoutes {
                 href: `/calculation/${nomsId}/check-information`,
               },
             ],
-          } as ErrorMessages)
+          } as ErrorMessages),
         )
       } else {
         req.flash(
@@ -124,7 +124,7 @@ export default class CalculationRoutes {
           JSON.stringify({
             messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
             messageType: ErrorMessageType.SAVE_DATES,
-          } as ErrorMessages)
+          } as ErrorMessages),
         )
       }
       res.redirect(`/calculation/${nomsId}/summary/${calculationRequestId}`)
@@ -140,7 +140,7 @@ export default class CalculationRoutes {
     const calculation = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,
-      token
+      token,
     )
     if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
       throw FullPageError.notFoundError()

@@ -16,18 +16,18 @@ export default class SelectOffencesViewModel extends AbstractSelectOffencesViewM
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     calculationQuestions: CalculationUserQuestions,
     public calculationQuestionType: CalculationQuestionTypes,
-    private userInputs: CalculationUserInputs
+    private userInputs: CalculationUserInputs,
   ) {
     super(calculationQuestions)
     const filteredSentences = sentencesAndOffences.filter(sentence => {
       return !!calculationQuestions.sentenceQuestions.find(
         question =>
           question.sentenceSequence === sentence.sentenceSequence &&
-          question.userInputType === calculationQuestionType.apiType
+          question.userInputType === calculationQuestionType.apiType,
       )
     })
     this.cases = Array.from(
-      groupBy(filteredSentences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values()
+      groupBy(filteredSentences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values(),
     )
       .map(sentences => new CourtCaseTableViewModel(sentences))
       .sort((a, b) => a.caseSequence - b.caseSequence)

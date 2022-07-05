@@ -31,7 +31,7 @@ export default class CalculateReleaseDatesService {
     username: string,
     prisonerId: string,
     userInput: CalculationUserInputs,
-    token: string
+    token: string,
   ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(prisonerId, userInput)
   }
@@ -39,7 +39,7 @@ export default class CalculateReleaseDatesService {
   async getCalculationResults(
     username: string,
     calculationRequestId: number,
-    token: string
+    token: string,
   ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
   }
@@ -50,7 +50,7 @@ export default class CalculateReleaseDatesService {
 
   async getBreakdown(
     calculationRequestId: number,
-    token: string
+    token: string,
   ): Promise<{
     calculationBreakdown?: CalculationBreakdown
     releaseDatesWithAdjustments: ReleaseDateWithAdjustments[]
@@ -76,21 +76,21 @@ export default class CalculateReleaseDatesService {
     if (breakdown.breakdownByReleaseDateType.LED) {
       const ledDetails = breakdown.breakdownByReleaseDateType.LED
       releaseDatesWithAdjustments.push(
-        this.ledRulesToAdjustmentRow(ledDetails.releaseDate, ledDetails.unadjustedDate, ledDetails.adjustedDays)
+        this.ledRulesToAdjustmentRow(ledDetails.releaseDate, ledDetails.unadjustedDate, ledDetails.adjustedDays),
       )
     }
     if (breakdown.breakdownByReleaseDateType.SLED || breakdown.breakdownByReleaseDateType.SED) {
       CalculateReleaseDatesService.standardAdjustmentRow(
         breakdown.breakdownByReleaseDateType.SLED ? ReleaseDateType.SLED : ReleaseDateType.SED,
         breakdown.breakdownByReleaseDateType.SLED || breakdown.breakdownByReleaseDateType.SED,
-        releaseDatesWithAdjustments
+        releaseDatesWithAdjustments,
       )
     }
     if (breakdown.breakdownByReleaseDateType.CRD || breakdown.breakdownByReleaseDateType.ARD) {
       CalculateReleaseDatesService.standardAdjustmentRow(
         breakdown.breakdownByReleaseDateType.CRD ? ReleaseDateType.CRD : ReleaseDateType.ARD,
         breakdown.breakdownByReleaseDateType.CRD || breakdown.breakdownByReleaseDateType.ARD,
-        releaseDatesWithAdjustments
+        releaseDatesWithAdjustments,
       )
     }
     if (breakdown.breakdownByReleaseDateType.HDCED) {
@@ -101,8 +101,8 @@ export default class CalculateReleaseDatesService {
           hdcedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
           hdcedDetails.releaseDate,
           hdcedDetails.unadjustedDate,
-          hdcedDetails.adjustedDays
-        )
+          hdcedDetails.adjustedDays,
+        ),
       )
     }
     if (breakdown.breakdownByReleaseDateType.TUSED) {
@@ -113,8 +113,8 @@ export default class CalculateReleaseDatesService {
           tusedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
           tusedDetails.releaseDate,
           tusedDetails.unadjustedDate,
-          tusedDetails.adjustedDays
-        )
+          tusedDetails.adjustedDays,
+        ),
       )
     }
     return releaseDatesWithAdjustments
@@ -123,16 +123,16 @@ export default class CalculateReleaseDatesService {
   private static standardAdjustmentRow(
     releaseDateType: ReleaseDateType,
     releaseDateCalculationBreakdown: ReleaseDateCalculationBreakdown,
-    releaseDatesWithAdjustments: ReleaseDateWithAdjustments[]
+    releaseDatesWithAdjustments: ReleaseDateWithAdjustments[],
   ) {
     releaseDatesWithAdjustments.push(
       CalculateReleaseDatesService.createAdjustmentRow(
         releaseDateCalculationBreakdown.releaseDate,
         releaseDateType,
         `${longDateFormat(releaseDateCalculationBreakdown.unadjustedDate)} ${daysArithmeticToWords(
-          releaseDateCalculationBreakdown.adjustedDays
-        )}`
-      )
+          releaseDateCalculationBreakdown.adjustedDays,
+        )}`,
+      ),
     )
   }
 
@@ -141,14 +141,14 @@ export default class CalculateReleaseDatesService {
     rulesWithExtraAdjustments: RulesWithExtraAdjustments,
     releaseDate: string,
     unadjustedDate: string,
-    adjustedDays: number
+    adjustedDays: number,
   ): ReleaseDateWithAdjustments {
     if (rules.includes(CalculationRule.HDCED_MINIMUM_14D)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_MINIMUM_14D
       return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
         ReleaseDateType.HDCED,
-        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`
+        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`,
       )
     }
 
@@ -158,8 +158,8 @@ export default class CalculateReleaseDatesService {
         releaseDate,
         ReleaseDateType.HDCED,
         `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
-          adjustedDays
-        )}`
+          adjustedDays,
+        )}`,
       )
     }
 
@@ -168,7 +168,7 @@ export default class CalculateReleaseDatesService {
       return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
         ReleaseDateType.HDCED,
-        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`
+        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`,
       )
     }
     return null
@@ -179,7 +179,7 @@ export default class CalculateReleaseDatesService {
     rulesWithExtraAdjustments: RulesWithExtraAdjustments,
     releaseDate: string,
     unadjustedDate: string,
-    adjustedDays: number
+    adjustedDays: number,
   ): ReleaseDateWithAdjustments {
     if (rules.includes(CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments[CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y]
@@ -187,8 +187,8 @@ export default class CalculateReleaseDatesService {
         releaseDate,
         ReleaseDateType.TUSED,
         `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
-          adjustedDays
-        )}`
+          adjustedDays,
+        )}`,
       )
     }
     return null
@@ -197,19 +197,19 @@ export default class CalculateReleaseDatesService {
   private ledRulesToAdjustmentRow(
     releaseDate: string,
     unadjustedDate: string,
-    adjustedDays: number
+    adjustedDays: number,
   ): ReleaseDateWithAdjustments {
     return CalculateReleaseDatesService.createAdjustmentRow(
       releaseDate,
       ReleaseDateType.LED,
-      `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)}`
+      `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)}`,
     )
   }
 
   private static createAdjustmentRow(
     releaseDate: string,
     releaseDateType: ReleaseDateType,
-    hintText: string
+    hintText: string,
   ): ReleaseDateWithAdjustments {
     return {
       releaseDate,
@@ -227,7 +227,7 @@ export default class CalculateReleaseDatesService {
     prisonerId: string,
     calculationRequestId: number,
     token: string,
-    body: CalculationFragments
+    body: CalculationFragments,
   ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).confirmCalculation(prisonerId, calculationRequestId, body)
   }
@@ -235,7 +235,7 @@ export default class CalculateReleaseDatesService {
   async getWeekendAdjustments(
     username: string,
     calculation: BookingCalculation,
-    token: string
+    token: string,
   ): Promise<{ [key: string]: WorkingDay }> {
     const client = new CalculateReleaseDatesApiClient(token)
     const adjustments: { [key: string]: WorkingDay } = {}
@@ -270,14 +270,14 @@ export default class CalculateReleaseDatesService {
     prisonId: string,
     userInput: CalculationUserInputs,
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
-    token: string
+    token: string,
   ): Promise<ErrorMessages> {
     const errors = await new CalculateReleaseDatesApiClient(token).validate(prisonId, userInput)
 
     if (Object.keys(errors).length) {
       const messages: ErrorMessage[] = []
       errors.messages.forEach(e =>
-        translateErrorToText(e, sentencesAndOffences).forEach(message => messages.push({ text: message }))
+        translateErrorToText(e, sentencesAndOffences).forEach(message => messages.push({ text: message })),
       )
       return {
         messageType: errors.type === 'UNSUPPORTED' ? ErrorMessageType.UNSUPPORTED : ErrorMessageType.VALIDATION,

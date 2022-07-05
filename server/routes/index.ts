@@ -29,13 +29,13 @@ export default function Index({
     calculateReleaseDatesService,
     prisonerService,
     entryPointService,
-    userInputService
+    userInputService,
   )
   const checkInformationAccessRoutes = new CheckInformationRoutes(
     calculateReleaseDatesService,
     prisonerService,
     entryPointService,
-    userInputService
+    userInputService,
   )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
@@ -46,7 +46,7 @@ export default function Index({
     calculateReleaseDatesService,
     prisonerService,
     entryPointService,
-    userInputService
+    userInputService,
   )
 
   const indexRoutes = () => {

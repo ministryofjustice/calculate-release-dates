@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-shadow
 enum CalculationRule {
   HDCED_GE_12W_LT_18M = 'HDCED_GE_12W_LT_18M',
   HDCED_GE_18M_LT_4Y = 'HDCED_GE_18M_LT_4Y',

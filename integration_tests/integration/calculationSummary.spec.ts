@@ -70,7 +70,7 @@ context('Calculation summary', () => {
       .errorSummary()
       .should(
         'contain.text',
-        'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes'
+        'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
       )
     redirectedView.errorSummary().find('a').should('have.attr', 'href', '/calculation/A1234AB/check-information')
   })

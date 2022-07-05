@@ -19,7 +19,7 @@ export default class ViewReleaseDatesService {
 
   async getBookingAndSentenceAdjustments(
     calculationId: number,
-    token: string
+    token: string,
   ): Promise<PrisonApiBookingAndSentenceAdjustments> {
     return new CalculateReleaseDatesApiClient(token).getBookingAndSentenceAdjustments(calculationId)
   }

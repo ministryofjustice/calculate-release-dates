@@ -9,7 +9,7 @@ export default class CalculationQuestionTypes {
     public readonly apiType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED',
     public readonly url: 'list-a' | 'list-b' | 'list-c' | 'list-d',
     public readonly text: 'List A' | 'List B' | 'List C' | 'List D',
-    public readonly textLower: 'list A' | 'list B' | 'list C' | 'list D'
+    public readonly textLower: 'list A' | 'list B' | 'list C' | 'list D',
   ) {}
 
   public static ORIGINAL = new CalculationQuestionTypes('ORIGINAL', 'list-a', 'List A', 'list A')
@@ -23,7 +23,7 @@ export default class CalculationQuestionTypes {
   public static ORDERED_TYPES = [this.ORIGINAL, this.FOUR_TO_UNDER_SEVEN, this.SECTION_250, this.UPDATED]
 
   public static getOrderedQuestionTypesFromQuestions(
-    calculationQuestions: CalculationUserQuestions
+    calculationQuestions: CalculationUserQuestions,
   ): CalculationQuestionTypes[] {
     return this.getOrderedQuestionTypes(calculationQuestions.sentenceQuestions)
   }
@@ -35,7 +35,7 @@ export default class CalculationQuestionTypes {
   private static getOrderedQuestionTypes(
     questions: {
       userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
-    }[]
+    }[],
   ): CalculationQuestionTypes[] {
     return questions
       .map(question => question.userInputType)
@@ -50,7 +50,7 @@ export default class CalculationQuestionTypes {
   }
 
   public static fromApiType(
-    apiType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
+    apiType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED',
   ): CalculationQuestionTypes {
     return CalculationQuestionTypes.ORDERED_TYPES.find(type => type.apiType === apiType)
   }

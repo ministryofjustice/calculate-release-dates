@@ -5,6 +5,7 @@ export interface ErrorMessages {
   messageType?: ErrorMessageType
 }
 
+// eslint-disable-next-line no-shadow
 export enum ErrorMessageType {
   VALIDATION = 'VALIDATION',
   UNSUPPORTED = 'UNSUPPORTED',

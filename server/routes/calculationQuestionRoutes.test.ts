@@ -181,7 +181,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).not.toContain('List C')
         expect(res.text).not.toContain('List D')
         expect(res.text).toContain(
-          'On the following pages, you must select the Schedule 15 offences with SDS+ release arrangements, from the relevant lists.'
+          'On the following pages, you must select the Schedule 15 offences with SDS+ release arrangements, from the relevant lists.',
         )
       })
   })
@@ -346,7 +346,7 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain(
-          `<a href="#unselect-all">You must select at least one offence. If none apply, select &#39;None of the sentences include Schedule 15 offences from list B&#39;.</a>`
+          `<a href="#unselect-all">You must select at least one offence. If none apply, select &#39;None of the sentences include Schedule 15 offences from list B&#39;.</a>`,
         )
       })
   })

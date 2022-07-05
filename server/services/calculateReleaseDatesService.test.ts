@@ -257,7 +257,7 @@ describe('Calculate release dates service tests', () => {
         'user',
         prisonerId,
         null,
-        token
+        token,
       )
 
       expect(result).toEqual(calculationResults)
@@ -282,7 +282,7 @@ describe('Calculate release dates service tests', () => {
       token,
       {
         breakdownHtml: '',
-      }
+      },
     )
 
     expect(result).toEqual(calculationResults)
@@ -459,7 +459,7 @@ describe('Calculate release dates service tests', () => {
             sentenceSequence: 1,
           },
         ],
-        token
+        token,
       )
 
       expect(result.messages).toEqual([{ text: 'This sentence is unsupported' }])

@@ -3,7 +3,7 @@ import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/Prison
 
 export default function translateErrorToText(
   validationMessage: ValidationMessage,
-  sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
+  sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
 ): string[] {
   const sentencesAndOffence =
     validationMessage.sentenceSequence &&

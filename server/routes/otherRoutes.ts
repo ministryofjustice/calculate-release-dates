@@ -18,7 +18,7 @@ import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffender
 export default class OtherRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly prisonerService: PrisonerService
+    private readonly prisonerService: PrisonerService,
   ) {}
 
   // TODO Remove this submitTestCalculation method and associated code - only in place to aid bulk testing of the calculation algorithm
@@ -49,10 +49,10 @@ export default class OtherRoutes {
             username,
             nomsId,
             null,
-            token
+            token,
           )
           csvData.push(
-            this.addRow(prisonDetails, calc, nomisDates, sentenceAndOffences, adjustments, returnToCustody, keyDates)
+            this.addRow(prisonDetails, calc, nomisDates, sentenceAndOffences, adjustments, returnToCustody, keyDates),
           )
         } catch (ex) {
           if (ex?.status === 422) {
@@ -66,8 +66,8 @@ export default class OtherRoutes {
                 returnToCustody,
                 keyDates,
                 ex,
-                'Validation Error'
-              )
+                'Validation Error',
+              ),
             )
           } else {
             csvData.push(
@@ -80,8 +80,8 @@ export default class OtherRoutes {
                 returnToCustody,
                 keyDates,
                 ex,
-                'Server error'
-              )
+                'Server error',
+              ),
             )
           }
         }
@@ -96,8 +96,8 @@ export default class OtherRoutes {
             returnToCustody,
             keyDates,
             ex,
-            'Prison API Error'
-          )
+            'Prison API Error',
+          ),
         )
       }
     }
@@ -115,7 +115,7 @@ export default class OtherRoutes {
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
     returnToCustody: PrisonApiReturnToCustodyDate,
-    keyDates: PrisonApiOffenderKeyDates
+    keyDates: PrisonApiOffenderKeyDates,
   ) {
     const sentenceLength = OtherRoutes.sentenceLength(calc)
     const row = {
@@ -266,7 +266,7 @@ export default class OtherRoutes {
     returnToCustody: PrisonApiReturnToCustodyDate,
     keyDates: PrisonApiOffenderKeyDates,
     ex: any,
-    errorText: string
+    errorText: string,
   ) {
     return {
       NOMS_ID: nomsId,

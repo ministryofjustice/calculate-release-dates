@@ -15,7 +15,7 @@ export function serviceCheckFactory(
   name: string,
   url: string,
   agentOptions: AgentConfig,
-  serviceTimeout: ServiceTimeout = new ServiceTimeout()
+  serviceTimeout: ServiceTimeout = new ServiceTimeout(),
 ): ServiceCheck {
   const keepaliveAgent = url.startsWith('https') ? new HttpsAgent(agentOptions) : new Agent(agentOptions)
 
@@ -25,7 +25,7 @@ export function serviceCheckFactory(
         .get(url)
         .agent(keepaliveAgent)
         .retry(2, (err, res) => {
-          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message} when calling ${name}`)
+          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message} when calling ${res}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
         })
         .timeout(serviceTimeout)

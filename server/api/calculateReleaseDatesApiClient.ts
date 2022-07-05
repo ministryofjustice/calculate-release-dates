@@ -23,7 +23,7 @@ export default class CalculateReleaseDatesApiClient {
     this.restClient = new RestClient(
       'Calculate release dates API',
       config.apis.calculateReleaseDates as ApiConfig,
-      token
+      token,
     )
   }
 
@@ -55,7 +55,7 @@ export default class CalculateReleaseDatesApiClient {
   confirmCalculation(
     prisonerId: string,
     calculationRequestId: number,
-    body: CalculationFragments
+    body: CalculationFragments,
   ): Promise<BookingCalculation> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}/confirm/${calculationRequestId}`,

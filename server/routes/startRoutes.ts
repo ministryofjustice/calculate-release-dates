@@ -5,7 +5,7 @@ import PrisonerService from '../services/prisonerService'
 export default class StartRoutes {
   constructor(
     private readonly entryPointService: EntryPointService,
-    private readonly prisonerService: PrisonerService
+    private readonly prisonerService: PrisonerService,
   ) {}
 
   public startPage: RequestHandler = async (req, res): Promise<void> => {

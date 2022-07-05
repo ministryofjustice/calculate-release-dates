@@ -20,7 +20,7 @@ export default class CalculationQuestionRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly entryPointService: EntryPointService,
-    private readonly userInputService: UserInputService
+    private readonly userInputService: UserInputService,
   ) {}
 
   private handleListRequest = (type: CalculationQuestionTypes): RequestHandler => {
@@ -39,7 +39,7 @@ export default class CalculationQuestionRoutes {
       const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
         username,
         prisonerDetail.bookingId,
-        token
+        token,
       )
       const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
       return this.renderSelectPage(res, sentencesAndOffences, calculationQuestions, prisonerDetail, type, userInputs)
@@ -53,7 +53,7 @@ export default class CalculationQuestionRoutes {
     prisonerDetail: PrisonApiPrisoner,
     type: CalculationQuestionTypes,
     userInputs: CalculationUserInputs,
-    validationErrors?: ErrorMessages
+    validationErrors?: ErrorMessages,
   ): void {
     const model = new SelectOffencesViewModel(sentencesAndOffences, calculationQuestions, type, userInputs)
     return res.render('pages/questions/selectOffences', {
@@ -80,14 +80,14 @@ export default class CalculationQuestionRoutes {
       const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
         username,
         prisonerDetail.bookingId,
-        token
+        token,
       )
 
       const offences = sentencesAndOffences
         .map(sentence =>
           sentence.offences.map(offence => {
             return { sentence, offence }
-          })
+          }),
         )
         .reduce((acc, value) => acc.concat(value), [])
 
@@ -120,7 +120,7 @@ export default class CalculationQuestionRoutes {
                   id: 'unselect-all',
                 },
               ],
-            }
+            },
           )
         }
       }
@@ -131,7 +131,7 @@ export default class CalculationQuestionRoutes {
 
       // Clear existing answers to this question
       userInputs.sentenceCalculationUserInputs = userInputs.sentenceCalculationUserInputs.filter(
-        question => question.userInputType !== type.apiType
+        question => question.userInputType !== type.apiType,
       )
 
       userInputs.sentenceCalculationUserInputs = [
@@ -164,7 +164,7 @@ export default class CalculationQuestionRoutes {
 
   private nextQuestion(
     calculationQuestions: CalculationUserQuestions,
-    calculationQuestionType: CalculationQuestionTypes
+    calculationQuestionType: CalculationQuestionTypes,
   ): CalculationQuestionTypes {
     const userInputTypes = CalculationQuestionTypes.getOrderedQuestionTypesFromQuestions(calculationQuestions)
     const index = userInputTypes.indexOf(calculationQuestionType)

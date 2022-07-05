@@ -348,13 +348,13 @@ describe('Check information routes tests', () => {
           expect.anything(),
           stubbedUserInput,
           expect.anything(),
-          expect.anything()
+          expect.anything(),
         )
         expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
           expect.anything(),
           'A1234AA',
           stubbedUserInput,
-          expect.anything()
+          expect.anything(),
         )
       })
   })

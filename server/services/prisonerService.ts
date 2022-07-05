@@ -26,7 +26,7 @@ export default class PrisonerService {
     username: string,
     nomsId: string,
     userCaseloads: string[],
-    token: string
+    token: string,
   ): Promise<PrisonApiPrisoner> {
     try {
       const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
@@ -56,7 +56,7 @@ export default class PrisonerService {
   async getSentencesAndOffences(
     username: string,
     bookingId: number,
-    token: string
+    token: string,
   ): Promise<PrisonApiOffenderSentenceAndOffences[]> {
     const sentencesAndOffences = await new PrisonApiClient(token).getSentencesAndOffences(bookingId)
     if (sentencesAndOffences.length === 0) {
@@ -79,7 +79,7 @@ export default class PrisonerService {
 
   async getBookingAndSentenceAdjustments(
     bookingId: number,
-    token: string
+    token: string,
   ): Promise<PrisonApiBookingAndSentenceAdjustments> {
     return new PrisonApiClient(token).getBookingAndSentenceAdjustments(bookingId)
   }

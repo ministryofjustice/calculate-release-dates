@@ -17,7 +17,7 @@ export default class CheckInformationRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly entryPointService: EntryPointService,
-    private readonly userInputService: UserInputService
+    private readonly userInputService: UserInputService,
   ) {}
 
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
@@ -39,11 +39,11 @@ export default class CheckInformationRoutes {
     const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
       username,
       prisonerDetail.bookingId,
-      token
+      token,
     )
     const adjustmentDetails = await this.prisonerService.getBookingAndSentenceAdjustments(
       prisonerDetail.bookingId,
-      token
+      token,
     )
     const returnToCustody = sentencesAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
       ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
@@ -55,7 +55,7 @@ export default class CheckInformationRoutes {
         nomsId,
         userInputs,
         sentencesAndOffences,
-        token
+        token,
       )
     } else {
       validationMessages = null
@@ -67,7 +67,7 @@ export default class CheckInformationRoutes {
         userInputs,
         sentencesAndOffences,
         adjustmentDetails,
-        returnToCustody
+        returnToCustody,
       ),
       dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
       validationErrors: validationMessages,
@@ -82,14 +82,14 @@ export default class CheckInformationRoutes {
     const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
       username,
       prisonerDetail.bookingId,
-      token
+      token,
     )
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     const errors = await this.calculateReleaseDatesService.validateBackend(
       nomsId,
       userInputs,
       sentencesAndOffences,
-      token
+      token,
     )
     if (errors.messages.length > 0) {
       return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
@@ -99,14 +99,14 @@ export default class CheckInformationRoutes {
       username,
       nomsId,
       userInputs,
-      token
+      token,
     )
     return res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
   }
 
   private async allQuestionsHaveBeenAnswered(
     calculationQuestions: CalculationUserQuestions,
-    userInputs: CalculationUserInputs
+    userInputs: CalculationUserInputs,
   ): Promise<boolean> {
     if (!userInputs) {
       return calculationQuestions.sentenceQuestions.length === 0

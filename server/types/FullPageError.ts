@@ -40,6 +40,7 @@ export class FullPageError extends Error {
   }
 }
 
+// eslint-disable-next-line no-shadow
 export enum FullPageErrorType {
   NOT_IN_CASELOAD,
   NO_SENTENCES,

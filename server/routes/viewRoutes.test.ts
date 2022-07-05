@@ -350,7 +350,7 @@ describe('View journey routesroutes tests', () => {
           expect(res.text).not.toContain('Calculation breakdown')
           expect(res.text).toContain('The calculation breakdown cannot be shown on this page.')
           expect(res.text).toContain(
-            'To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/A1234AA/check-information">calculate release dates again.'
+            'To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/A1234AA/check-information">calculate release dates again.',
           )
         })
     })
