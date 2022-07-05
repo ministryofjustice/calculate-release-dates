@@ -1,17 +1,15 @@
-import { RedisClient } from 'redis'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import redis from 'redis-mock'
 import TokenStore from './tokenStore'
 
-const redisClient = {
-  on: jest.fn(),
-  get: jest.fn(),
-  set: jest.fn(),
-}
+const redisClient = redis.createClient()
 
 describe('tokenStore', () => {
   let tokenStore: TokenStore
 
   beforeEach(() => {
-    tokenStore = new TokenStore(redisClient as unknown as RedisClient)
+    tokenStore = new TokenStore(redisClient)
   })
 
   afterEach(() => {
@@ -19,7 +17,9 @@ describe('tokenStore', () => {
   })
 
   it('Can retrieve token', async () => {
-    redisClient.get.mockImplementation((key, callback) => callback(null, 'token-1'))
+    redisClient.get.mockImplementation((key: unknown, callback: (arg0: unknown, arg1: string) => unknown) =>
+      callback(null, 'token-1'),
+    )
 
     await expect(tokenStore.getToken('user-1')).resolves.toBe('token-1')
 

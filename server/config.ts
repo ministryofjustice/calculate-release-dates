@@ -15,11 +15,11 @@ function get<T>(name: string, fallback: T, options = { requireInProduction: fals
 const requiredInProduction = { requireInProduction: true }
 
 export class AgentConfig {
-  maxSockets: 100
+  timeout: number
 
-  maxFreeSockets: 10
-
-  freeSocketTimeout: 30000
+  constructor(timeout = 8000) {
+    this.timeout = timeout
+  }
 }
 
 export interface ApiConfig {
@@ -35,14 +35,14 @@ export default {
   https: production,
   staticResourceCacheDuration: 20,
   redis: {
-    host: process.env.REDIS_HOST,
+    host: get('REDIS_HOST', 'localhost', requiredInProduction),
     port: parseInt(process.env.REDIS_PORT, 10) || 6379,
     password: process.env.REDIS_AUTH_TOKEN,
     tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
   },
   session: {
     secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
-    expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 20)),
+    expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 120)),
   },
   apis: {
     hmppsAuth: {
@@ -52,11 +52,11 @@ export default {
         response: Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('HMPPS_AUTH_TIMEOUT_DEADLINE', 10000)),
       },
-      agent: new AgentConfig(),
-      apiClientId: get('API_CLIENT_ID', 'calculate-release-dates-client', requiredInProduction),
+      agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
+      apiClientId: get('API_CLIENT_ID', 'clientid', requiredInProduction),
       apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret', requiredInProduction),
-      systemClientId: get('SYSTEM_CLIENT_ID', 'calculate-release-dates-admin', requiredInProduction),
-      systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'client_secret', requiredInProduction),
+      systemClientId: get('SYSTEM_CLIENT_ID', 'clientid', requiredInProduction),
+      systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
     },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
@@ -64,7 +64,7 @@ export default {
         response: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE', 5000)),
       },
-      agent: new AgentConfig(),
+      agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
     calculateReleaseDates: {

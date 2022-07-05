@@ -25,18 +25,23 @@ export default function setUpAuth(): Router {
     passport.authenticate('oauth2', {
       successReturnToOrRedirect: req.session.returnTo || '/',
       failureRedirect: '/autherror',
-    })(req, res, next)
+    })(req, res, next),
   )
 
-  const authLogoutUrl = `${config.apis.hmppsAuth.externalUrl}/logout?client_id=${config.apis.hmppsAuth.apiClientId}&redirect_uri=${config.domain}`
+  const authUrl = config.apis.hmppsAuth.externalUrl
+  const authLogoutUrl = `${authUrl}/logout?client_id=${config.apis.hmppsAuth.apiClientId}&redirect_uri=${config.domain}`
 
-  router.use('/logout', (req, res) => {
+  router.use('/logout', (req, res, next) => {
     if (req.user) {
-      req.logout()
-      req.session.destroy(() => res.redirect(authLogoutUrl))
-      return
-    }
-    res.redirect(authLogoutUrl)
+      req.logout(err => {
+        if (err) return next(err)
+        return req.session.destroy(() => res.redirect(authLogoutUrl))
+      })
+    } else res.redirect(authLogoutUrl)
+  })
+
+  router.use('/account-details', (req, res) => {
+    res.redirect(`${authUrl}/account-details`)
   })
 
   router.use((req, res, next) => {

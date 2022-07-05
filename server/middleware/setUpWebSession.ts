@@ -9,10 +9,12 @@ import config from '../config'
 const RedisStore = connectRedis(session)
 
 const client = redis.createClient({
-  port: config.redis.port,
+  socket: {
+    host: config.redis.host,
+    port: config.redis.port,
+    tls: config.redis.tls_enabled === 'true',
+  },
   password: config.redis.password,
-  host: config.redis.host,
-  tls: config.redis.tls_enabled === 'true' ? {} : false,
 })
 
 export default function setUpWebSession(): Router {
@@ -25,7 +27,7 @@ export default function setUpWebSession(): Router {
       resave: false, // redis implements touch so shouldn't need this
       saveUninitialized: false,
       rolling: true,
-    })
+    }),
   )
 
   // Update a value in the cookie so that the set-cookie will be sent.
