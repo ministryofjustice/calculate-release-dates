@@ -28,8 +28,8 @@
     "clean": "rm -rf dist build node_modules stylesheets"
   },
   "engines": {
-    "node": ">=14 <15",
-    "npm": ">=6.4"
+    "node": "^16",
+    "npm": "^8"
   },
   "jest": {
     "preset": "ts-jest",
@@ -37,7 +37,7 @@
       "server/**/*.{ts,js,jsx,mjs}"
     ],
     "testMatch": [
-      "<rootDir>/(server|job)/**/?(*.)(spec|test).{ts,js,jsx,mjs}"
+      "<rootDir>/(server|job)/**/?(*.)(cy|test).{ts,js,jsx,mjs}"
     ],
     "testEnvironment": "node",
     "reporters": [
