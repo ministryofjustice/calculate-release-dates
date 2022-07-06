@@ -15,7 +15,7 @@ parameters:
 
   node-version:
     type: string
-    default: 14.17-browsers
+    default: 16.15-browsers
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
       - checkout
       - run:
           name: Update npm
-          command: 'sudo npm install -g npm@latest'
+          command: 'npm install -g npm@latest'
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
