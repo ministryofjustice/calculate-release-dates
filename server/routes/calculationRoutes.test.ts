@@ -198,6 +198,9 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('HDCED with adjustments')
         expect(res.text).toContain('13 May 2029')
         expect(res.text).toContain('14 May 2029 minus 1 day')
+        expect(res.text).toContain(
+          `Some release dates and details are not included because they are not relevant to this person's sentences`
+        )
       })
   })
 
