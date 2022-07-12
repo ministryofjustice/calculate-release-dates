@@ -191,6 +191,11 @@ const invalidValidationResult: ValidationMessages = {
       arguments: [],
     },
     {
+      code: 'ADJUSTMENT_FUTURE_DATED',
+      message: '',
+      arguments: ['UNLAWFULLY_AT_LARGE', 'ADDITIONAL_DAYS_AWARDED'],
+    },
+    {
       code: 'REMAND_OVERLAPS_WITH_REMAND',
       message: '',
       arguments: [],
@@ -400,7 +405,7 @@ describe('Calculate release dates service tests', () => {
       expect(result.messages).toEqual([])
     })
 
-    it('Test for missing offence dates', async () => {
+    it('Test for validation mapping', async () => {
       fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, invalidValidationResult)
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, sentencesAndOffences, token)
@@ -423,6 +428,8 @@ describe('Calculate release dates service tests', () => {
         },
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand periods must have a from and to date.' },
+        { text: 'The from date for Unlawfully at large (UAL) must be the first day the prisoner was deemed UAL.' },
+        { text: 'The from date for Additional days awarded (ADA) should be the date of the adjudication hearing.' },
         { text: 'Remand time can only be added once, it can cannot overlap with other remand dates.' },
         { text: 'Remand time cannot be credited when a custodial sentence is being served.' },
         {

@@ -221,6 +221,7 @@ export interface components {
         | 'MULTIPLE_SENTENCES_CONSECUTIVE_TO'
         | 'PRISONER_SUBJECT_TO_PTD'
         | 'SEC_91_SENTENCE_TYPE_INCORRECT'
+        | 'ADJUSTMENT_FUTURE_DATED'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]
