@@ -46,6 +46,7 @@ export default function translateErrorToText(
           .join(' and ')} entered.`,
       ]
     case 'ADJUSTMENT_AFTER_RELEASE':
+    case 'ADJUSTMENT_FUTURE_DATED':
       return validationMessage.arguments.map(a => {
         switch (a) {
           case 'ADDITIONAL_DAYS_AWARDED':
