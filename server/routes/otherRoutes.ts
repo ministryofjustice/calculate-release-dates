@@ -295,7 +295,7 @@ export default class OtherRoutes {
       PED: errorText,
       NOMIS_PED: nomisDates?.paroleEligibilityDate,
       NOMIS_PED_CALCULATED: nomisDates?.paroleEligibilityCalculatedDate,
-      NOMIS_PED_OVERRIDE: nomisDates?.paroleEligibilityCalculatedDate,
+      NOMIS_PED_OVERRIDE: nomisDates?.paroleEligibilityOverrideDate,
       HDCED: errorText,
       NOMIS_HDCED: nomisDates?.homeDetentionCurfewEligibilityDate,
       ETD: errorText,
