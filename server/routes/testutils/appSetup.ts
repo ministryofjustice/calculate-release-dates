@@ -75,5 +75,6 @@ export const appWithAllRoutes = (overrides: Partial<Services> = {}, production?:
     ...overrides,
   })
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
+
   return appSetup({ router, production })
 }

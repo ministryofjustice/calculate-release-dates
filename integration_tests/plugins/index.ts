@@ -13,8 +13,8 @@ export default (on: (string, Record) => void): void => {
     getSignInUrl: auth.getSignInUrl,
     stubSignIn: auth.stubSignIn,
 
-    stubAuthUser: auth.stubUser,
-    stubAuthPing: auth.stubPing,
+    stubAuthUser: auth.stubAuthUser,
+    stubAuthPing: auth.stubAuthPing,
 
     stubTokenVerificationPing: tokenVerification.stubPing,
 

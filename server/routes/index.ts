@@ -1,10 +1,6 @@
 import { RequestHandler, Router } from 'express'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { Services } from '../services'
-import populateCurrentUser from '../middleware/populateCurrentUser'
-import flashMessages from '../middleware/flashMessageMiddleware'
-import tokenVerifier from '../api/tokenVerification'
-import auth from '../authentication/auth'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
 import SearchRoutes from './searchRoutes'
@@ -14,7 +10,6 @@ import ViewRoutes from './viewRoutes'
 import CalculationQuestionRoutes from './calculationQuestionRoutes'
 
 export default function Index({
-  userService,
   prisonerService,
   calculateReleaseDatesService,
   entryPointService,
@@ -105,16 +100,6 @@ export default function Index({
     post('/test/calculation', otherAccessRoutes.submitTestCalculation) // TODO remove this route as it was only for testing
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
   }
-
-  router.use(auth.authenticationMiddleware(tokenVerifier))
-  router.use(populateCurrentUser(userService))
-  router.use((req, res, next) => {
-    if (typeof req.csrfToken === 'function') {
-      res.locals.csrfToken = req.csrfToken()
-    }
-    next()
-  })
-  router.use(flashMessages())
 
   indexRoutes()
   calculationRoutes()

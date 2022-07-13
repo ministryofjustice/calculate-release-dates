@@ -17,6 +17,8 @@ import setUpHealthChecks from './middleware/setUpHealthChecks'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { Services } from './services'
+import setUpCurrentUser from './middleware/setUpCurrentUser'
+import setUpCsrf from './middleware/setUpCsrf'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -33,6 +35,8 @@ export default function createApp(services: Services): express.Application {
   nunjucksSetup(app, path)
   app.use(setUpAuthentication())
   app.use(cookieParser())
+  app.use(setUpCsrf())
+  app.use(setUpCurrentUser(services))
 
   // CSRF protection
   if (process.env.NODE_ENV !== 'test') {
