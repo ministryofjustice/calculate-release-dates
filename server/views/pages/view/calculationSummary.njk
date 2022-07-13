@@ -8,7 +8,8 @@
 {% set pageId = "view-calculation-summary" %}
 
 {% block aside %}
-    {% if prisonerDetail %}
+    {% if model.prisonerDetail %}
+        {% set prisonerDetail = model.prisonerDetail %}
         {% include "../partials/prisonerIdentityBar.njk" %}
     {% endif %}
 {% endblock %}
@@ -16,31 +17,37 @@
 {% block beforeContent %}
     {{super()}}
 
-    {% if calculationSummaryUnavailable %}
+    {% if model.calculationSummaryUnavailable %}
+        {% if model.dpsEntryPoint %}
+            {% set backlink = "/?prisonId=" + model.prisonerDetail.offenderNo %}
+        {% else %}
+            {% set backlink = "/view/search/prisoners" %}
+        {% endif %}
         <nav>
             {{ govukBackLink({
-        text: "Back",
-        href: "/view/search/prisoners"
-    }) }}
+                text: "Back",
+                href: backlink
+            }) }}
         </nav>
     {% endif %}
 {% endblock %}
 
 {% block content %}
+    {% set validationErrors = model.validationErrors %}
     {% include "../partials/customErrorBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Release dates {% if prisonerDetail %} for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}
+            <h1 class="govuk-heading-xl">Release dates {% if model.prisonerDetail %} for {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}
                 {% endif %}
             </h1>
             <p class="govuk-body govuk-!-margin-top-8">
-                <a href={{"/view/" + nomsId + "/calculation-summary/" + calculationRequestId + "/print"}}>Print calculation summary</a>
+                <a href={{"/view/" + model.nomsId + "/calculation-summary/" + model.calculationRequestId + "/print"}}>Print calculation summary</a>
             </p>
             <p class="govuk-body">
                 <a class="govuk-link" href="/view/search/prisoners">View previous calculation for another person</a>
             </p>
             <p class="govuk-body govuk-!-margin-bottom-0">
-                <a class="govuk-link" href={{digitalPrisonServicesUrl}}>Back to Digital Prison Service (DPS) search</a>
+                <a class="govuk-link" href={{model.digitalPrisonServicesUrl}}>Back to Digital Prison Service (DPS) search</a>
             </p>
             {% include "../partials/calculationSummaryDates.njk" %}
             {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
@@ -50,13 +57,12 @@
 
     {% include "../partials/calculationSummaryBreakdown.njk" %}
 
-    {% if calculationSummaryUnavailable %}
-    {% else %}
+    {% if not model.calculationSummaryUnavailable %}
         <div class="govuk-grid-row">
             <nav class="pagination" role="navigation" aria-label="Pagination">
                 <ul class="pagination__list">
                     <li class="pagination__item pagination__item--previous">
-                        <a href={{"/view/" + nomsId + "/sentences-and-offences/" + calculationRequestId}} class="govuk-link pagination__link" data-qa="previous-page-button">
+                        <a href={{"/view/" + nomsId + "/sentences-and-offences/" + model.calculationRequestId}} class="govuk-link pagination__link" data-qa="previous-page-button">
                             <span class="pagination__link-title">
                                 <svg class="gem-c-pagination__link-icon" xmlns="http://www.w3.org/2000/svg" height="13" width="17" viewBox="0 0 17 13">
                                     <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>

@@ -12,10 +12,15 @@
 
 {% block beforeContent %}
     {{ super() }}
+    {% if model.dpsEntryPoint %}
+        {% set backlink = "/?prisonId=" + model.prisonerDetail.offenderNo %}
+    {% else %}
+        {% set backlink = "/view/search/prisoners" %}
+    {% endif %}
     <nav>
         {{ govukBackLink({
         text: "Back",
-        href: "/view/search/prisoners"
+        href: backlink
     }) }}
     </nav>
 {% endblock %}
@@ -24,7 +29,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
             <h1 class="govuk-heading-xl" id="check-nomis-heading">Sentence and offence information for
-                {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
+                {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}</h1>
         </div>
     </div>
     <div class="govuk-grid-row">

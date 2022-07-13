@@ -214,6 +214,7 @@ describe('View journey routesroutes tests', () => {
     it('GET /view/:nomsId/latest should redirect to the latest ', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getLatestCalculation.mockResolvedValue(stubbedCalculationResults as never)
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/latest')
         .expect(302)
@@ -230,6 +231,7 @@ describe('View journey routesroutes tests', () => {
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue(stubbedUserInput)
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')
         .expect(200)
@@ -258,6 +260,7 @@ describe('View journey routesroutes tests', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')
         .expect(200)
@@ -277,6 +280,7 @@ describe('View journey routesroutes tests', () => {
         calculationBreakdown: stubbedCalculationBreakdown,
         releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
       })
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
@@ -292,7 +296,7 @@ describe('View journey routesroutes tests', () => {
           // This is now displayed as part of breakdown even IF the dates don't contain a SLED.
           // The design without SLED will come in time
           expect(res.text).toContain('Sentence')
-          expect(res.text).not.toContain('Concurrent sentences')
+          expect(res.text).toContain('Concurrent sentences')
           expect(res.text).not.toContain('Consecutive sentence')
           expect(res.text).toContain('Release dates with adjustments')
           expect(res.text).toContain('03 February 2021')

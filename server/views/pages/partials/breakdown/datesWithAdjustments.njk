@@ -15,9 +15,9 @@
     <div class="govuk-grid-column-one-half">
         <table class="govuk-table govuk-!-margin-bottom-4" data-qa="release-dates-adjustments-table">
             <tbody class="govuk-table__body">
-            {% for releaseDatesWithAdjustment in releaseDatesWithAdjustments %}
-                {{ addAdjustmentRow(releaseDatesWithAdjustment.releaseDateType, releaseDatesWithAdjustment.releaseDate, releaseDatesWithAdjustment.hintText) }}
-            {% endfor %}
+                {% for releaseDatesWithAdjustment in model.releaseDatesWithAdjustments %}
+                    {{ addAdjustmentRow(releaseDatesWithAdjustment.releaseDateType, releaseDatesWithAdjustment.releaseDate, releaseDatesWithAdjustment.hintText) }}
+                {% endfor %}
             </tbody>
         </table>
     </div>

@@ -6,7 +6,7 @@
         </tr>
     </thead>
     <tbody class="govuk-table__body calculation-breakdown">
-        {% for sentencePart in calculationBreakdown.consecutiveSentence.sentenceParts %}
+        {% for sentencePart in model.calculationBreakdown.consecutiveSentence.sentenceParts %}
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Court case {{ sentencePart.caseSequence }}, count {{ sentencePart.lineSequence }}
                     {% if sentencePart.caseReference %}

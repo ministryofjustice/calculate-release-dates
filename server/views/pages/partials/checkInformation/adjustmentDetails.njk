@@ -76,7 +76,9 @@
                     <tbody class="govuk-table__body">
                         {% for adjustment in adjustments.recallSentenceTaggedBail.details %}
                             <tr class="govuk-table__row">
-                                {% set sentence = sentenceSequenceToSentence.get(adjustment.sentence) %}
+                                {% set sentence = model
+                                    .sentenceSequenceToSentence
+                                    .get(adjustment.sentence) %}
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
                                 <!-- Days -->
@@ -108,7 +110,9 @@
                     <tbody class="govuk-table__body">
                         {% for adjustment in adjustments.taggedBail.details %}
                             <tr class="govuk-table__row">
-                                {% set sentence = sentenceSequenceToSentence.get(adjustment.sentence) %}
+                                {% set sentence = model
+                                    .sentenceSequenceToSentence
+                                    .get(adjustment.sentence) %}
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
                                 <!-- Days -->
