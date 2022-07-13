@@ -10,7 +10,6 @@ import ViewRoutes from './viewRoutes'
 import CalculationQuestionRoutes from './calculationQuestionRoutes'
 
 export default function Index({
-  userService,
   prisonerService,
   calculateReleaseDatesService,
   entryPointService,

@@ -1,8 +1,6 @@
 import passport from 'passport'
 import { Strategy } from 'passport-oauth2'
 import type { RequestHandler } from 'express'
-
-import { inspect } from 'util'
 import config from '../config'
 import generateOauthClientToken from './clientCredentials'
 import type { TokenVerifier } from '../api/tokenVerification'
