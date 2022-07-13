@@ -2,28 +2,29 @@
 {% from "./sentenceTable.njk" import sentenceTable %}
 
 <p class="govuk-body govuk-!-margin-top-2" id="offence-count-text">
-                This calculation will include {{ offenceCount }}
-        {{ 'sentence' | pluralise(offenceCount) }} from NOMIS.
+                This calculation will include {{ model.offenceCount }}
+        {{ 'sentence' | pluralise(model.offenceCount) }} from NOMIS.
             </p>
 <h2 class="govuk-heading-l govuk-!-margin-top-6">Court cases</h2>
 
 <div id="sentences">
-        {% for case in cases %}
+        {% for case in model.cases %}
                 {{ courtCaseDetails({case: case, includeCaseDetails: true}) }}
                 {{ sentenceTable({
                         case: case,
                         includeCheckboxes: false,
                         includeConcurrentOrConsecutiveText: true,
                         includeSDSPlusBadge: true,
-                        sentenceSequenceToSentence: sentenceSequenceToSentence,
-                        offenceCount:offenceCount,
-                        returnToCustodyDate:returnToCustodyDate,
-                        userInputs: userInputs,
-                        rowIsSdsPlus: rowIsSdsPlus,
+                        sentenceSequenceToSentence: model.sentenceSequenceToSentence,
+                        offenceCount: model.offenceCount,
+                        returnToCustodyDate: model.returnToCustodyDate,
+                        userInputs: model.userInputs,
+                        rowIsSdsPlus: model.rowIsSdsPlus,
                         includeSentenceType: true
                         }) 
                 }}
         {% endfor %}
 </div>
 
+{% set adjustments = model.adjustments %}
 {% include "./sentenceAdjustments.njk" %}

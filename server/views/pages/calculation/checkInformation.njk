@@ -7,15 +7,16 @@
 {% set pageId = "check-information" %}
 
 {% block aside %}
+    {% set prisonerDetail = model.prisonerDetail %}
     {% include "../partials/prisonerIdentityBar.njk" %}
 {% endblock %}
 
 {% block beforeContent %}
     {{ super() }}
-    {% if lastUserQuestion(userInputs) %}
-        {% set backlink = "/calculation/" + prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + lastUserQuestion(userInputs).url %}
-    {% elif dpsEntryPoint %}
-        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
+    {% if model.lastUserQuestion() %}
+        {% set backlink = "/calculation/" + model.prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + model.lastUserQuestion().url %}
+    {% elif model.dpsEntryPoint %}
+        {% set backlink = "/?prisonId=" + model.prisonerDetail.offenderNo %}
     {% else %}
         {% set backlink = "/search/prisoners" %}
     {% endif %}
@@ -28,11 +29,12 @@
 {% endblock %}
 
 {% block content %}
+    {% set validationErrors = model.validationErrors %}
     {% include "../partials/customErrorBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
             <h1 class="govuk-heading-xl" id="check-nomis-heading">Check sentence and offence information for
-                {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
+                {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}</h1>
         </div>
     </div>
     <div class="govuk-grid-row">

@@ -1,11 +1,11 @@
-{% if showBreakdown(releaseDates, calculationBreakdown) %}
+{% if model.showBreakdown() %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
             <h2 class="govuk-heading-l govuk-!-margin-top-6">Calculation breakdown</h2>
 
             <!-- Concurrent sentence breakdown -->
-            {% if calculationBreakdown.concurrentSentences.length %}
+            {% if model.calculationBreakdown.concurrentSentences.length %}
                 <div class="govuk-!-margin-bottom-8">
                     <h3 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-4">
                         {% if calculationBreakdown.concurrentSentences.length === 1 and not calculationBreakdown.consecutiveSentence %}
@@ -22,14 +22,14 @@
 
     <div class="govuk-grid-row">
 
-        {% if calculationBreakdown.consecutiveSentence %}
+        {% if model.calculationBreakdown.consecutiveSentence %}
             <div class="govuk-grid-column-full">
                 <h3 class="govuk-heading-m govuk-!-margin-bottom-4">Consecutive sentences</h3>
             </div>
             <div class="govuk-grid-column-one-half">
                 <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-2 govuk-!-margin-bottom-4"
                    data-qa="consecutive-start-date">Consecutive sentences start date: <span
-                            class="govuk-body">{{ calculationBreakdown.consecutiveSentence.sentencedAt | date('DD MMMM YYYY') }}</span>
+                            class="govuk-body">{{ model.calculationBreakdown.consecutiveSentence.sentencedAt | date('DD MMMM YYYY') }}</span>
                 </p>
                 {% include "./calculationSummary/consecutiveSentenceTable.njk" %}
                 {% include "./calculationSummary/consecutiveSentenceDatesTable.njk" %}

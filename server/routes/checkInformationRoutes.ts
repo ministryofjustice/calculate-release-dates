@@ -62,15 +62,15 @@ export default class CheckInformationRoutes {
     }
 
     return res.render('pages/calculation/checkInformation', {
-      ...new SentenceAndOffenceViewModel(
+      model: new SentenceAndOffenceViewModel(
         prisonerDetail,
         userInputs,
+        this.entryPointService.isDpsEntryPoint(req),
         sentencesAndOffences,
         adjustmentDetails,
-        returnToCustody
+        returnToCustody,
+        validationMessages
       ),
-      dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
-      validationErrors: validationMessages,
     })
   }
 

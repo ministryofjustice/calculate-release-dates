@@ -40,7 +40,12 @@ export default function Index({
   const searchAccessRoutes = new SearchRoutes(prisonerService)
   const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
   const startRoutes = new StartRoutes(entryPointService, prisonerService)
-  const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
+  const viewAccessRoutes = new ViewRoutes(
+    viewReleaseDatesService,
+    calculateReleaseDatesService,
+    prisonerService,
+    entryPointService
+  )
 
   const calculationQuestionRoutes = new CalculationQuestionRoutes(
     calculateReleaseDatesService,

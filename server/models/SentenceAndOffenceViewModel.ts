@@ -9,6 +9,7 @@ import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
+import { ErrorMessages } from '../types/ErrorMessages'
 import { groupBy, indexBy } from '../utils/utils'
 import AdjustmentsViewModel from './AdjustmentsViewModel'
 import CalculationQuestionTypes from './CalculationQuestionTypes'
@@ -28,9 +29,11 @@ export default class SentenceAndOffenceViewModel {
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
+    public dpsEntryPoint: boolean,
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
-    returnToCustodyDate?: PrisonApiReturnToCustodyDate
+    returnToCustodyDate?: PrisonApiReturnToCustodyDate,
+    public validationErrors?: ErrorMessages
   ) {
     this.adjustments = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
@@ -48,22 +51,18 @@ export default class SentenceAndOffenceViewModel {
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
   }
 
-  public rowIsSdsPlus = function rowIsSdsPlus(
-    userInputs: CalculationUserInputs,
-    sentence: PrisonApiOffenderSentenceAndOffences,
-    offence: PrisonApiOffenderOffence
-  ): boolean {
+  public rowIsSdsPlus(sentence: PrisonApiOffenderSentenceAndOffences, offence: PrisonApiOffenderOffence): boolean {
     const input =
-      userInputs &&
-      userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
+      this.userInputs &&
+      this.userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
     return input && input.userChoice
   }
 
-  public lastUserQuestion = function lastUserQuestion(userInputs: CalculationUserInputs): CalculationQuestionTypes {
-    if (userInputs) {
-      const userInputTypes = CalculationQuestionTypes.getOrderedQuestionTypesFromInputs(userInputs)
+  public lastUserQuestion(): CalculationQuestionTypes {
+    if (this.userInputs) {
+      const userInputTypes = CalculationQuestionTypes.getOrderedQuestionTypesFromInputs(this.userInputs)
       return userInputTypes[userInputTypes.length - 1]
     }
     return null

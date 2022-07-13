@@ -8,6 +8,7 @@
 {% set pageId = "calculation-summary" %}
 
 {% block aside %}
+    {% set prisonerDetail = model.prisonerDetail %}
     {% include "../partials/prisonerIdentityBar.njk" %}
 {% endblock %}
 
@@ -16,12 +17,13 @@
     <nav>
         {{ govukBackLink({
         text: "Back",
-        href: "/calculation/" + prisonerDetail.offenderNo + "/check-information"
+        href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
     }) }}
     </nav>
 {% endblock %}
 
 {% block content %}
+    {% set validationErrors = model.validationErrors %}
     {% include "../partials/customErrorBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -50,7 +52,7 @@
                     }) }}
             </form>
             <p class="govuk-body govuk-!-font-size-16">
-                <a class="govuk-link" href={{ "/calculation/" + prisonerDetail.offenderNo +
+                <a class="govuk-link" href={{ "/calculation/" + model.prisonerDetail.offenderNo +
                     "/check-information" }}>Cancel calculation</a>
             </p>
 

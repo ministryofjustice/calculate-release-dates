@@ -2,19 +2,19 @@
     <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
             <td class="govuk-table__header">Total sentence length</td>
-            <td class="govuk-table__cell">{{ calculationBreakdown.consecutiveSentence.sentenceLengthDays }}
+            <td class="govuk-table__cell">{{ model.calculationBreakdown.consecutiveSentence.sentenceLengthDays }}
             days
         </td>
         </tr>
         <tr class="govuk-table__row">
-            <td class="govuk-table__header">{{ calculationBreakdown.consecutiveSentence.dates | expiryDateType }}</td>
-            {% set expiryDate = calculationBreakdown.consecutiveSentence.dates | expiryDates %}
+            <td class="govuk-table__header">{{ model.calculationBreakdown.consecutiveSentence.dates | expiryDateType }}</td>
+            {% set expiryDate = model.calculationBreakdown.consecutiveSentence.dates | expiryDates %}
             <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}<br/>
                 <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">{{ expiryDate.daysFromSentenceStart }} days</span></td>
         </tr>
         <tr class="govuk-table__row">
-            <td class="govuk-table__header">{{ calculationBreakdown.consecutiveSentence.dates | releaseDateType }}</td>
-            {% set releaseDate = calculationBreakdown.consecutiveSentence.dates | releaseDates %}
+            <td class="govuk-table__header">{{ model.calculationBreakdown.consecutiveSentence.dates | releaseDateType }}</td>
+            {% set releaseDate = model.calculationBreakdown.consecutiveSentence.dates | releaseDates %}
             <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}<br/>
                 <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">{{ releaseDate.daysFromSentenceStart }} days</span></td>
         </tr>

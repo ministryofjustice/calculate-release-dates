@@ -14,50 +14,50 @@
 <h2 class="govuk-heading-l govuk-!-margin-top-9">Final release dates</h2>
 <div class="custom-card">
     <div class="custom-card-main">
-        {% if releaseDates.SLED %}
-            {{ releaseDateLine('Sentence and licence expiry date (SLED)', 'SLED-date', releaseDates.SLED) }}
+        {% if model.releaseDates.SLED %}
+            {{ releaseDateLine('Sentence and licence expiry date (SLED)', 'SLED-date', model.releaseDates.SLED) }}
         {% endif %}
-        {% if releaseDates.LED %}
-            {{ releaseDateLine('Licence expiry date (LED)', 'LED-date', releaseDates.LED) }}
+        {% if model.releaseDates.LED %}
+            {{ releaseDateLine('Licence expiry date (LED)', 'LED-date', model.releaseDates.LED) }}
         {% endif %}
-        {% if releaseDates.SED %}
-            {{ releaseDateLine('Sentence expiry date (SED)', 'SED-date', releaseDates.SED) }}
+        {% if model.releaseDates.SED %}
+            {{ releaseDateLine('Sentence expiry date (SED)', 'SED-date', model.releaseDates.SED) }}
         {% endif %}
-        {% if releaseDates.NPD %}
-            {{ releaseDateLine('Non parole date (NPD)', 'NPD-date', releaseDates.NPD) }}
+        {% if model.releaseDates.NPD %}
+            {{ releaseDateLine('Non parole date (NPD)', 'NPD-date', model.releaseDates.NPD) }}
         {% endif %}
-        {% if releaseDates.ARD %}
-            {{ releaseDateLine('Automatic release date (ARD)', 'ARD-date', releaseDates.ARD) }}
-            {% if weekendAdjustments.ARD %}
-                {{ holidayLine('ARD-weekend-adjustment', weekendAdjustments.ARD.date, weekendAdjustments.ARD.adjustedForBankHoliday) }}
+        {% if model.releaseDates.ARD %}
+            {{ releaseDateLine('Automatic release date (ARD)', 'ARD-date', model.releaseDates.ARD) }}
+            {% if model.weekendAdjustments.ARD %}
+                {{ holidayLine('ARD-weekend-adjustment', model.weekendAdjustments.ARD.date, model.weekendAdjustments.ARD.adjustedForBankHoliday) }}
             {% endif %}
         {% endif %}
-        {% if releaseDates.CRD %}
-            {{ releaseDateLine('Conditional release date (CRD)', 'CRD-date', releaseDates.CRD) }}
-            {% if weekendAdjustments.CRD %}
-                {{ holidayLine('CRD-weekend-adjustment', weekendAdjustments.CRD.date, weekendAdjustments.CRD.adjustedForBankHoliday) }}
+        {% if model.releaseDates.CRD %}
+            {{ releaseDateLine('Conditional release date (CRD)', 'CRD-date', model.releaseDates.CRD) }}
+            {% if model.weekendAdjustments.CRD %}
+                {{ holidayLine('CRD-weekend-adjustment', model.weekendAdjustments.CRD.date, model.weekendAdjustments.CRD.adjustedForBankHoliday) }}
             {% endif %}
         {% endif %}
-        {% if releaseDates.PED %}
-            {{ releaseDateLine('Parole eligibility date (PED)', 'PED-date', releaseDates.PED) }}
+        {% if model.releaseDates.PED %}
+            {{ releaseDateLine('Parole eligibility date (PED)', 'PED-date', model.releaseDates.PED) }}
         {% endif %}
-        {% if releaseDates.PRRD %}
-            {{ releaseDateLine('Post recall release date (PRRD)', 'PRRD-date', releaseDates.PRRD) }}
-            {% if weekendAdjustments.PRRD %}
-                {{ holidayLine('PRRD-weekend-adjustment', weekendAdjustments.PRRD.date, weekendAdjustments.PRRD.adjustedForBankHoliday) }}
+        {% if model.releaseDates.PRRD %}
+            {{ releaseDateLine('Post recall release date (PRRD)', 'PRRD-date', model.releaseDates.PRRD) }}
+            {% if model.weekendAdjustments.PRRD %}
+                {{ holidayLine('PRRD-weekend-adjustment', model.weekendAdjustments.PRRD.date, model.weekendAdjustments.PRRD.adjustedForBankHoliday) }}
             {% endif %}
         {% endif %}
-        {% if releaseDates.HDCED %}
-            {{ releaseDateLine('Home detention curfew eligibility date (HDCED)', 'HDCED-date', releaseDates.HDCED) }}
-            {% if weekendAdjustments.HDCED %}
-                {{ holidayLine('HDCED-weekend-adjustment', weekendAdjustments.HDCED.date, weekendAdjustments.HDCED.adjustedForBankHoliday) }}
+        {% if model.releaseDates.HDCED %}
+            {{ releaseDateLine('Home detention curfew eligibility date (HDCED)', 'HDCED-date', model.releaseDates.HDCED) }}
+            {% if model.weekendAdjustments.HDCED %}
+                {{ holidayLine('HDCED-weekend-adjustment', model.weekendAdjustments.HDCED.date, model.weekendAdjustments.HDCED.adjustedForBankHoliday) }}
             {% endif %}
-            {% if hdcedBeforePRRD(releaseDates, calculationBreakdown) %}
-                {{ hdcedBeforePrrdLine(calculationBreakdown.otherDates.PRRD)}}
+            {% if model.hdcedBeforePRRD() %}
+                {{ hdcedBeforePrrdLine(model.calculationBreakdown.otherDates.PRRD)}}
             {% endif %}
         {% endif %}
-        {% if releaseDates.TUSED %}
-            {{ releaseDateLine('Top up supervision expiry date (TUSED)', 'TUSED-date', releaseDates.TUSED) }}
+        {% if model.releaseDates.TUSED %}
+            {{ releaseDateLine('Top up supervision expiry date (TUSED)', 'TUSED-date', model.releaseDates.TUSED) }}
         {% endif %}
     </div>
 </div>

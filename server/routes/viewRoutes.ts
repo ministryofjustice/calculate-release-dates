@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express'
+import { Request, RequestHandler } from 'express'
 import PrisonerService from '../services/prisonerService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
@@ -7,12 +7,14 @@ import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import SentenceRowViewModel from '../models/SentenceRowViewModel'
+import EntryPointService from '../services/entryPointService'
 
 export default class ViewRoutes {
   constructor(
     private readonly viewReleaseDatesService: ViewReleaseDatesService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly prisonerService: PrisonerService
+    private readonly prisonerService: PrisonerService,
+    private readonly entryPointService: EntryPointService
   ) {}
 
   public startViewJourney: RequestHandler = async (req, res): Promise<void> => {
@@ -51,7 +53,7 @@ export default class ViewRoutes {
         calculationRequestId,
         token
       )
-      const CalculationUserInputs = await this.viewReleaseDatesService.getCalculationUserInputs(
+      const calculationUserInputs = await this.viewReleaseDatesService.getCalculationUserInputs(
         calculationRequestId,
         token
       )
@@ -60,9 +62,10 @@ export default class ViewRoutes {
         : null
 
       res.render('pages/view/sentencesAndOffences', {
-        ...new SentenceAndOffenceViewModel(
+        model: new SentenceAndOffenceViewModel(
           prisonerDetail,
-          CalculationUserInputs,
+          calculationUserInputs,
+          this.entryPointService.isDpsEntryPoint(req),
           sentencesAndOffences,
           adjustmentDetails,
           returnToCustody
@@ -84,7 +87,8 @@ export default class ViewRoutes {
     nomsId: string,
     username: string,
     token: string,
-    caseloads: string[]
+    caseloads: string[],
+    req: Request
   ): Promise<CalculationSummaryViewModel> {
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
@@ -110,7 +114,10 @@ export default class ViewRoutes {
         nomsId,
         prisonerDetail,
         breakdown?.calculationBreakdown,
-        breakdown?.releaseDatesWithAdjustments
+        breakdown?.releaseDatesWithAdjustments,
+        null,
+        false,
+        this.entryPointService.isDpsEntryPoint(req)
       )
     } catch (error) {
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
@@ -131,7 +138,8 @@ export default class ViewRoutes {
             ],
             messageType: ErrorMessageType.MISSING_PRISON_API_DATA,
           } as ErrorMessages,
-          true
+          true,
+          this.entryPointService.isDpsEntryPoint(req)
         )
       }
       throw error
@@ -142,19 +150,17 @@ export default class ViewRoutes {
     const { nomsId } = req.params
     const { caseloads, token, username } = res.locals.user
     const calculationRequestId = Number(req.params.calculationRequestId)
-    res.render(
-      'pages/view/calculationSummary',
-      await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads)
-    )
+    res.render('pages/view/calculationSummary', {
+      model: await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads, req),
+    })
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    res.render(
-      'pages/view/printCalculationSummary',
-      await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads)
-    )
+    res.render('pages/view/printCalculationSummary', {
+      model: await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads, req),
+    })
   }
 }

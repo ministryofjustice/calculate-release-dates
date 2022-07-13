@@ -52,7 +52,7 @@
                                         {{ params.returnToCustodyDate | date('DD MMMM YYYY') }}
                                     </div>
                                 {% endif %}
-                                {% if params.includeSDSPlusBadge and params.rowIsSdsPlus(params.userInputs, sentence, offence)%}
+                                {% if params.includeSDSPlusBadge and params.rowIsSdsPlus(sentence, offence)%}
                                     <div class="govuk-!-margin-top-2">
                                         <span class="moj-badge">SDS+</span></div>
                                 {% endif %}
