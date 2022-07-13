@@ -98,7 +98,7 @@ jobs:
     executor:
       name: hmpps/node_redis
       node_tag: << pipeline.parameters.node-version >>
-      redis_tag: buster
+      redis_tag: "6.2"
     steps:
       - checkout
       - attach_workspace:
