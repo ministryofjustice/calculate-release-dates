@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { Response } from 'superagent'
 import AuthorisedRoles from '../../server/enumerations/authorisedRoles'
-
-import { stubFor, getRequests } from './wiremock'
+import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 
 const createToken = () => {
@@ -19,10 +18,12 @@ const createToken = () => {
 }
 
 const getSignInUrl = (): Promise<string> =>
-  getRequests().then(data => {
+  getMatchingRequests({
+    method: 'GET',
+    urlPath: '/auth/oauth/authorize',
+  }).then(data => {
     const { requests } = data.body
-    const stateParam = requests[0].request.queryParams.state
-    const stateValue = stateParam ? stateParam.values[0] : requests[1].request.queryParams.state.values[0]
+    const stateValue = requests[requests.length - 1].queryParams.state.values[0]
     return `/login/callback?code=codexxxx&state=${stateValue}`
   })
 
@@ -58,7 +59,7 @@ const redirect = () =>
       status: 200,
       headers: {
         'Content-Type': 'text/html',
-        Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
+        Location: 'http://localhost:3007/login/callback?code=codexxxx&state=stateyyyy',
       },
       body: '<html><body id="sign-in-page">SignIn page<h1>Sign in</h1></body></html>',
     },
@@ -68,7 +69,7 @@ const signOut = () =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/auth/logout.*',
+      urlPattern: '/auth/sign-out.*',
     },
     response: {
       status: 200,
@@ -76,6 +77,21 @@ const signOut = () =>
         'Content-Type': 'text/html',
       },
       body: '<html><body id="sign-in-page">SignIn page<h1>Sign in</h1></body></html>',
+    },
+  })
+
+const manageDetails = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/auth/account-details.*',
+    },
+    response: {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html',
+      },
+      body: '<html><body><h1>Your account details</h1></body></html>',
     },
   })
 
@@ -89,7 +105,7 @@ const token = () =>
       status: 200,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
-        Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
+        Location: 'http://localhost:3007/login/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
         access_token: createToken(),
@@ -102,7 +118,7 @@ const token = () =>
     },
   })
 
-const stubUser = () =>
+const stubUser = (name: string) =>
   stubFor({
     request: {
       method: 'GET',
@@ -117,7 +133,7 @@ const stubUser = () =>
         staffId: 231232,
         username: 'USER1',
         active: true,
-        name: 'anon nobody',
+        name,
       },
     },
   })
@@ -133,14 +149,14 @@ const stubUserRoles = () =>
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      jsonBody: [{ roleId: 'SOME_USER_ROLE' }],
+      jsonBody: [{ roleCode: 'SOME_USER_ROLE' }],
     },
   })
 
 export default {
   getSignInUrl,
-  stubPing: (): Promise<[Response, Response]> => Promise.all([ping(), tokenVerification.stubPing()]),
-  stubSignIn: (): Promise<[Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), token(), tokenVerification.stubVerifyToken()]),
-  stubUser: (): Promise<[Response, Response]> => Promise.all([stubUser(), stubUserRoles()]),
+  stubAuthPing: ping,
+  stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
+  stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
 }
