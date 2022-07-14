@@ -116,13 +116,10 @@ export interface components {
       custodialDuration?: components['schemas']['Duration']
       extensionDuration?: components['schemas']['Duration']
       automaticRelease?: boolean
-      /** Format: int32 */
-      custodialLengthInDays?: number
     } & {
       automaticRelease: unknown
       consecutiveSentenceUUIDs: unknown
       custodialDuration: unknown
-      custodialLengthInDays: unknown
       extensionDuration: unknown
       identifier: unknown
       offence: unknown
@@ -170,25 +167,26 @@ export interface components {
         months?: number
         /** Format: int32 */
         days?: number
-        negative?: boolean
         zero?: boolean
+        negative?: boolean
+        units?: {
+          durationEstimated?: boolean
+          duration?: {
+            /** Format: int64 */
+            seconds?: number
+            zero?: boolean
+            /** Format: int32 */
+            nano?: number
+            negative?: boolean
+            positive?: boolean
+          }
+          timeBased?: boolean
+          dateBased?: boolean
+        }[]
         chronology?: {
           id?: string
           calendarType?: string
         }
-        units?: {
-          dateBased?: boolean
-          timeBased?: boolean
-          duration?: {
-            /** Format: int64 */
-            seconds?: number
-            /** Format: int32 */
-            nano?: number
-            negative?: boolean
-            zero?: boolean
-          }
-          durationEstimated?: boolean
-        }[]
       }
     }
     CalculationFragments: {
@@ -210,7 +208,7 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE'
         | 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE'
-        | 'SENTENCE_HAS_NO_DURATION'
+        | 'SENTENCE_HAS_NO_IMPRISONMENT_DURATION'
         | 'OFFENCE_MISSING_DATE'
         | 'REMAND_FROM_TO_DATES_REQUIRED'
         | 'SENTENCE_HAS_MULTIPLE_TERMS'
@@ -222,6 +220,11 @@ export interface components {
         | 'PRISONER_SUBJECT_TO_PTD'
         | 'SEC_91_SENTENCE_TYPE_INCORRECT'
         | 'ADJUSTMENT_FUTURE_DATED'
+        | 'SENTENCE_HAS_NO_LICENCE_DURATION'
+        | 'LICENCE_TERM_LESS_THAN_ONE_YEAR'
+        | 'LICENCE_TERM_MORE_THAN_EIGHT_YEARS'
+        | 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT'
+        | 'LASPO_AR_SENTENCE_TYPE_INCORRECT'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]
