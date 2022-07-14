@@ -1,18 +1,10 @@
-import { createClient } from 'redis'
-
 import logger from '../../logger'
-import config from '../config'
+import { createRedisClient } from '../data/redisClient'
 
-const createRedisClient = () => {
-  return createClient({
-    socket: {
-      port: config.redis.port,
-      host: config.redis.host,
-      tls: config.redis.tls_enabled === 'true',
-    },
-    password: config.redis.password,
-    // prefix: 'systemToken:',
-  })
+const getRedisClient = () => {
+  const client = createRedisClient({ legacyMode: true })
+  client.connect().catch((err: Error) => logger.error(`Error connecting to Redis`, err))
+  return client
 }
 
 export default class TokenStore {
@@ -26,7 +18,7 @@ export default class TokenStore {
     return this.redisClientInternal
   }
 
-  constructor(redisClientImplementation = createRedisClient()) {
+  constructor(redisClientImplementation = getRedisClient()) {
     redisClientImplementation.on('error', (error: never) => {
       logger.error(error, `Redis error`)
     })

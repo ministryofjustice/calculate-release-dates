@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   redis:
-    image: 'bitnami/redis:5.0'
+    image: 'bitnami/redis:6.2'
     networks:
       - hmpps
     container_name: redis 
