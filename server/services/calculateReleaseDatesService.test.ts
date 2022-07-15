@@ -157,7 +157,7 @@ const invalidValidationResult: ValidationMessages = {
       arguments: [],
     },
     {
-      code: 'SENTENCE_HAS_NO_DURATION',
+      code: 'SENTENCE_HAS_NO_IMPRISONMENT_DURATION',
       sentenceSequence: 4,
       message: '',
       arguments: [],
@@ -176,6 +176,36 @@ const invalidValidationResult: ValidationMessages = {
     },
     {
       code: 'SEC_91_SENTENCE_TYPE_INCORRECT',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'SENTENCE_HAS_NO_LICENCE_DURATION',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'LICENCE_TERM_LESS_THAN_ONE_YEAR',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'LICENCE_TERM_MORE_THAN_EIGHT_YEARS',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'LASPO_AR_SENTENCE_TYPE_INCORRECT',
       sentenceSequence: 4,
       message: '',
       arguments: [],
@@ -422,6 +452,21 @@ describe('Calculate release dates service tests', () => {
         { text: 'Court case 2 count 3 must only have one term in NOMIS.' },
         {
           text: 'There are multiple sentences that are consecutive to court case 2 count 3. A sentence should only have one other sentence consecutive to it.',
+        },
+        {
+          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
+        },
+        {
+          text: 'Court case 2 count 3 must include a licence term.',
+        },
+        {
+          text: 'Court court case 2 count 3 must have a licence term of at least one year.',
+        },
+        {
+          text: 'Court case court case 2 count 3 must have a licence term that does not exceed 8 years.',
+        },
+        {
+          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
         },
         {
           text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
