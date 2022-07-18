@@ -6,7 +6,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewReleaseDatesService from './viewReleaseDatesService'
 
-jest.mock('../api/hmppsAuthClient')
+jest.mock('../data/hmppsAuthClient')
 
 const token = 'token'
 const stubbedUserInput = {

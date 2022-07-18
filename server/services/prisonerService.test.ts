@@ -1,5 +1,5 @@
 import nock from 'nock'
-import HmppsAuthClient from '../api/hmppsAuthClient'
+import HmppsAuthClient from '../data/hmppsAuthClient'
 import config from '../config'
 import PrisonerService from './prisonerService'
 import {
@@ -10,7 +10,7 @@ import {
 import { FullPageErrorType } from '../types/FullPageError'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
-jest.mock('../api/hmppsAuthClient')
+jest.mock('../data/hmppsAuthClient')
 
 const caseload = {
   caseLoadId: 'MDI',
