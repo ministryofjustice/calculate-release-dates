@@ -1,5 +1,5 @@
 import { Readable } from 'stream'
-import type HmppsAuthClient from '../api/hmppsAuthClient'
+import type HmppsAuthClient from '../data/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
 import {
   PrisonApiBookingAndSentenceAdjustments,

@@ -1,4 +1,4 @@
-import { serviceCheckFactory } from '../api/healthCheck'
+import { serviceCheckFactory } from '../data/healthCheck'
 import config from '../config'
 import type { AgentConfig } from '../config'
 

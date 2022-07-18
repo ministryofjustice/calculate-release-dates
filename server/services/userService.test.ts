@@ -1,10 +1,10 @@
 import nock from 'nock'
 import UserService from './userService'
-import HmppsAuthClient, { User } from '../api/hmppsAuthClient'
+import HmppsAuthClient, { User } from '../data/hmppsAuthClient'
 import { PrisonApiUserCaseloads } from '../@types/prisonApi/prisonClientTypes'
 import config from '../config'
 
-jest.mock('../api/hmppsAuthClient')
+jest.mock('../data/hmppsAuthClient')
 
 const token = 'some token'
 

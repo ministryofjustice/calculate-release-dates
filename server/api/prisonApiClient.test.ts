@@ -1,11 +1,11 @@
 import nock from 'nock'
 import config from '../config'
 import PrisonerService from '../services/prisonerService'
-import HmppsAuthClient from './hmppsAuthClient'
+import HmppsAuthClient from '../data/hmppsAuthClient'
 import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
 import { FullPageErrorType } from '../types/FullPageError'
 
-jest.mock('./hmppsAuthClient')
+jest.mock('../data/hmppsAuthClient')
 
 const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
 const prisonerService = new PrisonerService(hmppsAuthClient)

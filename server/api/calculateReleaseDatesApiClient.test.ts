@@ -2,7 +2,7 @@ import nock from 'nock'
 import config from '../config'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
-jest.mock('./hmppsAuthClient')
+jest.mock('../data/hmppsAuthClient')
 
 interface TestData {
   key: string

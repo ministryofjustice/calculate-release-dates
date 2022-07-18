@@ -1,5 +1,5 @@
 import config, { ApiConfig } from '../config'
-import RestClient from './restClient'
+import RestClient from '../data/restClient'
 import {
   BookingCalculation,
   CalculationBreakdown,

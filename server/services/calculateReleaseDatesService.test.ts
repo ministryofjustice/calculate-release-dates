@@ -11,7 +11,7 @@ import { ErrorMessageType } from '../types/ErrorMessages'
 import { psiExample16CalculationBreakdown, psiExample25CalculationBreakdown } from './breakdownExamplesTestData'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
-jest.mock('../api/hmppsAuthClient')
+jest.mock('../data/hmppsAuthClient')
 
 const prisonerId = 'A1234AB'
 const calculationRequestId = 123456
