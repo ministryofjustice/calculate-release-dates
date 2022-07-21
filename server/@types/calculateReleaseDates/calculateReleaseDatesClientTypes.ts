@@ -12,3 +12,5 @@ export type CalculationUserQuestions = components['schemas']['CalculationUserQue
 export type CalculationSentenceQuestion = components['schemas']['CalculationSentenceQuestion']
 export type CalculationUserInputs = components['schemas']['CalculationUserInputs']
 export type CalculationSentenceUserInput = components['schemas']['CalculationSentenceUserInput']
+export type SentenceDiagram = components['schemas']['SentenceDiagram']
+export type SentenceDiagramRow = components['schemas']['SentenceDiagramRow']

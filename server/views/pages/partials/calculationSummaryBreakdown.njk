@@ -8,7 +8,7 @@
             {% if model.calculationBreakdown.concurrentSentences.length %}
                 <div class="govuk-!-margin-bottom-8">
                     <h3 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-4">
-                        {% if calculationBreakdown.concurrentSentences.length === 1 and not calculationBreakdown.consecutiveSentence %}
+                        {% if model.calculationBreakdown.concurrentSentences.length === 1 and not model.calculationBreakdown.consecutiveSentence %}
                             Sentence
                         {% else %}
                             Concurrent sentences

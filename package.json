@@ -85,6 +85,7 @@
   },
   "dependencies": {
     "@ministryofjustice/frontend": "^1.4.2",
+    "@types/lodash": "^4.14.182",
     "agentkeepalive": "^4.2.1",
     "applicationinsights": "^2.3.3",
     "body-parser": "^1.20.0",
@@ -107,6 +108,7 @@
     "http-errors": "^1.8.1",
     "jquery": "^3.6.0",
     "jwt-decode": "^3.1.2",
+    "lodash": "^4.17.21",
     "nocache": "^3.0.4",
     "nunjucks": "^3.2.3",
     "nunjucks-date-filter": "^0.1.1",
