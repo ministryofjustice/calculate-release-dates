@@ -53,6 +53,10 @@ export interface paths {
     /** This endpoint will return the prisoner details based on a calculationRequestId */
     get: operations['getPrisonerDetails']
   }
+  '/calculation/diagram/{calculationRequestId}': {
+    /** This endpoint will return the data required for a sentence diagram for the given calculationRequestId */
+    get: operations['getSentenceDiagram']
+  }
   '/calculation/calculation-user-input/{calculationRequestId}': {
     /** This endpoint will return the user input based on a calculationRequestId */
     get: operations['getCalculationInput']
@@ -318,6 +322,20 @@ export interface components {
       /** Format: date */
       dateOfBirth: string
       alerts: components['schemas']['Alert'][]
+    }
+    SentenceDiagram: {
+      rows: components['schemas']['SentenceDiagramRow'][]
+    }
+    SentenceDiagramRow: {
+      description: string
+      sections: components['schemas']['SentenceDiagramRowSection'][]
+    }
+    SentenceDiagramRowSection: {
+      /** Format: date */
+      start: string
+      /** Format: date */
+      end: string
+      description?: string
     }
     /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
@@ -806,6 +824,35 @@ export interface operations {
       404: {
         content: {
           'application/json': components['schemas']['PrisonerDetails']
+        }
+      }
+    }
+  }
+  /** This endpoint will return the data required for a sentence diagram for the given calculationRequestId */
+  getSentenceDiagram: {
+    parameters: {
+      path: {
+        /** The calculationRequestId of the diagram */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['SentenceDiagram']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['SentenceDiagram']
+        }
+      }
+      /** No calculation exists for this calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['SentenceDiagram']
         }
       }
     }

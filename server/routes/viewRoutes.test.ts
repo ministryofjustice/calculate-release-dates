@@ -296,7 +296,6 @@ describe('View journey routesroutes tests', () => {
           // This is now displayed as part of breakdown even IF the dates don't contain a SLED.
           // The design without SLED will come in time
           expect(res.text).toContain('Sentence')
-          expect(res.text).toContain('Concurrent sentences')
           expect(res.text).not.toContain('Consecutive sentence')
           expect(res.text).toContain('Release dates with adjustments')
           expect(res.text).toContain('03 February 2021')

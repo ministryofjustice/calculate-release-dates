@@ -116,6 +116,7 @@ export default class ViewRoutes {
         breakdown?.calculationBreakdown,
         breakdown?.releaseDatesWithAdjustments,
         null,
+        null,
         false,
         this.entryPointService.isDpsEntryPoint(req)
       )
@@ -128,6 +129,7 @@ export default class ViewRoutes {
           calculationRequestId,
           nomsId,
           prisonerDetail,
+          null,
           null,
           null,
           {
