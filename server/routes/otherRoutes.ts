@@ -1,6 +1,8 @@
 import { RequestHandler } from 'express'
 import path from 'path'
 import { stringify } from 'csv-stringify'
+import dayjs from 'dayjs'
+import _ from 'lodash'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
@@ -14,6 +16,7 @@ import {
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import SentenceRowViewModel from '../models/SentenceRowViewModel'
 import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffenderKeyDates'
+import { indexBy } from '../utils/utils'
 
 export default class OtherRoutes {
   constructor(
@@ -172,12 +175,30 @@ export default class OtherRoutes {
       ARE_DATES_SAME_USING_OVERRIDES: OtherRoutes.areDatesSameUsingOverrides(row) ? 'Y' : 'N',
       IS_ESL_SAME: sentenceLength === keyDates.sentenceLength ? 'Y' : 'N',
       IS_JSL_SAME: sentenceLength === keyDates.judiciallyImposedSentenceLength ? 'Y' : 'N',
+      SEX_OFFENDER: this.isSexOffender(prisoner),
+      LOCATION: prisoner?.locationDescription,
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
+      CONSECUTIVE_SENTENCES: this.getConsecutiveSentences(sentenceAndOffences),
       ERROR_TEXT: null as string,
       ERROR_JSON: null as string,
     }
+  }
+
+  private isSexOffender(prisoner: PrisonApiPrisoner): string {
+    return !!prisoner?.alerts?.find(alert => {
+      const dateCreated = dayjs(alert.dateCreated)
+      const now = dayjs()
+      return (
+        dateCreated < now &&
+        (!alert.dateExpires || dayjs(alert.dateExpires) > now) &&
+        alert.alertType === 'S' &&
+        alert.alertCode === 'SOR'
+      )
+    })
+      ? 'TRUE'
+      : 'FALSE'
   }
 
   private static sentenceLength = (calc: BookingCalculation) => {
@@ -319,13 +340,31 @@ export default class OtherRoutes {
       ARE_DATES_SAME_USING_OVERRIDES: errorText,
       IS_ESL_SAME: errorText,
       IS_JSL_SAME: errorText,
+      SEX_OFFENDER: this.isSexOffender(prisoner),
+      LOCATION: prisoner?.locationDescription,
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
+      CONSECUTIVE_SENTENCES: this.getConsecutiveSentences(sentenceAndOffences),
       ERROR_TEXT: ex.message,
       ERROR_JSON: JSON.stringify(ex),
     }
   }
+
+  private getConsecutiveSentences(sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[]) {
+    const sentenceSequenceToSentence = indexBy(
+      sentenceAndOffences,
+      (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
+    )
+    const sentencesConsecutiveTo = sentenceAndOffences.filter(sentence => !!sentence.consecutiveToSequence)
+    const sentencesConsectiveFrom = sentencesConsecutiveTo.map(sentence =>
+      sentenceSequenceToSentence.get(sentence.consecutiveToSequence)
+    )
+    return JSON.stringify(
+      _.union(sentencesConsecutiveTo, sentencesConsectiveFrom).sort((a, b) => a.lineSequence - b.lineSequence)
+    )
+  }
+
   /* eslint-enable */
 
   public testCalculation: RequestHandler = async (req, res): Promise<void> => {
