@@ -15,6 +15,7 @@ context('Calculation summary', () => {
     cy.task('stubGetUserCaseloads')
     cy.task('stubConfirmCalculation_errorNomisDataChanged')
     cy.task('stubConfirmCalculation_errorServerError')
+    cy.task('stubSentencesAndOffences')
   })
 
   it('Visit Calculation summary page', () => {
