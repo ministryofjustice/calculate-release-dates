@@ -290,10 +290,10 @@ describe('View journey routesroutes tests', () => {
         .expect(res => {
           expect(res.text).toContain('Conditional release date (CRD)')
           expect(res.text).toContain('Wednesday, 03 February 2021')
-          expect(res.text).toContain('Tuesday, 02 February 2021 adjusted for weekend')
+          expect(res.text).toContain('Tuesday, 02 February 2021 when adjusted to a working day')
           expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
           expect(res.text).toContain('Sunday, 03 October 2021')
-          expect(res.text).toContain('Tuesday, 05 October 2021 adjusted for Bank Holiday')
+          expect(res.text).toContain('Tuesday, 05 October 2021 when adjusted to a working day')
           // expect(res.text).not.toContain('SLED')
           // This is now displayed as part of breakdown even IF the dates don't contain a SLED.
           // The design without SLED will come in time
@@ -347,10 +347,10 @@ describe('View journey routesroutes tests', () => {
         .expect(res => {
           expect(res.text).toContain('Conditional release date (CRD)')
           expect(res.text).toContain('Wednesday, 03 February 2021')
-          expect(res.text).toContain('Tuesday, 02 February 2021 adjusted for weekend')
+          expect(res.text).toContain('Tuesday, 02 February 2021 when adjusted to a working day')
           expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
           expect(res.text).toContain('Sunday, 03 October 2021')
-          expect(res.text).toContain('Tuesday, 05 October 2021 adjusted for Bank Holiday')
+          expect(res.text).toContain('Tuesday, 05 October 2021 when adjusted to a working day')
           // Should not contain breakdown
           expect(res.text).not.toContain('Calculation breakdown')
           expect(res.text).toContain('The calculation breakdown cannot be shown on this page.')

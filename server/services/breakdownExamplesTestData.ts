@@ -1,4 +1,7 @@
-import { CalculationBreakdown } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationBreakdown,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export function psiExample16CalculationBreakdown(): CalculationBreakdown {
   return {
@@ -136,5 +139,83 @@ export function psiExample25CalculationBreakdown(): CalculationBreakdown {
       },
     },
     otherDates: {},
+  }
+}
+
+export function pedAdjustedByCrdAndBeforePrrdReleaseDates(): BookingCalculation {
+  return {
+    dates: { SLED: '2029-09-14', CRD: '2026-09-14', PED: '2024-10-12', ESED: '2029-09-14' },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
+  return {
+    concurrentSentences: [
+      {
+        sentencedAt: '2015-07-20',
+        sentenceLength: '10 years',
+        sentenceLengthDays: 3653,
+        dates: {
+          SLED: {
+            unadjusted: '2025-07-19',
+            adjusted: '2025-03-18',
+            daysFromSentenceStart: 3653,
+            adjustedByDays: 123,
+          },
+          PRRD: {
+            unadjusted: '2020-07-19',
+            adjusted: '2020-03-18',
+            daysFromSentenceStart: 1827,
+            adjustedByDays: 123,
+          },
+        },
+        lineSequence: 1,
+        caseSequence: 1,
+        caseReference: null,
+      },
+      {
+        sentencedAt: '2021-10-13',
+        sentenceLength: '6 years',
+        sentenceLengthDays: 2191,
+        dates: {
+          SLED: { unadjusted: '2027-10-12', adjusted: '2027-10-12', daysFromSentenceStart: 2191, adjustedByDays: 0 },
+          CRD: { unadjusted: '2024-10-12', adjusted: '2024-10-12', daysFromSentenceStart: 1096, adjustedByDays: 0 },
+        },
+        lineSequence: 3,
+        caseSequence: 3,
+        caseReference: null,
+      },
+    ],
+    consecutiveSentence: null,
+    breakdownByReleaseDateType: {
+      SLED: {
+        rules: [],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2029-09-14',
+        unadjustedDate: '2029-09-14',
+      },
+      CRD: {
+        rules: [],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2026-09-14',
+        unadjustedDate: '2026-09-14',
+      },
+      PED: {
+        rules: ['PED_EQUAL_TO_LATEST_SDS_RELEASE'],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2024-10-12',
+        unadjustedDate: '2024-09-14',
+      },
+    },
+    otherDates: { PRRD: '2025-03-18' },
   }
 }

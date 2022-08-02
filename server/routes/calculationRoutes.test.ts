@@ -14,6 +14,10 @@ import {
 import EntryPointService from '../services/entryPointService'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import UserInputService from '../services/userInputService'
+import {
+  pedAdjustedByCrdAndBeforePrrdBreakdown,
+  pedAdjustedByCrdAndBeforePrrdReleaseDates,
+} from '../services/breakdownExamplesTestData'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -182,10 +186,10 @@ describe('Calculation routes tests', () => {
       .expect(res => {
         expect(res.text).toContain('Conditional release date (CRD)')
         expect(res.text).toContain('Wednesday, 03 February 2021')
-        expect(res.text).toContain('Tuesday, 02 February 2021 adjusted for weekend')
+        expect(res.text).toContain('Tuesday, 02 February 2021 when adjusted to a working day')
         expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
         expect(res.text).toContain('Sunday, 03 October 2021')
-        expect(res.text).toContain('Tuesday, 05 October 2021 adjusted for Bank Holiday')
+        expect(res.text).toContain('Tuesday, 05 October 2021 when adjusted to a working day')
         // expect(res.text).not.toContain('SLED')
         // This is now displayed as part of breakdown even IF the dates don't contain a SLED.
         // The design without SLED will come in time
@@ -200,6 +204,24 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain(
           `Some release dates and details are not included because they are not relevant to this person's sentences`
         )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the ped adjusted release dates', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(pedAdjustedByCrdAndBeforePrrdReleaseDates())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: pedAdjustedByCrdAndBeforePrrdBreakdown(),
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Adjusted for the CRD of a concurrent sentence')
+        expect(res.text).toContain('(Note: PRRD is later than PED)')
       })
   })
 
