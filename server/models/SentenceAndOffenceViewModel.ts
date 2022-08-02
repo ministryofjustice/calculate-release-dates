@@ -27,8 +27,6 @@ export default class SentenceAndOffenceViewModel {
 
   public returnToCustodyDate?: string
 
-  public edsFeatureToggle: boolean
-
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
@@ -52,7 +50,6 @@ export default class SentenceAndOffenceViewModel {
       previousValue + currentValue.offences.length
     this.offenceCount = sentencesAndOffences.reduce(reducer, 0)
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
-    this.edsFeatureToggle = config.featureToggles.eds
   }
 
   public rowIsSdsPlus(sentence: PrisonApiOffenderSentenceAndOffences, offence: PrisonApiOffenderOffence): boolean {

@@ -11,7 +11,7 @@
 <div id="sentences">
         {% for case in model.cases %}
                 {{ courtCaseDetails({case: case, includeCaseDetails: true}) }}
-                {% if model.edsFeatureToggle %}
+                {% if featureToggles.eds %}
                         {{ sentenceCard({
                         case: case,
                         includeCheckboxes: false,
