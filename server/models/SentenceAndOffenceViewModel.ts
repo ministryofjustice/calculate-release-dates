@@ -9,7 +9,6 @@ import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
-import config from '../config'
 import { ErrorMessages } from '../types/ErrorMessages'
 import { groupBy, indexBy } from '../utils/utils'
 import AdjustmentsViewModel from './AdjustmentsViewModel'
