@@ -282,6 +282,7 @@ describe('View journey routesroutes tests', () => {
         calculationBreakdown: stubbedCalculationBreakdown,
         releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
       })
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
@@ -316,6 +317,7 @@ describe('View journey routesroutes tests', () => {
         calculationBreakdown: stubbedCalculationBreakdown,
         releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
       })
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456/print')
         .expect(200)

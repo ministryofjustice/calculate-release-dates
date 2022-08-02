@@ -18,18 +18,22 @@ import {
   pedAdjustedByCrdAndBeforePrrdBreakdown,
   pedAdjustedByCrdAndBeforePrrdReleaseDates,
 } from '../services/breakdownExamplesTestData'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
+import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/entryPointService')
 jest.mock('../services/userInputService')
+jest.mock('../services/viewReleaseDatesService')
 
 const userService = new UserService(null) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
+const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
 
 let app: Express
 
@@ -156,6 +160,39 @@ const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
   },
 ]
 
+const stubbedSentencesAndOffences = [
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    sentenceSequence: 1,
+    offences: [
+      { offenceEndDate: '2021-02-03' },
+      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+      { offenceStartDate: '2021-03-06' },
+      {},
+      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
+    ],
+  } as PrisonApiOffenderSentenceAndOffences,
+  {
+    terms: [
+      {
+        years: 2,
+      },
+    ],
+    caseSequence: 2,
+    lineSequence: 2,
+    sentenceSequence: 2,
+    consecutiveToSequence: 1,
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+]
 beforeEach(() => {
   app = appWithAllRoutes({
     userService,
@@ -163,6 +200,7 @@ beforeEach(() => {
     calculateReleaseDatesService,
     entryPointService,
     userInputService,
+    viewReleaseDatesService,
   })
 })
 
@@ -179,6 +217,7 @@ describe('Calculation routes tests', () => {
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
       .expect(200)
@@ -215,6 +254,7 @@ describe('Calculation routes tests', () => {
       calculationBreakdown: pedAdjustedByCrdAndBeforePrrdBreakdown(),
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -233,6 +273,7 @@ describe('Calculation routes tests', () => {
       calculationBreakdown: stubbedLicenceCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
       .expect(200)

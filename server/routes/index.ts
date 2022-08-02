@@ -24,7 +24,8 @@ export default function Index({
     calculateReleaseDatesService,
     prisonerService,
     entryPointService,
-    userInputService
+    userInputService,
+    viewReleaseDatesService
   )
   const checkInformationAccessRoutes = new CheckInformationRoutes(
     calculateReleaseDatesService,

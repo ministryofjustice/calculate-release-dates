@@ -40,19 +40,27 @@ export default class SentenceRowViewModel {
     return SentenceRowViewModel.isSentenceFixedTermRecall(this.sentencesAndOffence)
   }
 
-  public isEdsSentence(): boolean {
-    return SentenceRowViewModel.edsSentenceTypes.includes(this.sentencesAndOffence.sentenceCalculationType)
+  public isEds(): boolean {
+    return SentenceRowViewModel.isSentenceEds(this.sentencesAndOffence)
   }
 
-  public isSopcSentence(): boolean {
-    return SentenceRowViewModel.sopcSentenceTypes.includes(this.sentencesAndOffence.sentenceCalculationType)
+  public isSopc(): boolean {
+    return SentenceRowViewModel.isSentenceFixedTermRecall(this.sentencesAndOffence)
   }
 
   public hasCustodialAndLicenseTerms(): boolean {
-    return this.isEdsSentence() || this.isSopcSentence()
+    return this.isEds() || this.isSopc()
   }
 
   public static isSentenceFixedTermRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
     return this.fixedTermRecallTypes.includes(sentence.sentenceCalculationType)
+  }
+
+  public static isSentenceSopc(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+    return SentenceRowViewModel.sopcSentenceTypes.includes(sentence.sentenceCalculationType)
+  }
+
+  public static isSentenceEds(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+    return SentenceRowViewModel.edsSentenceTypes.includes(sentence.sentenceCalculationType)
   }
 }

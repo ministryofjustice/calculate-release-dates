@@ -5,9 +5,11 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import SentenceDiagramViewModel from './SentenceDiagramViewModel'
+import SentenceRowViewModel from './SentenceRowViewModel'
 
 export default class CalculationSummaryViewModel {
   public sentenceDiagramViewModel?: SentenceDiagramViewModel
@@ -18,6 +20,7 @@ export default class CalculationSummaryViewModel {
     public calculationRequestId: number,
     public nomsId: string,
     public prisonerDetail: PrisonApiPrisoner,
+    public sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     public calculationBreakdown?: CalculationBreakdown,
     public releaseDatesWithAdjustments?: ReleaseDateWithAdjustments[],
     sentenceDiagram?: SentenceDiagram,
@@ -63,6 +66,17 @@ export default class CalculationSummaryViewModel {
   }
 
   public showBreakdown(): boolean {
-    return !!this.calculationBreakdown && !this.releaseDates.PRRD && !this.calculationBreakdown?.otherDates?.PRRD
+    return (
+      !!this.calculationBreakdown &&
+      !this.releaseDates.PRRD &&
+      !this.calculationBreakdown?.otherDates?.PRRD &&
+      this.allSentencesSupported()
+    )
+  }
+
+  private allSentencesSupported(): boolean {
+    return !this.sentencesAndOffences.find(
+      sentence => SentenceRowViewModel.isSentenceEds(sentence) || SentenceRowViewModel.isSentenceSopc(sentence)
+    )
   }
 }

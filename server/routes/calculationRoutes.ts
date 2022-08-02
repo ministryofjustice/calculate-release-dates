@@ -9,13 +9,15 @@ import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import UserInputService from '../services/userInputService'
 import { SentenceDiagram } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 
 export default class CalculationRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly entryPointService: EntryPointService,
-    private readonly userInputService: UserInputService
+    private readonly userInputService: UserInputService,
+    private readonly viewReleaseDatesService: ViewReleaseDatesService
   ) {}
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
@@ -42,8 +44,9 @@ export default class CalculationRoutes {
     if (serverErrors && serverErrors[0]) {
       validationErrors = JSON.parse(serverErrors[0])
     }
-
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+    const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token)
+
     let sentenceDiagram: SentenceDiagram
     if (gantt) {
       sentenceDiagram = await this.calculateReleaseDatesService.getSentenceDiagram(calculationRequestId, token)
@@ -56,6 +59,7 @@ export default class CalculationRoutes {
       calculationRequestId,
       nomsId,
       prisonerDetail,
+      sentencesAndOffences,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments,
       sentenceDiagram,
@@ -84,12 +88,14 @@ export default class CalculationRoutes {
       token
     )
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+    const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token)
     const model = new CalculationSummaryViewModel(
       releaseDates.dates,
       weekendAdjustments,
       calculationRequestId,
       nomsId,
       prisonerDetail,
+      sentencesAndOffences,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments
     )
