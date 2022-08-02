@@ -107,12 +107,17 @@ export default class ViewRoutes {
         token
       )
       const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+      const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(
+        calculationRequestId,
+        token
+      )
       return new CalculationSummaryViewModel(
         releaseDates.dates,
         weekendAdjustments,
         calculationRequestId,
         nomsId,
         prisonerDetail,
+        sentencesAndOffences,
         breakdown?.calculationBreakdown,
         breakdown?.releaseDatesWithAdjustments,
         null,
@@ -129,6 +134,7 @@ export default class ViewRoutes {
           calculationRequestId,
           nomsId,
           prisonerDetail,
+          null,
           null,
           null,
           null,
