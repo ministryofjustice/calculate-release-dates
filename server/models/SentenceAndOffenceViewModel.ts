@@ -9,7 +9,6 @@ import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
-import config from '../config'
 import { ErrorMessages } from '../types/ErrorMessages'
 import { groupBy, indexBy } from '../utils/utils'
 import AdjustmentsViewModel from './AdjustmentsViewModel'
@@ -26,8 +25,6 @@ export default class SentenceAndOffenceViewModel {
   public offenceCount: number
 
   public returnToCustodyDate?: string
-
-  public edsFeatureToggle: boolean
 
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
@@ -52,7 +49,6 @@ export default class SentenceAndOffenceViewModel {
       previousValue + currentValue.offences.length
     this.offenceCount = sentencesAndOffences.reduce(reducer, 0)
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
-    this.edsFeatureToggle = config.featureToggles.eds
   }
 
   public rowIsSdsPlus(sentence: PrisonApiOffenderSentenceAndOffences, offence: PrisonApiOffenderOffence): boolean {
