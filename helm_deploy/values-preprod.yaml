@@ -18,6 +18,7 @@ generic-service:
     VIEW_JOURNEY_FEATURE_TOGGLE: "true"
     RECALL_FEATURE_TOGGLE: "true"
     SDS_PLUS_QUESTION: "true"
+    EDS_FEATURE_TOGGLE: "false"
 
 
 generic-prometheus-alerts:

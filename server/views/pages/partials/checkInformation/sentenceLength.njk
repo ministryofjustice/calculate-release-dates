@@ -1,0 +1,11 @@
+{% macro sentenceLength(term) %}
+
+    {{ term.years }}
+    {{ 'year' | pluralise(term.years) }}
+    {{ term.months }}
+    {{ 'month' | pluralise(term.months) }}
+    {{ term.weeks }}
+    {{ 'week' | pluralise(term.weeks) }}
+    {{ term.days }}
+    {{ 'day' | pluralise(term.days) }}
+{% endmacro %}

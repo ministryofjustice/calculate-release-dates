@@ -5,8 +5,8 @@ export default class ViewSentencesAndOffencesCommon extends Page {
     return cy.get('#offence-count-text')
   }
 
-  public sentenceTable(caseSequence: number): PageElement {
-    return cy.get(`[data-qa=${caseSequence}-sentence-table]`)
+  public sentenceCards(caseSequence: number): PageElement {
+    return cy.get(`[data-qa=${caseSequence}-sentence-cards]`)
   }
 
   public caseNumber(caseSequence: number): PageElement {

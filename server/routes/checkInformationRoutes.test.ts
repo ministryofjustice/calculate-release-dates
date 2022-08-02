@@ -21,6 +21,7 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -199,6 +200,7 @@ const stubbedReturnToCustodyDate = {
 } as PrisonApiReturnToCustodyDate
 
 beforeEach(() => {
+  config.featureToggles.eds = false
   app = appWithAllRoutes({
     userService,
     prisonerService,
@@ -213,6 +215,49 @@ afterEach(() => {
 })
 
 describe('Check information routes tests', () => {
+  it('GET /calculation/:nomsId/check-information should return detail about the prisoner with the EDS card view', () => {
+    config.featureToggles.eds = true
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('sentence-card')
+        expect(res.text).toContain('A1234AA')
+        expect(res.text).toContain('Anon')
+        expect(res.text).toContain('Nobody')
+        expect(res.text).toContain('This calculation will include 8')
+        expect(res.text).toContain('sentences from NOMIS.')
+        expect(res.text).toContain('Court case 1')
+        expect(res.text).toContain('Committed on 03 February 2021')
+        expect(res.text).toContain('Committed from 04 January 2021 to 05 January 2021')
+        expect(res.text).toContain('Committed on 06 March 2021')
+        expect(res.text).toContain('Offence date not entered')
+        expect(res.text).toContain('Committed on 07 January 2021')
+        expect(res.text).toContain('SDS Standard Sentence')
+        expect(res.text).toContain('Court case 2')
+        expect(res.text).toContain('Consecutive to  court case 1 count 1')
+        expect(res.text).toContain('href="/calculation/A1234AA/select-offences-that-appear-in-list-a"')
+        expect(res.text).toContain('Restore additional days awarded (RADA)')
+        expect(res.text).toContain('2')
+        expect(res.text).toContain('Detailed')
+        expect(res.text).toContain('From 01 February 2021 to 02 February 2021')
+        expect(res.text).toContain('CASE001')
+        expect(res.text).toContain('Court 1')
+        expect(res.text).toContain('Return to custody')
+        expect(res.text).toContain('12 April 2022')
+        expect(res.text).toContain('SDS+')
+        expect(res.text).not.toContain('98765')
+      })
+  })
+
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)

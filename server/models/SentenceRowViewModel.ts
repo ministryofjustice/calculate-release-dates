@@ -1,25 +1,55 @@
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
+import { PrisonApiSentenceTerms } from '../@types/prisonApi/PrisonApiSentenceTerms'
+
+type AggregatedTerm = {
+  years: number
+  months: number
+  weeks: number
+  days: number
+}
 
 export default class SentenceRowViewModel {
-  public years: number
-
-  public months: number
-
-  public weeks: number
-
-  public days: number
-
   private static fixedTermRecallTypes = ['14FTR_ORA', '14FTRHDC_ORA', 'FTR', 'FTR_ORA']
 
+  private static edsSentenceTypes = ['EDS18', 'EDS21', 'EDSU18', 'LASPO_AR', 'LASPO_DR']
+
+  private static sopcSentenceTypes = ['SEC236A', 'SOPC18', 'SOPC21', 'SDOPCU18']
+
+  private allTerms: AggregatedTerm
+
+  private imprisonmentTerm: AggregatedTerm
+
+  private licenseTerm: AggregatedTerm
+
   constructor(public sentencesAndOffence: PrisonApiOffenderSentenceAndOffences) {
-    this.years = sentencesAndOffence.terms.map(t => t.years).reduce((sum, current) => sum + current, 0) || 0
-    this.months = sentencesAndOffence.terms.map(t => t.months).reduce((sum, current) => sum + current, 0) || 0
-    this.weeks = sentencesAndOffence.terms.map(t => t.weeks).reduce((sum, current) => sum + current, 0) || 0
-    this.days = sentencesAndOffence.terms.map(t => t.days).reduce((sum, current) => sum + current, 0) || 0
+    this.allTerms = this.aggregateTerms(sentencesAndOffence.terms)
+    this.imprisonmentTerm = this.aggregateTerms(sentencesAndOffence.terms.filter(term => term.code === 'IMP'))
+    this.licenseTerm = this.aggregateTerms(sentencesAndOffence.terms.filter(term => term.code === 'LIC'))
+  }
+
+  private aggregateTerms(terms: PrisonApiSentenceTerms[]): AggregatedTerm {
+    return {
+      years: terms.map(t => t.years).reduce((sum, current) => sum + current, 0) || 0,
+      months: terms.map(t => t.months).reduce((sum, current) => sum + current, 0) || 0,
+      weeks: terms.map(t => t.weeks).reduce((sum, current) => sum + current, 0) || 0,
+      days: terms.map(t => t.days).reduce((sum, current) => sum + current, 0) || 0,
+    }
   }
 
   public isFixedTermRecall(): boolean {
     return SentenceRowViewModel.isSentenceFixedTermRecall(this.sentencesAndOffence)
+  }
+
+  public isEdsSentence(): boolean {
+    return SentenceRowViewModel.edsSentenceTypes.includes(this.sentencesAndOffence.sentenceCalculationType)
+  }
+
+  public isSopcSentence(): boolean {
+    return SentenceRowViewModel.sopcSentenceTypes.includes(this.sentencesAndOffence.sentenceCalculationType)
+  }
+
+  public hasCustodialAndLicenseTerms(): boolean {
+    return this.isEdsSentence() || this.isSopcSentence()
   }
 
   public static isSentenceFixedTermRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {

@@ -7,4 +7,5 @@ export type PrisonApiSentenceTerms = {
   weeks?: number
   /** The sentence duration - years */
   years?: number
+  code?: string
 }
