@@ -44,7 +44,6 @@ export default class CalculationRoutes {
     }
 
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-    console.log(JSON.stringify(releaseDates))
     let sentenceDiagram: SentenceDiagram
     if (gantt) {
       sentenceDiagram = await this.calculateReleaseDatesService.getSentenceDiagram(calculationRequestId, token)
