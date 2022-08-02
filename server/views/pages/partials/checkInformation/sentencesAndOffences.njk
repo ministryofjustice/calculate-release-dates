@@ -1,5 +1,6 @@
 {% from "./courtCaseDetails.njk" import courtCaseDetails %}
 {% from "./sentenceTable.njk" import sentenceTable %}
+{% from "./sentenceCard.njk" import sentenceCard %}
 
 <p class="govuk-body govuk-!-margin-top-2" id="offence-count-text">
                 This calculation will include {{ model.offenceCount }}
@@ -10,7 +11,8 @@
 <div id="sentences">
         {% for case in model.cases %}
                 {{ courtCaseDetails({case: case, includeCaseDetails: true}) }}
-                {{ sentenceTable({
+                {% if model.edsFeatureToggle %}
+                        {{ sentenceCard({
                         case: case,
                         includeCheckboxes: false,
                         includeConcurrentOrConsecutiveText: true,
@@ -23,6 +25,21 @@
                         includeSentenceType: true
                         }) 
                 }}
+                {% else %}
+                        {{ sentenceTable({
+                        case: case,
+                        includeCheckboxes: false,
+                        includeConcurrentOrConsecutiveText: true,
+                        includeSDSPlusBadge: true,
+                        sentenceSequenceToSentence: model.sentenceSequenceToSentence,
+                        offenceCount: model.offenceCount,
+                        returnToCustodyDate: model.returnToCustodyDate,
+                        userInputs: model.userInputs,
+                        rowIsSdsPlus: model.rowIsSdsPlus,
+                        includeSentenceType: true
+                        }) 
+                }}
+                {% endif %}
         {% endfor %}
 </div>
 

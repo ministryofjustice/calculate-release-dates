@@ -142,5 +142,18 @@ div.govuk-width-container {
 }
 .flex {
   display: flex;
-  align-content: stretch;
+}
+
+.sentence-card {
+  border-left: 4px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  background: #f8f8f8;
+  padding: 0 20px;
+  padding-bottom: 15px;
+  padding-top: 5px;
+  
+  .govuk-table__cell, .govuk-table__header {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
 }

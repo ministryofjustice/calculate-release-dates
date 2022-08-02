@@ -102,5 +102,6 @@ export default {
   featureToggles: {
     viewJourney: get('VIEW_JOURNEY_FEATURE_TOGGLE', false) === 'true',
     recall: get('RECALL_FEATURE_TOGGLE', false) === 'true',
+    eds: get('EDS_FEATURE_TOGGLE', false) === 'true',
   },
 }

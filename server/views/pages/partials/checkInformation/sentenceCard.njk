@@ -1,0 +1,76 @@
+{% macro sentenceCard(params) %}
+    {% for sentenceModel in params.case.sentences %}
+        {% set sentence = sentenceModel.sentencesAndOffence %}
+        {% for offence in sentence.offences %}
+
+            <div class="govuk-!-margin-bottom-6 sentence-card flex">
+                <div class="govuk-grid-column-full govuk-!-margin-top-4">
+                    <h3 class="govuk-body-s govuk-!-margin-bottom-0">Count {{ sentence.lineSequence }}</h3>
+                    <h4 class="govuk-heading-s govuk-!-margin-bottom-1">{{ offence.offenceDescription }}</h4>
+                    <p class="govuk-body-s">
+                        {% if (offence.offenceEndDate and offence.offenceStartDate and offence.offenceEndDate !== offence.offenceStartDate) %}
+                        Committed between {{ offence.offenceStartDate | date('DD MMMM YYYY') }} and {{ offence.offenceEndDate | date('DD MMMM YYYY') }}
+                        {% elseif (offence.offenceEndDate or offence.offenceStartDate) %}
+                        Committed on {{ (offence.offenceEndDate or offence.offenceStartDate) | date('DD MMMM YYYY') }}
+                        {% else %}
+                        Offence date not entered
+                    {% endif %}
+                    </p>
+                    <table class="govuk-table govuk-!-margin-right-4 govuk-!-margin-bottom-6 govuk-!-margin-bottom-0">
+                        <tbody class="govuk-table__body">
+                            <tr class="govuk-table__row govuk-body-s">
+                                <th scope="row" class="govuk-table__header sentence-table-header">Sentence type</th>
+                                <td class="govuk-table__cell">
+                                    {{ sentence.sentenceTypeDescription }}
+                                    {% if sentenceModel.isFixedTermRecall() %}
+                                        <br>
+                                        <div class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">Returned to custody on<br>
+                                            {{ params.returnToCustodyDate | date('DD MMMM YYYY') }}
+                                        </div>
+                                    {% endif %}
+                                    {% if params.includeSDSPlusBadge and params.rowIsSdsPlus(sentence, offence)%}
+                                        <span class="moj-badge moj-badge--small">SDS+</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr class="govuk-table__row govuk-body-s">
+                                <th scope="row" class="govuk-table__header sentence-table-header">Sentence date</th>
+                                <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
+                            </tr>
+                            <tr class="govuk-table__row govuk-body-s">
+                                <th scope="row" class="govuk-table__header sentence-table-header">Sentence length</th>
+                                <td class="govuk-table__cell">
+                                    {{ sentenceModel.years }}
+                                    {{ 'year' | pluralise(sentenceModel.years) }}
+                                    {{ sentenceModel.months }}
+                                    {{ 'month' | pluralise(sentenceModel.months) }}
+                                    <br>
+                                    {{ sentenceModel.weeks }}
+                                    {{ 'week' | pluralise(sentenceModel.weeks) }}
+                                    {{ sentenceModel.days }}
+                                    {{ 'day' | pluralise(sentenceModel.days) }}
+
+                                    {% if params.includeConcurrentOrConsecutiveText %}
+                                        <br/>
+                                        <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                                            {% if sentence.consecutiveToSequence %}
+                                                {% set consecutiveToSequence = params
+                                                    .sentenceSequenceToSentence
+                                                    .get(sentence.consecutiveToSequence) %}
+                                    consecutive to
+                                    <br>
+                                    court case {{ consecutiveToSequence.caseSequence }} count {{ consecutiveToSequence.lineSequence }}
+                                            {% elif params.offenceCount > 1 %}
+                                    concurrent
+                                        {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endmacro %}
