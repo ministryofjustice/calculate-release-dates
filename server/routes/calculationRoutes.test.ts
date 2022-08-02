@@ -14,6 +14,10 @@ import {
 import EntryPointService from '../services/entryPointService'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import UserInputService from '../services/userInputService'
+import {
+  pedAdjustedByCrdAndBeforePrrdBreakdown,
+  pedAdjustedByCrdAndBeforePrrdReleaseDates,
+} from '../services/breakdownExamplesTestData'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -200,6 +204,24 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain(
           `Some release dates and details are not included because they are not relevant to this person's sentences`
         )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the ped adjusted release dates', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(pedAdjustedByCrdAndBeforePrrdReleaseDates())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: pedAdjustedByCrdAndBeforePrrdBreakdown(),
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Adjusted for the CRD of a concurrent sentence')
+        expect(res.text).toContain('(Note: PRRD is later than PED)')
       })
   })
 

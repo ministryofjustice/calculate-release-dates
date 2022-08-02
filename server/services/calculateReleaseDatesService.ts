@@ -268,6 +268,12 @@ export default class CalculateReleaseDatesService {
         adjustments.HDCED = adjustment
       }
     }
+    if (calculation.dates.PED) {
+      const adjustment = await client.getNextWorkingDay(calculation.dates.PED)
+      if (adjustment.date !== calculation.dates.PED) {
+        adjustments.PED = adjustment
+      }
+    }
     return adjustments
   }
 

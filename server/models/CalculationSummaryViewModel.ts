@@ -41,6 +41,27 @@ export default class CalculationSummaryViewModel {
     return false
   }
 
+  public pedBeforePRRD(): boolean {
+    if (this.releaseDates?.PED && this.calculationBreakdown?.otherDates?.PRRD) {
+      const ped = dayjs(this.releaseDates?.PED)
+      const prrd = dayjs(this.calculationBreakdown.otherDates.PRRD)
+      if (prrd > ped) {
+        return true
+      }
+    }
+    return false
+  }
+
+  public displayPedAdjustmentHint(): boolean {
+    if (this.releaseDates?.PED && this.calculationBreakdown?.breakdownByReleaseDateType?.PED) {
+      const { rules } = this.calculationBreakdown.breakdownByReleaseDateType.PED
+      if (rules.includes('PED_EQUAL_TO_LATEST_SDS_RELEASE') || rules.includes('PED_EQUAL_TO_LATEST_NON_PED_RELEASE')) {
+        return true
+      }
+    }
+    return false
+  }
+
   public showBreakdown(): boolean {
     return !!this.calculationBreakdown && !this.releaseDates.PRRD && !this.calculationBreakdown?.otherDates?.PRRD
   }

@@ -436,6 +436,8 @@ export interface components {
         | 'LED_CONSEC_ORA_AND_NON_ORA'
         | 'UNUSED_ADA'
         | 'IMMEDIATE_RELEASE'
+        | 'PED_EQUAL_TO_LATEST_SDS_RELEASE'
+        | 'PED_EQUAL_TO_LATEST_NON_PED_RELEASE'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {

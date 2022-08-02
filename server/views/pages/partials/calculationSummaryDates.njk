@@ -4,11 +4,19 @@
 {% endmacro %}
 
 {% macro holidayLine(dataQa, releaseDate, isBankHoliday) %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }} adjusted for {{ "Bank Holiday" if isBankHoliday else "weekend" }}</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }} when adjusted to a working day</p>
 {% endmacro %}
 
 {% macro hdcedBeforePrrdLine(prrd) %}
     <p class="govuk-body govuk-hint govuk-!-font-size-16">Release on HDC must not take place before the PRRD {{ prrd | date('dddd, DD MMMM YYYY') }}</p>
+{% endmacro %}
+
+{% macro pedBeforePrrdLine(prrd) %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">(Note: PRRD is later than PED)</p>
+{% endmacro %}
+
+{% macro pedAdjustedByOtherRelease() %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">Adjusted for the CRD of a concurrent sentence</p>
 {% endmacro %}
 
 <h2 class="govuk-heading-l govuk-!-margin-top-9">Final release dates</h2>
@@ -40,6 +48,15 @@
         {% endif %}
         {% if model.releaseDates.PED %}
             {{ releaseDateLine('Parole eligibility date (PED)', 'PED-date', model.releaseDates.PED) }}
+            {% if model.displayPedAdjustmentHint() %}
+                {{ pedAdjustedByOtherRelease()}}
+            {% endif %}
+            {% if model.weekendAdjustments.PED %}
+                {{ holidayLine('PED-weekend-adjustment', model.weekendAdjustments.PED.date, model.weekendAdjustments.PED.adjustedForBankHoliday) }}
+            {% endif %}
+            {% if model.pedBeforePRRD() %}
+                {{ pedBeforePrrdLine(model.releaseDates.PED)}}
+            {% endif %}
         {% endif %}
         {% if model.releaseDates.PRRD %}
             {{ releaseDateLine('Post recall release date (PRRD)', 'PRRD-date', model.releaseDates.PRRD) }}
