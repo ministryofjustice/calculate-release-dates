@@ -126,7 +126,14 @@ export default {
             caseReference: 'ABC123',
             sentenceSequence: 1,
             sentenceStatus: 'A',
-            offences: [{ offenceEndDate: '2021-02-03', offenceCode: 'abc', offenderChargeId: 111 }],
+            offences: [
+              {
+                offenceEndDate: '2021-02-03',
+                offenceCode: 'abc',
+                offenderChargeId: 111,
+                offenceDescription: 'Doing a crime',
+              },
+            ],
           },
           {
             terms: [
@@ -142,7 +149,14 @@ export default {
             consecutiveToSequence: 1,
             sentenceStatus: 'A',
             sentenceTypeDescription: 'SDS Standard Sentence',
-            offences: [{ offenceEndDate: '2021-02-05', offenceCode: 'def', offenderChargeId: 222 }],
+            offences: [
+              {
+                offenceEndDate: '2021-02-05',
+                offenceCode: 'def',
+                offenderChargeId: 222,
+                offenceDescription: 'Doing another crime',
+              },
+            ],
           },
           {
             terms: [
@@ -158,7 +172,7 @@ export default {
             consecutiveToSequence: 1,
             sentenceStatus: 'I',
             sentenceTypeDescription: 'SDS Standard Sentence',
-            offences: [{ offenceEndDate: '2021-02-05' }],
+            offences: [{ offenceEndDate: '2021-02-05', offenceDescription: 'Doing a crime' }],
           },
         ],
       },
