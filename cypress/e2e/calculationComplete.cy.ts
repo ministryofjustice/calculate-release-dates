@@ -1,4 +1,4 @@
-import CalculationCompletePage from '../../integration_tests/pages/calculationComplete'
+import CalculationCompletePage from '../pages/calculationComplete'
 
 context('Calculation complete', () => {
   beforeEach(() => {

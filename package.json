@@ -69,7 +69,7 @@
       "migrations/*",
       "node_modules/*",
       "test/*",
-      "integration_tests/*"
+      "cypress/*"
     ],
     "delay": 2500,
     "ext": "js,json,html,njk"

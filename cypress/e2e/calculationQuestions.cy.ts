@@ -1,5 +1,5 @@
-import AlternativeReleaseIntroPage from '../../integration_tests/pages/alternativeReleaseIntro'
-import SelectOffencesPage from '../../integration_tests/pages/selectOffences'
+import AlternativeReleaseIntroPage from '../pages/alternativeReleaseIntro'
+import SelectOffencesPage from '../pages/selectOffences'
 
 context('Calculation questions page', () => {
   beforeEach(() => {

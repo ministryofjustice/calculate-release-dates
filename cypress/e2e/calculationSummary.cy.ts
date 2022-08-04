@@ -1,6 +1,6 @@
-import CalculationSummaryPage from '../../integration_tests/pages/calculationSummary'
-import ErrorPage from '../../integration_tests/pages/error'
-import Page from '../../integration_tests/pages/page'
+import CalculationSummaryPage from '../pages/calculationSummary'
+import ErrorPage from '../pages/error'
+import Page from '../pages/page'
 
 context('Calculation summary', () => {
   beforeEach(() => {

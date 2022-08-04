@@ -1,7 +1,7 @@
-import IndexPage from '../../integration_tests/pages'
-import ErrorPage from '../../integration_tests/pages/error'
-import Page from '../../integration_tests/pages/page'
-import PrisonerSearchPage from '../../integration_tests/pages/prisonerSearch'
+import IndexPage from '../pages'
+import ErrorPage from '../pages/error'
+import Page from '../pages/page'
+import PrisonerSearchPage from '../pages/prisonerSearch'
 
 context('View journey tests', () => {
   beforeEach(() => {

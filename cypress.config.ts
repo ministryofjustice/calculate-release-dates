@@ -1,22 +1,22 @@
-import { defineConfig } from "cypress";
+import { defineConfig } from 'cypress'
 
 export default defineConfig({
   chromeWebSecurity: false,
-  fixturesFolder: "integration_tests/fixtures",
-  screenshotsFolder: "integration_tests/screenshots",
-  videosFolder: "integration_tests/videos",
-  reporter: "cypress-multi-reporters",
+  fixturesFolder: 'cypress/fixtures',
+  screenshotsFolder: 'cypress/screenshots',
+  videosFolder: 'cypress/videos',
+  reporter: 'cypress-multi-reporters',
 
   reporterOptions: {
-    configFile: "reporter-config.json",
+    configFile: 'reporter-config.json',
   },
 
   videoUploadOnPasses: false,
   taskTimeout: 60000,
 
   e2e: {
-    setupNodeEvents(on, config) {
+    setupNodeEvents() {
       // implement node event listeners here
     },
   },
-});
+})
