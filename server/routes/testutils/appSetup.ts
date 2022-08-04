@@ -64,7 +64,7 @@ function appSetup({ router, production = false }: { router: Router; production?:
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const appWithAllRoutes = (overrides: Partial<Services> = {}, production?: boolean): Express => {
+export const appWithAllRoutes = (overrides: Partial<Services> = {}, production = false): Express => {
   const router = allRoutes({
     userService: new MockUserService(),
     prisonerService: {} as PrisonerService,
