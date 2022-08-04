@@ -45,7 +45,7 @@ export default class SentenceRowViewModel {
   }
 
   public isSopc(): boolean {
-    return SentenceRowViewModel.isSentenceFixedTermRecall(this.sentencesAndOffence)
+    return SentenceRowViewModel.isSentenceSopc(this.sentencesAndOffence)
   }
 
   public hasCustodialAndLicenseTerms(): boolean {
