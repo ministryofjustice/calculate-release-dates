@@ -330,7 +330,7 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Detailed')
-        expect(res.text).toContain('There are no detailed adjustments for')
+        expect(res.text).toContain('There are no detailed adjustments for Anon')
       })
   })
   it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {

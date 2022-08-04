@@ -1,6 +1,6 @@
 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="detailed">
     {% if not adjustments.hasAnyAdjustments() %}
-        <p class="govuk-body">There are no detailed adjustments for {{prisonerDetail.firstName}}
+        <p class="govuk-body">There are no detailed adjustments for {{model.prisonerDetail.firstName}}
             {{prisonerDetail.lastName}}</p>
     {% else %}
         {% if adjustments.hasAnyDeductionAdjustments() %}
