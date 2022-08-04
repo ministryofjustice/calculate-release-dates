@@ -97,7 +97,7 @@
     ],
     "import/no-extraneous-dependencies": [
       "error",
-      { "devDependencies": ["**/*.test.js", "**/*.test.ts", "/cypress/**", "/cypress.config.ts"] }
+      { "devDependencies": ["**/*.test.js", "**/*.test.ts", "cypress.config.ts"] }
     ],
     "prettier/prettier": [
       "error",

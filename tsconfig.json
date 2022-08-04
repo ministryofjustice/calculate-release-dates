@@ -19,6 +19,6 @@
     "typeRoots": ["./server/@types", "./node_modules/@types"],
     "lib": ["ES2020.Promise"]
   },
-  "exclude": ["node_modules", "assets/**/*.js", "cypress", "dist"],
+  "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "cypress.config.ts"],
   "include": ["**/*.js", "**/*.ts"]
 }
