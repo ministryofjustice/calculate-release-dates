@@ -75,11 +75,19 @@ export default function translateErrorToText(
       ]
     case 'LICENCE_TERM_LESS_THAN_ONE_YEAR':
       return [
-        `Court court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must have a licence term of at least one year.`,
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must have a licence term of at least one year.`,
       ]
     case 'LICENCE_TERM_MORE_THAN_EIGHT_YEARS':
       return [
-        `Court case court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must have a licence term that does not exceed 8 years.`,
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must have a licence term that does not exceed 8 years.`,
+      ]
+    case 'MORE_THAN_ONE_IMPRISONMENT_TERM':
+      return [
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must only have one imprisonment term.`,
+      ]
+    case 'MORE_THAN_ONE_LICENCE_TERM':
+      return [
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must only have one licence term.`,
       ]
     default:
       throw new Error(`Uknown validation code ${validationMessage.code}`)
