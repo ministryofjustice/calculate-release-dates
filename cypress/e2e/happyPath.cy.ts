@@ -1,13 +1,13 @@
-import IndexPage from '../pages'
-import AlternativeReleaseIntroPage from '../pages/alternativeReleaseIntro'
-import CalculationCompletePage from '../pages/calculationComplete'
-import CalculationSummaryPage from '../pages/calculationSummary'
-import CheckInformationPage from '../pages/checkInformation'
-import Page from '../pages/page'
-import PrisonerSearchPage from '../pages/prisonerSearch'
-import SelectOffencesPage from '../pages/selectOffences'
-import ViewCalculationSummary from '../pages/viewCalculationSummary'
-import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
+import IndexPage from '../../integration_tests/pages'
+import AlternativeReleaseIntroPage from '../../integration_tests/pages/alternativeReleaseIntro'
+import CalculationCompletePage from '../../integration_tests/pages/calculationComplete'
+import CalculationSummaryPage from '../../integration_tests/pages/calculationSummary'
+import CheckInformationPage from '../../integration_tests/pages/checkInformation'
+import Page from '../../integration_tests/pages/page'
+import PrisonerSearchPage from '../../integration_tests/pages/prisonerSearch'
+import SelectOffencesPage from '../../integration_tests/pages/selectOffences'
+import ViewCalculationSummary from '../../integration_tests/pages/viewCalculationSummary'
+import ViewSentencesAndOffencesPage from '../../integration_tests/pages/viewSentencesAndOffences'
 
 context('End to end happy path of user journey', () => {
   beforeEach(() => {

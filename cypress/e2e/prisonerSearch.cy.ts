@@ -1,4 +1,4 @@
-import PrisonerSearchPage from '../pages/prisonerSearch'
+import PrisonerSearchPage from '../../integration_tests/pages/prisonerSearch'
 
 context('Prisoner search', () => {
   beforeEach(() => {

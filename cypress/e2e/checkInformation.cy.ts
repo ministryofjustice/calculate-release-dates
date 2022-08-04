@@ -1,4 +1,4 @@
-import CheckInformationPage from '../pages/checkInformation'
+import CheckInformationPage from '../../integration_tests/pages/checkInformation'
 
 context('Check nomis information', () => {
   beforeEach(() => {
