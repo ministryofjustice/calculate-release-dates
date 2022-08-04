@@ -181,7 +181,19 @@ const invalidValidationResult: ValidationMessages = {
       arguments: [],
     },
     {
-      code: 'SENTENCE_HAS_NO_LICENCE_DURATION',
+      code: 'SENTENCE_HAS_NO_IMPRISONMENT_TERM',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'SENTENCE_HAS_NO_LICENCE_TERM',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'ZERO_IMPRISONMENT_TERM',
       sentenceSequence: 4,
       message: '',
       arguments: [],
@@ -469,7 +481,13 @@ describe('Calculate release dates service tests', () => {
           text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
         },
         {
+          text: 'Court case 2 count 3 must include a imprisonment term.',
+        },
+        {
           text: 'Court case 2 count 3 must include a licence term.',
+        },
+        {
+          text: 'Court case 2 count 3 must include an imprisonment term greater than zero.',
         },
         {
           text: 'Court case 2 count 3 must have a licence term of at least one year.',

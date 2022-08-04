@@ -69,9 +69,17 @@ export default function translateErrorToText(
       return [
         `The sentence type for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} is invalid for the sentence date entered.`,
       ]
-    case 'SENTENCE_HAS_NO_LICENCE_DURATION':
+    case 'SENTENCE_HAS_NO_IMPRISONMENT_TERM':
+      return [
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include a imprisonment term.`,
+      ]
+    case 'SENTENCE_HAS_NO_LICENCE_TERM':
       return [
         `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include a licence term.`,
+      ]
+    case 'ZERO_IMPRISONMENT_TERM':
+      return [
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include an imprisonment term greater than zero.`,
       ]
     case 'LICENCE_TERM_LESS_THAN_ONE_YEAR':
       return [
