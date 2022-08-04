@@ -60,14 +60,14 @@
                         {% endif %}
                         <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
                         <td class="govuk-table__cell">
-                            {{ sentenceModel.years }}
+                            {{ sentenceModel.allTerms.years }}
                             {{ 'year' | pluralise(sentenceModel.years) }}
-                            {{ sentenceModel.months }}
+                            {{ sentenceModel.allTerms.months }}
                             {{ 'month' | pluralise(sentenceModel.months) }}
                             <br>
-                            {{ sentenceModel.weeks }}
+                            {{ sentenceModel.allTerms.weeks }}
                             {{ 'week' | pluralise(sentenceModel.weeks) }}
-                            {{ sentenceModel.days }}
+                            {{ sentenceModel.allTerms.days }}
                             {{ 'day' | pluralise(sentenceModel.days) }}
                             <br>
 
