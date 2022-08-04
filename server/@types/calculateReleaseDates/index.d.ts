@@ -229,6 +229,8 @@ export interface components {
         | 'LICENCE_TERM_MORE_THAN_EIGHT_YEARS'
         | 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT'
         | 'LASPO_AR_SENTENCE_TYPE_INCORRECT'
+        | 'MORE_THAN_ONE_IMPRISONMENT_TERM'
+        | 'MORE_THAN_ONE_LICENCE_TERM'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]

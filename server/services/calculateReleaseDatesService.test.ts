@@ -211,6 +211,18 @@ const invalidValidationResult: ValidationMessages = {
       arguments: [],
     },
     {
+      code: 'MORE_THAN_ONE_IMPRISONMENT_TERM',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'MORE_THAN_ONE_LICENCE_TERM',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
       code: 'REMAND_FROM_TO_DATES_REQUIRED',
       message: '',
       arguments: [],
@@ -460,16 +472,22 @@ describe('Calculate release dates service tests', () => {
           text: 'Court case 2 count 3 must include a licence term.',
         },
         {
-          text: 'Court court case 2 count 3 must have a licence term of at least one year.',
+          text: 'Court case 2 count 3 must have a licence term of at least one year.',
         },
         {
-          text: 'Court case court case 2 count 3 must have a licence term that does not exceed 8 years.',
+          text: 'Court case 2 count 3 must have a licence term that does not exceed 8 years.',
+        },
+        {
+          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
         },
         {
           text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
         },
         {
-          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
+          text: 'Court case 2 count 3 must only have one imprisonment term.',
+        },
+        {
+          text: 'Court case 2 count 3 must only have one licence term.',
         },
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand periods must have a from and to date.' },
