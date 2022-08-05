@@ -71,7 +71,7 @@ export default function translateErrorToText(
       ]
     case 'SENTENCE_HAS_NO_IMPRISONMENT_TERM':
       return [
-        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include a imprisonment term.`,
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include an imprisonment term.`,
       ]
     case 'SENTENCE_HAS_NO_LICENCE_TERM':
       return [

@@ -481,7 +481,7 @@ describe('Calculate release dates service tests', () => {
           text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
         },
         {
-          text: 'Court case 2 count 3 must include a imprisonment term.',
+          text: 'Court case 2 count 3 must include an imprisonment term.',
         },
         {
           text: 'Court case 2 count 3 must include a licence term.',
