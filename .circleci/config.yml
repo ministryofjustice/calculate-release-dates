@@ -122,8 +122,6 @@ jobs:
       - run:
           name: Wait for node app to start
           command: sleep 5
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: integration tests
           command: npm run int-test
@@ -139,9 +137,9 @@ workflows:
   build-test-and-deploy:
     jobs:
       - build:
-        filters:
-          tags:
-            ignore: /.*/
+          filters:
+            tags:
+              ignore: /.*/
       - unit_test:
           requires:
             - build
