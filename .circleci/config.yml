@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@3.14.3
+  hmpps: ministryofjustice/hmpps@5.1
   slack: circleci/slack@4.4.2
 
 parameters:
@@ -98,7 +98,7 @@ jobs:
     executor:
       name: hmpps/node_redis
       node_tag: << pipeline.parameters.node-version >>
-      redis_tag: buster
+      redis_tag: "6.2"
     steps:
       - checkout
       - attach_workspace:
@@ -106,6 +106,8 @@ jobs:
       - run:
           name: Install missing OS dependency
           command: sudo apt-get install libxss1
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get wiremock
           command: curl -o wiremock.jar https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.27.1/wiremock-standalone-2.27.1.jar
@@ -120,8 +122,6 @@ jobs:
       - run:
           name: Wait for node app to start
           command: sleep 5
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: integration tests
           command: npm run int-test
@@ -137,9 +137,9 @@ workflows:
   build-test-and-deploy:
     jobs:
       - build:
-        filters:
-          tags:
-            ignore: /.*/
+          filters:
+            tags:
+              ignore: /.*/
       - unit_test:
           requires:
             - build
@@ -148,7 +148,7 @@ workflows:
             - build
       - hmpps/helm_lint:
           name: helm_lint
-      - hmpps/build_docker:
+      - hmpps/build_multiplatform_docker:
           name: build_docker
           filters:
             branches:
@@ -157,6 +157,7 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
+          jira_update: true
           context: hmpps-common-vars
           filters:
             branches:
@@ -175,6 +176,8 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
+          jira_update: true
+          jira_env_type: staging
           context:
             - hmpps-common-vars
             - calculate-release-dates-preprod
@@ -187,6 +190,8 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_prod
           env: "prod"
+          jira_update: true
+          jira_env_type: production
           slack_notification: true
           slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:
