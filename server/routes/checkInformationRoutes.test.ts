@@ -22,6 +22,7 @@ import {
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../config'
+import trimHtml from './testutils/testUtils'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -229,10 +230,10 @@ describe('Check information routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        trimHtml(res)
         expect(res.text).toContain('sentence-card')
         expect(res.text).toContain('A1234AA')
-        expect(res.text).toContain('Anon')
-        expect(res.text).toContain('Nobody')
+        expect(res.text).toContain('Anon Nobody')
         expect(res.text).toContain('This calculation will include 8')
         expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
@@ -243,7 +244,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Committed on 07 January 2021')
         expect(res.text).toContain('SDS Standard Sentence')
         expect(res.text).toContain('Court case 2')
-        expect(res.text).toContain('Consecutive to  court case 1 count 1')
+        expect(res.text).toContain('Consecutive to court case 1 count 1')
         expect(res.text).toContain('href="/calculation/A1234AA/select-offences-that-appear-in-list-a"')
         expect(res.text).toContain('Restore additional days awarded (RADA)')
         expect(res.text).toContain('2')
