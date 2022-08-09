@@ -14,6 +14,7 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import trimHtml from './testutils/testUtils'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -205,10 +206,11 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        trimHtml(res)
         expect(res.text).toContain('href="/calculation/A1234AA/alternative-release-arrangements"')
         expect(res.text).toContain('Select offences that appear in List A')
         expect(res.text).toContain('Court case 3')
-        expect(res.text.replace(/\s/g, '')).toContain('2months')
+        expect(res.text).toContain('2 months')
         expect(res.text).toContain('id="checkbox-999" name="999" value="true" checked')
         expect(res.text).toContain('Continue')
       })
