@@ -157,7 +157,7 @@ const invalidValidationResult: ValidationMessages = {
       arguments: [],
     },
     {
-      code: 'SENTENCE_HAS_NO_IMPRISONMENT_DURATION',
+      code: 'ZERO_IMPRISONMENT_TERM',
       sentenceSequence: 4,
       message: '',
       arguments: [],
@@ -199,13 +199,13 @@ const invalidValidationResult: ValidationMessages = {
       arguments: [],
     },
     {
-      code: 'LICENCE_TERM_LESS_THAN_ONE_YEAR',
+      code: 'EDS_LICENCE_TERM_LESS_THAN_ONE_YEAR',
       sentenceSequence: 4,
       message: '',
       arguments: [],
     },
     {
-      code: 'LICENCE_TERM_MORE_THAN_EIGHT_YEARS',
+      code: 'EDS_LICENCE_TERM_MORE_THAN_EIGHT_YEARS',
       sentenceSequence: 4,
       message: '',
       arguments: [],
@@ -230,6 +230,24 @@ const invalidValidationResult: ValidationMessages = {
     },
     {
       code: 'MORE_THAN_ONE_LICENCE_TERM',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'SOPC_LICENCE_TERM_NOT_12_MONTHS',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'SEC236A_SENTENCE_TYPE_INCORRECT',
+      sentenceSequence: 4,
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT',
       sentenceSequence: 4,
       message: '',
       arguments: [],
@@ -472,7 +490,7 @@ describe('Calculate release dates service tests', () => {
         { text: 'The calculation must include an offence date for court case 2 count 3.' },
         { text: 'The offence date for court case 2 count 3 must be before the sentence date.' },
         { text: 'The offence date range for court case 2 count 3 must be before the sentence date.' },
-        { text: 'You must enter a length of time for the term of imprisonment for court case 2 count 3.' },
+        { text: 'Court case 2 count 3 must include an imprisonment term greater than zero.' },
         { text: 'Court case 2 count 3 must only have one term in NOMIS.' },
         {
           text: 'There are multiple sentences that are consecutive to court case 2 count 3. A sentence should only have one other sentence consecutive to it.',
@@ -506,6 +524,15 @@ describe('Calculate release dates service tests', () => {
         },
         {
           text: 'Court case 2 count 3 must only have one licence term.',
+        },
+        {
+          text: 'Court case 2 count 3 must include a licence term of 12 months or 1 year.',
+        },
+        {
+          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
+        },
+        {
+          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
         },
         { text: 'Remand periods must have a from and to date.' },
         { text: 'Remand periods must have a from and to date.' },

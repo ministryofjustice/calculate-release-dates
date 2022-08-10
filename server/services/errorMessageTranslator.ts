@@ -19,10 +19,6 @@ export default function translateErrorToText(
       return [
         `The offence date range for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must be before the sentence date.`,
       ]
-    case 'SENTENCE_HAS_NO_IMPRISONMENT_DURATION':
-      return [
-        `You must enter a length of time for the term of imprisonment for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}.`,
-      ]
     case 'OFFENCE_MISSING_DATE':
       return [
         `The calculation must include an offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence}.`,
@@ -66,6 +62,8 @@ export default function translateErrorToText(
     case 'SEC_91_SENTENCE_TYPE_INCORRECT':
     case 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT':
     case 'LASPO_AR_SENTENCE_TYPE_INCORRECT':
+    case 'SEC236A_SENTENCE_TYPE_INCORRECT':
+    case 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT':
       return [
         `The sentence type for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} is invalid for the sentence date entered.`,
       ]
@@ -81,11 +79,11 @@ export default function translateErrorToText(
       return [
         `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include an imprisonment term greater than zero.`,
       ]
-    case 'LICENCE_TERM_LESS_THAN_ONE_YEAR':
+    case 'EDS_LICENCE_TERM_LESS_THAN_ONE_YEAR':
       return [
         `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must have a licence term of at least one year.`,
       ]
-    case 'LICENCE_TERM_MORE_THAN_EIGHT_YEARS':
+    case 'EDS_LICENCE_TERM_MORE_THAN_EIGHT_YEARS':
       return [
         `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must have a licence term that does not exceed 8 years.`,
       ]
@@ -96,6 +94,10 @@ export default function translateErrorToText(
     case 'MORE_THAN_ONE_LICENCE_TERM':
       return [
         `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must only have one licence term.`,
+      ]
+    case 'SOPC_LICENCE_TERM_NOT_12_MONTHS':
+      return [
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include a licence term of 12 months or 1 year.`,
       ]
     default:
       throw new Error(`Uknown validation code ${validationMessage.code}`)
