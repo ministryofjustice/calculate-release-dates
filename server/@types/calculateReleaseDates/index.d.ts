@@ -105,6 +105,7 @@ export interface components {
       offender: components['schemas']['Offender']
       sentences: (
         | components['schemas']['ExtendedDeterminateSentence']
+        | components['schemas']['SopcSentence']
         | components['schemas']['StandardDeterminateSentence']
       )[]
       adjustments: components['schemas']['Adjustments']
@@ -143,6 +144,19 @@ export interface components {
       /** Format: date */
       dateOfBirth: string
       isActiveSexOffender: boolean
+    }
+    SopcSentence: components['schemas']['AbstractSentence'] & {
+      custodialDuration?: components['schemas']['Duration']
+      extensionDuration?: components['schemas']['Duration']
+      sdopcu18?: boolean
+    } & {
+      consecutiveSentenceUUIDs: unknown
+      custodialDuration: unknown
+      extensionDuration: unknown
+      identifier: unknown
+      offence: unknown
+      sdopcu18: unknown
+      sentencedAt: unknown
     }
     StandardDeterminateSentence: components['schemas']['AbstractSentence'] & {
       duration?: components['schemas']['Duration']
@@ -212,7 +226,6 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE'
         | 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE'
-        | 'SENTENCE_HAS_NO_IMPRISONMENT_DURATION'
         | 'OFFENCE_MISSING_DATE'
         | 'REMAND_FROM_TO_DATES_REQUIRED'
         | 'SENTENCE_HAS_MULTIPLE_TERMS'
@@ -227,12 +240,15 @@ export interface components {
         | 'SENTENCE_HAS_NO_IMPRISONMENT_TERM'
         | 'SENTENCE_HAS_NO_LICENCE_TERM'
         | 'ZERO_IMPRISONMENT_TERM'
-        | 'LICENCE_TERM_LESS_THAN_ONE_YEAR'
-        | 'LICENCE_TERM_MORE_THAN_EIGHT_YEARS'
+        | 'EDS_LICENCE_TERM_LESS_THAN_ONE_YEAR'
+        | 'EDS_LICENCE_TERM_MORE_THAN_EIGHT_YEARS'
         | 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT'
         | 'LASPO_AR_SENTENCE_TYPE_INCORRECT'
         | 'MORE_THAN_ONE_IMPRISONMENT_TERM'
         | 'MORE_THAN_ONE_LICENCE_TERM'
+        | 'SOPC_LICENCE_TERM_NOT_12_MONTHS'
+        | 'SEC236A_SENTENCE_TYPE_INCORRECT'
+        | 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]
