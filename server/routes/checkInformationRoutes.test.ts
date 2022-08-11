@@ -314,6 +314,7 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
+    config.featureToggles.eds = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
@@ -329,7 +330,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Anon')
         expect(res.text).toContain('Nobody')
-        expect(res.text).toContain('This calculation will include 8')
+        expect(res.text).toContain('This calculation will include 9')
         expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
