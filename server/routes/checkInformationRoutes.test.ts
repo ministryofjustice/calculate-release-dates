@@ -314,7 +314,6 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner', () => {
-    config.featureToggles.eds = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
