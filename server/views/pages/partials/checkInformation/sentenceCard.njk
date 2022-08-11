@@ -43,25 +43,10 @@
                                     </tr>
                                 {% endif %}
                                 {% if sentenceModel.hasCustodialAndLicenseTerms() %}
-                                    <tr class="govuk-table__row govuk-body-s">
-                                        <th scope="row" class="govuk-table__header sentence-table-header">Custodial term</th>
-                                        <td class="govuk-table__cell">
-                                            {{ sentenceLength(sentenceModel.imprisonmentTerm) }}
-                                        </td>
-                                    </tr>
-                                    <tr class="govuk-table__row govuk-body-s">
-                                        <th scope="row" class="govuk-table__header sentence-table-header">Licence period</th>
-                                        <td class="govuk-table__cell">
-                                            {{ sentenceLength(sentenceModel.licenseTerm) }}
-                                        </td>
-                                    </tr>
+                                    {{ sentenceLength(sentenceModel.imprisonmentTerm, 'Custodial term') }}
+                                    {{ sentenceLength(sentenceModel.licenceTerm, 'Licence period') }}
                                 {% else %}
-                                    <tr class="govuk-table__row govuk-body-s">
-                                        <th scope="row" class="govuk-table__header sentence-table-header">Sentence length</th>
-                                        <td class="govuk-table__cell">
-                                            {{ sentenceLength(sentenceModel.allTerms) }}
-                                        </td>
-                                    </tr>
+                                    {{ sentenceLength(sentence.terms, 'Sentence length') }}
                                 {% endif %}
 
                                 {% if params.includeConcurrentOrConsecutiveText and params.offenceCount > 1 %}

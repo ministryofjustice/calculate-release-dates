@@ -1,11 +1,17 @@
-{% macro sentenceLength(term) %}
-
-    {{ term.years }}
-    {{ 'year' | pluralise(term.years) }}
-    {{ term.months }}
-    {{ 'month' | pluralise(term.months) }}
-    {{ term.weeks }}
-    {{ 'week' | pluralise(term.weeks) }}
-    {{ term.days }}
-    {{ 'day' | pluralise(term.days) }}
+{% macro sentenceLength(terms, label) %}
+    {% for term in terms %}
+        <tr class="govuk-table__row govuk-body-s">
+            <th scope="row" class="govuk-table__header sentence-table-header">{{label}}</th>
+            <td class="govuk-table__cell">
+                {{ term.years }}
+                {{ 'year' | pluralise(term.years) }}
+                {{ term.months }}
+                {{ 'month' | pluralise(term.months) }}
+                {{ term.weeks }}
+                {{ 'week' | pluralise(term.weeks) }}
+                {{ term.days }}
+                {{ 'day' | pluralise(term.days) }}
+            </td>
+        </tr>
+    {% endfor %}
 {% endmacro %}

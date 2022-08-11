@@ -1,6 +1,7 @@
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import { PrisonApiSentenceTerms } from '../@types/prisonApi/PrisonApiSentenceTerms'
 
+// TODO remove when we get rid of the old sentenceTable design.
 type AggregatedTerm = {
   years: number
   months: number
@@ -15,18 +16,20 @@ export default class SentenceRowViewModel {
 
   private static sopcSentenceTypes = ['SEC236A', 'SOPC18', 'SOPC21', 'SDOPCU18']
 
+  // TODO remove when we get rid of the old sentenceTable design.
   private allTerms: AggregatedTerm
 
-  private imprisonmentTerm: AggregatedTerm
+  private imprisonmentTerm: PrisonApiSentenceTerms[]
 
-  private licenseTerm: AggregatedTerm
+  private licenceTerm: PrisonApiSentenceTerms[]
 
   constructor(public sentencesAndOffence: PrisonApiOffenderSentenceAndOffences) {
     this.allTerms = this.aggregateTerms(sentencesAndOffence.terms)
-    this.imprisonmentTerm = this.aggregateTerms(sentencesAndOffence.terms.filter(term => term.code === 'IMP'))
-    this.licenseTerm = this.aggregateTerms(sentencesAndOffence.terms.filter(term => term.code === 'LIC'))
+    this.imprisonmentTerm = sentencesAndOffence.terms.filter(term => term.code === 'IMP')
+    this.licenceTerm = sentencesAndOffence.terms.filter(term => term.code === 'LIC')
   }
 
+  // TODO remove when we get rid of the old sentenceTable design.
   private aggregateTerms(terms: PrisonApiSentenceTerms[]): AggregatedTerm {
     return {
       years: terms.map(t => t.years).reduce((sum, current) => sum + current, 0) || 0,
