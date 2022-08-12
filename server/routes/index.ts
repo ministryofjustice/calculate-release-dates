@@ -15,6 +15,7 @@ export default function Index({
   entryPointService,
   viewReleaseDatesService,
   userInputService,
+  oneThousandCalculationsService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -34,7 +35,11 @@ export default function Index({
     userInputService
   )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
-  const otherAccessRoutes = new OtherRoutes(calculateReleaseDatesService, prisonerService)
+  const otherAccessRoutes = new OtherRoutes(
+    oneThousandCalculationsService,
+    calculateReleaseDatesService,
+    prisonerService
+  )
   const startRoutes = new StartRoutes(entryPointService, prisonerService)
   const viewAccessRoutes = new ViewRoutes(
     viewReleaseDatesService,
