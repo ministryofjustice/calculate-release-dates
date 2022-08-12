@@ -15,6 +15,7 @@ import PrisonerService from '../../services/prisonerService'
 import EntryPointService from '../../services/entryPointService'
 import ViewReleaseDatesService from '../../services/viewReleaseDatesService'
 import UserInputService from '../../services/userInputService'
+import OneThousandCalculationsService from '../../services/oneThousandCalculationsService'
 
 const user = {
   name: 'anon nobody',
@@ -72,6 +73,7 @@ export const appWithAllRoutes = (overrides: Partial<Services> = {}, production =
     entryPointService: {} as EntryPointService,
     viewReleaseDatesService: {} as ViewReleaseDatesService,
     userInputService: {} as UserInputService,
+    oneThousandCalculationsService: {} as OneThousandCalculationsService,
     ...overrides,
   })
   auth.default.authenticationMiddleware = () => (req, res, next) => next()

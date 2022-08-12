@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import _ from 'lodash'
 import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffenderKeyDates'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
@@ -19,7 +20,7 @@ export default class OneThousandCalculationsService {
     private readonly prisonerService: PrisonerService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService
   ) {}
-
+  /* eslint-disable */
   public async runCalculations(
     username: string,
     caseloads: string[],
@@ -120,7 +121,7 @@ export default class OneThousandCalculationsService {
     ex?: any,
     errorText?: string
   ): OneThousandCalculationsRow {
-    const sentenceLength = OneThousandCalculationsService.sentenceLength(calc)
+    const sentenceLength = calc ? OneThousandCalculationsService.sentenceLength(calc) : ''
     const row = {
       NOMS_ID: nomsId,
       DOB: prisoner?.dateOfBirth,
@@ -158,7 +159,7 @@ export default class OneThousandCalculationsService {
       LTD: errorText || calc?.dates?.LTD,
       NOMIS_LTD: nomisDates?.lateTermDate,
       DPRRD: errorText || calc?.dates?.DPRRD,
-      NOMIS_DPRRD: nomisDates?.postRecallReleaseDate,
+      NOMIS_DPRRD: nomisDates?.dtoPostRecallReleaseDate,
       NOMIS_DPRRD_OVERRIDE: nomisDates?.dtoPostRecallReleaseDateOverride,
       PRRD: errorText || calc?.dates?.PRRD,
       NOMIS_PRRD: nomisDates?.postRecallReleaseDate,
@@ -180,7 +181,7 @@ export default class OneThousandCalculationsService {
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
-      CONSECUTIVE_SENTENCES: this.getConsecutiveSentences(sentenceAndOffences),
+      CONSECUTIVE_SENTENCES: sentenceAndOffences ? this.getConsecutiveSentences(sentenceAndOffences) : '',
       ERROR_TEXT: ex?.message,
       ERROR_JSON: JSON.stringify(ex),
     }
@@ -277,6 +278,7 @@ export default class OneThousandCalculationsService {
       OneThousandCalculationsService.areSame(row.ESED, row.NOMIS_ESED)
     )
   }
+
   private getConsecutiveSentences(sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[]) {
     const sentenceSequenceToSentence = indexBy(
       sentenceAndOffences,
@@ -291,3 +293,4 @@ export default class OneThousandCalculationsService {
     )
   }
 }
+/* eslint-enable */
