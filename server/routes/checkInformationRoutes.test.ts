@@ -134,6 +134,56 @@ const stubbedSentencesAndOffences = [
       },
     ],
   },
+  {
+    sentenceSequence: 4,
+    lineSequence: 4,
+    caseSequence: 4,
+    courtDescription: 'Amersham Crown Court',
+    sentenceStatus: 'A',
+    sentenceCategory: '2020',
+    sentenceCalculationType: 'EDSU18',
+    sentenceTypeDescription: 'EDS Sec 254 Sentencing Code (U18)',
+    sentenceDate: '2022-08-08',
+    terms: [
+      {
+        years: 6,
+        months: 0,
+        weeks: 0,
+        days: 0,
+        code: 'IMP',
+      },
+      {
+        years: 9,
+        months: 0,
+        weeks: 0,
+        days: 0,
+        code: 'IMP',
+      },
+      {
+        years: 2,
+        months: 0,
+        weeks: 0,
+        days: 0,
+        code: 'LIC',
+      },
+      {
+        years: 3,
+        months: 0,
+        weeks: 0,
+        days: 0,
+        code: 'LIC',
+      },
+    ],
+    offences: [
+      {
+        offenderChargeId: 3933291,
+        offenceStartDate: '2022-08-07',
+        offenceCode: 'TH68013A',
+        offenceDescription: 'Attempt theft of motor vehicle',
+        indicators: ['D', '50', '51'],
+      },
+    ],
+  },
 ]
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
@@ -234,7 +284,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('sentence-card')
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Anon Nobody')
-        expect(res.text).toContain('This calculation will include 8')
+        expect(res.text).toContain('This calculation will include 9')
         expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
@@ -255,6 +305,10 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Return to custody')
         expect(res.text).toContain('12 April 2022')
         expect(res.text).toContain('SDS+')
+        const custodialMatches = (res.text.match(/Custodial term/g) || []).length
+        expect(custodialMatches).toBe(2)
+        const LicenceMatches = (res.text.match(/Licence period/g) || []).length
+        expect(LicenceMatches).toBe(2)
         expect(res.text).not.toContain('98765')
       })
   })
@@ -275,7 +329,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Anon')
         expect(res.text).toContain('Nobody')
-        expect(res.text).toContain('This calculation will include 8')
+        expect(res.text).toContain('This calculation will include 9')
         expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
