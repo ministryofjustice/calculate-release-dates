@@ -15,7 +15,6 @@ generic-service:
     PRISON_API_URL: "https://api-dev.prison.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-offender-search-dev.prison.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital-dev.prison.service.justice.gov.uk"
-    EDS_FEATURE_TOGGLE: "true"
     SOPC_FEATURE_TOGGLE: "true"
 
   # Switches off the allow list in the DEV env only.

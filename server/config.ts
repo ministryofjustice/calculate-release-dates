@@ -100,7 +100,6 @@ export default {
     tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),
   },
   featureToggles: {
-    eds: get('EDS_FEATURE_TOGGLE', false) === 'true',
     sopc: get('SOPC_FEATURE_TOGGLE', false) === 'true',
   },
 }
