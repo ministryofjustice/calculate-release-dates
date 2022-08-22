@@ -21,7 +21,6 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import config from '../config'
 import trimHtml from './testutils/testUtils'
 
 jest.mock('../services/userService')

@@ -21,7 +21,6 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
-import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
