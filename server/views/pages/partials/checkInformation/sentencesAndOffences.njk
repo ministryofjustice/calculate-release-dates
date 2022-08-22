@@ -11,8 +11,7 @@
 <div id="sentences">
         {% for case in model.cases %}
                 {{ courtCaseDetails({case: case, includeCaseDetails: true}) }}
-                {% if featureToggles.eds %}
-                        {{ sentenceCard({
+                {{ sentenceCard({
                         case: case,
                         includeCheckboxes: false,
                         includeConcurrentOrConsecutiveText: true,
@@ -25,21 +24,6 @@
                         includeSentenceType: true
                         }) 
                 }}
-                {% else %}
-                        {{ sentenceTable({
-                        case: case,
-                        includeCheckboxes: false,
-                        includeConcurrentOrConsecutiveText: true,
-                        includeSDSPlusBadge: true,
-                        sentenceSequenceToSentence: model.sentenceSequenceToSentence,
-                        offenceCount: model.offenceCount,
-                        returnToCustodyDate: model.returnToCustodyDate,
-                        userInputs: model.userInputs,
-                        rowIsSdsPlus: model.rowIsSdsPlus,
-                        includeSentenceType: true
-                        }) 
-                }}
-                {% endif %}
         {% endfor %}
 </div>
 

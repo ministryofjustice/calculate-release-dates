@@ -197,7 +197,6 @@ const stubbedUserInput = {
 } as CalculationUserInputs
 
 beforeEach(() => {
-  config.featureToggles.eds = false
   app = appWithAllRoutes({
     userService,
     prisonerService,
@@ -211,7 +210,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('View journey routesroutes tests', () => {
+describe('View journey routes tests', () => {
   describe('Get latest view tests', () => {
     it('GET /view/:nomsId/latest should redirect to the latest ', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -246,14 +245,13 @@ describe('View journey routesroutes tests', () => {
           expect(res.text).toContain('sentences from NOMIS.')
           expect(res.text).toContain('Court case 1')
           expect(res.text).toContain('Committed on 03 February 2021')
-          expect(res.text).toContain('Committed between 04 January 2021 and 05 January 2021')
+          expect(res.text).toContain('Committed from 04 January 2021 to 05 January 2021')
           expect(res.text).toContain('Committed on 06 March 2021')
           expect(res.text).toContain('Offence date not entered')
           expect(res.text).toContain('Committed on 07 January 2021')
           expect(res.text).toContain('SDS Standard Sentence')
           expect(res.text).toContain('Court case 2')
-          expect(res.text).toContain('consecutive to')
-          expect(res.text).toContain('court case 1 count 1')
+          expect(res.text).toContain('Consecutive to  court case 1 count 1')
           expect(res.text).toContain('/view/A1234AA/calculation-summary/123456')
           expect(res.text).toContain('SDS+')
         })
