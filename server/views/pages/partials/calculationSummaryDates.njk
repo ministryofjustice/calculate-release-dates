@@ -12,11 +12,11 @@
 {% endmacro %}
 
 {% macro pedBeforePrrdLine(prrd) %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16">(Note: PRRD is later than PED)</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">The post recall release date (PRRD) of {{ prrd | date('dddd, DD MMMM YYYY') }} is later than the PED</p>
 {% endmacro %}
 
 {% macro pedAdjustedByOtherRelease() %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16">Adjusted for the CRD of a concurrent sentence</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the CRD of a concurrent sentence</p>
 {% endmacro %}
 
 <h2 class="govuk-heading-l govuk-!-margin-top-9">Final release dates with adjustments</h2>

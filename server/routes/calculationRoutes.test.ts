@@ -260,8 +260,10 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Adjusted for the CRD of a concurrent sentence')
-        expect(res.text).toContain('(Note: PRRD is later than PED)')
+        expect(res.text).toContain('PED adjusted for the CRD of a concurrent sentence')
+        expect(res.text).toContain(
+          'The post recall release date (PRRD) of Saturday, 12 October 2024 is later than the PED'
+        )
       })
   })
 
