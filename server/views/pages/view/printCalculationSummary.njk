@@ -8,6 +8,7 @@
 {% set pageId = "view-print-calculation-summary" %}
 
 {% block aside %}
+    {% set prisonerDetail = model.prisonerDetail %}
     {% if prisonerDetail %}
         {% include "../partials/prisonerIdentityBar.njk" %}
     {% endif %}
@@ -18,7 +19,7 @@
     <nav>
         {{ govukBackLink({
         text: "Back",
-        href: "/view/" + nomsId + "/calculation-summary/" + calculationRequestId
+        href: "/view/" + model.nomsId + "/calculation-summary/" + model.calculationRequestId
     }) }}
     </nav>
 {% endblock %}
@@ -27,7 +28,7 @@
     {% include "../partials/formError.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Release dates {% if prisonerDetail %} for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}
+            <h1 class="govuk-heading-xl">Release dates {% if model.prisonerDetail %} for {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}
                 {% endif %}
             </h1>
             {% include "../partials/calculationSummaryDates.njk" %}
