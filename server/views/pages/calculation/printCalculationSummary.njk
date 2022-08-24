@@ -8,6 +8,7 @@
 {% set pageId = "print-calculation-summary" %}
 
 {% block aside %}
+    {% set prisonerDetail = model.prisonerDetail %}
     {% include "../partials/prisonerIdentityBar.njk" %}
 {% endblock %}
 
@@ -16,7 +17,7 @@
     <nav>
         {{ govukBackLink({
         text: "Back",
-        href: "/calculation/" + prisonerDetail.offenderNo + "/complete/" + calculationRequestId
+        href: "/calculation/" + model.prisonerDetail.offenderNo + "/complete/" + model.calculationRequestId
     }) }}
     </nav>
 {% endblock %}
