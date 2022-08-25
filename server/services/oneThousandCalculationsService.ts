@@ -1,6 +1,9 @@
 import dayjs from 'dayjs'
 import _ from 'lodash'
-import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationBreakdown,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffenderKeyDates'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import {
@@ -31,7 +34,15 @@ export default class OneThousandCalculationsService {
 
     // This is just temporary code therefore the iterative loop rather than an async approach (was easier to develop and easier to debug)
     for (const nomsId of nomsIds) {
-      let prisonDetails, bookingId, nomisDates, sentenceAndOffences, adjustments, returnToCustody, keyDates, calc
+      let prisonDetails,
+        bookingId,
+        nomisDates,
+        sentenceAndOffences,
+        adjustments,
+        returnToCustody,
+        keyDates,
+        calc,
+        breakdown
       try {
         prisonDetails = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
         bookingId = prisonDetails.bookingId
@@ -44,6 +55,15 @@ export default class OneThousandCalculationsService {
           : null
         try {
           calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, null, token)
+          try {
+            //For now only fetch breakdown if we calculate a PED. We may want to capture the breakdown for more calculations later.
+            if (calc.dates.PED) {
+              breakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
+                calc.calculationRequestId,
+                token
+              )
+            }
+          } catch (ex) {}
           csvData.push(
             this.addRow(
               nomsId,
@@ -53,7 +73,8 @@ export default class OneThousandCalculationsService {
               sentenceAndOffences,
               adjustments,
               returnToCustody,
-              keyDates
+              keyDates,
+              breakdown
             )
           )
         } catch (ex) {
@@ -68,6 +89,7 @@ export default class OneThousandCalculationsService {
                 adjustments,
                 returnToCustody,
                 keyDates,
+                breakdown,
                 ex,
                 'Validation Error'
               )
@@ -83,6 +105,7 @@ export default class OneThousandCalculationsService {
                 adjustments,
                 returnToCustody,
                 keyDates,
+                breakdown,
                 ex,
                 'Server error'
               )
@@ -100,6 +123,7 @@ export default class OneThousandCalculationsService {
             adjustments,
             returnToCustody,
             keyDates,
+            breakdown,
             ex,
             'Prison API Error'
           )
@@ -118,6 +142,7 @@ export default class OneThousandCalculationsService {
     adjustments: PrisonApiBookingAndSentenceAdjustments,
     returnToCustody: PrisonApiReturnToCustodyDate,
     keyDates: PrisonApiOffenderKeyDates,
+    breakdown: CalculationBreakdown,
     ex?: any,
     errorText?: string
   ): OneThousandCalculationsRow {
@@ -176,6 +201,7 @@ export default class OneThousandCalculationsService {
       ARE_DATES_SAME_USING_OVERRIDES: OneThousandCalculationsService.areDatesSameUsingOverrides(row) ? 'Y' : 'N',
       IS_ESL_SAME: sentenceLength === keyDates?.sentenceLength ? 'Y' : 'N',
       IS_JSL_SAME: sentenceLength === keyDates?.judiciallyImposedSentenceLength ? 'Y' : 'N',
+      IS_PED_ADJUSTED_TO_CRD: this.isPedAdjustedToCrd(breakdown, calc),
       SEX_OFFENDER: this.isSexOffender(prisoner),
       LOCATION: prisoner?.locationDescription,
       SENTENCES: JSON.stringify(sentenceAndOffences),
@@ -185,6 +211,17 @@ export default class OneThousandCalculationsService {
       ERROR_TEXT: ex?.message,
       ERROR_JSON: JSON.stringify(ex),
     }
+  }
+
+  isPedAdjustedToCrd(breakdown: CalculationBreakdown, calc: BookingCalculation): 'Y' | 'N' | '' {
+    if (calc?.dates.PED) {
+      if (breakdown?.breakdownByReleaseDateType?.PED?.rules?.includes('PED_EQUAL_TO_LATEST_NON_PED_RELEASE')) {
+        return 'Y'
+      } else {
+        return 'N'
+      }
+    }
+    return ''
   }
 
   private isSexOffender(prisoner: PrisonApiPrisoner): 'Y' | 'N' {
