@@ -10,6 +10,7 @@ import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffender
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import OneThousandCalculationsRow from '../models/OneThousandCalculationsRow'
+import { pedAdjustedByCrdAndBeforePrrdBreakdown } from './breakdownExamplesTestData'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
@@ -317,6 +318,7 @@ describe('Calculate release dates service tests', () => {
       prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(adjustments)
       prisonerService.getReturnToCustodyDate.mockResolvedValue(returnToCustody)
       calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue(calculation)
+      calculateReleaseDatesService.getCalculationBreakdown.mockResolvedValue(pedAdjustedByCrdAndBeforePrrdBreakdown())
 
       const rows = await oneThousandCalculationsService.runCalculations('', [], '', ['ABCDEFG'])
 
@@ -363,6 +365,7 @@ describe('Calculate release dates service tests', () => {
         ARE_DATES_SAME_USING_OVERRIDES: 'N',
         IS_ESL_SAME: 'N',
         IS_JSL_SAME: 'Y',
+        IS_PED_ADJUSTED_TO_CRD: 'Y',
         SEX_OFFENDER: 'Y',
         LOCATION: 'Kirkham (HMP)',
         SENTENCES:
@@ -444,6 +447,7 @@ describe('Calculate release dates service tests', () => {
         ARE_DATES_SAME_USING_OVERRIDES: 'N',
         IS_ESL_SAME: 'N',
         IS_JSL_SAME: 'N',
+        IS_PED_ADJUSTED_TO_CRD: '',
         SEX_OFFENDER: 'Y',
         LOCATION: 'Kirkham (HMP)',
         SENTENCES:
@@ -526,6 +530,7 @@ describe('Calculate release dates service tests', () => {
         ARE_DATES_SAME_USING_OVERRIDES: 'N',
         IS_ESL_SAME: 'N',
         IS_JSL_SAME: 'N',
+        IS_PED_ADJUSTED_TO_CRD: '',
         SEX_OFFENDER: 'Y',
         LOCATION: 'Kirkham (HMP)',
         SENTENCES:
@@ -601,6 +606,7 @@ describe('Calculate release dates service tests', () => {
         ARE_DATES_SAME_USING_OVERRIDES: 'N',
         IS_ESL_SAME: 'N',
         IS_JSL_SAME: 'N',
+        IS_PED_ADJUSTED_TO_CRD: '',
         SEX_OFFENDER: 'N',
         LOCATION: undefined,
         SENTENCES: undefined,

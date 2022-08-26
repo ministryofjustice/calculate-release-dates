@@ -223,7 +223,7 @@ export default class CalculateReleaseDatesService {
     }
   }
 
-  private async getCalculationBreakdown(calculationRequestId: number, token: string): Promise<CalculationBreakdown> {
+  public async getCalculationBreakdown(calculationRequestId: number, token: string): Promise<CalculationBreakdown> {
     return new CalculateReleaseDatesApiClient(token).getCalculationBreakdown(calculationRequestId)
   }
 

@@ -209,7 +209,7 @@ export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
         unadjustedDate: '2026-09-14',
       },
       PED: {
-        rules: ['PED_EQUAL_TO_LATEST_SDS_RELEASE'],
+        rules: ['PED_EQUAL_TO_LATEST_NON_PED_RELEASE'],
         rulesWithExtraAdjustments: {},
         adjustedDays: 0,
         releaseDate: '2024-10-12',

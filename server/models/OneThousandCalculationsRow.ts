@@ -49,6 +49,7 @@ type OneThousandCalculationsRow = {
   ARE_DATES_SAME_USING_OVERRIDES: 'Y' | 'N'
   IS_ESL_SAME: 'Y' | 'N'
   IS_JSL_SAME: 'Y' | 'N'
+  IS_PED_ADJUSTED_TO_CRD: 'Y' | 'N' | ''
   SEX_OFFENDER: 'Y' | 'N'
   LOCATION: string
   SENTENCES: string
