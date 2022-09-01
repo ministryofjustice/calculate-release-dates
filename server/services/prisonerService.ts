@@ -22,18 +22,36 @@ export default class PrisonerService {
     return new PrisonApiClient(token).getPrisonerImage(nomsId)
   }
 
+  async getPrisonerDetailIncludingReleased(
+    username: string,
+    nomsId: string,
+    userCaseloads: string[],
+    token: string
+  ): Promise<PrisonApiPrisoner> {
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, true)
+  }
+
   async getPrisonerDetail(
     username: string,
     nomsId: string,
     userCaseloads: string[],
     token: string
   ): Promise<PrisonApiPrisoner> {
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, false)
+  }
+
+  private async getPrisonerDetailImpl(
+    nomsId: string,
+    userCaseloads: string[],
+    token: string,
+    includeReleased: boolean
+  ): Promise<PrisonApiPrisoner> {
     try {
       const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
-      if (!userCaseloads.includes(prisonerDetail.agencyId)) {
-        throw FullPageError.notInCaseLoadError()
+      if (userCaseloads.includes(prisonerDetail.agencyId) || (includeReleased && prisonerDetail.agencyId === 'OUT')) {
+        return prisonerDetail
       }
-      return prisonerDetail
+      throw FullPageError.notInCaseLoadError()
     } catch (error) {
       if (error?.status === 404) {
         throw FullPageError.notInCaseLoadError()
@@ -53,7 +71,7 @@ export default class PrisonerService {
     return new PrisonerSearchApiClient(token).searchPrisonerNumbers(prisonerNumbers)
   }
 
-  async getSentencesAndOffences(
+  async getActiveSentencesAndOffences(
     username: string,
     bookingId: number,
     token: string
@@ -63,6 +81,18 @@ export default class PrisonerService {
       throw FullPageError.noSentences()
     }
     return sentencesAndOffences.filter(s => s.sentenceStatus === 'A')
+  }
+
+  async getSentencesAndOffences(
+    username: string,
+    bookingId: number,
+    token: string
+  ): Promise<PrisonApiOffenderSentenceAndOffences[]> {
+    const sentencesAndOffences = await new PrisonApiClient(token).getSentencesAndOffences(bookingId)
+    if (sentencesAndOffences.length === 0) {
+      throw FullPageError.noSentences()
+    }
+    return sentencesAndOffences
   }
 
   async getUsersCaseloads(username: string, token: string): Promise<PrisonApiUserCaseloads[]> {

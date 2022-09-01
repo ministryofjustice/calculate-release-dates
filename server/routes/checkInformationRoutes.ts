@@ -36,7 +36,7 @@ export default class CheckInformationRoutes {
     }
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
+    const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
       username,
       prisonerDetail.bookingId,
       token
@@ -79,7 +79,7 @@ export default class CheckInformationRoutes {
     const { nomsId } = req.params
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
+    const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
       username,
       prisonerDetail.bookingId,
       token

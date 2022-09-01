@@ -311,13 +311,13 @@ describe('Calculate release dates service tests', () => {
 
   describe('OneThousandCalculationsService tests', () => {
     it('Test that successful calculations will return a CSV row', async () => {
-      prisonerService.getPrisonerDetail.mockResolvedValue(prisoner)
+      prisonerService.getPrisonerDetailIncludingReleased.mockResolvedValue(prisoner)
       prisonerService.getSentenceDetail.mockResolvedValue(nomisDates)
       prisonerService.getOffenderKeyDates.mockResolvedValue(keyDates)
       prisonerService.getSentencesAndOffences.mockResolvedValue(sentenceAndOffences)
       prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(adjustments)
       prisonerService.getReturnToCustodyDate.mockResolvedValue(returnToCustody)
-      calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue(calculation)
+      calculateReleaseDatesService.calculateTestReleaseDates.mockResolvedValue(calculation)
       calculateReleaseDatesService.getCalculationBreakdown.mockResolvedValue(pedAdjustedByCrdAndBeforePrrdBreakdown())
 
       const rows = await oneThousandCalculationsService.runCalculations('', [], '', ['ABCDEFG'])
@@ -392,13 +392,13 @@ describe('Calculate release dates service tests', () => {
       expect(rows[0]).toStrictEqual(expected)
     })
     it('Test that a validation calculation error will return a CSV row', async () => {
-      prisonerService.getPrisonerDetail.mockResolvedValue(prisoner)
+      prisonerService.getPrisonerDetailIncludingReleased.mockResolvedValue(prisoner)
       prisonerService.getSentenceDetail.mockResolvedValue(nomisDates)
       prisonerService.getOffenderKeyDates.mockResolvedValue(keyDates)
       prisonerService.getSentencesAndOffences.mockResolvedValue(sentenceAndOffences)
       prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(adjustments)
       prisonerService.getReturnToCustodyDate.mockResolvedValue(returnToCustody)
-      calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockRejectedValue({
+      calculateReleaseDatesService.calculateTestReleaseDates.mockRejectedValue({
         status: 422,
         message: 'There was an error',
       })
@@ -475,13 +475,13 @@ describe('Calculate release dates service tests', () => {
     })
 
     it('Test that an unexpected calculation error will return a CSV row', async () => {
-      prisonerService.getPrisonerDetail.mockResolvedValue(prisoner)
+      prisonerService.getPrisonerDetailIncludingReleased.mockResolvedValue(prisoner)
       prisonerService.getSentenceDetail.mockResolvedValue(nomisDates)
       prisonerService.getOffenderKeyDates.mockResolvedValue(keyDates)
       prisonerService.getSentencesAndOffences.mockResolvedValue(sentenceAndOffences)
       prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(adjustments)
       prisonerService.getReturnToCustodyDate.mockResolvedValue(returnToCustody)
-      calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockRejectedValue({
+      calculateReleaseDatesService.calculateTestReleaseDates.mockRejectedValue({
         status: 500,
         message: 'There was an unexpected error',
       })
@@ -557,7 +557,7 @@ describe('Calculate release dates service tests', () => {
       expect(rows[0]).toStrictEqual(expected)
     })
     it('Test that a prison-api error will return a CSV row', async () => {
-      prisonerService.getPrisonerDetail.mockRejectedValue({
+      prisonerService.getPrisonerDetailIncludingReleased.mockRejectedValue({
         status: 500,
         message: 'There was an unexpected error',
       })

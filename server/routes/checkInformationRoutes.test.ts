@@ -266,7 +266,7 @@ afterEach(() => {
 describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner with the EDS card view', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
@@ -312,7 +312,7 @@ describe('Check information routes tests', () => {
 
   it('GET /calculation/:nomsId/check-information back button should reutrn to dps start page if no calc questions', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
@@ -329,7 +329,7 @@ describe('Check information routes tests', () => {
 
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner without adjustments', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedEmptyAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
@@ -345,7 +345,7 @@ describe('Check information routes tests', () => {
   })
   it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
@@ -365,7 +365,7 @@ describe('Check information routes tests', () => {
 
   it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
@@ -381,7 +381,7 @@ describe('Check information routes tests', () => {
 
   it('POST /calculation/:nomsId/check-information pass', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.validateBackend.mockResolvedValue({ messages: [] })
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
@@ -416,7 +416,7 @@ describe('Check information routes tests', () => {
 
   it('POST /calculation/:nomsId/check-information should redirect if validation fails', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
@@ -450,7 +450,7 @@ describe('Check information routes tests', () => {
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getSentencesAndOffences.mockImplementation(() => {
+    prisonerService.getActiveSentencesAndOffences.mockImplementation(() => {
       throw FullPageError.noSentences()
     })
     return request(app)
