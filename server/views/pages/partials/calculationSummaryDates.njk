@@ -55,7 +55,7 @@
                 {{ holidayLine('PED-weekend-adjustment', model.weekendAdjustments.PED.date, model.weekendAdjustments.PED.adjustedForBankHoliday) }}
             {% endif %}
             {% if model.pedBeforePRRD() %}
-                {{ pedBeforePrrdLine(model.releaseDates.PED)}}
+                {{ pedBeforePrrdLine(model.calculationBreakdown.otherDates.PRRD)}}
             {% endif %}
         {% endif %}
         {% if model.releaseDates.PRRD %}
