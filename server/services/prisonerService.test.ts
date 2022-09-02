@@ -143,13 +143,13 @@ describe('Prisoner service related tests', () => {
         fakeApi
           .get(`/api/offender-sentences/booking/123/sentences-and-offences`)
           .reply(200, [...activeSentences, inactiveSentence])
-        const result = await prisonerService.getSentencesAndOffences('user', 123, token)
+        const result = await prisonerService.getActiveSentencesAndOffences('user', 123, token)
         expect(result).toStrictEqual(activeSentences)
       })
       it('Test getting sentences and offences with no offences', async () => {
         fakeApi.get(`/api/offender-sentences/booking/123/sentences-and-offences`).reply(200, [])
         try {
-          const result = await prisonerService.getSentencesAndOffences('user', 123, token)
+          const result = await prisonerService.getActiveSentencesAndOffences('user', 123, token)
           expect(result).toStrictEqual(activeSentences)
         } catch (error) {
           expect(error.errorKey).toBe(FullPageErrorType.NO_SENTENCES)

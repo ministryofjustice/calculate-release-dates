@@ -44,7 +44,12 @@ export default class OneThousandCalculationsService {
         calc,
         breakdown
       try {
-        prisonDetails = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+        prisonDetails = await this.prisonerService.getPrisonerDetailIncludingReleased(
+          username,
+          nomsId,
+          caseloads,
+          token
+        )
         bookingId = prisonDetails.bookingId
         nomisDates = await this.prisonerService.getSentenceDetail(username, bookingId, token)
         keyDates = await this.prisonerService.getOffenderKeyDates(bookingId, token)
@@ -54,7 +59,7 @@ export default class OneThousandCalculationsService {
           ? await this.prisonerService.getReturnToCustodyDate(bookingId, token)
           : null
         try {
-          calc = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(username, nomsId, null, token)
+          calc = await this.calculateReleaseDatesService.calculateTestReleaseDates(username, nomsId, null, token)
           try {
             //For now only fetch breakdown if we calculate a PED. We may want to capture the breakdown for more calculations later.
             if (calc.dates.PED) {

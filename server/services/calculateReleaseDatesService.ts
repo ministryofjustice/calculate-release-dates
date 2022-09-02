@@ -28,6 +28,15 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).calculateReleaseDates(bookingData)
   }
 
+  async calculateTestReleaseDates(
+    username: string,
+    prisonerId: string,
+    userInput: CalculationUserInputs,
+    token: string
+  ): Promise<BookingCalculation> {
+    return new CalculateReleaseDatesApiClient(token).calculateTestReleaseDates(prisonerId, userInput)
+  }
+
   async calculatePreliminaryReleaseDates(
     username: string,
     prisonerId: string,

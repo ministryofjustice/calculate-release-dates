@@ -36,7 +36,7 @@ export default class CalculationQuestionRoutes {
         return res.redirect(`/calculation/${nomsId}/alternative-release-arangements`)
       }
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-      const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
+      const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
         username,
         prisonerDetail.bookingId,
         token
@@ -77,7 +77,7 @@ export default class CalculationQuestionRoutes {
       const { nomsId } = req.params
       const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-      const sentencesAndOffences = await this.prisonerService.getSentencesAndOffences(
+      const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
         username,
         prisonerDetail.bookingId,
         token
