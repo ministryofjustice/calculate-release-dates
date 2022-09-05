@@ -278,7 +278,7 @@ export default class CalculateReleaseDatesService {
       }
     }
     if (calculation.dates.PED) {
-      const adjustment = await client.getNextWorkingDay(calculation.dates.PED)
+      const adjustment = await client.getPreviousWorkingDay(calculation.dates.PED)
       if (adjustment.date !== calculation.dates.PED) {
         adjustments.PED = adjustment
       }

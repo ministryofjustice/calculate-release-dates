@@ -20,6 +20,7 @@ const calculationResults: BookingCalculation = {
     CRD: '2021-02-03',
     SLED: '2021-10-28',
     HDCED: '2021-10-10',
+    PED: '2022-09-04',
   },
   effectiveSentenceLength: null,
   calculationRequestId,
@@ -376,15 +377,22 @@ describe('Calculate release dates service tests', () => {
       adjustedForBankHoliday: false,
       adjustedForWeekend: true,
     }
+    const adjustedPed: WorkingDay = {
+      date: '2022-09-02',
+      adjustedForBankHoliday: false,
+      adjustedForWeekend: true,
+    }
 
     fakeApi.get(`/working-day/previous/${calculationResults.dates.CRD}`).reply(200, adjustedCrd)
     fakeApi.get(`/working-day/next/${calculationResults.dates.HDCED}`).reply(200, adjustedHdced)
+    fakeApi.get(`/working-day/previous/${calculationResults.dates.PED}`).reply(200, adjustedPed)
 
     const result = await calculateReleaseDatesService.getWeekendAdjustments('user', calculationResults, token)
 
     expect(result).toEqual({
       HDCED: adjustedHdced,
       CRD: adjustedCrd,
+      PED: adjustedPed,
     })
   })
 
