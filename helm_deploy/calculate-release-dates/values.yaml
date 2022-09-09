@@ -69,6 +69,8 @@ generic-service:
     sodexo-peterborough: "51.155.55.241/32"
     serco: "217.22.14.0/24"
     durham-tees-valley: "51.179.197.1/32"
+    oakwood-01: "217.161.76.184/29"
+    oakwood-02: "217.161.76.192/29"
     oakwood-1: "217.161.76.187/32"
     oakwood-2: "217.161.76.195/32"
     oakwood-3: "217.161.76.186/32"
