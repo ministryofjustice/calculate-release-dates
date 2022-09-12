@@ -21,10 +21,11 @@ export default class StartRoutes {
   }
 
   public supportedSentences: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
     let prisonId: string
     if (this.entryPointService.isDpsEntryPoint(req)) {
       prisonId = this.entryPointService.getDpsPrisonerId(req)
     }
-    return res.render('pages/supportedSentences', { prisonId })
+    return res.render('pages/supportedSentences', { prisonId, nomsId })
   }
 }

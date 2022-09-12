@@ -58,6 +58,7 @@ export default function Index({
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
     get('/supported-sentences', startRoutes.supportedSentences)
+    get('/supported-sentences/:nomsId', startRoutes.supportedSentences)
   }
 
   const checkInformationRoutes = () => {

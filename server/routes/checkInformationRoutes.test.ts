@@ -362,6 +362,29 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Update these details in NOMIS and then')
       })
   })
+  it('GET /calculation/:nomsId/check-information should display unsupported errors when they exist', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.validateBackend.mockReturnValue({
+      messages: [{ text: 'An error occurred with the nomis information' }],
+      messageType: ErrorMessageType.UNSUPPORTED,
+    } as never)
+    return request(app)
+      .get('/calculation/A1234AA/check-information?hasErrors=true')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('An error occurred with the nomis information')
+        expect(res.text).toContain(
+          'If these sentences are correct, you will need to complete this calculation manually in NOMIS.'
+        )
+        expect(res.text).toContain('Check supported sentence types')
+        expect(res.text).toContain('href="/supported-sentences/A1234AA"')
+      })
+  })
 
   it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)

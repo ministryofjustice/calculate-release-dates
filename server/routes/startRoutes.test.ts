@@ -113,4 +113,18 @@ describe('Start routes tests', () => {
         expect(entryPointService.getDpsPrisonerId.mock.calls.length).toBe(1)
       })
   })
+  it('GET /supported-sentences/nomsid should return the supported sentence page from unsupported error', () => {
+    entryPointService.isDpsEntryPoint.mockReturnValue(false)
+    return request(app)
+      .get('/supported-sentences/ASD123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Supported sentences')
+        expect(res.text).toContain('href="/calculation/ASD123/check-information?hasErrors=true')
+      })
+      .expect(() => {
+        expect(entryPointService.isDpsEntryPoint.mock.calls.length).toBe(1)
+      })
+  })
 })
