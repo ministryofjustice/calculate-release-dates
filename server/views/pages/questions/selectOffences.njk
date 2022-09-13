@@ -3,7 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "../partials/checkInformation/courtCaseDetails.njk" import courtCaseDetails %}
-{% from "../partials/checkInformation/sentenceTable.njk" import sentenceTable %}
+{% from "../partials/checkInformation/sentenceCard.njk" import sentenceCard %}
 
 {% set pageTitle = applicationName + " - Select offences that appear in " + model.calculationQuestionType.text %}
 {% set pageId = "select-offences-" + model.calculationQuestionType.url  %}
@@ -33,63 +33,38 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">
-                Select offences that appear in {{model.calculationQuestionType.textLower}}
+                Select the offences that appear on {{model.calculationQuestionType.textLower}}
             </h1>
-            <p class="govuk-body">For each sentence, select the offences that have alternative release date arrangements.</p>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-quarter">
-            <a target="_blank" href="/schedule-15-{{model.calculationQuestionType.url}}" data-qa="offence-list-link">
-                <div class="card-group card-group__item govuk-!-margin-top-6">
-                    <div class="card card--clickable">
-                        <h2 class="govuk-heading-s card__heading govuk-!-margin-bottom-0">{{model.calculationQuestionType.text}} (opens in new tab)</h2>
-                    </div>
+            <p class="govuk-body">For each sentence, you must select the offences that have alternative release arrangements.</p>
+            <ul class="govuk-list govuk-list--number">
+                <li>Note the name of the offence for the first sentence below</li>
+                <li>
+                    Open <a target="_blank" href="/schedule-15-{{model.calculationQuestionType.url}}" data-qa="offence-list-link">{{model.calculationQuestionType.text}} (opens in new tab)</a>
+                </li>
+                <li>Check if the name of the offence appears on {{model.calculationQuestionType.text}}</li>
+                <li>Return to this page</li>
+                <li>Select the box if the offence name appears on {{model.calculationQuestionType.text}}</li>
+                <li>Repeat for each sentence</li>
+            </ul>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Are incohate offences included?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">Not all incohate offences appear on the list as named offences. Sentences that include incohate offences could still be specified by Schedule 15. Incohate offences can be:
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>aiding, abbetting councelling or procuring</li>
+                        <li>attempted or attempt to</li>
+                        <li>conspiricy or conspire to</li>
+                        <li>incite or incitement</li>
+                        <li>where the person intended or believed would commit an offence</li>
+                    </ul>
+                    <p class="govuk-body">See paragraph 64 (specified violent offences) and paragraph 153 (specified sexual offences) for more information.</p>
                 </div>
-            </a>
-        </div>
-    </div>
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <p class="govuk-body">The Schedule 15 offences in {{model.calculationQuestionType.textLower}} are applicable to:
-                </p>
-            {% if model.isOriginal() %}
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS and DYOI sentence types</li>
-                    <li>sentences imposed on or after 01 April 2020</li>
-                    <li>sentences imposed before 28 June 2022</li>
-                    <li>individual sentences of 7 years or over</li>
-                    <li>people aged 18 years or over when sentenced</li>
-                    <li>a maximum sentence of life</li>
-                </ul>
-            {% endif %}
-            {% if model.isFourToUnderSeven() %}
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS and DYOI sentence types</li>
-                    <li>sentences imposed on or after 28 June 2022</li>
-                    <li>individual sentences of 4 years or over, but less than 7 years</li>
-                    <li>people aged 18 years or over when sentenced</li>
-                    <li>a maximum sentence of life</li>
-                </ul>
-            {% endif %}
-            {% if model.isSection250() %}
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>SEC250 sentences</li>
-                    <li>sentences imposed on or after 28 June 2022</li>
-                    <li>individual sentences of 7 years or over</li>
-                    <li>a maximum sentence of life</li>
-                </ul>
-            {% endif %}
-            {% if model.isUpdated() %}
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS and DYOI sentence types</li>
-                    <li>sentences imposed on or after 28 June 2022</li>
-                    <li>individual sentences of 7 years or over</li>
-                    <li>people aged 18 years or over when sentenced</li>
-                    <li>a maximum sentence of life</li>
-                </ul>
-            {% endif %}
+            </details>
         </div>
     </div>
 
@@ -101,7 +76,14 @@
                 <div id="sentences">
                     {% for case in model.cases %}
                         {{ courtCaseDetails({case: case, includeCaseDetails: false}) }}
-                        {{ sentenceTable({case: case, includeCheckboxes: true, includeConurrentOrConsecutiveText: false, isCheckboxChecked: model.isCheckboxChecked, includeSentenceType: false}) }}
+                        {{ sentenceCard({
+                        case: case,
+                        includeCheckboxes: true,
+                        includeConcurrentOrConsecutiveText: false,
+                        isCheckboxChecked: model.isCheckboxChecked,
+                        listText: model.calculationQuestionType.text
+                        }) }}
+                        {# {{ sentenceTable({case: case, includeCheckboxes: true, includeConurrentOrConsecutiveText: false, isCheckboxChecked: model.isCheckboxChecked, includeSentenceType: false}) }} #}
                     {% endfor %}
                 </div>
             </div>
@@ -110,7 +92,7 @@
                     <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="unselect-all" name="none" type="checkbox" value="unselect-all"  {{ "checked" if model.isNoneCheckboxChecked() }}>
                         <label class="govuk-label govuk-checkboxes__label" for="unselect-all">
-                            None of the sentences include Schedule 15 offences from {{model.calculationQuestionType.textLower}}.
+                            None of the sentences have offences that appear on {{model.calculationQuestionType.text}}.
                         </label>
                     </div>
                 </div>

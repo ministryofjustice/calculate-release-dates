@@ -32,22 +32,13 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">
-                Some sentences could have alternative release arrangements
+                This calculation needs more information
             </h1>
-            <p class="govuk-body">This service has identified that some sentences in this calculation could be affected by:</p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>
-                    The Release of Prisoners (Alteration of Relevant Proportion of Sentence) Order 2020 (SDS+)
-                </li>
-                <li>
-                    Police, Crime, Sentencing and Courts Act 2022
-                </li>
-            </ul>
-            <p class="govuk-body">Where an offence can attract a maximum life sentence, the release dates for some sentences are calculated at two thirds. This is also known as an SDS+ arrangement.</p>
+            <p class="govuk-body">Some sentences in this calculation have offences that could change the way it is calculated. These sentences can have release dates that are calculated at two thirds (also known as an SDS+, which is completed on a peach calculation sheet).</p>
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        What are the criteria for an SDS+ arrangement?
+                        What are the criteria for an SDS+?
                     </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -62,61 +53,14 @@
                     </ul>
                 </div>
             </details>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-l govuk-!-margin-top-4">What you need to do</h2>
-            <p class="govuk-body">On the following page{% if model.hasMoreThanOneQuestion() %}s{% endif %}, you must select the Schedule 15 offences with SDS+ release arrangements, from the relevant lists.</p>
-
-            {% if model.hasOriginal() %}
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="list-a">List A</h4>
-                <p class="govuk-body">The offences in list A are applicable to:</p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS and DYOI sentence types</li>
-                    <li>sentences imposed on or after 01 April 2020</li>
-                    <li>sentences imposed before 28 June 2022</li>
-                    <li>individual sentences of 7 years or over</li>
-                    <li>people aged 18 years or over when sentenced</li>
-                    <li>a maximum sentence of life</li>
-                </ul>
-            {% endif %}
-            {% if model.hasFourToUnderSeven() %}
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="list-b">List B</h4>
-                <p class="govuk-body">The offences in list B are applicable to:</p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS and DYOI sentence types</li>
-                    <li>sentences imposed on or after 28 June 2022</li>
-                    <li>individual sentences of 4 years or over, but less than 7 years</li>
-                    <li>people aged 18 years or over when sentenced</li>
-                    <li>a maximum sentence of life</li>
-                </ul>
-            {% endif %}
-            {% if model.hasSection250() %}
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="list-c">List C</h4>
-                <p class="govuk-body">The offences in list C are applicable to:</p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>SEC250 sentences</li>
-                    <li>sentences imposed on or after 28 June 2022</li>
-                    <li>individual sentences of 7 years or over</li>
-                    <li>a maximum sentence of life</li>
-                </ul>
-            {% endif %}
-            {% if model.hasUpdated() %}
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="list-d">List D</h4>
-                <p class="govuk-body">The offences in list D are applicable to:</p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>SDS and DYOI sentence types</li>
-                    <li>sentences imposed on or after 28 June 2022</li>
-                    <li>individual sentences of 7 years or over</li>
-                    <li>people aged 18 years or over when sentenced</li>
-                    <li>a maximum sentence of life</li>
-                </ul>
-            {% endif %}
+            <h2 class="govuk-heading-l govuk-!-margin-top-4">What you need do</h2>
+            <p class="govuk-body">This service has identified some sentences that meet the criteria for SDS+ release arrangements. These have been highlighted on the following pages.</p>
+            <p class="govuk-body">Some offences for these sentences could be Schedule 15 offences. You must identify the ones that are, by looking them up on the list{% if model.hasMoreThanOneQuestion() %}s{% endif %}.
+            </p>
         </div>
     </div>
     <!-- Call to action -->
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <a href="{{"/calculation/" + prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + model.firstQuestion().url}}" role="button" draggable="false" class="govuk-button" data-module="govuk-button" data-qa="continue">
                 Continue

@@ -177,12 +177,8 @@ describe('Calculation question routes tests', () => {
       .expect(res => {
         expect(res.text).toContain('/?prisonId=A1234AA')
         expect(res.text).toContain('Some sentences could have alternative release arrangements')
-        expect(res.text).toContain('List A')
-        expect(res.text).toContain('List B')
-        expect(res.text).not.toContain('List C')
-        expect(res.text).not.toContain('List D')
         expect(res.text).toContain(
-          'On the following pages, you must select the Schedule 15 offences with SDS+ release arrangements, from the relevant lists.'
+          'Some offences for these sentences could be Schedule 15 offences. You must identify the ones that are, by looking them up on the lists.'
         )
       })
   })
