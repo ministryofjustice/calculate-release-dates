@@ -15,12 +15,6 @@ context('Calculation questions page', () => {
   it('Visit alternative release intro page and test functionality', () => {
     cy.signIn()
     const alternativeReleaseIntro = AlternativeReleaseIntroPage.goTo('A1234AB')
-
-    alternativeReleaseIntro.listA().should('exist')
-    alternativeReleaseIntro.listB().should('not.exist')
-    alternativeReleaseIntro.listC().should('exist')
-    alternativeReleaseIntro.listD().should('not.exist')
-
     alternativeReleaseIntro.continueButton().click()
 
     let listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
