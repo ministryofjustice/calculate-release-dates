@@ -4,13 +4,13 @@ import PrisonerService from '../services/prisonerService'
 import EntryPointService from '../services/entryPointService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import { ErrorMessages } from '../types/ErrorMessages'
-import SentenceRowViewModel from '../models/SentenceRowViewModel'
 import UserInputService from '../services/userInputService'
 import {
   CalculationUserInputs,
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { arraysContainSameItemsAsStrings, unique } from '../utils/utils'
+import SentenceTypes from '../models/SentenceTypes'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -45,7 +45,7 @@ export default class CheckInformationRoutes {
       prisonerDetail.bookingId,
       token
     )
-    const returnToCustody = sentencesAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
+    const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
       ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
       : null
 

@@ -8,12 +8,13 @@ import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffender
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import {
   PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiOffenderFinePayment,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import OneThousandCalculationsRow from '../models/OneThousandCalculationsRow'
-import SentenceRowViewModel from '../models/SentenceRowViewModel'
+import SentenceTypes from '../models/SentenceTypes'
 import { indexBy } from '../utils/utils'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import PrisonerService from './prisonerService'
@@ -41,6 +42,7 @@ export default class OneThousandCalculationsService {
         adjustments,
         returnToCustody,
         keyDates,
+        finePayments,
         calc,
         breakdown
       try {
@@ -55,8 +57,11 @@ export default class OneThousandCalculationsService {
         keyDates = await this.prisonerService.getOffenderKeyDates(bookingId, token)
         sentenceAndOffences = await this.prisonerService.getSentencesAndOffences(username, bookingId, token)
         adjustments = await this.prisonerService.getBookingAndSentenceAdjustments(bookingId, token)
-        returnToCustody = sentenceAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
+        returnToCustody = sentenceAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
           ? await this.prisonerService.getReturnToCustodyDate(bookingId, token)
+          : null
+        finePayments = sentenceAndOffences.filter(s => SentenceTypes.isAfineSentence(s)).length
+          ? await this.prisonerService.getOffenderFinePayments(bookingId, token)
           : null
         try {
           calc = await this.calculateReleaseDatesService.calculateTestReleaseDates(username, nomsId, null, token)
@@ -78,6 +83,7 @@ export default class OneThousandCalculationsService {
               sentenceAndOffences,
               adjustments,
               returnToCustody,
+              finePayments,
               keyDates,
               breakdown
             )
@@ -93,6 +99,7 @@ export default class OneThousandCalculationsService {
                 sentenceAndOffences,
                 adjustments,
                 returnToCustody,
+                finePayments,
                 keyDates,
                 breakdown,
                 ex,
@@ -109,6 +116,7 @@ export default class OneThousandCalculationsService {
                 sentenceAndOffences,
                 adjustments,
                 returnToCustody,
+                finePayments,
                 keyDates,
                 breakdown,
                 ex,
@@ -127,6 +135,7 @@ export default class OneThousandCalculationsService {
             sentenceAndOffences,
             adjustments,
             returnToCustody,
+            finePayments,
             keyDates,
             breakdown,
             ex,
@@ -146,6 +155,7 @@ export default class OneThousandCalculationsService {
     sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
     returnToCustody: PrisonApiReturnToCustodyDate,
+    finePayments: PrisonApiOffenderFinePayment[],
     keyDates: PrisonApiOffenderKeyDates,
     breakdown: CalculationBreakdown,
     ex?: any,
@@ -212,6 +222,7 @@ export default class OneThousandCalculationsService {
       SENTENCES: JSON.stringify(sentenceAndOffences),
       ADJUSTMENTS: JSON.stringify(adjustments),
       RETURN_TO_CUSTODY: JSON.stringify(returnToCustody),
+      FINE_PAYMENTS: JSON.stringify(finePayments),
       CONSECUTIVE_SENTENCES: sentenceAndOffences ? this.getConsecutiveSentences(sentenceAndOffences) : '',
       ERROR_TEXT: ex?.message,
       ERROR_JSON: JSON.stringify(ex),

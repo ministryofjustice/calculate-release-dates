@@ -3,6 +3,7 @@ import config, { ApiConfig } from '../config'
 import RestClient from '../data/restClient'
 import type {
   PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiOffenderFinePayment,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceAdjustmentDetail,
@@ -67,5 +68,11 @@ export default class PrisonApiClient {
     return this.restClient.get({
       path: `/api/offender-dates/${bookingId}`,
     }) as Promise<PrisonApiOffenderKeyDates>
+  }
+
+  async getOffenderFinePayments(bookingId: number): Promise<PrisonApiOffenderFinePayment[]> {
+    return this.restClient.get({
+      path: `/api/offender-fine-payment/booking/${bookingId}`,
+    }) as Promise<PrisonApiOffenderFinePayment[]>
   }
 }

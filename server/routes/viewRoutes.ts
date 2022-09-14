@@ -6,8 +6,8 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
-import SentenceRowViewModel from '../models/SentenceRowViewModel'
 import EntryPointService from '../services/entryPointService'
+import SentenceTypes from '../models/SentenceTypes'
 
 export default class ViewRoutes {
   constructor(
@@ -57,7 +57,7 @@ export default class ViewRoutes {
         calculationRequestId,
         token
       )
-      const returnToCustody = sentencesAndOffences.filter(s => SentenceRowViewModel.isSentenceFixedTermRecall(s)).length
+      const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
         ? await this.viewReleaseDatesService.getReturnToCustodyDate(calculationRequestId, token)
         : null
 
