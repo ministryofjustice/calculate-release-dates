@@ -1,5 +1,6 @@
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import { PrisonApiSentenceTerms } from '../@types/prisonApi/PrisonApiSentenceTerms'
+import SentenceTypes from './SentenceTypes'
 
 // TODO remove when we get rid of the old sentenceTable design.
 type AggregatedTerm = {
@@ -10,12 +11,6 @@ type AggregatedTerm = {
 }
 
 export default class SentenceRowViewModel {
-  private static fixedTermRecallTypes = ['14FTR_ORA', '14FTRHDC_ORA', 'FTR', 'FTR_ORA']
-
-  private static edsSentenceTypes = ['EDS18', 'EDS21', 'EDSU18', 'LASPO_AR', 'LASPO_DR']
-
-  private static sopcSentenceTypes = ['SEC236A', 'SOPC18', 'SOPC21', 'SDOPCU18']
-
   // TODO remove when we get rid of the old sentenceTable design.
   private allTerms: AggregatedTerm
 
@@ -40,30 +35,18 @@ export default class SentenceRowViewModel {
   }
 
   public isFixedTermRecall(): boolean {
-    return SentenceRowViewModel.isSentenceFixedTermRecall(this.sentencesAndOffence)
+    return SentenceTypes.isSentenceFixedTermRecall(this.sentencesAndOffence)
   }
 
   public isEds(): boolean {
-    return SentenceRowViewModel.isSentenceEds(this.sentencesAndOffence)
+    return SentenceTypes.isSentenceEds(this.sentencesAndOffence)
   }
 
   public isSopc(): boolean {
-    return SentenceRowViewModel.isSentenceSopc(this.sentencesAndOffence)
+    return SentenceTypes.isSentenceSopc(this.sentencesAndOffence)
   }
 
   public hasCustodialAndLicenseTerms(): boolean {
     return this.isEds() || this.isSopc()
-  }
-
-  public static isSentenceFixedTermRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
-    return this.fixedTermRecallTypes.includes(sentence.sentenceCalculationType)
-  }
-
-  public static isSentenceSopc(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
-    return SentenceRowViewModel.sopcSentenceTypes.includes(sentence.sentenceCalculationType)
-  }
-
-  public static isSentenceEds(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
-    return SentenceRowViewModel.edsSentenceTypes.includes(sentence.sentenceCalculationType)
   }
 }

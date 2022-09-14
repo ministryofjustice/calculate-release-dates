@@ -55,6 +55,7 @@ type OneThousandCalculationsRow = {
   SENTENCES: string
   ADJUSTMENTS: string
   RETURN_TO_CUSTODY: string
+  FINE_PAYMENTS: string
   CONSECUTIVE_SENTENCES: string
   ERROR_TEXT: string
   ERROR_JSON: string

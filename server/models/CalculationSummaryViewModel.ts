@@ -9,7 +9,7 @@ import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/Prison
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import SentenceDiagramViewModel from './SentenceDiagramViewModel'
-import SentenceRowViewModel from './SentenceRowViewModel'
+import SentenceTypes from './SentenceTypes'
 
 export default class CalculationSummaryViewModel {
   public sentenceDiagramViewModel?: SentenceDiagramViewModel
@@ -76,7 +76,7 @@ export default class CalculationSummaryViewModel {
 
   private allSentencesSupported(): boolean {
     return !this.sentencesAndOffences.find(
-      sentence => SentenceRowViewModel.isSentenceEds(sentence) || SentenceRowViewModel.isSentenceSopc(sentence)
+      sentence => SentenceTypes.isSentenceEds(sentence) || SentenceTypes.isSentenceSopc(sentence)
     )
   }
 }
