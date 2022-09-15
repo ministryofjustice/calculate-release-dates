@@ -5,9 +5,7 @@
                 This calculation will include {{ model.offenceCount }}
         {{ 'sentence' | pluralise(model.offenceCount) }} from NOMIS.
             </p>
-<h2 class="govuk-heading-l govuk-!-margin-top-6">Court cases</h2>
-
-<div id="sentences">
+<div id="sentences" class="govuk-!-margin-top-8">
         {% for case in model.cases %}
                 {{ courtCaseDetails({case: case, includeCaseDetails: true}) }}
                 {{ sentenceCard({

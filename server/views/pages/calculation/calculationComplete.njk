@@ -10,30 +10,28 @@
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-width-container">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <div class="govuk-panel govuk-panel--confirmation">
-                    <h1 class="govuk-panel__title">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title">
                         Calculation complete for<br>
-                        {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}
-                    </h1>
-                    <div class="govuk-panel__body govuk-!-font-size-19">
+                    {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}
+                </h1>
+                <div class="govuk-panel__body govuk-!-font-size-19">
                         The calculation has been saved in NOMIS.
                     </div>
-                </div>
-                <div class="govuk-!-margin-top-8">
-                    <p class="govuk-body">
-                        <a class="govuk-link" href={{ "/calculation/" + prisonerDetail.offenderNo +
+            </div>
+            <div class="govuk-!-margin-top-8">
+                <p class="govuk-body">
+                    <a class="govuk-link" href={{ "/calculation/" + prisonerDetail.offenderNo +
                 "/summary/" + calculationRequestId + "/print" }}>Print calculation summary</a>
-                    </p>
-                    <p class="govuk-body">
-                        <a class="govuk-link" href="/search/prisoners">Calculate release dates for another person</a>
-                    </p>
-                    <p class="govuk-body">
-                        <a class="govuk-link" href={{digitalPrisonServicesUrl}}>Back to Digital Prison Service (DPS) search</a>
-                    </p>
-                </div>
+                </p>
+                <p class="govuk-body">
+                    <a class="govuk-link" href="/search/prisoners">Calculate release dates for another person</a>
+                </p>
+                <p class="govuk-body">
+                    <a class="govuk-link" href={{digitalPrisonServicesUrl}}>Back to Digital Prison Service (DPS) search</a>
+                </p>
             </div>
         </div>
     </div>

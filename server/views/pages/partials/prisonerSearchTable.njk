@@ -2,35 +2,39 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% if (prisoners) %}
-    {% if (prisoners.length > 0) %}
-        <table id="search-results-table" class="govuk-table" data-qa="search-results-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Name</th>
-                    <th scope="col" class="govuk-table__header">Prison number</th>
-                    <th scope="col" class="govuk-table__header">Date of birth</th>
-                    <th scope="col" class="govuk-table__header"></th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                {% for prisoner in prisoners %}
-                    <tr class="govuk-table__row" data-qa="{{'prisoner-' + prisoner.prisonerNumber}}">
-                        <td class="govuk-table__cell">
-                            {% set prisonerLink = "/calculation/" + prisoner.prisonerNumber + "/alternative-release-arrangements" %}
-                            {% if view %}
-                                {% set prisonerLink = "/view/" + prisoner.prisonerNumber + "/latest" %}
-                            {% endif %}
-                            <a class="govuk-link"
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% if (prisoners.length > 0) %}
+                <table id="search-results-table" class="govuk-table" data-qa="search-results-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Name</th>
+                            <th scope="col" class="govuk-table__header">Prison number</th>
+                            <th scope="col" class="govuk-table__header">Date of birth</th>
+                            <th scope="col" class="govuk-table__header"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for prisoner in prisoners %}
+                            <tr class="govuk-table__row" data-qa="{{'prisoner-' + prisoner.prisonerNumber}}">
+                                <td class="govuk-table__cell">
+                                    {% set prisonerLink = "/calculation/" + prisoner.prisonerNumber + "/alternative-release-arrangements" %}
+                                    {% if view %}
+                                        {% set prisonerLink = "/view/" + prisoner.prisonerNumber + "/latest" %}
+                                    {% endif %}
+                                    <a class="govuk-link"
                             href="{{prisonerLink}}" data-qa="prisoner-link">{{ (prisoner.lastName + ', ' +prisoner.firstName ) | title }}</a>
-                        </td>
-                        <td class="govuk-table__cell">{{ prisoner.prisonerNumber }}</td>
-                        <td class="govuk-table__cell">{{ prisoner.dateOfBirth | date('DD MMMM YYYY') }}</td>
-                    </tr>
+                                </td>
+                                <td class="govuk-table__cell">{{ prisoner.prisonerNumber }}</td>
+                                <td class="govuk-table__cell">{{ prisoner.dateOfBirth | date('DD MMMM YYYY') }}</td>
+                            </tr>
 
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p class="govuk-body govuk-!-font-weight-bold">There are no matching results.</p>
-    {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="govuk-body govuk-!-font-weight-bold">There are no matching results.</p>
+            {% endif %}
+        </div>
+    </div>
 {% endif %}
