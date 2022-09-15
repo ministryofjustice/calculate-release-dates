@@ -1,8 +1,15 @@
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-inset-text">
+                If you think some information is wrong, you can edit it in NOMIS and <a href="">reload this page</a>.
+            </div>
+    </div>
+</div>
 <h2 class="govuk-heading-m govuk-!-margin-top-9">Now calculate release dates
-    for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h2>
+    for {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}</h2>
 <p class="govuk-body">The release dates will not be saved in NOMIS until you have reviewed the calculation.</p>
 <form method="post">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
     {{ govukButton({
         text: "Calculate release dates",
         type: submit,
@@ -11,16 +18,3 @@
         attributes: {  'data-qa': 'calculate-release-dates' }
     }) }}
 </form>
-<details class="govuk-details" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-            Some information is wrong
-        </span>
-    </summary>
-    <div class="govuk-details__text">
-        You can edit this information in NOMIS and <a href="">reload this page</a>.
-        If you think the service isn’t working properly, email
-        <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Check sentence and offence information">calculatereleasedates@digital.justice.gov.uk</a>
-        for support.
-    </div>
-</details>
