@@ -5,6 +5,7 @@ import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
   PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
@@ -13,7 +14,6 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import EntryPointService from '../services/entryPointService'
 import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import UserInputService from '../services/userInputService'
 import {
   CalculationSentenceQuestion,

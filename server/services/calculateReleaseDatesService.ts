@@ -16,9 +16,9 @@ import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseD
 import { arithmeticToWords, daysArithmeticToWords, longDateFormat } from '../utils/utils'
 import ReleaseDateType from '../enumerations/releaseDateType'
 import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import ErrorMessage from '../types/ErrorMessage'
 import translateErrorToText from './errorMessageTranslator'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed

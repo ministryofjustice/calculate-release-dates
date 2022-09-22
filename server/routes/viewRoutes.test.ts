@@ -6,6 +6,7 @@ import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
   PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -20,7 +21,6 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')

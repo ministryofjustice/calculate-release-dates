@@ -1,7 +1,7 @@
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import {
   PrisonApiBookingAdjustment,
   PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiSentenceAdjustmentValues,
 } from '../@types/prisonApi/prisonClientTypes'
 

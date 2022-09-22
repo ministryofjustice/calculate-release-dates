@@ -4,14 +4,14 @@ import RestClient from '../data/restClient'
 import type {
   PrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderFinePayment,
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceAdjustmentDetail,
   PrisonApiUserCaseloads,
+  PrisonApiOffenderCalculatedKeyDates,
 } from '../@types/prisonApi/prisonClientTypes'
 import { PrisonApiSentenceCalcDates } from '../@types/prisonApi/prisonClientTypes'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
-import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffenderKeyDates'
 
 export default class PrisonApiClient {
   restClient: RestClient
@@ -64,10 +64,10 @@ export default class PrisonApiClient {
     }) as Promise<PrisonApiReturnToCustodyDate>
   }
 
-  async getOffenderKeyDates(bookingId: number): Promise<PrisonApiOffenderKeyDates> {
+  async getOffenderKeyDates(bookingId: number): Promise<PrisonApiOffenderCalculatedKeyDates> {
     return this.restClient.get({
       path: `/api/offender-dates/${bookingId}`,
-    }) as Promise<PrisonApiOffenderKeyDates>
+    }) as Promise<PrisonApiOffenderCalculatedKeyDates>
   }
 
   async getOffenderFinePayments(bookingId: number): Promise<PrisonApiOffenderFinePayment[]> {

@@ -4,14 +4,14 @@ import {
   BookingCalculation,
   CalculationBreakdown,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffenderKeyDates'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import {
   PrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderFinePayment,
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
+  PrisonApiOffenderCalculatedKeyDates,
 } from '../@types/prisonApi/prisonClientTypes'
 import OneThousandCalculationsRow from '../models/OneThousandCalculationsRow'
 import SentenceTypes from '../models/SentenceTypes'
@@ -156,7 +156,7 @@ export default class OneThousandCalculationsService {
     adjustments: PrisonApiBookingAndSentenceAdjustments,
     returnToCustody: PrisonApiReturnToCustodyDate,
     finePayments: PrisonApiOffenderFinePayment[],
-    keyDates: PrisonApiOffenderKeyDates,
+    keyDates: PrisonApiOffenderCalculatedKeyDates,
     breakdown: CalculationBreakdown,
     ex?: any,
     errorText?: string
@@ -172,8 +172,8 @@ export default class OneThousandCalculationsService {
       NOMIS_CRD_OVERRIDE: nomisDates?.conditionalReleaseOverrideDate,
       LED: errorText || calc?.dates.LED || calc?.dates?.SLED,
       NOMIS_LED: nomisDates?.licenceExpiryDate,
-      NOMIS_LED_CALCULATED: nomisDates?.licenseExpiryCalculatedDate,
-      NOMIS_LED_OVERRIDE: nomisDates?.licenseExpiryOverrideDate,
+      NOMIS_LED_CALCULATED: nomisDates?.licenceExpiryCalculatedDate,
+      NOMIS_LED_OVERRIDE: nomisDates?.licenceExpiryOverrideDate,
       SED: errorText || calc?.dates?.SED || calc?.dates?.SLED,
       NOMIS_SED: nomisDates?.sentenceExpiryDate,
       NOMIS_SED_CALCULATED: nomisDates?.sentenceExpiryCalculatedDate,
@@ -186,12 +186,16 @@ export default class OneThousandCalculationsService {
       NOMIS_ARD_OVERRIDE: nomisDates?.automaticReleaseOverrideDate,
       TUSED: errorText || calc?.dates?.TUSED,
       NOMIS_TUSED: nomisDates?.topupSupervisionExpiryDate,
+      NOMIS_TUSED_CALCULATED: nomisDates?.topupSupervisionExpiryCalculatedDate,
+      NOMIS_TUSED_OVERRIDE: nomisDates?.topupSupervisionExpiryOverrideDate,
       PED: errorText || calc?.dates?.PED,
       NOMIS_PED: nomisDates?.paroleEligibilityDate,
       NOMIS_PED_CALCULATED: nomisDates?.paroleEligibilityCalculatedDate,
       NOMIS_PED_OVERRIDE: nomisDates?.paroleEligibilityOverrideDate,
       HDCED: errorText || calc?.dates?.HDCED,
       NOMIS_HDCED: nomisDates?.homeDetentionCurfewEligibilityDate,
+      NOMIS_HDCED_CALCULATED: nomisDates?.homeDetentionCurfewEligibilityCalculatedDate,
+      NOMIS_HDCED_OVERRIDE: nomisDates?.homeDetentionCurfewEligibilityOverrideDate,
       ETD: errorText || calc?.dates?.ETD,
       NOMIS_ETD: nomisDates?.earlyTermDate,
       MTD: errorText || calc?.dates?.MTD,
@@ -206,6 +210,10 @@ export default class OneThousandCalculationsService {
       NOMIS_PRRD_OVERRIDE: nomisDates?.postRecallReleaseOverrideDate,
       ESED: errorText || calc?.dates?.ESED,
       NOMIS_ESED: nomisDates?.effectiveSentenceEndDate,
+      NOMIS_ERSED: keyDates?.earlyRemovalSchemeEligibilityDate,
+      NOMIS_ROTL: keyDates?.releaseOnTemporaryLicenceDate,
+      COMMENT: keyDates?.comment,
+      REASON_CODE: keyDates?.reasonCode,
       SENTENCE_LENGTH: sentenceLength,
       NOMIS_ESL: keyDates?.sentenceLength,
       NOMIS_JSL: keyDates?.judiciallyImposedSentenceLength,

@@ -22,12 +22,16 @@ type OneThousandCalculationsRow = {
   NOMIS_ARD_OVERRIDE: string
   TUSED: string
   NOMIS_TUSED: string
+  NOMIS_TUSED_CALCULATED: string
+  NOMIS_TUSED_OVERRIDE: string
   PED: string
   NOMIS_PED: string
   NOMIS_PED_CALCULATED: string
   NOMIS_PED_OVERRIDE: string
   HDCED: string
   NOMIS_HDCED: string
+  NOMIS_HDCED_CALCULATED: string
+  NOMIS_HDCED_OVERRIDE: string
   ETD: string
   NOMIS_ETD: string
   MTD: string
@@ -42,6 +46,10 @@ type OneThousandCalculationsRow = {
   NOMIS_PRRD_OVERRIDE: string
   ESED: string
   NOMIS_ESED: string
+  NOMIS_ERSED: string
+  NOMIS_ROTL: string
+  COMMENT: string
+  REASON_CODE: string
   SENTENCE_LENGTH: string
   NOMIS_ESL: string
   NOMIS_JSL: string
