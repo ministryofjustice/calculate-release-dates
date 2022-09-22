@@ -1,4 +1,4 @@
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import SentenceRowViewModel from './SentenceRowViewModel'
 
 export default class CourtCaseTableViewModel {

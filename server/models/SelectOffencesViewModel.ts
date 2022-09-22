@@ -2,8 +2,7 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
-import { PrisonApiOffenderOffence } from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiOffenderOffence, PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { groupBy } from '../utils/utils'
 import AbstractSelectOffencesViewModel from './AbstractSelectOffencesViewModel'
 import CalculationQuestionTypes from './CalculationQuestionTypes'

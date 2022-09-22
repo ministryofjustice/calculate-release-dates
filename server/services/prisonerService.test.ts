@@ -3,12 +3,12 @@ import HmppsAuthClient from '../data/hmppsAuthClient'
 import config from '../config'
 import PrisonerService from './prisonerService'
 import {
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
 import { FullPageErrorType } from '../types/FullPageError'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 
 jest.mock('../data/hmppsAuthClient')
 

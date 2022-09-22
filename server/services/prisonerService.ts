@@ -4,16 +4,16 @@ import PrisonApiClient from '../api/prisonApiClient'
 import {
   PrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderFinePayment,
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
   PrisonApiUserCaseloads,
+  PrisonApiOffenderCalculatedKeyDates,
 } from '../@types/prisonApi/prisonClientTypes'
 import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
 import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 import { FullPageError } from '../types/FullPageError'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
-import { PrisonApiOffenderKeyDates } from '../@types/prisonApi/PrisonApiOffenderKeyDates'
 
 export default class PrisonerService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
@@ -104,7 +104,7 @@ export default class PrisonerService {
     return new PrisonApiClient(token).getSentenceDetail(bookingId)
   }
 
-  async getOffenderKeyDates(bookingId: number, token: string): Promise<PrisonApiOffenderKeyDates> {
+  async getOffenderKeyDates(bookingId: number, token: string): Promise<PrisonApiOffenderCalculatedKeyDates> {
     return new PrisonApiClient(token).getOffenderKeyDates(bookingId)
   }
 

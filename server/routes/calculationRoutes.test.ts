@@ -4,7 +4,11 @@ import { HttpError } from 'http-errors'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonApiOffenderSentenceAndOffences,
+  PrisonApiPrisoner,
+  PrisonApiSentenceDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
   BookingCalculation,
@@ -18,7 +22,6 @@ import {
   pedAdjustedByCrdAndBeforePrrdBreakdown,
   pedAdjustedByCrdAndBeforePrrdReleaseDates,
 } from '../services/breakdownExamplesTestData'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/PrisonApiOffenderSentenceAndOffences'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 
 jest.mock('../services/userService')
