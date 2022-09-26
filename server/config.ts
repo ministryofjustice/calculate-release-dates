@@ -99,5 +99,7 @@ export default {
   analytics: {
     tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),
   },
-  featureToggles: {},
+  featureToggles: {
+    afine: get('AFINE_FEATURE_TOGGLE', false) === 'true',
+  },
 }
