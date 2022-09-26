@@ -88,7 +88,9 @@ describe('Start routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Supported sentences')
-        expect(res.text).toContain('The sentences currently supported by the Calculates release dates service are:')
+        expect(res.text).toContain(
+          'The Calculate release dates service supports CJA (Criminal Justice Act) 2003 and 2020 sentences only. The sentences currently supported are:'
+        )
         expect(res.text).toContain('href="/"')
       })
       .expect(() => {
@@ -105,7 +107,6 @@ describe('Start routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Supported sentences')
-        expect(res.text).toContain('The sentences currently supported by the Calculates release dates service are:')
         expect(res.text).toContain('href="/?prisonId=ASD123"')
       })
       .expect(() => {
