@@ -10,7 +10,7 @@ export default function translateErrorToText(
     sentencesAndOffences.find(s => s.sentenceSequence === validationMessage.sentenceSequence)
   switch (validationMessage.code) {
     case 'UNSUPPORTED_SENTENCE_TYPE':
-      return [validationMessage.arguments[0]]
+      return [`${validationMessage.arguments[0]} ${validationMessage.arguments[1]}`]
     case 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE':
       return [
         `The offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must be before the sentence date.`,

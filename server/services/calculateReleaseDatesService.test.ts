@@ -308,7 +308,13 @@ const unsupportedValidationResult: ValidationMessages = {
       code: 'UNSUPPORTED_SENTENCE_TYPE',
       sentenceSequence: 1,
       message: '',
-      arguments: ['This sentence is unsupported'],
+      arguments: ['2003', 'This sentence type is unsupported'],
+    },
+    {
+      code: 'UNSUPPORTED_SENTENCE_TYPE',
+      sentenceSequence: 2,
+      message: '',
+      arguments: ['1991', 'This sentence type is supported'],
     },
   ],
 }
@@ -585,7 +591,10 @@ describe('Calculate release dates service tests', () => {
         token
       )
 
-      expect(result.messages).toEqual([{ text: 'This sentence is unsupported' }])
+      expect(result.messages).toEqual([
+        { text: '2003 This sentence type is unsupported' },
+        { text: '1991 This sentence type is supported' },
+      ])
       expect(result.messageType).toBe(ErrorMessageType.UNSUPPORTED)
     })
   })
