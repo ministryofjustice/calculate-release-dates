@@ -11,6 +11,12 @@ export default function translateErrorToText(
   switch (validationMessage.code) {
     case 'UNSUPPORTED_SENTENCE_TYPE':
       return [`${validationMessage.arguments[0]} ${validationMessage.arguments[1]}`]
+    case 'A_FINE_SENTENCE_WITH_PAYMENTS':
+      return ['Any of the fine amount for a default term has been paid.']
+    case 'A_FINE_SENTENCE_CONSECUTIVE':
+      return ['A sentence is consecutive to a default term.']
+    case 'A_FINE_SENTENCE_CONSECUTIVE_TO':
+      return ['A default term is consecutive to another default term or sentence.']
     case 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE':
       return [
         `The offence date for court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must be before the sentence date.`,

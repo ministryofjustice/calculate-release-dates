@@ -9,9 +9,13 @@
         </h2>
         <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
-                {% if validationErrors.messageType === 'UNSUPPORTED' %}
+                {% if validationErrors.messageType === 'UNSUPPORTED_SENTENCE' %}
                     <li>
                         <p class="govuk-body">One or more of the sentence types in this calculation is not currently supported in this service:</p>
+                    </li>
+                {% elif validationErrors.messageType === 'UNSUPPORTED_CALCULATION' %}
+                    <li>
+                        <p class="govuk-body">This service does not yet support a calculation scenario{% if validationErrors.messages.length > 1 %}s{% endif %} when:</p>
                     </li>
                 {% endif %}
                 {% for error in validationErrors.messages %}
@@ -28,12 +32,16 @@
                     </li>
                 {% endfor %}
 
-                {% if validationErrors.messageType === 'UNSUPPORTED' %}
+                {% if validationErrors.messageType === 'UNSUPPORTED_SENTENCE' %}
                     <li>
                         <p class="govuk-body">If these sentences are correct, you will need to complete this calculation manually in NOMIS.</p>
                         <p class="govuk-body govuk-!-margin-bottom-0">
                             <a href="{{'/supported-sentences/' + model.prisonerDetail.offenderNo}}">Check supported sentence types</a>
                         </p>
+                    </li>
+                {% elif validationErrors.messageType === 'UNSUPPORTED_CALCULATION' %}
+                    <li>
+                        <p class="govuk-body govuk-!-margin-bottom-0">Calculate the release dates manually until {% if validationErrors.messages.length === 1 %}this scenario is{% else %}these scenarios are{% endif %} supported by this service.</p>
                     </li>
                 {% elif validationErrors.messageType === 'VALIDATION' %}
                     <li>

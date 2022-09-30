@@ -308,7 +308,7 @@ const invalidValidationResult: ValidationMessages = {
 }
 
 const unsupportedValidationResult: ValidationMessages = {
-  type: 'UNSUPPORTED',
+  type: 'UNSUPPORTED_SENTENCE',
   messages: [
     {
       code: 'UNSUPPORTED_SENTENCE_TYPE',
@@ -321,6 +321,27 @@ const unsupportedValidationResult: ValidationMessages = {
       sentenceSequence: 2,
       message: '',
       arguments: ['1991', 'This sentence type is supported'],
+    },
+  ],
+}
+
+const unsupportedCalculationResult: ValidationMessages = {
+  type: 'UNSUPPORTED_CALCULATION',
+  messages: [
+    {
+      code: 'A_FINE_SENTENCE_WITH_PAYMENTS',
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'A_FINE_SENTENCE_CONSECUTIVE',
+      message: '',
+      arguments: [],
+    },
+    {
+      code: 'A_FINE_SENTENCE_CONSECUTIVE_TO',
+      message: '',
+      arguments: [],
     },
   ],
 }
@@ -604,7 +625,19 @@ describe('Calculate release dates service tests', () => {
         { text: '2003 This sentence type is unsupported' },
         { text: '1991 This sentence type is supported' },
       ])
-      expect(result.messageType).toBe(ErrorMessageType.UNSUPPORTED)
+      expect(result.messageType).toBe(ErrorMessageType.UNSUPPORTED_SENTENCE)
+    })
+    it('Test for unsupported calculation', async () => {
+      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, unsupportedCalculationResult)
+
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, sentencesAndOffences, token)
+
+      expect(result.messages).toEqual([
+        { text: 'Any of the fine amount for a default term has been paid.' },
+        { text: 'A sentence is consecutive to a default term.' },
+        { text: 'A default term is consecutive to another default term or sentence.' },
+      ])
+      expect(result.messageType).toBe(ErrorMessageType.UNSUPPORTED_CALCULATION)
     })
   })
 })
