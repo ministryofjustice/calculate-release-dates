@@ -298,6 +298,12 @@ const invalidValidationResult: ValidationMessages = {
       message: '',
       arguments: ['ADDITIONAL_DAYS_AWARDED', 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED', 'UNLAWFULLY_AT_LARGE'],
     },
+    {
+      code: 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT',
+      message: '',
+      sentenceSequence: 4,
+      arguments: [],
+    },
   ],
 }
 
@@ -571,6 +577,9 @@ describe('Calculate release dates service tests', () => {
         },
         {
           text: 'The from date for Unlawfully at large (UAL) must be the first day the prisoner was deemed UAL.',
+        },
+        {
+          text: 'Court case 2 count 3 must include a fine amount.',
         },
       ])
       expect(result.messageType).toBe(ErrorMessageType.VALIDATION)

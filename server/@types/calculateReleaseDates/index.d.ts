@@ -249,6 +249,7 @@ export interface components {
         | 'SOPC_LICENCE_TERM_NOT_12_MONTHS'
         | 'SEC236A_SENTENCE_TYPE_INCORRECT'
         | 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT'
+        | 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]
