@@ -13,7 +13,7 @@ import {
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import EntryPointService from '../services/entryPointService'
 import { FullPageError } from '../types/FullPageError'
-import { ErrorMessageType } from '../types/ErrorMessages'
+import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import UserInputService from '../services/userInputService'
 import {
   CalculationSentenceQuestion,
@@ -362,16 +362,16 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Update these details in NOMIS and then')
       })
   })
-  it('GET /calculation/:nomsId/check-information should display unsupported errors when they exist', () => {
+  it('GET /calculation/:nomsId/check-information should display unsupported sentence errors when they exist', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
-    calculateReleaseDatesService.validateBackend.mockReturnValue({
+    calculateReleaseDatesService.validateBackend.mockResolvedValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
-      messageType: ErrorMessageType.UNSUPPORTED,
-    } as never)
+      messageType: ErrorMessageType.UNSUPPORTED_SENTENCE,
+    } as ErrorMessages)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
       .expect(200)
@@ -383,6 +383,53 @@ describe('Check information routes tests', () => {
         )
         expect(res.text).toContain('Check supported sentence types')
         expect(res.text).toContain('href="/supported-sentences/A1234AA"')
+      })
+  })
+  it('GET /calculation/:nomsId/check-information should display unsupported calculation errors when they exist', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.validateBackend.mockResolvedValue({
+      messages: [{ text: 'An error occurred with the nomis information' }],
+      messageType: ErrorMessageType.UNSUPPORTED_CALCULATION,
+    } as ErrorMessages)
+    return request(app)
+      .get('/calculation/A1234AA/check-information?hasErrors=true')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('An error occurred with the nomis information')
+        expect(res.text).toContain('This service does not yet support a calculation scenario when:')
+        expect(res.text).toContain(
+          'Calculate the release dates manually until this scenario is supported by this service.'
+        )
+      })
+  })
+  it('GET /calculation/:nomsId/check-information should display multiple unsupported calculation errors when they exist', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.validateBackend.mockResolvedValue({
+      messages: [
+        { text: 'An error occurred with the nomis information' },
+        { text: 'An error occurred with the nomis information' },
+      ],
+      messageType: ErrorMessageType.UNSUPPORTED_CALCULATION,
+    } as ErrorMessages)
+    return request(app)
+      .get('/calculation/A1234AA/check-information?hasErrors=true')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('An error occurred with the nomis information')
+        expect(res.text).toContain('This service does not yet support a calculation scenarios when:')
+        expect(res.text).toContain(
+          'Calculate the release dates manually until these scenarios are supported by this service.'
+        )
       })
   })
 

@@ -299,8 +299,23 @@ export default class CalculateReleaseDatesService {
       errors.messages.forEach(e =>
         translateErrorToText(e, sentencesAndOffences).forEach(message => messages.push({ text: message }))
       )
+      let messageType: ErrorMessageType
+      switch (errors.type) {
+        case 'UNSUPPORTED_SENTENCE': {
+          messageType = ErrorMessageType.UNSUPPORTED_SENTENCE
+          break
+        }
+        case 'UNSUPPORTED_CALCULATION': {
+          messageType = ErrorMessageType.UNSUPPORTED_CALCULATION
+          break
+        }
+        default: {
+          messageType = ErrorMessageType.VALIDATION
+          break
+        }
+      }
       return {
-        messageType: errors.type === 'UNSUPPORTED' ? ErrorMessageType.UNSUPPORTED : ErrorMessageType.VALIDATION,
+        messageType,
         messages,
       }
     }

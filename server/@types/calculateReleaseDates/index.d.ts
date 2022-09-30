@@ -250,12 +250,15 @@ export interface components {
         | 'SEC236A_SENTENCE_TYPE_INCORRECT'
         | 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT'
         | 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT'
+        | 'A_FINE_SENTENCE_WITH_PAYMENTS'
+        | 'A_FINE_SENTENCE_CONSECUTIVE'
+        | 'A_FINE_SENTENCE_CONSECUTIVE_TO'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]
     }
     ValidationMessages: {
-      type: 'UNSUPPORTED' | 'VALIDATION' | 'VALID'
+      type: 'UNSUPPORTED_PRISONER' | 'UNSUPPORTED_SENTENCE' | 'UNSUPPORTED_CALCULATION' | 'VALIDATION' | 'VALID'
       messages: components['schemas']['ValidationMessage'][]
     }
     WorkingDay: {
