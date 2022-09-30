@@ -99,6 +99,10 @@ export default function translateErrorToText(
       return [
         `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include a licence term of 12 months or 1 year.`,
       ]
+    case 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT':
+      return [
+        `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include a fine amount.`,
+      ]
     default:
       throw new Error(`Uknown validation code ${validationMessage.code}`)
   }
