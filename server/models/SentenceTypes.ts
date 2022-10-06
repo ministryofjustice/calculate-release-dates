@@ -21,7 +21,7 @@ export default class SentenceTypes {
     return this.edsSentenceTypes.includes(sentence.sentenceCalculationType)
   }
 
-  public static isAfineSentence(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+  public static isSentenceAfine(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
     return this.aFineSentenceTypes.includes(sentence.sentenceCalculationType)
   }
 }

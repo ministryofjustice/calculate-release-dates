@@ -92,6 +92,12 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   njkEnv.addFilter('expiryDateType', dates => {
     return getExpiryDateType(dates)
   })
+
+  njkEnv.addFilter('formatCurrency', currency => {
+    return typeof currency === 'number'
+      ? currency.toLocaleString(undefined, { style: 'currency', currency: 'GBP' })
+      : ''
+  })
 }
 
 const getReleaseDateType = (dates: { [key: string]: unknown }): string => {

@@ -60,7 +60,7 @@ export default class OneThousandCalculationsService {
         returnToCustody = sentenceAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
           ? await this.prisonerService.getReturnToCustodyDate(bookingId, token)
           : null
-        finePayments = sentenceAndOffences.filter(s => SentenceTypes.isAfineSentence(s)).length
+        finePayments = sentenceAndOffences.filter(s => SentenceTypes.isSentenceAfine(s)).length
           ? await this.prisonerService.getOffenderFinePayments(bookingId, token)
           : null
         try {
