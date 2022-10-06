@@ -37,6 +37,10 @@ export default class SentenceRowViewModel {
     return SentenceTypes.isSentenceSopc(this.sentencesAndOffence)
   }
 
+  public isAfine(): boolean {
+    return SentenceTypes.isSentenceAfine(this.sentencesAndOffence)
+  }
+
   public hasCustodialAndLicenseTerms(): boolean {
     return this.isEds() || this.isSopc()
   }

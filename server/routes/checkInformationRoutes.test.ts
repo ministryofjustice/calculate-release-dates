@@ -183,6 +183,29 @@ const stubbedSentencesAndOffences = [
       },
     ],
   },
+  {
+    bookingId: 1203025,
+    sentenceSequence: 4,
+    lineSequence: 4,
+    caseSequence: 4,
+    courtDescription: 'Abergavenny Magistrates Court',
+    sentenceStatus: 'A',
+    sentenceCategory: '2020',
+    sentenceCalculationType: 'A/FINE',
+    sentenceTypeDescription: 'Imprisonment in Default of Fine',
+    sentenceDate: '2022-10-01',
+    terms: [{ years: 0, months: 0, weeks: 0, days: 90, code: 'IMP' }],
+    offences: [
+      {
+        offenderChargeId: 3933385,
+        offenceStartDate: '2022-01-01',
+        offenceCode: 'WC81161',
+        offenceDescription: 'Keep / confine bird in small cage / receptacle',
+        indicators: ['99'],
+      },
+    ],
+    fineAmount: 3000,
+  },
 ]
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
@@ -281,7 +304,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('sentence-card')
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Anon Nobody')
-        expect(res.text).toContain('This calculation will include 9')
+        expect(res.text).toContain('This calculation will include 10')
         expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
@@ -307,6 +330,10 @@ describe('Check information routes tests', () => {
         const LicenceMatches = (res.text.match(/Licence period/g) || []).length
         expect(LicenceMatches).toBe(2)
         expect(res.text).not.toContain('98765')
+        expect(res.text).toContain('CJA Code')
+        expect(res.text).toContain('2020')
+        expect(res.text).toContain('Imprisonment in Default of Fine')
+        expect(res.text).toContain('£3,000.00')
       })
   })
 
