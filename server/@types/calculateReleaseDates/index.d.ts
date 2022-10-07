@@ -17,6 +17,10 @@ export interface paths {
     /** This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine */
     post: operations['validate']
   }
+  '/calculation/{prisonerId}/test': {
+    /** This endpoint will calculate release dates based on a prisoners latest booking, this can includeinactive bookings of historic prisoners. Endpoint is used to test calculations against NOMIS. */
+    post: operations['testCalculation']
+  }
   '/calculation/{prisonerId}/confirm/{calculationRequestId}': {
     /** This endpoint will calculate release dates based on a prisoners latest booking */
     post: operations['confirmCalculation']
@@ -73,6 +77,16 @@ export interface paths {
 
 export interface components {
   schemas: {
+    AFineSentence: components['schemas']['AbstractSentence'] & {
+      duration?: components['schemas']['Duration']
+      fineAmount?: number
+    } & {
+      consecutiveSentenceUUIDs: unknown
+      duration: unknown
+      identifier: unknown
+      offence: unknown
+      sentencedAt: unknown
+    }
     AbstractSentence: {
       offence: components['schemas']['Offence']
       /** Format: date */
@@ -104,6 +118,7 @@ export interface components {
     Booking: {
       offender: components['schemas']['Offender']
       sentences: (
+        | components['schemas']['AFineSentence']
         | components['schemas']['ExtendedDeterminateSentence']
         | components['schemas']['SopcSentence']
         | components['schemas']['StandardDeterminateSentence']
@@ -133,6 +148,7 @@ export interface components {
     Offence: {
       /** Format: date */
       committedAt: string
+      offenceCode?: string
       isScheduleFifteen: boolean
       isScheduleFifteenMaximumLife: boolean
       isPcscSds: boolean
@@ -176,7 +192,7 @@ export interface components {
       /** Format: int64 */
       bookingId: number
       prisonerId: string
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR'
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST'
       calculationFragments?: components['schemas']['CalculationFragments']
       effectiveSentenceLength?: {
         /** Format: int32 */
@@ -249,10 +265,10 @@ export interface components {
         | 'SOPC_LICENCE_TERM_NOT_12_MONTHS'
         | 'SEC236A_SENTENCE_TYPE_INCORRECT'
         | 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT'
-        | 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT'
         | 'A_FINE_SENTENCE_WITH_PAYMENTS'
         | 'A_FINE_SENTENCE_CONSECUTIVE'
         | 'A_FINE_SENTENCE_CONSECUTIVE_TO'
+        | 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT'
       /** Format: int32 */
       sentenceSequence?: number
       arguments: string[]
@@ -311,6 +327,7 @@ export interface components {
       offences: components['schemas']['OffenderOffence'][]
       caseReference?: string
       courtDescription?: string
+      fineAmount?: number
     }
     SentenceTerms: {
       /** Format: int32 */
@@ -346,6 +363,7 @@ export interface components {
       /** Format: date */
       dateOfBirth: string
       alerts: components['schemas']['Alert'][]
+      agencyId: string
     }
     SentenceDiagram: {
       rows: components['schemas']['SentenceDiagramRow'][]
@@ -368,10 +386,7 @@ export interface components {
        * @description Amount of adjustment
        */
       adjustmentValue: number
-      /**
-       * @description Unit of adjustment
-       * @example DAYS
-       */
+      /** @description Unit of adjustment */
       type:
         | 'Nanos'
         | 'Micros'
@@ -450,7 +465,7 @@ export interface components {
     ReleaseDateCalculationBreakdown: {
       /**
        * @description Calculation rules used to determine this calculation.
-       * @example [HDCED_LT_18_MONTHS]
+       * @example HDCED_GE_12W_LT_18M
        */
       rules: (
         | 'HDCED_GE_12W_LT_18M'
@@ -460,7 +475,10 @@ export interface components {
         | 'LED_CONSEC_ORA_AND_NON_ORA'
         | 'UNUSED_ADA'
         | 'IMMEDIATE_RELEASE'
-        | 'PED_EQUAL_TO_LATEST_NON_PED_RELEASE'
+        | 'PED_EQUAL_TO_LATEST_NON_PED_CONDITIONAL_RELEASE'
+        | 'PED_EQUAL_TO_LATEST_NON_PED_ACTUAL_RELEASE'
+        | 'HDCED_ADJUSTED_TO_CONCURRENT_CONDITIONAL_RELEASE'
+        | 'HDCED_ADJUSTED_TO_CONCURRENT_ACTUAL_RELEASE'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
@@ -520,6 +538,12 @@ export interface operations {
   /** This endpoint will calculate release dates based on a prisoners booking data (e.g. sentences and adjustments) */
   calculate: {
     responses: {
+      /** Test calculation completed and release dates returned */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -548,6 +572,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -576,6 +606,18 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns validation errors */
+      200: {
+        content: {
+          'application/json': components['schemas']['ValidationMessages']
+        }
+      }
+      /** Validation passes */
+      204: {
+        content: {
+          'application/json': components['schemas']['ValidationMessages']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -586,6 +628,40 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['ValidationMessages']
+        }
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CalculationUserInputs']
+      }
+    }
+  }
+  /** This endpoint will calculate release dates based on a prisoners latest booking, this can includeinactive bookings of historic prisoners. Endpoint is used to test calculations against NOMIS. */
+  testCalculation: {
+    parameters: {
+      path: {
+        /** The prisoners ID (aka nomsId) */
+        prisonerId: string
+      }
+    }
+    responses: {
+      /** Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+      /** Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+      /** Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
@@ -606,6 +682,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -646,6 +728,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns previous working day */
+      200: {
+        content: {
+          'application/json': components['schemas']['WorkingDay']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -669,6 +757,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns next working day */
+      200: {
+        content: {
+          'application/json': components['schemas']['WorkingDay']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -692,6 +786,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns questions for a calculation */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculationUserQuestions']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -715,6 +815,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns sentences and offences */
+      200: {
+        content: {
+          'application/json': components['schemas']['SentenceAndOffences'][]
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -744,6 +850,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns return to custody */
+      200: {
+        content: {
+          'application/json': components['schemas']['ReturnToCustodyDate']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -775,6 +887,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -804,6 +922,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -833,6 +957,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns prisoner details */
+      200: {
+        content: {
+          'application/json': components['schemas']['PrisonerDetails']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -862,6 +992,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns diagram data of calculation dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['SentenceDiagram']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -891,6 +1027,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns calculation inputs */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculationUserInputs']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -920,6 +1062,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns breakdown of calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculationBreakdown']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
@@ -949,6 +1097,12 @@ export interface operations {
       }
     }
     responses: {
+      /** Returns adjustments */
+      200: {
+        content: {
+          'application/json': components['schemas']['BookingAndSentenceAdjustments']
+        }
+      }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {

@@ -16,7 +16,11 @@
 {% endmacro %}
 
 {% macro pedAdjustedByOtherRelease() %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the CRD of a concurrent sentence</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the {{model.displayPedAdjustmentHint()}} of a concurrent sentence</p>
+{% endmacro %}
+
+{% macro hdcedAdjustedByOtherRelease() %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">HDCED adjusted for the {{model.displayHdcedAdjustmentHint()}} of a concurrent sentence</p>
 {% endmacro %}
 
 <div class="custom-card">
@@ -65,6 +69,9 @@
         {% endif %}
         {% if model.releaseDates.HDCED %}
             {{ releaseDateLine('Home detention curfew eligibility date (HDCED)', 'HDCED-date', model.releaseDates.HDCED) }}
+            {% if model.displayHdcedAdjustmentHint() %}
+                {{ hdcedAdjustedByOtherRelease()}}
+            {% endif %}
             {% if model.weekendAdjustments.HDCED %}
                 {{ holidayLine('HDCED-weekend-adjustment', model.weekendAdjustments.HDCED.date, model.weekendAdjustments.HDCED.adjustedForBankHoliday) }}
             {% endif %}

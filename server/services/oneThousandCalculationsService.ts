@@ -239,7 +239,10 @@ export default class OneThousandCalculationsService {
 
   isPedAdjustedToCrd(breakdown: CalculationBreakdown, calc: BookingCalculation): 'Y' | 'N' | '' {
     if (calc?.dates.PED) {
-      if (breakdown?.breakdownByReleaseDateType?.PED?.rules?.includes('PED_EQUAL_TO_LATEST_NON_PED_RELEASE')) {
+      if (
+        breakdown?.breakdownByReleaseDateType?.PED?.rules?.includes('PED_EQUAL_TO_LATEST_NON_PED_ACTUAL_RELEASE') ||
+        breakdown?.breakdownByReleaseDateType?.PED?.rules?.includes('PED_EQUAL_TO_LATEST_NON_PED_CONDITIONAL_RELEASE')
+      ) {
         return 'Y'
       } else {
         return 'N'
