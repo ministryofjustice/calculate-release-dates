@@ -19,6 +19,8 @@ import EntryPointService from '../services/entryPointService'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import UserInputService from '../services/userInputService'
 import {
+  hdcedAdjustedToArd,
+  hdcedAdjustedToArdReleaseDates,
   pedAdjustedByCrdAndBeforePrrdBreakdown,
   pedAdjustedByCrdAndBeforePrrdReleaseDates,
 } from '../services/breakdownExamplesTestData'
@@ -267,6 +269,24 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain(
           'The post recall release date (PRRD) of Tuesday, 18 March 2025 is later than the PED'
         )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the hdced adjusted release dates', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(hdcedAdjustedToArdReleaseDates())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: hdcedAdjustedToArd(),
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('HDCED adjusted for the ARD of a concurrent sentence')
       })
   })
 

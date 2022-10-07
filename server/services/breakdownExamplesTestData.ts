@@ -209,7 +209,7 @@ export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
         unadjustedDate: '2026-09-14',
       },
       PED: {
-        rules: ['PED_EQUAL_TO_LATEST_NON_PED_RELEASE'],
+        rules: ['PED_EQUAL_TO_LATEST_NON_PED_CONDITIONAL_RELEASE'],
         rulesWithExtraAdjustments: {},
         adjustedDays: 0,
         releaseDate: '2024-10-12',
@@ -217,5 +217,99 @@ export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
       },
     },
     otherDates: { PRRD: '2025-03-18' },
+  }
+}
+
+export function hdcedAdjustedToArd(): CalculationBreakdown {
+  return {
+    concurrentSentences: [
+      {
+        sentencedAt: '2022-03-21',
+        sentenceLength: '18 months',
+        sentenceLengthDays: 549,
+        dates: {
+          SLED: {
+            unadjusted: '2023-09-20',
+            adjusted: '2023-09-20',
+            daysFromSentenceStart: 549,
+            adjustedByDays: 0,
+          },
+          CRD: {
+            unadjusted: '2022-12-20',
+            adjusted: '2022-12-20',
+            daysFromSentenceStart: 275,
+            adjustedByDays: 0,
+          },
+        },
+        lineSequence: 0,
+        caseSequence: 0,
+        caseReference: null,
+      },
+      {
+        sentencedAt: '2022-07-11',
+        sentenceLength: '70 days',
+        sentenceLengthDays: 70,
+        dates: {
+          SED: {
+            unadjusted: '2022-09-18',
+            adjusted: '2022-09-18',
+            daysFromSentenceStart: 70,
+            adjustedByDays: 0,
+          },
+          ARD: {
+            unadjusted: '2022-08-14',
+            adjusted: '2022-08-14',
+            daysFromSentenceStart: 35,
+            adjustedByDays: 0,
+          },
+        },
+        lineSequence: 0,
+        caseSequence: 0,
+        caseReference: null,
+      },
+    ],
+    consecutiveSentence: null,
+    breakdownByReleaseDateType: {
+      SLED: {
+        rules: [],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2023-09-20',
+        unadjustedDate: '2023-09-20',
+      },
+      CRD: {
+        rules: [],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2022-12-20',
+        unadjustedDate: '2022-12-20',
+      },
+      HDCED: {
+        rules: ['HDCED_ADJUSTED_TO_CONCURRENT_ACTUAL_RELEASE'],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: -6,
+        releaseDate: '2022-08-14',
+        unadjustedDate: '2022-08-08',
+      },
+    },
+    otherDates: {},
+  }
+}
+
+export function hdcedAdjustedToArdReleaseDates(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      CRD: '2022-12-20',
+      TUSED: '2023-12-20',
+      HDCED: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
   }
 }
