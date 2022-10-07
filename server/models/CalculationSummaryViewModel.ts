@@ -90,8 +90,6 @@ export default class CalculationSummaryViewModel {
   }
 
   private allSentencesSupported(): boolean {
-    return !this.sentencesAndOffences.find(
-      sentence => SentenceTypes.isSentenceEds(sentence) || SentenceTypes.isSentenceSopc(sentence)
-    )
+    return !this.sentencesAndOffences.find(sentence => !SentenceTypes.isSentenceSds(sentence))
   }
 }
