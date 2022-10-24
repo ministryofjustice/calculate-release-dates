@@ -11,11 +11,11 @@ parameters:
 
   releases-slack-channel:
     type: string
-    default: farsight-alerts
+    default: dps-releases
 
   node-version:
     type: string
-    default: 16.15-browsers
+    default: 16.17-browsers
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
       - checkout
       - run:
           name: Update npm
-          command: 'npm install -g npm@latest'
+          command: 'sudo npm install -g npm@latest'
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
@@ -92,7 +92,7 @@ jobs:
       - store_test_results:
           path: test_results
       - store_artifacts:
-          path: test-results/unit-test-reports.html
+          path: test_results/unit-test-reports.html
 
   integration_test:
     executor:
@@ -148,7 +148,7 @@ workflows:
             - build
       - hmpps/helm_lint:
           name: helm_lint
-      - hmpps/build_multiplatform_docker:
+      - hmpps/build_docker:
           name: build_docker
           filters:
             branches:
@@ -157,7 +157,6 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
-          jira_update: true
           context: hmpps-common-vars
           filters:
             branches:
@@ -176,8 +175,6 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
-          jira_update: true
-          jira_env_type: staging
           context:
             - hmpps-common-vars
             - calculate-release-dates-preprod
@@ -190,8 +187,6 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_prod
           env: "prod"
-          jira_update: true
-          jira_env_type: production
           slack_notification: true
           slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:
