@@ -16,11 +16,11 @@
 {% endmacro %}
 
 {% macro pedAdjustedByOtherRelease() %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the {{model.displayPedAdjustmentHint()}} of a concurrent sentence</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the {{model.displayPedAdjustmentHint()}} of a concurrent sentence or default term</p>
 {% endmacro %}
 
 {% macro hdcedAdjustedByOtherRelease() %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16">HDCED adjusted for the {{model.displayHdcedAdjustmentHint()}} of a concurrent sentence</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">HDCED adjusted for the {{model.displayHdcedAdjustmentHint()}} of a concurrent sentence or default term</p>
 {% endmacro %}
 
 <div class="custom-card">
