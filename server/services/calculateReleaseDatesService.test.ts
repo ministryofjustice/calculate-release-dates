@@ -112,6 +112,11 @@ const sentencesAndOffences = [
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
+const validResult: ValidationMessages = {
+  type: 'VALIDATION',
+  messages: [],
+}
+
 const invalidValidationResult: ValidationMessages = {
   type: 'VALIDATION',
   messages: [
@@ -274,6 +279,11 @@ const invalidValidationResult: ValidationMessages = {
       arguments: [],
     },
     {
+      code: 'REMAND_OVERLAPS_WITH_REMAND_DETAILED',
+      message: '',
+      arguments: [],
+    },
+    {
       code: 'REMAND_OVERLAPS_WITH_SENTENCE',
       message: '',
       arguments: [],
@@ -341,6 +351,16 @@ const unsupportedCalculationResult: ValidationMessages = {
     {
       code: 'A_FINE_SENTENCE_CONSECUTIVE_TO',
       message: '',
+      arguments: [],
+    },
+    {
+      code: 'UNSUPPORTED_ADJUSTMENT_LAWFULLY_AT_LARGE',
+      message: 'LAL Adjustment unsupported',
+      arguments: [],
+    },
+    {
+      code: 'UNSUPPORTED_ADJUSTMENT_SPECIAL_REMISSION',
+      message: 'SR Adjustment unsupported',
       arguments: [],
     },
   ],
@@ -513,7 +533,7 @@ describe('Calculate release dates service tests', () => {
 
   describe('Validation tests', () => {
     it('Test validation passes', async () => {
-      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(204)
+      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, validResult)
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, sentencesAndOffences, token)
       expect(result.messages).toEqual([])
     })
@@ -580,6 +600,7 @@ describe('Calculate release dates service tests', () => {
         { text: 'The from date for Unlawfully at large (UAL) must be the first day the prisoner was deemed UAL.' },
         { text: 'The from date for Additional days awarded (ADA) should be the date of the adjudication hearing.' },
         { text: 'Remand time can only be added once, it can cannot overlap with other remand dates.' },
+        { text: 'Remand time can only be added once, it can cannot overlap with other remand dates.' },
         { text: 'Remand time cannot be credited when a custodial sentence is being served.' },
         {
           text: 'The release date cannot be before the sentence date. Go back to NOMIS and reduce the amount of remand entered.',
@@ -636,6 +657,8 @@ describe('Calculate release dates service tests', () => {
         { text: 'Any of the fine amount for a default term has been paid.' },
         { text: 'A sentence is consecutive to a default term.' },
         { text: 'A default term is consecutive to another default term or sentence.' },
+        { text: 'LAL Adjustment unsupported' },
+        { text: 'SR Adjustment unsupported' },
       ])
       expect(result.messageType).toBe(ErrorMessageType.UNSUPPORTED_CALCULATION)
     })
