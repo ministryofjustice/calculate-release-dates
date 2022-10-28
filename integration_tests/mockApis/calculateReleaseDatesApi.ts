@@ -136,7 +136,12 @@ export default {
         urlPattern: `/calculate-release-dates/calculation/A1234AB/validate`,
       },
       response: {
-        status: 204,
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          type: 'VALID',
+          messages: [],
+        },
       },
     })
   },

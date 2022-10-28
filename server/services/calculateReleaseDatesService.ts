@@ -294,7 +294,7 @@ export default class CalculateReleaseDatesService {
   ): Promise<ErrorMessages> {
     const errors = await new CalculateReleaseDatesApiClient(token).validate(prisonId, userInput)
 
-    if (Object.keys(errors).length) {
+    if (errors.messages.length) {
       const messages: ErrorMessage[] = []
       errors.messages.forEach(e =>
         translateErrorToText(e, sentencesAndOffences).forEach(message => messages.push({ text: message }))

@@ -33,6 +33,8 @@ export default function translateErrorToText(
       return [`Remand periods must have a from and to date.`]
     case 'REMAND_OVERLAPS_WITH_REMAND':
       return [`Remand time can only be added once, it can cannot overlap with other remand dates.`]
+    case 'REMAND_OVERLAPS_WITH_REMAND_DETAILED':
+      return [`Remand time can only be added once, it can cannot overlap with other remand dates.`]
     case 'REMAND_OVERLAPS_WITH_SENTENCE':
       return [`Remand time cannot be credited when a custodial sentence is being served.`]
     case 'SENTENCE_HAS_MULTIPLE_TERMS':
@@ -109,7 +111,11 @@ export default function translateErrorToText(
       return [
         `Court case ${sentencesAndOffence.caseSequence} count ${sentencesAndOffence.lineSequence} must include a fine amount.`,
       ]
+    case 'UNSUPPORTED_ADJUSTMENT_LAWFULLY_AT_LARGE':
+      return [validationMessage.message]
+    case 'UNSUPPORTED_ADJUSTMENT_SPECIAL_REMISSION':
+      return [validationMessage.message]
     default:
-      throw new Error(`Uknown validation code ${validationMessage.code}`)
+      throw new Error(`Unknown validation code ${validationMessage.code}`)
   }
 }
