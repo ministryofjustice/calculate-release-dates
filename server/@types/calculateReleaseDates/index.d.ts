@@ -277,7 +277,6 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'ZERO_IMPRISONMENT_TERM'
       arguments: string[]
-      test?: string
       message: string
       type: 'UNSUPPORTED_SENTENCE' | 'UNSUPPORTED_CALCULATION' | 'VALIDATION'
     }
