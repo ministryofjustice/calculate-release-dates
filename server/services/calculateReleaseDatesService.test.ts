@@ -4,12 +4,10 @@ import config from '../config'
 import {
   BookingCalculation,
   CalculationBreakdown,
-  ValidationMessages,
+  ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { ErrorMessageType } from '../types/ErrorMessages'
 import { psiExample16CalculationBreakdown, psiExample25CalculationBreakdown } from './breakdownExamplesTestData'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 
 jest.mock('../data/hmppsAuthClient')
 
@@ -56,315 +54,52 @@ const calculationBreakdown: CalculationBreakdown = {
   otherDates: {},
 }
 
-const sentencesAndOffences = [
+const validResult: ValidationMessage[] = []
+
+const invalidValidationResult: ValidationMessage[] = [
   {
-    caseSequence: 2,
-    lineSequence: 3,
-    sentenceDate: '2020-02-05',
-    sentenceCalculationType: 'ADIMP_ORA',
-    offences: [
-      { offenceEndDate: '2021-02-03' },
-      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-      { offenceStartDate: '2021-03-06' },
-      {},
-      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
-    ],
-    sentenceSequence: 4,
-  } as PrisonApiOffenderSentenceAndOffences,
+    code: 'OFFENCE_MISSING_DATE',
+    message: 'Validation failed 1',
+    arguments: [],
+    type: 'VALIDATION',
+  },
   {
-    caseSequence: 1,
-    lineSequence: 1,
-    sentenceDate: '2021-02-05',
-    sentenceCalculationType: 'ADIMP_ORA',
-    terms: [
-      {
-        days: 1,
-      },
-    ],
-    offences: [{ offenceCode: 'GBH' }],
-    sentenceSequence: 1,
-  } as PrisonApiOffenderSentenceAndOffences,
-  {
-    caseSequence: 2,
-    lineSequence: 2,
-    sentenceDate: '2021-02-05',
-    sentenceCalculationType: 'ADIMP_ORA',
-    terms: [
-      {
-        days: 1,
-      },
-    ],
-    offences: [{ offenceStartDate: '2021-04-03', offenceEndDate: '2021-04-03' }],
-    sentenceSequence: 3,
-  } as PrisonApiOffenderSentenceAndOffences,
-  {
-    caseSequence: 1,
-    lineSequence: 2,
-    sentenceDate: '2021-02-05',
-    sentenceCalculationType: 'ADIMP_ORA',
-    terms: [
-      {
-        days: 1,
-      },
-    ],
-    offences: [{ offenceCode: 'GBH', offenceStartDate: '2021-04-03' }],
-    sentenceSequence: 2,
-  } as PrisonApiOffenderSentenceAndOffences,
+    code: 'OFFENCE_MISSING_DATE',
+    message: 'Validation failed 2',
+    arguments: [],
+    type: 'VALIDATION',
+  },
 ]
 
-const validResult: ValidationMessages = {
-  type: 'VALIDATION',
-  messages: [],
-}
+const unsupportedValidationResult: ValidationMessage[] = [
+  {
+    code: 'UNSUPPORTED_SENTENCE_TYPE',
+    message: 'Unsupported sentence 1',
+    arguments: [],
+    type: 'UNSUPPORTED_SENTENCE',
+  },
+  {
+    code: 'UNSUPPORTED_SENTENCE_TYPE',
+    message: 'Unsupported sentence 2',
+    arguments: [],
+    type: 'UNSUPPORTED_SENTENCE',
+  },
+]
 
-const invalidValidationResult: ValidationMessages = {
-  type: 'VALIDATION',
-  messages: [
-    {
-      code: 'OFFENCE_MISSING_DATE',
-      sentenceSequence: 1,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE',
-      sentenceSequence: 2,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE',
-      sentenceSequence: 3,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE',
-      sentenceSequence: 3,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'OFFENCE_MISSING_DATE',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'ZERO_IMPRISONMENT_TERM',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'SENTENCE_HAS_MULTIPLE_TERMS',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'MULTIPLE_SENTENCES_CONSECUTIVE_TO',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'SEC_91_SENTENCE_TYPE_INCORRECT',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'SENTENCE_HAS_NO_IMPRISONMENT_TERM',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'SENTENCE_HAS_NO_LICENCE_TERM',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'ZERO_IMPRISONMENT_TERM',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'EDS_LICENCE_TERM_LESS_THAN_ONE_YEAR',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'EDS_LICENCE_TERM_MORE_THAN_EIGHT_YEARS',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'LASPO_AR_SENTENCE_TYPE_INCORRECT',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'MORE_THAN_ONE_IMPRISONMENT_TERM',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'MORE_THAN_ONE_LICENCE_TERM',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'SOPC_LICENCE_TERM_NOT_12_MONTHS',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'SEC236A_SENTENCE_TYPE_INCORRECT',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT',
-      sentenceSequence: 4,
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'REMAND_FROM_TO_DATES_REQUIRED',
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'REMAND_FROM_TO_DATES_REQUIRED',
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'ADJUSTMENT_FUTURE_DATED',
-      message: '',
-      arguments: ['UNLAWFULLY_AT_LARGE', 'ADDITIONAL_DAYS_AWARDED'],
-    },
-    {
-      code: 'REMAND_OVERLAPS_WITH_REMAND',
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'REMAND_OVERLAPS_WITH_REMAND_DETAILED',
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'REMAND_OVERLAPS_WITH_SENTENCE',
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'CUSTODIAL_PERIOD_EXTINGUISHED',
-      message: '',
-      arguments: ['REMAND'],
-    },
-    {
-      code: 'CUSTODIAL_PERIOD_EXTINGUISHED',
-      message: '',
-      arguments: ['TAGGED BAIL'],
-    },
-    {
-      code: 'CUSTODIAL_PERIOD_EXTINGUISHED',
-      message: '',
-      arguments: ['REMAND', 'TAGGED BAIL'],
-    },
-    {
-      code: 'ADJUSTMENT_AFTER_RELEASE',
-      message: '',
-      arguments: ['ADDITIONAL_DAYS_AWARDED', 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED', 'UNLAWFULLY_AT_LARGE'],
-    },
-    {
-      code: 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT',
-      message: '',
-      sentenceSequence: 4,
-      arguments: [],
-    },
-  ],
-}
-
-const unsupportedValidationResult: ValidationMessages = {
-  type: 'UNSUPPORTED_SENTENCE',
-  messages: [
-    {
-      code: 'UNSUPPORTED_SENTENCE_TYPE',
-      sentenceSequence: 1,
-      message: '',
-      arguments: ['2003', 'This sentence type is unsupported'],
-    },
-    {
-      code: 'UNSUPPORTED_SENTENCE_TYPE',
-      sentenceSequence: 2,
-      message: '',
-      arguments: ['1991', 'This sentence type is supported'],
-    },
-  ],
-}
-
-const unsupportedCalculationResult: ValidationMessages = {
-  type: 'UNSUPPORTED_CALCULATION',
-  messages: [
-    {
-      code: 'A_FINE_SENTENCE_WITH_PAYMENTS',
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'A_FINE_SENTENCE_CONSECUTIVE',
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'A_FINE_SENTENCE_CONSECUTIVE_TO',
-      message: '',
-      arguments: [],
-    },
-    {
-      code: 'UNSUPPORTED_ADJUSTMENT_LAWFULLY_AT_LARGE',
-      message: 'LAL Adjustment unsupported',
-      arguments: [],
-    },
-    {
-      code: 'UNSUPPORTED_ADJUSTMENT_SPECIAL_REMISSION',
-      message: 'SR Adjustment unsupported',
-      arguments: [],
-    },
-  ],
-}
+const unsupportedCalculationResult: ValidationMessage[] = [
+  {
+    code: 'A_FINE_SENTENCE_CONSECUTIVE',
+    message: 'Unsupported calculation 1',
+    arguments: [],
+    type: 'UNSUPPORTED_CALCULATION',
+  },
+  {
+    code: 'A_FINE_SENTENCE_CONSECUTIVE_TO',
+    message: 'Unsupported calculation 2',
+    arguments: [],
+    type: 'UNSUPPORTED_CALCULATION',
+  },
+]
 
 const token = 'token'
 
@@ -534,133 +269,42 @@ describe('Calculate release dates service tests', () => {
   describe('Validation tests', () => {
     it('Test validation passes', async () => {
       fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, validResult)
-      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, sentencesAndOffences, token)
-      expect(result.messages).toEqual([])
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
+      expect(result).toEqual({
+        messages: [],
+      })
     })
 
-    it('Test for validation mapping', async () => {
+    it('Test for validation type errors', async () => {
       fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, invalidValidationResult)
 
-      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, sentencesAndOffences, token)
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result.messages).toEqual([
-        { text: 'The calculation must include an offence date for court case 1 count 1.' },
-        { text: 'The offence date for court case 1 count 2 must be before the sentence date.' },
-        { text: 'The offence date for court case 2 count 2 must be before the sentence date.' },
-        { text: 'The offence date range for court case 2 count 2 must be before the sentence date.' },
-        { text: 'The calculation must include an offence date for court case 2 count 3.' },
-        { text: 'The offence date for court case 2 count 3 must be before the sentence date.' },
-        { text: 'The offence date range for court case 2 count 3 must be before the sentence date.' },
-        { text: 'Court case 2 count 3 must include an imprisonment term greater than zero.' },
-        { text: 'Court case 2 count 3 must only have one term in NOMIS.' },
-        {
-          text: 'There are multiple sentences that are consecutive to court case 2 count 3. A sentence should only have one other sentence consecutive to it.',
-        },
-        {
-          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
-        },
-        {
-          text: 'Court case 2 count 3 must include an imprisonment term.',
-        },
-        {
-          text: 'Court case 2 count 3 must include a licence term.',
-        },
-        {
-          text: 'Court case 2 count 3 must include an imprisonment term greater than zero.',
-        },
-        {
-          text: 'Court case 2 count 3 must have a licence term of at least one year.',
-        },
-        {
-          text: 'Court case 2 count 3 must have a licence term that does not exceed 8 years.',
-        },
-        {
-          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
-        },
-        {
-          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
-        },
-        {
-          text: 'Court case 2 count 3 must only have one imprisonment term.',
-        },
-        {
-          text: 'Court case 2 count 3 must only have one licence term.',
-        },
-        {
-          text: 'Court case 2 count 3 must include a licence term of 12 months or 1 year.',
-        },
-        {
-          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
-        },
-        {
-          text: 'The sentence type for court case 2 count 3 is invalid for the sentence date entered.',
-        },
-        { text: 'Remand periods must have a from and to date.' },
-        { text: 'Remand periods must have a from and to date.' },
-        { text: 'The from date for Unlawfully at large (UAL) must be the first day the prisoner was deemed UAL.' },
-        { text: 'The from date for Additional days awarded (ADA) should be the date of the adjudication hearing.' },
-        { text: 'Remand time can only be added once, it can cannot overlap with other remand dates.' },
-        { text: 'Remand time can only be added once, it can cannot overlap with other remand dates.' },
-        { text: 'Remand time cannot be credited when a custodial sentence is being served.' },
-        {
-          text: 'The release date cannot be before the sentence date. Go back to NOMIS and reduce the amount of remand entered.',
-        },
-        {
-          text: 'The release date cannot be before the sentence date. Go back to NOMIS and reduce the amount of tagged bail entered.',
-        },
-        {
-          text: 'The release date cannot be before the sentence date. Go back to NOMIS and reduce the amount of remand and tagged bail entered.',
-        },
-        {
-          text: 'The from date for Additional days awarded (ADA) should be the date of the adjudication hearing.',
-        },
-        {
-          text: 'The from date for Restored additional days awarded (RADA) must be the date the additional days were remitted.',
-        },
-        {
-          text: 'The from date for Unlawfully at large (UAL) must be the first day the prisoner was deemed UAL.',
-        },
-        {
-          text: 'Court case 2 count 3 must include a fine amount.',
-        },
-      ])
-      expect(result.messageType).toBe(ErrorMessageType.VALIDATION)
+      expect(result).toEqual({
+        messages: [{ text: 'Validation failed 1' }, { text: 'Validation failed 2' }],
+        messageType: 'VALIDATION',
+      })
     })
     it('Test for unsupported sentences', async () => {
       fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, unsupportedValidationResult)
 
-      const result = await calculateReleaseDatesService.validateBackend(
-        prisonerId,
-        null,
-        [
-          {
-            sentenceCalculationType: 'UNSUPORTED',
-            sentenceTypeDescription: 'This sentence is unsupported',
-            sentenceSequence: 1,
-          },
-        ],
-        token
-      )
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result.messages).toEqual([
-        { text: '2003 This sentence type is unsupported' },
-        { text: '1991 This sentence type is supported' },
-      ])
-      expect(result.messageType).toBe(ErrorMessageType.UNSUPPORTED_SENTENCE)
+      expect(result).toEqual({
+        messages: [{ text: 'Unsupported sentence 1' }, { text: 'Unsupported sentence 2' }],
+        messageType: 'UNSUPPORTED_SENTENCE',
+      })
     })
+
     it('Test for unsupported calculation', async () => {
       fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, unsupportedCalculationResult)
 
-      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, sentencesAndOffences, token)
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result.messages).toEqual([
-        { text: 'Any of the fine amount for a default term has been paid.' },
-        { text: 'A sentence is consecutive to a default term.' },
-        { text: 'A default term is consecutive to another default term or sentence.' },
-        { text: 'LAL Adjustment unsupported' },
-        { text: 'SR Adjustment unsupported' },
-      ])
-      expect(result.messageType).toBe(ErrorMessageType.UNSUPPORTED_CALCULATION)
+      expect(result).toEqual({
+        messages: [{ text: 'Unsupported calculation 1' }, { text: 'Unsupported calculation 2' }],
+        messageType: 'UNSUPPORTED_CALCULATION',
+      })
     })
   })
 })

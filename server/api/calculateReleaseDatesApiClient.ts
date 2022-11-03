@@ -7,7 +7,7 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
   SentenceDiagram,
-  ValidationMessages,
+  ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
@@ -79,11 +79,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({ path: `/working-day/previous/${date}` }) as Promise<WorkingDay>
   }
 
-  validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessages> {
+  validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessage[]> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}/validate`,
       data: userInput || null,
-    }) as Promise<ValidationMessages>
+    }) as Promise<ValidationMessage[]>
   }
 
   getPrisonerDetail(calculationId: number): Promise<PrisonApiPrisoner> {

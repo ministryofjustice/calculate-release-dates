@@ -7,6 +7,7 @@ import {
   CalculationUserQuestions,
   ReleaseDateCalculationBreakdown,
   SentenceDiagram,
+  ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
@@ -17,8 +18,6 @@ import { arithmeticToWords, daysArithmeticToWords, longDateFormat } from '../uti
 import ReleaseDateType from '../enumerations/releaseDateType'
 import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ErrorMessage from '../types/ErrorMessage'
-import translateErrorToText from './errorMessageTranslator'
-import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
@@ -286,39 +285,20 @@ export default class CalculateReleaseDatesService {
     return adjustments
   }
 
-  async validateBackend(
-    prisonId: string,
-    userInput: CalculationUserInputs,
-    sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
-    token: string
-  ): Promise<ErrorMessages> {
-    const errors = await new CalculateReleaseDatesApiClient(token).validate(prisonId, userInput)
+  async validateBackend(prisonId: string, userInput: CalculationUserInputs, token: string): Promise<ErrorMessages> {
+    const validationMessages = await new CalculateReleaseDatesApiClient(token).validate(prisonId, userInput)
+    return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
+  }
 
-    if (errors.messages.length) {
-      const messages: ErrorMessage[] = []
-      errors.messages.forEach(e =>
-        translateErrorToText(e, sentencesAndOffences).forEach(message => messages.push({ text: message }))
-      )
-      let messageType: ErrorMessageType
-      switch (errors.type) {
-        case 'UNSUPPORTED_SENTENCE': {
-          messageType = ErrorMessageType.UNSUPPORTED_SENTENCE
-          break
-        }
-        case 'UNSUPPORTED_CALCULATION': {
-          messageType = ErrorMessageType.UNSUPPORTED_CALCULATION
-          break
-        }
-        default: {
-          messageType = ErrorMessageType.VALIDATION
-          break
-        }
-      }
-      return {
-        messageType,
-        messages,
-      }
+  private convertMessages(validationMessages: ValidationMessage[]): ErrorMessages {
+    const { type } = validationMessages[0] // atm all messages are of the same type for each run of the validation
+    const messages = validationMessages.map(m => {
+      return { text: m.message } as ErrorMessage
+    })
+
+    return {
+      messageType: ErrorMessageType[type],
+      messages,
     }
-    return { messages: [] }
   }
 }
