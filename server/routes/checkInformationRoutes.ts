@@ -51,12 +51,7 @@ export default class CheckInformationRoutes {
 
     let validationMessages: ErrorMessages
     if (req.query.hasErrors) {
-      validationMessages = await this.calculateReleaseDatesService.validateBackend(
-        nomsId,
-        userInputs,
-        sentencesAndOffences,
-        token
-      )
+      validationMessages = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
     } else {
       validationMessages = null
     }
@@ -75,22 +70,11 @@ export default class CheckInformationRoutes {
   }
 
   public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
+    const { username, token } = res.locals.user
     const { nomsId } = req.params
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
-      username,
-      prisonerDetail.bookingId,
-      token
-    )
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-    const errors = await this.calculateReleaseDatesService.validateBackend(
-      nomsId,
-      userInputs,
-      sentencesAndOffences,
-      token
-    )
+    const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
     if (errors.messages.length > 0) {
       return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
     }

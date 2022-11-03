@@ -235,50 +235,50 @@ export interface components {
     CalculationUserInputs: {
       sentenceCalculationUserInputs: components['schemas']['CalculationSentenceUserInput'][]
     }
+    /** @description Validation message details */
     ValidationMessage: {
+      /** @description Validation code details */
       code:
-        | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE'
-        | 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE'
-        | 'OFFENCE_MISSING_DATE'
-        | 'REMAND_FROM_TO_DATES_REQUIRED'
-        | 'SENTENCE_HAS_MULTIPLE_TERMS'
-        | 'REMAND_OVERLAPS_WITH_REMAND'
-        | 'REMAND_OVERLAPS_WITH_REMAND_DETAILED'
-        | 'REMAND_OVERLAPS_WITH_SENTENCE'
-        | 'CUSTODIAL_PERIOD_EXTINGUISHED'
-        | 'ADJUSTMENT_AFTER_RELEASE'
-        | 'MULTIPLE_SENTENCES_CONSECUTIVE_TO'
-        | 'PRISONER_SUBJECT_TO_PTD'
-        | 'SEC_91_SENTENCE_TYPE_INCORRECT'
-        | 'ADJUSTMENT_FUTURE_DATED'
-        | 'SENTENCE_HAS_NO_IMPRISONMENT_TERM'
-        | 'SENTENCE_HAS_NO_LICENCE_TERM'
-        | 'ZERO_IMPRISONMENT_TERM'
-        | 'EDS_LICENCE_TERM_LESS_THAN_ONE_YEAR'
-        | 'EDS_LICENCE_TERM_MORE_THAN_EIGHT_YEARS'
-        | 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT'
-        | 'LASPO_AR_SENTENCE_TYPE_INCORRECT'
-        | 'MORE_THAN_ONE_IMPRISONMENT_TERM'
-        | 'MORE_THAN_ONE_LICENCE_TERM'
-        | 'SOPC_LICENCE_TERM_NOT_12_MONTHS'
-        | 'SEC236A_SENTENCE_TYPE_INCORRECT'
-        | 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT'
-        | 'A_FINE_SENTENCE_WITH_PAYMENTS'
+        | 'ADJUSTMENT_AFTER_RELEASE_ADA'
+        | 'ADJUSTMENT_AFTER_RELEASE_RADA'
+        | 'ADJUSTMENT_AFTER_RELEASE_UAL'
+        | 'ADJUSTMENT_FUTURE_DATED_ADA'
+        | 'ADJUSTMENT_FUTURE_DATED_RADA'
+        | 'ADJUSTMENT_FUTURE_DATED_UAL'
         | 'A_FINE_SENTENCE_CONSECUTIVE'
         | 'A_FINE_SENTENCE_CONSECUTIVE_TO'
         | 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT'
+        | 'A_FINE_SENTENCE_WITH_PAYMENTS'
+        | 'CUSTODIAL_PERIOD_EXTINGUISHED_REMAND'
+        | 'CUSTODIAL_PERIOD_EXTINGUISHED_TAGGED_BAIL'
+        | 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT'
+        | 'EDS_LICENCE_TERM_LESS_THAN_ONE_YEAR'
+        | 'EDS_LICENCE_TERM_MORE_THAN_EIGHT_YEARS'
+        | 'LASPO_AR_SENTENCE_TYPE_INCORRECT'
+        | 'MORE_THAN_ONE_IMPRISONMENT_TERM'
+        | 'MORE_THAN_ONE_LICENCE_TERM'
+        | 'MULTIPLE_SENTENCES_CONSECUTIVE_TO'
+        | 'OFFENCE_DATE_AFTER_SENTENCE_RANGE_DATE'
+        | 'OFFENCE_DATE_AFTER_SENTENCE_START_DATE'
+        | 'OFFENCE_MISSING_DATE'
+        | 'PRISONER_SUBJECT_TO_PTD'
+        | 'REMAND_FROM_TO_DATES_REQUIRED'
+        | 'REMAND_OVERLAPS_WITH_REMAND'
+        | 'REMAND_OVERLAPS_WITH_SENTENCE'
+        | 'SEC236A_SENTENCE_TYPE_INCORRECT'
+        | 'SEC_91_SENTENCE_TYPE_INCORRECT'
+        | 'SENTENCE_HAS_MULTIPLE_TERMS'
+        | 'SENTENCE_HAS_NO_IMPRISONMENT_TERM'
+        | 'SENTENCE_HAS_NO_LICENCE_TERM'
+        | 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT'
+        | 'SOPC_LICENCE_TERM_NOT_12_MONTHS'
         | 'UNSUPPORTED_ADJUSTMENT_LAWFULLY_AT_LARGE'
         | 'UNSUPPORTED_ADJUSTMENT_SPECIAL_REMISSION'
-      /** Format: int32 */
-      sentenceSequence?: number
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'ZERO_IMPRISONMENT_TERM'
       arguments: string[]
       message: string
-    }
-    ValidationMessages: {
-      /** @description Indicates the result of the validation, VALID means there are no errors */
-      type: 'UNSUPPORTED_PRISONER' | 'UNSUPPORTED_SENTENCE' | 'UNSUPPORTED_CALCULATION' | 'VALIDATION' | 'VALID'
-      messages: components['schemas']['ValidationMessage'][]
+      type: 'UNSUPPORTED_SENTENCE' | 'UNSUPPORTED_CALCULATION' | 'VALIDATION'
     }
     WorkingDay: {
       /** Format: date */
@@ -503,7 +503,7 @@ export interface components {
        */
       unadjustedDate: string
     }
-    BookingAdjustments: {
+    BookingAdjustment: {
       active: boolean
       /** Format: date */
       fromDate: string
@@ -519,10 +519,10 @@ export interface components {
         | 'UNLAWFULLY_AT_LARGE'
     }
     BookingAndSentenceAdjustments: {
-      bookingAdjustments: components['schemas']['BookingAdjustments'][]
-      sentenceAdjustments: components['schemas']['SentenceAdjustments'][]
+      bookingAdjustments: components['schemas']['BookingAdjustment'][]
+      sentenceAdjustments: components['schemas']['SentenceAdjustment'][]
     }
-    SentenceAdjustments: {
+    SentenceAdjustment: {
       /** Format: int32 */
       sentenceSequence: number
       active: boolean
@@ -532,14 +532,7 @@ export interface components {
       toDate?: string
       /** Format: int32 */
       numberOfDays: number
-      type:
-        | 'RECALL_SENTENCE_REMAND'
-        | 'RECALL_SENTENCE_TAGGED_BAIL'
-        | 'REMAND'
-        | 'TAGGED_BAIL'
-        | 'UNUSED_REMAND'
-        | 'LAWFULLY_AT_LARGE'
-        | 'SPECIAL_REMISSION'
+      type: 'RECALL_SENTENCE_REMAND' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'TAGGED_BAIL' | 'UNUSED_REMAND'
     }
   }
 }
@@ -619,19 +612,19 @@ export interface operations {
       /** Validation job has run successfully, the response indicates if there are any errors */
       200: {
         content: {
-          'application/json': components['schemas']['ValidationMessages']
+          'application/json': components['schemas']['ValidationMessage'][]
         }
       }
       /** Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['ValidationMessages']
+          'application/json': components['schemas']['ValidationMessage'][]
         }
       }
       /** Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['ValidationMessages']
+          'application/json': components['schemas']['ValidationMessage'][]
         }
       }
     }

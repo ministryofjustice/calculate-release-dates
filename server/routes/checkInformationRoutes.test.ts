@@ -499,7 +499,6 @@ describe('Check information routes tests', () => {
         expect(calculateReleaseDatesService.validateBackend).toBeCalledWith(
           expect.anything(),
           stubbedUserInput,
-          expect.anything(),
           expect.anything()
         )
         expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
