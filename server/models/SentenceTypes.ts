@@ -12,7 +12,15 @@ export default class SentenceTypes {
     'SEC250_ORA',
   ]
 
-  private static fixedTermRecallTypes = ['14FTR_ORA', '14FTRHDC_ORA', 'FTR', 'FTR_ORA']
+  private static fixedTermRecallTypes = [
+    '14FTR_ORA',
+    'FTR',
+    'FTR_ORA',
+    'FTR_SCH15',
+    'FTRSCH15_ORA',
+    'FTRSCH18',
+    'FTRSCH18_ORA',
+  ]
 
   private static edsSentenceTypes = ['EDS18', 'EDS21', 'EDSU18', 'LASPO_AR', 'LASPO_DR']
 
