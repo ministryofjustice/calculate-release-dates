@@ -13,6 +13,7 @@ export type PrisonApiOffenderFinePayment = components['schemas']['OffenderFinePa
 export type PrisonApiOffenderSentenceAndOffences = components['schemas']['OffenderSentenceAndOffences']
 export type PrisonApiOffenderSentenceTerm = components['schemas']['OffenderSentenceTerm']
 export type PrisonApiOffenderKeyDates = components['schemas']['OffenderKeyDates']
+export type PrisonApiFixedTermRecallDetails = components['schemas']['FixedTermRecallDetails']
 export type PrisonApiOffenderCalculatedKeyDates = PrisonApiOffenderKeyDates & {
   earlyRemovalSchemeEligibilityDate: string
   releaseOnTemporaryLicenceDate: string
@@ -20,7 +21,8 @@ export type PrisonApiOffenderCalculatedKeyDates = PrisonApiOffenderKeyDates & {
   comment: string
   reasonCode: string
 }
-// TODO replace with generated definition when prison-api is fixed.
+//  TODO Could be removed with a refactor
+//   it was being returned by two apis (prison-api and crd-api) - have refactored prison-api call to use PrisonApiFixedTermRecallDetails
 export type PrisonApiReturnToCustodyDate = {
   bookingId: number
   returnToCustodyDate: string

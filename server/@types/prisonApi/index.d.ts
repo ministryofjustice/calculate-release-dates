@@ -19,7 +19,7 @@ export interface paths {
     put: operations['recallPrisoner']
   }
   '/api/reference-domains/domains/{domain}/codes/{code}': {
-    /** Reference code detail for reference domain and code (with sub-codes). */
+    /** Reference code detail for reference domain and code (with sub-codes).<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getReferenceCodeByDomainAndCode']
     put: operations['updateReferenceCode']
     post: operations['createReferenceCode']
@@ -29,6 +29,9 @@ export interface paths {
   }
   '/api/offenders/{offenderNo}/transfer-in': {
     put: operations['transferInPrisoner']
+  }
+  '/api/offenders/{offenderNo}/temporary-absence-out': {
+    put: operations['transferOutPrisonerToTemporaryAbsence']
   }
   '/api/offenders/{offenderNo}/temporary-absence-arrival': {
     put: operations['temporaryAbsenceArrival']
@@ -145,7 +148,8 @@ export interface paths {
      *   "description": "May earnings",
      *   "amount": 1,
      *   "client_transaction_id": "PAY-05-19"
-     * }<br/>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu. Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>This will be setup by script intially as part of the deployment process as shown below<br/><br/>
+     * }<br/>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu.
+     * Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>This will be setup by script intially as part of the deployment process as shown below<br/><br/>
      */
     post: operations['storePayment']
   }
@@ -161,38 +165,45 @@ export interface paths {
     post: operations['imprisonmentDataSetup']
   }
   '/api/schedules/{agencyId}/visits': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getVisits']
   }
   '/api/schedules/{agencyId}/externalTransfers': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getExternalTransfers']
   }
   '/api/schedules/{agencyId}/events-by-location-ids': {
-    /** Get all events for given date for prisoners in listed cells. Note secondary sort is by start time */
+    /** Get all events for given date for prisoners in listed cells. Note secondary sort is by start time<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getEventsByLocationId']
   }
   '/api/schedules/{agencyId}/courtEvents': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getCourtEvents']
   }
   '/api/schedules/{agencyId}/count-activities': {
-    /** Get count of suspended prisoner activities for given date range */
+    /** Get count of suspended prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getCountActivitiesByDateRange']
   }
   '/api/schedules/{agencyId}/appointments': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAppointments']
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getAppointmentsForOffenders']
   }
   '/api/schedules/{agencyId}/activities': {
-    /** Get all Prisoner activities for given date */
+    /** Get all Prisoner activities for given date<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getActivitiesAtAllLocations']
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getActivitiesForBookings']
   }
   '/api/schedules/{agencyId}/activities-by-event-ids': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getActivitiesByEventIds']
   }
   '/api/prisoners': {
-    /** List of offenders matching specified criteria. */
+    /** List of offenders matching specified criteria.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getPrisoners_1']
-    /** List of offenders matching specified criteria. */
+    /** List of offenders matching specified criteria.<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getPrisoners']
   }
   '/api/offenders': {
@@ -209,16 +220,18 @@ export interface paths {
      *   <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
      *   <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
      * </ul>
+     * <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getOffenderSentences']
-    /** Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists. */
+    /** Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists.<p>This endpoint uses the REPLICA database.</p> */
     post: operations['postOffenderSentences']
   }
   '/api/offender-sentences/home-detention-curfews/latest': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getBatchLatestHomeDetentionCurfew']
   }
   '/api/offender-sentences/bookings': {
-    /** Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists. */
+    /** Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists.<p>This endpoint uses the REPLICA database.</p> */
     post: operations['postOffenderSentencesBookings']
   }
   '/api/offender-dates/{bookingId}': {
@@ -228,28 +241,41 @@ export interface paths {
     post: operations['updateOffenderKeyDates']
   }
   '/api/offender-assessments/{assessmentCode}': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenderAssessmentsAssessmentCode']
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['postOffenderAssessmentsAssessmentCode']
   }
   '/api/offender-assessments/csra/rating': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['postOffenderAssessmentsCsraRatings']
   }
   '/api/offender-assessments/csra/list': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['postOffenderAssessmentsCsraList']
   }
   '/api/offender-assessments/category': {
-    /** Categorisation details for all supplied Offenders using SYSTEM access */
+    /** Categorisation details for all supplied Offenders using SYSTEM access<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getOffenderCategorisationsSystem']
   }
   '/api/offender-assessments/category/{agencyId}': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenderCategorisations_1']
-    /** Categorisation details for supplied Offenders where agencyId is their create agency and is in the caseload */
+    /** Categorisation details for supplied Offenders where agencyId is their create agency and is in the caseload<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getOffenderCategorisations']
+  }
+  '/api/offences/unlink-from-schedule': {
+    /** Requires UPDATE_OFFENCE_SCHEDULES role */
+    post: operations['unlinkOffencesFromSchedules']
   }
   '/api/offences/statute': {
     get: operations['getOffencesByStatute']
     /** Requires OFFENCE_MAINTAINER role */
     post: operations['createStatute']
+  }
+  '/api/offences/link-to-schedule': {
+    /** Requires UPDATE_OFFENCE_SCHEDULES role */
+    post: operations['linkOffencesToSchedules']
   }
   '/api/offences/ho-code': {
     get: operations['getOffencesByHoCode']
@@ -277,7 +303,7 @@ export interface paths {
     post: operations['postKeyWorkerStaffAllocationHistory']
   }
   '/api/key-worker/offenders/allocationHistory': {
-    /** Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists. */
+    /** Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists.<p>This endpoint uses the REPLICA database.</p> */
     post: operations['postKeyWorkerOffendersAllocationHistory']
   }
   '/api/images/offenders/{offenderNo}': {
@@ -289,16 +315,28 @@ export interface paths {
     /** Notes:<br/><ul><li>If the field X-Client-Name is present in the request header then the value is prepended to the client_unique_ref separated by a dash</li><li>The client_unique_ref can have a maximum of 64 characters, only alphabetic, numeric, ‘-’ and ‘_’ characters are allowed</li></ul> */
     post: operations['transferToSavings']
   }
+  '/api/digital-warrant/booking/{bookingId}/sentence': {
+    post: operations['createSentence']
+  }
+  '/api/digital-warrant/booking/{bookingId}/court-case': {
+    post: operations['createCourtCase']
+  }
+  '/api/digital-warrant/booking/{bookingId}/charge': {
+    post: operations['createCharge']
+  }
+  '/api/digital-warrant/booking/{bookingId}/adjustment': {
+    post: operations['createAdjustment']
+  }
   '/api/case-notes/usage': {
-    /** Count of case notes */
+    /** Count of case notes<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getCaseNoteUsageSummary']
-    /** Retrieves list of case notes grouped by type and offender */
+    /** Retrieves list of case notes grouped by type and offender<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getCaseNoteUsageSummaryByPost']
   }
   '/api/case-notes/staff-usage': {
-    /** Count of case notes */
+    /** Count of case notes<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getCaseNoteStaffUsageSummary']
-    /** Retrieves list of case notes grouped by type/sub-type and staff */
+    /** Retrieves list of case notes grouped by type/sub-type and staff<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getCaseNoteStaffUsageSummaryByPost']
   }
   '/api/bookings/{bookingId}/relationships': {
@@ -335,14 +373,15 @@ export interface paths {
     post: operations['postAlert']
   }
   '/api/bookings/proven-adjudications': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getProvenAdjudicationSummaryForBookings']
   }
   '/api/bookings/offenders': {
-    /** Offender detail for offenders */
+    /** Offender detail for offenders<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getBasicInmateDetailsForOffenders']
   }
   '/api/bookings/offenders/{agencyId}/list': {
-    /** Basic offender details by booking ids */
+    /** Basic offender details by booking ids<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getBasicInmateDetailsByBookingIds']
   }
   '/api/bookings/offenderNo/{offenderNo}/relationships': {
@@ -352,6 +391,7 @@ export interface paths {
     post: operations['createRelationshipByOffenderNo']
   }
   '/api/bookings/offenderNo/{agencyId}/alerts': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getAlertsByOffenderNosAtAgency']
   }
   '/api/bookings/offenderNo/personal-care-needs': {
@@ -363,10 +403,11 @@ export interface paths {
     post: operations['countPersonalCareNeeds']
   }
   '/api/bookings/offenderNo/alerts': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getAlertsByOffenderNos']
   }
   '/api/bookings/mainOffence': {
-    /** Post version to allow specifying a large number of bookingIds. */
+    /** Post version to allow specifying a large number of bookingIds.<p>This endpoint uses the REPLICA database.</p> */
     post: operations['getMainOffence']
   }
   '/api/appointments': {
@@ -392,73 +433,75 @@ export interface paths {
     post: operations['createAgencyAddressPhoneContact']
   }
   '/api/v1/prison/{prison_id}/slots': {
-    /** returns list slots with capacity details */
+    /** returns list slots with capacity details<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getVisitSlotsWithCapacity']
   }
   '/api/v1/prison/{prison_id}/offenders/{noms_id}/transactions/{client_unique_ref}': {
-    /** All transaction amounts are represented as pence values. */
+    /** All transaction amounts are represented as pence values.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getTransactionByClientUniqueRef']
   }
   '/api/v1/prison/{prison_id}/offenders/{noms_id}/holds': {
-    /** Gets every hold on an offender’s account or just the hold identified by the client_unique_ref */
+    /** Gets every hold on an offender’s account or just the hold identified by the client_unique_ref<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getHolds']
   }
   '/api/v1/prison/{prison_id}/offenders/{noms_id}/accounts': {
-    /** Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>All balance values are represented as pence values. */
+    /** Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>All balance values are represented as pence values.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAccountBalance']
   }
   '/api/v1/prison/{prison_id}/offenders/{noms_id}/accounts/{account_code}/transactions': {
-    /** Transactions are returned in NOMIS ordee (Descending date followed by id).<br/>All transaction amounts are represented as pence values. */
+    /** Transactions are returned in NOMIS ordee (Descending date followed by id).<br/>All transaction amounts are represented as pence values.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAccountTransactions']
   }
   '/api/v1/prison/{prison_id}/live_roll': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getLiveRoll']
   }
   '/api/v1/offenders/{offender_id}/visits/unavailability': {
-    /** returns list of reason if unavailable date */
+    /** returns list of reason if unavailable date<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getVisitUnavailability']
   }
   '/api/v1/offenders/{offender_id}/visits/contact_list': {
-    /** returns list of contacts */
+    /** returns list of contacts<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getVisitContactList']
   }
   '/api/v1/offenders/{offender_id}/visits/available_dates': {
-    /** returns list of dates */
+    /** returns list of dates<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getVisitAvailableDates']
   }
   '/api/v1/offenders/{noms_id}': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffender']
   }
   '/api/v1/offenders/{noms_id}/pss_detail': {
-    /** Returns the PSS detail information for the specified offender including personal data, warnings, sentence details and location information.<br/><ul><li>The 'type' field is always OFFENDER_DETAILS_REQUEST</li><br/><li>The field 'offender_details_request' contains a JSON block of data containing the offender data.</li></ul>The format of 'offender_details_request' is not specified here. */
+    /** Returns the PSS detail information for the specified offender including personal data, warnings, sentence details and location information.<br/><ul><li>The 'type' field is always OFFENDER_DETAILS_REQUEST</li><br/><li>The field 'offender_details_request' contains a JSON block of data containing the offender data.</li></ul>The format of 'offender_details_request' is not specified here.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenderPssDetail']
   }
   '/api/v1/offenders/{noms_id}/location': {
-    /** The levels shows the type of each level of the location address as defined on the Agency Details tab in Maintain Agency Locations screen (OUMAGLOC).<br/><br/>Since the offender's location can change often and is fairly sensitive (and therefore should not automatically be exposed to all services), this information is not included in the general offender information call. */
+    /** The levels shows the type of each level of the location address as defined on the Agency Details tab in Maintain Agency Locations screen (OUMAGLOC).<br/><br/>Since the offender's location can change often and is fairly sensitive (and therefore should not automatically be exposed to all services), this information is not included in the general offender information call.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getLatestBookingLocation']
   }
   '/api/v1/offenders/{noms_id}/image': {
-    /** Returns a 480wx600h JPEG photograph of the offender. The data is base64 encoded within the image key. */
+    /** Returns a 480wx600h JPEG photograph of the offender. The data is base64 encoded within the image key.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenderImage']
   }
   '/api/v1/offenders/{noms_id}/charges': {
-    /** Returns all the bookings, the legal cases for each booking and charges within each legal case.<br/>The ordering is as follows:<ul><li><strong>bookings</strong>: Current or latest booking first, others in descending order of booking date</li><li><strong>legal_cases</strong>: Active cases followed by inactive cases, further ordered by begin_date, latest first</li><li><strong>charges</strong>: Most serious active charge first, then remaining active charges, followed by inactive charges</li></ul> */
+    /** Returns all the bookings, the legal cases for each booking and charges within each legal case.<br/>The ordering is as follows:<ul><li><strong>bookings</strong>: Current or latest booking first, others in descending order of booking date</li><li><strong>legal_cases</strong>: Active cases followed by inactive cases, further ordered by begin_date, latest first</li><li><strong>charges</strong>: Most serious active charge first, then remaining active charges, followed by inactive charges</li></ul><p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBookings']
   }
   '/api/v1/offenders/{noms_id}/alerts': {
-    /** Returns all active alerts for the specified offender or those that meet the optional criteria. Active alerts are listed first, followed by inactive alerts, both sorted by ascending order of alert date.<br/><ul><li>if alert_type is specified then only alerts of that type are returned</li><li>if modified_since is specified then only those alerts created or modified on or after the specified date time. The following formats are supported: 2018-01-10, 2018-01-10 03:34, 2018-01-10 03:34:12, 2018-01-10 03:34:12.123</li><li>If include_inactive=true is specified then inactive alerts are also returned.</li></ul> */
+    /** Returns all active alerts for the specified offender or those that meet the optional criteria. Active alerts are listed first, followed by inactive alerts, both sorted by ascending order of alert date.<br/><ul><li>if alert_type is specified then only alerts of that type are returned</li><li>if modified_since is specified then only those alerts created or modified on or after the specified date time. The following formats are supported: 2018-01-10, 2018-01-10 03:34, 2018-01-10 03:34:12, 2018-01-10 03:34:12.123</li><li>If include_inactive=true is specified then inactive alerts are also returned.</li></ul><p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAlerts']
   }
   '/api/v1/offenders/events': {
-    /** Returns all events that required to update the prisoner self service application. Currently these are:<ul><li>ALERT</li><li>DISCHARGE</li><li>IEP_CHANGED</li><li>INTERNAL_LOCATION_CHANGED</li><li>NOMS_ID_CHANGED</li><li>PERSONAL_DETAILS_CHANGED</li><li>PERSONAL_OFFICER_CHANGED</li><li>RECEPTION</li><li>SENTENCE_INFORMATION_CHANGED</li><li>BALANCE_UPDATE</li></ul> */
+    /** Returns all events that required to update the prisoner self service application. Currently these are:<ul><li>ALERT</li><li>DISCHARGE</li><li>IEP_CHANGED</li><li>INTERNAL_LOCATION_CHANGED</li><li>NOMS_ID_CHANGED</li><li>PERSONAL_DETAILS_CHANGED</li><li>PERSONAL_OFFICER_CHANGED</li><li>RECEPTION</li><li>SENTENCE_INFORMATION_CHANGED</li><li>BALANCE_UPDATE</li></ul><p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenderEvents']
   }
   '/api/v1/lookup/active_offender': {
-    /** offender id will be returned if offender is found */
+    /** offender id will be returned if offender is found<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getActiveOffender']
   }
   '/api/users/{username}': {
-    /** User detail. */
+    /** User detail.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getUserDetails']
   }
   '/api/users/me': {
@@ -470,7 +513,7 @@ export interface paths {
     get: operations['getMyRoles']
   }
   '/api/users/me/locations': {
-    /** List of locations accessible to current user. */
+    /** List of locations accessible to current user.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getMyLocations']
   }
   '/api/users/me/caseNoteTypes': {
@@ -478,7 +521,7 @@ export interface paths {
     get: operations['getMyCaseNoteTypes']
   }
   '/api/users/me/caseLoads': {
-    /** List of caseloads accessible to current user. */
+    /** List of caseloads accessible to current user.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getMyCaseLoads']
   }
   '/api/staff/{staffId}': {
@@ -498,58 +541,58 @@ export interface paths {
     get: operations['getStaffCaseloads']
   }
   '/api/staff/roles/{agencyId}/role/{role}': {
-    /** Get staff members within agency who are currently assigned the specified role. */
+    /** Get staff members within agency who are currently assigned the specified role.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getStaffByAgencyRole']
   }
   '/api/schedules/{agencyId}/suspended-activities-by-date-range': {
-    /** Get all Prisoner activities for given date range */
+    /** Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getSuspendedActivitiesAtAllLocationsByDateRange']
   }
   '/api/schedules/{agencyId}/locations/{locationId}/usage/{usage}': {
-    /** Get all Prisoner events for given date at location. */
+    /** Get all Prisoner events for given date at location.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getLocationEvents']
   }
   '/api/schedules/{agencyId}/activities-by-date-range': {
-    /** Get all Prisoner activities for given date range */
+    /** Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getActivitiesAtAllLocationsByDateRange']
   }
   '/api/schedules/locations/{locationId}/activities': {
-    /** Get all Prisoner activities for given date at location. */
+    /** Get all Prisoner activities for given date at location.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getActivitiesAtLocation']
   }
   '/api/restore-info': {
     get: operations['getLastRestoreDate']
   }
   '/api/reference-domains/scheduleReasons': {
-    /** Get possible reason codes for created event. */
+    /** Get possible reason codes for created event.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getScheduleReasons']
   }
   '/api/reference-domains/domains': {
-    /** A reference domain can be used to retrieve all codes related to that domain. Ordered by domain ascending */
+    /** A reference domain can be used to retrieve all codes related to that domain. Ordered by domain ascending<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAllReferenceDomains']
   }
   '/api/reference-domains/domains/{domain}': {
-    /** List of reference codes for reference domain paged. Please note this API has the incorrect name so the non-paged /domains/{domain}/codes version is preferred. */
+    /** List of reference codes for reference domain paged. Please note this API has the incorrect name so the non-paged /domains/{domain}/codes version is preferred.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getReferenceCodesByDomain']
   }
   '/api/reference-domains/domains/{domain}/reverse-lookup': {
-    /** Wild card can be specified */
+    /** Wild card can be specified<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getReferenceCodeByDomainAndDescription']
   }
   '/api/reference-domains/domains/{domain}/codes': {
-    /** List of reference codes for reference domain ordered by code ascending. The list is an un-paged flat list */
+    /** List of reference codes for reference domain ordered by code ascending. The list is an un-paged flat list<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getReferenceCodesByDomain_1']
   }
   '/api/reference-domains/caseNoteTypes': {
-    /** List of all used case note types (with sub-types). */
+    /** List of all used case note types (with sub-types).<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getCaseNoteTypes']
   }
   '/api/reference-domains/caseNoteSources': {
-    /** List of case note source codes. */
+    /** List of case note source codes.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getCaseNoteSources']
   }
   '/api/reference-domains/alertTypes': {
-    /** List of alert types (with alert codes). */
+    /** List of alert types (with alert codes).<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAlertTypes']
   }
   '/api/questionnaires/{category}/{code}': {
@@ -589,7 +632,7 @@ export interface paths {
     get: operations['getOffender_1']
   }
   '/api/offenders/{offenderNo}/transaction-history': {
-    /** Transactions are returned in order of entryDate descending and sequence ascending).<br/>All transaction amounts are represented as pence values. */
+    /** Transactions are returned in order of entryDate descending and sequence ascending).<br/>All transaction amounts are represented as pence values.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getTransactionsHistory']
   }
   '/api/offenders/{offenderNo}/sentences': {
@@ -635,7 +678,7 @@ export interface paths {
     get: operations['getOffenderCaseNote']
   }
   '/api/offenders/{offenderNo}/case-notes/v2': {
-    /** Retrieve an offenders case notes for latest booking */
+    /** Retrieve an offenders case notes for latest booking<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenderCaseNotes']
   }
   '/api/offenders/{offenderNo}/bookings/latest/alerts': {
@@ -670,11 +713,11 @@ export interface paths {
     get: operations['getOffenderNumbers']
   }
   '/api/offenders/alerts/candidates': {
-    /** This query is slow and can take several minutes */
+    /** This query is slow and can take several minutes<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAlertCandidates']
   }
   '/api/offender-sentences/home-detention-curfew-candidates': {
-    /** Version 1 */
+    /** Version 1<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenderSentencesHomeDetentionCurfewCandidates']
   }
   '/api/offender-sentences/booking/{bookingId}/sentences-and-offences': {
@@ -704,13 +747,15 @@ export interface paths {
     get: operations['getOffenderCsraAssessment']
   }
   '/api/offender-assessments/assessments': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAssessments']
   }
   '/api/offender-activities/{offenderNo}/attendance-history': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getHistoricalAttendances']
   }
   '/api/offender-activities/{offenderNo}/activities-history': {
-    /** This includes suspended activities */
+    /** This includes suspended activities<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getRecentStartedActivities']
   }
   '/api/offences': {
@@ -729,7 +774,7 @@ export interface paths {
     get: operations['getOffendersOutToday']
   }
   '/api/movements/{agencyId}/in': {
-    /** Offenders who entered a prison during a time period. */
+    /** Offenders who entered a prison during a time period.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getMovementsIn']
   }
   '/api/movements/{agencyId}/in/{isoDate}': {
@@ -741,18 +786,19 @@ export interface paths {
     get: operations['getEnrouteOffenderMovements']
   }
   '/api/movements/upcomingCourtAppearances': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getUpcomingCourtAppearances']
   }
   '/api/movements/transfers': {
-    /** Planned movements are recorded as events of type court, release or transfers/appointments. When these events are started they are actualised as external movements. */
+    /** Planned movements are recorded as events of type court, release or transfers/appointments. When these events are started they are actualised as external movements.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getTransfers']
   }
   '/api/movements/rollcount/{agencyId}': {
-    /** Current establishment rollcount numbers. */
+    /** Current establishment rollcount numbers.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getRollcount']
   }
   '/api/movements/rollcount/{agencyId}/movements': {
-    /** Rollcount movement numbers. */
+    /** Rollcount movement numbers.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getRollcountMovements']
   }
   '/api/movements/rollcount/{agencyId}/in-reception': {
@@ -763,7 +809,7 @@ export interface paths {
     get: operations['getEnrouteOffenderMovementCount']
   }
   '/api/movements/livingUnit/{livingUnitId}/currently-out': {
-    /** Information on offenders currently out. */
+    /** Information on offenders currently out.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffendersCurrentlyOut']
   }
   '/api/movements/agency/{agencyId}/temporary-absences': {
@@ -778,11 +824,11 @@ export interface paths {
     get: operations['getLocation']
   }
   '/api/locations/{locationId}/inmates': {
-    /** List of offenders at location. */
+    /** List of offenders at location.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffendersAtLocation']
   }
   '/api/locations/description/{locationPrefix}/inmates': {
-    /** List of offenders at location. */
+    /** List of offenders at location.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffendersAtLocationDescription']
   }
   '/api/locations/code/{code}': {
@@ -793,7 +839,7 @@ export interface paths {
     get: operations['getAllocationsForKeyworker']
   }
   '/api/key-worker/{agencyId}/available': {
-    /** Key workers available for allocation at specified agency. */
+    /** Key workers available for allocation at specified agency.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAvailableKeyworkers']
   }
   '/api/key-worker/{agencyId}/allocationHistory': {
@@ -816,7 +862,7 @@ export interface paths {
     get: operations['getOffendersWithImagesCapturedInRange']
   }
   '/api/identifiers/{type}/{value}': {
-    /** Empty list will be returned for no matches */
+    /** Empty list will be returned for no matches<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenderIdentifiersByTypeAndValue']
   }
   '/api/events': {
@@ -838,12 +884,14 @@ export interface paths {
     get: operations['getPrisonerEducations']
   }
   '/api/cell/{locationId}/history': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBedAssignmentsHistory']
   }
   '/api/cell/{locationId}/attributes': {
     get: operations['getCellAttributes']
   }
   '/api/cell/{agencyId}/history/{assignmentDate}': {
+    /** <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBedAssignmentsHistoryByDateForAgency']
   }
   '/api/case-notes/events': {
@@ -863,7 +911,7 @@ export interface paths {
     get: operations['getBookingVisitsForToday']
   }
   '/api/bookings/{bookingId}/visits/summary': {
-    /** Will return whether there are any visits and also the date of the next scheduled visit */
+    /** Will return whether there are any visits and also the date of the next scheduled visit<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBookingVisitsSummary']
   }
   '/api/bookings/{bookingId}/visits/prisons': {
@@ -871,11 +919,11 @@ export interface paths {
     get: operations['getBookingVisitsPrisons']
   }
   '/api/bookings/{bookingId}/visits/next': {
-    /** The next visit for the offender. Will return 200 with no body if no next visit is scheduled */
+    /** The next visit for the offender. Will return 200 with no body if no next visit is scheduled<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBookingVisitsNext']
   }
   '/api/bookings/{bookingId}/visits-with-visitors': {
-    /** visits with visitor list for offender. */
+    /** visits with visitor list for offender.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBookingVisitsWithVisitor']
   }
   '/api/bookings/{bookingId}/sentenceDetail': {
@@ -886,6 +934,7 @@ export interface paths {
      *   <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
      *   <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
      * </ul>
+     * <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBookingSentenceDetail']
   }
@@ -895,9 +944,6 @@ export interface paths {
   '/api/bookings/{bookingId}/secondary-languages': {
     /** Get secondary languages */
     get: operations['getSecondaryLanguages']
-  }
-  '/api/bookings/{bookingId}/return-to-custody': {
-    get: operations['getReturnToCustodyDate']
   }
   '/api/bookings/{bookingId}/reasonable-adjustments': {
     /** Reasonable Adjustment Information */
@@ -944,16 +990,19 @@ export interface paths {
     get: operations['getIncidentsByBookingId']
   }
   '/api/bookings/{bookingId}/image': {
-    /** Image detail (without image data). */
+    /** Image detail (without image data).<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getMainImageForBookings']
   }
   '/api/bookings/{bookingId}/image/data': {
-    /** Image data (as bytes). */
+    /** Image data (as bytes).<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getMainBookingImageData']
   }
   '/api/bookings/{bookingId}/identifiers': {
     /** Identifiers for this booking */
     get: operations['getOffenderIdentifiers']
+  }
+  '/api/bookings/{bookingId}/fixed-term-recall': {
+    get: operations['getFixedTermRecallDetails']
   }
   '/api/bookings/{bookingId}/events': {
     /** All scheduled events for offender. */
@@ -983,15 +1032,15 @@ export interface paths {
     get: operations['getContacts']
   }
   '/api/bookings/{bookingId}/cell-history': {
-    /** Default sort order is by assignment date descending */
+    /** Default sort order is by assignment date descending<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBedAssignmentsHistory_1']
   }
   '/api/bookings/{bookingId}/caseNotes': {
-    /** Offender case notes. */
+    /** Offender case notes.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenderCaseNotes_1']
   }
   '/api/bookings/{bookingId}/caseNotes/{type}/{subType}/count': {
-    /** Count of case notes */
+    /** Count of case notes<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getCaseNoteCount']
   }
   '/api/bookings/{bookingId}/caseNotes/{caseNoteId}': {
@@ -1039,11 +1088,11 @@ export interface paths {
     get: operations['getAdjudicationSummary']
   }
   '/api/bookings/{bookingId}/activities': {
-    /** All scheduled activities for offender. */
+    /** All scheduled activities for offender.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBookingActivities']
   }
   '/api/bookings/{bookingId}/activities/today': {
-    /** Today's scheduled activities for offender. */
+    /** Today's scheduled activities for offender.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBookingActivitiesForToday']
   }
   '/api/bookings/v2': {
@@ -1055,11 +1104,11 @@ export interface paths {
     get: operations['getOffenderBookingByOffenderNo']
   }
   '/api/bookings/offenderNo/{offenderNo}/visit/balances': {
-    /** Balances visit orders and privilege visit orders for offender. */
+    /** Balances visit orders and privilege visit orders for offender.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getBookingVisitBalances']
   }
   '/api/bookings/offenderNo/{offenderNo}/offenceHistory': {
-    /** All Offences recorded for this offender. */
+    /** All Offences recorded for this offender.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getOffenceHistory']
   }
   '/api/bookings/offenderNo/{offenderNo}/key-worker': {
@@ -1077,7 +1126,7 @@ export interface paths {
     delete: operations['deleteAppointment']
   }
   '/api/agencies/{agencyId}/locations': {
-    /** List of active internal locations for agency. */
+    /** List of active internal locations for agency.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAgencyLocations']
   }
   '/api/agencies/{agencyId}/locations/type/{type}': {
@@ -1093,7 +1142,7 @@ export interface paths {
     get: operations['getAgencyEventLocations']
   }
   '/api/agencies/{agencyId}/eventLocationsBooked': {
-    /** List of locations for agency where events (appointments, visits, activities) are being held. */
+    /** List of locations for agency where events (appointments, visits, activities) are being held.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAgencyEventLocationsBooked']
   }
   '/api/agencies/{agencyId}/establishment-types': {
@@ -1101,7 +1150,7 @@ export interface paths {
     get: operations['getAgencyEstablishmentTypes']
   }
   '/api/agencies/{agencyId}/cellsWithCapacity': {
-    /** List of active cells with capacity for agency. */
+    /** List of active cells with capacity for agency.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAgencyActiveCellsWithCapacity']
   }
   '/api/agencies/type/{type}': {
@@ -1109,7 +1158,7 @@ export interface paths {
     get: operations['getAgenciesByType']
   }
   '/api/agencies/prison': {
-    /** List of prison contact details. */
+    /** List of prison contact details.<p>This endpoint uses the REPLICA database.</p> */
     get: operations['getPrisonContactDetailList']
   }
   '/api/agencies/prison/{agencyId}': {
@@ -2437,6 +2486,41 @@ export interface components {
        */
       cellLocation?: string
     }
+    /** @description Represents the data required for transferring a prisoner to temporary absence */
+    RequestToTransferOutToTemporaryAbsence: {
+      /**
+       * @description The city to be released to. Not required if scheduleEventId is present
+       * @example 18248
+       */
+      toCity?: string
+      /**
+       * @description The time the movement occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
+       * @example 2021-07-05T10:35:17
+       */
+      movementTime?: string
+      /**
+       * @description The escort type of the move.
+       * @example PECS
+       */
+      escortType: string
+      /**
+       * @description Reason code for the transfer, reference domain is MOVE_RSN
+       * @example C3
+       */
+      transferReasonCode: string
+      /**
+       * @description Additional comments about the release
+       * @example Prisoner was transferred to a new prison
+       */
+      commentText?: string
+      /** @description Flag indicate if bed should be released */
+      shouldReleaseBed?: boolean
+      /**
+       * Format: int64
+       * @description Optional scheduled schedule event this movement relates to
+       */
+      scheduleEventId?: number
+    }
     /** @description Represents the data required for registering temporary absence arrival */
     RequestForTemporaryAbsenceArrival: {
       /**
@@ -2537,7 +2621,7 @@ export interface components {
       recallTime: string
       /**
        * @description Where the prisoner has been recalled from (default OUT)
-       * @example OUT
+       * @example SHEFCC
        */
       fromLocationId?: string
       /**
@@ -3983,7 +4067,7 @@ export interface components {
       bookingInTime: string
       /**
        * @description Where the prisoner has moved from (default OUT)
-       * @example OUT
+       * @example SHEFCC
        */
       fromLocationId?: string
       /**
@@ -4287,6 +4371,25 @@ export interface components {
       /** @description The prison to be transferred to */
       placementAgencyId: string
     }
+    /** @description Maps an offence to a schedule */
+    OffenceToScheduleMappingDto: {
+      /**
+       * @description Offence code
+       * @example COML025
+       */
+      offenceCode: string
+      /**
+       * @description Schedule type
+       * @example SCHEDULE_15
+       */
+      schedule:
+        | 'SCHEDULE_13'
+        | 'SCHEDULE_15'
+        | 'SCHEDULE_15_ATTRACTS_LIFE'
+        | 'SCHEDULE_17A_PART_1'
+        | 'SCHEDULE_17A_PART_2'
+        | 'SCHEDULE_19ZA'
+    }
     /** @description Create external movement */
     CreateExternalMovement: {
       /**
@@ -4534,6 +4637,120 @@ export interface components {
        * @example CLIENT121131-0_11
        */
       client_unique_ref: string
+    }
+    /** @description A new sentence from a digital warrant */
+    Sentence: {
+      /** @description The type of sentence */
+      sentenceType?: string
+      /** @description The category of sentence */
+      sentenceCategory?: string
+      /**
+       * Format: date
+       * @description The date of sentencing
+       */
+      sentenceDate?: string
+      /**
+       * Format: int32
+       * @description Days sentence to
+       */
+      days?: number
+      /**
+       * Format: int32
+       * @description Weeks sentence to
+       */
+      weeks?: number
+      /**
+       * Format: int32
+       * @description Months sentence to
+       */
+      months?: number
+      /**
+       * Format: int32
+       * @description Years sentence to
+       */
+      years?: number
+      /**
+       * Format: int64
+       * @description The id of the offender charge
+       */
+      offenderChargeId?: number
+      /**
+       * Format: int64
+       * @description The id of the court case
+       */
+      courtCaseId?: number
+    }
+    /** @description A new offender court case details entered from a digital warrant. */
+    CourtCase: {
+      /**
+       * Format: date
+       * @description The begin date
+       * @example 2019-12-01
+       */
+      beginDate?: string
+      /** @description The location of the court case */
+      agencyId?: string
+      /**
+       * @description The case type
+       * @example Adult
+       */
+      caseType?: string
+      /**
+       * @description The case information number
+       * @example TD20177010
+       */
+      caseInfoNumber?: string
+      /** @description Type of court hearing */
+      hearingType?: string
+    }
+    /** @description A new offence from a digital warrant */
+    Charge: {
+      /** @description The offence code of the office in the court case */
+      offenceCode?: string
+      /** @description The offence statute of the office in the court case */
+      offenceStatue?: string
+      /**
+       * Format: date
+       * @description The date of the offence
+       */
+      offenceDate?: string
+      /**
+       * Format: date
+       * @description The offence end date
+       */
+      offenceEndDate?: string
+      /** @description Was the verdict guilty or not guilty */
+      guilty?: boolean
+      /**
+       * Format: int64
+       * @description The id of the court case
+       */
+      courtCaseId?: number
+    }
+    /** @description An adjustment to a calculation */
+    Adjustment: {
+      /**
+       * Format: int32
+       * @description The sequence of sentence
+       */
+      sequence?: number
+      /** @description The type of adjustment */
+      type?: string
+      /**
+       * Format: date
+       * @description The from date of the adjustment
+       */
+      from?: string
+      /**
+       * Format: date
+       * @description The to date of the adjustment
+       */
+      to?: string
+      /**
+       * Format: int32
+       * @description Days of the adjustment
+       */
+      days?: number
     }
     /** @description Case Note Type Usage Request */
     CaseNoteUsageRequest: {
@@ -5707,35 +5924,6 @@ export interface components {
       /** @description Bookings */
       bookings?: components['schemas']['Booking'][]
     }
-    /** @description Offender Charge */
-    Charge: {
-      statute?: components['schemas']['CodeDescription']
-      offence?: components['schemas']['CodeDescription']
-      /**
-       * @description Most Serious Offence
-       * @example true
-       */
-      most_serious?: boolean
-      /**
-       * @description Charge Active
-       * @example true
-       */
-      charge_active?: boolean
-      /**
-       * @description Severity Ranking
-       * @example 100
-       */
-      severity_ranking?: string
-      result?: components['schemas']['CodeDescription']
-      disposition?: components['schemas']['CodeDescription']
-      /**
-       * @description Convicted
-       * @example true
-       */
-      convicted?: boolean
-      imprisonment_status?: components['schemas']['CodeDescription']
-      band?: components['schemas']['CodeDescription']
-    }
     /** @description Legal Case */
     LegalCase: {
       /**
@@ -6213,10 +6401,10 @@ export interface components {
       establishmentName: string
     }
     PagePrisonerInformation: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['PrisonerInformation'][]
@@ -6224,10 +6412,10 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     PageableObject: {
@@ -8345,10 +8533,10 @@ export interface components {
       additionalAnswers?: string[]
     }
     PageOffenceDto: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['OffenceDto'][]
@@ -8356,10 +8544,10 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     Pageable: {
@@ -9036,10 +9224,10 @@ export interface components {
       numberAllocated: number
     }
     PageOffenderNumber: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['OffenderNumber'][]
@@ -9047,10 +9235,10 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     /** @description Offender Event */
@@ -9254,10 +9442,10 @@ export interface components {
       addresses: components['schemas']['AddressDto'][]
     }
     PageEmployment: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['Employment'][]
@@ -9265,10 +9453,10 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     /** @description Offender Education */
@@ -9333,10 +9521,10 @@ export interface components {
       addresses: components['schemas']['AddressDto'][]
     }
     PageEducation: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['Education'][]
@@ -9344,10 +9532,10 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     /** @description Bed assignment history entry */
@@ -9498,15 +9686,15 @@ export interface components {
        */
       establishmentCode?: string
       /**
-       * @description Name of staff member who created case note (lastname, firstname)
-       * @example Smith, John
-       */
-      staffName: string
-      /**
        * @description Case Note Type and Sub Type
        * @example POS IEP_ENC
        */
       noteType: string
+      /**
+       * @description Name of staff member who created case note (lastname, firstname)
+       * @example Smith, John
+       */
+      staffName: string
     }
     /** @description Visit summary */
     VisitSummary: {
@@ -9519,10 +9707,10 @@ export interface components {
       hasVisits: boolean
     }
     PageVisitWithVisitors: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['VisitWithVisitors'][]
@@ -9530,10 +9718,10 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     /** @description Visit details */
@@ -9647,19 +9835,6 @@ export interface components {
       /** @description Speaking proficiency */
       canSpeak?: boolean
     }
-    /** @description Offender recall return to custody date */
-    ReturnToCustodyDate: {
-      /**
-       * Format: int64
-       * @description the booking id
-       */
-      bookingId?: number
-      /**
-       * Format: date
-       * @description The date the offender returned to custody
-       */
-      returnToCustodyDate?: string
-    }
     /** @description Reasonable Adjustment */
     ReasonableAdjustment: {
       /**
@@ -9714,50 +9889,27 @@ export interface components {
        */
       containerType?: string
     }
+    /** @description Details relating to the fixed term recall on a booking */
+    FixedTermRecallDetails: {
+      /**
+       * Format: int64
+       * @description The booking id
+       */
+      bookingId?: number
+      /**
+       * Format: date
+       * @description The date the offender returned to custody
+       */
+      returnToCustodyDate?: string
+      /**
+       * Format: int32
+       * @description The length of the fixed term recall
+       */
+      recallLength?: number
+    }
     /** @description Represents court hearings for an offender booking. */
     CourtHearings: {
       hearings?: components['schemas']['CourtHearing'][]
-    }
-    /** @description Offender court case details */
-    CourtCase: {
-      /**
-       * Format: int64
-       * @description The case identifier
-       * @example 1
-       */
-      id?: number
-      /**
-       * Format: int64
-       * @description The case sequence number for the offender
-       * @example 1
-       */
-      caseSeq?: number
-      /**
-       * Format: date
-       * @description The begin date
-       * @example 2019-12-01
-       */
-      beginDate?: string
-      agency?: components['schemas']['Agency']
-      /**
-       * @description The case type
-       * @example Adult
-       */
-      caseType?: string
-      /** @description The prefix of the case number */
-      caseInfoPrefix?: string
-      /**
-       * @description The case information number
-       * @example TD20177010
-       */
-      caseInfoNumber?: string
-      /**
-       * @description The case status
-       * @example ACTIVE
-       */
-      caseStatus?: 'ACTIVE' | 'CLOSED' | 'INACTIVE'
-      /** @description Court hearings associated with the court case */
-      courtHearings?: components['schemas']['CourtHearing'][]
     }
     /** @description Contacts Details for offender */
     ContactDetail: {
@@ -9767,10 +9919,10 @@ export interface components {
       otherContacts: components['schemas']['Contact'][]
     }
     PageBedAssignment: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['BedAssignment'][]
@@ -9778,17 +9930,17 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     PageCaseNote: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CaseNote'][]
@@ -9796,10 +9948,10 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     /** @description Case Note Count Detail */
@@ -9843,10 +9995,10 @@ export interface components {
       currency: string
     }
     PageAlert: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['Alert'][]
@@ -9854,10 +10006,10 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     /** @description Adjudication Summary for offender */
@@ -9921,10 +10073,10 @@ export interface components {
       hearingSequence: number
     }
     PagePrisonerBookingSummary: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['PrisonerBookingSummary'][]
@@ -9932,10 +10084,10 @@ export interface components {
       number?: number
       sort?: components['schemas']['SortObject']
       first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
       empty?: boolean
     }
     /** @description Prisoner Booking Summary */
@@ -10308,7 +10460,7 @@ export interface operations {
       }
     }
   }
-  /** Reference code detail for reference domain and code (with sub-codes). */
+  /** Reference code detail for reference domain and code (with sub-codes).<p>This endpoint uses the REPLICA database.</p> */
   getReferenceCodeByDomainAndCode: {
     parameters: {
       path: {
@@ -10512,6 +10664,45 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['RequestToTransferIn']
+      }
+    }
+  }
+  transferOutPrisonerToTemporaryAbsence: {
+    parameters: {
+      path: {
+        /** The offenderNo of prisoner */
+        offenderNo: string
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['InmateDetail']
+        }
+      }
+      /** Invalid request. */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** Requested resource not found. */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** Unrecoverable error occurred whilst processing request. */
+      500: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RequestToTransferOutToTemporaryAbsence']
       }
     }
   }
@@ -11729,7 +11920,8 @@ export interface operations {
    *   "description": "May earnings",
    *   "amount": 1,
    *   "client_transaction_id": "PAY-05-19"
-   * }<br/>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu. Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>This will be setup by script intially as part of the deployment process as shown below<br/><br/>
+   * }<br/>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu.
+   * Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>This will be setup by script intially as part of the deployment process as shown below<br/><br/>
    */
   storePayment: {
     parameters: {
@@ -11870,6 +12062,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getVisits: {
     parameters: {
       path: {
@@ -11896,6 +12089,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getExternalTransfers: {
     parameters: {
       path: {
@@ -11920,7 +12114,7 @@ export interface operations {
       }
     }
   }
-  /** Get all events for given date for prisoners in listed cells. Note secondary sort is by start time */
+  /** Get all events for given date for prisoners in listed cells. Note secondary sort is by start time<p>This endpoint uses the REPLICA database.</p> */
   getEventsByLocationId: {
     parameters: {
       path: {
@@ -11972,6 +12166,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getCourtEvents: {
     parameters: {
       path: {
@@ -11998,7 +12193,7 @@ export interface operations {
       }
     }
   }
-  /** Get count of suspended prisoner activities for given date range */
+  /** Get count of suspended prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p> */
   getCountActivitiesByDateRange: {
     parameters: {
       path: {
@@ -12046,6 +12241,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getAppointments: {
     parameters: {
       path: {
@@ -12069,6 +12265,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getAppointmentsForOffenders: {
     parameters: {
       path: {
@@ -12095,7 +12292,7 @@ export interface operations {
       }
     }
   }
-  /** Get all Prisoner activities for given date */
+  /** Get all Prisoner activities for given date<p>This endpoint uses the REPLICA database.</p> */
   getActivitiesAtAllLocations: {
     parameters: {
       path: {
@@ -12144,6 +12341,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getActivitiesForBookings: {
     parameters: {
       path: {
@@ -12172,6 +12370,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getActivitiesByEventIds: {
     parameters: {
       path: {
@@ -12192,7 +12391,7 @@ export interface operations {
       }
     }
   }
-  /** List of offenders matching specified criteria. */
+  /** List of offenders matching specified criteria.<p>This endpoint uses the REPLICA database.</p> */
   getPrisoners_1: {
     parameters: {
       query: {
@@ -12265,7 +12464,7 @@ export interface operations {
       }
     }
   }
-  /** List of offenders matching specified criteria. */
+  /** List of offenders matching specified criteria.<p>This endpoint uses the REPLICA database.</p> */
   getPrisoners: {
     parameters: {
       header: {
@@ -12402,6 +12601,7 @@ export interface operations {
    *   <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
    *   <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
    * </ul>
+   * <p>This endpoint uses the REPLICA database.</p>
    */
   getOffenderSentences: {
     parameters: {
@@ -12439,7 +12639,7 @@ export interface operations {
       }
     }
   }
-  /** Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists. */
+  /** Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists.<p>This endpoint uses the REPLICA database.</p> */
   postOffenderSentences: {
     responses: {
       /** The list of offenders is returned. */
@@ -12455,6 +12655,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getBatchLatestHomeDetentionCurfew: {
     responses: {
       /** List of HDC status information */
@@ -12476,7 +12677,7 @@ export interface operations {
       }
     }
   }
-  /** Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists. */
+  /** Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists.<p>This endpoint uses the REPLICA database.</p> */
   postOffenderSentencesBookings: {
     responses: {
       /** The list of offenders is returned. */
@@ -12579,6 +12780,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getOffenderAssessmentsAssessmentCode: {
     parameters: {
       path: {
@@ -12623,6 +12825,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   postOffenderAssessmentsAssessmentCode: {
     parameters: {
       path: {
@@ -12652,6 +12855,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   postOffenderAssessmentsCsraRatings: {
     responses: {
       /** The current CSRA rating for each offender. */
@@ -12667,6 +12871,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   postOffenderAssessmentsCsraList: {
     responses: {
       /** The CSRA assessment list is returned, 1 per offender. */
@@ -12682,7 +12887,7 @@ export interface operations {
       }
     }
   }
-  /** Categorisation details for all supplied Offenders using SYSTEM access */
+  /** Categorisation details for all supplied Offenders using SYSTEM access<p>This endpoint uses the REPLICA database.</p> */
   getOffenderCategorisationsSystem: {
     parameters: {
       query: {
@@ -12704,6 +12909,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getOffenderCategorisations_1: {
     parameters: {
       path: {
@@ -12726,7 +12932,7 @@ export interface operations {
       }
     }
   }
-  /** Categorisation details for supplied Offenders where agencyId is their create agency and is in the caseload */
+  /** Categorisation details for supplied Offenders where agencyId is their create agency and is in the caseload<p>This endpoint uses the REPLICA database.</p> */
   getOffenderCategorisations: {
     parameters: {
       path: {
@@ -12749,6 +12955,20 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': number[]
+      }
+    }
+  }
+  /** Requires UPDATE_OFFENCE_SCHEDULES role */
+  unlinkOffencesFromSchedules: {
+    responses: {
+      /** Offences unlinked from schedules successfully */
+      200: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffenceToScheduleMappingDto'][]
       }
     }
   }
@@ -12801,6 +13021,20 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['StatuteDto'][]
+      }
+    }
+  }
+  /** Requires UPDATE_OFFENCE_SCHEDULES role */
+  linkOffencesToSchedules: {
+    responses: {
+      /** Offences linked to schedules successfully */
+      201: unknown
+      /** Unrecoverable error occurred whilst processing request. */
+      500: unknown
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffenceToScheduleMappingDto'][]
       }
     }
   }
@@ -12864,8 +13098,6 @@ export interface operations {
         fromDateTime: string
         /** The date for which movements are searched, defaults to today */
         movementDate?: string
-        /** Filter to just movements to or from this agency. */
-        agencyId?: string
         /** movement type codes to filter by, defaults to TRN, REL, ADM */
         movementTypes?: string[]
       }
@@ -13021,7 +13253,7 @@ export interface operations {
       }
     }
   }
-  /** Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists. */
+  /** Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists.<p>This endpoint uses the REPLICA database.</p> */
   postKeyWorkerOffendersAllocationHistory: {
     responses: {
       /** The allocations history list is returned. */
@@ -13168,7 +13400,115 @@ export interface operations {
       }
     }
   }
-  /** Count of case notes */
+  createSentence: {
+    parameters: {
+      path: {
+        /** The required booking id (mandatory) */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** Sentence created. */
+      201: {
+        content: {
+          'application/json': number
+        }
+      }
+      /** Requested resource not found. */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Sentence']
+      }
+    }
+  }
+  createCourtCase: {
+    parameters: {
+      path: {
+        /** The required booking id (mandatory) */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** Court case created. */
+      201: {
+        content: {
+          'application/json': number
+        }
+      }
+      /** Requested resource not found. */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CourtCase']
+      }
+    }
+  }
+  createCharge: {
+    parameters: {
+      path: {
+        /** The required booking id (mandatory) */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** Court case charge created. */
+      201: {
+        content: {
+          'application/json': number
+        }
+      }
+      /** Requested resource not found. */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Charge']
+      }
+    }
+  }
+  createAdjustment: {
+    parameters: {
+      path: {
+        /** The required booking id (mandatory) */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** Sentence created. */
+      201: {
+        content: {
+          'application/json': number
+        }
+      }
+      /** Requested resource not found. */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Adjustment']
+      }
+    }
+  }
+  /** Count of case notes<p>This endpoint uses the REPLICA database.</p> */
   getCaseNoteUsageSummary: {
     parameters: {
       query: {
@@ -13217,7 +13557,7 @@ export interface operations {
       }
     }
   }
-  /** Retrieves list of case notes grouped by type and offender */
+  /** Retrieves list of case notes grouped by type and offender<p>This endpoint uses the REPLICA database.</p> */
   getCaseNoteUsageSummaryByPost: {
     responses: {
       /** The case note usage list is returned. */
@@ -13233,7 +13573,7 @@ export interface operations {
       }
     }
   }
-  /** Count of case notes */
+  /** Count of case notes<p>This endpoint uses the REPLICA database.</p> */
   getCaseNoteStaffUsageSummary: {
     parameters: {
       query: {
@@ -13278,7 +13618,7 @@ export interface operations {
       }
     }
   }
-  /** Retrieves list of case notes grouped by type/sub-type and staff */
+  /** Retrieves list of case notes grouped by type/sub-type and staff<p>This endpoint uses the REPLICA database.</p> */
   getCaseNoteStaffUsageSummaryByPost: {
     responses: {
       /** The case note usage list is returned. */
@@ -13646,6 +13986,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getProvenAdjudicationSummaryForBookings: {
     parameters: {
       query: {
@@ -13685,7 +14026,7 @@ export interface operations {
       }
     }
   }
-  /** Offender detail for offenders */
+  /** Offender detail for offenders<p>This endpoint uses the REPLICA database.</p> */
   getBasicInmateDetailsForOffenders: {
     parameters: {
       query: {
@@ -13725,7 +14066,7 @@ export interface operations {
       }
     }
   }
-  /** Basic offender details by booking ids */
+  /** Basic offender details by booking ids<p>This endpoint uses the REPLICA database.</p> */
   getBasicInmateDetailsByBookingIds: {
     parameters: {
       path: {
@@ -13826,6 +14167,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getAlertsByOffenderNosAtAgency: {
     parameters: {
       path: {
@@ -13931,6 +14273,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getAlertsByOffenderNos: {
     responses: {
       /** OK */
@@ -13946,7 +14289,7 @@ export interface operations {
       }
     }
   }
-  /** Post version to allow specifying a large number of bookingIds. */
+  /** Post version to allow specifying a large number of bookingIds.<p>This endpoint uses the REPLICA database.</p> */
   getMainOffence: {
     responses: {
       /** OK */
@@ -14189,7 +14532,7 @@ export interface operations {
       }
     }
   }
-  /** returns list slots with capacity details */
+  /** returns list slots with capacity details<p>This endpoint uses the REPLICA database.</p> */
   getVisitSlotsWithCapacity: {
     parameters: {
       path: {
@@ -14230,7 +14573,7 @@ export interface operations {
       }
     }
   }
-  /** All transaction amounts are represented as pence values. */
+  /** All transaction amounts are represented as pence values.<p>This endpoint uses the REPLICA database.</p> */
   getTransactionByClientUniqueRef: {
     parameters: {
       header: {
@@ -14273,7 +14616,7 @@ export interface operations {
       }
     }
   }
-  /** Gets every hold on an offender’s account or just the hold identified by the client_unique_ref */
+  /** Gets every hold on an offender’s account or just the hold identified by the client_unique_ref<p>This endpoint uses the REPLICA database.</p> */
   getHolds: {
     parameters: {
       header: {
@@ -14318,7 +14661,7 @@ export interface operations {
       }
     }
   }
-  /** Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>All balance values are represented as pence values. */
+  /** Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>All balance values are represented as pence values.<p>This endpoint uses the REPLICA database.</p> */
   getAccountBalance: {
     parameters: {
       path: {
@@ -14355,7 +14698,7 @@ export interface operations {
       }
     }
   }
-  /** Transactions are returned in NOMIS ordee (Descending date followed by id).<br/>All transaction amounts are represented as pence values. */
+  /** Transactions are returned in NOMIS ordee (Descending date followed by id).<br/>All transaction amounts are represented as pence values.<p>This endpoint uses the REPLICA database.</p> */
   getAccountTransactions: {
     parameters: {
       path: {
@@ -14400,6 +14743,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getLiveRoll: {
     parameters: {
       path: {
@@ -14428,7 +14772,7 @@ export interface operations {
       }
     }
   }
-  /** returns list of reason if unavailable date */
+  /** returns list of reason if unavailable date<p>This endpoint uses the REPLICA database.</p> */
   getVisitUnavailability: {
     parameters: {
       path: {
@@ -14469,7 +14813,7 @@ export interface operations {
       }
     }
   }
-  /** returns list of contacts */
+  /** returns list of contacts<p>This endpoint uses the REPLICA database.</p> */
   getVisitContactList: {
     parameters: {
       path: {
@@ -14504,7 +14848,7 @@ export interface operations {
       }
     }
   }
-  /** returns list of dates */
+  /** returns list of dates<p>This endpoint uses the REPLICA database.</p> */
   getVisitAvailableDates: {
     parameters: {
       path: {
@@ -14545,6 +14889,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getOffender: {
     parameters: {
       path: {
@@ -14579,7 +14924,7 @@ export interface operations {
       }
     }
   }
-  /** Returns the PSS detail information for the specified offender including personal data, warnings, sentence details and location information.<br/><ul><li>The 'type' field is always OFFENDER_DETAILS_REQUEST</li><br/><li>The field 'offender_details_request' contains a JSON block of data containing the offender data.</li></ul>The format of 'offender_details_request' is not specified here. */
+  /** Returns the PSS detail information for the specified offender including personal data, warnings, sentence details and location information.<br/><ul><li>The 'type' field is always OFFENDER_DETAILS_REQUEST</li><br/><li>The field 'offender_details_request' contains a JSON block of data containing the offender data.</li></ul>The format of 'offender_details_request' is not specified here.<p>This endpoint uses the REPLICA database.</p> */
   getOffenderPssDetail: {
     parameters: {
       path: {
@@ -14614,7 +14959,7 @@ export interface operations {
       }
     }
   }
-  /** The levels shows the type of each level of the location address as defined on the Agency Details tab in Maintain Agency Locations screen (OUMAGLOC).<br/><br/>Since the offender's location can change often and is fairly sensitive (and therefore should not automatically be exposed to all services), this information is not included in the general offender information call. */
+  /** The levels shows the type of each level of the location address as defined on the Agency Details tab in Maintain Agency Locations screen (OUMAGLOC).<br/><br/>Since the offender's location can change often and is fairly sensitive (and therefore should not automatically be exposed to all services), this information is not included in the general offender information call.<p>This endpoint uses the REPLICA database.</p> */
   getLatestBookingLocation: {
     parameters: {
       path: {
@@ -14649,7 +14994,7 @@ export interface operations {
       }
     }
   }
-  /** Returns a 480wx600h JPEG photograph of the offender. The data is base64 encoded within the image key. */
+  /** Returns a 480wx600h JPEG photograph of the offender. The data is base64 encoded within the image key.<p>This endpoint uses the REPLICA database.</p> */
   getOffenderImage: {
     parameters: {
       path: {
@@ -14684,7 +15029,7 @@ export interface operations {
       }
     }
   }
-  /** Returns all the bookings, the legal cases for each booking and charges within each legal case.<br/>The ordering is as follows:<ul><li><strong>bookings</strong>: Current or latest booking first, others in descending order of booking date</li><li><strong>legal_cases</strong>: Active cases followed by inactive cases, further ordered by begin_date, latest first</li><li><strong>charges</strong>: Most serious active charge first, then remaining active charges, followed by inactive charges</li></ul> */
+  /** Returns all the bookings, the legal cases for each booking and charges within each legal case.<br/>The ordering is as follows:<ul><li><strong>bookings</strong>: Current or latest booking first, others in descending order of booking date</li><li><strong>legal_cases</strong>: Active cases followed by inactive cases, further ordered by begin_date, latest first</li><li><strong>charges</strong>: Most serious active charge first, then remaining active charges, followed by inactive charges</li></ul><p>This endpoint uses the REPLICA database.</p> */
   getBookings: {
     parameters: {
       path: {
@@ -14719,7 +15064,7 @@ export interface operations {
       }
     }
   }
-  /** Returns all active alerts for the specified offender or those that meet the optional criteria. Active alerts are listed first, followed by inactive alerts, both sorted by ascending order of alert date.<br/><ul><li>if alert_type is specified then only alerts of that type are returned</li><li>if modified_since is specified then only those alerts created or modified on or after the specified date time. The following formats are supported: 2018-01-10, 2018-01-10 03:34, 2018-01-10 03:34:12, 2018-01-10 03:34:12.123</li><li>If include_inactive=true is specified then inactive alerts are also returned.</li></ul> */
+  /** Returns all active alerts for the specified offender or those that meet the optional criteria. Active alerts are listed first, followed by inactive alerts, both sorted by ascending order of alert date.<br/><ul><li>if alert_type is specified then only alerts of that type are returned</li><li>if modified_since is specified then only those alerts created or modified on or after the specified date time. The following formats are supported: 2018-01-10, 2018-01-10 03:34, 2018-01-10 03:34:12, 2018-01-10 03:34:12.123</li><li>If include_inactive=true is specified then inactive alerts are also returned.</li></ul><p>This endpoint uses the REPLICA database.</p> */
   getAlerts: {
     parameters: {
       path: {
@@ -14762,7 +15107,7 @@ export interface operations {
       }
     }
   }
-  /** Returns all events that required to update the prisoner self service application. Currently these are:<ul><li>ALERT</li><li>DISCHARGE</li><li>IEP_CHANGED</li><li>INTERNAL_LOCATION_CHANGED</li><li>NOMS_ID_CHANGED</li><li>PERSONAL_DETAILS_CHANGED</li><li>PERSONAL_OFFICER_CHANGED</li><li>RECEPTION</li><li>SENTENCE_INFORMATION_CHANGED</li><li>BALANCE_UPDATE</li></ul> */
+  /** Returns all events that required to update the prisoner self service application. Currently these are:<ul><li>ALERT</li><li>DISCHARGE</li><li>IEP_CHANGED</li><li>INTERNAL_LOCATION_CHANGED</li><li>NOMS_ID_CHANGED</li><li>PERSONAL_DETAILS_CHANGED</li><li>PERSONAL_OFFICER_CHANGED</li><li>RECEPTION</li><li>SENTENCE_INFORMATION_CHANGED</li><li>BALANCE_UPDATE</li></ul><p>This endpoint uses the REPLICA database.</p> */
   getOffenderEvents: {
     parameters: {
       query: {
@@ -14805,7 +15150,7 @@ export interface operations {
       }
     }
   }
-  /** offender id will be returned if offender is found */
+  /** offender id will be returned if offender is found<p>This endpoint uses the REPLICA database.</p> */
   getActiveOffender: {
     parameters: {
       query: {
@@ -14842,7 +15187,7 @@ export interface operations {
       }
     }
   }
-  /** User detail. */
+  /** User detail.<p>This endpoint uses the REPLICA database.</p> */
   getUserDetails: {
     parameters: {
       path: {
@@ -14941,7 +15286,7 @@ export interface operations {
       }
     }
   }
-  /** List of locations accessible to current user. */
+  /** List of locations accessible to current user.<p>This endpoint uses the REPLICA database.</p> */
   getMyLocations: {
     responses: {
       /** OK */
@@ -14972,14 +15317,6 @@ export interface operations {
   }
   /** List of all case note types (with sub-types) accessible to current user (and based on working caseload). */
   getMyCaseNoteTypes: {
-    parameters: {
-      header: {
-        /** Comma separated list of one or more of the following fields - <b>code, activeFlag, description</b> */
-        'Sort-Fields'?: string
-        /** Sort order (ASC or DESC) - defaults to ASC. */
-        'Sort-Order'?: 'ASC' | 'DESC'
-      }
-    }
     responses: {
       /** OK */
       200: {
@@ -15007,7 +15344,7 @@ export interface operations {
       }
     }
   }
-  /** List of caseloads accessible to current user. */
+  /** List of caseloads accessible to current user.<p>This endpoint uses the REPLICA database.</p> */
   getMyCaseLoads: {
     parameters: {
       query: {
@@ -15184,7 +15521,7 @@ export interface operations {
       }
     }
   }
-  /** Get staff members within agency who are currently assigned the specified role. */
+  /** Get staff members within agency who are currently assigned the specified role.<p>This endpoint uses the REPLICA database.</p> */
   getStaffByAgencyRole: {
     parameters: {
       path: {
@@ -15239,7 +15576,7 @@ export interface operations {
       }
     }
   }
-  /** Get all Prisoner activities for given date range */
+  /** Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p> */
   getSuspendedActivitiesAtAllLocationsByDateRange: {
     parameters: {
       path: {
@@ -15282,7 +15619,7 @@ export interface operations {
       }
     }
   }
-  /** Get all Prisoner events for given date at location. */
+  /** Get all Prisoner events for given date at location.<p>This endpoint uses the REPLICA database.</p> */
   getLocationEvents: {
     parameters: {
       path: {
@@ -15333,7 +15670,7 @@ export interface operations {
       }
     }
   }
-  /** Get all Prisoner activities for given date range */
+  /** Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p> */
   getActivitiesAtAllLocationsByDateRange: {
     parameters: {
       path: {
@@ -15384,7 +15721,7 @@ export interface operations {
       }
     }
   }
-  /** Get all Prisoner activities for given date at location. */
+  /** Get all Prisoner activities for given date at location.<p>This endpoint uses the REPLICA database.</p> */
   getActivitiesAtLocation: {
     parameters: {
       path: {
@@ -15455,7 +15792,7 @@ export interface operations {
       }
     }
   }
-  /** Get possible reason codes for created event. */
+  /** Get possible reason codes for created event.<p>This endpoint uses the REPLICA database.</p> */
   getScheduleReasons: {
     parameters: {
       query: {
@@ -15490,7 +15827,7 @@ export interface operations {
       }
     }
   }
-  /** A reference domain can be used to retrieve all codes related to that domain. Ordered by domain ascending */
+  /** A reference domain can be used to retrieve all codes related to that domain. Ordered by domain ascending<p>This endpoint uses the REPLICA database.</p> */
   getAllReferenceDomains: {
     responses: {
       /** OK */
@@ -15519,7 +15856,7 @@ export interface operations {
       }
     }
   }
-  /** List of reference codes for reference domain paged. Please note this API has the incorrect name so the non-paged /domains/{domain}/codes version is preferred. */
+  /** List of reference codes for reference domain paged. Please note this API has the incorrect name so the non-paged /domains/{domain}/codes version is preferred.<p>This endpoint uses the REPLICA database.</p> */
   getReferenceCodesByDomain: {
     parameters: {
       path: {
@@ -15568,7 +15905,7 @@ export interface operations {
       }
     }
   }
-  /** Wild card can be specified */
+  /** Wild card can be specified<p>This endpoint uses the REPLICA database.</p> */
   getReferenceCodeByDomainAndDescription: {
     parameters: {
       path: {
@@ -15609,7 +15946,7 @@ export interface operations {
       }
     }
   }
-  /** List of reference codes for reference domain ordered by code ascending. The list is an un-paged flat list */
+  /** List of reference codes for reference domain ordered by code ascending. The list is an un-paged flat list<p>This endpoint uses the REPLICA database.</p> */
   getReferenceCodesByDomain_1: {
     parameters: {
       path: {
@@ -15644,7 +15981,7 @@ export interface operations {
       }
     }
   }
-  /** List of all used case note types (with sub-types). */
+  /** List of all used case note types (with sub-types).<p>This endpoint uses the REPLICA database.</p> */
   getCaseNoteTypes: {
     responses: {
       /** OK */
@@ -15673,7 +16010,7 @@ export interface operations {
       }
     }
   }
-  /** List of case note source codes. */
+  /** List of case note source codes.<p>This endpoint uses the REPLICA database.</p> */
   getCaseNoteSources: {
     parameters: {
       header: {
@@ -15714,7 +16051,7 @@ export interface operations {
       }
     }
   }
-  /** List of alert types (with alert codes). */
+  /** List of alert types (with alert codes).<p>This endpoint uses the REPLICA database.</p> */
   getAlertTypes: {
     parameters: {
       header: {
@@ -16107,7 +16444,7 @@ export interface operations {
       }
     }
   }
-  /** Transactions are returned in order of entryDate descending and sequence ascending).<br/>All transaction amounts are represented as pence values. */
+  /** Transactions are returned in order of entryDate descending and sequence ascending).<br/>All transaction amounts are represented as pence values.<p>This endpoint uses the REPLICA database.</p> */
   getTransactionsHistory: {
     parameters: {
       path: {
@@ -16527,7 +16864,7 @@ export interface operations {
       }
     }
   }
-  /** Retrieve an offenders case notes for latest booking */
+  /** Retrieve an offenders case notes for latest booking<p>This endpoint uses the REPLICA database.</p> */
   getOffenderCaseNotes: {
     parameters: {
       path: {
@@ -16862,7 +17199,7 @@ export interface operations {
       }
     }
   }
-  /** This query is slow and can take several minutes */
+  /** This query is slow and can take several minutes<p>This endpoint uses the REPLICA database.</p> */
   getAlertCandidates: {
     parameters: {
       query: {
@@ -16885,7 +17222,7 @@ export interface operations {
       }
     }
   }
-  /** Version 1 */
+  /** Version 1<p>This endpoint uses the REPLICA database.</p> */
   getOffenderSentencesHomeDetentionCurfewCandidates: {
     responses: {
       /** Sentence details for offenders who are candidates for Home Detention Curfew. */
@@ -17142,6 +17479,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getAssessments: {
     parameters: {
       query: {
@@ -17170,6 +17508,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getHistoricalAttendances: {
     parameters: {
       path: {
@@ -17200,7 +17539,7 @@ export interface operations {
       }
     }
   }
-  /** This includes suspended activities */
+  /** This includes suspended activities<p>This endpoint uses the REPLICA database.</p> */
   getRecentStartedActivities: {
     parameters: {
       path: {
@@ -17396,7 +17735,7 @@ export interface operations {
       }
     }
   }
-  /** Offenders who entered a prison during a time period. */
+  /** Offenders who entered a prison during a time period.<p>This endpoint uses the REPLICA database.</p> */
   getMovementsIn: {
     parameters: {
       path: {
@@ -17515,6 +17854,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getUpcomingCourtAppearances: {
     responses: {
       /** OK */
@@ -17525,7 +17865,7 @@ export interface operations {
       }
     }
   }
-  /** Planned movements are recorded as events of type court, release or transfers/appointments. When these events are started they are actualised as external movements. */
+  /** Planned movements are recorded as events of type court, release or transfers/appointments. When these events are started they are actualised as external movements.<p>This endpoint uses the REPLICA database.</p> */
   getTransfers: {
     parameters: {
       query: {
@@ -17578,7 +17918,7 @@ export interface operations {
       }
     }
   }
-  /** Current establishment rollcount numbers. */
+  /** Current establishment rollcount numbers.<p>This endpoint uses the REPLICA database.</p> */
   getRollcount: {
     parameters: {
       path: {
@@ -17617,7 +17957,7 @@ export interface operations {
       }
     }
   }
-  /** Rollcount movement numbers. */
+  /** Rollcount movement numbers.<p>This endpoint uses the REPLICA database.</p> */
   getRollcountMovements: {
     parameters: {
       path: {
@@ -17723,7 +18063,7 @@ export interface operations {
       }
     }
   }
-  /** Information on offenders currently out. */
+  /** Information on offenders currently out.<p>This endpoint uses the REPLICA database.</p> */
   getOffendersCurrentlyOut: {
     parameters: {
       path: {
@@ -17866,7 +18206,7 @@ export interface operations {
       }
     }
   }
-  /** List of offenders at location. */
+  /** List of offenders at location.<p>This endpoint uses the REPLICA database.</p> */
   getOffendersAtLocation: {
     parameters: {
       path: {
@@ -17911,7 +18251,7 @@ export interface operations {
       }
     }
   }
-  /** List of offenders at location. */
+  /** List of offenders at location.<p>This endpoint uses the REPLICA database.</p> */
   getOffendersAtLocationDescription: {
     parameters: {
       path: {
@@ -18041,7 +18381,7 @@ export interface operations {
       }
     }
   }
-  /** Key workers available for allocation at specified agency. */
+  /** Key workers available for allocation at specified agency.<p>This endpoint uses the REPLICA database.</p> */
   getAvailableKeyworkers: {
     parameters: {
       path: {
@@ -18254,7 +18594,7 @@ export interface operations {
       }
     }
   }
-  /** Empty list will be returned for no matches */
+  /** Empty list will be returned for no matches<p>This endpoint uses the REPLICA database.</p> */
   getOffenderIdentifiersByTypeAndValue: {
     parameters: {
       path: {
@@ -18392,6 +18732,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getBedAssignmentsHistory: {
     parameters: {
       path: {
@@ -18466,6 +18807,7 @@ export interface operations {
       }
     }
   }
+  /** <p>This endpoint uses the REPLICA database.</p> */
   getBedAssignmentsHistoryByDateForAgency: {
     parameters: {
       path: {
@@ -18668,7 +19010,7 @@ export interface operations {
       }
     }
   }
-  /** Will return whether there are any visits and also the date of the next scheduled visit */
+  /** Will return whether there are any visits and also the date of the next scheduled visit<p>This endpoint uses the REPLICA database.</p> */
   getBookingVisitsSummary: {
     parameters: {
       path: {
@@ -18738,7 +19080,7 @@ export interface operations {
       }
     }
   }
-  /** The next visit for the offender. Will return 200 with no body if no next visit is scheduled */
+  /** The next visit for the offender. Will return 200 with no body if no next visit is scheduled<p>This endpoint uses the REPLICA database.</p> */
   getBookingVisitsNext: {
     parameters: {
       path: {
@@ -18777,7 +19119,7 @@ export interface operations {
       }
     }
   }
-  /** visits with visitor list for offender. */
+  /** visits with visitor list for offender.<p>This endpoint uses the REPLICA database.</p> */
   getBookingVisitsWithVisitor: {
     parameters: {
       path: {
@@ -18835,6 +19177,7 @@ export interface operations {
    *   <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
    *   <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
    * </ul>
+   * <p>This endpoint uses the REPLICA database.</p>
    */
   getBookingSentenceDetail: {
     parameters: {
@@ -18921,40 +19264,6 @@ export interface operations {
       200: {
         content: {
           'application/json': components['schemas']['SecondaryLanguage'][]
-        }
-      }
-      /** Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getReturnToCustodyDate: {
-    parameters: {
-      path: {
-        /** The offender booking linked to the return to custody date. */
-        bookingId: number
-      }
-    }
-    responses: {
-      /** OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['ReturnToCustodyDate']
         }
       }
       /** Invalid request. */
@@ -19385,7 +19694,7 @@ export interface operations {
       }
     }
   }
-  /** Image detail (without image data). */
+  /** Image detail (without image data).<p>This endpoint uses the REPLICA database.</p> */
   getMainImageForBookings: {
     parameters: {
       path: {
@@ -19420,7 +19729,7 @@ export interface operations {
       }
     }
   }
-  /** Image data (as bytes). */
+  /** Image data (as bytes).<p>This endpoint uses the REPLICA database.</p> */
   getMainBookingImageData: {
     parameters: {
       path: {
@@ -19479,6 +19788,40 @@ export interface operations {
         }
       }
       /** Requested resource not found. */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** Unrecoverable error occurred whilst processing request. */
+      500: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getFixedTermRecallDetails: {
+    parameters: {
+      path: {
+        /** The offenders bookingID */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['FixedTermRecallDetails']
+        }
+      }
+      /** Invalid request. */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** No Fixed Term Recall exists for this booking */
       404: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
@@ -19752,7 +20095,7 @@ export interface operations {
       }
     }
   }
-  /** Default sort order is by assignment date descending */
+  /** Default sort order is by assignment date descending<p>This endpoint uses the REPLICA database.</p> */
   getBedAssignmentsHistory_1: {
     parameters: {
       path: {
@@ -19793,7 +20136,7 @@ export interface operations {
       }
     }
   }
-  /** Offender case notes. */
+  /** Offender case notes.<p>This endpoint uses the REPLICA database.</p> */
   getOffenderCaseNotes_1: {
     parameters: {
       path: {
@@ -19846,7 +20189,7 @@ export interface operations {
       }
     }
   }
-  /** Count of case notes */
+  /** Count of case notes<p>This endpoint uses the REPLICA database.</p> */
   getCaseNoteCount: {
     parameters: {
       path: {
@@ -20314,7 +20657,7 @@ export interface operations {
       }
     }
   }
-  /** All scheduled activities for offender. */
+  /** All scheduled activities for offender.<p>This endpoint uses the REPLICA database.</p> */
   getBookingActivities: {
     parameters: {
       path: {
@@ -20365,7 +20708,7 @@ export interface operations {
       }
     }
   }
-  /** Today's scheduled activities for offender. */
+  /** Today's scheduled activities for offender.<p>This endpoint uses the REPLICA database.</p> */
   getBookingActivitiesForToday: {
     parameters: {
       path: {
@@ -20492,7 +20835,7 @@ export interface operations {
       }
     }
   }
-  /** Balances visit orders and privilege visit orders for offender. */
+  /** Balances visit orders and privilege visit orders for offender.<p>This endpoint uses the REPLICA database.</p> */
   getBookingVisitBalances: {
     parameters: {
       path: {
@@ -20531,7 +20874,7 @@ export interface operations {
       }
     }
   }
-  /** All Offences recorded for this offender. */
+  /** All Offences recorded for this offender.<p>This endpoint uses the REPLICA database.</p> */
   getOffenceHistory: {
     parameters: {
       path: {
@@ -20684,7 +21027,7 @@ export interface operations {
       404: unknown
     }
   }
-  /** List of active internal locations for agency. */
+  /** List of active internal locations for agency.<p>This endpoint uses the REPLICA database.</p> */
   getAgencyLocations: {
     parameters: {
       path: {
@@ -20840,7 +21183,7 @@ export interface operations {
       }
     }
   }
-  /** List of locations for agency where events (appointments, visits, activities) are being held. */
+  /** List of locations for agency where events (appointments, visits, activities) are being held.<p>This endpoint uses the REPLICA database.</p> */
   getAgencyEventLocationsBooked: {
     parameters: {
       path: {
@@ -20914,7 +21257,7 @@ export interface operations {
       }
     }
   }
-  /** List of active cells with capacity for agency. */
+  /** List of active cells with capacity for agency.<p>This endpoint uses the REPLICA database.</p> */
   getAgencyActiveCellsWithCapacity: {
     parameters: {
       path: {
@@ -20999,7 +21342,7 @@ export interface operations {
       }
     }
   }
-  /** List of prison contact details. */
+  /** List of prison contact details.<p>This endpoint uses the REPLICA database.</p> */
   getPrisonContactDetailList: {
     responses: {
       /** OK */

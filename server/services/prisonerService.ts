@@ -3,13 +3,13 @@ import type HmppsAuthClient from '../data/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
 import {
   PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiOffenderCalculatedKeyDates,
   PrisonApiOffenderFinePayment,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
   PrisonApiUserCaseloads,
-  PrisonApiOffenderCalculatedKeyDates,
 } from '../@types/prisonApi/prisonClientTypes'
 import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
 import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
@@ -116,7 +116,8 @@ export default class PrisonerService {
   }
 
   async getReturnToCustodyDate(bookingId: number, token: string): Promise<PrisonApiReturnToCustodyDate> {
-    return new PrisonApiClient(token).getReturnToCustodyDate(bookingId)
+    const { returnToCustodyDate } = await new PrisonApiClient(token).getFixedTermRecallDetails(bookingId)
+    return { bookingId, returnToCustodyDate } as PrisonApiReturnToCustodyDate
   }
 
   async getOffenderFinePayments(bookingId: number, token: string): Promise<PrisonApiOffenderFinePayment[]> {
