@@ -6,7 +6,7 @@ import type {
   PrisonApiOffenderFinePayment,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
-  PrisonApiReturnToCustodyDate,
+  PrisonApiFixedTermRecallDetails,
   PrisonApiSentenceAdjustmentDetail,
   PrisonApiUserCaseloads,
   PrisonApiOffenderCalculatedKeyDates,
@@ -58,10 +58,10 @@ export default class PrisonApiClient {
     }) as Promise<PrisonApiBookingAndSentenceAdjustments>
   }
 
-  async getReturnToCustodyDate(bookingId: number): Promise<PrisonApiReturnToCustodyDate> {
+  async getFixedTermRecallDetails(bookingId: number): Promise<PrisonApiFixedTermRecallDetails> {
     return this.restClient.get({
-      path: `/api/bookings/${bookingId}/return-to-custody`,
-    }) as Promise<PrisonApiReturnToCustodyDate>
+      path: `/api/bookings/${bookingId}/fixed-term-recall`,
+    }) as Promise<PrisonApiFixedTermRecallDetails>
   }
 
   async getOffenderKeyDates(bookingId: number): Promise<PrisonApiOffenderCalculatedKeyDates> {

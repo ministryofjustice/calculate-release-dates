@@ -21,7 +21,14 @@ export type PrisonApiOffenderCalculatedKeyDates = PrisonApiOffenderKeyDates & {
   reasonCode: string
 }
 // TODO replace with generated definition when prison-api is fixed.
+//  This was being returned by two apis (prison-api and crd-api) - have refactored prison-api call to use PrisonApiFixedTermRecallDetails
 export type PrisonApiReturnToCustodyDate = {
   bookingId: number
   returnToCustodyDate: string
+}
+
+export type PrisonApiFixedTermRecallDetails = {
+  bookingId: number
+  returnToCustodyDate: string
+  recallLength: number
 }
