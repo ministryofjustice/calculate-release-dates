@@ -64,7 +64,12 @@ export default class OneThousandCalculationsService {
           ? await this.prisonerService.getOffenderFinePayments(bookingId, token)
           : null
         try {
-          calc = await this.calculateReleaseDatesService.calculateTestReleaseDates(username, nomsId, null, token)
+          calc = await this.calculateReleaseDatesService.calculateTestReleaseDates(
+            username,
+            nomsId,
+            { calculateErsed: keyDates.earlyRemovalSchemeEligibilityDate != null, sentenceCalculationUserInputs: null },
+            token
+          )
           try {
             //For now only fetch breakdown if we calculate a PED. We may want to capture the breakdown for more calculations later.
             if (calc.dates.PED) {
@@ -210,6 +215,7 @@ export default class OneThousandCalculationsService {
       NOMIS_PRRD_OVERRIDE: nomisDates?.postRecallReleaseOverrideDate,
       ESED: errorText || calc?.dates?.ESED,
       NOMIS_ESED: nomisDates?.effectiveSentenceEndDate,
+      ERSED: errorText || calc?.dates?.ERSED,
       NOMIS_ERSED: keyDates?.earlyRemovalSchemeEligibilityDate,
       NOMIS_ROTL: keyDates?.releaseOnTemporaryLicenceDate,
       COMMENT: keyDates?.comment,
