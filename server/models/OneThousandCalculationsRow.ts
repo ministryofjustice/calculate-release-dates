@@ -46,6 +46,7 @@ type OneThousandCalculationsRow = {
   NOMIS_PRRD_OVERRIDE: string
   ESED: string
   NOMIS_ESED: string
+  ERSED: string
   NOMIS_ERSED: string
   NOMIS_ROTL: string
   COMMENT: string

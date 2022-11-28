@@ -233,6 +233,7 @@ export interface components {
       userChoice: boolean
     }
     CalculationUserInputs: {
+      calculateErsed: boolean
       sentenceCalculationUserInputs: components['schemas']['CalculationSentenceUserInput'][]
     }
     /** @description Validation message details */
