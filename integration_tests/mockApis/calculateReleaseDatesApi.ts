@@ -52,7 +52,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: `/calculate-release-dates/calculation/A1234AB/confirm/123`,
+        urlPattern: `/calculate-release-dates/calculation/confirm/123`,
       },
       response: {
         status: 200,
@@ -75,7 +75,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: `/calculate-release-dates/calculation/A1234AB/confirm/98`,
+        urlPattern: `/calculate-release-dates/calculation/confirm/98`,
       },
       response: {
         status: 412,
@@ -87,7 +87,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: `/calculate-release-dates/calculation/A1234AB/confirm/99`,
+        urlPattern: `/calculate-release-dates/calculation/confirm/99`,
       },
       response: {
         status: 500,
@@ -133,7 +133,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: `/calculate-release-dates/calculation/A1234AB/validate`,
+        urlPattern: `/calculate-release-dates/validation/A1234AB/full-validation`,
       },
       response: {
         status: 200,

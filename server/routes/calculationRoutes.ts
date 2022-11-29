@@ -110,7 +110,6 @@ export default class CalculationRoutes {
     try {
       const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
         username,
-        nomsId,
         calculationRequestId,
         token,
         {

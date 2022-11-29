@@ -139,17 +139,11 @@ describe('Calculate release dates service tests', () => {
   })
 
   it('Test confirming the results of a calculation', async () => {
-    fakeApi.post(`/calculation/${prisonerId}/confirm/${calculationRequestId}`).reply(200, calculationResults)
+    fakeApi.post(`/calculation/confirm/${calculationRequestId}`).reply(200, calculationResults)
 
-    const result = await calculateReleaseDatesService.confirmCalculation(
-      'user',
-      prisonerId,
-      calculationRequestId,
-      token,
-      {
-        breakdownHtml: '',
-      }
-    )
+    const result = await calculateReleaseDatesService.confirmCalculation('user', calculationRequestId, token, {
+      breakdownHtml: '',
+    })
 
     expect(result).toEqual(calculationResults)
   })
@@ -268,7 +262,7 @@ describe('Calculate release dates service tests', () => {
 
   describe('Validation tests', () => {
     it('Test validation passes', async () => {
-      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, validResult)
+      fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, validResult)
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
       expect(result).toEqual({
         messages: [],
@@ -276,7 +270,7 @@ describe('Calculate release dates service tests', () => {
     })
 
     it('Test for validation type errors', async () => {
-      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, invalidValidationResult)
+      fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, invalidValidationResult)
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
@@ -286,7 +280,7 @@ describe('Calculate release dates service tests', () => {
       })
     })
     it('Test for unsupported sentences', async () => {
-      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, unsupportedValidationResult)
+      fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, unsupportedValidationResult)
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
@@ -297,7 +291,7 @@ describe('Calculate release dates service tests', () => {
     })
 
     it('Test for unsupported calculation', async () => {
-      fakeApi.post(`/calculation/${prisonerId}/validate`).reply(200, unsupportedCalculationResult)
+      fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, unsupportedCalculationResult)
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
