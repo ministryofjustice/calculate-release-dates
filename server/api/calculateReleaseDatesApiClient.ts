@@ -60,13 +60,9 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<CalculationBreakdown>
   }
 
-  confirmCalculation(
-    prisonerId: string,
-    calculationRequestId: number,
-    body: CalculationFragments
-  ): Promise<BookingCalculation> {
+  confirmCalculation(calculationRequestId: number, body: CalculationFragments): Promise<BookingCalculation> {
     return this.restClient.post({
-      path: `/calculation/${prisonerId}/confirm/${calculationRequestId}`,
+      path: `/calculation/confirm/${calculationRequestId}`,
       data: body,
     }) as Promise<BookingCalculation>
   }
@@ -81,7 +77,7 @@ export default class CalculateReleaseDatesApiClient {
 
   validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessage[]> {
     return this.restClient.post({
-      path: `/calculation/${prisonerId}/validate`,
+      path: `/validation/${prisonerId}/full-validation`,
       data: userInput || null,
     }) as Promise<ValidationMessage[]>
   }

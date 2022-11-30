@@ -237,12 +237,11 @@ export default class CalculateReleaseDatesService {
 
   async confirmCalculation(
     username: string,
-    prisonerId: string,
     calculationRequestId: number,
     token: string,
     body: CalculationFragments
   ): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).confirmCalculation(prisonerId, calculationRequestId, body)
+    return new CalculateReleaseDatesApiClient(token).confirmCalculation(calculationRequestId, body)
   }
 
   async getWeekendAdjustments(
