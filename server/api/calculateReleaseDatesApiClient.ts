@@ -4,6 +4,7 @@ import {
   BookingCalculation,
   CalculationBreakdown,
   CalculationFragments,
+  CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
   SentenceDiagram,
@@ -41,11 +42,11 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<BookingCalculation>
   }
 
-  calculateTestReleaseDates(prisonerId: string, userInput: CalculationUserInputs): Promise<BookingCalculation> {
+  calculateTestReleaseDates(prisonerId: string, userInput: CalculationUserInputs): Promise<CalculationResults> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}/test`,
       data: userInput || null,
-    }) as Promise<BookingCalculation>
+    }) as Promise<CalculationResults>
   }
 
   getCalculationResults(calculationRequestId: number): Promise<BookingCalculation> {
