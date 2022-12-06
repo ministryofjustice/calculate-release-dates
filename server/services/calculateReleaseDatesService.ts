@@ -3,6 +3,7 @@ import {
   BookingCalculation,
   CalculationBreakdown,
   CalculationFragments,
+  CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
   ReleaseDateCalculationBreakdown,
@@ -32,7 +33,7 @@ export default class CalculateReleaseDatesService {
     prisonerId: string,
     userInput: CalculationUserInputs,
     token: string
-  ): Promise<BookingCalculation> {
+  ): Promise<CalculationResults> {
     return new CalculateReleaseDatesApiClient(token).calculateTestReleaseDates(prisonerId, userInput)
   }
 

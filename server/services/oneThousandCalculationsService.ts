@@ -6,12 +6,12 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   PrisonApiBookingAndSentenceAdjustments,
+  PrisonApiOffenderCalculatedKeyDates,
   PrisonApiOffenderFinePayment,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
-  PrisonApiOffenderCalculatedKeyDates,
 } from '../@types/prisonApi/prisonClientTypes'
 import OneThousandCalculationsRow from '../models/OneThousandCalculationsRow'
 import SentenceTypes from '../models/SentenceTypes'
@@ -34,6 +34,7 @@ export default class OneThousandCalculationsService {
     const csvData: OneThousandCalculationsRow[] = []
 
     // This is just temporary code therefore the iterative loop rather than an async approach (was easier to develop and easier to debug)
+    // This temporary code and test aid has become a permanent fixture! TODO refactor to coding standards
     for (const nomsId of nomsIds) {
       let prisonDetails,
         bookingId,
@@ -64,12 +65,38 @@ export default class OneThousandCalculationsService {
           ? await this.prisonerService.getOffenderFinePayments(bookingId, token)
           : null
         try {
-          calc = await this.calculateReleaseDatesService.calculateTestReleaseDates(
-            username,
-            nomsId,
-            { calculateErsed: keyDates.earlyRemovalSchemeEligibilityDate != null, sentenceCalculationUserInputs: null },
-            token
-          )
+          const { calculatedReleaseDates: calc, validationMessages } =
+            await this.calculateReleaseDatesService.calculateTestReleaseDates(
+              username,
+              nomsId,
+              {
+                calculateErsed: keyDates.earlyRemovalSchemeEligibilityDate != null,
+                sentenceCalculationUserInputs: null,
+              },
+              token
+            )
+          if (validationMessages.length > 0) {
+            const message = validationMessages
+              .map(i => i.message)
+              .reduce((prev, current) => prev + current + '\r\n', '')
+            csvData.push(
+              this.addRow(
+                nomsId,
+                prisonDetails,
+                calc,
+                nomisDates,
+                sentenceAndOffences,
+                adjustments,
+                returnToCustody,
+                finePayments,
+                keyDates,
+                breakdown,
+                { message },
+                'Validation Error'
+              )
+            )
+            continue
+          }
           try {
             //For now only fetch breakdown if we calculate a PED. We may want to capture the breakdown for more calculations later.
             if (calc.dates.PED) {
@@ -94,41 +121,22 @@ export default class OneThousandCalculationsService {
             )
           )
         } catch (ex) {
-          if (ex?.status === 422) {
-            csvData.push(
-              this.addRow(
-                nomsId,
-                prisonDetails,
-                calc,
-                nomisDates,
-                sentenceAndOffences,
-                adjustments,
-                returnToCustody,
-                finePayments,
-                keyDates,
-                breakdown,
-                ex,
-                'Validation Error'
-              )
+          csvData.push(
+            this.addRow(
+              nomsId,
+              prisonDetails,
+              calc,
+              nomisDates,
+              sentenceAndOffences,
+              adjustments,
+              returnToCustody,
+              finePayments,
+              keyDates,
+              breakdown,
+              ex,
+              'Server error'
             )
-          } else {
-            csvData.push(
-              this.addRow(
-                nomsId,
-                prisonDetails,
-                calc,
-                nomisDates,
-                sentenceAndOffences,
-                adjustments,
-                returnToCustody,
-                finePayments,
-                keyDates,
-                breakdown,
-                ex,
-                'Server error'
-              )
-            )
-          }
+          )
         }
       } catch (ex) {
         csvData.push(

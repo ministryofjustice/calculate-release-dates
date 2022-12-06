@@ -358,7 +358,10 @@ describe('Calculate release dates service tests', () => {
       prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(adjustments)
       prisonerService.getReturnToCustodyDate.mockResolvedValue(returnToCustody)
       prisonerService.getOffenderFinePayments.mockResolvedValue(payments)
-      calculateReleaseDatesService.calculateTestReleaseDates.mockResolvedValue(calculation)
+      calculateReleaseDatesService.calculateTestReleaseDates.mockResolvedValue({
+        calculatedReleaseDates: calculation,
+        validationMessages: [],
+      })
       calculateReleaseDatesService.getCalculationBreakdown.mockResolvedValue(pedAdjustedByCrdAndBeforePrrdBreakdown())
 
       const rows = await oneThousandCalculationsService.runCalculations('', [], '', ['ABCDEFG'])
@@ -449,9 +452,16 @@ describe('Calculate release dates service tests', () => {
       prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(adjustments)
       prisonerService.getReturnToCustodyDate.mockResolvedValue(returnToCustody)
       prisonerService.getOffenderFinePayments.mockResolvedValue(payments)
-      calculateReleaseDatesService.calculateTestReleaseDates.mockRejectedValue({
-        status: 422,
-        message: 'There was an error',
+      calculateReleaseDatesService.calculateTestReleaseDates.mockResolvedValue({
+        calculatedReleaseDates: null,
+        validationMessages: [
+          {
+            code: 'OFFENCE_MISSING_DATE',
+            message: 'There was an error',
+            arguments: [],
+            type: 'VALIDATION',
+          },
+        ],
       })
 
       const rows = await oneThousandCalculationsService.runCalculations('', [], '', ['ABCDEFG'])
@@ -528,8 +538,8 @@ describe('Calculate release dates service tests', () => {
         PRRD: 'Validation Error',
         TUSED: 'Validation Error',
         ARD: 'Validation Error',
-        ERROR_JSON: '{"status":422,"message":"There was an error"}',
-        ERROR_TEXT: 'There was an error',
+        ERROR_JSON: '{"message":"There was an error\\r\\n"}',
+        ERROR_TEXT: 'There was an error\r\n',
       } as OneThousandCalculationsRow
 
       expect(rows[0]).toStrictEqual(expected)
