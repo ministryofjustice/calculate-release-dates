@@ -27,42 +27,84 @@
             <h1 class="govuk-heading-xl" data-qa="main-heading">
                 Supported sentences
             </h1>
+
+            <h2 class="govuk-heading-m">Standard determinate sentence types</h2>
             <p class="govuk-body">The Calculate release dates service supports CJA (Criminal Justice Act) 2003 and 2020 sentences only. The sentences currently supported are:</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>CJA03 Standard Determinate Sentence</li>
+                <li>ORA CJA03 Standard Determinate Sentence</li>
+                <li>ORA Sentencing Code Standard Determinate Sentence</li>
+                <li>ORA Serious Offence -18 CJA03 POCCA 2000</li>
+                <li>ORA Serious Offence Sec 250 Sentencing Code (U18)</li>
+                <li>ORA Young Offender Institution</li>
+                <li>Sentencing Code Standard Determinate Sentence</li>
+                <li>Serious Offence -18 CJA03 POCCA 2000</li>
+                <li>Serious Offence Sec 250 Sentencing Code (U18)</li>
+                <li>Young Offender Institution</li>
+            </ul>
+            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some SDS scenarios are not supported.</a></p>
+
+            <h2 class="govuk-heading-m">EDS sentences</h2>
+            <ul class="govuk-list govuk-list--bullet">
                 <li>EDS LASPO Automatic Release</li>
                 <li>EDS LASPO Discretionary Release</li>
                 <li>EDS Sec 266 Sentencing Code (18 - 20)</li>
                 <li>EDS Sec 279 Sentencing Code (21+)</li>
                 <li>EDS Sec 254 Sentencing Code (U18)</li>
+            </ul>
+            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some EDS scenarios are not supported.</a></p>
+
+
+            <h2 class="govuk-heading-m">Fixed term recall sentences</h2>
+            <ul class="govuk-list govuk-list--bullet">
                 <li>FTR Schedule 15 Offender</li>
                 <li>FTR Schedule 18 Sentencing Code Offender</li>
                 <li>Fixed Term Recall Pre ORA Sentence</li>
-                {% if featureToggles.afine %}
-                    <li>Imprisonment in Default of Fine (single and concurrent only)</li>
-                {% endif %}
-                <li>Licence Recall</li>
-                <li>ORA CJA03 Standard Determinate Sentence</li>
                 <li>ORA 14 Day Fixed Term Recall</li>
                 <li>ORA 28 Day Fixed Term Recall</li>
                 <li>ORA FTR Schedule 15 Offender</li>
                 <li>ORA FTR Sch 18 Sentencing Code Offender</li>
-                <li>ORA Licence Recall</li>
-                <li>ORA Sentencing Code Standard Determinate Sentence</li>
-                <li>ORA Serious Offence -18 CJA03 POCCA 2000</li>
-                <li>ORA Serious Offence Sec 250 Sentencing Code (U18)</li>
-                <li>ORA Young Offender Institution</li>
-                <li>Recall from YOI</li>
-                <li>Recall Serious Offence - 18 CJA03 POCCA 2000</li>
-                <li>Recall Serious Offence Sec 250 Sentencing Code (U18)</li>
+            </ul>
+
+            <h2 class="govuk-heading-m">Default terms</h2>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Imprisonment in Default of Fine</li>
+            </ul>
+            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some Imprisonment in Default of Fines scenarios are not supported.</a></p>
+
+            <h2 class="govuk-heading-m">SOPC sentences</h2>
+            <ul class="govuk-list govuk-list--bullet">
                 <li>Section 236A SOPC CJA03</li>
-                <li>Sentencing Code Standard Determinate Sentence</li>
-                <li>Serious Offence -18 CJA03 POCCA 2000</li>
-                <li>Serious Offence Sec 250 Sentencing Code (U18)</li>
                 <li>SOPC Sec 265 Sentencing Code (18 - 20)</li>
                 <li>SOPC Sec 278 Sentencing Code (21+)</li>
                 <li>Special sentence of detention for terrorist offenders of particular concern Sec 252A</li>
-                <li>Young Offender Institution</li>
+            </ul>
+            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some SOPC scenarios are not supported.</a></p>
+
+
+
+            <h2 class="govuk-heading-m">Standard recall sentences</h2>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Licence Recall</li>
+                <li>ORA Licence Recall</li>
+                <li>Recall from YOI</li>
+                <li>Recall Serious Offence - 18 CJA03 POCCA 2000</li>
+                <li>Recall Serious Offence Sec 250 Sentencing Code (U18)</li>
+            </ul>
+
+            <h2 id="unsupported-sentences" class="govuk-heading-m">Unsupported scenarios</h2>
+            <p class="govuk-body">Some supported sentence types have scenarios that cannot currently be calculated. These are:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>SDS TORERA (Terrorist Offenders Restriction of Early Release Act 2020) sentences</li>
+                <li>SOPC TORERA (Terrorist Offenders Restriction of Early Release Act 2020) sentences</li>
+                <li>EDS100 sentence</li>
+                <li>Consecutive Default terms</li>
+                <li>default terms that have been paid in part</li>
+            </ul>
+            <p class="govuk-body">Release dates cannot be calculated for prisoners that have:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>lawfully at large or Special remission adjustments</li>
+                <li>a Power to Detain (PTD) alert set in NOMIS</li>
             </ul>
         </div>
     </div>
