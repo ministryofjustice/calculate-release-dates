@@ -115,29 +115,6 @@ div.govuk-width-container {
     }
 }
 
-
-.gantt-table {
-  th {
-    border-right: 1px solid #b1b4;
-    width: 60px;
-    &:nth-child(1) {
-      width: 200px;
-    }
-  }
-  td {
-    padding: 0;
-    border-right: 1px solid #b1b4;
-
-    @for $i from 1 through 100 {
-      .start-position-#{$i} {
-        margin-left: #{round(0.6 * $i)}px
-      }
-      .end-position-#{$i} {
-        margin-right: #{60 - round(0.6 * $i)}px
-      }
-    }
-  }
-}
 .flex {
   display: flex;
 }

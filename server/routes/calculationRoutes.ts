@@ -8,7 +8,6 @@ import { nunjucksEnv } from '../utils/nunjucksSetup'
 import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import UserInputService from '../services/userInputService'
-import { SentenceDiagram } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 
 export default class CalculationRoutes {
@@ -23,7 +22,6 @@ export default class CalculationRoutes {
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    const { gantt } = req.query as Record<string, string>
     const calculationRequestId = Number(req.params.calculationRequestId)
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
@@ -47,12 +45,6 @@ export default class CalculationRoutes {
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
     const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token)
 
-    let sentenceDiagram: SentenceDiagram
-    if (gantt) {
-      sentenceDiagram = await this.calculateReleaseDatesService.getSentenceDiagram(calculationRequestId, token)
-    } else {
-      sentenceDiagram = null
-    }
     const model = new CalculationSummaryViewModel(
       releaseDates.dates,
       weekendAdjustments,
@@ -62,7 +54,6 @@ export default class CalculationRoutes {
       sentencesAndOffences,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments,
-      sentenceDiagram,
       validationErrors
     )
 

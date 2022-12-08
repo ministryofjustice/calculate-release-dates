@@ -1,5 +1,4 @@
 import { components } from './index'
-import { components as componentsOld } from './crd-temp'
 
 export type BookingCalculation = components['schemas']['CalculatedReleaseDates']
 export type WorkingDay = components['schemas']['WorkingDay']
@@ -13,6 +12,3 @@ export type CalculationSentenceQuestion = components['schemas']['CalculationSent
 export type CalculationUserInputs = components['schemas']['CalculationUserInputs']
 export type CalculationSentenceUserInput = components['schemas']['CalculationSentenceUserInput']
 export type CalculationResults = components['schemas']['CalculationResults']
-// TODO the below Sentence diagram objects to be removed as part of tech debt tickets, they have already been removed from the api side
-export type SentenceDiagram = componentsOld['schemas']['SentenceDiagram']
-export type SentenceDiagramRow = componentsOld['schemas']['SentenceDiagramRow']
