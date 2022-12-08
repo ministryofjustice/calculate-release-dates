@@ -7,7 +7,6 @@ import {
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
-  SentenceDiagram,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -121,11 +120,5 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/calculation/calculation-user-input/${calculationId}`,
     }) as Promise<CalculationUserInputs>
-  }
-
-  getSentenceDiagram(calculationId: number): Promise<SentenceDiagram> {
-    return this.restClient.get({
-      path: `/calculation/diagram/${calculationId}`,
-    }) as Promise<SentenceDiagram>
   }
 }

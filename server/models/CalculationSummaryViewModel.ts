@@ -1,18 +1,11 @@
 import dayjs from 'dayjs'
-import {
-  CalculationBreakdown,
-  SentenceDiagram,
-  WorkingDay,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { CalculationBreakdown, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { PrisonApiOffenderSentenceAndOffences, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
-import SentenceDiagramViewModel from './SentenceDiagramViewModel'
 import SentenceTypes from './SentenceTypes'
 
 export default class CalculationSummaryViewModel {
-  public sentenceDiagramViewModel?: SentenceDiagramViewModel
-
   constructor(
     public releaseDates: { [key: string]: string },
     public weekendAdjustments: { [key: string]: WorkingDay },
@@ -22,15 +15,10 @@ export default class CalculationSummaryViewModel {
     public sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     public calculationBreakdown?: CalculationBreakdown,
     public releaseDatesWithAdjustments?: ReleaseDateWithAdjustments[],
-    sentenceDiagram?: SentenceDiagram,
     public validationErrors?: ErrorMessages,
     public calculationSummaryUnavailable?: boolean,
     public dpsEntryPoint?: boolean
-  ) {
-    if (sentenceDiagram) {
-      this.sentenceDiagramViewModel = new SentenceDiagramViewModel(sentenceDiagram)
-    }
-  }
+  ) {}
 
   public hdcedBeforePRRD(): boolean {
     if (this.releaseDates?.HDCED && this.calculationBreakdown?.otherDates?.PRRD) {

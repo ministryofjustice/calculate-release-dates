@@ -7,7 +7,6 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
   ReleaseDateCalculationBreakdown,
-  SentenceDiagram,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -79,10 +78,6 @@ export default class CalculateReleaseDatesService {
         releaseDatesWithAdjustments: null,
       }
     }
-  }
-
-  async getSentenceDiagram(calculationRequestId: number, token: string): Promise<SentenceDiagram> {
-    return new CalculateReleaseDatesApiClient(token).getSentenceDiagram(calculationRequestId)
   }
 
   private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
