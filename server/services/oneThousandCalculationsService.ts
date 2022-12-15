@@ -305,22 +305,14 @@ export default class OneThousandCalculationsService {
 
   isHdced14DayRule(breakdown: CalculationBreakdown, calc: BookingCalculation): 'Y' | 'N' | '' {
     if (calc?.dates.HDCED) {
-      if (breakdown?.breakdownByReleaseDateType?.HDCED?.rules?.includes('HDCED_MINIMUM_14D')) {
-        return 'Y'
-      } else {
-        return 'N'
-      }
+      return breakdown?.breakdownByReleaseDateType?.HDCED?.rules?.includes('HDCED_MINIMUM_14D') ? 'Y' : 'N'
     }
     return ''
   }
 
   hasPcscSdsPlus(questions: CalculationUserQuestions): 'Y' | 'N' | '' {
     if (questions) {
-      if (questions.sentenceQuestions) {
-        return 'Y'
-      } else {
-        return 'N'
-      }
+      return questions.sentenceQuestions ? 'Y' : 'N'
     }
     return ''
   }
