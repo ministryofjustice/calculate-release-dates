@@ -3,6 +3,7 @@ import _ from 'lodash'
 import {
   BookingCalculation,
   CalculationBreakdown,
+  CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   PrisonApiBookingAndSentenceAdjustments,
@@ -44,6 +45,7 @@ export default class OneThousandCalculationsService {
         returnToCustody,
         keyDates,
         finePayments,
+        questions,
         calc,
         breakdown
       try {
@@ -63,6 +65,9 @@ export default class OneThousandCalculationsService {
           : null
         finePayments = sentenceAndOffences.filter(s => SentenceTypes.isSentenceAfine(s)).length
           ? await this.prisonerService.getOffenderFinePayments(bookingId, token)
+          : null
+        questions = sentenceAndOffences.filter(s => SentenceTypes.isSentenceSds(s)).length
+          ? await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
           : null
         try {
           const { calculatedReleaseDates: calc, validationMessages } =
@@ -89,6 +94,7 @@ export default class OneThousandCalculationsService {
                 adjustments,
                 returnToCustody,
                 finePayments,
+                questions,
                 keyDates,
                 breakdown,
                 { message },
@@ -98,8 +104,8 @@ export default class OneThousandCalculationsService {
             continue
           }
           try {
-            //For now only fetch breakdown if we calculate a PED. We may want to capture the breakdown for more calculations later.
-            if (calc.dates.PED) {
+            //For now only fetch breakdown if we calculate a PED or HDCED. We may want to capture the breakdown for more calculations later.
+            if (calc.dates.PED || calc.dates.HDCED) {
               breakdown = await this.calculateReleaseDatesService.getCalculationBreakdown(
                 calc.calculationRequestId,
                 token
@@ -116,6 +122,7 @@ export default class OneThousandCalculationsService {
               adjustments,
               returnToCustody,
               finePayments,
+              questions,
               keyDates,
               breakdown
             )
@@ -131,6 +138,7 @@ export default class OneThousandCalculationsService {
               adjustments,
               returnToCustody,
               finePayments,
+              questions,
               keyDates,
               breakdown,
               ex,
@@ -149,6 +157,7 @@ export default class OneThousandCalculationsService {
             adjustments,
             returnToCustody,
             finePayments,
+            questions,
             keyDates,
             breakdown,
             ex,
@@ -169,6 +178,7 @@ export default class OneThousandCalculationsService {
     adjustments: PrisonApiBookingAndSentenceAdjustments,
     returnToCustody: PrisonApiReturnToCustodyDate,
     finePayments: PrisonApiOffenderFinePayment[],
+    questions: CalculationUserQuestions,
     keyDates: PrisonApiOffenderCalculatedKeyDates,
     breakdown: CalculationBreakdown,
     ex?: any,
@@ -183,32 +193,54 @@ export default class OneThousandCalculationsService {
       CRD: errorText || calc?.dates.CRD,
       NOMIS_CRD: nomisDates?.conditionalReleaseDate,
       NOMIS_CRD_OVERRIDE: nomisDates?.conditionalReleaseOverrideDate,
+      CRD_MATCH: errorText
+        ? ''
+        : OneThousandCalculationsService.areSame(nomisDates?.conditionalReleaseDate, calc?.dates.CRD),
       LED: errorText || calc?.dates.LED || calc?.dates?.SLED,
       NOMIS_LED: nomisDates?.licenceExpiryDate,
       NOMIS_LED_CALCULATED: nomisDates?.licenceExpiryCalculatedDate,
       NOMIS_LED_OVERRIDE: nomisDates?.licenceExpiryOverrideDate,
+      LED_MATCH: errorText
+        ? ''
+        : OneThousandCalculationsService.areSame(nomisDates?.licenceExpiryDate, calc?.dates.LED || calc?.dates?.SLED),
       SED: errorText || calc?.dates?.SED || calc?.dates?.SLED,
       NOMIS_SED: nomisDates?.sentenceExpiryDate,
       NOMIS_SED_CALCULATED: nomisDates?.sentenceExpiryCalculatedDate,
       NOMIS_SED_OVERRIDE: nomisDates?.sentenceExpiryOverrideDate,
+      SED_MATCH: errorText
+        ? ''
+        : OneThousandCalculationsService.areSame(nomisDates?.sentenceExpiryDate, calc?.dates?.SED || calc?.dates?.SLED),
       NPD: errorText || calc?.dates?.NPD,
       NOMIS_NPD: nomisDates?.nonParoleDate,
       NOMIS_NPD_OVERRIDE: nomisDates?.nonParoleOverrideDate,
+      NPD_MATCH: errorText ? '' : OneThousandCalculationsService.areSame(nomisDates?.nonParoleDate, calc?.dates?.NPD),
       ARD: errorText || calc?.dates?.ARD,
       NOMIS_ARD: nomisDates?.automaticReleaseDate,
       NOMIS_ARD_OVERRIDE: nomisDates?.automaticReleaseOverrideDate,
+      ARD_MATCH: errorText
+        ? ''
+        : OneThousandCalculationsService.areSame(nomisDates?.automaticReleaseDate, calc?.dates?.ARD),
       TUSED: errorText || calc?.dates?.TUSED,
       NOMIS_TUSED: nomisDates?.topupSupervisionExpiryDate,
       NOMIS_TUSED_CALCULATED: nomisDates?.topupSupervisionExpiryCalculatedDate,
       NOMIS_TUSED_OVERRIDE: nomisDates?.topupSupervisionExpiryOverrideDate,
+      TUSED_MATCH: errorText
+        ? ''
+        : OneThousandCalculationsService.areSame(nomisDates?.topupSupervisionExpiryDate, calc?.dates?.TUSED),
       PED: errorText || calc?.dates?.PED,
       NOMIS_PED: nomisDates?.paroleEligibilityDate,
       NOMIS_PED_CALCULATED: nomisDates?.paroleEligibilityCalculatedDate,
       NOMIS_PED_OVERRIDE: nomisDates?.paroleEligibilityOverrideDate,
+      PED_MATCH: errorText
+        ? ''
+        : OneThousandCalculationsService.areSame(nomisDates?.paroleEligibilityDate, calc?.dates?.PED),
       HDCED: errorText || calc?.dates?.HDCED,
       NOMIS_HDCED: nomisDates?.homeDetentionCurfewEligibilityDate,
       NOMIS_HDCED_CALCULATED: nomisDates?.homeDetentionCurfewEligibilityCalculatedDate,
       NOMIS_HDCED_OVERRIDE: nomisDates?.homeDetentionCurfewEligibilityOverrideDate,
+      HDCED_MATCH: errorText
+        ? ''
+        : OneThousandCalculationsService.areSame(nomisDates?.homeDetentionCurfewEligibilityDate, calc?.dates?.HDCED),
       ETD: errorText || calc?.dates?.ETD,
       NOMIS_ETD: nomisDates?.earlyTermDate,
       MTD: errorText || calc?.dates?.MTD,
@@ -221,10 +253,16 @@ export default class OneThousandCalculationsService {
       PRRD: errorText || calc?.dates?.PRRD,
       NOMIS_PRRD: nomisDates?.postRecallReleaseDate,
       NOMIS_PRRD_OVERRIDE: nomisDates?.postRecallReleaseOverrideDate,
+      PRRD_MATCH: errorText
+        ? ''
+        : OneThousandCalculationsService.areSame(nomisDates?.postRecallReleaseDate, calc?.dates?.PRRD),
       ESED: errorText || calc?.dates?.ESED,
       NOMIS_ESED: nomisDates?.effectiveSentenceEndDate,
       ERSED: errorText || calc?.dates?.ERSED,
       NOMIS_ERSED: keyDates?.earlyRemovalSchemeEligibilityDate,
+      ERSED_MATCH: errorText
+        ? ''
+        : OneThousandCalculationsService.areSame(nomisDates?.earlyRemovalSchemeEligibilityDate, calc?.dates?.ERSED),
       NOMIS_ROTL: keyDates?.releaseOnTemporaryLicenceDate,
       COMMENT: keyDates?.comment,
       REASON_CODE: keyDates?.reasonCode,
@@ -234,11 +272,11 @@ export default class OneThousandCalculationsService {
     }
     return {
       ...row,
-      ARE_DATES_SAME: OneThousandCalculationsService.areDatesSame(row) ? 'Y' : 'N',
-      ARE_DATES_SAME_USING_OVERRIDES: OneThousandCalculationsService.areDatesSameUsingOverrides(row) ? 'Y' : 'N',
       IS_ESL_SAME: sentenceLength === keyDates?.sentenceLength ? 'Y' : 'N',
       IS_JSL_SAME: sentenceLength === keyDates?.judiciallyImposedSentenceLength ? 'Y' : 'N',
       IS_PED_ADJUSTED_TO_CRD: this.isPedAdjustedToCrd(breakdown, calc),
+      IS_HDCED_14_DAY_RULE: this.isHdced14DayRule(breakdown, calc),
+      HAS_SDS_PLUS_PCSC: this.hasPcscSdsPlus(questions),
       SEX_OFFENDER: this.isSexOffender(prisoner),
       LOCATION: prisoner?.locationDescription,
       SENTENCES: JSON.stringify(sentenceAndOffences),
@@ -257,6 +295,28 @@ export default class OneThousandCalculationsService {
         breakdown?.breakdownByReleaseDateType?.PED?.rules?.includes('PED_EQUAL_TO_LATEST_NON_PED_ACTUAL_RELEASE') ||
         breakdown?.breakdownByReleaseDateType?.PED?.rules?.includes('PED_EQUAL_TO_LATEST_NON_PED_CONDITIONAL_RELEASE')
       ) {
+        return 'Y'
+      } else {
+        return 'N'
+      }
+    }
+    return ''
+  }
+
+  isHdced14DayRule(breakdown: CalculationBreakdown, calc: BookingCalculation): 'Y' | 'N' | '' {
+    if (calc?.dates.HDCED) {
+      if (breakdown?.breakdownByReleaseDateType?.HDCED?.rules?.includes('HDCED_MINIMUM_14D')) {
+        return 'Y'
+      } else {
+        return 'N'
+      }
+    }
+    return ''
+  }
+
+  hasPcscSdsPlus(questions: CalculationUserQuestions): 'Y' | 'N' | '' {
+    if (questions) {
+      if (questions.sentenceQuestions) {
         return 'Y'
       } else {
         return 'N'
@@ -313,48 +373,11 @@ export default class OneThousandCalculationsService {
     return `${String(years).padStart(2, '0')}/${String(months).padStart(2, '0')}/${String(days).padStart(2, '0')}`
   }
 
-  private static areSame = (nomisDate: string, calculatedDate: string) => {
-    if (!nomisDate && !calculatedDate) return true
-    if (!nomisDate && calculatedDate) return false
-    if (nomisDate && !calculatedDate) return false
-    return nomisDate === calculatedDate
-  }
-
-  private static areDatesSameUsingOverrides(row: any) {
-    return (
-      OneThousandCalculationsService.areSame(row.CRD, row.NOMIS_CRD_OVERRIDE) &&
-      OneThousandCalculationsService.areSame(row.SED, row.NOMIS_SED_OVERRIDE) &&
-      OneThousandCalculationsService.areSame(row.LED, row.NOMIS_LED_OVERRIDE) &&
-      OneThousandCalculationsService.areSame(row.NPD, row.NOMIS_NPD_OVERRIDE) &&
-      OneThousandCalculationsService.areSame(row.ARD, row.NOMIS_ARD_OVERRIDE) &&
-      OneThousandCalculationsService.areSame(row.TUSED, row.NOMIS_TUSED) &&
-      OneThousandCalculationsService.areSame(row.PED, row.NOMIS_PED_OVERRIDE) &&
-      OneThousandCalculationsService.areSame(row.HDCED, row.NOMIS_HDCED) &&
-      OneThousandCalculationsService.areSame(row.ETD, row.NOMIS_ETD) &&
-      OneThousandCalculationsService.areSame(row.MTD, row.NOMIS_MTD) &&
-      OneThousandCalculationsService.areSame(row.LTD, row.NOMIS_LTD) &&
-      OneThousandCalculationsService.areSame(row.DPRRD, row.NOMIS_DPRRD_OVERRIDE) &&
-      OneThousandCalculationsService.areSame(row.PRRD, row.NOMIS_PRRD_OVERRIDE) &&
-      OneThousandCalculationsService.areSame(row.ESED, row.NOMIS_ESED)
-    )
-  }
-  private static areDatesSame(row: any) {
-    return (
-      OneThousandCalculationsService.areSame(row.CRD, row.NOMIS_CRD) &&
-      OneThousandCalculationsService.areSame(row.SED, row.NOMIS_SED) &&
-      OneThousandCalculationsService.areSame(row.LED, row.NOMIS_LED) &&
-      OneThousandCalculationsService.areSame(row.NPD, row.NOMIS_NPD) &&
-      OneThousandCalculationsService.areSame(row.ARD, row.NOMIS_ARD) &&
-      OneThousandCalculationsService.areSame(row.TUSED, row.NOMIS_TUSED) &&
-      OneThousandCalculationsService.areSame(row.PED, row.NOMIS_PED) &&
-      OneThousandCalculationsService.areSame(row.HDCED, row.NOMIS_HDCED) &&
-      OneThousandCalculationsService.areSame(row.ETD, row.NOMIS_ETD) &&
-      OneThousandCalculationsService.areSame(row.MTD, row.NOMIS_MTD) &&
-      OneThousandCalculationsService.areSame(row.LTD, row.NOMIS_LTD) &&
-      OneThousandCalculationsService.areSame(row.DPRRD, row.NOMIS_DPRRD) &&
-      OneThousandCalculationsService.areSame(row.PRRD, row.NOMIS_PRRD) &&
-      OneThousandCalculationsService.areSame(row.ESED, row.NOMIS_ESED)
-    )
+  private static areSame = (nomisDate: string, calculatedDate: string): 'Y' | 'N' => {
+    if (!nomisDate && !calculatedDate) return 'Y'
+    if (!nomisDate && calculatedDate) return 'N'
+    if (nomisDate && !calculatedDate) return 'N'
+    return nomisDate === calculatedDate ? 'Y' : 'N'
   }
 
   private getConsecutiveSentences(sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[]) {
