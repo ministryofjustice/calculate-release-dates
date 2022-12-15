@@ -215,6 +215,13 @@ export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
         releaseDate: '2024-10-12',
         unadjustedDate: '2024-09-14',
       },
+      HDCED: {
+        rules: ['HDCED_MINIMUM_14D'],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2024-10-12',
+        unadjustedDate: '2024-09-14',
+      },
     },
     otherDates: { PRRD: '2025-03-18' },
   }
