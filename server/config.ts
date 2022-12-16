@@ -99,5 +99,7 @@ export default {
   analytics: {
     tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),
   },
-  featureToggles: {},
+  featureToggles: {
+    edsSopcRecalls: get('EDS_SOPC_RECALLS', false) === 'true',
+  },
 }

@@ -206,6 +206,31 @@ const stubbedSentencesAndOffences = [
     ],
     fineAmount: 3000,
   },
+  {
+    bookingId: 1203780,
+    sentenceSequence: 5,
+    lineSequence: 5,
+    caseSequence: 5,
+    courtDescription: 'Aldershot and Farnham County Court',
+    sentenceStatus: 'A',
+    sentenceCategory: '2003',
+    sentenceCalculationType: 'LR_LASPO_DR',
+    sentenceTypeDescription: 'LR - EDS LASPO Discretionary Release',
+    sentenceDate: '2018-06-15',
+    terms: [
+      { years: 0, months: 40, weeks: 0, days: 0, code: 'IMP' },
+      { years: 0, months: 32, weeks: 0, days: 0, code: 'LIC' },
+    ],
+    offences: [
+      {
+        offenderChargeId: 3933639,
+        offenceStartDate: '2018-04-01',
+        offenceCode: 'FA06003B',
+        offenceDescription: 'Aid and abet fraud by abuse of position',
+        indicators: [],
+      },
+    ],
+  },
 ]
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
@@ -334,6 +359,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('2020')
         expect(res.text).toContain('Imprisonment in Default of Fine')
         expect(res.text).toContain('£3,000.00')
+        expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
       })
   })
 

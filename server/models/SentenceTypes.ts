@@ -26,6 +26,10 @@ export default class SentenceTypes {
 
   private static sopcSentenceTypes = ['SEC236A', 'SOPC18', 'SOPC21', 'SDOPCU18']
 
+  private static edsRecallSentenceTypes = ['LR_EDS18', 'LR_EDS21', 'LR_EDSU18', 'LR_LASPO_AR', 'LR_LASPO_DR']
+
+  private static sopcRecallSentenceTypes = ['LR_SEC236A', 'LR_SOPC18', 'LR_SOPC21']
+
   private static aFineSentenceTypes = ['A/FINE']
 
   public static isSentenceSds(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
@@ -46,5 +50,13 @@ export default class SentenceTypes {
 
   public static isSentenceAfine(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
     return this.aFineSentenceTypes.includes(sentence.sentenceCalculationType)
+  }
+
+  public static isSentenceSopcRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+    return this.sopcRecallSentenceTypes.includes(sentence.sentenceCalculationType)
+  }
+
+  public static isSentenceEdsRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+    return this.edsRecallSentenceTypes.includes(sentence.sentenceCalculationType)
   }
 }
