@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@6.0
+  hmpps: ministryofjustice/hmpps@6.2.0
   slack: circleci/slack@4.4.2
 
 parameters:
@@ -15,7 +15,7 @@ parameters:
 
   node-version:
     type: string
-    default: 16.17-browsers
+    default: 18.12-browsers
 
 jobs:
   build:
@@ -88,7 +88,7 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: unit tests
-          command: npm run test
+          command: npm run test:ci
       - store_test_results:
           path: test_results
       - store_artifacts:
@@ -148,7 +148,7 @@ workflows:
             - build
       - hmpps/helm_lint:
           name: helm_lint
-      - hmpps/build_docker:
+      - hmpps/build_multiplatform_docker:
           name: build_docker
           filters:
             branches:
@@ -157,6 +157,7 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
+          jira_update: true
           context: hmpps-common-vars
           filters:
             branches:
@@ -198,7 +199,7 @@ workflows:
   security:
     triggers:
       - schedule:
-          cron: "5 3 * * 1-5"
+          cron: "30 5 * * 1-5"
           filters:
             branches:
               only:
@@ -223,7 +224,7 @@ workflows:
   security-weekly:
     triggers:
       - schedule:
-          cron: "41 4 * * 1"
+          cron: "0 5 * * 1"
           filters:
             branches:
               only:
