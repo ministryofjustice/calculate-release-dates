@@ -50,6 +50,6 @@ export default class SentenceRowViewModel {
   }
 
   public hasCustodialAndLicenseTerms(): boolean {
-    return this.isEds() || this.isSopc() || this.isEdsRecall() || this.isEdsRecall()
+    return this.isEds() || this.isSopc() || this.isEdsRecall() || this.isSopcRecall()
   }
 }
