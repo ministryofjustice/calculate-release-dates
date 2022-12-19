@@ -206,6 +206,31 @@ const stubbedSentencesAndOffences = [
     ],
     fineAmount: 3000,
   },
+  {
+    bookingId: 1203780,
+    sentenceSequence: 5,
+    lineSequence: 5,
+    caseSequence: 5,
+    courtDescription: 'Aldershot and Farnham County Court',
+    sentenceStatus: 'A',
+    sentenceCategory: '2003',
+    sentenceCalculationType: 'LR_LASPO_DR',
+    sentenceTypeDescription: 'LR - EDS LASPO Discretionary Release',
+    sentenceDate: '2018-06-15',
+    terms: [
+      { years: 0, months: 40, weeks: 0, days: 0, code: 'IMP' },
+      { years: 0, months: 32, weeks: 0, days: 0, code: 'LIC' },
+    ],
+    offences: [
+      {
+        offenderChargeId: 3933639,
+        offenceStartDate: '2018-04-01',
+        offenceCode: 'FA06003B',
+        offenceDescription: 'Aid and abet fraud by abuse of position',
+        indicators: [],
+      },
+    ],
+  },
 ]
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
@@ -304,7 +329,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('sentence-card')
         expect(res.text).toContain('A1234AA')
         expect(res.text).toContain('Anon Nobody')
-        expect(res.text).toContain('This calculation will include 10')
+        expect(res.text).toContain('This calculation will include 11')
         expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('Committed on 03 February 2021')
@@ -326,14 +351,15 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('12 April 2022')
         expect(res.text).toContain('SDS+')
         const custodialMatches = (res.text.match(/Custodial term/g) || []).length
-        expect(custodialMatches).toBe(2)
+        expect(custodialMatches).toBe(3)
         const LicenceMatches = (res.text.match(/Licence period/g) || []).length
-        expect(LicenceMatches).toBe(2)
+        expect(LicenceMatches).toBe(3)
         expect(res.text).not.toContain('98765')
         expect(res.text).toContain('CJA Code')
         expect(res.text).toContain('2020')
         expect(res.text).toContain('Imprisonment in Default of Fine')
         expect(res.text).toContain('£3,000.00')
+        expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
       })
   })
 

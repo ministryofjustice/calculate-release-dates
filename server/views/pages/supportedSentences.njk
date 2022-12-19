@@ -42,7 +42,8 @@
                 <li>Serious Offence Sec 250 Sentencing Code (U18)</li>
                 <li>Young Offender Institution</li>
             </ul>
-            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some SDS scenarios are not supported.</a></p>
+            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some SDS scenarios are not supported.</a>
+            </p>
 
             <h2 class="govuk-heading-m">EDS sentences</h2>
             <ul class="govuk-list govuk-list--bullet">
@@ -52,7 +53,8 @@
                 <li>EDS Sec 279 Sentencing Code (21+)</li>
                 <li>EDS Sec 254 Sentencing Code (U18)</li>
             </ul>
-            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some EDS scenarios are not supported.</a></p>
+            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some EDS scenarios are not supported.</a>
+            </p>
 
             <h2 class="govuk-heading-m">Fixed term recall sentences</h2>
             <ul class="govuk-list govuk-list--bullet">
@@ -69,7 +71,8 @@
             <ul class="govuk-list govuk-list--bullet">
                 <li>Imprisonment in Default of Fine</li>
             </ul>
-            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some Imprisonment in Default of Fines scenarios are not supported.</a></p>
+            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some Imprisonment in Default of Fines scenarios are not supported.</a>
+            </p>
 
             <h2 class="govuk-heading-m">SOPC sentences</h2>
             <ul class="govuk-list govuk-list--bullet">
@@ -78,11 +81,22 @@
                 <li>SOPC Sec 278 Sentencing Code (21+)</li>
                 <li>Special sentence of detention for terrorist offenders of particular concern Sec 252A</li>
             </ul>
-            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some SOPC scenarios are not supported.</a></p>
+            <p class="govuk-body">Please note, <a href="#unsupported-sentences">some SOPC scenarios are not supported.</a>
+            </p>
 
             <h2 class="govuk-heading-m">Standard recall sentences</h2>
             <ul class="govuk-list govuk-list--bullet">
                 <li>Licence Recall</li>
+                {% if featureToggles.edsSopcRecalls %}
+                    <li>LR - EDS LASPO Automatic Release</li>
+                    <li>LR - EDS LASPO Discretionary Release</li>
+                    <li>LR - EDS Sec 254 Sentencing Code (U18)</li>
+                    <li>LR - EDS Sec 266 Sentencing Code (18 - 20)</li>
+                    <li>LR - EDS Sec 279 Sentencing Code (21+)</li>
+                    <li>LR - Section 236A SOPC CJA03</li>
+                    <li>LR - SOPC Sec 265 Sentencing Code (18 - 20)</li>
+                    <li>LR - SOPC Sec 278 Sentencing Code (21+)</li>
+                {% endif %}
                 <li>ORA Licence Recall</li>
                 <li>Recall from YOI</li>
                 <li>Recall Serious Offence - 18 CJA03 POCCA 2000</li>

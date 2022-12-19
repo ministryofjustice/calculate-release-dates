@@ -37,11 +37,19 @@ export default class SentenceRowViewModel {
     return SentenceTypes.isSentenceSopc(this.sentencesAndOffence)
   }
 
+  public isEdsRecall(): boolean {
+    return SentenceTypes.isSentenceEdsRecall(this.sentencesAndOffence)
+  }
+
+  public isSopcRecall(): boolean {
+    return SentenceTypes.isSentenceSopcRecall(this.sentencesAndOffence)
+  }
+
   public isAfine(): boolean {
     return SentenceTypes.isSentenceAfine(this.sentencesAndOffence)
   }
 
   public hasCustodialAndLicenseTerms(): boolean {
-    return this.isEds() || this.isSopc()
+    return this.isEds() || this.isSopc() || this.isEdsRecall() || this.isSopcRecall()
   }
 }
