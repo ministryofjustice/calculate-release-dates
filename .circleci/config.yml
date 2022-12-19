@@ -224,7 +224,7 @@ workflows:
   security-weekly:
     triggers:
       - schedule:
-          cron: "41 4 * * 1""
+          cron: "41 4 * * 1"
           filters:
             branches:
               only:
