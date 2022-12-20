@@ -28,8 +28,8 @@
     "clean": "rm -rf dist build node_modules stylesheets"
   },
   "engines": {
-    "node": ">=16 <17",
-    "npm": ">=8"
+    "node": "^18",
+    "npm": "^9"
   },
   "jest": {
     "preset": "ts-jest",
@@ -135,7 +135,7 @@
     "@types/jest": "^29.2.4",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/lodash": "^4.14.182",
-    "@types/node": "^16.11.39",
+    "@types/node": "^18.11.17",
     "@types/nunjucks": "^3.2.1",
     "@types/passport": "^1.0.11",
     "@types/passport-oauth2": "^1.4.11",

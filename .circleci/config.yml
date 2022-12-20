@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@6.0
+  hmpps: ministryofjustice/hmpps@6.2.0
   slack: circleci/slack@4.4.2
 
 parameters:
@@ -15,7 +15,7 @@ parameters:
 
   node-version:
     type: string
-    default: 16.17-browsers
+    default: 18.12-browsers
 
 jobs:
   build:
@@ -157,6 +157,7 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
+          jira_update: true
           context: hmpps-common-vars
           filters:
             branches:
