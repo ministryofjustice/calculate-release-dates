@@ -78,6 +78,7 @@ export interface components {
     CalculationUserInputs: {
       sentenceCalculationUserInputs?: components['schemas']['CalculationSentenceUserInput'][]
       calculateErsed: boolean
+      useOffenceIndicators: boolean
     }
     /** @description Validation message details */
     ValidationMessage: {
