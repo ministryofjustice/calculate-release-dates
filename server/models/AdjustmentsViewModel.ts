@@ -85,15 +85,17 @@ export default class AdjustmentsViewModel {
     sententencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
   ): AdjustmentViewModel {
     // Filter any sentence adjustments linked to a sentence thats not present on the booking (inactive).
-    const filteredAdjustments = adjustments.filter(a => {
-      if ('sentenceSequence' in a) {
-        const sentence = sententencesAndOffences.find(s => {
-          return s.sentenceSequence === a.sentenceSequence
-        })
-        return !!sentence
-      }
-      return true
-    })
+    const filteredAdjustments = adjustments
+      .filter(a => a.active)
+      .filter(a => {
+        if ('sentenceSequence' in a) {
+          const sentence = sententencesAndOffences.find(s => {
+            return s.sentenceSequence === a.sentenceSequence
+          })
+          return !!sentence
+        }
+        return true
+      })
     return {
       aggregate: this.aggregateAdjustment(filteredAdjustments),
       details: filteredAdjustments.map(a => {

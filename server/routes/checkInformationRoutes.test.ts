@@ -285,6 +285,13 @@ const stubbedAdjustments = {
       toDate: '2021-03-08',
       active: true,
     },
+    {
+      type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
+      numberOfDays: 987654,
+      fromDate: '2021-03-07',
+      toDate: '2021-03-08',
+      active: false,
+    },
   ],
 } as PrisonApiBookingAndSentenceAdjustments
 
@@ -360,6 +367,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Imprisonment in Default of Fine')
         expect(res.text).toContain('£3,000.00')
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
+        expect(res.text).not.toContain('987654')
       })
   })
 
