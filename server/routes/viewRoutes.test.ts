@@ -255,6 +255,7 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('Consecutive to  court case 1 count 1')
           expect(res.text).toContain('/view/A1234AA/calculation-summary/123456')
           expect(res.text).toContain('SDS+')
+          expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED)')
         })
     })
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences of the calculation if there is no user inputs', () => {

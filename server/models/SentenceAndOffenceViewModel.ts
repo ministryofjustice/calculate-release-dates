@@ -32,6 +32,7 @@ export default class SentenceAndOffenceViewModel {
     public dpsEntryPoint: boolean,
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
+    public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages
   ) {
@@ -66,5 +67,9 @@ export default class SentenceAndOffenceViewModel {
       return userInputTypes[userInputTypes.length - 1]
     }
     return null
+  }
+
+  public isErsedChecked(): boolean {
+    return this.userInputs?.calculateErsed === true
   }
 }

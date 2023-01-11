@@ -68,6 +68,7 @@ export default class ViewRoutes {
           this.entryPointService.isDpsEntryPoint(req),
           sentencesAndOffences,
           adjustmentDetails,
+          true,
           returnToCustody
         ),
         calculationRequestId,

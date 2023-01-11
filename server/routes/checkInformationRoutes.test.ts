@@ -368,6 +368,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('£3,000.00')
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
         expect(res.text).not.toContain('987654')
+        expect(res.text).toContain('Include an Early release scheme eligibility date (ERSED)')
       })
   })
 
@@ -526,19 +527,21 @@ describe('Check information routes tests', () => {
     })
     return request(app)
       .post('/calculation/A1234AA/check-information')
+      .type('form')
+      .send({ erse: 'true' })
       .expect(302)
       .expect('Location', '/calculation/A1234AA/summary/123')
       .expect(res => {
         expect(res.redirect).toBeTruthy()
         expect(calculateReleaseDatesService.validateBackend).toBeCalledWith(
           expect.anything(),
-          stubbedUserInput,
+          { ...stubbedUserInput, calculateErsed: true },
           expect.anything()
         )
         expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
           expect.anything(),
           'A1234AA',
-          stubbedUserInput,
+          { ...stubbedUserInput, calculateErsed: true },
           expect.anything()
         )
       })
