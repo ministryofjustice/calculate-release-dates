@@ -262,6 +262,11 @@ describe('View journey routes tests', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
+        calculateErsed: false,
+        useOffenceIndicators: false,
+        sentenceCalculationUserInputs: [],
+      })
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')

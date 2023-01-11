@@ -528,7 +528,7 @@ describe('Check information routes tests', () => {
     return request(app)
       .post('/calculation/A1234AA/check-information')
       .type('form')
-      .send({ erse: 'true' })
+      .send({ ersed: 'true' })
       .expect(302)
       .expect('Location', '/calculation/A1234AA/summary/123')
       .expect(res => {
@@ -551,6 +551,7 @@ describe('Check information routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
       messageType: ErrorMessageType.VALIDATION,
