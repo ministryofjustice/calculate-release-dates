@@ -124,9 +124,7 @@ export default class CalculationQuestionRoutes {
         }
       }
 
-      const userInputs =
-        this.userInputService.getCalculationUserInputForPrisoner(req, nomsId) ||
-        ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
+      const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
 
       // Clear existing answers to this question
       userInputs.sentenceCalculationUserInputs = userInputs.sentenceCalculationUserInputs.filter(

@@ -17,7 +17,10 @@ export default class UserInputService {
   }
 
   public getCalculationUserInputForPrisoner(req: Request, nomsId: string): CalculationUserInputs {
-    return req.session.userInputs && req.session.userInputs[nomsId]
+    return (
+      (req.session.userInputs && req.session.userInputs[nomsId]) ||
+      ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
+    )
   }
 
   public getCalculationUserInputForPrisonerOrBlank(req: Request, nomsId: string): CalculationUserInputs {

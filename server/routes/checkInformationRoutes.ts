@@ -63,6 +63,7 @@ export default class CheckInformationRoutes {
         this.entryPointService.isDpsEntryPoint(req),
         sentencesAndOffences,
         adjustmentDetails,
+        false,
         returnToCustody,
         validationMessages
       ),
@@ -74,6 +75,9 @@ export default class CheckInformationRoutes {
     const { nomsId } = req.params
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
+    userInputs.calculateErsed = req.body.ersed === 'true'
+    this.userInputService.setCalculationUserInputForPrisoner(req, nomsId, userInputs)
+
     const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
     if (errors.messages.length > 0) {
       return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)

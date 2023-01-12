@@ -8,13 +8,10 @@
 <h2 class="govuk-heading-m govuk-!-margin-top-9">Now calculate release dates
     for {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}</h2>
 <p class="govuk-body">The release dates will not be saved in NOMIS until you have reviewed the calculation.</p>
-<form method="post">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-    {{ govukButton({
+{{ govukButton({
         text: "Calculate release dates",
         type: submit,
         value: 'calculate-release-dates',
         preventDoubleClick: true,
         attributes: {  'data-qa': 'calculate-release-dates' }
     }) }}
-</form>

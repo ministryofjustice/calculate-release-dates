@@ -39,13 +39,16 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
 
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds-from-desktop">
-                    {% include "../partials/checkInformation/calculateDates.njk" %}
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds-from-desktop">
+                        {% include "../partials/checkInformation/calculateDates.njk" %}
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 {% endblock %}

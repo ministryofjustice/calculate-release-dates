@@ -22,6 +22,7 @@ import {
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import trimHtml from './testutils/testUtils'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -320,6 +321,7 @@ afterEach(() => {
 
 describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner with the EDS card view', () => {
+    config.featureToggles.ersed = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
@@ -368,9 +370,26 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('£3,000.00')
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
         expect(res.text).not.toContain('987654')
+        expect(res.text).toContain('Include an Early release scheme eligibility date (ERSED)')
       })
   })
-
+  it('GET /calculation/:nomsId/check-information should not show ersed checkbox if feature toggle off', () => {
+    config.featureToggles.ersed = false
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(null)
+    entryPointService.isDpsEntryPoint.mockReturnValue(true)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED)')
+      })
+  })
   it('GET /calculation/:nomsId/check-information back button should reutrn to dps start page if no calc questions', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
@@ -526,19 +545,21 @@ describe('Check information routes tests', () => {
     })
     return request(app)
       .post('/calculation/A1234AA/check-information')
+      .type('form')
+      .send({ ersed: 'true' })
       .expect(302)
       .expect('Location', '/calculation/A1234AA/summary/123')
       .expect(res => {
         expect(res.redirect).toBeTruthy()
         expect(calculateReleaseDatesService.validateBackend).toBeCalledWith(
           expect.anything(),
-          stubbedUserInput,
+          { ...stubbedUserInput, calculateErsed: true },
           expect.anything()
         )
         expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
           expect.anything(),
           'A1234AA',
-          stubbedUserInput,
+          { ...stubbedUserInput, calculateErsed: true },
           expect.anything()
         )
       })
@@ -548,6 +569,7 @@ describe('Check information routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
       messageType: ErrorMessageType.VALIDATION,

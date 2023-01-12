@@ -34,7 +34,7 @@ const prisoner = {
       alertCode: 'SOR',
       alertCodeDescription: 'Registered sex offender',
       dateCreated: '2022-01-10',
-      dateExpires: '2023-01-10',
+      dateExpires: '2030-01-10',
       expired: false,
       active: true,
       addedByFirstName: 'CRD',
