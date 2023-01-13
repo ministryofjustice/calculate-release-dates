@@ -19,6 +19,8 @@ import EntryPointService from '../services/entryPointService'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import UserInputService from '../services/userInputService'
 import {
+  ersedAdjustedByArdBreakdown,
+  ersedAdjustedByArdReleaseDate,
   hdcedAdjustedToArd,
   hdcedAdjustedToArdReleaseDates,
   pedAdjustedByCrdAndBeforePrrdBreakdown,
@@ -74,6 +76,7 @@ const stubbedCalculationResults = {
     CRD: '2021-02-03',
     SED: '2021-02-03',
     HDCED: '2021-10-03',
+    ERSED: '2020-02-03',
   },
   calculationRequestId: 123456,
   effectiveSentenceLength: {},
@@ -250,6 +253,8 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain(
           `Some release dates and details are not included because they are not relevant to this person's sentences`
         )
+        expect(res.text).toContain(`Monday, 03 February 2020`)
+        expect(res.text).toContain(`Early Removal Scheme Eligibility Date (ERSED)`)
       })
   })
 
@@ -307,6 +312,24 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Release on HDC must not take place before the PRRD Monday, 04 October 2021')
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details ERSED breakdown with ERSED adjusted by ARD', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedAdjustedByArdReleaseDate())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: ersedAdjustedByArdBreakdown(),
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('ERSED adjusted for the ARD of a concurrent default term')
       })
   })
 

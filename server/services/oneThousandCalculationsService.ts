@@ -77,6 +77,7 @@ export default class OneThousandCalculationsService {
               {
                 calculateErsed: keyDates.earlyRemovalSchemeEligibilityDate != null,
                 useOffenceIndicators: true,
+                sentenceCalculationUserInputs: [],
               },
               token
             )

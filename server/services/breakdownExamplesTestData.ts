@@ -320,3 +320,107 @@ export function hdcedAdjustedToArdReleaseDates(): BookingCalculation {
     effectiveSentenceLength: null,
   }
 }
+
+export function ersedAdjustedByArdReleaseDate(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-07-25',
+      CRD: '2022-01-24',
+      HDCED: '2021-09-12',
+      ERSED: '2021-05-02',
+      ESED: '2023-07-25',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function ersedHalfwayBreakdown(): CalculationBreakdown {
+  return {
+    concurrentSentences: [],
+    consecutiveSentence: null,
+    breakdownByReleaseDateType: {
+      ERSED: {
+        rules: ['ERSED_HALFWAY'],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 50,
+        releaseDate: '2010-12-01',
+        unadjustedDate: '2010-12-01',
+      },
+    },
+    otherDates: {},
+  }
+}
+export function ersedTwoThirdsBreakdown(): CalculationBreakdown {
+  return {
+    concurrentSentences: [],
+    consecutiveSentence: null,
+    breakdownByReleaseDateType: {
+      ERSED: {
+        rules: ['ERSED_TWO_THIRDS'],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 66,
+        releaseDate: '2023-03-20',
+        unadjustedDate: '2023-03-20',
+      },
+    },
+    otherDates: {},
+  }
+}
+export function ersedOneYearBreakdown(): CalculationBreakdown {
+  return {
+    concurrentSentences: [],
+    consecutiveSentence: null,
+    breakdownByReleaseDateType: {
+      ERSED: {
+        rules: ['ERSED_ONE_YEAR'],
+        rulesWithExtraAdjustments: {
+          ERSED_ONE_YEAR: {
+            adjustmentValue: -12,
+            type: 'MONTHS',
+          },
+        },
+        adjustedDays: 100,
+        releaseDate: '2023-07-28',
+        unadjustedDate: '2024-07-28',
+      },
+    },
+    otherDates: {},
+  }
+}
+export function ersedAdjustedByArdBreakdown(): CalculationBreakdown {
+  return {
+    concurrentSentences: [],
+    consecutiveSentence: null,
+    breakdownByReleaseDateType: {
+      ERSED: {
+        rules: ['ERSED_ADJUSTED_TO_CONCURRENT_TERM'],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2021-05-02',
+        unadjustedDate: '2021-04-26',
+      },
+    },
+    otherDates: {},
+  }
+}
+export function ersedBeforeSentenceBreakdown(): CalculationBreakdown {
+  return {
+    concurrentSentences: [],
+    consecutiveSentence: null,
+    breakdownByReleaseDateType: {
+      ERSED: {
+        rules: ['ERSED_BEFORE_SENTENCE_DATE'],
+        rulesWithExtraAdjustments: {},
+        adjustedDays: 0,
+        releaseDate: '2022-08-26',
+        unadjustedDate: '2023-01-13',
+      },
+    },
+    otherDates: {},
+  }
+}

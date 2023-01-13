@@ -126,6 +126,25 @@ export default class CalculateReleaseDatesService {
         )
       )
     }
+    if (breakdown.breakdownByReleaseDateType.ERSED) {
+      const ersedDetails = breakdown.breakdownByReleaseDateType.ERSED
+      if (
+        !(
+          ersedDetails.rules.includes('ERSED_ADJUSTED_TO_CONCURRENT_TERM') ||
+          ersedDetails.rules.includes('ERSED_BEFORE_SENTENCE_DATE')
+        )
+      ) {
+        releaseDatesWithAdjustments.push(
+          this.ersedRulesToAdjustmentRow(
+            ersedDetails.rules,
+            ersedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
+            ersedDetails.releaseDate,
+            ersedDetails.unadjustedDate,
+            ersedDetails.adjustedDays
+          )
+        )
+      }
+    }
     return releaseDatesWithAdjustments
   }
 
@@ -181,6 +200,30 @@ export default class CalculateReleaseDatesService {
       )
     }
     return null
+  }
+
+  private ersedRulesToAdjustmentRow(
+    rules: string[],
+    rulesWithExtraAdjustments: RulesWithExtraAdjustments,
+    releaseDate: string,
+    unadjustedDate: string,
+    adjustedDays: number
+  ): ReleaseDateWithAdjustments {
+    if (rules.includes('ERSED_ONE_YEAR')) {
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments.ERSED_ONE_YEAR
+      return CalculateReleaseDatesService.createAdjustmentRow(
+        releaseDate,
+        ReleaseDateType.ERSED,
+        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
+          adjustedDays
+        )}`
+      )
+    }
+    return CalculateReleaseDatesService.createAdjustmentRow(
+      releaseDate,
+      ReleaseDateType.ERSED,
+      `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)}`
+    )
   }
 
   private tusedRulesToAdjustmentRow(

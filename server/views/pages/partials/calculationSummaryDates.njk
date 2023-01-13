@@ -23,6 +23,10 @@
     <p class="govuk-body govuk-hint govuk-!-font-size-16">HDCED adjusted for the {{model.displayHdcedAdjustmentHint()}} of a concurrent sentence or default term</p>
 {% endmacro %}
 
+{% macro ersedAdjustedByOtherRelease() %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">ERSED adjusted for the ARD of a concurrent default term</p>
+{% endmacro %}
+
 <div class="custom-card">
     <div class="custom-card-main">
         {% if model.releaseDates.SLED %}
@@ -81,6 +85,12 @@
         {% endif %}
         {% if model.releaseDates.TUSED %}
             {{ releaseDateLine('Top up supervision expiry date (TUSED)', 'TUSED-date', model.releaseDates.TUSED) }}
+        {% endif %}
+        {% if model.releaseDates.ERSED %}
+            {{ releaseDateLine('Early Removal Scheme Eligibility Date (ERSED)', 'ERSED-date', model.releaseDates.ERSED) }}
+            {% if model.displayErsedAdjustmentHint() %}
+                {{ ersedAdjustedByOtherRelease()}}
+            {% endif %}
         {% endif %}
     </div>
 </div>
