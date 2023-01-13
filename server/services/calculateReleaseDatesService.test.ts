@@ -7,7 +7,15 @@ import {
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { psiExample16CalculationBreakdown, psiExample25CalculationBreakdown } from './breakdownExamplesTestData'
+import {
+  ersedAdjustedByArdBreakdown,
+  ersedBeforeSentenceBreakdown,
+  ersedHalfwayBreakdown,
+  ersedOneYearBreakdown,
+  ersedTwoThirdsBreakdown,
+  psiExample16CalculationBreakdown,
+  psiExample25CalculationBreakdown,
+} from './breakdownExamplesTestData'
 
 jest.mock('../data/hmppsAuthClient')
 
@@ -257,6 +265,62 @@ describe('Calculate release dates service tests', () => {
           hintText: '16 June 2015 plus 12 months minus 21 days',
         },
       ])
+    })
+
+    it('ERSED halfway', async () => {
+      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedHalfwayBreakdown())
+
+      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+
+      expect(result.calculationBreakdown).toEqual(ersedHalfwayBreakdown())
+
+      expect(result.releaseDatesWithAdjustments).toEqual([
+        { hintText: '01 December 2010 plus 50 days', releaseDate: '2010-12-01', releaseDateType: 'ERSED' },
+      ])
+    })
+    it('ERSED two thirds', async () => {
+      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedTwoThirdsBreakdown())
+
+      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+
+      expect(result.calculationBreakdown).toEqual(ersedTwoThirdsBreakdown())
+
+      expect(result.releaseDatesWithAdjustments).toEqual([
+        { hintText: '20 March 2023 plus 66 days', releaseDate: '2023-03-20', releaseDateType: 'ERSED' },
+      ])
+    })
+    it('ERSED one year', async () => {
+      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedOneYearBreakdown())
+
+      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+
+      expect(result.calculationBreakdown).toEqual(ersedOneYearBreakdown())
+
+      expect(result.releaseDatesWithAdjustments).toEqual([
+        {
+          hintText: '28 July 2024 minus 12 months plus 100 days',
+          releaseDate: '2023-07-28',
+          releaseDateType: 'ERSED',
+        },
+      ])
+    })
+    it('ERSED adjusted to afine', async () => {
+      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedAdjustedByArdBreakdown())
+
+      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+
+      expect(result.calculationBreakdown).toEqual(ersedAdjustedByArdBreakdown())
+
+      expect(result.releaseDatesWithAdjustments.find(it => it.releaseDateType === 'ERSED')).toBeFalsy()
+    })
+    it('ERSED before sentence date', async () => {
+      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedBeforeSentenceBreakdown())
+
+      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+
+      expect(result.calculationBreakdown).toEqual(ersedBeforeSentenceBreakdown())
+
+      expect(result.releaseDatesWithAdjustments.find(it => it.releaseDateType === 'ERSED')).toBeFalsy()
     })
   })
 

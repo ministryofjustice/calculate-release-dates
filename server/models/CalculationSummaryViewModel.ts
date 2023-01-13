@@ -68,6 +68,16 @@ export default class CalculationSummaryViewModel {
     return null
   }
 
+  public displayErsedAdjustmentHint(): boolean {
+    if (this.releaseDates?.ERSED && this.calculationBreakdown?.breakdownByReleaseDateType?.ERSED) {
+      const { rules } = this.calculationBreakdown.breakdownByReleaseDateType.ERSED
+      if (rules.includes('ERSED_ADJUSTED_TO_CONCURRENT_TERM')) {
+        return true
+      }
+    }
+    return false
+  }
+
   public showBreakdown(): boolean {
     return (
       !!this.calculationBreakdown &&
