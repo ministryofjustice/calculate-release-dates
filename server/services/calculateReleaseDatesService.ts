@@ -210,7 +210,7 @@ export default class CalculateReleaseDatesService {
     adjustedDays: number
   ): ReleaseDateWithAdjustments {
     if (rules.includes('ERSED_ONE_YEAR')) {
-      const ruleSpecificAdjustment = rulesWithExtraAdjustments.ERSED_ONE_YEAR
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments['ERSED_ONE_YEAR']
       return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
         ReleaseDateType.ERSED,
