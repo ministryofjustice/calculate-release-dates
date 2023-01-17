@@ -87,7 +87,7 @@
             {{ releaseDateLine('Top up supervision expiry date (TUSED)', 'TUSED-date', model.releaseDates.TUSED) }}
         {% endif %}
         {% if model.releaseDates.ERSED %}
-            {{ releaseDateLine('Early Removal Scheme Eligibility Date (ERSED)', 'ERSED-date', model.releaseDates.ERSED) }}
+            {{ releaseDateLine('Early removal scheme eligibility date (ERSED)', 'ERSED-date', model.releaseDates.ERSED) }}
             {% if model.displayErsedAdjustmentHint() %}
                 {{ ersedAdjustedByOtherRelease()}}
             {% endif %}

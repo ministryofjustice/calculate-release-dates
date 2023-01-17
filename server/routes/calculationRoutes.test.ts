@@ -254,7 +254,7 @@ describe('Calculation routes tests', () => {
           `Some release dates and details are not included because they are not relevant to this person's sentences`
         )
         expect(res.text).toContain(`Monday, 03 February 2020`)
-        expect(res.text).toContain(`Early Removal Scheme Eligibility Date (ERSED)`)
+        expect(res.text).toContain(`Early removal scheme eligibility date (ERSED)`)
       })
   })
 
