@@ -1,6 +1,6 @@
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
-{% if featureToggles.ersed and not model.isActiveRecallOnly() %}
+{% if featureToggles.ersed and model.isActiveRecallOnly() and not model.isErsedElligible() %}
     {% set ersedRecallNotification %}
         <h1 class="govuk-heading-l">Important</h1>
         <h2 class="govuk-heading-m">This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.</h2>

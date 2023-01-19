@@ -65,6 +65,36 @@ const stubbedPrisonerData = {
   } as PrisonApiSentenceDetail,
 } as PrisonApiPrisoner
 
+const stubbedErsedIneligibleSentencesAndOffences = [
+  {
+    sentenceSequence: 3,
+    lineSequence: 3,
+    caseSequence: 3,
+    courtDescription: 'Preston Crown Court',
+    sentenceStatus: 'A',
+    sentenceCategory: '2020',
+    sentenceCalculationType: 'LR_EDS18',
+    sentenceTypeDescription: 'LR_EDS18',
+    sentenceDate: '2021-09-03',
+    terms: [
+      {
+        years: 0,
+        months: 2,
+        weeks: 0,
+        days: 0,
+      },
+    ],
+    offences: [
+      {
+        offenderChargeId: 1,
+        offenceStartDate: '2020-01-01',
+        offenceCode: 'RL05016',
+        offenceDescription: 'Access / exit by unofficial route - railway bye-law',
+      },
+    ],
+  },
+]
+
 const stubbedSentencesAndOffences = [
   {
     terms: [
@@ -371,6 +401,27 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
         expect(res.text).not.toContain('987654')
         expect(res.text).toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
+      })
+  })
+  it('GET /calculation/:nomsId/check-information should show ERSED recall notification banner if recall only', () => {
+    config.featureToggles.ersed = true
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedErsedIneligibleSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
+        expect(res.text).toContain('Important')
+        expect(res.text).toContain(
+          'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
+        )
       })
   })
   it('GET /calculation/:nomsId/check-information should not show ersed checkbox if feature toggle off', () => {
