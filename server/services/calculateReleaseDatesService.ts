@@ -214,8 +214,8 @@ export default class CalculateReleaseDatesService {
       return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
         ReleaseDateType.ERSED,
-        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
-          adjustedDays
+        `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)} ${arithmeticToWords(
+          ruleSpecificAdjustment
         )}`
       )
     }
