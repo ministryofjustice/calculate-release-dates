@@ -34,31 +34,7 @@ export default class SentenceTypes {
 
   private static standardRecallSentenceTypes = ['LR', 'LR_ORO', 'LR_YOI_ORA', 'LR_SEC91_ORA', 'LRSEC250_ORA']
 
-  private static ersedInelligibleSentenceTypes = [
-    '14FTR_ORA',
-    'FTR',
-    'FTR_ORA',
-    'FTR_SCH15',
-    'FTRSCH15_ORA',
-    'FTRSCH18',
-    'FTRSCH18_ORA',
-    'LR',
-    'LR_ORA',
-    'LR_YOI_ORA',
-    'LR_SEC91_ORA',
-    'LRSEC250_ORA',
-    'LR_LASPO_AR',
-    'LR_LASPO_DR',
-    'LR_EDS18',
-    'LR_EDS21',
-    'LR_EDSU18',
-    'LR_SEC236A',
-    'LR_SOPC18',
-    'LR_SOPC21',
-    'A/FINE',
-    'DTO_ORA',
-    'DTO',
-  ]
+  private static dtoSentenceTypes = ['DTO_ORA', 'DTO']
 
   public static isSentenceSds(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
     return this.sdsSentenceTypes.includes(sentence.sentenceCalculationType)
@@ -92,7 +68,7 @@ export default class SentenceTypes {
     return this.standardRecallSentenceTypes.includes(sentence.sentenceCalculationType)
   }
 
-  public static isActiveRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+  public static isRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
     return (
       this.isSentenceEdsRecall(sentence) ||
       this.isSentenceSopcRecall(sentence) ||
@@ -101,7 +77,11 @@ export default class SentenceTypes {
     )
   }
 
+  public static isSentenceDto(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+    return this.dtoSentenceTypes.includes(sentence.sentenceCalculationType)
+  }
+
   public static isSentenceErsedElligible(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
-    return !this.ersedInelligibleSentenceTypes.includes(sentence.sentenceCalculationType)
+    return !(this.isRecall(sentence) || this.isSentenceAfine(sentence) || this.isSentenceDto(sentence))
   }
 }

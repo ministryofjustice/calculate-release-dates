@@ -82,6 +82,6 @@ export default class SentenceAndOffenceViewModel {
   }
 
   public isActiveRecallOnly(): boolean {
-    return this.sentencesAndOffences.every(sentence => SentenceTypes.isActiveRecall(sentence))
+    return this.sentencesAndOffences.every(sentence => SentenceTypes.isRecall(sentence))
   }
 }
