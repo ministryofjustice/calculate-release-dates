@@ -2,6 +2,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 {% set pageTitle = applicationName + " - check information" %}
 {% set pageId = "check-information" %}
@@ -31,8 +32,21 @@
 {% block content %}
     {% set validationErrors = model.validationErrors %}
     {% include "../partials/customErrorBanner.njk" %}
+    {% if featureToggles.ersed and not model.viewJourney and not model.isActiveRecallOnly() %}
+        {% set ersedRecallNotification %}
+            <h1 class="govuk-heading-l">Important</h1>
+            <h2 class="govuk-heading-m">This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.</h2>
+        {% endset %}
+        {{ mojBanner({
+            type: 'information',
+            html: ersedRecallNotification
+        }) }}
+    {% endif %}
+
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
+
             <h1 class="govuk-heading-xl" id="check-nomis-heading">Check sentence and offence information for
                 {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}</h1>
         </div>

@@ -6,7 +6,7 @@
         {{ 'sentence' | pluralise(model.offenceCount) }} from NOMIS.
             </p>
 
-{% if featureToggles.ersed and not model.viewJourney %}
+{% if featureToggles.ersed and not model.viewJourney and model.isErsedElligible() %}
         <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                 <div class="govuk-checkboxes__item float-none">
                         <input class="govuk-checkboxes__input" id="ersed" name="ersed" type="checkbox" value="true" {{ "checked" if model.isErsedChecked() }}/>
