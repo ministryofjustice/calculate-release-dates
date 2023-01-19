@@ -1,3 +1,5 @@
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+
 {% if featureToggles.ersed and not model.isActiveRecallOnly() %}
     {% set ersedRecallNotification %}
         <h1 class="govuk-heading-l">Important</h1>
