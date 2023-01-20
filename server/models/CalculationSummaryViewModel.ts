@@ -92,7 +92,7 @@ export default class CalculationSummaryViewModel {
   }
 
   public isErsedElligible(): boolean {
-    return !!this.sentencesAndOffences?.find(sentence => SentenceTypes.isSentenceErsedElligible(sentence))
+    return this.sentencesAndOffences?.some(sentence => SentenceTypes.isSentenceErsedElligible(sentence))
   }
 
   public isRecallOnly(): boolean {

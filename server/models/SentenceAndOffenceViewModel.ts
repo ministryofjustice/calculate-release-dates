@@ -78,7 +78,7 @@ export default class SentenceAndOffenceViewModel {
   }
 
   public isErsedElligible(): boolean {
-    return !!this.sentencesAndOffences.find(sentence => SentenceTypes.isSentenceErsedElligible(sentence))
+    return this.sentencesAndOffences.some(sentence => SentenceTypes.isSentenceErsedElligible(sentence))
   }
 
   public isRecallOnly(): boolean {

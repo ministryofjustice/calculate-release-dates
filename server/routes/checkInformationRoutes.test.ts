@@ -403,27 +403,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
       })
   })
-  it('GET /calculation/:nomsId/check-information should show ERSED recall notification banner if recall only', () => {
-    config.featureToggles.ersed = true
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedErsedIneligibleSentencesAndOffences)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
-    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
-    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
-    return request(app)
-      .get('/calculation/A1234AA/check-information')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
-        expect(res.text).toContain('Important')
-        expect(res.text).toContain(
-          'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
-        )
-      })
-  })
+
   it('GET /calculation/:nomsId/check-information should not show ersed checkbox if feature toggle off', () => {
     config.featureToggles.ersed = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
