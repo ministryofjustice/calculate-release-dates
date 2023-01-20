@@ -65,36 +65,6 @@ const stubbedPrisonerData = {
   } as PrisonApiSentenceDetail,
 } as PrisonApiPrisoner
 
-const stubbedErsedIneligibleSentencesAndOffences = [
-  {
-    sentenceSequence: 3,
-    lineSequence: 3,
-    caseSequence: 3,
-    courtDescription: 'Preston Crown Court',
-    sentenceStatus: 'A',
-    sentenceCategory: '2020',
-    sentenceCalculationType: 'LR_EDS18',
-    sentenceTypeDescription: 'LR_EDS18',
-    sentenceDate: '2021-09-03',
-    terms: [
-      {
-        years: 0,
-        months: 2,
-        weeks: 0,
-        days: 0,
-      },
-    ],
-    offences: [
-      {
-        offenderChargeId: 1,
-        offenceStartDate: '2020-01-01',
-        offenceCode: 'RL05016',
-        offenceDescription: 'Access / exit by unofficial route - railway bye-law',
-      },
-    ],
-  },
-]
-
 const stubbedSentencesAndOffences = [
   {
     terms: [
