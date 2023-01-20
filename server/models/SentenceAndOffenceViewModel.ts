@@ -78,10 +78,10 @@ export default class SentenceAndOffenceViewModel {
   }
 
   public isErsedElligible(): boolean {
-    return this.sentencesAndOffences.filter(sentence => SentenceTypes.isSentenceErsedElligible(sentence)).length > 0
+    return !!this.sentencesAndOffences.find(sentence => SentenceTypes.isSentenceErsedElligible(sentence))
   }
 
-  public isActiveRecallOnly(): boolean {
+  public isRecallOnly(): boolean {
     return this.sentencesAndOffences.every(sentence => SentenceTypes.isRecall(sentence))
   }
 }

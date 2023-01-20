@@ -335,44 +335,44 @@ describe('View journey routes tests', () => {
           )
         })
     })
-    it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences without ERSED and include recall only notification banner', () => {
+    it('GET /view/:calculationRequestId/calculation-summary should include recall only notification banner', () => {
       config.featureToggles.ersed = true
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedNotificationBannerSentencesAndOffences)
-      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({ ...stubbedUserInput, calculateErsed: false })
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
-        .get('/view/A1234AA/sentences-and-offences/123456')
+        .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
-          expect(res.text).not.toContain(
-            'An Early release scheme eligibility date (ERSED) was included in this calculation'
-          )
           expect(res.text).toContain('Important')
           expect(res.text).toContain(
             'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
           )
         })
     })
-    it('GET /view/:calculationRequestId/sentences-and-offences should not show the ERSED warning banner if no recall only', () => {
+    it('GET /view/:calculationRequestId/calculation-summary should not show the ERSED warning banner if no recall only', () => {
       config.featureToggles.ersed = true
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedErsedAvailableSentenceAndOffence)
-      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({ ...stubbedUserInput, calculateErsed: false })
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
-        .get('/view/A1234AA/sentences-and-offences/123456')
+        .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
-          expect(res.text).not.toContain(
-            'An Early release scheme eligibility date (ERSED) was included in this calculation'
-          )
           expect(res.text).not.toContain('Important')
           expect(res.text).not.toContain(
             'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
