@@ -90,4 +90,12 @@ export default class CalculationSummaryViewModel {
   private allSentencesSupported(): boolean {
     return !this.sentencesAndOffences.find(sentence => !SentenceTypes.isSentenceSds(sentence))
   }
+
+  public isErsedElligible(): boolean {
+    return this.sentencesAndOffences?.some(sentence => SentenceTypes.isSentenceErsedElligible(sentence))
+  }
+
+  public isRecallOnly(): boolean {
+    return this.sentencesAndOffences?.every(sentence => SentenceTypes.isRecall(sentence))
+  }
 }

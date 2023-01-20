@@ -6,7 +6,7 @@
         {{ 'sentence' | pluralise(model.offenceCount) }} from NOMIS.
             </p>
 
-{% if featureToggles.ersed %}
+{% if featureToggles.ersed and model.isErsedElligible() %}
         {% if model.viewJourney %}
                 {% if model.isErsedChecked() %}
                         <p class="govuk-body">An Early release scheme eligibility date (ERSED) was included in this calculation</p>

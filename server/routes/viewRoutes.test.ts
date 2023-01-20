@@ -100,6 +100,59 @@ const stubbedSentencesAndOffences = [
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
+const stubbedNotificationBannerSentencesAndOffences = [
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceCalculationType: 'LR_EDS18',
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    sentenceSequence: 1,
+    offences: [
+      { offenceEndDate: '2021-02-03' },
+      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+      { offenceStartDate: '2021-03-06' },
+      {},
+      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
+    ],
+  } as PrisonApiOffenderSentenceAndOffences,
+]
+
+const stubbedErsedAvailableSentenceAndOffence = [
+  {
+    terms: [
+      {
+        years: 2,
+      },
+    ],
+    caseSequence: 2,
+    lineSequence: 2,
+    sentenceSequence: 2,
+    consecutiveToSequence: 1,
+    sentenceCalculationType: 'LR_EDS18',
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+  {
+    terms: [
+      {
+        years: 2,
+      },
+    ],
+    caseSequence: 2,
+    lineSequence: 2,
+    sentenceSequence: 2,
+    consecutiveToSequence: 1,
+    sentenceCalculationType: 'EDS18',
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+]
+
 const stubbedAdjustments = {
   sentenceAdjustments: [
     {
@@ -279,6 +332,50 @@ describe('View journey routes tests', () => {
           expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
           expect(res.text).not.toContain(
             'An Early release scheme eligibility date (ERSED) was included in this calculation'
+          )
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary should include recall only notification banner', () => {
+      config.featureToggles.ersed = true
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedNotificationBannerSentencesAndOffences)
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Important')
+          expect(res.text).toContain(
+            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
+          )
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary should not show the ERSED warning banner if no recall only', () => {
+      config.featureToggles.ersed = true
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedErsedAvailableSentenceAndOffence)
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).not.toContain('Important')
+          expect(res.text).not.toContain(
+            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
           )
         })
     })

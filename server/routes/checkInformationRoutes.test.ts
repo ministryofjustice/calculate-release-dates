@@ -373,6 +373,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
       })
   })
+
   it('GET /calculation/:nomsId/check-information should not show ersed checkbox if feature toggle off', () => {
     config.featureToggles.ersed = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
