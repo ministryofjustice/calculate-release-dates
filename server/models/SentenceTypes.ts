@@ -32,7 +32,7 @@ export default class SentenceTypes {
 
   private static aFineSentenceTypes = ['A/FINE']
 
-  private static standardRecallSentenceTypes = ['LR', 'LR_ORO', 'LR_YOI_ORA', 'LR_SEC91_ORA', 'LRSEC250_ORA']
+  private static standardRecallSentenceTypes = ['LR', 'LR_ORA', 'LR_YOI_ORA', 'LR_SEC91_ORA', 'LRSEC250_ORA']
 
   private static dtoSentenceTypes = ['DTO_ORA', 'DTO']
 
