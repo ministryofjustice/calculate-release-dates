@@ -7,6 +7,9 @@ enum ReleaseDateType {
   ARD = 'ARD',
   LED = 'LED',
   ERSED = 'ERSED',
+  MTD = 'MTD',
+  ETD = 'ETD',
+  LTD = 'LTD',
 }
 
 export default ReleaseDateType
