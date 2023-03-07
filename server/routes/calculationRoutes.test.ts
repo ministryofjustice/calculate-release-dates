@@ -305,7 +305,7 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
+        expect(res.text).not.toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
         expect(res.text).toContain('Important')
         expect(res.text).toContain(
           'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'

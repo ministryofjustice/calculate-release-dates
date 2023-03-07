@@ -311,9 +311,9 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('Consecutive to  court case 1 count 1')
           expect(res.text).toContain('/view/A1234AA/calculation-summary/123456')
           expect(res.text).toContain('SDS+')
-          expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
+          expect(res.text).not.toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
           expect(res.text).toContain(
-            'An Early release scheme eligibility date (ERSED) was included in this calculation'
+            'An Early removal scheme eligibility date (ERSED) was included in this calculation'
           )
         })
     })
@@ -329,9 +329,9 @@ describe('View journey routes tests', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
+          expect(res.text).not.toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
           expect(res.text).not.toContain(
-            'An Early release scheme eligibility date (ERSED) was included in this calculation'
+            'An Early removal scheme eligibility date (ERSED) was included in this calculation'
           )
         })
     })
