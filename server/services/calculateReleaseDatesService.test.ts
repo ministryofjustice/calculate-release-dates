@@ -298,7 +298,7 @@ describe('Calculate release dates service tests', () => {
 
       expect(result.releaseDatesWithAdjustments).toEqual([
         {
-          hintText: '28 July 2024 minus 12 months plus 100 days',
+          hintText: '28 July 2024 plus 100 days minus 12 months',
           releaseDate: '2023-07-28',
           releaseDateType: 'ERSED',
         },

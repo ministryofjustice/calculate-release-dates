@@ -27,6 +27,7 @@ import {
   pedAdjustedByCrdAndBeforePrrdReleaseDates,
 } from '../services/breakdownExamplesTestData'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -203,6 +204,36 @@ const stubbedSentencesAndOffences = [
     offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
   } as PrisonApiOffenderSentenceAndOffences,
 ]
+
+const stubbedErsedIneligibleSentencesAndOffences = [
+  {
+    sentenceSequence: 3,
+    lineSequence: 3,
+    caseSequence: 3,
+    courtDescription: 'Preston Crown Court',
+    sentenceStatus: 'A',
+    sentenceCategory: '2020',
+    sentenceCalculationType: 'LR_EDS18',
+    sentenceTypeDescription: 'LR_EDS18',
+    sentenceDate: '2021-09-03',
+    terms: [
+      {
+        years: 0,
+        months: 2,
+        weeks: 0,
+        days: 0,
+      },
+    ],
+    offences: [
+      {
+        offenderChargeId: 1,
+        offenceStartDate: '2020-01-01',
+        offenceCode: 'RL05016',
+        offenceDescription: 'Access / exit by unofficial route - railway bye-law',
+      },
+    ],
+  },
+]
 beforeEach(() => {
   app = appWithAllRoutes({
     userService,
@@ -254,7 +285,31 @@ describe('Calculation routes tests', () => {
           `Some release dates and details are not included because they are not relevant to this person's sentences`
         )
         expect(res.text).toContain(`Monday, 03 February 2020`)
-        expect(res.text).toContain(`Early Removal Scheme Eligibility Date (ERSED)`)
+        expect(res.text).toContain(`Early removal scheme eligibility date (ERSED)`)
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should show ERSED recall notification banner if recall only', () => {
+    config.featureToggles.ersed = true
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedErsedIneligibleSentencesAndOffences)
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456')
+      .expect(200)
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
+        expect(res.text).toContain('Important')
+        expect(res.text).toContain(
+          'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
+        )
       })
   })
 
@@ -275,6 +330,10 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('PED adjusted for the CRD of a concurrent sentence or default term')
         expect(res.text).toContain(
           'The post recall release date (PRRD) of Tuesday, 18 March 2025 is later than the PED'
+        )
+        expect(res.text).not.toContain('Important')
+        expect(res.text).not.toContain(
+          'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
         )
       })
   })

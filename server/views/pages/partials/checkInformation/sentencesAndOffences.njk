@@ -6,14 +6,20 @@
         {{ 'sentence' | pluralise(model.offenceCount) }} from NOMIS.
             </p>
 
-{% if featureToggles.ersed and not model.viewJourney %}
-        <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-                <div class="govuk-checkboxes__item float-none">
-                        <input class="govuk-checkboxes__input" id="ersed" name="ersed" type="checkbox" value="true" {{ "checked" if model.isErsedChecked() }}/>
-                        <label class="govuk-label govuk-checkboxes__label" for="ersed">Include an Early release scheme eligibility date (ERSED)</label>
-                        <div class="govuk-hint govuk-checkboxes__hint">Not applicable for terror or terror-related offences</div>
+{% if featureToggles.ersed and model.isErsedElligible() %}
+        {% if model.viewJourney %}
+                {% if model.isErsedChecked() %}
+                        <p class="govuk-body">An Early release scheme eligibility date (ERSED) was included in this calculation</p>
+                {% endif %}
+        {% else %}
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item float-none">
+                                <input class="govuk-checkboxes__input" id="ersed" name="ersed" type="checkbox" value="true" {{ "checked" if model.isErsedChecked() }}/>
+                                <label class="govuk-label govuk-checkboxes__label" for="ersed">Include an Early release scheme eligibility date (ERSED) in this calculation</label>
+                                <div class="govuk-hint govuk-checkboxes__hint">Not applicable for terror or terror-related offences</div>
+                        </div>
                 </div>
-        </div>
+        {% endif %}
 {% endif %}
 <div id="sentences" class="govuk-!-margin-top-8">
         {% for case in model.cases %}

@@ -14,6 +14,7 @@ import { groupBy, indexBy } from '../utils/utils'
 import AdjustmentsViewModel from './AdjustmentsViewModel'
 import CalculationQuestionTypes from './CalculationQuestionTypes'
 import CourtCaseTableViewModel from './CourtCaseTableViewModel'
+import SentenceTypes from './SentenceTypes'
 
 export default class SentenceAndOffenceViewModel {
   public adjustments: AdjustmentsViewModel
@@ -25,6 +26,8 @@ export default class SentenceAndOffenceViewModel {
   public offenceCount: number
 
   public returnToCustodyDate?: string
+
+  public sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
 
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
@@ -50,6 +53,7 @@ export default class SentenceAndOffenceViewModel {
       previousValue + currentValue.offences.length
     this.offenceCount = sentencesAndOffences.reduce(reducer, 0)
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
+    this.sentencesAndOffences = sentencesAndOffences
   }
 
   public rowIsSdsPlus(sentence: PrisonApiOffenderSentenceAndOffences, offence: PrisonApiOffenderOffence): boolean {
@@ -71,5 +75,13 @@ export default class SentenceAndOffenceViewModel {
 
   public isErsedChecked(): boolean {
     return this.userInputs?.calculateErsed === true
+  }
+
+  public isErsedElligible(): boolean {
+    return this.sentencesAndOffences.some(sentence => SentenceTypes.isSentenceErsedElligible(sentence))
+  }
+
+  public isRecallOnly(): boolean {
+    return this.sentencesAndOffences.every(sentence => SentenceTypes.isRecall(sentence))
   }
 }

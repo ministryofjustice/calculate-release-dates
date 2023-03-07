@@ -370,9 +370,10 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('£3,000.00')
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
         expect(res.text).not.toContain('987654')
-        expect(res.text).toContain('Include an Early release scheme eligibility date (ERSED)')
+        expect(res.text).toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
       })
   })
+
   it('GET /calculation/:nomsId/check-information should not show ersed checkbox if feature toggle off', () => {
     config.featureToggles.ersed = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -387,7 +388,7 @@ describe('Check information routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED)')
+        expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
       })
   })
   it('GET /calculation/:nomsId/check-information back button should reutrn to dps start page if no calc questions', () => {

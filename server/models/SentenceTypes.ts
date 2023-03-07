@@ -32,6 +32,10 @@ export default class SentenceTypes {
 
   private static aFineSentenceTypes = ['A/FINE']
 
+  private static standardRecallSentenceTypes = ['LR', 'LR_ORA', 'LR_YOI_ORA', 'LR_SEC91_ORA', 'LRSEC250_ORA']
+
+  private static dtoSentenceTypes = ['DTO_ORA', 'DTO']
+
   public static isSentenceSds(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
     return this.sdsSentenceTypes.includes(sentence.sentenceCalculationType)
   }
@@ -58,5 +62,26 @@ export default class SentenceTypes {
 
   public static isSentenceEdsRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
     return this.edsRecallSentenceTypes.includes(sentence.sentenceCalculationType)
+  }
+
+  public static isSentenceStandardRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+    return this.standardRecallSentenceTypes.includes(sentence.sentenceCalculationType)
+  }
+
+  public static isRecall(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+    return (
+      this.isSentenceEdsRecall(sentence) ||
+      this.isSentenceSopcRecall(sentence) ||
+      this.isSentenceFixedTermRecall(sentence) ||
+      this.isSentenceStandardRecall(sentence)
+    )
+  }
+
+  public static isSentenceDto(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+    return this.dtoSentenceTypes.includes(sentence.sentenceCalculationType)
+  }
+
+  public static isSentenceErsedElligible(sentence: PrisonApiOffenderSentenceAndOffences): boolean {
+    return !(this.isRecall(sentence) || this.isSentenceAfine(sentence) || this.isSentenceDto(sentence))
   }
 }

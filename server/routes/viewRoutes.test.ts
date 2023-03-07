@@ -21,6 +21,7 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -94,6 +95,59 @@ const stubbedSentencesAndOffences = [
     sentenceSequence: 2,
     consecutiveToSequence: 1,
     sentenceCalculationType: 'ADIMP',
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+]
+
+const stubbedNotificationBannerSentencesAndOffences = [
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceCalculationType: 'LR_EDS18',
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    sentenceSequence: 1,
+    offences: [
+      { offenceEndDate: '2021-02-03' },
+      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+      { offenceStartDate: '2021-03-06' },
+      {},
+      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
+    ],
+  } as PrisonApiOffenderSentenceAndOffences,
+]
+
+const stubbedErsedAvailableSentenceAndOffence = [
+  {
+    terms: [
+      {
+        years: 2,
+      },
+    ],
+    caseSequence: 2,
+    lineSequence: 2,
+    sentenceSequence: 2,
+    consecutiveToSequence: 1,
+    sentenceCalculationType: 'LR_EDS18',
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+  {
+    terms: [
+      {
+        years: 2,
+      },
+    ],
+    caseSequence: 2,
+    lineSequence: 2,
+    sentenceSequence: 2,
+    consecutiveToSequence: 1,
+    sentenceCalculationType: 'EDS18',
     sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
   } as PrisonApiOffenderSentenceAndOffences,
@@ -187,6 +241,7 @@ const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
   },
 ]
 const stubbedUserInput = {
+  calculateErsed: true,
   sentenceCalculationUserInputs: [
     {
       userInputType: 'ORIGINAL',
@@ -229,6 +284,7 @@ describe('View journey routes tests', () => {
 
   describe('View sentence and offences tests', () => {
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences of the calculation', () => {
+      config.featureToggles.ersed = true
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
@@ -255,7 +311,72 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('Consecutive to  court case 1 count 1')
           expect(res.text).toContain('/view/A1234AA/calculation-summary/123456')
           expect(res.text).toContain('SDS+')
-          expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED)')
+          expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
+          expect(res.text).toContain(
+            'An Early release scheme eligibility date (ERSED) was included in this calculation'
+          )
+        })
+    })
+    it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences without ERSED', () => {
+      config.featureToggles.ersed = true
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({ ...stubbedUserInput, calculateErsed: false })
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).not.toContain('Include an Early release scheme eligibility date (ERSED) in this calculation')
+          expect(res.text).not.toContain(
+            'An Early release scheme eligibility date (ERSED) was included in this calculation'
+          )
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary should include recall only notification banner', () => {
+      config.featureToggles.ersed = true
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedNotificationBannerSentencesAndOffences)
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Important')
+          expect(res.text).toContain(
+            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
+          )
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary should not show the ERSED warning banner if no recall only', () => {
+      config.featureToggles.ersed = true
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedErsedAvailableSentenceAndOffence)
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).not.toContain('Important')
+          expect(res.text).not.toContain(
+            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
+          )
         })
     })
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences of the calculation if there is no user inputs', () => {
