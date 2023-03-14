@@ -2206,6 +2206,42 @@ export interface components {
     SentenceCalcDates: {
       /**
        * Format: date
+       * @description MTD - date calculated by nomis.
+       * @example 2020-02-03
+       */
+      mtdCalculatedDate: string
+      /**
+       * Format: date
+       * @description MTD - date overriden in nomis.
+       * @example 2020-02-03
+       */
+      mtdOverrideDate: string
+      /**
+       * Format: date
+       * @description ETD - date calculated by nomis.
+       * @example 2020-02-03
+       */
+      etdCalculatedDate: string
+      /**
+       * Format: date
+       * @description ETD - date overriden in nomis.
+       * @example 2020-02-03
+       */
+      etdOverrideDate: string
+      /**
+       * Format: date
+       * @description LTD - date calculated by nomis.
+       * @example 2020-02-03
+       */
+      ltdOverrideDate: string
+      /**
+       * Format: date
+       * @description LTD - date overriden in nomis.
+       * @example 2020-02-03
+       */
+      ltdCalculatedDate: string
+      /**
+       * Format: date
        * @description SED - date on which sentence expires.
        * @example 2020-02-03
        */
