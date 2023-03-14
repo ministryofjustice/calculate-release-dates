@@ -243,19 +243,22 @@ export default class OneThousandCalculationsService {
         ? ''
         : OneThousandCalculationsService.areSame(nomisDates?.homeDetentionCurfewEligibilityDate, calc?.dates?.HDCED),
       ETD: errorText || calc?.dates?.ETD,
-      NOMIS_ETD: nomisDates?.etdCalculatedDate,
+      NOMIS_ETD: nomisDates?.earlyTermDate,
+      NOMIS_ETD_CALCULATED: nomisDates?.etdCalculatedDate,
       NOMIS_ETD_OVERRIDE: nomisDates?.etdOverrideDate,
       ETD_MATCH: errorText
         ? ''
         : OneThousandCalculationsService.areSame(nomisDates?.etdCalculatedDate, calc?.dates?.ETD),
       MTD: errorText || calc?.dates?.MTD,
-      NOMIS_MTD: nomisDates?.mtdCalculatedDate,
+      NOMIS_MTD: nomisDates?.midTermDate,
+      NOMIS_MTD_CALCULATED: nomisDates?.mtdCalculatedDate,
       NOMIS_MTD_OVERRIDE: nomisDates?.mtdOverrideDate,
       MTD_MATCH: errorText
         ? ''
         : OneThousandCalculationsService.areSame(nomisDates?.mtdCalculatedDate, calc?.dates?.MTD),
       LTD: errorText || calc?.dates?.LTD,
-      NOMIS_LTD: nomisDates?.ltdCalculatedDate,
+      NOMIS_LTD: nomisDates?.lateTermDate,
+      NOMIS_LTD_CALCULATED: nomisDates?.ltdCalculatedDate,
       NOMIS_LTD_OVERRIDE: nomisDates?.ltdOverrideDate,
       LTD_MATCH: errorText
         ? ''
