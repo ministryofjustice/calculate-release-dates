@@ -4,7 +4,8 @@
 {% endmacro %}
 
 {% macro holidayLine(dataQa, releaseDate, isBankHoliday) %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }} when adjusted to a working day</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16"
+       data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }} when adjusted to a working day</p>
 {% endmacro %}
 
 {% macro hdcedBeforePrrdLine(prrd) %}
@@ -16,11 +17,11 @@
 {% endmacro %}
 
 {% macro pedAdjustedByOtherRelease() %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the {{model.displayPedAdjustmentHint()}} of a concurrent sentence or default term</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the {{ model.displayPedAdjustmentHint() }} of a concurrent sentence or default term</p>
 {% endmacro %}
 
 {% macro hdcedAdjustedByOtherRelease() %}
-    <p class="govuk-body govuk-hint govuk-!-font-size-16">HDCED adjusted for the {{model.displayHdcedAdjustmentHint()}} of a concurrent sentence or default term</p>
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">HDCED adjusted for the {{ model.displayHdcedAdjustmentHint() }} of a concurrent sentence or default term</p>
 {% endmacro %}
 
 {% macro ersedAdjustedByOtherRelease() %}
@@ -56,13 +57,13 @@
         {% if model.releaseDates.PED %}
             {{ releaseDateLine('Parole eligibility date (PED)', 'PED-date', model.releaseDates.PED) }}
             {% if model.displayPedAdjustmentHint() %}
-                {{ pedAdjustedByOtherRelease()}}
+                {{ pedAdjustedByOtherRelease() }}
             {% endif %}
             {% if model.weekendAdjustments.PED %}
                 {{ holidayLine('PED-weekend-adjustment', model.weekendAdjustments.PED.date, model.weekendAdjustments.PED.adjustedForBankHoliday) }}
             {% endif %}
             {% if model.pedBeforePRRD() %}
-                {{ pedBeforePrrdLine(model.calculationBreakdown.otherDates.PRRD)}}
+                {{ pedBeforePrrdLine(model.calculationBreakdown.otherDates.PRRD) }}
             {% endif %}
         {% endif %}
         {% if model.releaseDates.PRRD %}
@@ -74,13 +75,24 @@
         {% if model.releaseDates.HDCED %}
             {{ releaseDateLine('Home detention curfew eligibility date (HDCED)', 'HDCED-date', model.releaseDates.HDCED) }}
             {% if model.displayHdcedAdjustmentHint() %}
-                {{ hdcedAdjustedByOtherRelease()}}
+                {{ hdcedAdjustedByOtherRelease() }}
             {% endif %}
             {% if model.weekendAdjustments.HDCED %}
                 {{ holidayLine('HDCED-weekend-adjustment', model.weekendAdjustments.HDCED.date, model.weekendAdjustments.HDCED.adjustedForBankHoliday) }}
             {% endif %}
             {% if model.hdcedBeforePRRD() %}
-                {{ hdcedBeforePrrdLine(model.calculationBreakdown.otherDates.PRRD)}}
+                {{ hdcedBeforePrrdLine(model.calculationBreakdown.otherDates.PRRD) }}
+            {% endif %}
+        {% endif %}
+        {% if featureToggles.dto %}
+            {% if model.releaseDates.ETD %}
+                {{ releaseDateLine('Early transfer date (ETD)', 'ETD-date', model.releaseDates.ETD) }}
+            {% endif %}
+            {% if model.releaseDates.MTD %}
+                {{ releaseDateLine('Mid term date (MTD)', 'MTD-date', model.releaseDates.MTD) }}
+            {% endif %}
+            {% if model.releaseDates.LTD %}
+                {{ releaseDateLine('Late transfer date (LTD)', 'LTD-date', model.releaseDates.LTD) }}
             {% endif %}
         {% endif %}
         {% if model.releaseDates.TUSED %}
@@ -89,7 +101,7 @@
         {% if model.releaseDates.ERSED %}
             {{ releaseDateLine('Early removal scheme eligibility date (ERSED)', 'ERSED-date', model.releaseDates.ERSED) }}
             {% if model.displayErsedAdjustmentHint() %}
-                {{ ersedAdjustedByOtherRelease()}}
+                {{ ersedAdjustedByOtherRelease() }}
             {% endif %}
         {% endif %}
     </div>
