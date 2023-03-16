@@ -100,7 +100,15 @@
                 <li>Recall Serious Offence - 18 CJA03 POCCA 2000</li>
                 <li>Recall Serious Offence Sec 250 Sentencing Code (U18)</li>
             </ul>
-
+            {% if featureToggles.dto %}
+                <h2 class="govuk-heading-m">Detention and training orders</h2>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>Detention and Training Order</li>
+                    <li>ORA Detention and Training Order</li>
+                </ul>
+                <p class="govuk-body">Please note, <a href="#unsupported-sentences">some DTO scenarios are not supported.</a>
+                </p>
+            {% endif %}
             <h2 id="unsupported-sentences" class="govuk-heading-m">Unsupported scenarios</h2>
             <p class="govuk-body">Some supported sentence types have scenarios that cannot currently be calculated. These are:</p>
             <ul class="govuk-list govuk-list--bullet">
@@ -109,6 +117,11 @@
                 <li>EDS100 sentence</li>
                 <li>Consecutive Default terms</li>
                 <li>default terms that have been paid in part</li>
+                {% if featureToggles.dto %}
+                <li>DTO consecutive to non-DTO sentence</li>
+                <li>non-DTO sentence consecutive to DTO</li>
+                <li>Breach terms (SEC104 or SEC105) for DTO</li>
+                {% endif %}
             </ul>
             <p class="govuk-body">Release dates cannot be calculated for prisoners that have:</p>
             <ul class="govuk-list govuk-list--bullet">
