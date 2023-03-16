@@ -320,6 +320,24 @@ export default class CalculateReleaseDatesService {
         adjustments.PED = adjustment
       }
     }
+    if (calculation.dates.ETD) {
+      const adjustment = await client.getPreviousWorkingDay(calculation.dates.ETD)
+      if (adjustment.date !== calculation.dates.ETD) {
+        adjustments.ETD = adjustment
+      }
+    }
+    if (calculation.dates.MTD) {
+      const adjustment = await client.getPreviousWorkingDay(calculation.dates.MTD)
+      if (adjustment.date !== calculation.dates.MTD) {
+        adjustments.MTD = adjustment
+      }
+    }
+    if (calculation.dates.LTD) {
+      const adjustment = await client.getPreviousWorkingDay(calculation.dates.LTD)
+      if (adjustment.date !== calculation.dates.LTD) {
+        adjustments.LTD = adjustment
+      }
+    }
     return adjustments
   }
 
