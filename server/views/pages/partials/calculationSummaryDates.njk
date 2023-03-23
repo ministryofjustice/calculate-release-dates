@@ -28,6 +28,30 @@
     <p class="govuk-body govuk-hint govuk-!-font-size-16">ERSED adjusted for the ARD of a concurrent default term</p>
 {% endmacro %}
 
+{% macro ardBeforeMtd() %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Automatic Release Date (ARD)</p>
+{% endmacro %}
+
+{% macro crdBeforeMtd() %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Conditional Release Date (CRD)</p>
+{% endmacro %}
+
+{% macro pedBeforeMtd() %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Parole Eligibility Date (PED)</p>
+{% endmacro %}
+
+{% macro hdcedBeforeMtd() %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Home detention curfew eligibility date (HDCED)</p>
+{% endmacro %}
+
+{% macro displayMtdHintText() %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">{{ model.mtdHintText() }}</p>
+{% endmacro %}
+
+{% macro ersedAdjustedByMtd() %}
+    <p class="govuk-body govuk-hint govuk-!-font-size-16">Adjusted to Mid term date (MTD) of the Detention and training order (DTO)</p>
+{% endmacro %}
+
 <div class="custom-card">
     <div class="custom-card-main">
         {% if model.releaseDates.SLED %}
@@ -47,12 +71,18 @@
             {% if model.weekendAdjustments.ARD %}
                 {{ holidayLine('ARD-weekend-adjustment', model.weekendAdjustments.ARD.date, model.weekendAdjustments.ARD.adjustedForBankHoliday) }}
             {% endif %}
+            {% if model.displayArdBeforeMtd() %}
+                {{ ardBeforeMtd() }}
+            {%  endif  %}
         {% endif %}
         {% if model.releaseDates.CRD %}
             {{ releaseDateLine('Conditional release date (CRD)', 'CRD-date', model.releaseDates.CRD) }}
             {% if model.weekendAdjustments.CRD %}
                 {{ holidayLine('CRD-weekend-adjustment', model.weekendAdjustments.CRD.date, model.weekendAdjustments.CRD.adjustedForBankHoliday) }}
             {% endif %}
+            {% if model.displayCrdBeforeMtd() %}
+                {{ crdBeforeMtd() }}
+            {%  endif  %}
         {% endif %}
         {% if model.releaseDates.PED %}
             {{ releaseDateLine('Parole eligibility date (PED)', 'PED-date', model.releaseDates.PED) }}
@@ -65,6 +95,9 @@
             {% if model.pedBeforePRRD() %}
                 {{ pedBeforePrrdLine(model.calculationBreakdown.otherDates.PRRD) }}
             {% endif %}
+            {% if model.displayPedBeforeMtd() %}
+                {{ pedBeforeMtd() }}
+            {%  endif  %}
         {% endif %}
         {% if model.releaseDates.PRRD %}
             {{ releaseDateLine('Post recall release date (PRRD)', 'PRRD-date', model.releaseDates.PRRD) }}
@@ -83,6 +116,9 @@
             {% if model.hdcedBeforePRRD() %}
                 {{ hdcedBeforePrrdLine(model.calculationBreakdown.otherDates.PRRD) }}
             {% endif %}
+            {% if model.displayHdcedBeforeMtd() %}
+                {{ hdcedBeforeMtd() }}
+            {%  endif  %}
         {% endif %}
         {% if featureToggles.dto %}
             {% if model.releaseDates.ETD %}
@@ -95,6 +131,9 @@
                 {{ releaseDateLine('Mid term date (MTD)', 'MTD-date', model.releaseDates.MTD) }}
                 {% if model.weekendAdjustments.MTD %}
                     {{ holidayLine('MTD-weekend-adjustment', model.weekendAdjustments.MTD.date, model.weekendAdjustments.MTD.adjustedForBankHoliday) }}
+                {% endif %}
+                {% if model.mtdHintText() %}
+                    {{ displayMtdHintText() }}
                 {% endif %}
             {% endif %}
             {% if model.releaseDates.LTD %}
@@ -112,6 +151,9 @@
             {{ releaseDateLine('Early removal scheme eligibility date (ERSED)', 'ERSED-date', model.releaseDates.ERSED) }}
             {% if model.displayErsedAdjustmentHint() %}
                 {{ ersedAdjustedByOtherRelease() }}
+            {% endif %}
+            {% if model.ersedAdjustedByMtd() %}
+                {{ ersedAdjustedByMtd() }}
             {% endif %}
         {% endif %}
     </div>

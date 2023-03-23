@@ -321,6 +321,168 @@ export function hdcedAdjustedToArdReleaseDates(): BookingCalculation {
   }
 }
 
+export function mtdLaterThanCrd(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      CRD: '2022-12-20',
+      MTD: '2023-12-20',
+      HDCED: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function mtdLaterThanArd(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      ARD: '2022-12-20',
+      MTD: '2023-12-20',
+      HDCED: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function mtdLaterThanPed(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      PED: '2022-12-20',
+      MTD: '2023-12-20',
+      HDCED: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function mtdLaterThanHdcedWithCrd(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      CRD: '2024-12-20',
+      MTD: '2023-12-20',
+      HDCED: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function mtdLaterThanHdcedWithArd(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      ARD: '2024-12-20',
+      MTD: '2023-12-20',
+      HDCED: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function mtdBeforeHdcedAndCrd(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      CRD: '2024-12-20',
+      MTD: '2021-12-20',
+      HDCED: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function mtdBeforePedAndCrd(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      CRD: '2024-12-20',
+      MTD: '2021-12-20',
+      PED: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function ersedBeforeMtdBeforeCrd(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      CRD: '2024-12-20',
+      ERSED: '2021-12-20',
+      MTD: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
+export function ersedBeforeCrdBeforeMtd(): BookingCalculation {
+  return {
+    dates: {
+      SLED: '2023-09-20',
+      MTD: '2024-12-20',
+      ERSED: '2021-12-20',
+      CRD: '2022-08-14',
+      ESED: '2023-09-20',
+    },
+    calculationRequestId: 1,
+    bookingId: 1,
+    prisonerId: 'A1234AA',
+    calculationStatus: 'PRELIMINARY',
+    calculationFragments: null,
+    effectiveSentenceLength: null,
+  }
+}
+
 export function ersedAdjustedByArdReleaseDate(): BookingCalculation {
   return {
     dates: {

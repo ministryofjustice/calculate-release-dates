@@ -21,8 +21,17 @@ import UserInputService from '../services/userInputService'
 import {
   ersedAdjustedByArdBreakdown,
   ersedAdjustedByArdReleaseDate,
+  ersedBeforeCrdBeforeMtd,
+  ersedBeforeMtdBeforeCrd,
   hdcedAdjustedToArd,
   hdcedAdjustedToArdReleaseDates,
+  mtdBeforeHdcedAndCrd,
+  mtdBeforePedAndCrd,
+  mtdLaterThanArd,
+  mtdLaterThanCrd,
+  mtdLaterThanHdcedWithArd,
+  mtdLaterThanHdcedWithCrd,
+  mtdLaterThanPed,
   pedAdjustedByCrdAndBeforePrrdBreakdown,
   pedAdjustedByCrdAndBeforePrrdReleaseDates,
 } from '../services/breakdownExamplesTestData'
@@ -205,6 +214,42 @@ const stubbedSentencesAndOffences = [
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
+const stubbedDtoAndNonDto = [
+  {
+    terms: [
+      {
+        months: 4,
+      },
+    ],
+    sentenceCalculationType: 'DTO',
+    sentenceTypeDescription: 'Detention And Training Order Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    sentenceSequence: 1,
+    offences: [
+      { offenceEndDate: '2021-02-03' },
+      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+      { offenceStartDate: '2021-03-06' },
+      {},
+      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
+    ],
+  } as PrisonApiOffenderSentenceAndOffences,
+  {
+    terms: [
+      {
+        years: 2,
+      },
+    ],
+    caseSequence: 2,
+    lineSequence: 2,
+    sentenceSequence: 2,
+    consecutiveToSequence: 1,
+    sentenceCalculationType: 'ADIMP',
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+  } as PrisonApiOffenderSentenceAndOffences,
+]
+
 const stubbedErsedIneligibleSentencesAndOffences = [
   {
     sentenceSequence: 3,
@@ -353,6 +398,215 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('HDCED adjusted for the ARD of a concurrent sentence or default term')
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date being later than the CRD', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanCrd())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'The Detention and training order (DTO) release date is later than the Conditional Release Date (CRD)'
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date being later than the ARD', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanArd())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'The Detention and training order (DTO) release date is later than the Automatic Release Date (ARD)'
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date being later than the PED', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanPed())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'The Detention and training order (DTO) release date is later than the Parole Eligibility Date (PED)'
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date being later than the HDCED', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanHdcedWithCrd())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'The Detention and training order (DTO) release date is later than the Home detention curfew eligibility date (HDCED)'
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date falls between the HDCED & CRD', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanHdcedWithCrd())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Conditional release date)'
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date falls between the HDCED & ARD', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanHdcedWithArd())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Automatic release date)'
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date falls before the HDCED & CRD/ARD', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdBeforeHdcedAndCrd())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'Release from the Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Home Detention Curfew Eligibility Date)'
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date falls before the PED & CRD', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdBeforePedAndCrd())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Parole Eligibility Date)'
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the ersed being adjusted to the MTD', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedBeforeMtdBeforeCrd())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Adjusted to Mid term date (MTD) of the Detention and training order (DTO)')
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should display notification when ERSED cannot happen because of DTO', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedBeforeCrdBeforeMtd())
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    config.featureToggles.dto = true
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'Early removal cannot happen as release from the Detention Training Order (DTO) is later than the Conditional Release Date (CRD).'
+        )
+        expect(res.text).toContain('Important')
       })
   })
 
