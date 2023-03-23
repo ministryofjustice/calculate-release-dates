@@ -36,6 +36,7 @@
     {% set validationErrors = model.validationErrors %}
     {% include "../partials/customErrorBanner.njk" %}
     {% include "../partials/ersedRecallNotificationBanner.njk" %}
+    {% include "../partials/ersedCannotHappenNotificationBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Release dates {% if model.prisonerDetail %} for {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}

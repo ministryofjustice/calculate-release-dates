@@ -98,4 +98,84 @@ export default class CalculationSummaryViewModel {
   public isRecallOnly(): boolean {
     return this.sentencesAndOffences?.every(sentence => SentenceTypes.isRecall(sentence))
   }
+
+  public hasConcurrentDtoAndCrdArdSentence(): boolean {
+    return (
+      this.sentencesAndOffences?.some(sentence => SentenceTypes.isSentenceDto(sentence)) &&
+      this.sentencesAndOffences?.some(sentence => !SentenceTypes.isSentenceDto(sentence))
+    )
+  }
+
+  private dateBeforeAnother(dateA: string, dateB: string): boolean {
+    if (dateA && dateB) {
+      const dayjsDateA = dayjs(dateA)
+      const dayjsDateB = dayjs(dateB)
+      return dayjsDateA < dayjsDateB
+    }
+    return false
+  }
+
+  private displayDateBeforeMtd(date: string): boolean {
+    if (this.hasConcurrentDtoAndCrdArdSentence()) {
+      return this.dateBeforeAnother(date, this.releaseDates?.MTD)
+    }
+    return false
+  }
+
+  public displayCrdBeforeMtd(): boolean {
+    return this.displayDateBeforeMtd(this.releaseDates?.CRD)
+  }
+
+  public displayArdBeforeMtd(): boolean {
+    return this.displayDateBeforeMtd(this.releaseDates?.ARD)
+  }
+
+  public displayPedBeforeMtd(): boolean {
+    return this.displayDateBeforeMtd(this.releaseDates?.PED)
+  }
+
+  public displayHdcedBeforeMtd(): boolean {
+    return this.displayDateBeforeMtd(this.releaseDates?.HDCED)
+  }
+
+  public mtdHintText(): string {
+    const displayHdcedBeforeMtd = this.displayHdcedBeforeMtd()
+    const pedBeforeMtd = this.displayPedBeforeMtd()
+    const mtdBeforeCrd = this.dateBeforeAnother(this.releaseDates?.MTD, this.releaseDates?.CRD)
+    const mtdBeforeArd = this.dateBeforeAnother(this.releaseDates?.MTD, this.releaseDates?.ARD)
+    const mtdBeforeHdced = this.dateBeforeAnother(this.releaseDates?.MTD, this.releaseDates?.HDCED)
+    const hdcedBeforeCrd = this.dateBeforeAnother(this.releaseDates?.HDCED, this.releaseDates?.CRD)
+    const hdcedBeforeArd = this.dateBeforeAnother(this.releaseDates?.HDCED, this.releaseDates?.ARD)
+    const mtdBeforePed = this.dateBeforeAnother(this.releaseDates?.MTD, this.releaseDates?.PED)
+    const pedBeforeCrd = this.dateBeforeAnother(this.releaseDates?.PED, this.releaseDates?.CRD)
+    if (this.hasConcurrentDtoAndCrdArdSentence()) {
+      if (displayHdcedBeforeMtd || pedBeforeMtd) {
+        if (mtdBeforeCrd) {
+          return 'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Conditional release date)'
+        }
+        if (mtdBeforeArd) {
+          return 'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Automatic release date)'
+        }
+      }
+      if (mtdBeforeHdced && (hdcedBeforeCrd || hdcedBeforeArd)) {
+        return 'Release from the Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Home Detention Curfew Eligibility Date)'
+      }
+      if (mtdBeforePed && pedBeforeCrd) {
+        return 'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Parole Eligibility Date)'
+      }
+    }
+    return null
+  }
+
+  public ersedAdjustedByMtd(): boolean {
+    const mtdBeforeCrd = this.dateBeforeAnother(this.releaseDates?.MTD, this.releaseDates?.CRD)
+    const ersedBeforeMtd = this.dateBeforeAnother(this.releaseDates?.ERSED, this.releaseDates?.MTD)
+    return ersedBeforeMtd && mtdBeforeCrd
+  }
+
+  public ersedNotApplicableDueToDtoLaterThanCrd(): boolean {
+    const ersedBeforeCrd = this.dateBeforeAnother(this.releaseDates?.ERSED, this.releaseDates?.CRD)
+    const crdBeforeMtd = this.dateBeforeAnother(this.releaseDates?.CRD, this.releaseDates?.MTD)
+    return ersedBeforeCrd && crdBeforeMtd
+  }
 }
