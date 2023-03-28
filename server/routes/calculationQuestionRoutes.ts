@@ -149,7 +149,7 @@ export default class CalculationQuestionRoutes {
           .filter((it: CalculationSentenceUserInput) => !!it),
       ]
 
-      this.userInputService.setCalculationUserInputForPrisoner(req, nomsId, userInputs)
+      this.userInputService.setCalculationUserInputForPrisoner(req, nomsId as keyof CalculationUserInputs, userInputs)
 
       const nextQuestion = this.nextQuestion(calculationQuestions, type)
       if (nextQuestion) {

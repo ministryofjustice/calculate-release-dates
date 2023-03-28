@@ -76,7 +76,7 @@ export default class CheckInformationRoutes {
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     userInputs.calculateErsed = req.body.ersed === 'true'
-    this.userInputService.setCalculationUserInputForPrisoner(req, nomsId, userInputs)
+    this.userInputService.setCalculationUserInputForPrisoner(req, nomsId as keyof CalculationUserInputs, userInputs)
 
     const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
     if (errors.messages.length > 0) {

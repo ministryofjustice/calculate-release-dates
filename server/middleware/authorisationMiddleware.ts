@@ -5,8 +5,8 @@ import AuthorisedRoles from '../enumerations/authorisedRoles'
 
 const isAuthorisedRole = (role: string): boolean =>
   Object.keys(AuthorisedRoles)
-    .map(key => AuthorisedRoles[key])
-    .includes(role)
+    .map(key => AuthorisedRoles[key as keyof typeof AuthorisedRoles])
+    .includes(AuthorisedRoles[role as keyof typeof AuthorisedRoles])
 
 export default function authorisationMiddleware(req: Request, res: Response, next: NextFunction): void {
   if (res.locals && res.locals.user && res.locals.user.token) {

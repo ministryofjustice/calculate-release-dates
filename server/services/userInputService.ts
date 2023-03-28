@@ -2,28 +2,32 @@ import { Request } from 'express'
 import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class UserInputService {
-  public setCalculationUserInputForPrisoner(req: Request, nomsId: string, userInputs: CalculationUserInputs): void {
+  public setCalculationUserInputForPrisoner(
+    req: Request,
+    nomsId: keyof CalculationUserInputs,
+    userInputs: CalculationUserInputs
+  ): void {
     if (!req.session.userInputs) {
       req.session.userInputs = {}
     }
-    req.session.userInputs[nomsId] = userInputs
+    req.session.userInputs[nomsId as keyof typeof req.session.userInputs] = userInputs
   }
 
   public resetCalculationUserInputForPrisoner(req: Request, nomsId: string): void {
     if (!req.session.userInputs) {
       req.session.userInputs = {}
     }
-    req.session.userInputs[nomsId] = undefined
+    req.session.userInputs[nomsId as keyof typeof req.session.userInputs] = undefined
   }
 
   public getCalculationUserInputForPrisoner(req: Request, nomsId: string): CalculationUserInputs {
     return (
-      (req.session.userInputs && req.session.userInputs[nomsId]) ||
+      (req.session.userInputs && req.session.userInputs[nomsId as keyof typeof req.session.userInputs]) ||
       ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
     )
   }
 
   public getCalculationUserInputForPrisonerOrBlank(req: Request, nomsId: string): CalculationUserInputs {
-    return req.session.userInputs && req.session.userInputs[nomsId]
+    return req.session.userInputs && req.session.userInputs[nomsId as keyof typeof req.session.userInputs]
   }
 }
