@@ -53,8 +53,8 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
         unadjustedDate: '2015-06-16',
       },
       HDCED: {
-        rules: ['HDCED_GE_12W_LT_18M'],
-        rulesWithExtraAdjustments: { HDCED_GE_12W_LT_18M: { adjustmentValue: 61, type: 'Days' } },
+        rules: ['HDCED_GE_MIN_PERIOD_LT_MIDPOINT'],
+        rulesWithExtraAdjustments: { HDCED_GE_MIN_PERIOD_LT_MIDPOINT: { adjustmentValue: 61, type: 'Days' } },
         adjustedDays: -21,
         releaseDate: '2015-03-28',
         unadjustedDate: '2015-02-16',
@@ -124,8 +124,8 @@ export function psiExample25CalculationBreakdown(): CalculationBreakdown {
         unadjustedDate: '2015-06-16',
       },
       HDCED: {
-        rules: ['HDCED_GE_12W_LT_18M'],
-        rulesWithExtraAdjustments: { HDCED_GE_12W_LT_18M: { adjustmentValue: 61, type: 'Days' } },
+        rules: ['HDCED_GE_MIN_PERIOD_LT_MIDPOINT'],
+        rulesWithExtraAdjustments: { HDCED_GE_MIN_PERIOD_LT_MIDPOINT: { adjustmentValue: 61, type: 'Days' } },
         adjustedDays: -21,
         releaseDate: '2015-03-28',
         unadjustedDate: '2015-02-16',
@@ -216,7 +216,7 @@ export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
         unadjustedDate: '2024-09-14',
       },
       HDCED: {
-        rules: ['HDCED_MINIMUM_14D'],
+        rules: ['HDCED_MINIMUM_CUSTODIAL_PERIOD'],
         rulesWithExtraAdjustments: {},
         adjustedDays: 0,
         releaseDate: '2024-10-12',

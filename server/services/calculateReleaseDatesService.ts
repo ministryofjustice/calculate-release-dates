@@ -171,8 +171,8 @@ export default class CalculateReleaseDatesService {
     unadjustedDate: string,
     adjustedDays: number
   ): ReleaseDateWithAdjustments {
-    if (rules.includes(CalculationRule.HDCED_MINIMUM_14D)) {
-      const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_MINIMUM_14D
+    if (rules.includes(CalculationRule.HDCED_MINIMUM_CUSTODIAL_PERIOD)) {
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_MINIMUM_CUSTODIAL_PERIOD
       return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
         ReleaseDateType.HDCED,
@@ -180,8 +180,8 @@ export default class CalculateReleaseDatesService {
       )
     }
 
-    if (rules.includes(CalculationRule.HDCED_GE_12W_LT_18M)) {
-      const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_GE_12W_LT_18M
+    if (rules.includes(CalculationRule.HDCED_GE_MIN_PERIOD_LT_MIDPOINT)) {
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_GE_MIN_PERIOD_LT_MIDPOINT
       return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
         ReleaseDateType.HDCED,
@@ -191,8 +191,8 @@ export default class CalculateReleaseDatesService {
       )
     }
 
-    if (rules.includes(CalculationRule.HDCED_GE_18M_LT_4Y)) {
-      const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_GE_18M_LT_4Y
+    if (rules.includes(CalculationRule.HDCED_GE_MIDPOINT_LT_MAX_PERIOD)) {
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_GE_MIDPOINT_LT_MAX_PERIOD
       return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
         ReleaseDateType.HDCED,
