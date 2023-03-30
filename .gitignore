@@ -125,6 +125,7 @@ dist/
 test_results/
 cypress/videos/
 cypress/screenshots/
+integration_tests/screenshots/*
 */*.iml
 *.iml
 **/Chart.lock
