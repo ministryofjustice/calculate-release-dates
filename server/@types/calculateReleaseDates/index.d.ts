@@ -428,13 +428,13 @@ export interface components {
       /**
        * @description Calculation rules used to determine this calculation.
        * @example [
-       *   "HDCED_GE_12W_LT_18M"
+       *   "HDCED_GE_MIN_PERIOD_LT_MIDPOINT"
        * ]
        */
       rules: (
-        | 'HDCED_GE_12W_LT_18M'
-        | 'HDCED_GE_18M_LT_4Y'
-        | 'HDCED_MINIMUM_14D'
+        | 'HDCED_GE_MIN_PERIOD_LT_MIDPOINT'
+        | 'HDCED_GE_MIDPOINT_LT_MAX_PERIOD'
+        | 'HDCED_MINIMUM_CUSTODIAL_PERIOD'
         | 'TUSED_LICENCE_PERIOD_LT_1Y'
         | 'LED_CONSEC_ORA_AND_NON_ORA'
         | 'UNUSED_ADA'
