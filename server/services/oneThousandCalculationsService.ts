@@ -318,7 +318,7 @@ export default class OneThousandCalculationsService {
 
   isHdced14DayRule(breakdown: CalculationBreakdown, calc: BookingCalculation): 'Y' | 'N' | '' {
     if (calc?.dates.HDCED) {
-      return breakdown?.breakdownByReleaseDateType?.HDCED?.rules?.includes('HDCED_MINIMUM_14D') ? 'Y' : 'N'
+      return breakdown?.breakdownByReleaseDateType?.HDCED?.rules?.includes('HDCED_MINIMUM_CUSTODIAL_PERIOD') ? 'Y' : 'N'
     }
     return ''
   }
