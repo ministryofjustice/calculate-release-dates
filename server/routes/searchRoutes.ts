@@ -18,13 +18,12 @@ export default class SearchRoutes {
       if (!(prisonerIdentifier || firstName || lastName)) {
         return res.render('pages/search/searchPrisoners', settings)
       }
-      const upperCasePrisonerIdentifier = prisonerIdentifier ? prisonerIdentifier.toUpperCase() : null
       const prisoners =
         caseloads.length > 0
           ? await this.prisonerService.searchPrisoners(username, {
               firstName,
               lastName,
-              prisonerIdentifier: upperCasePrisonerIdentifier,
+              prisonerIdentifier: prisonerIdentifier?.toUpperCase(),
               prisonIds: caseloads,
               includeAliases: false,
             } as PrisonerSearchCriteria)
