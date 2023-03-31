@@ -6,7 +6,6 @@ generic-service:
 
   ingress:
     host: calculate-release-dates.hmpps.service.justice.gov.uk
-    modsecurity_enabled: true
 
   env:
     INGRESS_URL: "https://calculate-release-dates.hmpps.service.justice.gov.uk"
