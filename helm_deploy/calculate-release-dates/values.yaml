@@ -99,6 +99,9 @@ generic-service:
     moj-official-tgw-preprod: "51.149.251.0/24"
     crc-rrp: "62.253.83.37/32"
     crc-pp-wwm: "5.153.255.210/32"
+    cymulate-1: "54.217.50.18/32"
+    cymulate-2: "52.208.202.111/32"
+    cymulate-3: "52.49.144.209/32"
 
 generic-prometheus-alerts:
   targetApplication: calculate-release-dates
