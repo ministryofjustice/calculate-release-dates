@@ -7,8 +7,6 @@ generic-service:
   ingress:
     host: calculate-release-dates-preprod.hmpps.service.justice.gov.uk
     modsecurity_enabled: true
-    modsecurity_snippet: |
-      SecRuleEngine On
 
   env:
     INGRESS_URL: "https://calculate-release-dates-preprod.hmpps.service.justice.gov.uk"
