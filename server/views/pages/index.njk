@@ -11,7 +11,7 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <h1 class="govuk-heading-xl" data-qa="main-heading">
+            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">
                 Calculate release dates
             </h1>
             <p class="govuk-body">Automatically calculate a prisoner’s release dates using information from NOMIS.<br/>
@@ -40,7 +40,7 @@
                 href: startlink,
                 classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
                 isStartButton: true,
-                attributes: { 'data-qa': 'start-now-button' }
+                attributes: { 'data-qa': 'start-now-button', 'aria-labelledby': 'main-heading'}
             }) }}
 
             <h2 class="govuk-heading-m">Before you start</h2>
