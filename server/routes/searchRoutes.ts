@@ -23,7 +23,7 @@ export default class SearchRoutes {
           ? await this.prisonerService.searchPrisoners(username, {
               firstName,
               lastName,
-              prisonerIdentifier: prisonerIdentifier?.toUpperCase(),
+              prisonerIdentifier: prisonerIdentifier?.toUpperCase() || null,
               prisonIds: caseloads,
               includeAliases: false,
             } as PrisonerSearchCriteria)
