@@ -84,4 +84,18 @@ export default class SentenceAndOffenceViewModel {
   public isRecallOnly(): boolean {
     return this.sentencesAndOffences.every(sentence => SentenceTypes.isRecall(sentence))
   }
+
+  public hasMultipleOffencesToASentence(): boolean {
+    return !this.sentencesAndOffences.every(sentence => sentence.offences.length === 1)
+  }
+
+  public getMultipleOffencesToASentence(): object {
+    return Array.from(
+      groupBy(this.sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values()
+    )
+      .filter((sentences: PrisonApiOffenderSentenceAndOffences[]) =>
+        sentences.some((sent: PrisonApiOffenderSentenceAndOffences) => sent.offences.length > 1)
+      )
+      .flatMap(sentences => sentences.map(sentence => [sentence.caseSequence, sentence.lineSequence]))
+  }
 }

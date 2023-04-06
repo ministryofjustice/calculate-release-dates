@@ -529,6 +529,26 @@ describe('Check information routes tests', () => {
         expect(res.text).not.toContain('Update these details in NOMIS and then')
       })
   })
+  it('GET /calculation/:nomsId/check-information should display notification if sentence has multiple offences', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
+    return request(app)
+      .get('/calculation/A1234AA/check-information?hasErrors=true')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'Court case 1 count 1 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.'
+        )
+        expect(res.text).toContain(
+          'Court case 3 count 3 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.'
+        )
+      })
+  })
 
   it('POST /calculation/:nomsId/check-information pass', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)

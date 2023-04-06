@@ -20,7 +20,7 @@
                 {% endif %}
                 {% for error in validationErrors.messages %}
                     <li>
-                        <p class="govuk-body govuk-!-font-weight-bold">
+                        <p class="govuk-body">
                             {% if error.href %}
                                 <a href="{{ error.href }}">{{ error.html | safe if error.html else error.text }}</a>
                             {% elif error.id %}
