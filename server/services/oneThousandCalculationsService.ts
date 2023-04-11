@@ -196,7 +196,11 @@ export default class OneThousandCalculationsService {
       NOMIS_CRD_OVERRIDE: nomisDates?.conditionalReleaseOverrideDate,
       CRD_MATCH: errorText
         ? ''
-        : OneThousandCalculationsService.areSame(nomisDates?.conditionalReleaseDate, calc?.dates.CRD),
+        : OneThousandCalculationsService.areMatch(
+            nomisDates?.conditionalReleaseDate,
+            nomisDates?.conditionalReleaseOverrideDate,
+            calc?.dates.CRD
+          ),
       LED: errorText || calc?.dates.LED || calc?.dates?.SLED,
       NOMIS_LED: nomisDates?.licenceExpiryDate,
       NOMIS_LED_CALCULATED: nomisDates?.licenceExpiryCalculatedDate,
@@ -220,7 +224,11 @@ export default class OneThousandCalculationsService {
       NOMIS_ARD_OVERRIDE: nomisDates?.automaticReleaseOverrideDate,
       ARD_MATCH: errorText
         ? ''
-        : OneThousandCalculationsService.areSame(nomisDates?.automaticReleaseDate, calc?.dates?.ARD),
+        : OneThousandCalculationsService.areMatch(
+            nomisDates?.automaticReleaseDate,
+            nomisDates?.automaticReleaseOverrideDate,
+            calc?.dates?.ARD
+          ),
       TUSED: errorText || calc?.dates?.TUSED,
       NOMIS_TUSED: nomisDates?.topupSupervisionExpiryDate,
       NOMIS_TUSED_CALCULATED: nomisDates?.topupSupervisionExpiryCalculatedDate,
@@ -268,7 +276,11 @@ export default class OneThousandCalculationsService {
       NOMIS_PRRD_OVERRIDE: nomisDates?.postRecallReleaseOverrideDate,
       PRRD_MATCH: errorText
         ? ''
-        : OneThousandCalculationsService.areSame(nomisDates?.postRecallReleaseDate, calc?.dates?.PRRD),
+        : OneThousandCalculationsService.areMatch(
+            nomisDates?.postRecallReleaseDate,
+            nomisDates?.postRecallReleaseOverrideDate,
+            calc?.dates?.PRRD
+          ),
       ESED: errorText || calc?.dates?.ESED,
       NOMIS_ESED: nomisDates?.effectiveSentenceEndDate,
       ERSED: errorText || calc?.dates?.ERSED,
@@ -325,7 +337,7 @@ export default class OneThousandCalculationsService {
 
   hasPcscSdsPlus(questions: CalculationUserQuestions): 'Y' | 'N' | '' {
     if (questions) {
-      return questions.sentenceQuestions ? 'Y' : 'N'
+      return questions.sentenceQuestions?.length ? 'Y' : 'N'
     }
     return ''
   }
@@ -383,6 +395,16 @@ export default class OneThousandCalculationsService {
     if (!nomisDate && calculatedDate) return 'N'
     if (nomisDate && !calculatedDate) return 'N'
     return nomisDate === calculatedDate ? 'Y' : 'N'
+  }
+
+  private static areMatch = (nomisDate: string, nomisOverrideDate: string, calculatedDate: string): 'Y' | 'N' => {
+    if (!nomisOverrideDate!) {
+      if (calculatedDate === nomisDate) return 'Y'
+      else return 'N'
+    } else {
+      if (calculatedDate === nomisOverrideDate) return 'Y'
+      else return 'N'
+    }
   }
 
   private getConsecutiveSentences(sentenceAndOffences: PrisonApiOffenderSentenceAndOffences[]) {
