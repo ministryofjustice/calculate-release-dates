@@ -325,7 +325,7 @@ export default class OneThousandCalculationsService {
 
   hasPcscSdsPlus(questions: CalculationUserQuestions): 'Y' | 'N' | '' {
     if (questions) {
-      return questions.sentenceQuestions ? 'Y' : 'N'
+      return questions.sentenceQuestions?.length ? 'Y' : 'N'
     }
     return ''
   }
