@@ -484,6 +484,7 @@ describe('Calculate release dates service tests', () => {
         NOMIS_MTD_CALCULATED: '2022-01-14',
         ERROR_JSON: undefined,
         ERROR_TEXT: undefined,
+        ALL_DATES_MATCH: 'N',
       } as OneThousandCalculationsRow
 
       expect(rows[0]).toStrictEqual(expected)
@@ -605,6 +606,7 @@ describe('Calculate release dates service tests', () => {
         MTD_MATCH: '',
         ERROR_JSON: '{"message":"There was an error\\r\\n"}',
         ERROR_TEXT: 'There was an error\r\n',
+        ALL_DATES_MATCH: 'N',
       } as OneThousandCalculationsRow
 
       expect(rows[0]).toStrictEqual(expected)
@@ -720,6 +722,7 @@ describe('Calculate release dates service tests', () => {
         MTD_MATCH: '',
         ERROR_JSON: '{"status":500,"message":"There was an unexpected error"}',
         ERROR_TEXT: 'There was an unexpected error',
+        ALL_DATES_MATCH: 'N',
       } as OneThousandCalculationsRow
 
       expect(rows[0]).toStrictEqual(expected)
@@ -822,6 +825,7 @@ describe('Calculate release dates service tests', () => {
         ARD: 'Prison API Error',
         ERROR_JSON: '{"status":500,"message":"There was an unexpected error"}',
         ERROR_TEXT: 'There was an unexpected error',
+        ALL_DATES_MATCH: 'N',
       } as OneThousandCalculationsRow
 
       expect(rows[0]).toStrictEqual(expected)
