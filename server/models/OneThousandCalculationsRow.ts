@@ -78,6 +78,7 @@ type OneThousandCalculationsRow = {
   CONSECUTIVE_SENTENCES: string
   ERROR_TEXT: string
   ERROR_JSON: string
+  ALL_DATES_MATCH: 'Y' | 'N'
 }
 
 export default OneThousandCalculationsRow

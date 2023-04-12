@@ -311,7 +311,24 @@ export default class OneThousandCalculationsService {
       CONSECUTIVE_SENTENCES: sentenceAndOffences ? this.getConsecutiveSentences(sentenceAndOffences) : '',
       ERROR_TEXT: ex?.message,
       ERROR_JSON: JSON.stringify(ex),
+      ALL_DATES_MATCH: this.allDatesMatch(
+        Array.of(
+          row.ARD_MATCH,
+          row.CRD_MATCH,
+          row.LED_MATCH,
+          row.SED_MATCH,
+          row.TUSED_MATCH,
+          row.PED_MATCH,
+          row.HDCED_MATCH,
+          row.PRRD_MATCH,
+          row.ERSED_MATCH
+        )
+      ),
     }
+  }
+
+  allDatesMatch(matchColumns: string[]): 'Y' | 'N' {
+    return matchColumns.every((mc: string) => mc === 'Y') ? 'Y' : 'N'
   }
 
   isPedAdjustedToCrd(breakdown: CalculationBreakdown, calc: BookingCalculation): 'Y' | 'N' | '' {
