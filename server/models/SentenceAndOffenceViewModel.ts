@@ -98,10 +98,7 @@ export default class SentenceAndOffenceViewModel {
       )
       .flatMap(sentences =>
         sentences.map((sentence: PrisonApiOffenderSentenceAndOffences) => {
-          if (sentence.offences.length > 1) {
-            return [sentence.caseSequence, sentence.lineSequence]
-          }
-          return undefined
+          return sentence.offences.length > 1 ? [sentence.caseSequence, sentence.lineSequence] : undefined
         })
       )
       .filter((it: []) => it !== undefined)
