@@ -96,6 +96,11 @@ export default class SentenceAndOffenceViewModel {
       .filter((sentences: PrisonApiOffenderSentenceAndOffences[]) =>
         sentences.some((sent: PrisonApiOffenderSentenceAndOffences) => sent.offences.length > 1)
       )
-      .flatMap(sentences => sentences.map(sentence => [sentence.caseSequence, sentence.lineSequence]))
+      .flatMap(sentences =>
+        sentences.map((sentence: PrisonApiOffenderSentenceAndOffences) => {
+          return sentence.offences.length > 1 ? [sentence.caseSequence, sentence.lineSequence] : undefined
+        })
+      )
+      .filter((it: []) => it !== undefined)
   }
 }
