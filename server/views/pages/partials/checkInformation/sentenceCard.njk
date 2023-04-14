@@ -84,7 +84,7 @@
                                 <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                                     <div class="govuk-checkboxes__item">
                                         <input type="hidden" name="charges" value="{{offence.offenderChargeId}}"/>
-                                        <input type="checkbox" class="govuk-checkboxes__input row-checkbox" id="checkbox-{{offence.offenderChargeId}}" name="{{offence.offenderChargeId}}" value="true" {{ "checked" if params.isCheckboxChecked(sentence, offence) }} >
+                                        <input aria-describedby="body-summary"  type="checkbox" class="govuk-checkboxes__input row-checkbox" id="checkbox-{{offence.offenderChargeId}}" name="{{offence.offenderChargeId}}" value="true" {{ "checked" if params.isCheckboxChecked(sentence, offence) }} >
                                         <label class="govuk-label govuk-checkboxes__label" for="checkbox-{{offence.offenderChargeId}}">
                                 This offence appears on {{params.listText}}
                                         </label>
