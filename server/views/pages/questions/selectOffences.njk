@@ -35,7 +35,7 @@
             <h1 class="govuk-heading-xl">
                 Select the offences that appear on {{model.calculationQuestionType.textLower}}
             </h1>
-            <p class="govuk-body">For each sentence, you must select the offences that have alternative release arrangements.</p>
+            <p class="govuk-body" id="body-summary">Select the checkbox for any sentences that have offences on {{ model.calculationQuestionType.textLower }}. Alternatively, select the checkbox that says 'None of the sentences have offences that appear on {{ model.calculationQuestionType.textLower }}'.</p>
             <ul class="govuk-list govuk-list--number">
                 <li>Note the name of the offence for the first sentence below</li>
                 <li>
@@ -90,7 +90,7 @@
             <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
                 <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="unselect-all" name="none" type="checkbox" value="unselect-all"  {{ "checked" if model.isNoneCheckboxChecked() }}>
+                        <input aria-describedby="body-summary" class="govuk-checkboxes__input" id="unselect-all" name="none" type="checkbox" value="unselect-all"  {{ "checked" if model.isNoneCheckboxChecked() }}>
                         <label class="govuk-label govuk-checkboxes__label" for="unselect-all">
                             None of the sentences have offences that appear on {{model.calculationQuestionType.text}}.
                         </label>
