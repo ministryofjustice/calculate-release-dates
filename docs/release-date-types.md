@@ -35,11 +35,11 @@ Post Sentence Supervision was introduced by the Offender Rehabilitation Act 2014
 Post Sentence Supervision (PSS) starts once the LED has been reached, it is managed by Probation and  runs up until the Top-Up Supervision Expiry Date (TUSED/PSSED)
 ### Parole Eligibility Date (PED)
 
-The parole eligibility date is the date from which a person with a sentence requiring parole would be eligible to be released based on a determination by the parole board. A person serving a determinate sentence (not a life sentence or IPP) can apply for parole up to six months before their Parole Eligibility Date (PED).
+The parole eligibility date (PED) is the date from which a person with a sentence requiring parole would be eligible to be released based on a determination by the parole board. A person serving a determinate sentence (not a life sentence or IPP) can apply for parole up to six months before their Parole Eligibility Date (PED).
 
 ### Post-Recall Release Date (PRRD)
 
-PRRD is the release date following a prisoner being recalled from licence.
+Post-Recall Release Date (PRRD) is the release date following a prisoner being recalled from licence.
 
 ### Early Removal Scheme Dates
 
