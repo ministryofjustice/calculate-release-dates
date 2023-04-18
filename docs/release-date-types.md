@@ -1,6 +1,6 @@
 # Types of Release Date
 
-This document intends to inform you about the type of release dates in prison, and those produced by the service
+This document intends to inform you about the type of release dates in prison, and those produced by the Calculate Release Dates service
 
 ## Types of Release Date Produced by the Service
 
