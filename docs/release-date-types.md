@@ -101,7 +101,7 @@ else
     releaseDate = 'non do release date'
 ```
 
-The underlying code is implemented as this [actual release date algorithm] (https://github.com/ministryofjustice/prison-api/blob/04454f02556f4463798bff26ea2d4fea91268368/src/main/java/uk/gov/justice/hmpps/prison/repository/jpa/model/OffenderBooking.java#L407)
+The underlying code is implemented as this [actual release date algorithm](https://github.com/ministryofjustice/prison-api/blob/04454f02556f4463798bff26ea2d4fea91268368/src/main/java/uk/gov/justice/hmpps/prison/repository/jpa/model/OffenderBooking.java#L407)
 
 ### Confirmed Release Date (ARD)
 
