@@ -1,0 +1,8 @@
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+
+{% if model.hdcedBannerConfig() %}
+    {{ mojBanner({
+        type: ' ',
+        html: model.hdcedBannerConfig()
+    }) }}
+{% endif %}

@@ -109,6 +109,7 @@
     "jquery": "^3.6.4",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
+    "mockdate": "^3.0.5",
     "nocache": "^3.0.4",
     "nunjucks": "^3.2.3",
     "nunjucks-date-filter": "^0.1.1",

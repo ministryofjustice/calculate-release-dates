@@ -1,6 +1,7 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import { HttpError } from 'http-errors'
+import MockDate from 'mockdate'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -607,6 +608,47 @@ describe('Calculation routes tests', () => {
           'Early removal cannot happen as release from the Detention Training Order (DTO) is later than the Conditional Release Date (CRD).'
         )
         expect(res.text).toContain('Important')
+      })
+  })
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should display upcoming HDCED changes notification', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'For this calculation, this service has used the existing HDCED policy rules. From 6 June, this service will calculate HDCEDs using the new policy rules.'
+        )
+        expect(res.text).toContain('From 6 June, the policy for calculating HDCED will change')
+        expect(res.text).toContain('NOMIS has already been updated to reflect the new policy.')
+      })
+  })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should display HDCED changes notification', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    MockDate.set('2023-06-06')
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('This service has calculated the HDCED using the new policy rules.')
+        expect(res.text).toContain('From 6 June, the policy for calculating HDCED has changed')
       })
   })
 
