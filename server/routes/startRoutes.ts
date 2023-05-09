@@ -28,4 +28,8 @@ export default class StartRoutes {
     }
     return res.render('pages/supportedSentences', { prisonId, nomsId })
   }
+
+  public accessibility: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/accessibility')
+  }
 }
