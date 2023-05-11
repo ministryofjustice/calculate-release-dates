@@ -18,4 +18,7 @@ This is the user interface service for calculating release dates for people in p
 * [Types of Release Date](docs/release-date-types.md)
 
 
+## Check Information page
 
+* [Check Information Page](docs/check-information-page.md)
+* [Check Information Page Unsupported Sentence/Scenario](docs/check-information-unsupported-sentence.md)
