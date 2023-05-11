@@ -23,6 +23,11 @@ export default class CheckInformationRoutes {
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
+    const unsupportedSentenceOrCalculationMessages =
+      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+    if (unsupportedSentenceOrCalculationMessages.length > 0) {
+      return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
+    }
     const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     const aQuestionIsRequiredOrHasBeenAnswered =
@@ -60,6 +65,52 @@ export default class CheckInformationRoutes {
       model: new SentenceAndOffenceViewModel(
         prisonerDetail,
         userInputs,
+        this.entryPointService.isDpsEntryPoint(req),
+        sentencesAndOffences,
+        adjustmentDetails,
+        false,
+        returnToCustody,
+        validationMessages
+      ),
+    })
+  }
+
+  public unsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const unsupportedSentenceOrCalculationMessages =
+      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+    if (unsupportedSentenceOrCalculationMessages.length === 0) {
+      return res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
+      username,
+      prisonerDetail.bookingId,
+      token
+    )
+    const adjustmentDetails = await this.prisonerService.getBookingAndSentenceAdjustments(
+      prisonerDetail.bookingId,
+      token
+    )
+    const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
+      ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
+      : null
+
+    let validationMessages: ErrorMessages
+    if (req.query.hasErrors) {
+      validationMessages = await this.calculateReleaseDatesService.validateBackend(
+        nomsId,
+        {} as CalculationUserInputs,
+        token
+      )
+    } else {
+      validationMessages = null
+    }
+    return res.render('/pages/manualEntry/checkInformationUnsupported', {
+      model: new SentenceAndOffenceViewModel(
+        prisonerDetail,
+        {} as CalculationUserInputs,
         this.entryPointService.isDpsEntryPoint(req),
         sentencesAndOffences,
         adjustmentDetails,

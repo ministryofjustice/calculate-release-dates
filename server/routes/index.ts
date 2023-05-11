@@ -66,6 +66,11 @@ export default function Index({
     get('/calculation/:nomsId/check-information', checkInformationAccessRoutes.checkInformation)
     post('/calculation/:nomsId/check-information', checkInformationAccessRoutes.submitCheckInformation)
   }
+
+  const manualEntryRoutes = () => {
+    get('/calculation/:nomsId/check-information-unsupported', checkInformationAccessRoutes.unsupportedCheckInformation)
+  }
+
   const calculationRoutes = () => {
     get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
     post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
@@ -113,6 +118,7 @@ export default function Index({
   calculationRoutes()
   questionRoutes()
   checkInformationRoutes()
+  manualEntryRoutes()
   searchRoutes()
   viewRoutes()
   otherRoutes()
