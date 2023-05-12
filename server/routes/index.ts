@@ -8,6 +8,7 @@ import StartRoutes from './startRoutes'
 import CheckInformationRoutes from './checkInformationRoutes'
 import ViewRoutes from './viewRoutes'
 import CalculationQuestionRoutes from './calculationQuestionRoutes'
+import ManualEntryRoutes from './manualEntryRoutes'
 
 export default function Index({
   prisonerService,
@@ -55,6 +56,8 @@ export default function Index({
     userInputService
   )
 
+  const manualEntryAccessRoutes = new ManualEntryRoutes(calculateReleaseDatesService)
+
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
     get('/supported-sentences', startRoutes.supportedSentences)
@@ -69,6 +72,11 @@ export default function Index({
 
   const manualEntryRoutes = () => {
     get('/calculation/:nomsId/check-information-unsupported', checkInformationAccessRoutes.unsupportedCheckInformation)
+    post(
+      '/calculation/:nomsId/check-information-unsupported',
+      checkInformationAccessRoutes.submitUnsupportedCheckInformation
+    )
+    get('/calculation/:nomsId/manual-entry', manualEntryAccessRoutes.landingPage)
   }
 
   const calculationRoutes = () => {

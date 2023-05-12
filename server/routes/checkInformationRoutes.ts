@@ -11,6 +11,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { arraysContainSameItemsAsStrings, unique } from '../utils/utils'
 import SentenceTypes from '../models/SentenceTypes'
+import config from '../config'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -23,10 +24,12 @@ export default class CheckInformationRoutes {
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    const unsupportedSentenceOrCalculationMessages =
-      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
-    if (unsupportedSentenceOrCalculationMessages.length > 0) {
-      return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
+    if (config.featureToggles.manualEntry) {
+      const unsupportedSentenceOrCalculationMessages =
+        await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+      if (unsupportedSentenceOrCalculationMessages.length > 0) {
+        return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
+      }
     }
     const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
@@ -84,6 +87,7 @@ export default class CheckInformationRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
       username,
       prisonerDetail.bookingId,
@@ -107,10 +111,10 @@ export default class CheckInformationRoutes {
     } else {
       validationMessages = null
     }
-    return res.render('/pages/manualEntry/checkInformationUnsupported', {
+    return res.render('pages/manualEntry/checkInformationUnsupported', {
       model: new SentenceAndOffenceViewModel(
         prisonerDetail,
-        {} as CalculationUserInputs,
+        userInputs,
         this.entryPointService.isDpsEntryPoint(req),
         sentencesAndOffences,
         adjustmentDetails,
@@ -119,6 +123,11 @@ export default class CheckInformationRoutes {
         validationMessages
       ),
     })
+  }
+
+  public submitUnsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    return res.redirect(`/calculation/${nomsId}/manual-entry`)
   }
 
   public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {

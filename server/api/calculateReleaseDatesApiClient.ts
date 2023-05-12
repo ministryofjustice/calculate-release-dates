@@ -123,7 +123,7 @@ export default class CalculateReleaseDatesApiClient {
   }
 
   getUnsupportedValidation(prisonerId: string): Promise<ValidationMessage[]> {
-    return this.restClient.post({
+    return this.restClient.get({
       path: `/validation/${prisonerId}/supported-validation`,
     }) as Promise<ValidationMessage[]>
   }
