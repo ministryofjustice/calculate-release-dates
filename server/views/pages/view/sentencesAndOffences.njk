@@ -34,6 +34,21 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
+            {% if featureToggles.ersed and model.isErsedElligible() %}
+                {% if model.viewJourney %}
+                    {% if model.isErsedChecked() %}
+                        <p class="govuk-body">An Early removal scheme eligibility date (ERSED) was included in this calculation</p>
+                    {% endif %}
+                {% else %}
+                    <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item float-none">
+                            <input aria-describedby="additional-info" class="govuk-checkboxes__input" id="ersed" name="ersed" type="checkbox" value="true" {{ "checked" if model.isErsedChecked() }}/>
+                            <label class="govuk-label govuk-checkboxes__label" for="ersed">Include an Early removal scheme eligibility date (ERSED) in this calculation</label>
+                            <div id="additional-info" class="govuk-hint govuk-checkboxes__hint">Not applicable for terror or terror-related offences</div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
             {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
         </div>
     </div>

@@ -13,13 +13,14 @@ import {
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import EntryPointService from '../services/entryPointService'
 import { FullPageError } from '../types/FullPageError'
-import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import { ErrorMessageType } from '../types/ErrorMessages'
 import UserInputService from '../services/userInputService'
 import {
   CalculationSentenceQuestion,
   CalculationSentenceUserInput,
   CalculationUserInputs,
   CalculationUserQuestions,
+  ValidationMessage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import trimHtml from './testutils/testUtils'
 import config from '../config'
@@ -37,6 +38,8 @@ const entryPointService = new EntryPointService() as jest.Mocked<EntryPointServi
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 
 let app: Express
+
+const stubbedEmptyMessages: ValidationMessage[] = []
 
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
@@ -322,6 +325,7 @@ afterEach(() => {
 describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner with the EDS card view', () => {
     config.featureToggles.ersed = true
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
@@ -376,6 +380,7 @@ describe('Check information routes tests', () => {
 
   it('GET /calculation/:nomsId/check-information should not show ersed checkbox if feature toggle off', () => {
     config.featureToggles.ersed = false
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
@@ -395,6 +400,7 @@ describe('Check information routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(null)
@@ -411,6 +417,7 @@ describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner without adjustments', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedEmptyAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
@@ -429,6 +436,7 @@ describe('Check information routes tests', () => {
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
@@ -443,74 +451,44 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Update these details in NOMIS and then')
       })
   })
-  it('GET /calculation/:nomsId/check-information should display unsupported sentence errors when they exist', () => {
+  it('GET /calculation/:nomsId/check-information UNSUPPORTED_SENTENCE should redirect to the unsupported check information page', () => {
+    config.featureToggles.manualEntry = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
-    calculateReleaseDatesService.validateBackend.mockResolvedValue({
-      messages: [{ text: 'An error occurred with the nomis information' }],
-      messageType: ErrorMessageType.UNSUPPORTED_SENTENCE,
-    } as ErrorMessages)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
     return request(app)
-      .get('/calculation/A1234AA/check-information?hasErrors=true')
-      .expect(200)
-      .expect('Content-Type', /html/)
+      .get('/calculation/A1234AA/check-information')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/check-information-unsupported')
       .expect(res => {
-        expect(res.text).toContain('An error occurred with the nomis information')
-        expect(res.text).toContain(
-          'If these sentences are correct, you will need to complete this calculation manually in NOMIS.'
-        )
-        expect(res.text).toContain('Check supported sentence types')
-        expect(res.text).toContain('href="/supported-sentences/A1234AA"')
+        expect(res.redirect).toBeTruthy()
       })
   })
   it('GET /calculation/:nomsId/check-information should display unsupported calculation errors when they exist', () => {
+    config.featureToggles.manualEntry = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
-    calculateReleaseDatesService.validateBackend.mockResolvedValue({
-      messages: [{ text: 'An error occurred with the nomis information' }],
-      messageType: ErrorMessageType.UNSUPPORTED_CALCULATION,
-    } as ErrorMessages)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_CALCULATION',
+      } as ValidationMessage,
+    ])
     return request(app)
-      .get('/calculation/A1234AA/check-information?hasErrors=true')
-      .expect(200)
-      .expect('Content-Type', /html/)
+      .get('/calculation/A1234AA/check-information')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/check-information-unsupported')
       .expect(res => {
-        expect(res.text).toContain('An error occurred with the nomis information')
-        expect(res.text).toContain('This service does not yet support a calculation scenario when:')
-        expect(res.text).toContain(
-          'Calculate the release dates manually until this scenario is supported by this service.'
-        )
-      })
-  })
-  it('GET /calculation/:nomsId/check-information should display multiple unsupported calculation errors when they exist', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
-    calculateReleaseDatesService.validateBackend.mockResolvedValue({
-      messages: [
-        { text: 'An error occurred with the nomis information' },
-        { text: 'An error occurred with the nomis information' },
-      ],
-      messageType: ErrorMessageType.UNSUPPORTED_CALCULATION,
-    } as ErrorMessages)
-    return request(app)
-      .get('/calculation/A1234AA/check-information?hasErrors=true')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('An error occurred with the nomis information')
-        expect(res.text).toContain('This service does not yet support a calculation scenarios when:')
-        expect(res.text).toContain(
-          'Calculate the release dates manually until these scenarios are supported by this service.'
-        )
+        expect(res.redirect).toBeTruthy()
       })
   })
 
@@ -520,6 +498,7 @@ describe('Check information routes tests', () => {
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
     calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
@@ -529,12 +508,14 @@ describe('Check information routes tests', () => {
         expect(res.text).not.toContain('Update these details in NOMIS and then')
       })
   })
+
   it('GET /calculation/:nomsId/check-information should display notification if sentence has multiple offences', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
     calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
@@ -605,6 +586,7 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information should display error page for case load errors.', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     prisonerService.getPrisonerDetail.mockImplementation(() => {
@@ -623,6 +605,7 @@ describe('Check information routes tests', () => {
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
     prisonerService.getActiveSentencesAndOffences.mockImplementation(() => {
       throw FullPageError.noSentences()
     })
@@ -637,6 +620,7 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information will redirect user if they have unanswered questions', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(null)
     return request(app)
@@ -649,6 +633,7 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information will redirect user if they have answered questions no longer applicable', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     return request(app)

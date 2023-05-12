@@ -121,4 +121,10 @@ export default class CalculateReleaseDatesApiClient {
       path: `/calculation/calculation-user-input/${calculationId}`,
     }) as Promise<CalculationUserInputs>
   }
+
+  getUnsupportedValidation(prisonerId: string): Promise<ValidationMessage[]> {
+    return this.restClient.get({
+      path: `/validation/${prisonerId}/supported-validation`,
+    }) as Promise<ValidationMessage[]>
+  }
 }

@@ -1,0 +1,55 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+
+{% set pageTitle = applicationName + " - check information" %}
+{% set pageId = "check-information-unsupported" %}
+
+{% block aside %}
+    {% set prisonerDetail = model.prisonerDetail %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {% if model.dpsEntryPoint %}
+        {% set backlink = "/?prisonId=" + model.prisonerDetail.offenderNo %}
+    {% else %}
+        {% set backlink = "/search/prisoners" %}
+    {% endif %}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backlink
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% set validationErrors = model.validationErrors %}
+    {% include "../partials/customErrorBanner.njk" %}
+    {% include "../partials/multipleOffencesBanner.njk" %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds-from-desktop">
+
+            <h1 class="govuk-heading-xl" id="check-nomis-heading">Check sentence and offence information for
+                {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
+
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds-from-desktop">
+                        {% include "../partials/checkInformation/calculateDatesUnsupported.njk" %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

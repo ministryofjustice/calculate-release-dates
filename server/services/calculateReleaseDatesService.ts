@@ -57,6 +57,10 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getCalculationUserQuestions(prisonId)
   }
 
+  async getUnsupportedSentenceOrCalculationMessages(prisonId: string, token: string): Promise<ValidationMessage[]> {
+    return new CalculateReleaseDatesApiClient(token).getUnsupportedValidation(prisonId)
+  }
+
   async getBreakdown(
     calculationRequestId: number,
     token: string

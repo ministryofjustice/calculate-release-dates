@@ -1,0 +1,17 @@
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-inset-text">
+                If you think some information is wrong, you can edit it in NOMIS and <a href="">reload this page</a>.
+            </div>
+    </div>
+</div>
+<h2 class="govuk-heading-m govuk-!-margin-top-9">Now calculate release dates
+    for {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}</h2>
+<p class="govuk-body">The release dates will not be saved in NOMIS until you have reviewed the calculation.</p>
+{{ govukButton({
+        text: "Calculate release dates",
+        type: submit,
+        value: 'manual-entry',
+        preventDoubleClick: true,
+        attributes: {  'data-qa': 'manual-entry' }
+    }) }}
