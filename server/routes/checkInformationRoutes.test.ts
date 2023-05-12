@@ -13,7 +13,7 @@ import {
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import EntryPointService from '../services/entryPointService'
 import { FullPageError } from '../types/FullPageError'
-import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import { ErrorMessageType } from '../types/ErrorMessages'
 import UserInputService from '../services/userInputService'
 import {
   CalculationSentenceQuestion,
