@@ -3,6 +3,7 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import * as pathModule from 'path'
 import config from '../config'
+import applicationVersion from '../applicationVersion'
 
 // TODO the use of nunjucks-date-filter is raising a deprecation warning, some dates are in this format 12/12/2030 ->
 // Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable
@@ -26,8 +27,8 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   // Cachebusting version string
   if (production) {
-    // Version only changes on reboot
-    app.locals.version = Date.now().toString()
+    // Version only changes with new commits
+    app.locals.version = applicationVersion.shortHash
   } else {
     // Version changes every request
     app.use((req, res, next) => {
