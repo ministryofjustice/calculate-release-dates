@@ -4,25 +4,53 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
-{% set pageTitle = applicationName + " - check information" %}
-{% set pageId = "check-information-unsupported" %}
+{% set pageTitle = applicationName + " - manual entry" %}
+{% set pageId = "manual-entry-start" %}
 
 {% block aside %}
-    {% set prisonerDetail = model.prisonerDetail %}
+    {% set prisonerDetail = prisonerDetail %}
     {% include "../partials/prisonerIdentityBar.njk" %}
 {% endblock %}
 
 {% block beforeContent %}
     {{ super() }}
-    {% if model.dpsEntryPoint %}
-        {% set backlink = "/?prisonId=" + model.prisonerDetail.offenderNo %}
-    {% else %}
-        {% set backlink = "/search/prisoners" %}
-    {% endif %}
     <nav>
         {{ govukBackLink({
             text: "Back",
-            href: backlink
+            href: "/calculation/" + prisonerDetail.offenderNo + "/check-information-unsupported"
         }) }}
     </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">Calculate release dates</span>
+            <h1 class="govuk-heading-xl">
+                Manual calculation required
+            </h1>
+            <p class="govuk-body">One or more of the sentence scenarios in this calculation is not currently supported
+                by
+                the Calculate release dates service.</p>
+            <h2 class="govuk-heading-m">What you need to do</h2>
+            <ul class="govuk-list govuk-list--number">
+                <li>Complete a calculation using a paper calculation sheet</li>
+                <li>Come back to this page</li>
+                <li>Enter the release dates</li>
+            </ul>
+            <p class="govuk-body">This will be recorded as a manual calculation on NOMIS.</p>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukButton({
+                text: "Continue",
+                type: submit,
+                value: 'start-manual-calc',
+                preventDoubleClick: true,
+                attributes: {  'data-qa': 'manual-calc-start' }
+            }) }}
+        </div>
+    </div>
 {% endblock %}

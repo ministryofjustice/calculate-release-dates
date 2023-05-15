@@ -56,7 +56,7 @@ export default function Index({
     userInputService
   )
 
-  const manualEntryAccessRoutes = new ManualEntryRoutes(calculateReleaseDatesService)
+  const manualEntryAccessRoutes = new ManualEntryRoutes(calculateReleaseDatesService, prisonerService)
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
