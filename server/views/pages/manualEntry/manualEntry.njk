@@ -25,7 +25,6 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-xl">Calculate release dates</span>
             <h1 class="govuk-heading-xl">
                 Manual calculation required
             </h1>
@@ -41,11 +40,17 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            {% if hasIndeterminateSentences %}
+                {% set nextPage = "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/indeterminate-date-selection" %}
+            {% else %}
+                {% set nextPage = "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/determinate-date-selection"%}
+            {% endif %}
             {{ govukButton({
                 text: "Continue",
                 type: submit,
                 value: 'start-manual-calc',
                 preventDoubleClick: true,
+                href: nextPage,
                 attributes: {  'data-qa': 'manual-calc-start' }
             }) }}
         </div>

@@ -5,12 +5,15 @@ import PrisonerService from '../services/prisonerService'
 import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ManualCalculationService from '../services/manualCalculationService'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
+jest.mock('../services/manualCalculationService')
 
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const manualCalculationService = new ManualCalculationService() as jest.Mocked<ManualCalculationService>
 
 let app: Express
 
@@ -47,6 +50,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     calculateReleaseDatesService,
     prisonerService,
+    manualCalculationService,
   })
 })
 
@@ -58,6 +62,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   it('GET if there are no unsupported sentences the page re-directs', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+
     return request(app)
       .get('/calculation/A1234AA/manual-entry')
       .expect(302)
@@ -65,6 +70,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         expect(res.redirect).toBeTruthy()
       })
   })
+
   it('GET if there are unsupported sentences the page display correctly', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
@@ -72,12 +78,54 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       } as ValidationMessage,
     ])
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
+
     return request(app)
       .get('/calculation/A1234AA/manual-entry')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Manual calculation required')
+      })
+  })
+
+  it('GET if there are indeterminate sentences then href routes to correct page', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          `/calculation/${stubbedPrisonerData.offenderNo}/manual-entry/indeterminate-date-selection`
+        )
+      })
+  })
+
+  it('GET if there are determinate sentences then href routes to correct page', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          `/calculation/${stubbedPrisonerData.offenderNo}/manual-entry/determinate-date-selection`
+        )
       })
   })
 })

@@ -543,7 +543,7 @@ export function ersedOneYearBreakdown(): CalculationBreakdown {
         rulesWithExtraAdjustments: {
           ERSED_ONE_YEAR: {
             adjustmentValue: -12,
-            type: 'MONTHS',
+            type: 'Months',
           },
         },
         adjustedDays: 100,
