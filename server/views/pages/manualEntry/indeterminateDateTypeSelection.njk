@@ -1,0 +1,32 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+
+{% set pageTitle = applicationName + " - indeterminite manual entry" %}
+{% set pageId = "indeterminite selection" %}
+
+{% block aside %}
+    {% set prisonerDetail = prisonerDetail %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry"
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                Indeterminate sentences - date type selection page
+            </h1>
+            {# TODO Just a placeholder page #}
+        </div>
+    </div>
+{% endblock %}
