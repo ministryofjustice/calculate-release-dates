@@ -4,6 +4,15 @@
  */
 
 export interface paths {
+  '/queue-admin/retry-dlq/{dlqName}': {
+    put: operations['retryDlq']
+  }
+  '/queue-admin/retry-all-dlqs': {
+    put: operations['retryAllDlqs']
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    put: operations['purgeQueue']
+  }
   '/validation/{prisonerId}/full-validation': {
     /**
      * Validates that the data for the given prisoner in NOMIS can be used to calculate a release date
@@ -25,6 +34,13 @@ export interface paths {
      */
     post: operations['testCalculation']
   }
+  '/calculation/relevant-remand/{prisonerId}': {
+    /**
+     * Calculate a release date at a point in time for the relevant remand tool.
+     * @description This endpoint calculates the release date of an intersecting sentence, this is needed by therelevant remand tool in order to work out remand periods.
+     */
+    post: operations['relevantRemandCalculation']
+  }
   '/calculation/confirm/{calculationRequestId}': {
     /**
      * Calculate release dates and persist the results for a prisoners latest booking
@@ -45,6 +61,23 @@ export interface paths {
      * @description Finds the next working day, adjusting for weekends and bank holidays
      */
     get: operations['nextWorkingDay']
+  }
+  '/validation/{prisonerId}/supported-validation': {
+    /**
+     * Validates that the sentences for the given prisoner in NOMIS can be used to calculate a release date
+     * @description This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine
+     */
+    get: operations['validateSupported']
+  }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    get: operations['getDlqMessages']
+  }
+  '/manual-calculation/{bookingId}/has-indeterminate-sentences': {
+    /**
+     * Determine if a booking has any indeterminate sentences
+     * @description This endpoint will return true if a booking has any indeterminate sentences
+     */
+    get: operations['hasIndeterminateSentences']
   }
   '/calculation/{prisonerId}/user-questions': {
     /**
@@ -115,6 +148,63 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    Message: {
+      messageId?: string
+      receiptHandle?: string
+      body?: string
+      attributes?: {
+        [key: string]: string | undefined
+      }
+      messageAttributes?: {
+        [key: string]: components['schemas']['MessageAttributeValue'] | undefined
+      }
+      md5OfMessageAttributes?: string
+      md5OfBody?: string
+    }
+    MessageAttributeValue: {
+      stringValue?: string
+      binaryValue?: {
+        /** Format: int32 */
+        short?: number
+        char?: string
+        /** Format: int32 */
+        int?: number
+        /** Format: int64 */
+        long?: number
+        /** Format: float */
+        float?: number
+        /** Format: double */
+        double?: number
+        direct?: boolean
+        readOnly?: boolean
+      }
+      stringListValues?: string[]
+      binaryListValues?: {
+        /** Format: int32 */
+        short?: number
+        char?: string
+        /** Format: int32 */
+        int?: number
+        /** Format: int64 */
+        long?: number
+        /** Format: float */
+        float?: number
+        /** Format: double */
+        double?: number
+        direct?: boolean
+        readOnly?: boolean
+      }[]
+      dataType?: string
+    }
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      messages: components['schemas']['Message'][]
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
     /** @description List of sentences and the users input for each sentence */
     CalculationSentenceUserInput: {
       /** Format: int32 */
@@ -141,7 +231,6 @@ export interface components {
       code:
         | 'ADJUSTMENT_AFTER_RELEASE_ADA'
         | 'ADJUSTMENT_AFTER_RELEASE_RADA'
-        | 'ADJUSTMENT_AFTER_RELEASE_UAL'
         | 'ADJUSTMENT_FUTURE_DATED_ADA'
         | 'ADJUSTMENT_FUTURE_DATED_RADA'
         | 'ADJUSTMENT_FUTURE_DATED_UAL'
@@ -151,6 +240,9 @@ export interface components {
         | 'A_FINE_SENTENCE_WITH_PAYMENTS'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED_REMAND'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED_TAGGED_BAIL'
+        | 'DTO_RECALL'
+        | 'DTO_CONSECUTIVE_TO_SENTENCE'
+        | 'DTO_HAS_SENTENCE_CONSECUTIVE_TO_IT'
         | 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT'
         | 'EDS_LICENCE_TERM_LESS_THAN_ONE_YEAR'
         | 'EDS_LICENCE_TERM_MORE_THAN_EIGHT_YEARS'
@@ -187,6 +279,8 @@ export interface components {
         | 'UNSUPPORTED_ADJUSTMENT_SPECIAL_REMISSION'
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'ZERO_IMPRISONMENT_TERM'
+        | 'UNSUPPORTED_CALCULATION_DTO_WITH_RECALL'
+        | 'PRE_PCSC_DTO_WITH_ADJUSTMENT'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -241,11 +335,51 @@ export interface components {
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
       validationMessages: components['schemas']['ValidationMessage'][]
     }
+    RelevantRemand: {
+      /** Format: date */
+      from: string
+      /** Format: date */
+      to: string
+      /** Format: int32 */
+      days: number
+      /** Format: int32 */
+      sentenceSequence: number
+    }
+    RelevantRemandCalculationRequest: {
+      relevantRemands: components['schemas']['RelevantRemand'][]
+      sentence: components['schemas']['RelevantRemandSentence']
+    }
+    RelevantRemandSentence: {
+      /** Format: int32 */
+      sequence: number
+      /** Format: date */
+      sentenceDate: string
+      /** Format: int64 */
+      bookingId: number
+    }
+    RelevantRemandCalculationResult: {
+      /** Format: date */
+      releaseDate?: string
+      validationMessages: components['schemas']['ValidationMessage'][]
+    }
     WorkingDay: {
       /** Format: date */
       date: string
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
+    }
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never> | undefined
+      }
+      messageId: string
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
     CalculationSentenceQuestion: {
       /** Format: int32 */
@@ -358,8 +492,6 @@ export interface components {
         | 'Millennia'
         | 'Eras'
         | 'Forever'
-        | 'DAYS'
-        | 'MONTHS'
     }
     /** @description Calculation breakdown details */
     CalculationBreakdown: {
@@ -448,6 +580,7 @@ export interface components {
         | 'ERSED_ONE_YEAR'
         | 'ERSED_ADJUSTED_TO_CONCURRENT_TERM'
         | 'ERSED_BEFORE_SENTENCE_DATE'
+        | 'ERSED_ADJUSTED_TO_MTD'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
@@ -513,17 +646,57 @@ export interface components {
 export type external = Record<string, never>
 
 export interface operations {
-  validate: {
-    /**
-     * Validates that the data for the given prisoner in NOMIS can be used to calculate a release date
-     * @description This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine
-     */
+  retryDlq: {
     parameters: {
-      /**
-       * @description The prisoners ID (aka nomsId)
-       * @example A1234AB
-       */
       path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      path: {
+        queueName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
+  /**
+   * Validates that the data for the given prisoner in NOMIS can be used to calculate a release date
+   * @description This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine
+   */
+  validate: {
+    parameters: {
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
         prisonerId: string
       }
     }
@@ -553,17 +726,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Calculate release dates for a prisoner - preliminary calculation, this does not publish to NOMIS
+   * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS
+   */
   calculate: {
-    /**
-     * Calculate release dates for a prisoner - preliminary calculation, this does not publish to NOMIS
-     * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS
-     */
     parameters: {
-      /**
-       * @description The prisoners ID (aka nomsId)
-       * @example A1234AB
-       */
       path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
         prisonerId: string
       }
     }
@@ -593,17 +766,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Calculate release dates for a prisoner - test calculation, this does not publish to NOMIS
+   * @description This endpoint will calculate release dates based on a prisoners latest booking, this can includeinactive bookings of historic prisoners. Endpoint is used to test calculations against NOMIS.
+   */
   testCalculation: {
-    /**
-     * Calculate release dates for a prisoner - test calculation, this does not publish to NOMIS
-     * @description This endpoint will calculate release dates based on a prisoners latest booking, this can includeinactive bookings of historic prisoners. Endpoint is used to test calculations against NOMIS.
-     */
     parameters: {
-      /**
-       * @description The prisoners ID (aka nomsId)
-       * @example A1234AB
-       */
       path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
         prisonerId: string
       }
     }
@@ -633,11 +806,51 @@ export interface operations {
       }
     }
   }
+  /**
+   * Calculate a release date at a point in time for the relevant remand tool.
+   * @description This endpoint calculates the release date of an intersecting sentence, this is needed by therelevant remand tool in order to work out remand periods.
+   */
+  relevantRemandCalculation: {
+    parameters: {
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RelevantRemandCalculationRequest']
+      }
+    }
+    responses: {
+      /** @description Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['RelevantRemandCalculationResult']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['RelevantRemandCalculationResult']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['RelevantRemandCalculationResult']
+        }
+      }
+    }
+  }
+  /**
+   * Calculate release dates and persist the results for a prisoners latest booking
+   * @description This endpoint will calculate release dates based on a prisoners latest booking
+   */
   confirmCalculation: {
-    /**
-     * Calculate release dates and persist the results for a prisoners latest booking
-     * @description This endpoint will calculate release dates based on a prisoners latest booking
-     */
     parameters: {
       path: {
         calculationRequestId: number
@@ -681,17 +894,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Find the previous working day from a given date
+   * @description Finds the previous working day, adjusting for weekends and bank holidays
+   */
   previousWorkingDay: {
-    /**
-     * Find the previous working day from a given date
-     * @description Finds the previous working day, adjusting for weekends and bank holidays
-     */
     parameters: {
-      /**
-       * @description The date to adjust
-       * @example 2021-10-28
-       */
       path: {
+        /**
+         * @description The date to adjust
+         * @example 2021-10-28
+         */
         date: string
       }
     }
@@ -716,17 +929,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Find the next working day from a given date
+   * @description Finds the next working day, adjusting for weekends and bank holidays
+   */
   nextWorkingDay: {
-    /**
-     * Find the next working day from a given date
-     * @description Finds the next working day, adjusting for weekends and bank holidays
-     */
     parameters: {
-      /**
-       * @description The date to adjust
-       * @example 2021-10-28
-       */
       path: {
+        /**
+         * @description The date to adjust
+         * @example 2021-10-28
+         */
         date: string
       }
     }
@@ -751,17 +964,105 @@ export interface operations {
       }
     }
   }
-  getCalculationUserQuestions: {
-    /**
-     * Return which sentences and offences may be considered for different calculation rules
-     * @description This endpoint will return which sentences and offences may be considered for different calculation rules.We will have to ask the user for clarification if any of the rules apply beacuse we cannot trust input data from NOMIS
-     */
+  /**
+   * Validates that the sentences for the given prisoner in NOMIS can be used to calculate a release date
+   * @description This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine
+   */
+  validateSupported: {
     parameters: {
-      /**
-       * @description The prisoners ID (aka nomsId)
-       * @example A1234AB
-       */
       path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+    }
+    responses: {
+      /** @description Validation job has run successfully, the response indicates if there are any errors */
+      200: {
+        content: {
+          'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+    }
+  }
+  getDlqMessages: {
+    parameters: {
+      query: {
+        maxMessages?: number
+      }
+      path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
+        }
+      }
+    }
+  }
+  /**
+   * Determine if a booking has any indeterminate sentences
+   * @description This endpoint will return true if a booking has any indeterminate sentences
+   */
+  hasIndeterminateSentences: {
+    parameters: {
+      path: {
+        /**
+         * @description The booking ID to check against
+         * @example 100001
+         */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** @description Returns a boolean value */
+      200: {
+        content: {
+          'application/json': boolean
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': boolean
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': boolean
+        }
+      }
+    }
+  }
+  /**
+   * Return which sentences and offences may be considered for different calculation rules
+   * @description This endpoint will return which sentences and offences may be considered for different calculation rules.We will have to ask the user for clarification if any of the rules apply beacuse we cannot trust input data from NOMIS
+   */
+  getCalculationUserQuestions: {
+    parameters: {
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
         prisonerId: string
       }
     }
@@ -786,17 +1087,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Get sentences and offences for a calculationRequestId
+   * @description This endpoint will return the sentences and offences based on a calculationRequestId
+   */
   getSentencesAndOffence: {
-    /**
-     * Get sentences and offences for a calculationRequestId
-     * @description This endpoint will return the sentences and offences based on a calculationRequestId
-     */
     parameters: {
-      /**
-       * @description The calculationRequestId of the calculation
-       * @example 123456
-       */
       path: {
+        /**
+         * @description The calculationRequestId of the calculation
+         * @example 123456
+         */
         calculationRequestId: number
       }
     }
@@ -827,17 +1128,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Get return to custody date for a calculationRequestId
+   * @description This endpoint will return the return to custody date based on a calculationRequestId
+   */
   getReturnToCustodyDate: {
-    /**
-     * Get return to custody date for a calculationRequestId
-     * @description This endpoint will return the return to custody date based on a calculationRequestId
-     */
     parameters: {
-      /**
-       * @description The calculationRequestId of the calculation
-       * @example 123456
-       */
       path: {
+        /**
+         * @description The calculationRequestId of the calculation
+         * @example 123456
+         */
         calculationRequestId: number
       }
     }
@@ -868,22 +1169,22 @@ export interface operations {
       }
     }
   }
+  /**
+   * Get confirmed release dates for a prisoner's specific booking
+   * @description This endpoint will return the confirmed release dates based on a prisoners booking
+   */
   getConfirmedCalculationResults: {
-    /**
-     * Get confirmed release dates for a prisoner's specific booking
-     * @description This endpoint will return the confirmed release dates based on a prisoners booking
-     */
     parameters: {
-      /**
-       * @description The prisoners ID (aka nomsId)
-       * @example A1234AB
-       */
-      /**
-       * @description The booking ID associated with the calculation
-       * @example 100001
-       */
       path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
         prisonerId: string
+        /**
+         * @description The booking ID associated with the calculation
+         * @example 100001
+         */
         bookingId: number
       }
     }
@@ -914,17 +1215,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Get release dates for a calculationRequestId
+   * @description This endpoint will return the release dates based on a calculationRequestId
+   */
   getCalculationResults: {
-    /**
-     * Get release dates for a calculationRequestId
-     * @description This endpoint will return the release dates based on a calculationRequestId
-     */
     parameters: {
-      /**
-       * @description The calculationRequestId of the results
-       * @example 123456
-       */
       path: {
+        /**
+         * @description The calculationRequestId of the results
+         * @example 123456
+         */
         calculationRequestId: number
       }
     }
@@ -955,17 +1256,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Get prisoner details for a calculationRequestId
+   * @description This endpoint will return the prisoner details based on a calculationRequestId
+   */
   getPrisonerDetails: {
-    /**
-     * Get prisoner details for a calculationRequestId
-     * @description This endpoint will return the prisoner details based on a calculationRequestId
-     */
     parameters: {
-      /**
-       * @description The calculationRequestId of the calculation
-       * @example 123456
-       */
       path: {
+        /**
+         * @description The calculationRequestId of the calculation
+         * @example 123456
+         */
         calculationRequestId: number
       }
     }
@@ -996,17 +1297,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Get user input for a calculationRequestId
+   * @description This endpoint will return the user input based on a calculationRequestId
+   */
   getCalculationInput: {
-    /**
-     * Get user input for a calculationRequestId
-     * @description This endpoint will return the user input based on a calculationRequestId
-     */
     parameters: {
-      /**
-       * @description The calculationRequestId of the calculation
-       * @example 123456
-       */
       path: {
+        /**
+         * @description The calculationRequestId of the calculation
+         * @example 123456
+         */
         calculationRequestId: number
       }
     }
@@ -1037,17 +1338,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Get breakdown for a calculationRequestId
+   * @description This endpoint will return the breakdown based on a calculationRequestId
+   */
   getCalculationBreakdown: {
-    /**
-     * Get breakdown for a calculationRequestId
-     * @description This endpoint will return the breakdown based on a calculationRequestId
-     */
     parameters: {
-      /**
-       * @description The calculationRequestId of the breakdown
-       * @example 123456
-       */
       path: {
+        /**
+         * @description The calculationRequestId of the breakdown
+         * @example 123456
+         */
         calculationRequestId: number
       }
     }
@@ -1078,17 +1379,17 @@ export interface operations {
       }
     }
   }
+  /**
+   * Get adjustments for a calculationRequestId
+   * @description This endpoint will return the adjustments based on a calculationRequestId
+   */
   get: {
-    /**
-     * Get adjustments for a calculationRequestId
-     * @description This endpoint will return the adjustments based on a calculationRequestId
-     */
     parameters: {
-      /**
-       * @description The calculationRequestId of the calculation
-       * @example 123456
-       */
       path: {
+        /**
+         * @description The calculationRequestId of the calculation
+         * @example 123456
+         */
         calculationRequestId: number
       }
     }

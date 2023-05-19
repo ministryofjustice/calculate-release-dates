@@ -17,6 +17,7 @@ export default function Index({
   viewReleaseDatesService,
   userInputService,
   oneThousandCalculationsService,
+  manualCalculationService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -56,7 +57,11 @@ export default function Index({
     userInputService
   )
 
-  const manualEntryAccessRoutes = new ManualEntryRoutes(calculateReleaseDatesService, prisonerService)
+  const manualEntryAccessRoutes = new ManualEntryRoutes(
+    calculateReleaseDatesService,
+    prisonerService,
+    manualCalculationService
+  )
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
@@ -77,6 +82,11 @@ export default function Index({
       checkInformationAccessRoutes.submitUnsupportedCheckInformation
     )
     get('/calculation/:nomsId/manual-entry', manualEntryAccessRoutes.landingPage)
+    get(
+      '/calculation/:nomsId/manual-entry/indeterminate-date-selection',
+      manualEntryAccessRoutes.indeterminateSelection
+    )
+    get('/calculation/:nomsId/manual-entry/determinate-date-selection', manualEntryAccessRoutes.determinateSelection)
   }
 
   const calculationRoutes = () => {

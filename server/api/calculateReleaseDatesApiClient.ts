@@ -127,4 +127,10 @@ export default class CalculateReleaseDatesApiClient {
       path: `/validation/${prisonerId}/supported-validation`,
     }) as Promise<ValidationMessage[]>
   }
+
+  hasIndeterminateSentences(bookingId: number): Promise<boolean> {
+    return this.restClient.get({
+      path: `/manual-calculation/${bookingId}/has-indeterminate-sentences`,
+    }) as Promise<boolean>
+  }
 }
