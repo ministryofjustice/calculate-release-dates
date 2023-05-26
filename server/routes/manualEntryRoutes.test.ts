@@ -89,7 +89,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       })
   })
 
-  it('GET if there are indeterminate sentences then href routes to correct page', () => {
+  it('GET if there are indeterminate sentences then should have correct content', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -99,17 +99,15 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
 
     return request(app)
-      .get('/calculation/A1234AA/manual-entry')
+      .get('/calculation/A1234AA/manual-entry/select-dates')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain(
-          `/calculation/${stubbedPrisonerData.offenderNo}/manual-entry/indeterminate-date-selection`
-        )
+        expect(res.text).toContain('Tariff')
       })
   })
 
-  it('GET if there are determinate sentences then href routes to correct page', () => {
+  it('GET if there are determinate sentences then should have correct data', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -119,13 +117,11 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
 
     return request(app)
-      .get('/calculation/A1234AA/manual-entry')
+      .get('/calculation/A1234AA/manual-entry/select-dates')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain(
-          `/calculation/${stubbedPrisonerData.offenderNo}/manual-entry/determinate-date-selection`
-        )
+        expect(res.text).toContain('SED (Sentence Expiry Date)')
       })
   })
 
@@ -138,7 +134,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
 
     return request(app)
-      .post('/calculation/A1234AA/manual-entry/determinate-date-selection')
+      .post('/calculation/A1234AA/manual-entry/select-dates')
       .type('form')
       .send({ dateSelect: 'SED' })
       .expect(302)
@@ -156,7 +152,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
 
     return request(app)
-      .post('/calculation/A1234AA/manual-entry/determinate-date-selection')
+      .post('/calculation/A1234AA/manual-entry/select-dates')
       .type('form')
       .send({ dateSelect: undefined })
       .expect(200)

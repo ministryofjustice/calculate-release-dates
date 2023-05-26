@@ -82,12 +82,8 @@ export default function Index({
       checkInformationAccessRoutes.submitUnsupportedCheckInformation
     )
     get('/calculation/:nomsId/manual-entry', manualEntryAccessRoutes.landingPage)
-    get(
-      '/calculation/:nomsId/manual-entry/indeterminate-date-selection',
-      manualEntryAccessRoutes.indeterminateSelection
-    )
-    get('/calculation/:nomsId/manual-entry/determinate-date-selection', manualEntryAccessRoutes.determinateSelection)
-    post('/calculation/:nomsId/manual-entry/determinate-date-selection', manualEntryAccessRoutes.selectDeterminateDates)
+    get('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.dateSelection)
+    post('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.submitSelectedDates)
     get('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.enterDate)
   }
 
