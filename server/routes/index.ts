@@ -87,6 +87,8 @@ export default function Index({
       manualEntryAccessRoutes.indeterminateSelection
     )
     get('/calculation/:nomsId/manual-entry/determinate-date-selection', manualEntryAccessRoutes.determinateSelection)
+    post('/calculation/:nomsId/manual-entry/determinate-date-selection', manualEntryAccessRoutes.selectDeterminateDates)
+    get('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.enterDate)
   }
 
   const calculationRoutes = () => {

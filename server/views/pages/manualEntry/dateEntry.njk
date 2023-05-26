@@ -1,0 +1,22 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+
+{% set pageTitle = applicationName + " - determinite manual entry" %}
+{% set pageId = "determinite selection" %}
+
+{% block aside %}
+    {% set prisonerDetail = prisonerDetail %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry"
+        }) }}
+    </nav>
+{% endblock %}
