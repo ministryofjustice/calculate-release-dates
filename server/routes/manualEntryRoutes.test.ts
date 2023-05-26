@@ -128,4 +128,40 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         )
       })
   })
+
+  it('POST if a date type has been selected should redirect', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+
+    return request(app)
+      .post('/calculation/A1234AA/manual-entry/determinate-date-selection')
+      .type('form')
+      .send({ dateSelect: 'SED' })
+      .expect(302)
+      .expect(res => {
+        expect(res.text).toContain(`/calculation/${stubbedPrisonerData.offenderNo}/manual-entry/enter-date`)
+      })
+  })
+
+  it('POST if a date type has not been selected should display error', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+
+    return request(app)
+      .post('/calculation/A1234AA/manual-entry/determinate-date-selection')
+      .type('form')
+      .send({ dateSelect: undefined })
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Select at least one release date.')
+      })
+  })
 })

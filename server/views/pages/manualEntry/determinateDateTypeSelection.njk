@@ -1,5 +1,7 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 {% set pageTitle = applicationName + " - determinite manual entry" %}
@@ -23,10 +25,21 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">
-                Determinate sentences - date type selection page
-            </h1>
-            {# TODO Just a placeholder page #}
+            <form method="post">
+                {% if insufficientDatesSelected %}
+                    {% set determinateConfig = mergedConfig %}
+                {% endif %}
+                {{ govukCheckboxes(determinateConfig) }}
+
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    value: 'determinate-date-selection',
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'manual-entry' }
+                }) }}
+            </form>
         </div>
     </div>
 {% endblock %}
