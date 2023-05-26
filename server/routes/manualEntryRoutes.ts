@@ -87,6 +87,46 @@ const determinateConfig = {
     },
   ],
 }
+const indeterminateConfig = {
+  name: 'dateSelect',
+  fieldset: {
+    legend: {
+      text: 'Select the dates you need to enter',
+      isPageHeading: true,
+      classes: 'govuk-fieldset__legend--xl',
+    },
+  },
+  hint: {
+    text: 'Select all that apply to the manual calculation.',
+  },
+  items: [
+    {
+      value: 'tariff',
+      text: 'Tariff',
+    },
+    {
+      value: 'TERSED',
+      text: 'TERSED (Tariff-Expired Removal Scheme Eligibility Date)',
+    },
+    {
+      value: 'ROTL',
+      text: 'ROTL (Release on Temporary Licence)',
+    },
+    {
+      value: 'APD',
+      text: 'APD (Approved Parole Date)',
+    },
+    {
+      divider: 'or',
+    },
+    {
+      value: 'none',
+      text: 'None',
+      checked: true,
+      behaviour: 'exclusive',
+    },
+  ],
+}
 const errorMessage = {
   errorMessage: {
     text: 'Select at least one release date.',
@@ -108,21 +148,10 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
-      prisonerDetail.bookingId,
-      token
-    )
-    return res.render('pages/manualEntry/manualEntry', { prisonerDetail, hasIndeterminateSentences })
+    return res.render('pages/manualEntry/manualEntry', { prisonerDetail })
   }
 
-  public indeterminateSelection: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
-    const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    return res.render('pages/manualEntry/indeterminateDateTypeSelection', { prisonerDetail })
-  }
-
-  public selectDeterminateDates: RequestHandler = async (req, res): Promise<void> => {
+  public submitSelectedDates: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     // TODO add this as middleware
@@ -133,9 +162,14 @@ export default class ManualEntryRoutes {
     }
     const insufficientDatesSelected = req.body.dateSelect === undefined || req.body.dateSelect.length === 0
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
+      prisonerDetail.bookingId,
+      token
+    )
+    const config = hasIndeterminateSentences ? indeterminateConfig : determinateConfig
     if (insufficientDatesSelected) {
-      const mergedConfig = { ...determinateConfig, ...errorMessage }
-      return res.render('pages/manualEntry/determinateDateTypeSelection', {
+      const mergedConfig = { ...config, ...errorMessage }
+      return res.render('pages/manualEntry/dateTypeSelection', {
         prisonerDetail,
         insufficientDatesSelected,
         mergedConfig,
@@ -152,11 +186,16 @@ export default class ManualEntryRoutes {
     return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
   }
 
-  public determinateSelection: RequestHandler = async (req, res): Promise<void> => {
+  public dateSelection: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    return res.render('pages/manualEntry/determinateDateTypeSelection', { prisonerDetail, determinateConfig })
+    const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
+      prisonerDetail.bookingId,
+      token
+    )
+    const config = hasIndeterminateSentences ? indeterminateConfig : determinateConfig
+    return res.render('pages/manualEntry/dateTypeSelection', { prisonerDetail, config })
   }
 
   public enterDate: RequestHandler = async (req, res): Promise<void> => {

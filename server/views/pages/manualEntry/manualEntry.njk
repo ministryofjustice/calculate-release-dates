@@ -40,17 +40,12 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            {% if hasIndeterminateSentences %}
-                {% set nextPage = "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/indeterminate-date-selection" %}
-            {% else %}
-                {% set nextPage = "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/determinate-date-selection"%}
-            {% endif %}
             {{ govukButton({
                 text: "Continue",
                 type: submit,
                 value: 'start-manual-calc',
                 preventDoubleClick: true,
-                href: nextPage,
+                href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/select-dates",
                 attributes: {  'data-qa': 'manual-calc-start' }
             }) }}
         </div>
