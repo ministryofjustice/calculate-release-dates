@@ -85,6 +85,11 @@ export default function Index({
     get('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.dateSelection)
     post('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.submitSelectedDates)
     get('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.enterDate)
+    post('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.submitDate)
+    get('/calculation/:nomsId/manual-entry/confirmation', manualEntryAccessRoutes.loadConfirmation)
+    get('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.loadRemoveDate)
+    post('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.submitRemoveDate)
+    get('/calculation/:nomsId/manual-entry/change-date', manualEntryAccessRoutes.loadChangeDate)
   }
 
   const calculationRoutes = () => {

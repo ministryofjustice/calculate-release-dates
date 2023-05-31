@@ -1,4 +1,11 @@
 export interface ManualEntrySelectedDate {
   dateType: string
-  date?: string
+  dateText: string
+  date?: SubmittedDate
+}
+
+export interface SubmittedDate {
+  day: string
+  month: string
+  year: string
 }
