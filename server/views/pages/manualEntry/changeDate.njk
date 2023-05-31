@@ -2,8 +2,8 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
-{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitle = applicationName + " - determinite manual entry" %}
 {% set pageId = "determinite selection" %}
@@ -25,56 +25,51 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form class="form" method="post">
+            <form id="form" method="post">
                 {% if error %}
-                    {{ govukDateInput({
-                        id: date.dateType,
-                        name: 'dateEntry',
+                    {{ govukRadios({
+                        name: "remove-date",
                         fieldset: {
                             legend: {
-                                text: "Enter the " + date.dateText,
+                                text: "Are you sure you want to remove the " + fullDateName + " for " + prisonerDetail.firstName + " " + prisonerDetail.lastName +"?",
                                 isPageHeading: true,
                                 classes: "govuk-fieldset__legend--xl"
                             }
-                        },
-                        hint: {
-                            text: "For example, 27 3 2007"
-                        },
-                        errorMessage: {
-                            text: error
                         },
                         items: [
                             {
-                                classes: "govuk-input--width-2 govuk-input--error",
-                                name: "day",
-                                value: enteredDate.day
+                                value: "yes",
+                                text: "Yes"
                             },
                             {
-                                classes: "govuk-input--width-2 govuk-input--error",
-                                name: "month",
-                                value: enteredDate.month
+                                value: "no",
+                                text: "No"
                             },
-                            {
-                                classes: "govuk-input--width-4 govuk-input--error",
-                                name: "year",
-                                value: enteredDate.year
-                            }
-                        ]
+                        ],
+                        errorMessage: {
+                            text: "Please choose one of the options"
+                        }
                     }) }}
                 {% else %}
-                    {{ govukDateInput({
-                        id: date.dateType,
-                        name: 'dateEntry',
+                    {{ govukRadios({
+                        name: "remove-date",
                         fieldset: {
                             legend: {
-                                text: "Enter the " + date.dateText,
+                                text: "Are you sure you want to remove the " + fullDateName + " for " + prisonerDetail.firstName + " " + prisonerDetail.lastName +"?",
                                 isPageHeading: true,
                                 classes: "govuk-fieldset__legend--xl"
                             }
                         },
-                        hint: {
-                            text: "For example, 27 3 2007"
-                        }
+                        items: [
+                            {
+                                value: "yes",
+                                text: "Yes"
+                            },
+                            {
+                                value: "no",
+                                text: "No"
+                            },
+                        ]
                     }) }}
                 {% endif %}
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
@@ -82,9 +77,9 @@
                 {{ govukButton({
                     text: "Continue",
                     type: submit,
-                    value: 'submit-date',
+                    value: 'remove-date',
                     preventDoubleClick: true,
-                    attributes: {  'data-qa': 'date-entry' }
+                    attributes: {  'data-qa': 'remove-date' }
                 }) }}
             </form>
         </div>

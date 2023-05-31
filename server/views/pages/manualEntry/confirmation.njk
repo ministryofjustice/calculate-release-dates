@@ -1,0 +1,35 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " - determinite manual entry" %}
+{% set pageId = "determinite selection" %}
+
+{% block aside %}
+    {% set prisonerDetail = prisonerDetail %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry"
+        }) }}
+    </nav>
+{% endblock %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Check the dates you have entered</h1>
+            {{ govukSummaryList({
+                rows: rows
+            }) }}
+            <a href="/calculation/{{ prisonerDetail.offenderNo }}/manual-entry/select-dates" class="govuk-link govuk-link--no-visited-state">Add another release date</a>
+        </div>
+    </div>
+{% endblock %}
