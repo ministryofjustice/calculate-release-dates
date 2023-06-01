@@ -202,6 +202,9 @@ export default class ManualEntryService {
     hasIndeterminateSentences: boolean,
     firstLoad: boolean
   ): { error: boolean; config: DateSelectConfiguration } {
+    if (!req.session.selectedManualEntryDates[nomsId]) {
+      req.session.selectedManualEntryDates[nomsId] = []
+    }
     const insufficientDatesSelected =
       !firstLoad &&
       req.session.selectedManualEntryDates[nomsId].length === 0 &&

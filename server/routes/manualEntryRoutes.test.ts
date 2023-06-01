@@ -6,6 +6,7 @@ import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualCalculationService from '../services/manualCalculationService'
+import ManualEntryService from '../services/manualEntryService'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -14,7 +15,7 @@ jest.mock('../services/manualCalculationService')
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const manualCalculationService = new ManualCalculationService() as jest.Mocked<ManualCalculationService>
-
+const manualEntryService = new ManualEntryService()
 let app: Express
 
 const stubbedEmptyMessages: ValidationMessage[] = []
@@ -51,6 +52,7 @@ beforeEach(() => {
     calculateReleaseDatesService,
     prisonerService,
     manualCalculationService,
+    manualEntryService,
   })
 })
 
@@ -97,7 +99,6 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
-
     return request(app)
       .get('/calculation/A1234AA/manual-entry/select-dates')
       .expect(200)
@@ -115,7 +116,6 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
-
     return request(app)
       .get('/calculation/A1234AA/manual-entry/select-dates')
       .expect(200)

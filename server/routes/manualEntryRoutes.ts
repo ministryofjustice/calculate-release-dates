@@ -37,7 +37,9 @@ export default class ManualEntryRoutes {
     if (unsupportedSentenceOrCalculationMessages.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
-
+    if (!req.session.selectedManualEntryDates) {
+      req.session.selectedManualEntryDates = {}
+    }
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
@@ -69,6 +71,9 @@ export default class ManualEntryRoutes {
       await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
     if (unsupportedSentenceOrCalculationMessages.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+    if (!req.session.selectedManualEntryDates) {
+      req.session.selectedManualEntryDates = {}
     }
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
