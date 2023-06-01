@@ -89,4 +89,9 @@
             </form>
         </div>
     </div>
+    <script nonce="{{ cspNonce }}" type="application/javascript">
+        document.getElementsByName('day')[0].type = 'number'
+        document.getElementsByName('month')[0].type = 'number'
+        document.getElementsByName('year')[0].type = 'number'
+    </script>
 {% endblock %}
