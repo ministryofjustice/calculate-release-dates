@@ -1,0 +1,373 @@
+import { Request } from 'express'
+import dayjs from 'dayjs'
+import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
+
+const fullStringLookup = {
+  SED: 'SED (Sentence Expiry Date)',
+  LED: 'LED (Licence Expiry Date)',
+  CRD: 'CRD (Conditional Release Date)',
+  HDCED: 'HDCED (Home Detention Curfew Release Date)',
+  TUSED: 'TUSED (Top Up Supervision Expiry Date)',
+  PRRD: 'PRRD (Post Recall Release Date)',
+  PED: 'PED (Parole Eligibility Date)',
+  ROTL: 'ROTL (Release on Temporary Licence)',
+  ERSED: 'ERSED (Early Removal Scheme Eligibility Date)',
+  ARD: 'ARD (Automatic Release Date)',
+  HDCAD: 'HDCAD (Home Detention Curfew Approved Date)',
+  MTD: 'MTD (Mid Transfer Date)',
+  ETD: 'ETD (Early Transfer Date)',
+  LTD: 'LTD (Late Transfer Date)',
+  APD: 'APD (Approved Parole Date)',
+  NPD: 'NPD (Non-Parole Date)',
+  DPRRD: 'DPRRD (Detention and Training Order Post Recall Release Date)',
+  tariff: 'Tariff (known as the Tariff expiry date)',
+  TERSED: 'TERSED (Tariff-Expired Removal Scheme Eligibility Date)',
+}
+
+const determinateConfig = {
+  name: 'dateSelect',
+  fieldset: {
+    legend: {
+      text: 'Select the dates you need to enter',
+      isPageHeading: true,
+      classes: 'govuk-fieldset__legend--xl',
+    },
+  },
+  hint: {
+    text: 'Select all that apply to the manual calculation.',
+  },
+  items: [
+    {
+      value: 'SED',
+      text: 'SED (Sentence Expiry Date)',
+      checked: false,
+      attributes: {},
+    },
+    {
+      value: 'LED',
+      text: 'LED (Licence Expiry Date)',
+      checked: false,
+      attributes: {},
+    },
+    {
+      value: 'CRD',
+      attributes: {},
+      checked: false,
+      text: 'CRD (Conditional Release Date)',
+    },
+    {
+      attributes: {},
+      checked: false,
+      value: 'HDCED',
+      text: 'HDCED (Home Detention Curfew Release Date)',
+    },
+    {
+      value: 'TUSED',
+      attributes: {},
+      checked: false,
+      text: 'TUSED (Top Up Supervision Expiry Date)',
+    },
+    {
+      value: 'PRRD',
+      attributes: {},
+      checked: false,
+      text: 'PRRD (Post Recall Release Date)',
+    },
+    {
+      value: 'PED',
+      attributes: {},
+      checked: false,
+      text: 'PED (Parole Eligibility Date)',
+    },
+    {
+      value: 'ROTL',
+      checked: false,
+      attributes: {},
+      text: 'ROTL (Release on Temporary Licence)',
+    },
+    {
+      value: 'ERSED',
+      attributes: {},
+      checked: false,
+      text: 'ERSED (Early Removal Scheme Eligibility Date)',
+    },
+    {
+      value: 'ARD',
+      attributes: {},
+      checked: false,
+      text: 'ARD (Automatic Release Date)',
+    },
+    {
+      value: 'HDCAD',
+      attributes: {},
+      checked: false,
+      text: 'HDCAD (Home Detention Curfew Approved Date)',
+    },
+    {
+      value: 'MTD',
+      attributes: {},
+      checked: false,
+      text: 'MTD (Mid Transfer Date)',
+    },
+    {
+      value: 'ETD',
+      attributes: {},
+      checked: false,
+      text: 'ETD (Early Transfer Date)',
+    },
+    {
+      value: 'LTD',
+      attributes: {},
+      checked: false,
+      text: 'LTD (Late Transfer Date)',
+    },
+    {
+      value: 'APD',
+      attributes: {},
+      checked: false,
+      text: 'APD (Approved Parole Date)',
+    },
+    {
+      value: 'NPD',
+      attributes: {},
+      checked: false,
+      text: 'NPD (Non-Parole Date)',
+    },
+    {
+      value: 'DPRRD',
+      attributes: {},
+      checked: false,
+      text: 'DPRRD (Detention and Training Order Post Recall Release Date)',
+    },
+  ],
+}
+const indeterminateConfig = {
+  name: 'dateSelect',
+  fieldset: {
+    legend: {
+      text: 'Select the dates you need to enter',
+      isPageHeading: true,
+      classes: 'govuk-fieldset__legend--xl',
+    },
+  },
+  hint: {
+    text: 'Select all that apply to the manual calculation.',
+  },
+  items: [
+    {
+      value: 'tariff',
+      checked: false,
+      attributes: {},
+      text: 'Tariff (known as the Tariff expiry date)',
+    },
+    {
+      value: 'TERSED',
+      attributes: {},
+      checked: false,
+      text: 'TERSED (Tariff expired removal scheme eligibility date)',
+    },
+    {
+      value: 'ROTL',
+      attributes: {},
+      checked: false,
+      text: 'ROTL (Release on Temporary Licence)',
+    },
+    {
+      value: 'APD',
+      attributes: {},
+      checked: false,
+      text: 'APD (Approved Parole Date)',
+    },
+    {
+      divider: 'or',
+    },
+    {
+      value: 'none',
+      text: 'None of these dates apply',
+      attributes: {},
+      checked: false,
+      behaviour: 'exclusive',
+    },
+  ],
+}
+const errorMessage = {
+  errorMessage: {
+    text: 'Select at least one release date.',
+  },
+}
+export default class ManualEntryService {
+  public verifySelectedDateType(
+    req: Request,
+    nomsId: string,
+    hasIndeterminateSentences: boolean,
+    firstLoad: boolean
+  ): { error: boolean; config: DateSelectConfiguration } {
+    const insufficientDatesSelected =
+      !firstLoad &&
+      req.session.selectedManualEntryDates[nomsId].length === 0 &&
+      (req.body.dateSelect === undefined || req.body.dateSelect.length === 0)
+    const config: DateSelectConfiguration = hasIndeterminateSentences
+      ? (indeterminateConfig as DateSelectConfiguration)
+      : (determinateConfig as DateSelectConfiguration)
+    if (insufficientDatesSelected) {
+      const mergedConfig = { ...config, ...errorMessage }
+      // eslint-disable-next-line no-restricted-syntax
+      this.enrichConfiguration(mergedConfig, req, nomsId)
+      return { error: true, config: mergedConfig }
+    }
+    this.enrichConfiguration(config, req, nomsId)
+    return { error: false, config: <DateSelectConfiguration>config }
+  }
+
+  private enrichConfiguration(mergedConfig: DateSelectConfiguration, req: Request, nomsId: string) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of mergedConfig.items) {
+      if (
+        req.session.selectedManualEntryDates[nomsId] &&
+        req.session.selectedManualEntryDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === item.value)
+      ) {
+        item.checked = true
+        item.attributes = {
+          disabled: true,
+        }
+      } else {
+        item.checked = false
+        item.attributes = {}
+      }
+    }
+  }
+
+  public addManuallyCalculatedDateTypes(req: Request, nomsId: string): void {
+    const selectedDateTypes: string[] = Array.isArray(req.body.dateSelect) ? req.body.dateSelect : [req.body.dateSelect]
+    const dates = selectedDateTypes
+      .map((date: string) => {
+        if (date !== undefined) {
+          const existingDate = req.session.selectedManualEntryDates[nomsId].find(
+            (d: ManualEntrySelectedDate) => d !== undefined && d.dateType === date
+          )
+          if (existingDate) {
+            return {
+              dateType: date,
+              dateText: fullStringLookup[date],
+              date: existingDate.date,
+            } as ManualEntrySelectedDate
+          }
+          return {
+            dateType: date,
+            dateText: fullStringLookup[date],
+            date: undefined,
+          } as ManualEntrySelectedDate
+        }
+        return null
+      })
+      .filter(obj => obj !== null)
+    req.session.selectedManualEntryDates[nomsId] = [...req.session.selectedManualEntryDates[nomsId], ...dates]
+  }
+
+  public getNextDateToEnter(req: Request, nomsId: string): ManualEntrySelectedDate {
+    const hasDateToEnter = req.session.selectedManualEntryDates[nomsId].some(
+      (d: ManualEntrySelectedDate) => d !== undefined && d.date === undefined
+    )
+    if (hasDateToEnter) {
+      return req.session.selectedManualEntryDates[nomsId].find(
+        (d: ManualEntrySelectedDate) => d !== undefined && d.date === undefined
+      )
+    }
+    return undefined
+  }
+
+  public storeDate(req: Request, nomsId: string): StorageResponseModel {
+    const enteredDate = req.body
+    if (enteredDate.dateType !== 'none') {
+      if (enteredDate.day === '' || enteredDate.month === '' || enteredDate.year === '') {
+        const date = req.session.selectedManualEntryDates[nomsId].find(
+          (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
+        )
+        const message = 'The date entered must include a day, month and a year.'
+        return { message, date, enteredDate, success: false } as StorageResponseModel
+      }
+      req.session.selectedManualEntryDates[nomsId].find(
+        (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
+      ).date = enteredDate
+      return { success: true } as StorageResponseModel
+    }
+    return { success: false } as StorageResponseModel
+  }
+
+  public getConfirmationConfiguration(req: Request, nomsId: string) {
+    return req.session.selectedManualEntryDates[nomsId].map((d: ManualEntrySelectedDate) => {
+      const dateString = `${d.date.year}-${d.date.month}-${d.date.day}`
+      const dateValue = dayjs(dateString).format('DD MMMM YYYY')
+      const text = fullStringLookup[d.dateType]
+      return {
+        key: {
+          text,
+        },
+        value: {
+          text: dateValue,
+        },
+        actions: {
+          items: [
+            {
+              href: `/calculation/${nomsId}/manual-entry/change-date?dateType=${d.dateType}`,
+              text: 'Change',
+              visuallyHiddenText: `Change ${text}`,
+            },
+            {
+              href: `/calculation/${nomsId}/manual-entry/remove-date?dateType=${d.dateType}`,
+              text: 'Remove',
+              visuallyHiddenText: `Remove ${text}`,
+            },
+          ],
+        },
+      }
+    })
+  }
+
+  public fullStringLookup(dateType: string): string {
+    return fullStringLookup[dateType]
+  }
+
+  public removeDate(req: Request, nomsId: string): number {
+    const dateToRemove = req.query.dateType
+    if (req.body['remove-date'] === 'yes') {
+      req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
+        (d: ManualEntrySelectedDate) => d.dateType !== dateToRemove
+      )
+    }
+    return req.session.selectedManualEntryDates[nomsId].length
+  }
+
+  public changeDate(req: Request, nomsId: string): void {
+    req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
+      (d: ManualEntrySelectedDate) => d.dateType !== req.query.dateType
+    )
+    req.session.selectedManualEntryDates[nomsId].push({
+      dateType: req.query.dateType,
+      dateText: fullStringLookup[<string>req.query.dateType],
+      date: undefined,
+    } as ManualEntrySelectedDate)
+  }
+}
+
+export interface StorageResponseModel {
+  success: boolean
+  message: string
+  date: ManualEntrySelectedDate
+  enteredDate: ManualEntrySelectedDate
+}
+
+export interface DateSelectConfiguration {
+  hint: { text: string }
+  name: string
+  fieldset: { legend: { classes: string; text: string; isPageHeading: boolean } }
+  errorMessage: { text: string }
+  items: {
+    divider?: string
+    checked?: boolean
+    attributes?: { disabled?: boolean }
+    behaviour?: string
+    text?: string
+    value?: string
+  }[]
+}

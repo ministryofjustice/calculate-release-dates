@@ -9,7 +9,7 @@ declare module 'express-session' {
     returnTo: string
     nowInMinutes: number
     userInputs?: { string?: CalculationUserInputs }
-    selectedManualEntryDates?: ManualEntrySelectedDate[]
+    selectedManualEntryDates?: { string?: ManualEntrySelectedDate[] }
   }
 }
 

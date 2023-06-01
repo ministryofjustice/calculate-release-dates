@@ -18,6 +18,7 @@ export default function Index({
   userInputService,
   oneThousandCalculationsService,
   manualCalculationService,
+  manualEntryService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -60,7 +61,8 @@ export default function Index({
   const manualEntryAccessRoutes = new ManualEntryRoutes(
     calculateReleaseDatesService,
     prisonerService,
-    manualCalculationService
+    manualCalculationService,
+    manualEntryService
   )
 
   const indexRoutes = () => {
