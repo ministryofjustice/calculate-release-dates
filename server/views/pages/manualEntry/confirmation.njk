@@ -29,7 +29,7 @@
             {{ govukSummaryList({
                 rows: rows
             }) }}
-            <a href="/calculation/{{ prisonerDetail.offenderNo }}/manual-entry/select-dates" class="govuk-link govuk-link--no-visited-state">Add another release date</a>
+            <a href="/calculation/{{ prisonerDetail.offenderNo }}/manual-entry/select-dates?addExtra=true" class="govuk-link govuk-link--no-visited-state">Add another release date</a>
         </div>
     </div>
 {% endblock %}

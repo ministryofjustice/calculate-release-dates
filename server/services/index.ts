@@ -7,6 +7,7 @@ import UserInputService from './userInputService'
 import { dataAccess } from '../data'
 import OneThousandCalculationsService from './oneThousandCalculationsService'
 import ManualCalculationService from './manualCalculationService'
+import ManualEntryService from './manualEntryService'
 
 export const services = () => {
   const { hmppsAuthClient } = dataAccess()
@@ -21,7 +22,7 @@ export const services = () => {
     calculateReleaseDatesService
   )
   const manualCalculationService = new ManualCalculationService()
-
+  const manualEntryService = new ManualEntryService()
   return {
     userService,
     prisonerService,
@@ -31,6 +32,7 @@ export const services = () => {
     userInputService,
     oneThousandCalculationsService,
     manualCalculationService,
+    manualEntryService,
   }
 }
 
