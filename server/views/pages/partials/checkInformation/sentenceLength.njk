@@ -1,5 +1,6 @@
 {% macro sentenceLength(terms, label) %}
     {% for term in terms %}
+        {% if term.years > 0 or term.weeks > 0 or term.months > 0 or term.days > 0 %}
         <tr class="govuk-table__row govuk-body-s">
             <th scope="row" class="govuk-table__header sentence-table-header">{{label}}</th>
             <td class="govuk-table__cell">
@@ -13,5 +14,6 @@
                 {{ 'day' | pluralise(term.days) }}
             </td>
         </tr>
+            {% endif %}
     {% endfor %}
 {% endmacro %}
