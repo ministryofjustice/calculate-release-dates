@@ -282,7 +282,7 @@ export default class ManualEntryService {
   }
 
   public storeDate(req: Request, nomsId: string): StorageResponseModel {
-    const enteredDate = req.body
+    const enteredDate: EnteredDate = req.body
     if (enteredDate.dateType !== 'none') {
       const allItems: DateInputItem[] = [
         {
@@ -320,7 +320,7 @@ export default class ManualEntryService {
     return { success: false } as StorageResponseModel
   }
 
-  private allErrored(req: Request, nomsId: string, enteredDate: any, allItems: DateInputItem[]) {
+  private allErrored(req: Request, nomsId: string, enteredDate: EnteredDate, allItems: DateInputItem[]) {
     const date = req.session.selectedManualEntryDates[nomsId].find(
       (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
     )
@@ -331,7 +331,7 @@ export default class ManualEntryService {
     return { message, date, enteredDate, success: false, items } as StorageResponseModel
   }
 
-  private notWithinOneHundredYears(req: Request, nomsId: string, enteredDate: any, allItems: DateInputItem[]) {
+  private notWithinOneHundredYears(req: Request, nomsId: string, enteredDate: EnteredDate, allItems: DateInputItem[]) {
     const date = req.session.selectedManualEntryDates[nomsId].find(
       (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
     )
@@ -354,7 +354,7 @@ export default class ManualEntryService {
   private singleItemsErrored(
     req: Request,
     allItems: DateInputItem[],
-    enteredDate: any,
+    enteredDate: EnteredDate,
     nomsId: string
   ): StorageResponseModel {
     let i = 0
@@ -454,7 +454,7 @@ export interface StorageResponseModel {
   success: boolean
   message: string
   date: ManualEntrySelectedDate
-  enteredDate: ManualEntrySelectedDate
+  enteredDate: EnteredDate
   items: DateInputItem[]
 }
 
@@ -462,6 +462,13 @@ export interface DateInputItem {
   classes: string
   name: 'day' | 'month' | 'year'
   value: string
+}
+
+export interface EnteredDate {
+  day: string
+  month: string
+  year: string
+  dateType: string
 }
 
 export interface DateSelectConfiguration {
