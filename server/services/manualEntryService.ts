@@ -1,6 +1,7 @@
 import { Request } from 'express'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
+import { DateTime } from 'luxon'
 import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
 
 dayjs.extend(isBetween)
@@ -301,7 +302,10 @@ export default class ManualEntryService {
           value: enteredDate.year,
         },
       ]
-      if (enteredDate.day === '' && enteredDate.month === '' && enteredDate.year === '') {
+      if (
+        (enteredDate.day === '' && enteredDate.month === '' && enteredDate.year === '') ||
+        !this.isDateValid(enteredDate)
+      ) {
         return this.allErrored(req, nomsId, enteredDate, allItems)
       }
       const someErrors = this.singleItemsErrored(req, allItems, enteredDate, nomsId)
@@ -320,11 +324,16 @@ export default class ManualEntryService {
     return { success: false } as StorageResponseModel
   }
 
+  private isDateValid(enteredDate: EnteredDate): boolean {
+    const dateAsDate = DateTime.fromISO(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`)
+    return dateAsDate.isValid
+  }
+
   private allErrored(req: Request, nomsId: string, enteredDate: EnteredDate, allItems: DateInputItem[]) {
     const date = req.session.selectedManualEntryDates[nomsId].find(
       (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
     )
-    const message = 'The date entered must include a day, month and a year.'
+    const message = 'The date entered must include a valid day, month and a year.'
     const items = allItems.map(it => {
       return { ...it, classes: `${it.classes} govuk-input--error` }
     })
@@ -335,14 +344,14 @@ export default class ManualEntryService {
     const date = req.session.selectedManualEntryDates[nomsId].find(
       (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
     )
-    const dateAsDate = dayjs(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`)
-    const now = dayjs()
-    const oneHundredYearsBefore = now.subtract(100, 'year')
-    const oneHundredYearsAfter = now.add(100, 'year')
-    if (!dateAsDate.isBetween(oneHundredYearsBefore, oneHundredYearsAfter, 'day')) {
-      const message = `The date entered must be between ${oneHundredYearsBefore.format(
-        'DD MM YYYY'
-      )} and ${oneHundredYearsAfter.format('DD MM YYYY')}`
+    const dateAsDate = DateTime.fromISO(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`)
+    const now = DateTime.now()
+    const oneHundredYearsBefore = now.minus({ years: 100 })
+    const oneHundredYearsAfter = now.plus({ years: 100 })
+    if (dateAsDate < oneHundredYearsBefore || dateAsDate > oneHundredYearsAfter) {
+      const message = `The date entered must be between ${oneHundredYearsBefore.toFormat(
+        'dd MM yyyy'
+      )} and ${oneHundredYearsAfter.toFormat('dd MM yyyy')}`
       const items = allItems.map(it => {
         return { ...it, classes: `${it.classes} govuk-input--error` }
       })
@@ -397,7 +406,7 @@ export default class ManualEntryService {
   public getConfirmationConfiguration(req: Request, nomsId: string) {
     return req.session.selectedManualEntryDates[nomsId].map((d: ManualEntrySelectedDate) => {
       const dateString = `${d.date.year}-${d.date.month}-${d.date.day}`
-      const dateValue = dayjs(dateString).format('DD MMMM YYYY')
+      const dateValue = DateTime.fromISO(dateString).toFormat('dd LLLL yyyy')
       const text = fullStringLookup[d.dateType]
       return {
         key: {
