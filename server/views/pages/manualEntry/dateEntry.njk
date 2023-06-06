@@ -61,6 +61,38 @@
                             }
                         ]
                     }) }}
+                    {% elif previousDate %}
+                    {{ govukDateInput({
+                        id: date.dateType,
+                        name: 'dateEntry',
+                        fieldset: {
+                            legend: {
+                                text: "Enter the " + date.dateText,
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--xl"
+                            }
+                        },
+                        hint: {
+                            text: "For example, 27 3 2007"
+                        },
+                        items: [
+                            {
+                                classes: "govuk-input--width-2",
+                                name: "day",
+                                value: previousDate.day
+                            },
+                            {
+                                classes: "govuk-input--width-2",
+                                name: "month",
+                                value: previousDate.month
+                            },
+                            {
+                                classes: "govuk-input--width-4",
+                                name: "year",
+                                value: previousDate.year
+                            }
+                        ]
+                    }) }}
                 {% else %}
                     {{ govukDateInput({
                         id: date.dateType,

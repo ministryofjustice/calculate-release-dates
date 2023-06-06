@@ -2,7 +2,7 @@ import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import ManualCalculationService from '../services/manualCalculationService'
-import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
+import { ManualEntrySelectedDate, SubmittedDate } from '../models/ManualEntrySelectedDate'
 import ManualEntryService from '../services/manualEntryService'
 
 export default class ManualEntryRoutes {
@@ -88,15 +88,20 @@ export default class ManualEntryRoutes {
   public enterDate: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
+    const { year, month, day } = req.query
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const unsupportedSentenceOrCalculationMessages =
       await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
     if (unsupportedSentenceOrCalculationMessages.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
+    let previousDate
+    if (year && month && day) {
+      previousDate = { year, month, day } as SubmittedDate
+    }
     const date = this.manualEntryService.getNextDateToEnter(req, nomsId)
     if (date) {
-      return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date })
+      return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, previousDate })
     }
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }
@@ -178,7 +183,9 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
 
-    this.manualEntryService.changeDate(req, nomsId)
-    return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
+    const { date } = this.manualEntryService.changeDate(req, nomsId)
+    return res.redirect(
+      `/calculation/${nomsId}/manual-entry/enter-date?year=${date.year}&month=${date.month}&day=${date.day}`
+    )
   }
 }
