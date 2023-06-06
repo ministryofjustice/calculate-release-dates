@@ -624,11 +624,8 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain(
-          'For this calculation, this service has used the existing HDCED policy rules. From 6 June, this service will calculate HDCEDs using the new policy rules.'
-        )
-        expect(res.text).toContain('From 6 June, the policy for calculating HDCED will change')
-        expect(res.text).toContain('NOMIS has already been updated to reflect the new policy.')
+        expect(res.text).toContain('From 6 June, the policy for calculating HDCED has changed')
+        expect(res.text).toContain('This service has calculated the HDCED using the new policy rules')
       })
   })
 

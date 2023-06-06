@@ -325,7 +325,7 @@ export default class ManualEntryService {
   }
 
   private isDateValid(enteredDate: EnteredDate): boolean {
-    const dateAsDate = DateTime.fromISO(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`)
+    const dateAsDate = DateTime.fromFormat(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`, 'yyyy-M-d')
     return dateAsDate.isValid
   }
 
@@ -344,7 +344,7 @@ export default class ManualEntryService {
     const date = req.session.selectedManualEntryDates[nomsId].find(
       (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
     )
-    const dateAsDate = DateTime.fromISO(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`)
+    const dateAsDate = DateTime.fromFormat(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`, 'yyyy-M-d')
     const now = DateTime.now()
     const oneHundredYearsBefore = now.minus({ years: 100 })
     const oneHundredYearsAfter = now.plus({ years: 100 })
@@ -406,7 +406,7 @@ export default class ManualEntryService {
   public getConfirmationConfiguration(req: Request, nomsId: string) {
     return req.session.selectedManualEntryDates[nomsId].map((d: ManualEntrySelectedDate) => {
       const dateString = `${d.date.year}-${d.date.month}-${d.date.day}`
-      const dateValue = DateTime.fromISO(dateString).toFormat('dd LLLL yyyy')
+      const dateValue = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
       const text = fullStringLookup[d.dateType]
       return {
         key: {
@@ -447,7 +447,10 @@ export default class ManualEntryService {
     return req.session.selectedManualEntryDates[nomsId].length
   }
 
-  public changeDate(req: Request, nomsId: string): void {
+  public changeDate(req: Request, nomsId: string): ManualEntrySelectedDate {
+    const date = req.session.selectedManualEntryDates[nomsId].find(
+      (d: ManualEntrySelectedDate) => d.dateType === req.query.dateType
+    )
     req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
       (d: ManualEntrySelectedDate) => d.dateType !== req.query.dateType
     )
@@ -456,6 +459,7 @@ export default class ManualEntryService {
       dateText: fullStringLookup[<string>req.query.dateType],
       date: undefined,
     } as ManualEntrySelectedDate)
+    return date
   }
 }
 
