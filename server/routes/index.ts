@@ -92,6 +92,7 @@ export default function Index({
     get('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.loadRemoveDate)
     post('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.submitRemoveDate)
     get('/calculation/:nomsId/manual-entry/change-date', manualEntryAccessRoutes.loadChangeDate)
+    get('/calculation/:nomsId/manual-entry/save', manualEntryAccessRoutes.save)
   }
 
   const calculationRoutes = () => {

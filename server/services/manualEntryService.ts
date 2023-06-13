@@ -302,15 +302,15 @@ export default class ManualEntryService {
           value: enteredDate.year,
         },
       ]
-      if (
-        (enteredDate.day === '' && enteredDate.month === '' && enteredDate.year === '') ||
-        !this.isDateValid(enteredDate)
-      ) {
+      if (enteredDate.day === '' && enteredDate.month === '' && enteredDate.year === '') {
         return this.allErrored(req, nomsId, enteredDate, allItems)
       }
       const someErrors = this.singleItemsErrored(req, allItems, enteredDate, nomsId)
       if (someErrors) {
         return someErrors
+      }
+      if (!this.isDateValid(enteredDate)) {
+        return this.allErrored(req, nomsId, enteredDate, allItems)
       }
       const notWithinOneHundredYears = this.notWithinOneHundredYears(req, nomsId, enteredDate, allItems)
       if (notWithinOneHundredYears) {
@@ -319,9 +319,9 @@ export default class ManualEntryService {
       req.session.selectedManualEntryDates[nomsId].find(
         (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
       ).date = enteredDate
-      return { success: true } as StorageResponseModel
+      return { success: true, isNone: false } as StorageResponseModel
     }
-    return { success: false } as StorageResponseModel
+    return { success: false, isNone: true } as StorageResponseModel
   }
 
   private isDateValid(enteredDate: EnteredDate): boolean {
@@ -337,7 +337,7 @@ export default class ManualEntryService {
     const items = allItems.map(it => {
       return { ...it, classes: `${it.classes} govuk-input--error` }
     })
-    return { message, date, enteredDate, success: false, items } as StorageResponseModel
+    return { message, date, enteredDate, success: false, items, isNone: false } as StorageResponseModel
   }
 
   private notWithinOneHundredYears(req: Request, nomsId: string, enteredDate: EnteredDate, allItems: DateInputItem[]) {
@@ -355,7 +355,7 @@ export default class ManualEntryService {
       const items = allItems.map(it => {
         return { ...it, classes: `${it.classes} govuk-input--error` }
       })
-      return { message, date, enteredDate, success: false, items } as StorageResponseModel
+      return { message, date, enteredDate, success: false, items, isNone: false } as StorageResponseModel
     }
     return undefined
   }
@@ -398,16 +398,24 @@ export default class ManualEntryService {
       const date = req.session.selectedManualEntryDates[nomsId].find(
         (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
       )
-      return { message, date, enteredDate, success: false, items } as StorageResponseModel
+      return { message, date, enteredDate, success: false, items, isNone: false } as StorageResponseModel
     }
     return undefined
   }
 
+  private dateString(selectedDate: ManualEntrySelectedDate): string {
+    if (selectedDate.dateType === 'none') {
+      return ''
+    }
+    const dateString = `${selectedDate.date.year}-${selectedDate.date.month}-${selectedDate.date.day}`
+    return DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
+  }
+
   public getConfirmationConfiguration(req: Request, nomsId: string) {
     return req.session.selectedManualEntryDates[nomsId].map((d: ManualEntrySelectedDate) => {
-      const dateString = `${d.date.year}-${d.date.month}-${d.date.day}`
-      const dateValue = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
+      const dateValue = this.dateString(d)
       const text = fullStringLookup[d.dateType]
+      const items = this.getItems(nomsId, d, text)
       return {
         key: {
           text,
@@ -416,21 +424,29 @@ export default class ManualEntryService {
           text: dateValue,
         },
         actions: {
-          items: [
-            {
-              href: `/calculation/${nomsId}/manual-entry/change-date?dateType=${d.dateType}`,
-              text: 'Change',
-              visuallyHiddenText: `Change ${text}`,
-            },
-            {
-              href: `/calculation/${nomsId}/manual-entry/remove-date?dateType=${d.dateType}`,
-              text: 'Remove',
-              visuallyHiddenText: `Remove ${text}`,
-            },
-          ],
+          items,
         },
       }
     })
+  }
+
+  private getItems(nomsId: string, d: ManualEntrySelectedDate, text: string) {
+    const items = [
+      {
+        href: `/calculation/${nomsId}/manual-entry/change-date?dateType=${d.dateType}`,
+        text: 'Change',
+        visuallyHiddenText: `Change ${text}`,
+      },
+      {
+        href: `/calculation/${nomsId}/manual-entry/remove-date?dateType=${d.dateType}`,
+        text: 'Remove',
+        visuallyHiddenText: `Remove ${text}`,
+      },
+    ]
+    if (d.dateType === 'none') {
+      return items.filter(it => it.text !== 'Change')
+    }
+    return items
   }
 
   public fullStringLookup(dateType: string): string {
@@ -465,6 +481,7 @@ export default class ManualEntryService {
 
 export interface StorageResponseModel {
   success: boolean
+  isNone: boolean
   message: string
   date: ManualEntrySelectedDate
   enteredDate: EnteredDate

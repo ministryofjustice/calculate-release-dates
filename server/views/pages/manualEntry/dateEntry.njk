@@ -17,8 +17,8 @@
     {{ super() }}
     <nav>
         {{ govukBackLink({
-            text: "Back",
-            href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry"
+            text: "Check sentence and offence information",
+            href: "/calculation/" + prisonerDetail.offenderNo + "/check-information-unsupported"
         }) }}
     </nav>
 {% endblock %}
