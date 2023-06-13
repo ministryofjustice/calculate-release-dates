@@ -21,10 +21,11 @@
                         The calculation has been saved in NOMIS.
                     </div>
             </div>
+
             <div class="govuk-!-margin-top-8">
                 <p class="govuk-body">
                     <a class="govuk-link" href={{ "/calculation/" + prisonerDetail.offenderNo +
-                "/summary/" + calculationRequestId + "/print" }}>Print calculation summary</a>
+                    "/summary/" + calculationRequestId + "/print" }}>Print calculation summary</a>
                 </p>
                 <p class="govuk-body">
                     <a class="govuk-link" href="/search/prisoners">Calculate release dates for another person</a>
@@ -33,6 +34,9 @@
                     <a class="govuk-link" href={{digitalPrisonServicesUrl}}>Back to Digital Prison Service (DPS) search</a>
                 </p>
             </div>
+
+            {% include "../partials/complete/feedbackSection.njk" %}
+
         </div>
     </div>
 {% endblock %}
