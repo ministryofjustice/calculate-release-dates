@@ -16,6 +16,8 @@ import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
+import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
+import ManualCalculationResponse from '../models/ManualCalculationResponse'
 
 export default class CalculateReleaseDatesApiClient {
   restClient: RestClient
@@ -132,5 +134,12 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/manual-calculation/${bookingId}/has-indeterminate-sentences`,
     }) as Promise<boolean>
+  }
+
+  storeManualCalculation(nomsId: string, selectedManualEntryDates: ManualEntrySelectedDate[]) {
+    return this.restClient.post({
+      path: `/manual-calculation/${nomsId}`,
+      data: { selectedManualEntryDates },
+    }) as Promise<ManualCalculationResponse>
   }
 }

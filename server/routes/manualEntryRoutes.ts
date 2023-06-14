@@ -4,6 +4,8 @@ import PrisonerService from '../services/prisonerService'
 import ManualCalculationService from '../services/manualCalculationService'
 import { ManualEntrySelectedDate, SubmittedDate } from '../models/ManualEntrySelectedDate'
 import ManualEntryService from '../services/manualEntryService'
+import logger from '../../logger'
+import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -100,7 +102,7 @@ export default class ManualEntryRoutes {
       previousDate = { year, month, day } as SubmittedDate
     }
     const date = this.manualEntryService.getNextDateToEnter(req, nomsId)
-    if (date) {
+    if (date && date.dateType !== 'none') {
       return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, previousDate })
     }
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
@@ -116,13 +118,16 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
     const storeDateResponse = this.manualEntryService.storeDate(req, nomsId)
-    if (!storeDateResponse.success && storeDateResponse.message) {
+    if (!storeDateResponse.success && storeDateResponse.message && !storeDateResponse.isNone) {
       const { date, message, enteredDate } = storeDateResponse
       const error = message
       return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, error, enteredDate })
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
+    }
+    if (!storeDateResponse.success && storeDateResponse.isNone) {
+      return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
     }
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }
@@ -187,5 +192,44 @@ export default class ManualEntryRoutes {
     return res.redirect(
       `/calculation/${nomsId}/manual-entry/enter-date?year=${date.year}&month=${date.month}&day=${date.day}`
     )
+  }
+
+  public save: RequestHandler = async (req, res): Promise<void> => {
+    const { token } = res.locals.user
+    const { nomsId } = req.params
+    const unsupportedSentenceOrCalculationMessages =
+      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+    if (unsupportedSentenceOrCalculationMessages.length === 0) {
+      return res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+    try {
+      const response = await this.manualCalculationService.storeManualCalculation(nomsId, req, token)
+      return res.redirect(`/calculation/${nomsId}/complete/${response.calculationRequestId}`)
+    } catch (error) {
+      // TODO Move handling of validation errors from the api into the service layer
+      logger.error(error)
+      if (error.status === 412) {
+        req.flash(
+          'serverErrors',
+          JSON.stringify({
+            messages: [
+              {
+                text: 'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
+                href: `/calculation/${nomsId}/check-information`,
+              },
+            ],
+          } as ErrorMessages)
+        )
+      } else {
+        req.flash(
+          'serverErrors',
+          JSON.stringify({
+            messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
+            messageType: ErrorMessageType.SAVE_DATES,
+          } as ErrorMessages)
+        )
+      }
+      return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
+    }
   }
 }
