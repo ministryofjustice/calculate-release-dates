@@ -37,6 +37,13 @@
                 {% set startlink = "/search/prisoners" %}
             {% endif %}
 
+            {% if allowBulkLoad %}
+                <p class="govuk-body">
+                    To perform bulk analysis of previous calculations you may use the
+                    <a data-qa="bulk-comparison-start" href="{{ "/compare" }}">bulk comparison tool.</a>
+                </p>
+            {% endif %}
+
             {{ govukButton({
                 text: "Start now",
                 href: startlink,
