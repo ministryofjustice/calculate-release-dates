@@ -1,0 +1,108 @@
+.browse__breadcrumb-wrapper,.browse__header-wrapper {
+  background-color: #1d70b8;
+  padding-left:15px;
+}
+
+.browse__breadcrumb-wrapper {
+  overflow: auto
+}
+
+.browse__header-wrapper {
+  padding-bottom: 40px;
+  border-top: 1px solid #1d70b8;
+  margin-top: -1px
+}
+
+@media (min-width: 40.0625em) {
+  .browse__header-wrapper {
+    padding-bottom:50px;
+    padding-top: 30px
+  }
+}
+
+.browse__heading {
+  color: #fff;
+  margin-bottom: 30px
+}
+
+.browse__section {
+  margin-bottom: 60px
+}
+
+@media (min-width: 40.0625em) {
+  .browse__section:last-child {
+    margin-bottom:0
+  }
+}
+
+.browse__section--top-border {
+  border-top: 1px solid #b1b4b6;
+  padding-top: 15px
+}
+
+.browse__list>.browse__list-item {
+  margin-bottom: 25px
+}
+
+.browse__more-on-this-topic {
+  margin-top: 20px
+}
+
+@media (min-width: 40.0625em) {
+  .browse__more-on-this-topic {
+    margin-top:40px;
+    margin-bottom: 5px
+  }
+}
+
+
+.gem-c-lead-paragraph {
+  color: #0b0c0c;
+  font-family: "GDS Transport",arial,sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.1111111111;
+  margin-top: 0;
+  margin-bottom: 15px;
+  max-width: 30em
+}
+
+@media print {
+  .gem-c-lead-paragraph {
+    color: #000
+  }
+}
+
+@media print {
+  .gem-c-lead-paragraph {
+    font-family: sans-serif
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .gem-c-lead-paragraph {
+    font-size:24px;
+    font-size: 1.5rem;
+    line-height: 1.25
+  }
+}
+
+@media print {
+  .gem-c-lead-paragraph {
+    font-size: 18pt;
+    line-height: 1.15
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .gem-c-lead-paragraph {
+    margin-bottom:40px
+  }
+}
+
+.gem-c-lead-paragraph--inverse {
+  color: #fff
+}
