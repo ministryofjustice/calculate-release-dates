@@ -30,11 +30,13 @@
 
             <p class="govuk-body">This service currently supports a limited number of sentences.
                 <a href="/supported-sentences" class="govuk-link">Check supported sentence types</a>.</p>
+
             {% if prisonId %}
                 {% set startlink = "/calculation/" + prisonId + "/alternative-release-arrangements" %}
             {% else %}
                 {% set startlink = "/search/prisoners" %}
             {% endif %}
+
             {{ govukButton({
                 text: "Start now",
                 href: startlink,
