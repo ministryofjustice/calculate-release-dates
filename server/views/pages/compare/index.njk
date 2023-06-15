@@ -1,0 +1,65 @@
+{% extends "../../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Compare Release Dates" %}
+{% set pageId = "compare" %}
+
+{% block content %}
+
+    <div class="browse__header-wrapper govuk-!-margin-bottom-9">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h1 class="browse__heading govuk-heading-xl">
+                    Bulk Comparison
+                </h1>
+                <p class="gem-c-lead-paragraph gem-c-lead-paragraph--inverse govuk-!-margin-bottom-2">
+                    Perform bulk comparison of variations between offenders release dates
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="gem-c-cards">
+        <ul class="gem-c-cards__list" data-track-count="cardList">
+
+            <li class="gem-c-cards__list-item">
+                <div class="gem-c-cards__list-item-wrapper">
+                    <h2 class="gem-c-cards__sub-heading govuk-heading-s">
+                        <a
+                            class="govuk-link gem-c-cards__link"
+                            href="/compare/bulk">
+                            Perform a bulk comparison
+                        </a>
+                    </h2>
+                    <p class="govuk-body gem-c-cards__description">Compare differences in the release dates between Staff, NOMIS and those calculated by the Calculate Release Dates tool using predetermined datasets.</p>
+                </div>
+            </li>
+            <li class="gem-c-cards__list-item">
+                <div class="gem-c-cards__list-item-wrapper">
+                    <h2 class="gem-c-cards__sub-heading govuk-heading-s">
+                        <a
+                            class="govuk-link gem-c-cards__link"
+                            href="/compare/bulk/history">
+                            View historic comparisons
+                        </a>
+                    </h2>
+                    <p class="govuk-body gem-c-cards__description">Review the results of previously performed calculations</p>
+                </div>
+            </li>
+            {% if allowManualComparison %}
+            <li class="gem-c-cards__list-item">
+                <div class="gem-c-cards__list-item-wrapper">
+                    <h2 class="gem-c-cards__sub-heading govuk-heading-s">
+                        <a class="govuk-link gem-c-cards__link"
+                            href="/compare/manual">
+                            Manual bulk comparison
+                        </a>
+                    </h2>
+                    <p class="govuk-body gem-c-cards__description">Compare differences in the release dates between Staff, NOMIS and those calculated by the Calculate Release Dates tool for NOMIS references provided.</p>
+                </div>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+{% endblock %}
