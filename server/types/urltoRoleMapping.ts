@@ -15,9 +15,9 @@ const urlToRoleMapping = {
     roles: [AuthorisedRoles.ROLE_RELEASE_DATE_MANUAL_COMPARER],
     matchPath: getMatchPath(comparePaths.COMPARE_MANUAL),
   },
-  [comparePaths.COMPARE_BULK]: {
+  [comparePaths.COMPARE_CHOOSE]: {
     roles: [AuthorisedRoles.ROLE_RELEASE_DATE_COMPARER],
-    matchPath: getMatchPath(comparePaths.COMPARE_BULK),
+    matchPath: getMatchPath(comparePaths.COMPARE_CHOOSE),
   },
 }
 

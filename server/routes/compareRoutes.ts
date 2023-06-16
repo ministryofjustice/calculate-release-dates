@@ -4,18 +4,20 @@ import logger from '../../logger'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import OneThousandCalculationsService from '../services/oneThousandCalculationsService'
 import BulkLoadService from '../services/bulkLoadService'
+import PrisonerService from '../services/prisonerService'
 
 export const comparePaths = {
   COMPARE_INDEX: '/compare',
   COMPARE_MANUAL: '/compare/manual',
-  COMPARE_BULK: '/compare/bulk',
+  COMPARE_CHOOSE: '/compare/choose',
 }
 
 export default class CompareRoutes {
   constructor(
     private readonly oneThousandCalculationsService: OneThousandCalculationsService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly bulkLoadService: BulkLoadService
+    private readonly bulkLoadService: BulkLoadService,
+    private readonly prisonerService: PrisonerService
   ) {}
 
   /* eslint-disable */
@@ -25,6 +27,16 @@ export default class CompareRoutes {
     res.render('pages/compare/index', {
       allowBulkLoad,
       allowManualComparison,
+    })
+  }
+
+  public choose: RequestHandler = async (req, res) => {
+    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
+    const usersCaseload = await this.prisonerService.getUsersCaseloads(res.locals.user.username, res.locals.user.token)
+    const caseloadRadios = usersCaseload.map(caseload => ({ text: caseload.description, value: caseload.caseLoadId }))
+    res.render('pages/compare/choosePrison', {
+      allowBulkComparison,
+      caseloadRadios,
     })
     return
   }
@@ -45,7 +57,6 @@ export default class CompareRoutes {
     }).pipe(res)
     return
   }
-  /* eslint-enable */
 
   public manualCalculation: RequestHandler = async (req, res): Promise<void> => {
     const { username, token } = res.locals.user
