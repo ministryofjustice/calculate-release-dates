@@ -20,6 +20,7 @@ export default class CompareRoutes {
     private readonly prisonerService: PrisonerService
   ) {}
 
+  /* eslint-disable */
   public index: RequestHandler = async (req, res) => {
     const allowBulkLoad = this.bulkLoadService.allowBulkLoad(res.locals.user.userRoles)
     const allowManualComparison = this.bulkLoadService.allowManualComparison(res.locals.user.userRoles)
@@ -37,9 +38,10 @@ export default class CompareRoutes {
       allowBulkComparison,
       caseloadRadios,
     })
+    return
   }
 
-  // eslint-disable-next-line consistent-return
+  /* eslint-disable */
   public submitManualCalculation: RequestHandler = async (req, res) => {
     const { username, caseloads, token } = res.locals.user
     const { prisonerIds } = req.body
@@ -53,6 +55,7 @@ export default class CompareRoutes {
     stringify(results, {
       header: true,
     }).pipe(res)
+    return
   }
 
   public manualCalculation: RequestHandler = async (req, res): Promise<void> => {

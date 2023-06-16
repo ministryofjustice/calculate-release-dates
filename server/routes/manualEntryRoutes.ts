@@ -26,6 +26,7 @@ export default class ManualEntryRoutes {
     if (!req.session.selectedManualEntryDates) {
       req.session.selectedManualEntryDates = {}
     }
+    req.session.selectedManualEntryDates[nomsId] = []
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     return res.render('pages/manualEntry/manualEntry', { prisonerDetail })
   }
@@ -102,10 +103,10 @@ export default class ManualEntryRoutes {
       previousDate = { year, month, day } as SubmittedDate
     }
     const date = this.manualEntryService.getNextDateToEnter(req, nomsId)
-    if (date && date.dateType !== 'none') {
+    if (date && date.dateType !== 'None') {
       return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, previousDate })
     }
-    return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
+    return res.redirect(`/calculation/${nomsId}/manual-entry/no-dates-confirmation`)
   }
 
   public submitDate: RequestHandler = async (req, res): Promise<void> => {
@@ -231,5 +232,41 @@ export default class ManualEntryRoutes {
       }
       return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
     }
+  }
+
+  public noDatesConfirmation: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const unsupportedSentenceOrCalculationMessages =
+      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+    if (unsupportedSentenceOrCalculationMessages.length === 0) {
+      return res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+    return res.render('pages/manualEntry/noDatesConfirmation', { prisonerDetail })
+  }
+
+  public submitNoDatesConfirmation: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const unsupportedSentenceOrCalculationMessages =
+      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+    if (unsupportedSentenceOrCalculationMessages.length === 0) {
+      return res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+    if (
+      req.body['no-date-selection'] === 'yes' &&
+      req.session.selectedManualEntryDates[nomsId].length === 1 &&
+      req.session.selectedManualEntryDates[nomsId][0].dateType === 'None'
+    ) {
+      return res.redirect(`/calculation/${nomsId}/manual-entry/save`)
+    }
+    if (req.body['no-date-selection'] === 'no') {
+      req.session.selectedManualEntryDates[nomsId] = []
+      return res.redirect(`/calculation/${nomsId}/manual-entry/select-dates`)
+    }
+    const error = true
+    return res.render('pages/manualEntry/noDatesConfirmation', { prisonerDetail, error })
   }
 }
