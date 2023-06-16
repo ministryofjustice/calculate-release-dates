@@ -1,0 +1,87 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - determinite manual entry" %}
+{% set pageId = "determinite selection" %}
+
+{% block aside %}
+    {% set prisonerDetail = prisonerDetail %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Check sentence and offence information",
+            href: "/calculation/" + prisonerDetail.offenderNo + "/check-information-unsupported"
+        }) }}
+    </nav>
+{% endblock %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form id="form" method="post">
+                {% if error %}
+                    {{ govukRadios({
+                        name: "no-date-selection",
+                        fieldset: {
+                            legend: {
+                                text: "Are you sure you do not want to record any dates for " + prisonerDetail.firstName + " " + prisonerDetail.lastName +"?",
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--xl"
+                            }
+                        },
+                        items: [
+                            {
+                                value: "yes",
+                                text: "Yes"
+                            },
+                            {
+                                value: "no",
+                                text: "No"
+                            }
+                        ],
+                        errorMessage: {
+                            text: "You must select either 'Yes' or 'No'"
+                        }
+                    }) }}
+                {% else %}
+                    {{ govukRadios({
+                        name: "no-date-selection",
+                        fieldset: {
+                            legend: {
+                                text: "Are you sure you do not want to record any dates for " + prisonerDetail.firstName + " " + prisonerDetail.lastName +"?",
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--xl"
+                            }
+                        },
+                        items: [
+                            {
+                                value: "yes",
+                                text: "Yes"
+                            },
+                            {
+                                value: "no",
+                                text: "No"
+                            }
+                        ]
+                    }) }}
+                {% endif %}
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                <input type="hidden" name="dateType" value="{{ date.dateType }}"/>
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    value: 'no-date-selection',
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'no-date-selection' }
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

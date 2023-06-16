@@ -25,6 +25,7 @@ const fullStringLookup = {
   DPRRD: 'DPRRD (Detention and Training Order Post Recall Release Date)',
   tariff: 'Tariff (known as the Tariff expiry date)',
   TERSED: 'TERSED (Tariff-Expired Removal Scheme Eligibility Date)',
+  None: 'None of the above dates apply',
 }
 
 const determinateConfig = {
@@ -185,7 +186,7 @@ const indeterminateConfig = {
       divider: 'or',
     },
     {
-      value: 'none',
+      value: 'None',
       text: 'None of these dates apply',
       attributes: {},
       checked: false,
@@ -284,7 +285,7 @@ export default class ManualEntryService {
 
   public storeDate(req: Request, nomsId: string): StorageResponseModel {
     const enteredDate: EnteredDate = req.body
-    if (enteredDate.dateType !== 'none') {
+    if (enteredDate.dateType !== 'None') {
       const allItems: DateInputItem[] = [
         {
           classes: 'govuk-input--width-2',
@@ -404,7 +405,7 @@ export default class ManualEntryService {
   }
 
   private dateString(selectedDate: ManualEntrySelectedDate): string {
-    if (selectedDate.dateType === 'none') {
+    if (selectedDate.dateType === 'None') {
       return ''
     }
     const dateString = `${selectedDate.date.year}-${selectedDate.date.month}-${selectedDate.date.day}`
@@ -443,7 +444,7 @@ export default class ManualEntryService {
         visuallyHiddenText: `Remove ${text}`,
       },
     ]
-    if (d.dateType === 'none') {
+    if (d.dateType === 'None') {
       return items.filter(it => it.text !== 'Change')
     }
     return items
