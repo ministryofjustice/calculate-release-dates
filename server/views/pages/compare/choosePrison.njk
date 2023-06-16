@@ -1,0 +1,45 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Compare Release Dates" %}
+{% set pageId = "compare" %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form class="form" method="post" action="/compare/results">
+                <h1 class="govuk-heading-xl"></h1>
+
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+                {{ govukRadios({
+                    name: "selectedOMU",
+                    fieldset: {
+                        legend: {
+                            text: "Which Offender Management (OMU) do you want to perform a bulk comparison for?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--xl"
+                        }
+                    },
+                    items: caseloadRadios,
+                    errorMessage: {
+                        text: "Please choose an Offender Management Unit"
+                    }
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    value: 'submit-date',
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'date-entry' }
+                }) }}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

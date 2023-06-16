@@ -44,7 +44,8 @@ export default function Index({
   const compareAccessRoutes = new CompareRoutes(
     oneThousandCalculationsService,
     calculateReleaseDatesService,
-    bulkLoadService
+    bulkLoadService,
+    prisonerService
   )
 
   const otherAccessRoutes = new OtherRoutes(
@@ -149,6 +150,7 @@ export default function Index({
     get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
     get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation) // TODO remove this route as it was only for testing
     post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation) // TODO remove this route as it was only for testing
+    get(comparePaths.COMPARE_CHOOSE, compareAccessRoutes.choose)
   }
 
   indexRoutes()
