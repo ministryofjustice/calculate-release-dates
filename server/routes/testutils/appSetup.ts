@@ -18,6 +18,7 @@ import UserInputService from '../../services/userInputService'
 import OneThousandCalculationsService from '../../services/oneThousandCalculationsService'
 import ManualCalculationService from '../../services/manualCalculationService'
 import ManualEntryService from '../../services/manualEntryService'
+import BulkLoadService from '../../services/bulkLoadService'
 
 const user = {
   name: 'anon nobody',
@@ -78,6 +79,7 @@ export const appWithAllRoutes = (overrides: Partial<Services> = {}, production =
     oneThousandCalculationsService: {} as OneThousandCalculationsService,
     manualCalculationService: {} as ManualCalculationService,
     manualEntryService: {} as ManualEntryService,
+    bulkLoadService: {} as BulkLoadService,
     ...overrides,
   })
   auth.default.authenticationMiddleware = () => (req, res, next) => next()

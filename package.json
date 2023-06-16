@@ -117,6 +117,7 @@
     "openapi-typescript": "^6.2.7",
     "passport": "^0.6.0",
     "passport-oauth2": "^1.7.0",
+    "path-to-regexp": "^6.2.1",
     "prom-client": "^14.2.0",
     "redis": "^4.5.1",
     "superagent": "^8.0.9",

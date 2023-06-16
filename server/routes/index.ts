@@ -9,6 +9,7 @@ import CheckInformationRoutes from './checkInformationRoutes'
 import ViewRoutes from './viewRoutes'
 import CalculationQuestionRoutes from './calculationQuestionRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
+import CompareRoutes, { comparePaths } from './compareRoutes'
 
 export default function Index({
   prisonerService,
@@ -19,6 +20,7 @@ export default function Index({
   oneThousandCalculationsService,
   manualCalculationService,
   manualEntryService,
+  bulkLoadService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -38,12 +40,19 @@ export default function Index({
     userInputService
   )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
+
+  const compareAccessRoutes = new CompareRoutes(
+    oneThousandCalculationsService,
+    calculateReleaseDatesService,
+    bulkLoadService
+  )
+
   const otherAccessRoutes = new OtherRoutes(
     oneThousandCalculationsService,
     calculateReleaseDatesService,
     prisonerService
   )
-  const startRoutes = new StartRoutes(entryPointService, prisonerService)
+  const startRoutes = new StartRoutes(entryPointService, prisonerService, bulkLoadService)
   const viewAccessRoutes = new ViewRoutes(
     viewReleaseDatesService,
     calculateReleaseDatesService,
@@ -133,9 +142,13 @@ export default function Index({
   }
 
   const otherRoutes = () => {
-    get('/test/calculation', otherAccessRoutes.testCalculation) // TODO remove this route as it was only for testing
-    post('/test/calculation', otherAccessRoutes.submitTestCalculation) // TODO remove this route as it was only for testing
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
+  }
+
+  const compareRoutes = () => {
+    get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
+    get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation) // TODO remove this route as it was only for testing
+    post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation) // TODO remove this route as it was only for testing
   }
 
   indexRoutes()
@@ -146,6 +159,7 @@ export default function Index({
   searchRoutes()
   viewRoutes()
   otherRoutes()
+  compareRoutes()
 
   return router
 }

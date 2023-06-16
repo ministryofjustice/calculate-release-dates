@@ -1,11 +1,13 @@
 import { RequestHandler } from 'express'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
+import BulkLoadService from '../services/bulkLoadService'
 
 export default class StartRoutes {
   constructor(
     private readonly entryPointService: EntryPointService,
-    private readonly prisonerService: PrisonerService
+    private readonly prisonerService: PrisonerService,
+    private readonly bulkLoadService: BulkLoadService
   ) {}
 
   public startPage: RequestHandler = async (req, res): Promise<void> => {
@@ -16,8 +18,9 @@ export default class StartRoutes {
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, prisonId, caseloads, token)
       return res.render('pages/index', { prisonId, prisonerDetail })
     }
+    const allowBulkLoad = this.bulkLoadService.allowBulkLoad(res.locals.user.userRoles)
     this.entryPointService.setStandaloneEntrypointCookie(res)
-    return res.render('pages/index', { prisonId })
+    return res.render('pages/index', { prisonId, allowBulkLoad })
   }
 
   public supportedSentences: RequestHandler = async (req, res): Promise<void> => {

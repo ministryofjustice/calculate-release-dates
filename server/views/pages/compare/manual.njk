@@ -7,16 +7,18 @@
 {% set pageTitle = applicationName + " - test data" %}
 
 {% block content %}
+
     {% include "../partials/formError.njk" %}
     <div class="test-content">
         <form method="post">
+            <h1 class="govuk-heading-xl">Manual Bulk Comparison</h1>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-            <div class="govuk-!-width-one-quarter">
+            <div class="govuk-!-width-three-quarters">
                 {{ govukTextarea({
                     name: "prisonerIds",
                     id: "prisonerIds",
                     value: prisonerIds,
-                    rows: 25
+                    rows: 12
                 }) }}
             </div>
             <div class="govuk-grid-row  govuk-!-margin-bottom-0 govuk-!-padding-bottom-0">
