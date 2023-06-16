@@ -8,7 +8,7 @@ import OneThousandCalculationsRow from '../models/OneThousandCalculationsRow'
 let app: Express
 
 jest.mock('../services/bulkLoadService')
-jest.mock('../services/OneThousandCalculationsService')
+jest.mock('../services/oneThousandCalculationsService')
 const bulkLoadService = new BulkLoadService() as jest.Mocked<BulkLoadService>
 const oneThousandCalculationsService = new OneThousandCalculationsService(
   null,

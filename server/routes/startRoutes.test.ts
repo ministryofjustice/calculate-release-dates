@@ -4,12 +4,15 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import BulkLoadService from '../services/bulkLoadService'
 
 jest.mock('../services/entryPointService')
 jest.mock('../services/prisonerService')
+jest.mock('../services/bulkLoadService')
 
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const bulkLoadService = new BulkLoadService() as jest.Mocked<BulkLoadService>
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
   firstName: 'Anon',
@@ -40,7 +43,7 @@ const stubbedPrisonerData = {
 let app: Express
 
 beforeEach(() => {
-  app = appWithAllRoutes({ entryPointService, prisonerService })
+  app = appWithAllRoutes({ entryPointService, prisonerService, bulkLoadService })
 })
 
 afterEach(() => {
@@ -64,6 +67,8 @@ describe('Start routes tests', () => {
       })
   })
   it('GET ?prisonId=123 should return start page in DPS journey', () => {
+    bulkLoadService.allowBulkLoad.mockReturnValue(true)
+
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('?prisonId=123')
