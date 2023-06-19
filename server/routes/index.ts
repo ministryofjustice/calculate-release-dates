@@ -152,7 +152,10 @@ export default function Index({
     get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
     get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation) // TODO remove this route as it was only for testing
     post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation) // TODO remove this route as it was only for testing
+    post(comparePaths.COMPARE_RUN, compareAccessRoutes.run)
     get(comparePaths.COMPARE_CHOOSE, compareAccessRoutes.choose)
+    get(comparePaths.COMPARE_RESULT, compareAccessRoutes.result)
+    get(comparePaths.COMPARE_DETAIL, compareAccessRoutes.detail)
   }
 
   indexRoutes()
