@@ -106,7 +106,10 @@ export default class ManualEntryRoutes {
     if (date && date.dateType !== 'None') {
       return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, previousDate })
     }
-    return res.redirect(`/calculation/${nomsId}/manual-entry/no-dates-confirmation`)
+    if (date && date.dateType === 'None') {
+      return res.redirect(`/calculation/${nomsId}/manual-entry/no-dates-confirmation`)
+    }
+    return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }
 
   public submitDate: RequestHandler = async (req, res): Promise<void> => {
