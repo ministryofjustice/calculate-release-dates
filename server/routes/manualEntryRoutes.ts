@@ -208,7 +208,12 @@ export default class ManualEntryRoutes {
     }
     try {
       const response = await this.manualCalculationService.storeManualCalculation(nomsId, req, token)
-      return res.redirect(`/calculation/${nomsId}/complete/${response.calculationRequestId}`)
+      const isNone =
+        req.session.selectedManualEntryDates[nomsId].length === 1 &&
+        req.session.selectedManualEntryDates[nomsId][0].dateType === 'None'
+      const baseUrl = `/calculation/${nomsId}/complete/${response.calculationRequestId}`
+      const fullUrl = isNone ? `${baseUrl}?noDates=true` : `${baseUrl}?manual=true`
+      return res.redirect(fullUrl)
     } catch (error) {
       // TODO Move handling of validation errors from the api into the service layer
       logger.error(error)

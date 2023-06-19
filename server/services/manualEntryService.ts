@@ -23,7 +23,7 @@ const fullStringLookup = {
   APD: 'APD (Approved Parole Date)',
   NPD: 'NPD (Non-Parole Date)',
   DPRRD: 'DPRRD (Detention and Training Order Post Recall Release Date)',
-  tariff: 'Tariff (known as the Tariff expiry date)',
+  Tariff: 'Tariff (known as the Tariff expiry date)',
   TERSED: 'TERSED (Tariff-Expired Removal Scheme Eligibility Date)',
   None: 'None of the above dates apply',
 }
@@ -159,7 +159,7 @@ const indeterminateConfig = {
   },
   items: [
     {
-      value: 'tariff',
+      value: 'Tariff',
       checked: false,
       attributes: {},
       text: 'Tariff (known as the Tariff expiry date)',

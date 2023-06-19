@@ -112,6 +112,7 @@ export default class ViewRoutes {
         calculationRequestId,
         token
       )
+      const hasNone = 'None' in releaseDates.dates
       return new CalculationSummaryViewModel(
         releaseDates.dates,
         weekendAdjustments,
@@ -119,6 +120,7 @@ export default class ViewRoutes {
         nomsId,
         prisonerDetail,
         sentencesAndOffences,
+        hasNone,
         breakdown?.calculationBreakdown,
         breakdown?.releaseDatesWithAdjustments,
         null,
@@ -135,6 +137,7 @@ export default class ViewRoutes {
           nomsId,
           prisonerDetail,
           null,
+          false,
           null,
           null,
           {
