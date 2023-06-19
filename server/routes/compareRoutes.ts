@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import { stringify } from 'csv-stringify'
+import { v4 as uuidv4 } from 'uuid'
 import logger from '../../logger'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import OneThousandCalculationsService from '../services/oneThousandCalculationsService'
@@ -10,6 +11,9 @@ export const comparePaths = {
   COMPARE_INDEX: '/compare',
   COMPARE_MANUAL: '/compare/manual',
   COMPARE_CHOOSE: '/compare/choose',
+  COMPARE_RUN: '/compare/run',
+  COMPARE_RESULT: '/compare/result/:bulkComparisonResultId',
+  COMPARE_DETAIL: '/compare/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId',
 }
 
 export default class CompareRoutes {
@@ -37,6 +41,64 @@ export default class CompareRoutes {
     res.render('pages/compare/choosePrison', {
       allowBulkComparison,
       caseloadRadios,
+    })
+    return
+  }
+  public result: RequestHandler = async (req, res) => {
+    const bulkComparisonDetailId = uuidv4()
+
+    // retrieve the information about the bulkComparison
+    const bulkComparison = {
+      result: {
+        id: req.params.bulkComparisonResultId,
+        name: '1 Jan 2023',
+      },
+    }
+
+    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
+
+    res.render('pages/compare/resultOverview', {
+      allowBulkComparison,
+      bulkComparison,
+      bulkComparisonDetailId,
+    })
+    return
+  }
+  public run: RequestHandler = async (req, res) => {
+    const uuid = uuidv4()
+    const shortReference = uuid.substring(0, 8)
+    return res.redirect(`/compare/result/${shortReference}`)
+  }
+
+  public detail: RequestHandler = async (req, res) => {
+    const bulkComparison = {
+      result: {
+        id: req.params.bulkComparisonDetailId,
+        name: '1 Jan 2023',
+      },
+      detail: {
+        id: req.params.bulkComparisonResultId,
+        person: 'A8031DY',
+        booking: '1232122',
+        latestDates: true,
+        currentCalculation: {
+          source: 'NOMIS',
+          date: '13 March 2023',
+        },
+        dates: [
+          [{ text: 'CRD' }, { text: '06/05/2022' }, { text: '06/05/2022' }, { text: '06/05/2022' }],
+          [{ text: 'SLED' }, { text: '06/05/2022' }, { text: '06/05/2022' }, { text: '06/05/2022' }],
+          [{ text: 'HDCED' }, { text: '06/05/2022' }, { text: '06/05/2022' }, { text: '06/05/2022' }],
+        ],
+      },
+    }
+
+    // retrieve the information about the bulkComparison
+    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
+
+    res.render('pages/compare/resultDetail', {
+      allowBulkComparison,
+      bulkComparison,
     })
     return
   }
