@@ -143,6 +143,27 @@
         ]
     }) }}
 
+    {{ govukRadios({
+        name: "releaseInErrorType",
+        fieldset: {
+            legend: {
+                text: "Is calculate release dates correct?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--m"
+            }
+        },
+        items: [
+            {
+                value: "true",
+                text: "Yes"
+            },
+            {
+                value: "false",
+                text: "No"
+            }
+        ]
+    }) }}
+
     {{ govukTextarea({
         name: "more-detail",
         id: "more-detail",
