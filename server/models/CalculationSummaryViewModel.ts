@@ -13,6 +13,7 @@ export default class CalculationSummaryViewModel {
     public nomsId: string,
     public prisonerDetail: PrisonApiPrisoner,
     public sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
+    public hasNone: boolean,
     public calculationBreakdown?: CalculationBreakdown,
     public releaseDatesWithAdjustments?: ReleaseDateWithAdjustments[],
     public validationErrors?: ErrorMessages,

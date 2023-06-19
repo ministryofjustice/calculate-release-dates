@@ -3,6 +3,11 @@
     <p class="govuk-body" data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }}</p>
 {% endmacro %}
 
+{% macro releaseNoDateLine(heading, dataQa) %}
+    <h3 class="govuk-heading-s">{{ heading }}</h3>
+    <p class="govuk-body" data-qa={{ dataQa }}></p>
+{% endmacro %}
+
 {% macro holidayLine(dataQa, releaseDate, isBankHoliday) %}
     <p class="govuk-body govuk-hint govuk-!-font-size-16"
        data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }} when adjusted to a working day</p>
@@ -155,6 +160,27 @@
             {% if model.ersedAdjustedByMtd() %}
                 {{ ersedAdjustedByMtd() }}
             {% endif %}
+        {% endif %}
+        {% if model.releaseDates.ROTL %}
+            {{ releaseDateLine('Release on temporary licence (ROTL)', 'ROTL-date', model.releaseDates.ROTL) }}
+        {% endif %}
+        {% if model.releaseDates.HDCAD %}
+            {{ releaseDateLine('Home detention curfew approved date (HDCAD)', 'HDCAD-date', model.releaseDates.HDCAD) }}
+        {% endif %}
+        {% if model.releaseDates.DPRRD %}
+            {{ releaseDateLine('Detention and training order post recall release date (DPRRD)', 'DPRRD-date', model.releaseDates.DPRRD) }}
+        {% endif %}
+        {% if model.releaseDates.Tariff %}
+            {{ releaseDateLine('Tariff known as the Tariff expiry date in policy documentation', 'Tariff-date', model.releaseDates.Tariff) }}
+        {% endif %}
+        {% if model.releaseDates.TERSED %}
+            {{ releaseDateLine('Tariff-expired removal scheme eligibility date (TERSED)', 'TERSED-date', model.releaseDates.TERSED) }}
+        {% endif %}
+        {% if model.releaseDates.APD %}
+            {{ releaseDateLine('Approved parole date (APD)', 'APD-date', model.releaseDates.APD) }}
+        {% endif %}
+        {% if model.hasNone %}
+            {{ releaseNoDateLine('No dates apply', 'None-date') }}
         {% endif %}
     </div>
 </div>

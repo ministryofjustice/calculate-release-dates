@@ -52,6 +52,7 @@ export default class CalculationRoutes {
       nomsId,
       prisonerDetail,
       sentencesAndOffences,
+      false,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments,
       validationErrors
@@ -87,6 +88,7 @@ export default class CalculationRoutes {
       nomsId,
       prisonerDetail,
       sentencesAndOffences,
+      false,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments
     )
@@ -139,6 +141,7 @@ export default class CalculationRoutes {
   public complete: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
+    const { noDates, manual } = req.query
     this.entryPointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
@@ -154,6 +157,8 @@ export default class CalculationRoutes {
     res.render('pages/calculation/calculationComplete', {
       prisonerDetail,
       calculationRequestId,
+      noDates,
+      manual,
     })
   }
 
