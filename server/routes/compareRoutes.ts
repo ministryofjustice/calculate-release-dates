@@ -12,6 +12,8 @@ export const comparePaths = {
   COMPARE_MANUAL: '/compare/manual',
   COMPARE_CHOOSE: '/compare/choose',
   COMPARE_RUN: '/compare/run',
+  COMPARE_MANUAL_LIST: '/compare/manual/list',
+  COMPARE_LIST: '/compare/list',
   COMPARE_RESULT: '/compare/result/:bulkComparisonResultId',
   COMPARE_DETAIL: '/compare/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId',
 }
@@ -44,6 +46,29 @@ export default class CompareRoutes {
     })
     return
   }
+
+  public list: RequestHandler = async (req, res) => {
+    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
+    const usersCaseload = await this.prisonerService.getUsersCaseloads(res.locals.user.username, res.locals.user.token)
+    const caseloadRadios = usersCaseload.map(caseload => ({ text: caseload.description, value: caseload.caseLoadId }))
+    res.render('pages/compare/list', {
+      allowBulkComparison,
+      caseloadRadios,
+    })
+    return
+  }
+
+  public manual_list: RequestHandler = async (req, res) => {
+    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
+    const usersCaseload = await this.prisonerService.getUsersCaseloads(res.locals.user.username, res.locals.user.token)
+    const caseloadRadios = usersCaseload.map(caseload => ({ text: caseload.description, value: caseload.caseLoadId }))
+    res.render('pages/compare/manualList', {
+      allowBulkComparison,
+      caseloadRadios,
+    })
+    return
+  }
+
   public result: RequestHandler = async (req, res) => {
     const bulkComparisonDetailId = uuidv4()
 

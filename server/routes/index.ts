@@ -156,6 +156,8 @@ export default function Index({
     get(comparePaths.COMPARE_CHOOSE, compareAccessRoutes.choose)
     get(comparePaths.COMPARE_RESULT, compareAccessRoutes.result)
     get(comparePaths.COMPARE_DETAIL, compareAccessRoutes.detail)
+    get(comparePaths.COMPARE_LIST, compareAccessRoutes.list)
+    get(comparePaths.COMPARE_MANUAL_LIST, compareAccessRoutes.manual_list)
   }
 
   indexRoutes()
