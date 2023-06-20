@@ -121,7 +121,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('SED (Sentence Expiry Date)')
+        expect(res.text).toContain('SED (Sentence expiry date)')
       })
   })
 
