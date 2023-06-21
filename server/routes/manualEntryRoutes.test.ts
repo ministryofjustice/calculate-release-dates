@@ -7,6 +7,7 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
+import ManualEntryValidationService from '../services/manualEntryValidationService'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -15,7 +16,8 @@ jest.mock('../services/manualCalculationService')
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const manualCalculationService = new ManualCalculationService() as jest.Mocked<ManualCalculationService>
-const manualEntryService = new ManualEntryService()
+const manualEntryValidationService = new ManualEntryValidationService()
+const manualEntryService = new ManualEntryService(manualEntryValidationService)
 let app: Express
 
 const stubbedEmptyMessages: ValidationMessage[] = []
