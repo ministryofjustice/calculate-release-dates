@@ -63,7 +63,7 @@
                     text: "Showing Latest Dates"
                 },
                 value: {
-                    text: bulkComparison.detail.lastestDates
+                    text: bulkComparison.detail.latestDates
                 }
             },
             {
@@ -112,7 +112,7 @@
             rows: bulkComparison.detail.dates
         }) }}
 
-    <h3 class="govuk-heading-l">Record Discrepancy</h3>
+    <h3 class="govuk-heading-l">Mismatch Investigation Result</h3>
 
     {{ govukRadios({
         name: "releaseInErrorType",
@@ -168,7 +168,7 @@
         name: "more-detail",
         id: "more-detail",
         label: {
-            text: "Provide any more detail around this discrepency?",
+            text: "Provide any more detail around this mismatch?",
             classes: "govuk-label--m",
             isPageHeading: true
         },
