@@ -169,12 +169,19 @@ export default class ManualEntryRoutes {
   }
 
   public submitRemoveDate: RequestHandler = async (req, res): Promise<void> => {
-    const { token } = res.locals.user
+    const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const unsupportedSentenceOrCalculationMessages =
       await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
     if (unsupportedSentenceOrCalculationMessages.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+    const dateToRemove: string = <string>req.query.dateType
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+    if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
+      const error = true
+      return res.render('pages/manualEntry/removeDate', { prisonerDetail, dateToRemove, fullDateName, error })
     }
     const remainingDates = this.manualEntryService.removeDate(req, nomsId)
     if (remainingDates === 0) {

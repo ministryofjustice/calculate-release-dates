@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import { DateTime } from 'luxon'
 import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
+import ManualEntryValidationService from './manualEntryValidationService'
 
 dayjs.extend(isBetween)
 const fullStringLookup = {
@@ -200,6 +201,8 @@ const errorMessage = {
   },
 }
 export default class ManualEntryService {
+  constructor(private readonly manualEntryValidationService: ManualEntryValidationService) {}
+
   public verifySelectedDateType(
     req: Request,
     nomsId: string,
@@ -221,6 +224,15 @@ export default class ManualEntryService {
       // eslint-disable-next-line no-restricted-syntax
       this.enrichConfiguration(mergedConfig, req, nomsId)
       return { error: true, config: mergedConfig }
+    }
+    const selectedDateTypes: string[] = Array.isArray(req.body.dateSelect) ? req.body.dateSelect : [req.body.dateSelect]
+    const validationMessage = this.manualEntryValidationService.validatePairs(selectedDateTypes)
+    if (validationMessage) {
+      const validationError = { errorMessage: { html: validationMessage } }
+      const mergedConfig = { ...config, ...validationError }
+      // eslint-disable-next-line no-restricted-syntax
+      this.enrichConfiguration(<DateSelectConfiguration>mergedConfig, req, nomsId)
+      return { error: true, config: <DateSelectConfiguration>mergedConfig }
     }
     this.enrichConfiguration(config, req, nomsId)
     return { error: false, config: <DateSelectConfiguration>config }
@@ -268,6 +280,7 @@ export default class ManualEntryService {
         return null
       })
       .filter(obj => obj !== null)
+    // Do validation here
     req.session.selectedManualEntryDates[nomsId] = [...req.session.selectedManualEntryDates[nomsId], ...dates]
   }
 
@@ -503,10 +516,10 @@ export interface EnteredDate {
 }
 
 export interface DateSelectConfiguration {
-  hint: { text: string }
+  hint: { text?: string; html?: string }
   name: string
   fieldset: { legend: { classes: string; text: string; isPageHeading: boolean } }
-  errorMessage: { text: string }
+  errorMessage: { text?: string; html?: string }
   items: {
     divider?: string
     checked?: boolean
