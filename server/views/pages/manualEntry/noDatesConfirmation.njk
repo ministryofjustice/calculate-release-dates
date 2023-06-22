@@ -28,6 +28,7 @@
             <form id="form" method="post">
                 {% if error %}
                     {{ govukRadios({
+                        classes: "govuk-radios--inline",
                         name: "no-date-selection",
                         fieldset: {
                             legend: {
@@ -52,6 +53,7 @@
                     }) }}
                 {% else %}
                     {{ govukRadios({
+                        classes: "govuk-radios--inline",
                         name: "no-date-selection",
                         fieldset: {
                             legend: {
