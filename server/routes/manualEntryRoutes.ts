@@ -98,6 +98,9 @@ export default class ManualEntryRoutes {
     if (unsupportedSentenceOrCalculationMessages.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
+    if (req.session.selectedManualEntryDates[nomsId].length === 0) {
+      return res.redirect(`/calculation/${nomsId}/manual-entry/select-dates`)
+    }
     let previousDate
     if (year && month && day) {
       previousDate = { year, month, day } as SubmittedDate
