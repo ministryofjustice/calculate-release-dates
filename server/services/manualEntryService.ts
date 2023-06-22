@@ -28,6 +28,28 @@ const fullStringLookup = {
   TERSED: 'TERSED (Tariff-Expired Removal Scheme Eligibility Date)',
   None: 'None of the above dates apply',
 }
+const order = {
+  SED: 1,
+  LED: 2,
+  CRD: 3,
+  HDCED: 4,
+  TUSED: 5,
+  PRRD: 6,
+  PED: 7,
+  ROTL: 20,
+  ERSED: 21,
+  ARD: 22,
+  HDCAD: 23,
+  MTD: 24,
+  ETD: 25,
+  LTD: 26,
+  NPD: 27,
+  DPRRD: 28,
+  Tariff: 18,
+  TERSED: 19,
+  APD: 29,
+  None: 30,
+}
 
 const determinateConfig = {
   name: 'dateSelect',
@@ -317,14 +339,15 @@ export default class ManualEntryService {
         },
       ]
       if (enteredDate.day === '' && enteredDate.month === '' && enteredDate.year === '') {
-        return this.allErrored(req, nomsId, enteredDate, allItems)
+        const message = 'The date entered must include a day, month and a year.'
+        return this.allErrored(req, nomsId, enteredDate, allItems, message)
       }
       const someErrors = this.singleItemsErrored(req, allItems, enteredDate, nomsId)
       if (someErrors) {
         return someErrors
       }
       if (!this.isDateValid(enteredDate)) {
-        return this.allErrored(req, nomsId, enteredDate, allItems)
+        return this.allErrored(req, nomsId, enteredDate, allItems, 'The date entered must be a real date')
       }
       const notWithinOneHundredYears = this.notWithinOneHundredYears(req, nomsId, enteredDate, allItems)
       if (notWithinOneHundredYears) {
@@ -343,11 +366,16 @@ export default class ManualEntryService {
     return dateAsDate.isValid
   }
 
-  private allErrored(req: Request, nomsId: string, enteredDate: EnteredDate, allItems: DateInputItem[]) {
+  private allErrored(
+    req: Request,
+    nomsId: string,
+    enteredDate: EnteredDate,
+    allItems: DateInputItem[],
+    message: string
+  ) {
     const date = req.session.selectedManualEntryDates[nomsId].find(
       (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
     )
-    const message = 'The date entered must include a valid day, month and a year.'
     const items = allItems.map(it => {
       return { ...it, classes: `${it.classes} govuk-input--error` }
     })
@@ -412,6 +440,7 @@ export default class ManualEntryService {
       const date = req.session.selectedManualEntryDates[nomsId].find(
         (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
       )
+      message += '.'
       return { message, date, enteredDate, success: false, items, isNone: false } as StorageResponseModel
     }
     return undefined
@@ -426,22 +455,29 @@ export default class ManualEntryService {
   }
 
   public getConfirmationConfiguration(req: Request, nomsId: string) {
-    return req.session.selectedManualEntryDates[nomsId].map((d: ManualEntrySelectedDate) => {
-      const dateValue = this.dateString(d)
-      const text = fullStringLookup[d.dateType]
-      const items = this.getItems(nomsId, d, text)
-      return {
-        key: {
-          text,
-        },
-        value: {
-          text: dateValue,
-        },
-        actions: {
-          items,
-        },
-      }
-    })
+    return req.session.selectedManualEntryDates[nomsId]
+      .map((d: ManualEntrySelectedDate) => {
+        const dateValue = this.dateString(d)
+        const text = fullStringLookup[d.dateType]
+        const items = this.getItems(nomsId, d, text)
+        return {
+          key: {
+            text,
+          },
+          value: {
+            text: dateValue,
+          },
+          actions: {
+            items,
+          },
+          order: this.getOrder(d.dateType),
+        }
+      })
+      .sort((row1: DateRow, row2: DateRow) => row1.order - row2.order)
+  }
+
+  private getOrder(dateType: string) {
+    return order[dateType]
   }
 
   private getItems(nomsId: string, d: ManualEntrySelectedDate, text: string) {
@@ -528,4 +564,17 @@ export interface DateSelectConfiguration {
     text?: string
     value?: string
   }[]
+}
+
+export interface DateRow {
+  key: string
+  value: string
+  actions: ActionItem
+  order: number
+}
+
+export interface ActionItem {
+  href: string
+  text: string
+  visuallyHiddenText: string
 }
