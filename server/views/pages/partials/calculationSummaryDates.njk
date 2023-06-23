@@ -125,29 +125,27 @@
                 {{ hdcedBeforeMtd() }}
             {%  endif  %}
         {% endif %}
-        {% if featureToggles.dto %}
-            {% if model.releaseDates.ETD %}
-                {{ releaseDateLine('Early transfer date (ETD)', 'ETD-date', model.releaseDates.ETD) }}
-                {% if model.weekendAdjustments.ETD %}
-                    {{ holidayLine('ETD-weekend-adjustment', model.weekendAdjustments.ETD.date, model.weekendAdjustments.ETD.adjustedForBankHoliday) }}
-                {% endif %}
+        {% if model.releaseDates.ETD %}
+            {{ releaseDateLine('Early transfer date (ETD)', 'ETD-date', model.releaseDates.ETD) }}
+            {% if model.weekendAdjustments.ETD %}
+                {{ holidayLine('ETD-weekend-adjustment', model.weekendAdjustments.ETD.date, model.weekendAdjustments.ETD.adjustedForBankHoliday) }}
             {% endif %}
-            {% if model.releaseDates.MTD %}
-                {{ releaseDateLine('Mid term date (MTD)', 'MTD-date', model.releaseDates.MTD) }}
-                {% if model.weekendAdjustments.MTD %}
-                    {{ holidayLine('MTD-weekend-adjustment', model.weekendAdjustments.MTD.date, model.weekendAdjustments.MTD.adjustedForBankHoliday) }}
-                {% endif %}
-                {% if model.mtdHintText() %}
-                    {{ displayMtdHintText() }}
-                {% endif %}
+        {% endif %}
+        {% if model.releaseDates.MTD %}
+            {{ releaseDateLine('Mid term date (MTD)', 'MTD-date', model.releaseDates.MTD) }}
+            {% if model.weekendAdjustments.MTD %}
+                {{ holidayLine('MTD-weekend-adjustment', model.weekendAdjustments.MTD.date, model.weekendAdjustments.MTD.adjustedForBankHoliday) }}
             {% endif %}
-            {% if model.releaseDates.LTD %}
-                {{ releaseDateLine('Late transfer date (LTD)', 'LTD-date', model.releaseDates.LTD) }}
-                {% if model.weekendAdjustments.LTD %}
-                    {{ holidayLine('LTD-weekend-adjustment', model.weekendAdjustments.LTD.date, model.weekendAdjustments.LTD.adjustedForBankHoliday) }}
-                {% endif %}
+            {% if model.mtdHintText() %}
+                {{ displayMtdHintText() }}
+            {% endif %}
+        {% endif %}
+        {% if model.releaseDates.LTD %}
+            {{ releaseDateLine('Late transfer date (LTD)', 'LTD-date', model.releaseDates.LTD) }}
+            {% if model.weekendAdjustments.LTD %}
+                {{ holidayLine('LTD-weekend-adjustment', model.weekendAdjustments.LTD.date, model.weekendAdjustments.LTD.adjustedForBankHoliday) }}
+            {% endif %}
 
-            {% endif %}
         {% endif %}
         {% if model.releaseDates.TUSED %}
             {{ releaseDateLine('Top up supervision expiry date (TUSED)', 'TUSED-date', model.releaseDates.TUSED) }}
