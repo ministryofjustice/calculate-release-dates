@@ -37,7 +37,6 @@ import {
   pedAdjustedByCrdAndBeforePrrdReleaseDates,
 } from '../services/breakdownExamplesTestData'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
-import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -336,7 +335,6 @@ describe('Calculation routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/summary/:calculationRequestId should show ERSED recall notification banner if recall only', () => {
-    config.featureToggles.ersed = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)

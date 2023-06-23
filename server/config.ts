@@ -101,7 +101,6 @@ export default {
   },
   featureToggles: {
     edsSopcRecalls: get('EDS_SOPC_RECALLS', false) === 'true',
-    ersed: get('ERSED_FEATURE_TOGGLE', false) === 'true',
     manualEntry: get('MANUAL_ENTRY_TOGGLE', false) === 'true',
   },
 }

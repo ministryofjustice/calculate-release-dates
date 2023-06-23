@@ -44,7 +44,7 @@
         <div class="govuk-grid-column-full">
             <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-                {% if featureToggles.ersed and model.isErsedElligible() %}
+                {% if model.isErsedElligible() %}
                     {% if model.viewJourney %}
                         {% if model.isErsedChecked() %}
                             <p class="govuk-body">An Early removal scheme eligibility date (ERSED) was included in this calculation</p>
