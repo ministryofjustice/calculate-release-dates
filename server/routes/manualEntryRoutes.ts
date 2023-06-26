@@ -28,7 +28,11 @@ export default class ManualEntryRoutes {
     }
     req.session.selectedManualEntryDates[nomsId] = []
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    return res.render('pages/manualEntry/manualEntry', { prisonerDetail })
+    const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
+      prisonerDetail.bookingId,
+      token
+    )
+    return res.render('pages/manualEntry/manualEntry', { prisonerDetail, hasIndeterminateSentences })
   }
 
   public submitSelectedDates: RequestHandler = async (req, res): Promise<void> => {
