@@ -21,7 +21,6 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
-import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -284,7 +283,6 @@ describe('View journey routes tests', () => {
 
   describe('View sentence and offences tests', () => {
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences of the calculation', () => {
-      config.featureToggles.ersed = true
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
@@ -318,7 +316,6 @@ describe('View journey routes tests', () => {
         })
     })
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences without ERSED', () => {
-      config.featureToggles.ersed = true
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
@@ -336,7 +333,6 @@ describe('View journey routes tests', () => {
         })
     })
     it('GET /view/:calculationRequestId/calculation-summary should include recall only notification banner', () => {
-      config.featureToggles.ersed = true
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
@@ -358,7 +354,6 @@ describe('View journey routes tests', () => {
         })
     })
     it('GET /view/:calculationRequestId/calculation-summary should not show the ERSED warning banner if no recall only', () => {
-      config.featureToggles.ersed = true
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
