@@ -411,7 +411,6 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -432,7 +431,6 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -453,7 +451,6 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -474,7 +471,7 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
+
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -495,7 +492,7 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
+
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -516,7 +513,7 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
+
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -537,7 +534,7 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
+
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -558,7 +555,7 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
+
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -579,7 +576,7 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
+
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -598,7 +595,7 @@ describe('Calculation routes tests', () => {
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
     })
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    config.featureToggles.dto = true
+
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
