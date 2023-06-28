@@ -102,5 +102,6 @@ export default {
   featureToggles: {
     edsSopcRecalls: get('EDS_SOPC_RECALLS', false) === 'true',
     manualEntry: get('MANUAL_ENTRY_TOGGLE', false) === 'true',
+    approvedDates: get('APPROVED_DATES_TOGGLE', false) === 'true',
   },
 }
