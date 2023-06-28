@@ -112,7 +112,7 @@ export default class ViewRoutes {
         calculationRequestId,
         token
       )
-      const hasNone = 'None' in releaseDates.dates
+      const hasNone = releaseDates.dates.None !== undefined
       return new CalculationSummaryViewModel(
         releaseDates.dates,
         weekendAdjustments,
