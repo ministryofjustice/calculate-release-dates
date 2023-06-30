@@ -1,11 +1,8 @@
 import { Request } from 'express'
-import dayjs from 'dayjs'
-import isBetween from 'dayjs/plugin/isBetween'
 import { DateTime } from 'luxon'
 import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
 import ManualEntryValidationService from './manualEntryValidationService'
 
-dayjs.extend(isBetween)
 const fullStringLookup = {
   SED: 'SED (Sentence Expiry Date)',
   LED: 'LED (Licence Expiry Date)',
