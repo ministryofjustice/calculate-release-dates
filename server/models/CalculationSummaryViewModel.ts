@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { DateTime } from 'luxon'
 import { CalculationBreakdown, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { PrisonApiOffenderSentenceAndOffences, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
@@ -190,5 +191,80 @@ export default class CalculationSummaryViewModel {
       return '<h2 class="govuk-heading-m">From 6 June, the policy for calculating HDCED has changed</h2><p class="govuk-body">This service has calculated the HDCED using the new policy rules.</p>'
     }
     return ''
+  }
+
+  public getHints(type: string): string[] {
+    const hints = [] as string[]
+    const longFormat = 'cccc, dd LLLL yyyy'
+    if (this.weekendAdjustments[type]) {
+      const releaseDate = DateTime.fromISO(this.weekendAdjustments[type].date).toFormat(longFormat)
+      hints.push(
+        `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${type}-weekend-adjustment">${releaseDate} when adjusted to a working day</p>`
+      )
+    }
+    if (type === 'ARD' && this.displayArdBeforeMtd()) {
+      hints.push(
+        '<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Automatic Release Date (ARD)</p>'
+      )
+    }
+    if (type === 'CRD' && this.displayCrdBeforeMtd()) {
+      hints.push(
+        '<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Conditional Release Date (CRD)</p>'
+      )
+    }
+    if (type === 'PED') {
+      if (this.displayPedAdjustmentHint()) {
+        const inserts = this.displayPedAdjustmentHint()
+        hints.push(
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the ${inserts} of a concurrent sentence or default term</p>`
+        )
+      }
+      if (this.pedBeforePRRD()) {
+        const prrd = DateTime.fromISO(this.calculationBreakdown.otherDates.PRRD).toFormat(longFormat)
+        hints.push(
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">The post recall release date (PRRD) of ${prrd} is later than the PED</p>`
+        )
+      }
+      if (this.displayPedBeforeMtd()) {
+        hints.push(
+          '<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Parole Eligibility Date (PED)</p>'
+        )
+      }
+    }
+    if (type === 'HDCED') {
+      if (this.displayHdcedAdjustmentHint()) {
+        const content = this.displayHdcedAdjustmentHint()
+        hints.push(
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">HDCED adjusted for the ${content} of a concurrent sentence or default term</p>`
+        )
+      }
+      if (this.hdcedBeforePRRD()) {
+        const prrd = DateTime.fromISO(this.calculationBreakdown.otherDates.PRRD).toFormat(longFormat)
+        hints.push(
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">Release on HDC must not take place before the PRRD ${prrd}</p>`
+        )
+      }
+      if (this.displayHdcedBeforeMtd()) {
+        hints.push(
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Home detention curfew eligibility date (HDCED)</p>`
+        )
+      }
+    }
+    if (type === 'MTD' && this.mtdHintText()) {
+      hints.push(`<p class="govuk-body govuk-hint govuk-!-font-size-16">${this.mtdHintText()}</p>`)
+    }
+    if (type === 'ERSED') {
+      if (this.displayErsedAdjustmentHint()) {
+        hints.push(
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">ERSED adjusted for the ARD of a concurrent default term</p>`
+        )
+      }
+      if (this.ersedAdjustedByMtd()) {
+        hints.push(
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">Adjusted to Mid term date (MTD) of the Detention and training order (DTO)</p>`
+        )
+      }
+    }
+    return hints
   }
 }
