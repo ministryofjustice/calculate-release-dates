@@ -10,6 +10,7 @@ declare module 'express-session' {
     nowInMinutes: number
     userInputs?: { string?: CalculationUserInputs }
     selectedManualEntryDates?: { string?: ManualEntrySelectedDate[] }
+    selectedApprovedDates?: { string?: ManualEntrySelectedDate[] }
   }
 }
 

@@ -10,6 +10,7 @@ import ViewRoutes from './viewRoutes'
 import CalculationQuestionRoutes from './calculationQuestionRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
+import ApprovedDatesRoutes from './approvedDatesRoutes'
 
 export default function Index({
   prisonerService,
@@ -75,6 +76,8 @@ export default function Index({
     manualEntryService
   )
 
+  const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService)
+
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
     get('/supported-sentences', startRoutes.supportedSentences)
@@ -107,6 +110,12 @@ export default function Index({
     post('/calculation/:nomsId/manual-entry/no-dates-confirmation', manualEntryAccessRoutes.submitNoDatesConfirmation)
   }
 
+  const approvedDatesRoutes = () => {
+    get(
+      '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
+      approvedDatesAccessRoutes.selectedApprovedDates
+    )
+  }
   const calculationRoutes = () => {
     get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
     post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
@@ -169,6 +178,6 @@ export default function Index({
   viewRoutes()
   otherRoutes()
   compareRoutes()
-
+  approvedDatesRoutes()
   return router
 }
