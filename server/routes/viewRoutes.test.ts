@@ -410,10 +410,10 @@ describe('View journey routes tests', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).toContain('Conditional release date (CRD)')
+          expect(res.text).toContain('CRD (Conditional release date)')
           expect(res.text).toContain('Wednesday, 03 February 2021')
           expect(res.text).toContain('Tuesday, 02 February 2021 when adjusted to a working day')
-          expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
+          expect(res.text).toContain('HDCED (Home detention curfew eligibility date)')
           expect(res.text).toContain('Sunday, 03 October 2021')
           expect(res.text).toContain('Tuesday, 05 October 2021 when adjusted to a working day')
           // expect(res.text).not.toContain('SLED')
@@ -469,10 +469,10 @@ describe('View journey routes tests', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).toContain('Conditional release date (CRD)')
+          expect(res.text).toContain('CRD (Conditional release date)')
           expect(res.text).toContain('Wednesday, 03 February 2021')
           expect(res.text).toContain('Tuesday, 02 February 2021 when adjusted to a working day')
-          expect(res.text).toContain('Home detention curfew eligibility date (HDCED)')
+          expect(res.text).toContain('HDCED (Home detention curfew eligibility date)')
           expect(res.text).toContain('Sunday, 03 October 2021')
           expect(res.text).toContain('Tuesday, 05 October 2021 when adjusted to a working day')
           // Should not contain breakdown
