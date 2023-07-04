@@ -1,0 +1,45 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+
+{% set pageTitle = applicationName + " - determinite manual entry" %}
+{% set pageId = "determinite selection" %}
+
+{% block aside %}
+    {% set prisonerDetail = prisonerDetail %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: "/calculation/" + prisonerDetail.offenderNo + "/summary/" + calculationRequestId
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+{#                {% if insufficientDatesSelected %}#}
+{#                    {% set config = mergedConfig %}#}
+{#                {% endif %}#}
+{#                {{ govukCheckboxes(config) }}#}
+
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    value: 'determinate-date-selection',
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'manual-entry' }
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

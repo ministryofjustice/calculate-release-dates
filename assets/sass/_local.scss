@@ -144,3 +144,8 @@ div.govuk-width-container {
 .moj-banner {
   padding: 20px;
 }
+
+.larger-link {
+  @extend .govuk-link;
+  font-size: 1.3em !important;
+}
