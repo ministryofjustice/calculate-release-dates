@@ -1,6 +1,6 @@
 {% macro releaseDateLine(heading, dataQa, releaseDate, extras) %}
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">{{ heading }}</dt>
+        <dt class="custom-summary-list__key">{{ heading }}</dt>
         <dd class="govuk-summary-list__value" data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }}
             {% for extra in extras %}
                 {{ extra | safe}}
