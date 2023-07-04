@@ -18,64 +18,64 @@
     <div class="custom-card-main">
         <dl class="govuk-summary-list">
             {% if model.releaseDates.SLED %}
-                {{ releaseDateLine('Sentence and licence expiry date (SLED)', 'SLED-date', model.releaseDates.SLED) }}
+                {{ releaseDateLine('SLED (Sentence and licence expiry date)', 'SLED-date', model.releaseDates.SLED) }}
             {% endif %}
             {% if model.releaseDates.LED %}
-                {{ releaseDateLine('Licence expiry date (LED)', 'LED-date', model.releaseDates.LED) }}
+                {{ releaseDateLine('LED (Licence expiry date)', 'LED-date', model.releaseDates.LED) }}
             {% endif %}
             {% if model.releaseDates.SED %}
-                {{ releaseDateLine('Sentence expiry date (SED)', 'SED-date', model.releaseDates.SED) }}
+                {{ releaseDateLine('SED (Sentence expiry date)', 'SED-date', model.releaseDates.SED) }}
             {% endif %}
             {% if model.releaseDates.NPD %}
-                {{ releaseDateLine('Non parole date (NPD)', 'NPD-date', model.releaseDates.NPD) }}
+                {{ releaseDateLine('NPD (Non parole date)', 'NPD-date', model.releaseDates.NPD) }}
             {% endif %}
             {% if model.releaseDates.ARD %}
-                {{ releaseDateLine('Automatic release date (ARD)', 'ARD-date', model.releaseDates.ARD, model.getHints('ARD')) }}
+                {{ releaseDateLine('ARD (Automatic release date)', 'ARD-date', model.releaseDates.ARD, model.getHints('ARD')) }}
             {% endif %}
             {% if model.releaseDates.CRD %}
-                {{ releaseDateLine('Conditional release date (CRD)', 'CRD-date', model.releaseDates.CRD, model.getHints('CRD')) }}
+                {{ releaseDateLine('CRD (Conditional release date)', 'CRD-date', model.releaseDates.CRD, model.getHints('CRD')) }}
             {% endif %}
             {% if model.releaseDates.PED %}
-                {{ releaseDateLine('Parole eligibility date (PED)', 'PED-date', model.releaseDates.PED, model.getHints('PED')) }}
+                {{ releaseDateLine('PED (Parole eligibility date)', 'PED-date', model.releaseDates.PED, model.getHints('PED')) }}
             {% endif %}
             {% if model.releaseDates.PRRD %}
-                {{ releaseDateLine('Post recall release date (PRRD)', 'PRRD-date', model.releaseDates.PRRD, model.getHints('PRRD')) }}
+                {{ releaseDateLine('PRRD (Post recall release date)', 'PRRD-date', model.releaseDates.PRRD, model.getHints('PRRD')) }}
             {% endif %}
             {% if model.releaseDates.HDCED %}
-                {{ releaseDateLine('Home detention curfew eligibility date (HDCED)', 'HDCED-date', model.releaseDates.HDCED, model.getHints('HDCED')) }}
+                {{ releaseDateLine('HDCED (Home detention curfew eligibility date)', 'HDCED-date', model.releaseDates.HDCED, model.getHints('HDCED')) }}
             {% endif %}
             {% if model.releaseDates.ETD %}
-                {{ releaseDateLine('Early transfer date (ETD)', 'ETD-date', model.releaseDates.ETD, model.getHints('ETD')) }}
+                {{ releaseDateLine('ETD (Early transfer date)', 'ETD-date', model.releaseDates.ETD, model.getHints('ETD')) }}
             {% endif %}
             {% if model.releaseDates.MTD %}
-                {{ releaseDateLine('Mid term date (MTD)', 'MTD-date', model.releaseDates.MTD, model.getHints('MTD')) }}
+                {{ releaseDateLine('MTD (Mid term date)', 'MTD-date', model.releaseDates.MTD, model.getHints('MTD')) }}
             {% endif %}
             {% if model.releaseDates.LTD %}
-                {{ releaseDateLine('Late transfer date (LTD)', 'LTD-date', model.releaseDates.LTD, model.getHints('LTD')) }}
+                {{ releaseDateLine('LTD (Late transfer date)', 'LTD-date', model.releaseDates.LTD, model.getHints('LTD')) }}
             {% endif %}
             {% if model.releaseDates.TUSED %}
-                {{ releaseDateLine('Top up supervision expiry date (TUSED)', 'TUSED-date', model.releaseDates.TUSED, model.getHints('TUSED')) }}
+                {{ releaseDateLine('TUSED (Top up supervision expiry date)', 'TUSED-date', model.releaseDates.TUSED, model.getHints('TUSED')) }}
             {% endif %}
             {% if model.releaseDates.ERSED %}
-                {{ releaseDateLine('Early removal scheme eligibility date (ERSED)', 'ERSED-date', model.releaseDates.ERSED, model.getHints('ERSED')) }}
+                {{ releaseDateLine('ERSED (Early removal scheme eligibility date)', 'ERSED-date', model.releaseDates.ERSED, model.getHints('ERSED')) }}
             {% endif %}
             {% if model.releaseDates.ROTL %}
-                {{ releaseDateLine('Release on temporary licence (ROTL)', 'ROTL-date', model.releaseDates.ROTL, model.getHints('ROTL')) }}
+                {{ releaseDateLine('ROTL (Release on temporary licence)', 'ROTL-date', model.releaseDates.ROTL, model.getHints('ROTL')) }}
             {% endif %}
             {% if model.releaseDates.HDCAD %}
-                {{ releaseDateLine('Home detention curfew approved date (HDCAD)', 'HDCAD-date', model.releaseDates.HDCAD, model.getHints('HDCAD')) }}
+                {{ releaseDateLine('HDCAD (Home detention curfew approved date)', 'HDCAD-date', model.releaseDates.HDCAD, model.getHints('HDCAD')) }}
             {% endif %}
             {% if model.releaseDates.DPRRD %}
-                {{ releaseDateLine('Detention and training order post recall release date (DPRRD)', 'DPRRD-date', model.releaseDates.DPRRD, model.getHints('HDCAD')) }}
+                {{ releaseDateLine('DPRRD (Detention and training order post recall release date)', 'DPRRD-date', model.releaseDates.DPRRD, model.getHints('HDCAD')) }}
             {% endif %}
             {% if model.releaseDates.Tariff %}
-                {{ releaseDateLine('Tariff known as the Tariff expiry date in policy documentation', 'Tariff-date', model.releaseDates.Tariff, model.getHints('Tariff')) }}
+                {{ releaseDateLine('Tariff (known as the Tariff expiry date)', 'Tariff-date', model.releaseDates.Tariff, model.getHints('Tariff')) }}
             {% endif %}
             {% if model.releaseDates.TERSED %}
-                {{ releaseDateLine('Tariff-expired removal scheme eligibility date (TERSED)', 'TERSED-date', model.releaseDates.TERSED, model.getHints('TERSED')) }}
+                {{ releaseDateLine('TERSED (Tariff-expired removal scheme eligibility date)', 'TERSED-date', model.releaseDates.TERSED, model.getHints('TERSED')) }}
             {% endif %}
             {% if model.releaseDates.APD %}
-                {{ releaseDateLine('Approved parole date (APD)', 'APD-date', model.releaseDates.APD, model.getHints('APD')) }}
+                {{ releaseDateLine('APD (Approved parole date)', 'APD-date', model.releaseDates.APD, model.getHints('APD')) }}
             {% endif %}
             {% if model.hasNone %}
                 {{ releaseNoDateLine('No dates apply', 'None-date') }}
