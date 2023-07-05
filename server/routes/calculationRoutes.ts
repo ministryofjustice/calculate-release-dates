@@ -9,6 +9,7 @@ import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import UserInputService from '../services/userInputService'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
+import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
 
 export default class CalculationRoutes {
   constructor(
@@ -23,6 +24,13 @@ export default class CalculationRoutes {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
+    if (
+      req.session.selectedApprovedDates &&
+      req.session.selectedApprovedDates[nomsId] &&
+      req.session.selectedApprovedDates[nomsId].some((date: ManualEntrySelectedDate) => date.date === undefined)
+    ) {
+      req.session.selectedApprovedDates[nomsId] = []
+    }
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,

@@ -22,6 +22,7 @@ export default function Index({
   manualCalculationService,
   manualEntryService,
   bulkLoadService,
+  approvedDatesService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -76,7 +77,7 @@ export default function Index({
     manualEntryService
   )
 
-  const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService)
+  const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService, approvedDatesService)
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
@@ -113,8 +114,13 @@ export default function Index({
   const approvedDatesRoutes = () => {
     get(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
-      approvedDatesAccessRoutes.selectedApprovedDates
+      approvedDatesAccessRoutes.selectedApprovedDateTypes
     )
+    post(
+      '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
+      approvedDatesAccessRoutes.submitApprovedDateTypes
+    )
+    get('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.loadSubmitDates)
   }
   const calculationRoutes = () => {
     get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)

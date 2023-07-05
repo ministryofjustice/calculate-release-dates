@@ -26,10 +26,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-{#                {% if insufficientDatesSelected %}#}
-{#                    {% set config = mergedConfig %}#}
-{#                {% endif %}#}
-{#                {{ govukCheckboxes(config) }}#}
+                {{ govukCheckboxes(config) }}
 
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
                 {{ govukButton({

@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
 import ManualEntryValidationService from './manualEntryValidationService'
 
-const fullStringLookup = {
+export const FULL_STRING_LOOKUP = {
   SED: 'SED (Sentence expiry date)',
   LED: 'LED (Licence expiry date)',
   CRD: 'CRD (Conditional release date)',
@@ -63,13 +63,13 @@ const determinateConfig = {
   items: [
     {
       value: 'SED',
-      text: fullStringLookup.SED,
+      text: FULL_STRING_LOOKUP.SED,
       checked: false,
       attributes: {},
     },
     {
       value: 'LED',
-      text: fullStringLookup.LED,
+      text: FULL_STRING_LOOKUP.LED,
       checked: false,
       attributes: {},
     },
@@ -77,91 +77,91 @@ const determinateConfig = {
       value: 'CRD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.CRD,
+      text: FULL_STRING_LOOKUP.CRD,
     },
     {
       attributes: {},
       checked: false,
       value: 'HDCED',
-      text: fullStringLookup.HDCED,
+      text: FULL_STRING_LOOKUP.HDCED,
     },
     {
       value: 'TUSED',
       attributes: {},
       checked: false,
-      text: fullStringLookup.TUSED,
+      text: FULL_STRING_LOOKUP.TUSED,
     },
     {
       value: 'PRRD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.PRRD,
+      text: FULL_STRING_LOOKUP.PRRD,
     },
     {
       value: 'PED',
       attributes: {},
       checked: false,
-      text: fullStringLookup.PED,
+      text: FULL_STRING_LOOKUP.PED,
     },
     {
       value: 'ROTL',
       checked: false,
       attributes: {},
-      text: fullStringLookup.ROTL,
+      text: FULL_STRING_LOOKUP.ROTL,
     },
     {
       value: 'ERSED',
       attributes: {},
       checked: false,
-      text: fullStringLookup.ERSED,
+      text: FULL_STRING_LOOKUP.ERSED,
     },
     {
       value: 'ARD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.ARD,
+      text: FULL_STRING_LOOKUP.ARD,
     },
     {
       value: 'HDCAD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.HDCAD,
+      text: FULL_STRING_LOOKUP.HDCAD,
     },
     {
       value: 'MTD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.MTD,
+      text: FULL_STRING_LOOKUP.MTD,
     },
     {
       value: 'ETD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.ETD,
+      text: FULL_STRING_LOOKUP.ETD,
     },
     {
       value: 'LTD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.LTD,
+      text: FULL_STRING_LOOKUP.LTD,
     },
     {
       value: 'APD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.APD,
+      text: FULL_STRING_LOOKUP.APD,
     },
     {
       value: 'NPD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.NPD,
+      text: FULL_STRING_LOOKUP.NPD,
     },
     {
       value: 'DPRRD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.DPRRD,
+      text: FULL_STRING_LOOKUP.DPRRD,
     },
   ],
 }
@@ -182,32 +182,32 @@ const indeterminateConfig = {
       value: 'Tariff',
       checked: false,
       attributes: {},
-      text: fullStringLookup.Tariff,
+      text: FULL_STRING_LOOKUP.Tariff,
     },
     {
       value: 'TERSED',
       attributes: {},
       checked: false,
-      text: fullStringLookup.TERSED,
+      text: FULL_STRING_LOOKUP.TERSED,
     },
     {
       value: 'ROTL',
       attributes: {},
       checked: false,
-      text: fullStringLookup.ROTL,
+      text: FULL_STRING_LOOKUP.ROTL,
     },
     {
       value: 'APD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.APD,
+      text: FULL_STRING_LOOKUP.APD,
     },
     {
       divider: 'or',
     },
     {
       value: 'None',
-      text: fullStringLookup.None,
+      text: FULL_STRING_LOOKUP.None,
       attributes: {},
       checked: false,
       behaviour: 'exclusive',
@@ -286,13 +286,13 @@ export default class ManualEntryService {
           if (existingDate) {
             return {
               dateType: date,
-              dateText: fullStringLookup[date],
+              dateText: FULL_STRING_LOOKUP[date],
               date: existingDate.date,
             } as ManualEntrySelectedDate
           }
           return {
             dateType: date,
-            dateText: fullStringLookup[date],
+            dateText: FULL_STRING_LOOKUP[date],
             date: undefined,
           } as ManualEntrySelectedDate
         }
@@ -455,7 +455,7 @@ export default class ManualEntryService {
     return req.session.selectedManualEntryDates[nomsId]
       .map((d: ManualEntrySelectedDate) => {
         const dateValue = this.dateString(d)
-        const text = fullStringLookup[d.dateType]
+        const text = FULL_STRING_LOOKUP[d.dateType]
         const items = this.getItems(nomsId, d, text)
         return {
           key: {
@@ -497,7 +497,7 @@ export default class ManualEntryService {
   }
 
   public fullStringLookup(dateType: string): string {
-    return fullStringLookup[dateType]
+    return FULL_STRING_LOOKUP[dateType]
   }
 
   public removeDate(req: Request, nomsId: string): number {
@@ -519,7 +519,7 @@ export default class ManualEntryService {
     )
     req.session.selectedManualEntryDates[nomsId].push({
       dateType: req.query.dateType,
-      dateText: fullStringLookup[<string>req.query.dateType],
+      dateText: FULL_STRING_LOOKUP[<string>req.query.dateType],
       date: undefined,
     } as ManualEntrySelectedDate)
     return date
