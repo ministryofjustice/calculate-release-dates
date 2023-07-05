@@ -16,34 +16,24 @@
             </h1>
             <p class="govuk-body">Automatically calculate a prisoner’s release dates using information from NOMIS.<br/>
             </p>
-
+            <h2 class="govuk-heading-m">Before you start</h2>
+        <p>
+            Check in NOMIS that the prisoners information includes:
+            <ul class="govuk-list govuk-list--bullet">
+                <li>court case information</li>
+                <li>offence information</li>
+                <li>sentences</li>
+                <li>adjustments</li>
+            </ul>
+        </p>
             <p class="govuk-body">
-                {% if prisonId %}
-                        You can view previous calculations for {{prisonerDetail.firstName}}
-                    {{prisonerDetail.lastName}} using the
-                        <a data-qa="view-journey-start" href="{{ "/view/" + prisonId + "/latest" }}">calculation lookup service.</a>
-                {% else %}
-                        You can view previous calculations using the
-                        <a data-qa="view-journey-start" href="/view/search/prisoners">calculation lookup service.</a>
-                {% endif %}
+
             </p>
-
-            <p class="govuk-body">This service currently supports a limited number of sentences.
-                <a href="/supported-sentences" class="govuk-link">Check supported sentence types</a>.</p>
-
             {% if prisonId %}
                 {% set startlink = "/calculation/" + prisonId + "/alternative-release-arrangements" %}
             {% else %}
                 {% set startlink = "/search/prisoners" %}
             {% endif %}
-
-            {% if allowBulkLoad %}
-                <p class="govuk-body">
-                    To perform bulk analysis of previous calculations you may use the
-                    <a data-qa="bulk-comparison-start" href="{{ "/compare" }}">bulk comparison tool.</a>
-                </p>
-            {% endif %}
-
             {{ govukButton({
                 text: "Start now",
                 href: startlink,
@@ -52,16 +42,29 @@
                 attributes: { 'data-qa': 'start-now-button', 'aria-describedby': 'main-heading'}
             }) }}
 
-            <h2 class="govuk-heading-m">Before you start</h2>
-            <p class="govuk-body">Check in NOMIS that the prisoner’s information includes:</p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>court cases</li>
-                <li>court dates</li>
-                <li>offences</li>
-                <li>offence dates</li>
-                <li>sentences</li>
-                <li>adjustments </li>
-            </ul>
+            <h2 class="govuk-heading-m" id="look-up-heading">Look up previous calculations</h2>
+            <p>You can view previous calculations using the calculation lookup service</p>
+            {% if prisonId %}
+                {% set viewlink = "/view/" + prisonId + "/latest"  %}
+            {% else %}
+                {% set viewlink = "/view/search/prisoners"  %}
+            {% endif %}
+
+            {{ govukButton({
+                text: "Look up calculations",
+                href: viewlink,
+                classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
+                isStartButton: true,
+                attributes: { 'data-qa': 'view-journey-start', 'aria-describedby': 'look-up-heading'}
+            }) }}
+
+            {% if allowBulkLoad %}
+                <p class="govuk-body">
+                    To perform bulk analysis of previous calculations you may use the
+                    <a data-qa="bulk-comparison-start" href="{{ "/compare" }}">bulk comparison tool.</a>
+                </p>
+            {% endif %}
+
         </div>
     </div>
 {% endblock %}
