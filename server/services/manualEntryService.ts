@@ -2,29 +2,8 @@ import { Request } from 'express'
 import { DateTime } from 'luxon'
 import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
 import ManualEntryValidationService from './manualEntryValidationService'
+import DateTypeConfigurationService, { FULL_STRING_LOOKUP } from './dateTypeConfigurationService'
 
-const fullStringLookup = {
-  SED: 'SED (Sentence expiry date)',
-  LED: 'LED (Licence expiry date)',
-  CRD: 'CRD (Conditional release date)',
-  HDCED: 'HDCED (Home detention curfew release date)',
-  TUSED: 'TUSED (Top up supervision expiry date)',
-  PRRD: 'PRRD (Post recall release date)',
-  PED: 'PED (Parole eligibility date)',
-  ROTL: 'ROTL (Release on temporary licence)',
-  ERSED: 'ERSED (Early removal scheme eligibility date)',
-  ARD: 'ARD (Automatic release date)',
-  HDCAD: 'HDCAD (Home detention curfew approved date)',
-  MTD: 'MTD (Mid transfer date)',
-  ETD: 'ETD (Early transfer date)',
-  LTD: 'LTD (Late transfer date)',
-  APD: 'APD (Approved parole date)',
-  NPD: 'NPD (Non-parole date)',
-  DPRRD: 'DPRRD (Detention and training order post recall release date)',
-  Tariff: 'Tariff (known as the Tariff expiry date)',
-  TERSED: 'TERSED (Tariff-expired removal scheme eligibility date)',
-  None: 'None of the above dates apply',
-}
 const order = {
   SED: 1,
   LED: 2,
@@ -63,13 +42,13 @@ const determinateConfig = {
   items: [
     {
       value: 'SED',
-      text: fullStringLookup.SED,
+      text: FULL_STRING_LOOKUP.SED,
       checked: false,
       attributes: {},
     },
     {
       value: 'LED',
-      text: fullStringLookup.LED,
+      text: FULL_STRING_LOOKUP.LED,
       checked: false,
       attributes: {},
     },
@@ -77,91 +56,91 @@ const determinateConfig = {
       value: 'CRD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.CRD,
+      text: FULL_STRING_LOOKUP.CRD,
     },
     {
       attributes: {},
       checked: false,
       value: 'HDCED',
-      text: fullStringLookup.HDCED,
+      text: FULL_STRING_LOOKUP.HDCED,
     },
     {
       value: 'TUSED',
       attributes: {},
       checked: false,
-      text: fullStringLookup.TUSED,
+      text: FULL_STRING_LOOKUP.TUSED,
     },
     {
       value: 'PRRD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.PRRD,
+      text: FULL_STRING_LOOKUP.PRRD,
     },
     {
       value: 'PED',
       attributes: {},
       checked: false,
-      text: fullStringLookup.PED,
+      text: FULL_STRING_LOOKUP.PED,
     },
     {
       value: 'ROTL',
       checked: false,
       attributes: {},
-      text: fullStringLookup.ROTL,
+      text: FULL_STRING_LOOKUP.ROTL,
     },
     {
       value: 'ERSED',
       attributes: {},
       checked: false,
-      text: fullStringLookup.ERSED,
+      text: FULL_STRING_LOOKUP.ERSED,
     },
     {
       value: 'ARD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.ARD,
+      text: FULL_STRING_LOOKUP.ARD,
     },
     {
       value: 'HDCAD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.HDCAD,
+      text: FULL_STRING_LOOKUP.HDCAD,
     },
     {
       value: 'MTD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.MTD,
+      text: FULL_STRING_LOOKUP.MTD,
     },
     {
       value: 'ETD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.ETD,
+      text: FULL_STRING_LOOKUP.ETD,
     },
     {
       value: 'LTD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.LTD,
+      text: FULL_STRING_LOOKUP.LTD,
     },
     {
       value: 'APD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.APD,
+      text: FULL_STRING_LOOKUP.APD,
     },
     {
       value: 'NPD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.NPD,
+      text: FULL_STRING_LOOKUP.NPD,
     },
     {
       value: 'DPRRD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.DPRRD,
+      text: FULL_STRING_LOOKUP.DPRRD,
     },
   ],
 }
@@ -182,32 +161,32 @@ const indeterminateConfig = {
       value: 'Tariff',
       checked: false,
       attributes: {},
-      text: fullStringLookup.Tariff,
+      text: FULL_STRING_LOOKUP.Tariff,
     },
     {
       value: 'TERSED',
       attributes: {},
       checked: false,
-      text: fullStringLookup.TERSED,
+      text: FULL_STRING_LOOKUP.TERSED,
     },
     {
       value: 'ROTL',
       attributes: {},
       checked: false,
-      text: fullStringLookup.ROTL,
+      text: FULL_STRING_LOOKUP.ROTL,
     },
     {
       value: 'APD',
       attributes: {},
       checked: false,
-      text: fullStringLookup.APD,
+      text: FULL_STRING_LOOKUP.APD,
     },
     {
       divider: 'or',
     },
     {
       value: 'None',
-      text: fullStringLookup.None,
+      text: FULL_STRING_LOOKUP.None,
       attributes: {},
       checked: false,
       behaviour: 'exclusive',
@@ -220,7 +199,10 @@ const errorMessage = {
   },
 }
 export default class ManualEntryService {
-  constructor(private readonly manualEntryValidationService: ManualEntryValidationService) {}
+  constructor(
+    private readonly manualEntryValidationService: ManualEntryValidationService,
+    private readonly dateTypeConfigurationService: DateTypeConfigurationService
+  ) {}
 
   public verifySelectedDateType(
     req: Request,
@@ -276,29 +258,10 @@ export default class ManualEntryService {
   }
 
   public addManuallyCalculatedDateTypes(req: Request, nomsId: string): void {
-    const selectedDateTypes: string[] = Array.isArray(req.body.dateSelect) ? req.body.dateSelect : [req.body.dateSelect]
-    const dates = selectedDateTypes
-      .map((date: string) => {
-        if (date !== undefined) {
-          const existingDate = req.session.selectedManualEntryDates[nomsId].find(
-            (d: ManualEntrySelectedDate) => d !== undefined && d.dateType === date
-          )
-          if (existingDate) {
-            return {
-              dateType: date,
-              dateText: fullStringLookup[date],
-              date: existingDate.date,
-            } as ManualEntrySelectedDate
-          }
-          return {
-            dateType: date,
-            dateText: fullStringLookup[date],
-            date: undefined,
-          } as ManualEntrySelectedDate
-        }
-        return null
-      })
-      .filter(obj => obj !== null)
+    const dates = this.dateTypeConfigurationService.configure(
+      req.body.dateSelect,
+      req.session.selectedManualEntryDates[nomsId]
+    )
     // Do validation here
     req.session.selectedManualEntryDates[nomsId] = [...req.session.selectedManualEntryDates[nomsId], ...dates]
   }
@@ -455,7 +418,7 @@ export default class ManualEntryService {
     return req.session.selectedManualEntryDates[nomsId]
       .map((d: ManualEntrySelectedDate) => {
         const dateValue = this.dateString(d)
-        const text = fullStringLookup[d.dateType]
+        const text = FULL_STRING_LOOKUP[d.dateType]
         const items = this.getItems(nomsId, d, text)
         return {
           key: {
@@ -497,7 +460,7 @@ export default class ManualEntryService {
   }
 
   public fullStringLookup(dateType: string): string {
-    return fullStringLookup[dateType]
+    return FULL_STRING_LOOKUP[dateType]
   }
 
   public removeDate(req: Request, nomsId: string): number {
@@ -519,7 +482,7 @@ export default class ManualEntryService {
     )
     req.session.selectedManualEntryDates[nomsId].push({
       dateType: req.query.dateType,
-      dateText: fullStringLookup[<string>req.query.dateType],
+      dateText: FULL_STRING_LOOKUP[<string>req.query.dateType],
       date: undefined,
     } as ManualEntrySelectedDate)
     return date
