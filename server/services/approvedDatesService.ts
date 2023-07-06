@@ -1,6 +1,7 @@
 import { Request } from 'express'
-import { DateSelectConfiguration, FULL_STRING_LOOKUP } from './manualEntryService'
+import { DateSelectConfiguration } from './manualEntryService'
 import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
+import DateTypeConfigurationService, { FULL_STRING_LOOKUP } from './dateTypeConfigurationService'
 
 const approvedDatesConfig = {
   name: 'dateSelect',
@@ -42,6 +43,8 @@ const selectDatesError = {
   },
 }
 export default class ApprovedDatesService {
+  constructor(private readonly dateTypeConfigurationService: DateTypeConfigurationService) {}
+
   public getConfig(req: Request): DateSelectConfiguration {
     const config = approvedDatesConfig
     this.enrichConfiguration(config, req, req.params.nomsId)
@@ -72,29 +75,10 @@ export default class ApprovedDatesService {
       const error = true
       return { error, config }
     }
-    const selectedDateTypes: string[] = Array.isArray(req.body.dateSelect) ? req.body.dateSelect : [req.body.dateSelect]
-    const dates = selectedDateTypes
-      .map((date: string) => {
-        if (date !== undefined) {
-          const existingDate = req.session.selectedApprovedDates[req.params.nomsId].find(
-            (d: ManualEntrySelectedDate) => d !== undefined && d.dateType === date
-          )
-          if (existingDate) {
-            return {
-              dateType: date,
-              dateText: FULL_STRING_LOOKUP[date],
-              date: existingDate.date,
-            } as ManualEntrySelectedDate
-          }
-          return {
-            dateType: date,
-            dateText: FULL_STRING_LOOKUP[date],
-            date: undefined,
-          } as ManualEntrySelectedDate
-        }
-        return null
-      })
-      .filter(obj => obj !== null)
+    const dates = this.dateTypeConfigurationService.configure(
+      req.body.dateSelect,
+      req.session.selectedApprovedDates[req.params.nomsId]
+    )
     // Do validation here
     req.session.selectedApprovedDates[req.params.nomsId] = [
       ...req.session.selectedApprovedDates[req.params.nomsId],
