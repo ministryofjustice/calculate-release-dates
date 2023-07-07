@@ -61,11 +61,8 @@
                 {% endif %}
                 {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
 
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds-from-desktop">
-                        {% include "../partials/checkInformation/calculateDates.njk" %}
-                    </div>
-                </div>
+                {% include "../partials/checkInformation/calculateDates.njk" %}
+
             </form>
         </div>
     </div>

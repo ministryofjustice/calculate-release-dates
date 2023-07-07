@@ -43,12 +43,7 @@
             <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
                 {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
-
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds-from-desktop">
-                        {% include "../partials/checkInformation/calculateDatesUnsupported.njk" %}
-                    </div>
-                </div>
+                {% include "../partials/checkInformation/calculateDatesUnsupported.njk" %}
             </form>
         </div>
     </div>
