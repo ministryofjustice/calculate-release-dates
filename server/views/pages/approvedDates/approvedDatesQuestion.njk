@@ -1,0 +1,97 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - approved dates" %}
+{% set pageId = "approved-dates-question" %}
+
+{% block aside %}
+    {% set prisonerDetail = prisonerDetail %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Check sentence and offence information",
+            href: "/calculation/" + prisonerDetail.offenderNo + "/check-information"
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {% if error %}
+                <p>
+                    {{ govukRadios({
+                        name: "approvedDatesQuestion",
+                        fieldset: {
+                            legend: {
+                                text: "Do you need to enter APD, HDCAD or ROTL dates for " + prisonerDetail.firstName | title + " " + prisonerDetail.lastName | title + "?",
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--l"
+                            }
+                        },
+                        errorMessage: {
+                            text: "Please select either 'Yes' or 'No, save the calculation to NOMIS'"
+                        },
+                        items: [
+                            {
+                                value: "yes",
+                                text: "Yes"
+                            },
+                            {
+                                value: "no",
+                                text: "No, save the calculation to NOMIS"
+                            }
+                        ]
+                    }) }}
+                    {% else %}
+                        {{ govukRadios({
+                            name: "approvedDatesQuestion",
+                            fieldset: {
+                                legend: {
+                                    text: "Do you need to enter APD, HDCAD or ROTL dates for " + prisonerDetail.firstName | title + " " + prisonerDetail.lastName | title + "?",
+                                    isPageHeading: true,
+                                    classes: "govuk-fieldset__legend--l"
+                                }
+                            },
+                            items: [
+                                {
+                                    value: "yes",
+                                    text: "Yes"
+                                },
+                                {
+                                    value: "no",
+                                    text: "No, save the calculation to NOMIS"
+                                }
+                            ]
+                        }) }}
+                    {% endif %}
+                </p>
+                <p>{{ govukDetails({
+                        summaryText: "More information",
+                        html: "<p class=\"govuk-body\">By selecting 'yes' to enter APD, HDCAD or ROTL dates, you'll need to select the dates you need to enter. The dates you enter will be saved to NOMIS with the calculated dates.</p><p class=\"govuk-body\">Otherwise, the calculation will be saved to NOMIS with no manually entered dates.</p>"
+                    }) }}
+                </p>
+                <p>
+                    {{ govukButton({
+                        text: "Continue",
+                        type: submit,
+                        value: 'approved-dates-question',
+                        preventDoubleClick: true,
+                        attributes: {  'data-qa': 'approved-dates-question' }
+                    }) }}
+                </p>
+            </form>
+        </div>
+    </div>
+{% endblock %}

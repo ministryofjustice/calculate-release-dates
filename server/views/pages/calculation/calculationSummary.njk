@@ -42,16 +42,6 @@
             {% include "../partials/calculationSummaryDates.njk" %}
         </div>
     </div>
-    {% if featureToggles.approvedDates %}
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds  govuk-!-margin-bottom-5">
-                <a class="larger-link"
-                   href={{ "/calculation/" + model.prisonerDetail.offenderNo + "/" + model.calculationRequestId + "/select-approved-dates" }}>Enter ROTL,
-                    HDCAD or APD dates
-                </a>
-            </div>
-        </div>
-    {% endif %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
@@ -63,24 +53,35 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h3 class="govuk-heading-m govuk-!-margin-top-9">Confirm and submit to NOMIS</h3>
-            <p class="govuk-body">By submitting this calculation you are confirming that, to the best of your knowledge,
-                it is correct. The calculation will be saved in NOMIS.</p>
-            <form method="post">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+            {% if featureToggles.approvedDates %}
+                <h3 class="govuk-heading-m govuk-!-margin-top-9">Before you continue</h3>
+                <p class="govuk-body">By continuing, you are confirming, to the best of your knowledge,
+                    that this calculation is correct. The calculation will be saved in NOMIS.</p>
                 {{ govukButton({
-                    text: "Confirm and submit",
-                    type: submit,
-                    value: 'confirm-and-submit',
+                    text: "Confirm and continue",
+                    value: 'approved-dates-question',
                     preventDoubleClick: true,
+                    href: "/calculation/" + model.prisonerDetail.offenderNo + "/" + model.calculationRequestId + "/approved-dates-question",
                     attributes: { 'data-qa': 'submit-to-nomis' }
                 }) }}
-            </form>
-            <p class="govuk-body govuk-!-font-size-16">
-                <a class="govuk-link" href={{ "/calculation/" + model.prisonerDetail.offenderNo +
-                "/check-information" }}>Cancel calculation</a>
-            </p>
-
+            {% else %}
+                <p class="govuk-body">By submitting this calculation you are confirming that, to the best of your knowledge,
+                    it is correct. The calculation will be saved in NOMIS.</p>
+                <form method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                    {{ govukButton({
+                        text: "Confirm and submit",
+                        type: submit,
+                        value: 'confirm-and-submit',
+                        preventDoubleClick: true,
+                        attributes: { 'data-qa': 'submit-to-nomis' }
+                    }) }}
+                </form>
+                <p class="govuk-body govuk-!-font-size-16">
+                    <a class="govuk-link" href={{ "/calculation/" + model.prisonerDetail.offenderNo +
+                    "/check-information" }}>Cancel calculation</a>
+                </p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
