@@ -8,6 +8,28 @@ export default class ApprovedDatesRoutes {
     private readonly approvedDatesService: ApprovedDatesService
   ) {}
 
+  public askApprovedDatesQuestion: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId, calculationRequestId } = req.params
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    return res.render('pages/approvedDates/approvedDatesQuestion', { prisonerDetail, calculationRequestId })
+  }
+
+  public submitApprovedDatesQuestion: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId, calculationRequestId } = req.params
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const hasApprovedDates = req.body.approvedDatesQuestion
+    if (hasApprovedDates === 'yes') {
+      return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/select-approved-dates`)
+    }
+    if (hasApprovedDates === 'no') {
+      return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/store`)
+    }
+    const error = !hasApprovedDates
+    return res.render('pages/approvedDates/approvedDatesQuestion', { prisonerDetail, calculationRequestId, error })
+  }
+
   public selectedApprovedDateTypes: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId, calculationRequestId } = req.params

@@ -113,6 +113,15 @@ export default function Index({
 
   const approvedDatesRoutes = () => {
     get(
+      '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
+      approvedDatesAccessRoutes.askApprovedDatesQuestion
+    )
+    post(
+      '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
+      approvedDatesAccessRoutes.submitApprovedDatesQuestion
+    )
+    get('/calculation/:nomsId/:calculationRequestId/store', calculationAccessRoutes.submitCalculationSummary)
+    get(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
       approvedDatesAccessRoutes.selectedApprovedDateTypes
     )
