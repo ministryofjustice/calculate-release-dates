@@ -12,6 +12,7 @@ import BulkLoadService from './bulkLoadService'
 import ManualEntryValidationService from './manualEntryValidationService'
 import ApprovedDatesService from './approvedDatesService'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
+import DateValidationService from './dateValidationService'
 
 export const services = () => {
   const { hmppsAuthClient } = dataAccess()
@@ -28,7 +29,12 @@ export const services = () => {
   const manualCalculationService = new ManualCalculationService()
   const manualEntryValidationService = new ManualEntryValidationService()
   const dateTypeConfigurationService = new DateTypeConfigurationService()
-  const manualEntryService = new ManualEntryService(manualEntryValidationService, dateTypeConfigurationService)
+  const dateValidationService = new DateValidationService()
+  const manualEntryService = new ManualEntryService(
+    manualEntryValidationService,
+    dateTypeConfigurationService,
+    dateValidationService
+  )
   const bulkLoadService = new BulkLoadService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
   return {
