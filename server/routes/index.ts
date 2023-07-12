@@ -11,6 +11,7 @@ import CalculationQuestionRoutes from './calculationQuestionRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
+import DateValidationService from '../services/dateValidationService'
 
 export default function Index({
   prisonerService,
@@ -77,7 +78,13 @@ export default function Index({
     manualEntryService
   )
 
-  const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService, approvedDatesService)
+  const dateValidationService = new DateValidationService()
+  const approvedDatesAccessRoutes = new ApprovedDatesRoutes(
+    prisonerService,
+    approvedDatesService,
+    manualEntryService,
+    dateValidationService
+  )
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
@@ -130,6 +137,8 @@ export default function Index({
       approvedDatesAccessRoutes.submitApprovedDateTypes
     )
     get('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.loadSubmitDates)
+    post('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.storeSubmitDates)
+    get('/calculation/:nomsId/:calculationRequestId/confirmation', calculationAccessRoutes.calculationSummary)
   }
   const calculationRoutes = () => {
     get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)

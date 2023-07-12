@@ -109,7 +109,7 @@ export default class ManualEntryRoutes {
     if (year && month && day) {
       previousDate = { year, month, day } as SubmittedDate
     }
-    const date = this.manualEntryService.getNextDateToEnter(req, nomsId)
+    const date = this.manualEntryService.getNextDateToEnter(req.session.selectedManualEntryDates[nomsId])
     if (date && date.dateType !== 'None') {
       return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, previousDate })
     }
@@ -128,13 +128,16 @@ export default class ManualEntryRoutes {
     if (unsupportedSentenceOrCalculationMessages.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
-    const storeDateResponse = this.manualEntryService.storeDate(req, nomsId)
+    const storeDateResponse = this.manualEntryService.storeDate(req.session.selectedManualEntryDates[nomsId], req.body)
     if (!storeDateResponse.success && storeDateResponse.message && !storeDateResponse.isNone) {
       const { date, message, enteredDate } = storeDateResponse
       const error = message
       return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, error, enteredDate })
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
+      req.session.selectedManualEntryDates[nomsId].find(
+        (d: ManualEntrySelectedDate) => d.dateType === storeDateResponse.date.dateType
+      ).date = storeDateResponse.date.date
       return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
     }
     if (!storeDateResponse.success && storeDateResponse.isNone) {

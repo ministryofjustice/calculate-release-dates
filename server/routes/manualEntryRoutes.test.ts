@@ -9,6 +9,7 @@ import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
 import ManualEntryValidationService from '../services/manualEntryValidationService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
+import DateValidationService from '../services/dateValidationService'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -19,7 +20,12 @@ const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.
 const manualCalculationService = new ManualCalculationService() as jest.Mocked<ManualCalculationService>
 const manualEntryValidationService = new ManualEntryValidationService()
 const dateTypeConfigurationService = new DateTypeConfigurationService()
-const manualEntryService = new ManualEntryService(manualEntryValidationService, dateTypeConfigurationService)
+const dateValidationService = new DateValidationService()
+const manualEntryService = new ManualEntryService(
+  manualEntryValidationService,
+  dateTypeConfigurationService,
+  dateValidationService
+)
 let app: Express
 
 const stubbedEmptyMessages: ValidationMessage[] = []
