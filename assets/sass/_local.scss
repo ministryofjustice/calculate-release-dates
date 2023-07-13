@@ -149,3 +149,13 @@ div.govuk-width-container {
   @extend .govuk-link;
   font-size: 1.3em !important;
 }
+
+.red-link {
+  @extend .govuk-link;
+  color: #d4351c !important;
+}
+
+.remove-link {
+  @extend .red-link;
+  margin-left: 15px;
+}
