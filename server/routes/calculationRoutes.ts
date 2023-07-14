@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express'
+import { DateTime } from 'luxon'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
@@ -82,7 +83,8 @@ export default class CalculationRoutes {
   private indexBy(dates: ManualEntrySelectedDate[]) {
     const result = {}
     dates.forEach(date => {
-      result[date.dateType] = date.date
+      const dateString = `${date.date.year}-${date.date.month}-${date.date.day}`
+      result[date.dateType] = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
     })
     return result
   }

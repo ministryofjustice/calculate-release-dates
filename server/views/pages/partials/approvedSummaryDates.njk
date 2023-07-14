@@ -3,7 +3,7 @@
         <dt class="custom-summary-list__key release-dates-key govuk-!-font-size-24">{{ heading }}
             <p class="govuk-hint">{{ description }}</p>
         </dt>
-        <dd class="govuk-summary-list__value" data-qa={{ dataQa }}>{{ releaseDate | date('dddd, DD MMMM YYYY') }}
+        <dd class="govuk-summary-list__value" data-qa={{ dataQa }}>{{ releaseDate }}
             {% for extra in extras %}
                 {{ extra | safe}}
             {% endfor %}</dd>
