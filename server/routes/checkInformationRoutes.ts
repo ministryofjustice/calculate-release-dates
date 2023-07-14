@@ -31,6 +31,7 @@ export default class CheckInformationRoutes {
         return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
       }
     }
+
     const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     const aQuestionIsRequiredOrHasBeenAnswered =
@@ -42,7 +43,12 @@ export default class CheckInformationRoutes {
       this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
       return res.redirect(`/calculation/${nomsId}/alternative-release-arrangements`)
     }
-
+    if (config.featureToggles.approvedDates) {
+      if (!req.session.selectedApprovedDates) {
+        req.session.selectedApprovedDates = {}
+      }
+      req.session.selectedApprovedDates[nomsId] = []
+    }
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
       username,

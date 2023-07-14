@@ -52,7 +52,14 @@ export default class CalculationRoutes {
     }
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
     const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token)
-
+    let approvedDates
+    if (
+      req.session.selectedApprovedDates &&
+      req.session.selectedApprovedDates[nomsId] &&
+      req.session.selectedApprovedDates[nomsId].length > 0
+    ) {
+      approvedDates = this.indexBy(req.session.selectedApprovedDates[nomsId])
+    }
     const model = new CalculationSummaryViewModel(
       releaseDates.dates,
       weekendAdjustments,
@@ -63,10 +70,21 @@ export default class CalculationRoutes {
       false,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments,
-      validationErrors
+      validationErrors,
+      false,
+      false,
+      approvedDates
     )
 
     res.render('pages/calculation/calculationSummary', { model })
+  }
+
+  private indexBy(dates: ManualEntrySelectedDate[]) {
+    const result = {}
+    dates.forEach(date => {
+      result[date.dateType] = date.date
+    })
+    return result
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {

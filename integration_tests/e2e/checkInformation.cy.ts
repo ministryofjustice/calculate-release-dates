@@ -10,6 +10,7 @@ context('Check nomis information', () => {
     cy.task('stubGetSentenceAdjustments')
     cy.task('stubGetUserCaseloads')
     cy.task('stubEmptyCalculationQuestions')
+    cy.task('stubSupportedValidation')
   })
 
   it('Visit check nomis information page', () => {

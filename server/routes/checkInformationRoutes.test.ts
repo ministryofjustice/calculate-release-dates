@@ -316,6 +316,7 @@ beforeEach(() => {
     entryPointService,
     userInputService,
   })
+  config.featureToggles.approvedDates = true
 })
 
 afterEach(() => {

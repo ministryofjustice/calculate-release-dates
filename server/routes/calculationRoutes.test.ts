@@ -310,10 +310,12 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('CRD (Conditional release date)')
+        expect(res.text).toContain('CRD')
+        expect(res.text).toContain('Conditional release date')
         expect(res.text).toContain('Wednesday, 03 February 2021')
         expect(res.text).toContain('Tuesday, 02 February 2021 when adjusted to a working day')
-        expect(res.text).toContain('HDCED (Home detention curfew eligibility date)')
+        expect(res.text).toContain('HDCED')
+        expect(res.text).toContain('Home detention curfew eligibility date')
         expect(res.text).toContain('Sunday, 03 October 2021')
         expect(res.text).toContain('Tuesday, 05 October 2021 when adjusted to a working day')
         // expect(res.text).not.toContain('SLED')
@@ -331,7 +333,8 @@ describe('Calculation routes tests', () => {
           `Some release dates and details are not included because they are not relevant to this person's sentences`
         )
         expect(res.text).toContain(`Monday, 03 February 2020`)
-        expect(res.text).toContain(`ERSED (Early removal scheme eligibility date)`)
+        expect(res.text).toContain(`ERSED`)
+        expect(res.text).toContain('Early removal scheme eligibility date')
       })
   })
 
