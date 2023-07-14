@@ -1,13 +1,9 @@
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import PrisonerService from '../services/prisonerService'
 import ApprovedDatesService from '../services/approvedDatesService'
 import { ManualEntrySelectedDate, SubmittedDate } from '../models/ManualEntrySelectedDate'
 import ManualEntryService from '../services/manualEntryService'
-import DateValidationService, {
-  DateInputItem,
-  EnteredDate,
-  StorageResponseModel,
-} from '../services/dateValidationService'
+import DateValidationService, { EnteredDate } from '../services/dateValidationService'
 
 export default class ApprovedDatesRoutes {
   constructor(
@@ -112,62 +108,5 @@ export default class ApprovedDatesRoutes {
       return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/submit-dates`)
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
-  }
-
-  private storeSubmittedDate(req: Request, enteredDate: EnteredDate, nomsId: string) {
-    const allItems: DateInputItem[] = [
-      {
-        classes: 'govuk-input--width-2',
-        name: 'day',
-        value: enteredDate.day,
-      } as DateInputItem,
-      {
-        classes: 'govuk-input--width-2',
-        name: 'month',
-        value: enteredDate.month,
-      },
-      {
-        classes: 'govuk-input--width-4',
-        name: 'year',
-        value: enteredDate.year,
-      },
-    ]
-    if (enteredDate.day === '' && enteredDate.month === '' && enteredDate.year === '') {
-      const message = 'The date entered must include a day, month and a year.'
-      return this.dateValidationService.allErrored(
-        req.session.selectedApprovedDates[nomsId],
-        enteredDate,
-        allItems,
-        message
-      )
-    }
-    const someErrors = this.dateValidationService.singleItemsErrored(
-      req.session.selectedApprovedDates[nomsId],
-      allItems,
-      enteredDate
-    )
-    if (someErrors) {
-      return someErrors
-    }
-    if (!this.dateValidationService.isDateValid(enteredDate)) {
-      return this.dateValidationService.allErrored(
-        req.session.selectedApprovedDates[nomsId],
-        enteredDate,
-        allItems,
-        'The date entered must be a real date'
-      )
-    }
-    const notWithinOneHundredYears = this.dateValidationService.notWithinOneHundredYears(
-      req.session.selectedApprovedDates[nomsId],
-      enteredDate,
-      allItems
-    )
-    if (notWithinOneHundredYears) {
-      return notWithinOneHundredYears
-    }
-    req.session.selectedApprovedDates[nomsId].find(
-      (d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType
-    ).date = enteredDate
-    return { success: true, isNone: false } as StorageResponseModel
   }
 }
