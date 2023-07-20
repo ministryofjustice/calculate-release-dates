@@ -2,10 +2,10 @@ import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import ManualCalculationService from '../services/manualCalculationService'
-import { ManualEntrySelectedDate, SubmittedDate } from '../models/ManualEntrySelectedDate'
 import ManualEntryService from '../services/manualEntryService'
 import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import { ManualEntryDate, SubmittedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -136,7 +136,7 @@ export default class ManualEntryRoutes {
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedManualEntryDates[nomsId].find(
-        (d: ManualEntrySelectedDate) => d.dateType === storeDateResponse.date.dateType
+        (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType
       ).date = storeDateResponse.date.date
       return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
     }
@@ -169,9 +169,7 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
     const dateToRemove: string = <string>req.query.dateType
-    if (
-      req.session.selectedManualEntryDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)
-    ) {
+    if (req.session.selectedManualEntryDates[nomsId].some((d: ManualEntryDate) => d.dateType === dateToRemove)) {
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
       return res.render('pages/manualEntry/removeDate', { prisonerDetail, dateToRemove, fullDateName })
     }

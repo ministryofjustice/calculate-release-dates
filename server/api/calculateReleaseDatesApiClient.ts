@@ -3,10 +3,11 @@ import RestClient from '../data/restClient'
 import {
   BookingCalculation,
   CalculationBreakdown,
-  CalculationFragments,
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
+  ManualEntryDate,
+  SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -16,7 +17,6 @@ import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
-import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
 import ManualCalculationResponse from '../models/ManualCalculationResponse'
 
 export default class CalculateReleaseDatesApiClient {
@@ -62,7 +62,7 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<CalculationBreakdown>
   }
 
-  confirmCalculation(calculationRequestId: number, body: CalculationFragments): Promise<BookingCalculation> {
+  confirmCalculation(calculationRequestId: number, body: SubmitCalculationRequest): Promise<BookingCalculation> {
     return this.restClient.post({
       path: `/calculation/confirm/${calculationRequestId}`,
       data: body,
@@ -136,7 +136,7 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<boolean>
   }
 
-  storeManualCalculation(nomsId: string, selectedManualEntryDates: ManualEntrySelectedDate[]) {
+  storeManualCalculation(nomsId: string, selectedManualEntryDates: ManualEntryDate[]) {
     return this.restClient.post({
       path: `/manual-calculation/${nomsId}`,
       data: { selectedManualEntryDates },

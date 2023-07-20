@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
+import { ManualEntryDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class DateValidationService {
   public isDateValid(enteredDate: EnteredDate): boolean {
@@ -7,25 +7,16 @@ export default class DateValidationService {
     return dateAsDate.isValid
   }
 
-  public allErrored(
-    dates: ManualEntrySelectedDate[],
-    enteredDate: EnteredDate,
-    allItems: DateInputItem[],
-    message: string
-  ) {
-    const date = dates.find((d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType)
+  public allErrored(dates: ManualEntryDate[], enteredDate: EnteredDate, allItems: DateInputItem[], message: string) {
+    const date = dates.find((d: ManualEntryDate) => d.dateType === enteredDate.dateType)
     const items = allItems.map(it => {
       return { ...it, classes: `${it.classes} govuk-input--error` }
     })
     return { message, date, enteredDate, success: false, items, isNone: false } as StorageResponseModel
   }
 
-  public notWithinOneHundredYears(
-    dates: ManualEntrySelectedDate[],
-    enteredDate: EnteredDate,
-    allItems: DateInputItem[]
-  ) {
-    const date = dates.find((d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType)
+  public notWithinOneHundredYears(dates: ManualEntryDate[], enteredDate: EnteredDate, allItems: DateInputItem[]) {
+    const date = dates.find((d: ManualEntryDate) => d.dateType === enteredDate.dateType)
     const dateAsDate = DateTime.fromFormat(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`, 'yyyy-M-d')
     const now = DateTime.now()
     const oneHundredYearsBefore = now.minus({ years: 100 })
@@ -43,7 +34,7 @@ export default class DateValidationService {
   }
 
   public singleItemsErrored(
-    dates: ManualEntrySelectedDate[],
+    dates: ManualEntryDate[],
     allItems: DateInputItem[],
     enteredDate: EnteredDate
   ): StorageResponseModel {
@@ -76,7 +67,7 @@ export default class DateValidationService {
       })
       .filter(it => it !== undefined)
     if (i > 0) {
-      const date = dates.find((d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType)
+      const date = dates.find((d: ManualEntryDate) => d.dateType === enteredDate.dateType)
       message += '.'
       return { message, date, enteredDate, success: false, items, isNone: false } as StorageResponseModel
     }
@@ -88,7 +79,7 @@ export interface StorageResponseModel {
   success: boolean
   isNone: boolean
   message: string
-  date: ManualEntrySelectedDate
+  date: ManualEntryDate
   enteredDate: EnteredDate
   items: DateInputItem[]
 }

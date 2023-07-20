@@ -150,7 +150,10 @@ describe('Calculate release dates service tests', () => {
     fakeApi.post(`/calculation/confirm/${calculationRequestId}`).reply(200, calculationResults)
 
     const result = await calculateReleaseDatesService.confirmCalculation('user', calculationRequestId, token, {
-      breakdownHtml: '',
+      calculationFragments: {
+        breakdownHtml: '',
+      },
+      approvedDates: [],
     })
 
     expect(result).toEqual(calculationResults)

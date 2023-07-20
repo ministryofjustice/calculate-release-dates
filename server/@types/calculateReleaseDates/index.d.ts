@@ -331,6 +331,20 @@ export interface components {
     CalculationFragments: {
       breakdownHtml: string
     }
+    SubmittedDate: {
+      day: string
+      month: string
+      year: string
+    }
+    ManualEntryDate: {
+      dateType: string
+      dateText: string
+      date?: components['schemas']['SubmittedDate']
+    }
+    SubmitCalculationRequest: {
+      calculationFragments: components['schemas']['CalculationFragments']
+      approvedDates: components['schemas']['ManualEntryDate'][]
+    }
     CalculationResults: {
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
       validationMessages: components['schemas']['ValidationMessage'][]

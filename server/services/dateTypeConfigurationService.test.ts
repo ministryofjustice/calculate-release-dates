@@ -1,5 +1,5 @@
 import DateTypeConfigurationService from './dateTypeConfigurationService'
-import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
+import { ManualEntryDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 const dateTypeConfigurationService = new DateTypeConfigurationService()
 describe('dateTypeConfigurationService', () => {
@@ -11,7 +11,7 @@ describe('dateTypeConfigurationService', () => {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
           date: { day: '03', month: '03', year: '2017' },
-        } as ManualEntrySelectedDate,
+        } as ManualEntryDate,
       ]
     )
     expect(configured).toEqual([
@@ -19,7 +19,7 @@ describe('dateTypeConfigurationService', () => {
         dateType: 'CRD',
         dateText: 'CRD (Conditional release date)',
         date: { day: '03', month: '03', year: '2017' },
-      } as ManualEntrySelectedDate,
+      } as ManualEntryDate,
     ])
   })
   it('adds a new date type with an undefined date if not in list', () => {
@@ -29,7 +29,7 @@ describe('dateTypeConfigurationService', () => {
         dateType: 'CRD',
         dateText: 'CRD (Conditional release date)',
         date: undefined,
-      } as ManualEntrySelectedDate,
+      } as ManualEntryDate,
     ])
   })
 })

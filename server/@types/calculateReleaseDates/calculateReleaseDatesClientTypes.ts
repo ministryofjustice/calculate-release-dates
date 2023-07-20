@@ -12,3 +12,6 @@ export type CalculationSentenceQuestion = components['schemas']['CalculationSent
 export type CalculationUserInputs = components['schemas']['CalculationUserInputs']
 export type CalculationSentenceUserInput = components['schemas']['CalculationSentenceUserInput']
 export type CalculationResults = components['schemas']['CalculationResults']
+export type SubmittedDate = components['schemas']['SubmittedDate']
+export type ManualEntryDate = components['schemas']['ManualEntryDate']
+export type SubmitCalculationRequest = components['schemas']['SubmitCalculationRequest']
