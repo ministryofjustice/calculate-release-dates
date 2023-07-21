@@ -10,7 +10,7 @@ import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import UserInputService from '../services/userInputService'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
-import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
+import { ManualEntryDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class CalculationRoutes {
   constructor(
@@ -28,7 +28,7 @@ export default class CalculationRoutes {
     if (
       req.session.selectedApprovedDates &&
       req.session.selectedApprovedDates[nomsId] &&
-      req.session.selectedApprovedDates[nomsId].some((date: ManualEntrySelectedDate) => date.date === undefined)
+      req.session.selectedApprovedDates[nomsId].some((date: ManualEntryDate) => date.date === undefined)
     ) {
       req.session.selectedApprovedDates[nomsId] = []
     }
@@ -80,7 +80,7 @@ export default class CalculationRoutes {
     res.render('pages/calculation/calculationSummary', { model })
   }
 
-  private indexBy(dates: ManualEntrySelectedDate[]) {
+  private indexBy(dates: ManualEntryDate[]) {
     const result = {}
     dates.forEach(date => {
       const dateString = `${date.date.year}-${date.date.month}-${date.date.day}`
@@ -129,13 +129,20 @@ export default class CalculationRoutes {
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const breakdownHtml = await this.getBreakdownFragment(calculationRequestId, token)
+    const approvedDates =
+      req.session.selectedApprovedDates != null && req.session.selectedApprovedDates[nomsId] != null
+        ? req.session.selectedApprovedDates[nomsId]
+        : []
     try {
       const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
         username,
         calculationRequestId,
         token,
         {
-          breakdownHtml,
+          calculationFragments: {
+            breakdownHtml,
+          },
+          approvedDates,
         }
       )
       res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)

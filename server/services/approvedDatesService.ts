@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import { DateSelectConfiguration } from './manualEntryService'
-import { ManualEntrySelectedDate } from '../models/ManualEntrySelectedDate'
 import DateTypeConfigurationService, { FULL_STRING_LOOKUP } from './dateTypeConfigurationService'
+import { ManualEntryDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 const approvedDatesConfig = {
   name: 'dateSelect',
@@ -56,7 +56,7 @@ export default class ApprovedDatesService {
     for (const item of mergedConfig.items) {
       if (
         req.session.selectedApprovedDates[nomsId] &&
-        req.session.selectedApprovedDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === item.value)
+        req.session.selectedApprovedDates[nomsId].some((d: ManualEntryDate) => d.dateType === item.value)
       ) {
         item.checked = true
         item.attributes = {

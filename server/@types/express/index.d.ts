@@ -1,5 +1,4 @@
-import { CalculationUserInputs } from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { ManualEntrySelectedDate } from '../../models/ManualEntrySelectedDate'
+import { CalculationUserInputs, ManualEntryDate } from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default {}
 
@@ -9,8 +8,8 @@ declare module 'express-session' {
     returnTo: string
     nowInMinutes: number
     userInputs?: { string?: CalculationUserInputs }
-    selectedManualEntryDates?: { string?: ManualEntrySelectedDate[] }
-    selectedApprovedDates?: { string?: ManualEntrySelectedDate[] }
+    selectedManualEntryDates?: { string?: ManualEntryDate[] }
+    selectedApprovedDates?: { string?: ManualEntryDate[] }
   }
 }
 

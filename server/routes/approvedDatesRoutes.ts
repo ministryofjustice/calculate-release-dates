@@ -1,9 +1,9 @@
 import { RequestHandler } from 'express'
 import PrisonerService from '../services/prisonerService'
 import ApprovedDatesService from '../services/approvedDatesService'
-import { ManualEntrySelectedDate, SubmittedDate } from '../models/ManualEntrySelectedDate'
 import ManualEntryService from '../services/manualEntryService'
 import DateValidationService, { EnteredDate } from '../services/dateValidationService'
+import { ManualEntryDate, SubmittedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ApprovedDatesRoutes {
   constructor(
@@ -103,7 +103,7 @@ export default class ApprovedDatesRoutes {
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedApprovedDates[nomsId].find(
-        (d: ManualEntrySelectedDate) => d.dateType === storeDateResponse.date.dateType
+        (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType
       ).date = storeDateResponse.date.date
       return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/submit-dates`)
     }

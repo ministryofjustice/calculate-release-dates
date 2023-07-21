@@ -2,11 +2,11 @@ import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClien
 import {
   BookingCalculation,
   CalculationBreakdown,
-  CalculationFragments,
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
   ReleaseDateCalculationBreakdown,
+  SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -282,7 +282,7 @@ export default class CalculateReleaseDatesService {
     username: string,
     calculationRequestId: number,
     token: string,
-    body: CalculationFragments
+    body: SubmitCalculationRequest
   ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).confirmCalculation(calculationRequestId, body)
   }
