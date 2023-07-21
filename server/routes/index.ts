@@ -139,6 +139,7 @@ export default function Index({
     get('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.loadSubmitDates)
     post('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.storeSubmitDates)
     get('/calculation/:nomsId/:calculationRequestId/confirmation', calculationAccessRoutes.calculationSummary)
+    post('/calculation/:nomsId/:calculationRequestId/confirmation', calculationAccessRoutes.submitCalculationSummary)
   }
   const calculationRoutes = () => {
     get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
