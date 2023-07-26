@@ -109,4 +109,12 @@ export default class ApprovedDatesRoutes {
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
   }
+
+  public loadChangeDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, calculationRequestId } = req.params
+    const { date } = this.approvedDatesService.changeDate(req, nomsId)
+    return res.redirect(
+      `/calculation/${nomsId}/${calculationRequestId}/submit-dates?year=${date.year}&month=${date.month}&day=${date.day}`
+    )
+  }
 }
