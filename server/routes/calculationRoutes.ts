@@ -189,12 +189,17 @@ export default class CalculationRoutes {
     if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
       throw FullPageError.notFoundError()
     }
+    const hasApprovedDates =
+      req.session.selectedApprovedDates != null &&
+      req.session.selectedApprovedDates[nomsId] != null &&
+      req.session.selectedApprovedDates[nomsId].length > 0
     this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
     res.render('pages/calculation/calculationComplete', {
       prisonerDetail,
       calculationRequestId,
       noDates,
       manual,
+      hasApprovedDates,
     })
   }
 
