@@ -8,6 +8,7 @@ import PrisonerSearchPage from '../pages/prisonerSearch'
 import SelectOffencesPage from '../pages/selectOffences'
 import ViewCalculationSummary from '../pages/viewCalculationSummary'
 import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
+import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
 
 context('End to end happy path of user journey', () => {
   beforeEach(() => {
@@ -60,6 +61,10 @@ context('End to end happy path of user journey', () => {
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
     calculationSummaryPage.submitToNomisButton().click()
 
+    const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
+    approvedDatesQuestionPage.no().click()
+    approvedDatesQuestionPage.continue().click()
+
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
     calculationCompletePage
@@ -87,6 +92,10 @@ context('End to end happy path of user journey', () => {
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
     calculationSummaryPage.submitToNomisButton().click()
+
+    const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
+    approvedDatesQuestionPage.no().click()
+    approvedDatesQuestionPage.continue().click()
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 

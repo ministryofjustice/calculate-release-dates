@@ -1,6 +1,7 @@
 import CalculationSummaryPage from '../pages/calculationSummary'
 import ErrorPage from '../pages/error'
 import Page from '../pages/page'
+import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
 
 context('Calculation summary', () => {
   beforeEach(() => {
@@ -66,8 +67,9 @@ context('Calculation summary', () => {
 
   it('Error when NOMIS data has changed', () => {
     cy.signIn()
-    const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '98')
-    calculationSummaryPage.submitToNomisButton().click()
+    const approvedDatesQuestionPage = ApprovedDatesQuestionPage.goTo('A1234AB', '98')
+    approvedDatesQuestionPage.no().click()
+    approvedDatesQuestionPage.continue().click()
     const redirectedView = CalculationSummaryPage.verifyOnPage(CalculationSummaryPage)
     redirectedView
       .errorSummary()
@@ -79,8 +81,9 @@ context('Calculation summary', () => {
   })
   it('Error when server error', () => {
     cy.signIn()
-    const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '99')
-    calculationSummaryPage.submitToNomisButton().click()
+    const approvedDatesQuestionPage = ApprovedDatesQuestionPage.goTo('A1234AB', '99')
+    approvedDatesQuestionPage.no().click()
+    approvedDatesQuestionPage.continue().click()
     const redirectedView = CalculationSummaryPage.verifyOnPage(CalculationSummaryPage)
     redirectedView.errorSummary().should('contain.text', 'The calculation could not be saved in NOMIS.')
   })
