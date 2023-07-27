@@ -102,6 +102,15 @@ export default class ApprovedDatesService {
     } as ManualEntryDate)
     return date
   }
+
+  public removeDate(req: Request, nomsId: string) {
+    const dateToRemove = req.query.dateType
+    if (req.body['remove-date'] === 'yes') {
+      req.session.selectedApprovedDates[nomsId] = req.session.selectedApprovedDates[nomsId].filter(
+        (d: ManualEntryDate) => d.dateType !== dateToRemove
+      )
+    }
+  }
 }
 
 export interface SubmitApprovedDateTypesResponse {

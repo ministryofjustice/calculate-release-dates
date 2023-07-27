@@ -117,4 +117,30 @@ export default class ApprovedDatesRoutes {
       `/calculation/${nomsId}/${calculationRequestId}/submit-dates?year=${date.year}&month=${date.month}&day=${date.day}`
     )
   }
+
+  public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId, calculationRequestId } = req.params
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const dateToRemove: string = <string>req.query.dateType
+    if (req.session.selectedApprovedDates[nomsId].some((d: ManualEntryDate) => d.dateType === dateToRemove)) {
+      const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+      return res.render('pages/approvedDates/removeDate', { prisonerDetail, dateToRemove, fullDateName })
+    }
+    return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
+  }
+
+  public submitRemoveDate: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId, calculationRequestId } = req.params
+    const dateToRemove: string = <string>req.query.dateType
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+    if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
+      const error = true
+      return res.render('pages/approvedDate/removeDate', { prisonerDetail, dateToRemove, fullDateName, error })
+    }
+    this.approvedDatesService.removeDate(req, nomsId)
+    return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
+  }
 }
