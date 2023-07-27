@@ -8,7 +8,7 @@
                 {{ extra | safe}}
             {% endfor %}</dd>
         <dd class="govuk-summary-list__action">
-            <a class="govuk-link" href="#">Change <span class="govuk-visually-hidden"> {{ heading }}</span></a>
+            <a class="govuk-link" href="/calculation/{{ model.nomsId }}/{{ model.calculationRequestId }}/change?dateType={{ heading }}">Change <span class="govuk-visually-hidden"> {{ heading }}</span></a>
             <a class="remove-link" href="#">Remove <span class="govuk-visually-hidden"> {{ heading }}</span></a>
         </dd>
     </div>

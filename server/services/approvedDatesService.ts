@@ -87,6 +87,21 @@ export default class ApprovedDatesService {
     const error = false
     return { error, config: null }
   }
+
+  public changeDate(req: Request, nomsId: string): ManualEntryDate {
+    const date = req.session.selectedApprovedDates[nomsId].find(
+      (d: ManualEntryDate) => d.dateType === req.query.dateType
+    )
+    req.session.selectedApprovedDates[nomsId] = req.session.selectedApprovedDates[nomsId].filter(
+      (d: ManualEntryDate) => d.dateType !== req.query.dateType
+    )
+    req.session.selectedApprovedDates[nomsId].push({
+      dateType: req.query.dateType,
+      dateText: FULL_STRING_LOOKUP[<string>req.query.dateType],
+      date: undefined,
+    } as ManualEntryDate)
+    return date
+  }
 }
 
 export interface SubmitApprovedDateTypesResponse {
