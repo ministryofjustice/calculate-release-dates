@@ -327,6 +327,9 @@ export interface components {
           isoBased?: boolean
         }
       }
+      approvedDates?: {
+        [key: string]: string | undefined
+      }
     }
     CalculationFragments: {
       breakdownHtml: string

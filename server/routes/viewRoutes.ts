@@ -125,7 +125,8 @@ export default class ViewRoutes {
         breakdown?.releaseDatesWithAdjustments,
         null,
         false,
-        this.entryPointService.isDpsEntryPoint(req)
+        this.entryPointService.isDpsEntryPoint(req),
+        releaseDates.approvedDates
       )
     } catch (error) {
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
