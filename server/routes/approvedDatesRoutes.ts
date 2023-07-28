@@ -138,7 +138,7 @@ export default class ApprovedDatesRoutes {
     const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
       const error = true
-      return res.render('pages/approvedDate/removeDate', { prisonerDetail, dateToRemove, fullDateName, error })
+      return res.render('pages/approvedDates/removeDate', { prisonerDetail, dateToRemove, fullDateName, error })
     }
     this.approvedDatesService.removeDate(req, nomsId)
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
