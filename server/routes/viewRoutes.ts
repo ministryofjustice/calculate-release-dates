@@ -121,6 +121,7 @@ export default class ViewRoutes {
         prisonerDetail,
         sentencesAndOffences,
         hasNone,
+        true,
         breakdown?.calculationBreakdown,
         breakdown?.releaseDatesWithAdjustments,
         null,
@@ -139,6 +140,7 @@ export default class ViewRoutes {
           prisonerDetail,
           null,
           false,
+          true,
           null,
           null,
           {
