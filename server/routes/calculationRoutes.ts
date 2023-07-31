@@ -69,7 +69,7 @@ export default class CalculationRoutes {
       prisonerDetail,
       sentencesAndOffences,
       false,
-      true,
+      false,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments,
       validationErrors,
