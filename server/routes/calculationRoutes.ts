@@ -85,7 +85,15 @@ export default class CalculationRoutes {
     const result = {}
     dates.forEach(date => {
       const dateString = `${date.date.year}-${date.date.month}-${date.date.day}`
-      result[date.dateType] = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
+      result[date.dateType] = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('cccc, dd LLLL yyyy')
+    })
+    return result
+  }
+
+  private indexApprovedDates(dates: { [key: string]: string }) {
+    const result = {}
+    Object.keys(dates).forEach((dateType: string) => {
+      result[dateType] = DateTime.fromFormat(dates[dateType], 'yyyy-MM-d').toFormat('dd LLLL yyyy')
     })
     return result
   }
@@ -125,7 +133,7 @@ export default class CalculationRoutes {
       null,
       false,
       false,
-      releaseDates.approvedDates
+      this.indexApprovedDates(releaseDates.approvedDates)
     )
     res.render('pages/calculation/printCalculationSummary', { model })
   }

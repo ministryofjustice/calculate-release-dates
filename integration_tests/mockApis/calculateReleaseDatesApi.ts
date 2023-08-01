@@ -44,6 +44,7 @@ export default {
           prisonerId: 'A1234AB',
           bookingId: 1234,
           calculationStatus: 'CONFIRMED',
+          approvedDates: {},
         },
       },
     })
