@@ -1,4 +1,5 @@
 import { Request, RequestHandler } from 'express'
+import { DateTime } from 'luxon'
 import PrisonerService from '../services/prisonerService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
@@ -83,6 +84,14 @@ export default class ViewRoutes {
     }
   }
 
+  private indexBy(dates: { [key: string]: string }) {
+    const result = {}
+    Object.keys(dates).forEach((dateType: string) => {
+      result[dateType] = DateTime.fromFormat(dates[dateType], 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+    })
+    return result
+  }
+
   private async calculateReleaseDatesViewModel(
     calculationRequestId: number,
     nomsId: string,
@@ -113,6 +122,7 @@ export default class ViewRoutes {
         token
       )
       const hasNone = releaseDates.dates.None !== undefined
+      const approvedDates = this.indexBy(releaseDates.approvedDates)
       return new CalculationSummaryViewModel(
         releaseDates.dates,
         weekendAdjustments,
@@ -127,7 +137,7 @@ export default class ViewRoutes {
         null,
         false,
         this.entryPointService.isDpsEntryPoint(req),
-        releaseDates.approvedDates
+        approvedDates
       )
     } catch (error) {
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
