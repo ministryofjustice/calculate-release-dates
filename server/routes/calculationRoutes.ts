@@ -121,7 +121,11 @@ export default class CalculationRoutes {
       hasNone,
       true,
       breakdown?.calculationBreakdown,
-      breakdown?.releaseDatesWithAdjustments
+      breakdown?.releaseDatesWithAdjustments,
+      null,
+      false,
+      false,
+      releaseDates.approvedDates
     )
     res.render('pages/calculation/printCalculationSummary', { model })
   }
