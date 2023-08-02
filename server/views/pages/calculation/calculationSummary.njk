@@ -68,8 +68,7 @@
             {% if featureToggles.approvedDates %}
                 {% if not model.approvedDates %}
                     <h3 class="govuk-heading-m govuk-!-margin-top-9">Before you continue</h3>
-                    <p class="govuk-body">By continuing, you are confirming, to the best of your knowledge,
-                        that this calculation is correct. The calculation will be saved in NOMIS.</p>
+                    <p class="govuk-body">By continuing you are confirming that, to the best of your knowledge, the calculation is correct.</p>
                     {{ govukButton({
                         text: "Confirm and continue",
                         value: 'approved-dates-question',
@@ -80,7 +79,7 @@
                 {% else %}
                     <h3 class="govuk-heading-m govuk-!-margin-top-9">Confirm and save to NOMIS</h3>
                     <p class="govuk-body">By continuing, you are confirming that, to the best of your knowledge, the
-                        calculation and manual dates are correct. The calculation will be saved in NOMIS.</p>
+                        information is correct. The calculation will be saved in NOMIS.</p>
                     <form method="post">
                         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
