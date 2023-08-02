@@ -93,7 +93,7 @@ export default class CalculationRoutes {
   private indexApprovedDates(dates: { [key: string]: string }) {
     const result = {}
     Object.keys(dates).forEach((dateType: string) => {
-      result[dateType] = DateTime.fromFormat(dates[dateType], 'yyyy-MM-d').toFormat('dd LLLL yyyy')
+      result[dateType] = DateTime.fromFormat(dates[dateType], 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
     })
     return result
   }
