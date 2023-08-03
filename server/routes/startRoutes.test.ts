@@ -57,7 +57,7 @@ describe('Start routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Start')
+        expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/search/prisoners"')
         expect(res.text).not.toContain('A1234AA')
       })
@@ -75,7 +75,7 @@ describe('Start routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Start')
+        expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/calculation/123/alternative-release-arrangements"')
         expect(res.text).toContain('A1234AA')
       })
