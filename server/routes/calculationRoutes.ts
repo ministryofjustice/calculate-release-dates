@@ -64,11 +64,13 @@ export default class CalculationRoutes {
     if (!req.session.HDCED) {
       req.session.HDCED = {}
     }
+    if (!req.session.HDCED_WEEKEND_ADJUSTED) {
+      req.session.HDCED_WEEKEND_ADJUSTED = {}
+    }
     if (releaseDates.dates.HDCED) {
-      req.session.HDCED[nomsId] =
+      req.session.HDCED[nomsId] = releaseDates.dates.HDCED
+      req.session.HDCED_WEEKEND_ADJUSTED[nomsId] =
         weekendAdjustments.HDCED != null && weekendAdjustments.HDCED.date != null
-          ? weekendAdjustments.HDCED.date
-          : releaseDates.dates.HDCED
     }
     const model = new CalculationSummaryViewModel(
       releaseDates.dates,

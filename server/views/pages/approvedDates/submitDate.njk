@@ -26,10 +26,12 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form class="form" method="post">
-                {% if hdced and date.dateType == 'HDCAD' %}
-                    {% set hintText = 'The HDCED for ' + prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title + ' is ' + hdced + '. The HDCAD must be after this date.' %}
+                {% if hdced and date.dateType == 'HDCAD' and hdcedWeekendAdjusted %}
+                    {% set hintText = 'The HDCED for ' + prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title + ' is ' + hdced + ', this is a non-working day. The HDCAD cannot be before this date.' %}
+                {% elif hdced and date.dateType == 'HDCAD' and not hdcedWeekendAdjusted %}
+                    {% set hintText = 'The HDCED for ' + prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title + ' is ' + hdced + '. The HDCAD cannot be before this date.' %}
                 {% else %}
-                    {% set hintText = 'For example, 27 3 2007' %}
+                    {% set hintText = '' %}
                 {% endif %}
                 {% if error %}
                     {{ govukDateInput({

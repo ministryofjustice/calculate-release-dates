@@ -87,6 +87,10 @@ export default class ApprovedDatesRoutes {
     if (req.session.HDCED[nomsId]) {
       hdced = DateTime.fromFormat(req.session.HDCED[nomsId], 'yyyy-M-d').toFormat('cccc, dd LLLL yyyy')
     }
+    let hdcedWeekendAdjusted
+    if (req.session.HDCED[nomsId]) {
+      hdcedWeekendAdjusted = req.session.HDCED_WEEKEND_ADJUSTED[nomsId]
+    }
     const date = this.manualEntryService.getNextDateToEnter(req.session.selectedApprovedDates[nomsId])
     if (date) {
       return res.render('pages/approvedDates/submitDate', {
@@ -95,6 +99,7 @@ export default class ApprovedDatesRoutes {
         previousDate,
         calculationRequestId,
         hdced,
+        hdcedWeekendAdjusted,
       })
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)

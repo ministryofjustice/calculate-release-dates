@@ -11,6 +11,7 @@ declare module 'express-session' {
     selectedManualEntryDates?: { string?: ManualEntryDate[] }
     selectedApprovedDates?: { string?: ManualEntryDate[] }
     HDCED?: { string?: string }
+    HDCED_WEEKEND_ADJUSTED?: { string?: boolean }
   }
 }
 
