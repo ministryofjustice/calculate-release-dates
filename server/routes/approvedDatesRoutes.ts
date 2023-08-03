@@ -1,16 +1,16 @@
 import { RequestHandler } from 'express'
+import { DateTime } from 'luxon'
 import PrisonerService from '../services/prisonerService'
 import ApprovedDatesService from '../services/approvedDatesService'
 import ManualEntryService from '../services/manualEntryService'
-import DateValidationService, { EnteredDate } from '../services/dateValidationService'
+import { EnteredDate } from '../services/dateValidationService'
 import { ManualEntryDate, SubmittedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ApprovedDatesRoutes {
   constructor(
     private readonly prisonerService: PrisonerService,
     private readonly approvedDatesService: ApprovedDatesService,
-    private readonly manualEntryService: ManualEntryService,
-    private readonly dateValidationService: DateValidationService
+    private readonly manualEntryService: ManualEntryService
   ) {}
 
   public askApprovedDatesQuestion: RequestHandler = async (req, res): Promise<void> => {
@@ -83,9 +83,19 @@ export default class ApprovedDatesRoutes {
     if (year && month && day) {
       previousDate = { year, month, day } as SubmittedDate
     }
+    let hdced
+    if (req.session.HDCED[nomsId]) {
+      hdced = DateTime.fromFormat(req.session.HDCED[nomsId], 'yyyy-M-d').toFormat('cccc, dd LLLL yyyy')
+    }
     const date = this.manualEntryService.getNextDateToEnter(req.session.selectedApprovedDates[nomsId])
     if (date) {
-      return res.render('pages/approvedDates/submitDate', { prisonerDetail, date, previousDate, calculationRequestId })
+      return res.render('pages/approvedDates/submitDate', {
+        prisonerDetail,
+        date,
+        previousDate,
+        calculationRequestId,
+        hdced,
+      })
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
   }

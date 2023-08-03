@@ -11,7 +11,6 @@ import CalculationQuestionRoutes from './calculationQuestionRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
-import DateValidationService from '../services/dateValidationService'
 
 export default function Index({
   prisonerService,
@@ -78,13 +77,7 @@ export default function Index({
     manualEntryService
   )
 
-  const dateValidationService = new DateValidationService()
-  const approvedDatesAccessRoutes = new ApprovedDatesRoutes(
-    prisonerService,
-    approvedDatesService,
-    manualEntryService,
-    dateValidationService
-  )
+  const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService, approvedDatesService, manualEntryService)
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)

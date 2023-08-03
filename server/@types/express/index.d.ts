@@ -10,6 +10,7 @@ declare module 'express-session' {
     userInputs?: { string?: CalculationUserInputs }
     selectedManualEntryDates?: { string?: ManualEntryDate[] }
     selectedApprovedDates?: { string?: ManualEntryDate[] }
+    HDCED?: { string?: string }
   }
 }
 

@@ -61,6 +61,15 @@ export default class CalculationRoutes {
     ) {
       approvedDates = this.indexBy(req.session.selectedApprovedDates[nomsId])
     }
+    if (!req.session.HDCED) {
+      req.session.HDCED = {}
+    }
+    if (releaseDates.dates.HDCED) {
+      req.session.HDCED[nomsId] =
+        weekendAdjustments.HDCED != null && weekendAdjustments.HDCED.date != null
+          ? weekendAdjustments.HDCED.date
+          : releaseDates.dates.HDCED
+    }
     const model = new CalculationSummaryViewModel(
       releaseDates.dates,
       weekendAdjustments,
