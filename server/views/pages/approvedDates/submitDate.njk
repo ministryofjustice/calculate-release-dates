@@ -26,6 +26,11 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form class="form" method="post">
+                {% if hdced and date.dateType == 'HDCAD' %}
+                    {% set hintText = 'The HDCED for ' + prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title + ' is ' + hdced + '. The HDCAD must be after this date.' %}
+                {% else %}
+                    {% set hintText = 'For example, 27 3 2007' %}
+                {% endif %}
                 {% if error %}
                     {{ govukDateInput({
                         id: date.dateType,
@@ -38,7 +43,7 @@
                             }
                         },
                         hint: {
-                            text: "For example, 27 3 2007"
+                            text: hintText
                         },
                         errorMessage: {
                             text: error
@@ -73,7 +78,7 @@
                             }
                         },
                         hint: {
-                            text: "For example, 27 3 2007"
+                            text: hintText
                         },
                         items: [
                             {
@@ -105,7 +110,7 @@
                             }
                         },
                         hint: {
-                            text: "For example, 27 3 2007"
+                            text: hintText
                         }
                     }) }}
                 {% endif %}
