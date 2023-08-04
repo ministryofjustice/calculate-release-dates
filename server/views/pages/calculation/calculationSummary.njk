@@ -15,10 +15,24 @@
 {% block beforeContent %}
     {{ super() }}
     <nav>
-        {{ govukBackLink({
-            text: "Back",
-            href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
-        }) }}
+        {% if featureToggles.approvedDates %}
+            {% if not model.approvedDates %}
+                {{ govukBackLink({
+                    text: "Back",
+                    href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
+                }) }}
+            {% else %}
+                {{ govukBackLink({
+                    text: "Check sentence and offence information",
+                    href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
+                }) }}
+            {% endif %}
+            {% else %}
+                {{ govukBackLink({
+                    text: "Back",
+                    href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
+                }) }}
+        {% endif %}
     </nav>
 {% endblock %}
 
