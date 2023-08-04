@@ -16,10 +16,6 @@
 {% block beforeContent %}
     {{ super() }}
     <nav>
-        {{ govukBackLink({
-            text: "Back",
-            href: "/calculation/" + prisonerDetail.offenderNo + "/summary/" + calculationRequestId
-        }) }}
     </nav>
 {% endblock %}
 {% block content %}

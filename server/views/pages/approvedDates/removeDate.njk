@@ -15,12 +15,6 @@
 
 {% block beforeContent %}
     {{ super() }}
-    <nav>
-        {{ govukBackLink({
-            text: "Check sentence and offence information",
-            href: "/calculation/" + prisonerDetail.offenderNo + "/check-information"
-        }) }}
-    </nav>
 {% endblock %}
 {% block content %}
     <div class="govuk-grid-row">
