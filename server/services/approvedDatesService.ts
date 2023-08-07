@@ -17,10 +17,10 @@ const approvedDatesConfig = {
   },
   items: [
     {
-      value: 'ROTL',
-      checked: false,
+      value: 'APD',
       attributes: {},
-      text: FULL_STRING_LOOKUP.ROTL,
+      checked: false,
+      text: FULL_STRING_LOOKUP.APD,
     },
     {
       value: 'HDCAD',
@@ -29,10 +29,10 @@ const approvedDatesConfig = {
       text: FULL_STRING_LOOKUP.HDCAD,
     },
     {
-      value: 'APD',
-      attributes: {},
+      value: 'ROTL',
       checked: false,
-      text: FULL_STRING_LOOKUP.APD,
+      attributes: {},
+      text: FULL_STRING_LOOKUP.ROTL,
     },
   ],
 } as DateSelectConfiguration
