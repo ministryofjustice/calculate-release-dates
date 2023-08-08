@@ -122,7 +122,7 @@ export default class ViewRoutes {
         token
       )
       const hasNone = releaseDates.dates.None !== undefined
-      const approvedDates = this.indexBy(releaseDates.approvedDates)
+      const approvedDates = releaseDates.approvedDates ? this.indexBy(releaseDates.approvedDates) : null
       return new CalculationSummaryViewModel(
         releaseDates.dates,
         weekendAdjustments,
