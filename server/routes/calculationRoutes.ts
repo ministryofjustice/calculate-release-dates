@@ -130,6 +130,12 @@ export default class CalculationRoutes {
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
     const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token)
     const hasNone = 'None' in releaseDates.dates
+    let approvedDates
+    if (releaseDates.approvedDates) {
+      approvedDates = this.indexApprovedDates(releaseDates.approvedDates)
+    } else {
+      approvedDates = null
+    }
     const model = new CalculationSummaryViewModel(
       releaseDates.dates,
       weekendAdjustments,
@@ -144,7 +150,7 @@ export default class CalculationRoutes {
       null,
       false,
       false,
-      this.indexApprovedDates(releaseDates.approvedDates)
+      approvedDates
     )
     res.render('pages/calculation/printCalculationSummary', { model })
   }
