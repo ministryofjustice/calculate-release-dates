@@ -4,7 +4,8 @@
          title: {
              html: '<span class="govuk-!-margin-right-5"><strong>Prisoner name: </strong>' + prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title + '</span>' +
              '<strong> Date of birth: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.dateOfBirth | date("DD MMMM YYYY")  + '</span>' +
-             '<strong>Prison number: </strong>' + prisonerDetail.offenderNo
+             '<strong>Prison number: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.offenderNo + '</span><strong>Establishment: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.assignedLivingUnit.agencyName +
+             '</span><strong>Location: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.assignedLivingUnit.description + '</span>'
          }
      }) }}
  {% endif %}
