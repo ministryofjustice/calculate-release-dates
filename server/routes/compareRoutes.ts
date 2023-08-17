@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import logger from '../../logger'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import OneThousandCalculationsService from '../services/oneThousandCalculationsService'
-import BulkLoadService from '../services/bulkLoadService'
+import UserPermissionsService from '../services/userPermissionsService'
 import PrisonerService from '../services/prisonerService'
 
 export const comparePaths = {
@@ -22,7 +22,7 @@ export default class CompareRoutes {
   constructor(
     private readonly oneThousandCalculationsService: OneThousandCalculationsService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly bulkLoadService: BulkLoadService,
+    private readonly bulkLoadService: UserPermissionsService,
     private readonly prisonerService: PrisonerService
   ) {}
 

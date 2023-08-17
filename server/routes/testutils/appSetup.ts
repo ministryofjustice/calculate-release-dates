@@ -18,7 +18,7 @@ import UserInputService from '../../services/userInputService'
 import OneThousandCalculationsService from '../../services/oneThousandCalculationsService'
 import ManualCalculationService from '../../services/manualCalculationService'
 import ManualEntryService from '../../services/manualEntryService'
-import BulkLoadService from '../../services/bulkLoadService'
+import UserPermissionsService from '../../services/userPermissionsService'
 import ApprovedDatesService from '../../services/approvedDatesService'
 
 const user = {
@@ -80,7 +80,7 @@ export const appWithAllRoutes = (overrides: Partial<Services> = {}, production =
     oneThousandCalculationsService: {} as OneThousandCalculationsService,
     manualCalculationService: {} as ManualCalculationService,
     manualEntryService: {} as ManualEntryService,
-    bulkLoadService: {} as BulkLoadService,
+    userPermissionsService: {} as UserPermissionsService,
     approvedDatesService: {} as ApprovedDatesService,
     ...overrides,
   })

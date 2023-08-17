@@ -8,7 +8,7 @@ import { dataAccess } from '../data'
 import OneThousandCalculationsService from './oneThousandCalculationsService'
 import ManualCalculationService from './manualCalculationService'
 import ManualEntryService from './manualEntryService'
-import BulkLoadService from './bulkLoadService'
+import UserPermissionsService from './userPermissionsService'
 import ManualEntryValidationService from './manualEntryValidationService'
 import ApprovedDatesService from './approvedDatesService'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
@@ -35,7 +35,7 @@ export const services = () => {
     dateTypeConfigurationService,
     dateValidationService
   )
-  const bulkLoadService = new BulkLoadService()
+  const userPermissionsService = new UserPermissionsService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
   return {
     userService,
@@ -47,7 +47,7 @@ export const services = () => {
     oneThousandCalculationsService,
     manualCalculationService,
     manualEntryService,
-    bulkLoadService,
+    userPermissionsService,
     approvedDatesService,
   }
 }

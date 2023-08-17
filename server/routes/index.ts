@@ -11,6 +11,7 @@ import CalculationQuestionRoutes from './calculationQuestionRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
+import GenuineOverrideRoutes from './genuineOverrideRoutes'
 
 export default function Index({
   prisonerService,
@@ -21,7 +22,7 @@ export default function Index({
   oneThousandCalculationsService,
   manualCalculationService,
   manualEntryService,
-  bulkLoadService,
+  userPermissionsService,
   approvedDatesService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -46,7 +47,7 @@ export default function Index({
   const compareAccessRoutes = new CompareRoutes(
     oneThousandCalculationsService,
     calculateReleaseDatesService,
-    bulkLoadService,
+    userPermissionsService,
     prisonerService
   )
 
@@ -55,7 +56,7 @@ export default function Index({
     calculateReleaseDatesService,
     prisonerService
   )
-  const startRoutes = new StartRoutes(entryPointService, prisonerService, bulkLoadService)
+  const startRoutes = new StartRoutes(entryPointService, prisonerService, userPermissionsService)
   const viewAccessRoutes = new ViewRoutes(
     viewReleaseDatesService,
     calculateReleaseDatesService,
@@ -78,6 +79,13 @@ export default function Index({
   )
 
   const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService, approvedDatesService, manualEntryService)
+
+  const genuineOverrideAccessRoutes = new GenuineOverrideRoutes(
+    userPermissionsService,
+    entryPointService,
+    prisonerService,
+    calculateReleaseDatesService
+  )
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
@@ -178,6 +186,10 @@ export default function Index({
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
   }
 
+  const specialistSupportRoutes = () => {
+    get('/specialist-support/', genuineOverrideAccessRoutes.startPage)
+  }
+
   const compareRoutes = () => {
     get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
     get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation) // TODO remove this route as it was only for testing
@@ -200,5 +212,6 @@ export default function Index({
   otherRoutes()
   compareRoutes()
   approvedDatesRoutes()
+  specialistSupportRoutes()
   return router
 }

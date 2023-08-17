@@ -524,6 +524,7 @@ describe('Check information routes tests', () => {
       dates: {},
       effectiveSentenceLength: {},
       prisonerId: 'A1234AA',
+      calculationReference: 'ABC123',
       bookingId: 123,
       calculationStatus: 'PRELIMINARY',
     })

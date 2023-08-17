@@ -56,6 +56,12 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<BookingCalculation>
   }
 
+  getCalculationResultsByReference(calculationReference: string): Promise<BookingCalculation> {
+    return this.restClient.get({
+      path: `/calculationReference/${calculationReference}`,
+    }) as Promise<BookingCalculation>
+  }
+
   getCalculationBreakdown(calculationRequestId: number): Promise<CalculationBreakdown> {
     return this.restClient.get({
       path: `/calculation/breakdown/${calculationRequestId}`,

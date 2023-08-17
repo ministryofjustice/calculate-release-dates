@@ -53,6 +53,14 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
   }
 
+  async getCalculationResultsByReference(
+    username: string,
+    calculationReference: string,
+    token: string
+  ): Promise<BookingCalculation> {
+    return new CalculateReleaseDatesApiClient(token).getCalculationResultsByReference(calculationReference)
+  }
+
   async getCalculationUserQuestions(prisonId: string, token: string): Promise<CalculationUserQuestions> {
     return new CalculateReleaseDatesApiClient(token).getCalculationUserQuestions(prisonId)
   }

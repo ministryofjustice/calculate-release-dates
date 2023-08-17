@@ -335,6 +335,7 @@ const calculation = {
     ERSED: '2022-11-11',
   },
   calculationRequestId: 3819,
+  calculationReference: 'ABC123',
   bookingId: 1202076,
   prisonerId: 'A8541DY',
   calculationStatus: 'PRELIMINARY',
