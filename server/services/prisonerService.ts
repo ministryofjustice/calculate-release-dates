@@ -29,7 +29,7 @@ export default class PrisonerService {
     userCaseloads: string[],
     token: string
   ): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, true)
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, true, false)
   }
 
   async getPrisonerDetail(
@@ -38,17 +38,30 @@ export default class PrisonerService {
     userCaseloads: string[],
     token: string
   ): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, false)
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, false, false)
+  }
+
+  async getPrisonerDetailForSpecialistSupport(
+    username: string,
+    nomsId: string,
+    userCaseloads: string[],
+    token: string
+  ): Promise<PrisonApiPrisoner> {
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, false, true)
   }
 
   private async getPrisonerDetailImpl(
     nomsId: string,
     userCaseloads: string[],
     token: string,
-    includeReleased: boolean
+    includeReleased: boolean,
+    isSpecialistSupport: boolean
   ): Promise<PrisonApiPrisoner> {
     try {
       const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
+      if (isSpecialistSupport) {
+        return prisonerDetail
+      }
       if (userCaseloads.includes(prisonerDetail.agencyId) || (includeReleased && prisonerDetail.agencyId === 'OUT')) {
         return prisonerDetail
       }

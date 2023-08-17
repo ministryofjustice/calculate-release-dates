@@ -294,6 +294,7 @@ export interface components {
       calculationRequestId: number
       /** Format: int64 */
       bookingId: number
+      calculationReference: string
       prisonerId: string
       /** @enum {string} */
       calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST'

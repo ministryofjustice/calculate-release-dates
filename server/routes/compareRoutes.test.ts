@@ -1,22 +1,22 @@
 import request from 'supertest'
 import { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
-import BulkLoadService from '../services/bulkLoadService'
+import UserPermissionsService from '../services/userPermissionsService'
 import OneThousandCalculationsService from '../services/oneThousandCalculationsService'
 import OneThousandCalculationsRow from '../models/OneThousandCalculationsRow'
 
 let app: Express
 
-jest.mock('../services/bulkLoadService')
+jest.mock('../services/userPermissionsService')
 jest.mock('../services/oneThousandCalculationsService')
-const bulkLoadService = new BulkLoadService() as jest.Mocked<BulkLoadService>
+const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
 const oneThousandCalculationsService = new OneThousandCalculationsService(
   null,
   null
 ) as jest.Mocked<OneThousandCalculationsService>
 
 beforeEach(() => {
-  app = appWithAllRoutes({ bulkLoadService, oneThousandCalculationsService })
+  app = appWithAllRoutes({ userPermissionsService, oneThousandCalculationsService })
 })
 
 afterEach(() => {

@@ -93,6 +93,7 @@ const stubbedCalculationResults = {
   effectiveSentenceLength: {},
   prisonerId: 'A1234AB',
   calculationStatus: 'CONFIRMED',
+  calculationReference: 'ABC123',
   bookingId: 123,
   approvedDates: {},
 } as BookingCalculation
@@ -780,6 +781,7 @@ describe('Calculation routes tests', () => {
       calculationRequestId: 654321,
       effectiveSentenceLength: {},
       prisonerId: 'A1234AA',
+      calculationReference: 'ABC123',
       bookingId: 123,
       calculationStatus: 'PRELIMINARY',
     })

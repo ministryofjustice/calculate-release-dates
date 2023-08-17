@@ -183,6 +183,7 @@ const stubbedCalculationResults = {
   calculationRequestId: 123456,
   effectiveSentenceLength: {},
   prisonerId: 'A1234AA',
+  calculationReference: 'ABC123',
   bookingId: 123,
   calculationStatus: 'CONFIRMED',
   approvedDates: {},

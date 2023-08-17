@@ -29,6 +29,7 @@ const calculationResults: BookingCalculation = {
     PED: '2022-09-04',
   },
   effectiveSentenceLength: null,
+  calculationReference: 'ABC123',
   calculationRequestId,
   prisonerId,
   bookingId: 123,
