@@ -18,9 +18,9 @@
                 Use this tool to lookup, check and make changes to preliminary calculations from the Calculate release dates service.
             </p>
             {% if calculationReference %}
-                {% set startlink = "/support/" + calculationReference + "/sentence-and-offence-information" %}
+                {% set startlink = "/specialist-support/" + calculationReference + "/sentence-and-offence-information" %}
             {% else %}
-                {% set startlink = "/support/search/prisoners" %}
+                {% set startlink = "/specialist-support/search" %}
             {% endif %}
             {{ govukButton({
                 text: "Start now",

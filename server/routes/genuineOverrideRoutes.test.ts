@@ -104,4 +104,76 @@ describe('Genuine overrides routes tests', () => {
         expect(res.text).toContain('Nobody')
       })
   })
+  it('GET /specialist-support/search should return the Specialist Support search page', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    return request(app)
+      .get('/specialist-support/search')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Specialist support team override tool')
+        expect(res.text).toContain('Look up a calculation')
+        expect(res.text).toContain('Enter the calculation reference number')
+      })
+  })
+  it('GET /specialist-support/search should not return the Specialist Support search page if you do not have permission', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(false)
+    return request(app)
+      .get('/specialist-support/search')
+      .expect(404)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Not found')
+      })
+  })
+  it('GET /specialist-support/search should not return the Specialist Support search page if you do not have permission', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(false)
+    return request(app)
+      .get('/specialist-support/search')
+      .expect(404)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Not found')
+      })
+  })
+  it('POST /specialist-support/search with no calc ref will show error', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    return request(app)
+      .post('/specialist-support/search')
+      .type('form')
+      .send({})
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('You must enter a calculation reference number before continuing.')
+      })
+  })
+  it('POST /specialist-support/search with calc ref that cannot be found will show error', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(null)
+    return request(app)
+      .post('/specialist-support/search')
+      .type('form')
+      .send({ calculationReference: '123' })
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'The calculation reference number you entered could not be found. Check the reference and try again.'
+        )
+      })
+  })
+  it('POST /specialist-support/search with calc ref that cannot be found will show error', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    return request(app)
+      .post('/specialist-support/search')
+      .type('form')
+      .send({ calculationReference: '123' })
+      .expect(302)
+      .expect('Location', '/specialist-support/calculation/123')
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+      })
+  })
 })

@@ -1,0 +1,20 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% set pageTitle = applicationName + " - Home" %}
+{% set pageId = "specialistSupportSearch" %}
+
+{% block aside %}
+    {% include "../../../views/pages/partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                <span class="govuk-caption-xl">Specialist support team override tool</span>
+                Confirm this is the correct calculation</h1>
+
+        </div>
+    </div>
+{% endblock %}

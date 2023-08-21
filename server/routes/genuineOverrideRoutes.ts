@@ -37,4 +37,45 @@ export default class GenuineOverrideRoutes {
     }
     throw FullPageError.notFoundError()
   }
+
+  public loadSearch: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      return res.render('pages/genuineOverrides/search')
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public submitSearch: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { calculationReference } = req.body
+      if (!calculationReference) {
+        const noCalculationReference = true
+        return res.render('pages/genuineOverrides/search', { noCalculationReference })
+      }
+      const { username, token } = res.locals.user
+      try {
+        const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+          username,
+          calculationReference,
+          token
+        )
+        if (!calculation) {
+          const calculationReferenceNotFound = true
+          return res.render('pages/genuineOverrides/search', { calculationReferenceNotFound })
+        }
+        return res.redirect(`/specialist-support/calculation/${calculationReference}`)
+      } catch (error) {
+        const calculationReferenceNotFound = true
+        return res.render('pages/genuineOverrides/search', { calculationReferenceNotFound })
+      }
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadConfirmPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      return res.render('pages/genuineOverrides/confirm')
+    }
+    throw FullPageError.notFoundError()
+  }
 }
