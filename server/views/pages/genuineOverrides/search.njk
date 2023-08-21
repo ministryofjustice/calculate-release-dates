@@ -1,0 +1,76 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% set pageTitle = applicationName + " - Home" %}
+{% set pageId = "specialistSupportSearch" %}
+
+{% block aside %}
+    {% include "../../../views/pages/partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <form method="post">
+                {% if noCalculationReference %}
+                    {{ govukInput({
+                        label: {
+                            html: '<h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">
+                <span class="govuk-caption-xl">Specialist support team override tool</span>
+                Look up a calculation
+            </h1>'
+                        },
+                        hint: {
+                            text: "Enter the calculation reference number"
+                        },
+                        id: "calculationReference",
+                        name: "calculationReference",
+                        errorMessage: {
+                            text: "You must enter a calculation reference number before continuing."
+                        }
+                    }) }}
+                    {% elif calculationReferenceNotFound %}
+                    {{ govukInput({
+                        label: {
+                            html: '<h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">
+                <span class="govuk-caption-xl">Specialist support team override tool</span>
+                Look up a calculation
+            </h1>'
+                        },
+                        hint: {
+                            text: "Enter the calculation reference number"
+                        },
+                        id: "calculationReference",
+                        name: "calculationReference",
+                        errorMessage: {
+                            text: "The calculation reference number you entered could not be found. Check the reference and try again."
+                        }
+                    }) }}
+                {% else %}
+                    {{ govukInput({
+                        label: {
+                            html: '<h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">
+                <span class="govuk-caption-xl">Specialist support team override tool</span>
+                Look up a calculation
+            </h1>'
+                        },
+                        hint: {
+                            text: "Enter the calculation reference number"
+                        },
+                        id: "calculationReference",
+                        name: "calculationReference"
+                    }) }}
+                {% endif %}
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    value: 'search',
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'search' }
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}
