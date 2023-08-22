@@ -38,6 +38,13 @@ export class FullPageError extends Error {
     error.status = 404
     return error
   }
+
+  static couldNotLoadConfirmPage(): FullPageError {
+    const error = new FullPageError('A calculation or prisoner could not be found')
+    error.errorKey = FullPageErrorType.CALCULATION_OR_PRISONER_NOT_FOUND
+    error.status = 404
+    return error
+  }
 }
 
 export enum FullPageErrorType {
@@ -45,4 +52,5 @@ export enum FullPageErrorType {
   NO_SENTENCES,
   NO_CALCULATION_SUBMITTED,
   NOT_FOUND,
+  CALCULATION_OR_PRISONER_NOT_FOUND,
 }
