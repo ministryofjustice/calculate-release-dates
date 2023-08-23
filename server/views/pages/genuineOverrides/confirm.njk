@@ -1,8 +1,9 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set pageTitle = applicationName + " - Home" %}
-{% set pageId = "specialistSupportSearch" %}
+{% set pageId = "specialistSupportConfirm" %}
 
 {% block aside %}
     {% include "../../../views/pages/partials/prisonerIdentityBar.njk" %}
@@ -13,8 +14,58 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">
                 <span class="govuk-caption-xl">Specialist support team override tool</span>
-                Confirm this is the correct calculation</h1>
-
+                Confirm this is the correct person</h1>
+            <div class="govuk-body">
+                {{ govukSummaryList({
+                    classes: 'govuk-summary-list--no-border',
+                    rows: [
+                        {
+                            key: {
+                            text: "Calculation reference"
+                        },
+                            value: {
+                            text: calculation.calculationReference
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Prisoner name"
+                        },
+                            value: {
+                            text: prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Prisoner number"
+                        },
+                            value: {
+                            html: prisonerDetail.offenderNo
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Establishment"
+                        },
+                            value: {
+                            html: prisonerDetail.assignedLivingUnit.agencyName
+                        }
+                        }
+                    ]
+                }) }}
+                <form method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                    {{ govukButton({
+                        text: "Yes, continue",
+                        type: submit,
+                        value: 'confirm',
+                        preventDoubleClick: true,
+                        attributes: {  'data-qa': 'confirm' }
+                    }) }}
+                    <br>
+                    <a href="/specialist-support/search" class="govuk-link">No, look up a different calculation</a>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock %}

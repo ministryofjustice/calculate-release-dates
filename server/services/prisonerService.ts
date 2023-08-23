@@ -44,10 +44,9 @@ export default class PrisonerService {
   async getPrisonerDetailForSpecialistSupport(
     username: string,
     nomsId: string,
-    userCaseloads: string[],
     token: string
   ): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, false, true)
+    return this.getPrisonerDetailImpl(nomsId, [], token, false, true)
   }
 
   private async getPrisonerDetailImpl(

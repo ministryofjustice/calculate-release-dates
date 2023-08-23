@@ -93,7 +93,7 @@ describe('Genuine overrides routes tests', () => {
   it('GET /specialist-support should return the Specialist Support index page with prisoner identity bar', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('/specialist-support?calculationReference=123')
       .expect(200)
@@ -174,6 +174,54 @@ describe('Genuine overrides routes tests', () => {
       .expect('Location', '/specialist-support/calculation/123')
       .expect(res => {
         expect(res.redirect).toBeTruthy()
+      })
+  })
+  it('GET /specialist-support/calculation/:calculationReference should not return the Specialist Support confirm page if you do not have permission', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(false)
+    return request(app)
+      .get('/specialist-support/calculation/123')
+      .expect(404)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Not found')
+      })
+  })
+  it('GET /specialist-support/calculation/:calculationReference should return the Specialist Support confirm page with prisoner identity bar', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/specialist-support/calculation/123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Specialist support team override tool')
+        expect(res.text).toContain('Anon Nobody')
+        expect(res.text).toContain('123')
+      })
+  })
+  it('GET /specialist-support/calculation/:calculationReference should return error if no prisoner found', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(null)
+    return request(app)
+      .get('/specialist-support/calculation/123')
+      .expect(404)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('A calculation or prisoner could not be found')
+      })
+  })
+  it('GET /specialist-support/calculation/:calculationReference should return error if no calculation found', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(null)
+    prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/specialist-support/calculation/123')
+      .expect(404)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('A calculation or prisoner could not be found')
       })
   })
 })

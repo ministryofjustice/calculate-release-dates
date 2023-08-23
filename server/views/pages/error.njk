@@ -5,61 +5,71 @@
 
 {% block content %}
 
-  <main class="app-container">
+    <main class="app-container">
 
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" data-qa="error-heading">
-          {% if status === 404 and not errorKey %}
-            Page not found
-          {% elif errorKey === 'NO_CALCULATION_SUBMITTED' %}
-            No calculation submitted
-          {% else %}
-            There is a problem
-          {% endif %}
-        </h1>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" data-qa="error-heading">
+                    {% if status === 404 and not errorKey %}
+                        Page not found
+                        {% elif errorKey === 'NO_CALCULATION_SUBMITTED' %}
+                        No calculation submitted
+                    {% else %}
+                        There is a problem
+                    {% endif %}
+                </h1>
 
-        {% if errorKey %}
-          {% if errorKey === 'NOT_IN_CASELOAD' %}
-            <p class="govuk-body">The details for this person cannot be found.</p>
-            <p class="govuk-body"> This could be because this person:</p>
-            <ul class="govuk-list govuk-list--bullet">
-              <li>is not in your caseload</li>
-              <li>has no bookings assigned to them</li>
-              <li>has no active bookings</li>
-              <li>offence dates</li>
-              <li>sentences</li>
-              <li>adjustments </li>
-            </ul>
+                {% if errorKey %}
+                    {% if errorKey === 'NOT_IN_CASELOAD' %}
+                        <p class="govuk-body">The details for this person cannot be found.</p>
+                        <p class="govuk-body"> This could be because this person:</p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>is not in your caseload</li>
+                            <li>has no bookings assigned to them</li>
+                            <li>has no active bookings</li>
+                            <li>offence dates</li>
+                            <li>sentences</li>
+                            <li>adjustments</li>
+                        </ul>
 
-            <p class="govuk-body govuk-!-margin-top-6">            
-              Check the details in NOMIS and then <a href="/">try again</a>.
-            </p>
-          {% elif errorKey === 'NO_SENTENCES' %}
-            <p>The calculation must include at least one sentence.</p>
+                        <p class="govuk-body govuk-!-margin-top-6">
+                            Check the details in NOMIS and then <a href="/">try again</a>.
+                        </p>
+                        {% elif errorKey === 'NO_SENTENCES' %}
+                        <p>The calculation must include at least one sentence.</p>
 
-            <p class="govuk-body govuk-!-margin-top-6">            
-              Check the details in NOMIS and then <a href="/">try again</a>.
-            </p>
-          {% elif errorKey === 'NO_CALCULATION_SUBMITTED' %}
-            <p> Release dates for {{prisonerDetails.firstName}}
-              {{prisonerDetails.lastName}} have not been submitted using the Calculate release dates service.</p>
-            <p class="govuk-body">
-              <a class="govuk-link" href={{ "/calculation/" + prisonerDetails.offenderNo +
-                "/check-information" }}>Calculate release dates for {{prisonerDetails.firstName}}
-                {{prisonerDetails.lastName}}</a>
-            </p>
-            <p class="govuk-body">
-              <a class="govuk-link" href="/search/prisoners">View release dates for another person</a>
-            </p>
-            <p class="govuk-body">
-              <a class="govuk-link" href={{digitalPrisonServicesUrl}}>Return to Digital Prison Service (DPS)</a>
-            </p>
-          {% endif %}
-        {% elif status === 404 %}
-          <p class="govuk-body">If you typed the web address, check it is correct.</p>
+                        <p class="govuk-body govuk-!-margin-top-6">
+                            Check the details in NOMIS and then <a href="/">try again</a>.
+                        </p>
+                        {% elif errorKey === 'NO_CALCULATION_SUBMITTED' %}
+                        <p> Release dates for {{ prisonerDetails.firstName }}
+                            {{ prisonerDetails.lastName }} have not been submitted using the Calculate release dates
+                            service.</p>
+                        <p class="govuk-body">
+                            <a class="govuk-link" href={{ "/calculation/" + prisonerDetails.offenderNo +
+                            "/check-information" }}>Calculate release dates for {{ prisonerDetails.firstName }}
+                                {{ prisonerDetails.lastName }}</a>
+                        </p>
+                        <p class="govuk-body">
+                            <a class="govuk-link" href="/search/prisoners">View release dates for another person</a>
+                        </p>
+                        <p class="govuk-body">
+                            <a class="govuk-link" href={{ digitalPrisonServicesUrl }}>Return to Digital Prison Service
+                                (DPS)</a>
+                        </p>
+                        {% elif errorKey === 'CALCULATION_OR_PRISONER_NOT_FOUND' %}
+                        <p class="govuk-body">
+                            A calculation or prisoner could not be found.
+                        </p>
+                        <p class="govuk-body">
+                            <a class="govuk-link" href="/specialist-support">Return to specialist support</a>
+                        </p>
+                    {% endif %}
 
-          <p class="govuk-body">If you pasted the web address, check you copied it correctly.</p>
+                    {% elif status === 404 %}
+                    <p class="govuk-body">If you typed the web address, check it is correct.</p>
+
+                    <p class="govuk-body">If you pasted the web address, check you copied it correctly.</p>
 
           <p class="govuk-body">Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>
               if you need support.</p>
@@ -68,11 +78,11 @@
           <h2>{{ status }}</h2>
         {% endif %}
 
-      </div>
-    </div>
-    {% if stack %}
-      <pre>{{ stack }}</pre>
-    {% endif %}
-  </main>
+            </div>
+        </div>
+        {% if stack %}
+            <pre>{{ stack }}</pre>
+        {% endif %}
+    </main>
 
 {% endblock %}

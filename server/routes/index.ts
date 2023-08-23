@@ -191,6 +191,7 @@ export default function Index({
     get('/specialist-support/search/', genuineOverrideAccessRoutes.loadSearch)
     post('/specialist-support/search/', genuineOverrideAccessRoutes.submitSearch)
     get('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.loadConfirmPage)
+    post('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.submitConfirmPage)
   }
 
   const compareRoutes = () => {

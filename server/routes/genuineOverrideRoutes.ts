@@ -18,16 +18,15 @@ export default class GenuineOverrideRoutes {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       if (calculationReference) {
         this.entryPointService.setEmailEntryPoint(res, calculationReference)
-        const { username, caseloads, token } = res.locals.user
+        const { username, token } = res.locals.user
         const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
           username,
           calculationReference,
           token
         )
-        const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        const prisonerDetail = await this.prisonerService.getPrisonerDetailForSpecialistSupport(
           username,
           calculation.prisonerId,
-          caseloads,
           token
         )
         return res.render('pages/genuineOverrides/index', { calculationReference, prisonerDetail })
@@ -74,7 +73,37 @@ export default class GenuineOverrideRoutes {
 
   public loadConfirmPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
-      return res.render('pages/genuineOverrides/confirm')
+      const { calculationReference } = req.params
+      const { username, token } = res.locals.user
+      try {
+        const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+          username,
+          calculationReference,
+          token
+        )
+        const prisonerDetail = await this.prisonerService.getPrisonerDetailForSpecialistSupport(
+          username,
+          calculation.prisonerId,
+          token
+        )
+        if (!calculation) {
+          throw new Error()
+        }
+        if (!prisonerDetail) {
+          throw new Error()
+        }
+        return res.render('pages/genuineOverrides/confirm', { calculation, prisonerDetail })
+      } catch (error) {
+        throw FullPageError.couldNotLoadConfirmPage()
+      }
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public submitConfirmPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { calculationReference } = req.params
+      res.redirect(`/specialist-support/calculation/${calculationReference}/sentence-and-offence-information`)
     }
     throw FullPageError.notFoundError()
   }
