@@ -4,13 +4,15 @@ import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { FullPageError } from '../types/FullPageError'
+import CheckInformationService from '../services/checkInformationService'
 
 export default class GenuineOverrideRoutes {
   constructor(
     private readonly userPermissionsService: UserPermissionsService,
     private readonly entryPointService: EntryPointService,
     private readonly prisonerService: PrisonerService,
-    private readonly calculateReleaseDatesService: CalculateReleaseDatesService
+    private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
+    private readonly checkInformationService: CheckInformationService
   ) {
     // intentionally left blank
   }
@@ -105,7 +107,32 @@ export default class GenuineOverrideRoutes {
   public submitConfirmPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
-      res.redirect(`/specialist-support/calculation/${calculationReference}/sentence-and-offence-information`)
+      return res.redirect(`/specialist-support/calculation/${calculationReference}/sentence-and-offence-information`)
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadCheckSentenceAndInformationPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const model = await this.checkInformationService.checkInformation(req, res, false)
+      return res.render('pages/genuineOverrides/checkInformation', {
+        model,
+      })
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public submitCheckSentenceAndInformationPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { calculationReference } = req.params
+      return res.redirect(`/specialist-support/calculation/${calculationReference}/calculation`)
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadCalculationPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      return res.render('pages/genuineOverrides/calculationSummary')
     }
     throw FullPageError.notFoundError()
   }

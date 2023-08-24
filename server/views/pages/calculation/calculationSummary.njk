@@ -55,7 +55,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            <h2 class="govuk-heading-l govuk-!-margin-top-9">Release dates</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-4">Release dates</h2>
 
             {% include "../partials/calculationSummaryDates.njk" %}
         </div>
@@ -63,7 +63,7 @@
     {% if model.approvedDates %}
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-three-quarters">
-                <h2 class="govuk-heading-l govuk-!-margin-top-9">Manual dates</h2>
+                <h2 class="govuk-heading-l govuk-!-margin-top-4">Manual dates</h2>
                 {% include "../partials/approvedSummaryDates.njk" %}
             </div>
         </div>
@@ -81,7 +81,7 @@
         <div class="govuk-grid-column-two-thirds">
             {% if featureToggles.approvedDates %}
                 {% if not model.approvedDates %}
-                    <h3 class="govuk-heading-m govuk-!-margin-top-9">Confirm the dates are correct</h3>
+                    <h3 class="govuk-heading-m govuk-!-margin-top-4">Confirm the dates are correct</h3>
                     <p class="govuk-body">By continuing you are confirming that, to the best of your knowledge, the calculation is correct.</p>
                     {{ govukButton({
                         text: "Confirm and continue",
@@ -91,7 +91,7 @@
                         attributes: { 'data-qa': 'submit-to-nomis' }
                     }) }}
                 {% else %}
-                    <h3 class="govuk-heading-m govuk-!-margin-top-9">Confirm and save to NOMIS</h3>
+                    <h3 class="govuk-heading-m govuk-!-margin-top-4">Confirm and save to NOMIS</h3>
                     <p class="govuk-body">By continuing, you are confirming that, to the best of your knowledge, the
                         information is correct. The calculation will be saved in NOMIS.</p>
                     <form method="post">

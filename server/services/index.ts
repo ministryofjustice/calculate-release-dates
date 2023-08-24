@@ -13,6 +13,8 @@ import ManualEntryValidationService from './manualEntryValidationService'
 import ApprovedDatesService from './approvedDatesService'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService from './dateValidationService'
+import QuestionsService from './questionsService'
+import CheckInformationService from './checkInformationService'
 
 export const services = () => {
   const { hmppsAuthClient } = dataAccess()
@@ -37,6 +39,13 @@ export const services = () => {
   )
   const userPermissionsService = new UserPermissionsService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
+  const questionsService = new QuestionsService(calculateReleaseDatesService, userInputService)
+  const checkInformationService = new CheckInformationService(
+    calculateReleaseDatesService,
+    prisonerService,
+    entryPointService,
+    userInputService
+  )
   return {
     userService,
     prisonerService,
@@ -49,6 +58,8 @@ export const services = () => {
     manualEntryService,
     userPermissionsService,
     approvedDatesService,
+    checkInformationService,
+    questionsService,
   }
 }
 

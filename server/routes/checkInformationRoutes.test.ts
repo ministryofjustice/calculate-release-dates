@@ -24,18 +24,33 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import trimHtml from './testutils/testUtils'
 import config from '../config'
+import QuestionsService from '../services/questionsService'
+import CheckInformationService from '../services/checkInformationService'
+import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/entryPointService')
 jest.mock('../services/userInputService')
+jest.mock('../services/checkInformationService')
+jest.mock('../services/questionsService')
 
 const userService = new UserService(null) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
+const questionsService = new QuestionsService(
+  calculateReleaseDatesService,
+  userInputService
+) as jest.Mocked<QuestionsService>
+const checkInformationService = new CheckInformationService(
+  calculateReleaseDatesService,
+  prisonerService,
+  entryPointService,
+  userInputService
+) as jest.Mocked<CheckInformationService>
 
 let app: Express
 
@@ -315,6 +330,8 @@ beforeEach(() => {
     calculateReleaseDatesService,
     entryPointService,
     userInputService,
+    questionsService,
+    checkInformationService,
   })
   config.featureToggles.approvedDates = true
 })
@@ -326,13 +343,19 @@ afterEach(() => {
 describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner with the EDS card view', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
       .get('/calculation/A1234AA/check-information')
       .expect(200)
@@ -379,14 +402,21 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information back button should reutrn to dps start page if no calc questions', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(null)
     entryPointService.isDpsEntryPoint.mockReturnValue(true)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      null,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
       .get('/calculation/A1234AA/check-information')
       .expect(200)
@@ -397,13 +427,20 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner without adjustments', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedEmptyAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     entryPointService.isDpsEntryPoint.mockReturnValue(true)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedEmptyAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
       .get('/calculation/A1234AA/check-information')
       .expect(200)
@@ -414,16 +451,26 @@ describe('Check information routes tests', () => {
       })
   })
   it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'An error occurred with the nomis information' }],
       messageType: ErrorMessageType.VALIDATION,
     } as never)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      {
+        messages: [{ text: 'An error occurred with the nomis information' }],
+        messageType: ErrorMessageType.VALIDATION,
+      } as never
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
       .expect(200)
@@ -435,11 +482,6 @@ describe('Check information routes tests', () => {
   })
   it('GET /calculation/:nomsId/check-information UNSUPPORTED_SENTENCE should redirect to the unsupported check information page', () => {
     config.featureToggles.manualEntry = true
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -455,11 +497,6 @@ describe('Check information routes tests', () => {
   })
   it('GET /calculation/:nomsId/check-information should display unsupported calculation errors when they exist', () => {
     config.featureToggles.manualEntry = true
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_CALCULATION',
@@ -475,13 +512,19 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
     calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      { messages: [] } as never
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
       .expect(200)
@@ -492,13 +535,19 @@ describe('Check information routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/check-information should display notification if sentence has multiple offences', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    prisonerService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
     calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      null,
+      { messages: [] } as never
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
       .get('/calculation/A1234AA/check-information?hasErrors=true')
       .expect(200)
@@ -570,9 +619,10 @@ describe('Check information routes tests', () => {
 
   it('GET /calculation/:nomsId/check-information should display error page for case load errors.', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
-    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     prisonerService.getPrisonerDetail.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+    checkInformationService.checkInformation.mockImplementation(() => {
       throw FullPageError.notInCaseLoadError()
     })
     return request(app)
@@ -589,7 +639,7 @@ describe('Check information routes tests', () => {
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
-    prisonerService.getActiveSentencesAndOffences.mockImplementation(() => {
+    checkInformationService.checkInformation.mockImplementation(() => {
       throw FullPageError.noSentences()
     })
     return request(app)
@@ -605,26 +655,11 @@ describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information will redirect user if they have unanswered questions', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(null)
-    return request(app)
-      .get('/calculation/A1234AA/check-information')
-      .expect(302)
-      .expect('Location', '/calculation/A1234AA/alternative-release-arrangements')
-      .expect(res => {
-        expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AA')
-      })
-  })
 
-  it('GET /calculation/:nomsId/check-information will redirect user if they have answered questions no longer applicable', () => {
-    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
-    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    questionsService.checkQuestions.mockResolvedValue(true as never)
     return request(app)
       .get('/calculation/A1234AA/check-information')
       .expect(302)
       .expect('Location', '/calculation/A1234AA/alternative-release-arrangements')
-      .expect(res => {
-        expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AA')
-      })
   })
 })
