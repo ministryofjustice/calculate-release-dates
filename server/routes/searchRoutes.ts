@@ -3,7 +3,9 @@ import PrisonerService from '../services/prisonerService'
 import { PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 
 export default class SearchRoutes {
-  constructor(private readonly prisonerService: PrisonerService) {}
+  constructor(private readonly prisonerService: PrisonerService) {
+    // intentionally left blank
+  }
 
   public searchViewPrisoners: RequestHandler = this.searchPrisoners({ view: true })
 

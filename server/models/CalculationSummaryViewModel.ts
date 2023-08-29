@@ -22,7 +22,9 @@ export default class CalculationSummaryViewModel {
     public calculationSummaryUnavailable?: boolean,
     public dpsEntryPoint?: boolean,
     public approvedDates?: { [key: string]: string }
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public hdcedBeforePRRD(): boolean {
     if (this.releaseDates?.HDCED && this.calculationBreakdown?.otherDates?.PRRD) {

@@ -11,7 +11,9 @@ export default class GenuineOverrideRoutes {
     private readonly entryPointService: EntryPointService,
     private readonly prisonerService: PrisonerService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public startPage: RequestHandler = async (req, res): Promise<void> => {
     const { calculationReference } = req.query as Record<string, string>

@@ -16,7 +16,9 @@ export default class ViewRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly entryPointService: EntryPointService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public startViewJourney: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user

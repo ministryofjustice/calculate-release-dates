@@ -11,7 +11,7 @@ const createEnvelope = (properties: Record<string, string | boolean>, baseType =
       baseType,
       baseData: { properties },
     } as DataTelemetry,
-  } as EnvelopeTelemetry)
+  }) as EnvelopeTelemetry
 
 const createContext = (username: string) =>
   ({
@@ -24,7 +24,7 @@ const createContext = (username: string) =>
         },
       },
     },
-  } as ContextObject)
+  }) as ContextObject
 
 const context = createContext(user.username)
 

@@ -19,7 +19,9 @@ export default class CalculationRoutes {
     private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService,
     private readonly viewReleaseDatesService: ViewReleaseDatesService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user

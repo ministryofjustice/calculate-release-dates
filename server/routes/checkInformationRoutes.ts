@@ -19,7 +19,9 @@ export default class CheckInformationRoutes {
     private readonly prisonerService: PrisonerService,
     private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user

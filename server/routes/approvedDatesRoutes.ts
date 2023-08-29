@@ -11,7 +11,9 @@ export default class ApprovedDatesRoutes {
     private readonly prisonerService: PrisonerService,
     private readonly approvedDatesService: ApprovedDatesService,
     private readonly manualEntryService: ManualEntryService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public askApprovedDatesQuestion: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user

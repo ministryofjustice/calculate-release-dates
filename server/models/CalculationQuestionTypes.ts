@@ -10,7 +10,9 @@ export default class CalculationQuestionTypes {
     public readonly url: 'list-a' | 'list-b' | 'list-c' | 'list-d',
     public readonly text: 'List A' | 'List B' | 'List C' | 'List D',
     public readonly textLower: 'list A' | 'list B' | 'list C' | 'list D'
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public static ORIGINAL = new CalculationQuestionTypes('ORIGINAL', 'list-a', 'List A', 'list A')
 

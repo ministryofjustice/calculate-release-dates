@@ -24,7 +24,9 @@ export default class CompareRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly bulkLoadService: UserPermissionsService,
     private readonly prisonerService: PrisonerService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   /* eslint-disable */
   public index: RequestHandler = async (req, res) => {
