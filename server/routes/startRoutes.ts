@@ -8,7 +8,9 @@ export default class StartRoutes {
     private readonly entryPointService: EntryPointService,
     private readonly prisonerService: PrisonerService,
     private readonly userPermissionsService: UserPermissionsService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public startPage: RequestHandler = async (req, res): Promise<void> => {
     const { prisonId } = req.query as Record<string, string>

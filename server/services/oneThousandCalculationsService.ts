@@ -24,7 +24,9 @@ export default class OneThousandCalculationsService {
   constructor(
     private readonly prisonerService: PrisonerService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
   /* eslint-disable */
   public async runCalculations(
     username: string,

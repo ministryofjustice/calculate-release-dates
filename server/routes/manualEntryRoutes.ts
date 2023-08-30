@@ -13,7 +13,9 @@ export default class ManualEntryRoutes {
     private readonly prisonerService: PrisonerService,
     private readonly manualCalculationService: ManualCalculationService,
     private readonly manualEntryService: ManualEntryService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public landingPage: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user

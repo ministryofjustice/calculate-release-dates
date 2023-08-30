@@ -204,7 +204,9 @@ export default class ManualEntryService {
     private readonly manualEntryValidationService: ManualEntryValidationService,
     private readonly dateTypeConfigurationService: DateTypeConfigurationService,
     private readonly dateValidationService: DateValidationService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public verifySelectedDateType(
     req: Request,

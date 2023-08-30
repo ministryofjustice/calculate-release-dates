@@ -9,7 +9,9 @@ export default class OtherRoutes {
     private readonly oneThousandCalculationsService: OneThousandCalculationsService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   public getPrisonerImage: RequestHandler = async (req, res): Promise<void> => {
     const { username } = res.locals.user

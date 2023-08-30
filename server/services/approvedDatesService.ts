@@ -43,7 +43,9 @@ const selectDatesError = {
   },
 }
 export default class ApprovedDatesService {
-  constructor(private readonly dateTypeConfigurationService: DateTypeConfigurationService) {}
+  constructor(private readonly dateTypeConfigurationService: DateTypeConfigurationService) {
+    // intentionally left blank
+  }
 
   public getConfig(req: Request): DateSelectConfiguration {
     const config = approvedDatesConfig

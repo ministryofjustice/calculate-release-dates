@@ -16,7 +16,9 @@ import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSear
 import { FullPageError } from '../types/FullPageError'
 
 export default class PrisonerService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {
+    // intentionally left blank
+  }
 
   async getPrisonerImage(username: string, nomsId: string): Promise<Readable> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)

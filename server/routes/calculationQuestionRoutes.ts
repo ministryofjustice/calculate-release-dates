@@ -20,7 +20,9 @@ export default class CalculationQuestionRoutes {
     private readonly prisonerService: PrisonerService,
     private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService
-  ) {}
+  ) {
+    // intentionally left blank
+  }
 
   private handleListRequest = (type: CalculationQuestionTypes): RequestHandler => {
     return async (req, res): Promise<void> => {
