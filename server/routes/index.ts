@@ -24,6 +24,8 @@ export default function Index({
   manualEntryService,
   userPermissionsService,
   approvedDatesService,
+  checkInformationService,
+  questionsService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -40,7 +42,9 @@ export default function Index({
     calculateReleaseDatesService,
     prisonerService,
     entryPointService,
-    userInputService
+    userInputService,
+    checkInformationService,
+    questionsService
   )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
 
@@ -84,7 +88,8 @@ export default function Index({
     userPermissionsService,
     entryPointService,
     prisonerService,
-    calculateReleaseDatesService
+    calculateReleaseDatesService,
+    checkInformationService
   )
 
   const indexRoutes = () => {
@@ -192,6 +197,18 @@ export default function Index({
     post('/specialist-support/search/', genuineOverrideAccessRoutes.submitSearch)
     get('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.loadConfirmPage)
     post('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.submitConfirmPage)
+    get(
+      '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
+      genuineOverrideAccessRoutes.loadCheckSentenceAndInformationPage
+    )
+    post(
+      '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
+      genuineOverrideAccessRoutes.submitCheckSentenceAndInformationPage
+    )
+    get(
+      '/specialist-support/calculation/:calculationReference/calculation',
+      genuineOverrideAccessRoutes.loadCalculationPage
+    )
   }
 
   const compareRoutes = () => {

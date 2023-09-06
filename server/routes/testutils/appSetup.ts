@@ -20,6 +20,8 @@ import ManualCalculationService from '../../services/manualCalculationService'
 import ManualEntryService from '../../services/manualEntryService'
 import UserPermissionsService from '../../services/userPermissionsService'
 import ApprovedDatesService from '../../services/approvedDatesService'
+import CheckInformationService from '../../services/checkInformationService'
+import QuestionsService from '../../services/questionsService'
 
 const user = {
   name: 'anon nobody',
@@ -82,6 +84,8 @@ export const appWithAllRoutes = (overrides: Partial<Services> = {}, production =
     manualEntryService: {} as ManualEntryService,
     userPermissionsService: {} as UserPermissionsService,
     approvedDatesService: {} as ApprovedDatesService,
+    checkInformationService: {} as CheckInformationService,
+    questionsService: {} as QuestionsService,
     ...overrides,
   })
   auth.default.authenticationMiddleware = () => (req, res, next) => next()

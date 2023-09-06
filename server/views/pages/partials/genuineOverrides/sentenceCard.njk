@@ -1,0 +1,99 @@
+{% from "./sentenceLength.njk" import sentenceLength %}
+
+{% macro sentenceCard(params) %}
+    <div data-qa="{{ params.case.caseSequence }}-sentence-cards">
+        {% for sentenceModel in params.case.sentences %}
+            {% set sentence = sentenceModel.sentencesAndOffence %}
+            {% for offence in sentence.offences %}
+
+                <div class="govuk-!-margin-bottom-6 sentence-card flex">
+                    <div class="govuk-grid-column-full govuk-!-margin-top-4">
+                        <h3 class="govuk-body-s govuk-!-margin-bottom-0">Count {{ sentence.lineSequence }}</h3>
+                        <h4 class="govuk-heading-s govuk-!-margin-bottom-1">{{ offence.offenceDescription }}</h4>
+                        <p class="govuk-body-s">
+                            {% if (offence.offenceEndDate and offence.offenceStartDate and offence.offenceEndDate !== offence.offenceStartDate) %}
+                        Committed from {{ offence.offenceStartDate | date('DD MMMM YYYY') }} to {{ offence.offenceEndDate | date('DD MMMM YYYY') }}
+                            {% elseif (offence.offenceEndDate or offence.offenceStartDate) %}
+                        Committed on {{ (offence.offenceEndDate or offence.offenceStartDate) | date('DD MMMM YYYY') }}
+                            {% else %}
+                        Offence date not entered
+                    {% endif %}
+                        </p>
+                        <table class="govuk-table govuk-!-margin-right-4 govuk-!-margin-bottom-6 govuk-!-margin-bottom-0 fixed-layout-table">
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row govuk-body-s">
+                                    <th scope="row" class="govuk-table__header sentence-table-header">CJA Code</th>
+                                    <td class="govuk-table__cell">
+                                        {{ sentence.sentenceCategory }}
+                                    </td>
+                                </tr>
+                                <tr class="govuk-table__row govuk-body-s">
+                                    <tr class="govuk-table__row govuk-body-s">
+                                        <th scope="row" class="govuk-table__header sentence-table-header">Sentence type</th>
+                                        <td class="govuk-table__cell">
+                                            {{ sentence.sentenceTypeDescription }}
+                                            {% if params.includeSDSPlusBadge and params.rowIsSdsPlus(sentence, offence)%}
+                                                <span class="moj-badge moj-badge--small">SDS+</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr class="govuk-table__row govuk-body-s">
+                                        <th scope="row" class="govuk-table__header sentence-table-header">Sentence date</th>
+                                        <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
+                                    </tr>
+                                    {% if sentenceModel.isFixedTermRecall() %}
+                                        <tr class="govuk-table__row govuk-body-s">
+                                            <th scope="row" class="govuk-table__header sentence-table-header">Return to custody</th>
+                                            <td class="govuk-table__cell">
+                                                {{ params.returnToCustodyDate | date('DD MMMM YYYY') }}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    {% if sentenceModel.hasCustodialAndLicenseTerms() %}
+                                        {{ sentenceLength(sentenceModel.imprisonmentTerm, 'Custodial term') }}
+                                        {{ sentenceLength(sentenceModel.licenceTerm, 'Licence period') }}
+                                    {% else %}
+                                        {{ sentenceLength(sentence.terms, 'Sentence length') }}
+                                    {% endif %}
+
+                                    {% if params.includeConcurrentOrConsecutiveText and params.offenceCount > 1 %}
+                                        <tr class="govuk-table__row govuk-body-s">
+                                            <th scope="row" class="govuk-table__header sentence-table-header">Concurrent or consecutive</th>
+                                            <td class="govuk-table__cell">
+                                                {% if sentence.consecutiveToSequence %}
+                                                    {% set consecutiveToSequence = params
+                                                        .sentenceSequenceToSentence
+                                                        .get(sentence.consecutiveToSequence) %}
+                                    Consecutive to  court case {{ consecutiveToSequence.caseSequence }} count {{ consecutiveToSequence.lineSequence }}
+                                                {% else %}
+                                    Concurrent
+                                        {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% if sentenceModel.isAfine() %}
+                                            <tr class="govuk-table__row govuk-body-s">
+                                                <th scope="row" class="govuk-table__header sentence-table-header">Fine amount</th>
+                                                <td class="govuk-table__cell">{{ sentence.fineAmount | formatCurrency }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if params.includeCheckboxes %}
+                                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                                    <div class="govuk-checkboxes__item">
+                                        <input type="hidden" name="charges" value="{{offence.offenderChargeId}}"/>
+                                        <input aria-describedby="body-summary"  type="checkbox" class="govuk-checkboxes__input row-checkbox" id="checkbox-{{offence.offenderChargeId}}" name="{{offence.offenderChargeId}}" value="true" {{ "checked" if params.isCheckboxChecked(sentence, offence) }} >
+                                        <label class="govuk-label govuk-checkboxes__label" for="checkbox-{{offence.offenderChargeId}}">
+                                This offence appears on {{params.listText}}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endmacro %}

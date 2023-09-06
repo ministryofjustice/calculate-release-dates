@@ -3,12 +3,12 @@
         <dt class="custom-summary-list__key release-dates-key govuk-!-font-size-24" style="max-width: 40%;">{{ heading }}
             <p class="govuk-hint">{{ description }}</p>
         </dt>
-        <dd class="govuk-summary-list__value" style="min-width: 40%;" data-qa={{ dataQa }}>{{ releaseDate }}
+        <dd class="govuk-summary-list__value release-dates-value" data-qa={{ dataQa }}>{{ releaseDate }}
             {% for extra in extras %}
                 {{ extra | safe }}
             {% endfor %}</dd>
         {% if not model.viewJourney %}
-            <dd class="govuk-summary-list__action">
+            <dd class="govuk-summary-list__action govuk-!-text-align-right">
                 <a class="govuk-link"
                    href="/calculation/{{ model.nomsId }}/{{ model.calculationRequestId }}/change?dateType={{ heading }}">Change
                     <span class="govuk-visually-hidden"> {{ heading }}</span></a>
