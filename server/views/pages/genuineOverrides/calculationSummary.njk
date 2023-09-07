@@ -1,19 +1,126 @@
 {% extends "../../partials/layout.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = applicationName + " - Home" %}
-{% set pageId = "specialistSupportIndex" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% set pageTitle = applicationName + " - calculation summary" %}
+{% set pageId = "genuine-overrides-calculation-summary" %}
 
 {% block aside %}
+    {% set prisonerDetail = model.prisonerDetail %}
     {% include "../partials/prisonerIdentityBar.njk" %}
 {% endblock %}
 
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {% if featureToggles.approvedDates %}
+            {% if not model.approvedDates %}
+                {{ govukBackLink({
+                    text: "Back",
+                    href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
+                }) }}
+            {% else %}
+                {{ govukBackLink({
+                    text: "Check sentence and offence information",
+                    href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
+                }) }}
+            {% endif %}
+        {% else %}
+            {{ govukBackLink({
+                text: "Back",
+                href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
+            }) }}
+        {% endif %}
+    </nav>
+{% endblock %}
+
 {% block content %}
+    {% set validationErrors = model.validationErrors %}
+    {% if formError %}
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+                {
+                    text: "You must select either 'Yes' or 'No' before continuing",
+                    href: "#releaseDatesQuestion"
+                }
+            ]
+        }) }}
+    {% endif %}
+    {% include "../partials/calculationSummary/summarySection.njk" %}
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">
-                Calculation Summary
-            </h1>
+
+            <form method="post">
+                {% if formError %}
+                <div id="releaseDatesQuestion">
+                    {{ govukRadios({
+                        name: "doYouAgree",
+                        fieldset: {
+                            legend: {
+                                text: "Do you agree with these release dates?",
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--l govuk-!-margin-top-4"
+                            }
+                        },
+                        items: [
+                            {
+                                value: "yes",
+                                text: "Yes, I agree with these dates"
+                            },
+                            {
+                                value: "no",
+                                text: "No, I need to override these dates",
+                                attributes: {
+                                    disabled: true
+                                }
+                            }
+                        ],
+                        errorMessage: {
+                            text: "You must select either 'Yes' or 'No' before continuing"
+                        }
+                    }) }}
+                    {% else %}
+                        {{ govukRadios({
+                            name: "doYouAgree",
+                            fieldset: {
+                                legend: {
+                                    text: "Do you agree with these release dates?",
+                                    isPageHeading: true,
+                                    classes: "govuk-fieldset__legend--l govuk-!-margin-top-4"
+                                }
+                            },
+                            items: [
+                                {
+                                    value: "yes",
+                                    text: "Yes, I agree with these dates"
+                                },
+                                {
+                                    value: "no",
+                                    text: "No, I need to override these dates",
+                                    attributes: {
+                                    disabled: true
+                                    }
+                                }
+                            ]
+                        }) }}
+                    {% endif %}
+                </div>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+                {{ govukButton({
+                    text: "Continue",
+                    value: 'continue',
+                    preventDoubleClick: true,
+                    type: submit,
+                    attributes: { 'data-qa': 'override-continue' }
+                }) }}
+            </form>
         </div>
     </div>
 {% endblock %}
