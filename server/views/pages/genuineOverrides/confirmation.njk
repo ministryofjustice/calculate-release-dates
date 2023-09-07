@@ -1,0 +1,45 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set pageTitle = applicationName + " - calculation complete" %}
+{% set pageId = "calculation-complete" %}
+
+{% block aside %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-panel govuk-panel--confirmation">
+
+                {% if manual %}
+                    {% include "../partials/complete/calculationSavedManual.njk" %}
+                    {% elif noDates %}
+                    {% include "../partials/complete/calculationSavedNoDates.njk" %}
+                    {% elif hasApprovedDates %}
+                    {% include "../partials/complete/calculationSavedApprovedDates.njk" %}
+                {% else %}
+                    {% include "../partials/complete/calculationSavedCalculated.njk" %}
+                {% endif %}
+            </div>
+
+            <div class="govuk-!-margin-top-8">
+                <p class="govuk-body">
+                    <a class="govuk-link" href={{ "/calculation/" + prisonerDetail.offenderNo +
+                    "/summary/" + calculationRequestId + "/print" }}>Print calculation summary</a>
+                </p>
+                <p class="govuk-body">
+                    <a class="govuk-link" href="/search/prisoners">Calculate release dates for another person</a>
+                </p>
+                <p class="govuk-body">
+                    <a class="govuk-link" href={{ digitalPrisonServicesUrl }}>Back to Digital Prison Service (DPS) search</a>
+                </p>
+            </div>
+
+            {% include "../partials/complete/feedbackSection.njk" %}
+
+        </div>
+    </div>
+{% endblock %}

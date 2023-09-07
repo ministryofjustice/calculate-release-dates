@@ -89,7 +89,9 @@ export default function Index({
     entryPointService,
     prisonerService,
     calculateReleaseDatesService,
-    checkInformationService
+    checkInformationService,
+    userInputService,
+    viewReleaseDatesService
   )
 
   const indexRoutes = () => {
@@ -206,8 +208,16 @@ export default function Index({
       genuineOverrideAccessRoutes.submitCheckSentenceAndInformationPage
     )
     get(
-      '/specialist-support/calculation/:calculationReference/calculation',
+      '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
       genuineOverrideAccessRoutes.loadCalculationPage
+    )
+    post(
+      '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
+      genuineOverrideAccessRoutes.submitCalculationPage
+    )
+    get(
+      '/specialist-support/calculation/:calculationReference/complete/:calculationRequestId',
+      genuineOverrideAccessRoutes.loadConfirmationPage
     )
   }
 

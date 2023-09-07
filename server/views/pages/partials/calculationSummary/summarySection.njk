@@ -1,0 +1,38 @@
+{% include "../../partials/customErrorBanner.njk" %}
+    {% include "../../partials/ersedRecallNotificationBanner.njk" %}
+    {% include "../../partials/ersedCannotHappenNotificationBanner.njk" %}
+    {% include "../../partials/hdcedNotificationBanner.njk" %}
+<div class="moj-width-container govuk-!-margin-top-9">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Review calculation</h1>
+            {% if not model.approvedDates %}
+                <p class="govuk-body">Check the release dates before entering the approved dates.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+        <h2 class="govuk-heading-l govuk-!-margin-top-4">Release dates</h2>
+
+        {% include "../../partials/calculationSummaryDates.njk" %}
+    </div>
+</div>
+{% if model.approvedDates %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h2 class="govuk-heading-l govuk-!-margin-top-4">Manual dates</h2>
+            {% include "../../partials/approvedSummaryDates.njk" %}
+        </div>
+    </div>
+{% endif %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% include "../../partials/calculationSummary/detailsMissingInset.njk" %}
+        {% include "../../partials/calculationSummary/howDatesCalculatedInset.njk" %}
+    </div>
+</div>
+
+{% include "../../partials/calculationSummaryBreakdown.njk" %}

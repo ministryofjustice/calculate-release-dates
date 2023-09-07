@@ -5,6 +5,12 @@ import PrisonerService from '../services/prisonerService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { FullPageError } from '../types/FullPageError'
 import CheckInformationService from '../services/checkInformationService'
+import UserInputService from '../services/userInputService'
+import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
+import ViewReleaseDatesService from '../services/viewReleaseDatesService'
+import logger from '../../logger'
+import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import { nunjucksEnv } from '../utils/nunjucksSetup'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -12,7 +18,9 @@ export default class GenuineOverrideRoutes {
     private readonly entryPointService: EntryPointService,
     private readonly prisonerService: PrisonerService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly checkInformationService: CheckInformationService
+    private readonly checkInformationService: CheckInformationService,
+    private readonly userInputService: UserInputService,
+    private readonly viewReleaseDatesService: ViewReleaseDatesService
   ) {
     // intentionally left blank
   }
@@ -125,15 +133,185 @@ export default class GenuineOverrideRoutes {
   public submitCheckSentenceAndInformationPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
-      return res.redirect(`/specialist-support/calculation/${calculationReference}/calculation`)
+      const { username, token } = res.locals.user
+      const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, calculation.prisonerId)
+      userInputs.calculateErsed = req.body.ersed === 'true'
+      this.userInputService.setCalculationUserInputForPrisoner(req, calculation.prisonerId, userInputs)
+
+      const errors = await this.calculateReleaseDatesService.validateBackend(calculation.prisonerId, userInputs, token)
+      if (errors.messages.length > 0) {
+        return res.redirect(`/calculation/${calculation.prisonerId}/check-information?hasErrors=true`)
+      }
+
+      const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
+        username,
+        calculation.prisonerId,
+        userInputs,
+        token
+      )
+      return res.redirect(
+        `/specialist-support/calculation/${calculationReference}/summary/${releaseDates.calculationRequestId}`
+      )
     }
     throw FullPageError.notFoundError()
   }
 
   public loadCalculationPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
-      return res.render('pages/genuineOverrides/calculationSummary')
+      const { username, caseloads, token } = res.locals.user
+      const calculationRequestId = Number(req.params.calculationRequestId)
+      const { calculationReference } = req.params
+      const { formError } = req.query
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
+        username,
+        calculationRequestId,
+        token
+      )
+      const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      if (releaseDates.prisonerId !== calculation.prisonerId) {
+        throw FullPageError.notFoundError()
+      }
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+      const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
+        username,
+        releaseDates,
+        token
+      )
+      const serverErrors = req.flash('serverErrors')
+      let validationErrors = null
+      if (serverErrors && serverErrors[0]) {
+        validationErrors = JSON.parse(serverErrors[0])
+      }
+      const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+      const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(
+        calculationRequestId,
+        token
+      )
+      const model = new CalculationSummaryViewModel(
+        releaseDates.dates,
+        weekendAdjustments,
+        calculationRequestId,
+        calculation.prisonerId,
+        prisonerDetail,
+        sentencesAndOffences,
+        false,
+        false,
+        breakdown?.calculationBreakdown,
+        breakdown?.releaseDatesWithAdjustments,
+        validationErrors,
+        false,
+        false
+      )
+
+      return res.render('pages/genuineOverrides/calculationSummary', { model, formError })
     }
     throw FullPageError.notFoundError()
+  }
+
+  public submitCalculationPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { doYouAgree } = req.body
+      const { calculationReference, calculationRequestId } = req.params
+      if (!doYouAgree) {
+        return res.redirect(
+          `/specialist-support/calculation/${calculationReference}/summary/${calculationRequestId}?formError=true`
+        )
+      }
+      if (doYouAgree === 'yes') {
+        const { username, token } = res.locals.user
+        const { nomsId } = req.params
+        const calculationRequestIdNumber = Number(req.params.calculationRequestId)
+        const breakdownHtml = await this.getBreakdownFragment(calculationRequestIdNumber, token)
+        const approvedDates =
+          req.session.selectedApprovedDates != null && req.session.selectedApprovedDates[nomsId] != null
+            ? req.session.selectedApprovedDates[nomsId]
+            : []
+        try {
+          const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
+            username,
+            calculationRequestIdNumber,
+            token,
+            {
+              calculationFragments: {
+                breakdownHtml,
+              },
+              approvedDates,
+            }
+          )
+          return res.redirect(
+            `/specialist-support/calculation/${calculationReference}/complete/${bookingCalculation.calculationRequestId}`
+          )
+        } catch (error) {
+          // TODO Move handling of validation errors from the api into the service layer
+          logger.error(error)
+          if (error.status === 412) {
+            req.flash(
+              'serverErrors',
+              JSON.stringify({
+                messages: [
+                  {
+                    text: 'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
+                    href: `/specialist-support/calculation/${calculationReference}/sentence-and-offence-information'`,
+                  },
+                ],
+              } as ErrorMessages)
+            )
+          } else {
+            req.flash(
+              'serverErrors',
+              JSON.stringify({
+                messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
+                messageType: ErrorMessageType.SAVE_DATES,
+              } as ErrorMessages)
+            )
+          }
+          return res.redirect(`/specialist-support/calculation/${calculationReference}/summary/${calculationRequestId}`)
+        }
+      }
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { calculationRequestId } = req.params
+      const { username, caseloads, token } = res.locals.user
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
+        username,
+        Number(calculationRequestId),
+        token
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+      return res.render('pages/genuineOverrides/confirmation', { prisonerDetail })
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {
+    return nunjucksEnv().render('pages/fragments/breakdownFragment.njk', {
+      model: {
+        ...(await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)),
+        showBreakdown: () => true,
+      },
+    })
   }
 }
