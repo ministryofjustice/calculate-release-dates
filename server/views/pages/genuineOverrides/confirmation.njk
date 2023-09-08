@@ -20,26 +20,25 @@
                     {% include "../partials/complete/calculationSavedNoDates.njk" %}
                     {% elif hasApprovedDates %}
                     {% include "../partials/complete/calculationSavedApprovedDates.njk" %}
+
                 {% else %}
                     {% include "../partials/complete/calculationSavedCalculated.njk" %}
                 {% endif %}
             </div>
 
+
             <div class="govuk-!-margin-top-8">
+                <h3 class="govuk-heading-m">
+                    What to do next
+                </h3>
                 <p class="govuk-body">
-                    <a class="govuk-link" href={{ "/calculation/" + prisonerDetail.offenderNo +
-                    "/summary/" + calculationRequestId + "/print" }}>Print calculation summary</a>
+                    Contact the OMU staff member and tell them why the CRDS calculation was correct.<br>
+                    <a href="mailto:?subject=Specialist Support">Email OMU</a>
                 </p>
                 <p class="govuk-body">
-                    <a class="govuk-link" href="/search/prisoners">Calculate release dates for another person</a>
-                </p>
-                <p class="govuk-body">
-                    <a class="govuk-link" href={{ digitalPrisonServicesUrl }}>Back to Digital Prison Service (DPS) search</a>
+                    <a class="govuk-link" href="/specalist-support/search">Look up another calculation</a>
                 </p>
             </div>
-
-            {% include "../partials/complete/feedbackSection.njk" %}
-
         </div>
     </div>
 {% endblock %}
