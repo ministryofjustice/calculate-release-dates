@@ -77,8 +77,8 @@
                                 value: "no",
                                 text: "No, I need to override these dates",
                                 attributes: {
-                                    disabled: true
-                                }
+                                disabled: true
+                            }
                             }
                         ],
                         errorMessage: {
@@ -105,21 +105,20 @@
                                     text: "No, I need to override these dates",
                                     attributes: {
                                     disabled: true
-                                    }
+                                }
                                 }
                             ]
                         }) }}
                     {% endif %}
+                    {{ govukButton({
+                        text: "Continue",
+                        value: 'continue',
+                        preventDoubleClick: true,
+                        type: submit,
+                        attributes: { 'data-qa': 'override-continue' }
+                    }) }}
                 </div>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-
-                {{ govukButton({
-                    text: "Continue",
-                    value: 'continue',
-                    preventDoubleClick: true,
-                    type: submit,
-                    attributes: { 'data-qa': 'override-continue' }
-                }) }}
             </form>
         </div>
     </div>
