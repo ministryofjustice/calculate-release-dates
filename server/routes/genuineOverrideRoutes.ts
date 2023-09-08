@@ -252,8 +252,9 @@ export default class GenuineOverrideRoutes {
               approvedDates,
             }
           )
+          // This uses the new calculation reference, so it can be used in the email for the OMU staff for a link to the view journey
           return res.redirect(
-            `/specialist-support/calculation/${calculationReference}/complete/${bookingCalculation.calculationRequestId}`
+            `/specialist-support/calculation/${bookingCalculation.calculationReference}/complete/${bookingCalculation.calculationRequestId}`
           )
         } catch (error) {
           // TODO Move handling of validation errors from the api into the service layer
