@@ -6,6 +6,7 @@ import {
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
+  GenuineOverride,
   ManualEntryDate,
   SubmitCalculationRequest,
   ValidationMessage,
@@ -147,5 +148,12 @@ export default class CalculateReleaseDatesApiClient {
       path: `/manual-calculation/${nomsId}`,
       data: { selectedManualEntryDates },
     }) as Promise<ManualCalculationResponse>
+  }
+
+  storeOverrideReason(overrideRequest: GenuineOverride) {
+    return this.restClient.post({
+      path: '/specialist-support/genuine-override',
+      data: overrideRequest,
+    }) as Promise<GenuineOverride>
   }
 }

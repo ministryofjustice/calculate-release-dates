@@ -11,6 +11,8 @@ import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
+import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import { GenuineOverride } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -283,6 +285,9 @@ export default class GenuineOverrideRoutes {
           return res.redirect(`/specialist-support/calculation/${calculationReference}/summary/${calculationRequestId}`)
         }
       }
+      if (doYouAgree === 'no') {
+        return res.redirect(`/specialist-support/calculation/${calculationReference}/reason`)
+      }
     }
     throw FullPageError.notFoundError()
   }
@@ -303,6 +308,71 @@ export default class GenuineOverrideRoutes {
         token
       )
       return res.render('pages/genuineOverrides/confirmation', { prisonerDetail })
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadReasonPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { calculationReference } = req.params
+      const { username, caseloads, token } = res.locals.user
+      const { noRadio, noOtherReason } = req.query
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+      return res.render('pages/genuineOverrides/reason', { prisonerDetail, noRadio, noOtherReason })
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public submitReasonPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { calculationReference } = req.params
+      const { token } = res.locals.user
+      const { overrideReason, otherReason } = req.body
+      if (!overrideReason) {
+        return res.redirect(`/specialist-support/calculation/${calculationReference}/reason?noRadio=true`)
+      }
+      if (overrideReason === 'other' && otherReason === '') {
+        return res.redirect(`/specialist-support/calculation/${calculationReference}/reason?noOtherReason=true`)
+      }
+      const reason = overrideReason === 'other' && otherReason ? `Other: ${otherReason}` : overrideReason
+      const genuineOverride = {
+        reason,
+        originalCalculationRequest: calculationReference,
+        isOverridden: true,
+      } as GenuineOverride
+      await new CalculateReleaseDatesApiClient(token).storeOverrideReason(genuineOverride)
+      return res.redirect(`/specialist-support/calculation/${calculationReference}/select-date-types`)
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadSelectDatesPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { calculationReference } = req.params
+      const { username, caseloads, token } = res.locals.user
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+      const config = {}
+      return res.render('pages/genuineOverrides/dateTypeSelection', { prisonerDetail, config })
     }
     throw FullPageError.notFoundError()
   }
