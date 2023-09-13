@@ -219,6 +219,12 @@ export default function Index({
       '/specialist-support/calculation/:calculationReference/complete/:calculationRequestId',
       genuineOverrideAccessRoutes.loadConfirmationPage
     )
+    get('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.loadReasonPage)
+    post('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.submitReasonPage)
+    get(
+      '/specialist-support/calculation/:calculationReference/select-date-types',
+      genuineOverrideAccessRoutes.loadSelectDatesPage
+    )
   }
 
   const compareRoutes = () => {

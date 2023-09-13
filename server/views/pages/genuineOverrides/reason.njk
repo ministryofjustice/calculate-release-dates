@@ -1,0 +1,131 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set pageTitle = applicationName + " - Enter specialist reason" %}
+{% set pageId = "specialistSupportReason" %}
+
+{% block aside %}
+    {% include "../../../views/pages/partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+            {% set textHtml %}
+                {{ govukInput({
+                    id: "other-reason",
+                    name: "otherReason",
+                    classes: "govuk-!-width-one-third",
+                    label: {
+                        text: "Other"
+                    }
+                }) }}
+            {% endset -%}
+            {% if noRadio %}
+                    {{ govukRadios({
+                        name: "overrideReason",
+                        fieldset: {
+                            legend: {
+                                text: "Select the reason for the override",
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--xl"
+                            }
+                        },
+                        errorMessage: {
+                            text: "Select a reason for the override."
+                        },
+                        items: [
+                            {
+                                value: "warrantMismatch",
+                                text: "Order of imprisonment/warrant doesn’t match trial record sheet"
+                            },
+                            {
+                                value: "terror",
+                                text: "Terrorism or terror-related offences"
+                            },
+                            {
+                                value: "other",
+                                text: "Other",
+                                conditional: {
+                                    html: textHtml
+                                }
+                            }
+                        ]
+                    }) }}
+            {% elif noOtherReason %}
+                {{ govukRadios({
+                    name: "overrideReason",
+                    fieldset: {
+                        legend: {
+                            text: "Select the reason for the override",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--xl"
+                        }
+                    },
+                    errorMessage: {
+                        text: "Enter a reason for the override."
+                    },
+                    items: [
+                        {
+                            value: "warrantMismatch",
+                            text: "Order of imprisonment/warrant doesn’t match trial record sheet"
+                        },
+                        {
+                            value: "terror",
+                            text: "Terrorism or terror-related offences"
+                        },
+                        {
+                            value: "other",
+                            text: "Other",
+                            checked: true,
+                            conditional: {
+                            html: textHtml
+                        }
+                        }
+                    ]
+                }) }}
+            {% else %}
+                {{ govukRadios(
+                    {
+                        name: "overrideReason",
+                        fieldset: {
+                            legend: {
+                                text: "Select the reason for the override",
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--xl"
+                            }
+                        },
+                        items: [
+                            {
+                                value: "warrantMismatch",
+                                text: "Order of imprisonment/warrant doesn’t match trial record sheet"
+                            },
+                            {
+                                value: "terror",
+                                text: "Terrorism or terror-related offences"
+                            },
+                            {
+                                value: "other",
+                                text: "Other",
+                                conditional: {
+                                html: textHtml
+                            }
+                            }
+                        ]
+                    }) }}
+            {% endif %}
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    value: 'continue',
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'continue' }
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

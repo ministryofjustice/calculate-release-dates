@@ -353,6 +353,12 @@ export interface components {
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
       validationMessages: components['schemas']['ValidationMessage'][]
     }
+    GenuineOverride: {
+      reason: string
+      originalCalculationRequest: string
+      savedCalculation?: string
+      isOverridden: boolean
+    }
     RelevantRemand: {
       /** Format: date */
       from: string

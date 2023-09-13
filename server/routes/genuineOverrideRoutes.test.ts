@@ -1,14 +1,18 @@
 import request from 'supertest'
 import { Express } from 'express'
+import nock from 'nock'
 import { appWithAllRoutes } from './testutils/appSetup'
 import UserPermissionsService from '../services/userPermissionsService'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { BookingCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { BookingCalculation, GenuineOverride } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import config from '../config'
 
 let app: Express
+let fakeApi: nock.Scope
+
 jest.mock('../services/userPermissionsService')
 jest.mock('../services/entryPointService')
 jest.mock('../services/prisonerService')
@@ -63,12 +67,16 @@ const stubbedPrisonerData = {
 } as PrisonApiPrisoner
 
 beforeEach(() => {
+  config.apis.calculateReleaseDates.url = 'http://localhost:8100'
+  fakeApi = nock(config.apis.calculateReleaseDates.url)
   app = appWithAllRoutes({ userPermissionsService, entryPointService, calculateReleaseDatesService, prisonerService })
 })
 
 afterEach(() => {
+  nock.cleanAll()
   jest.resetAllMocks()
 })
+
 describe('Genuine overrides routes tests', () => {
   it('GET /specialist-support should return the Specialist Support index page', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
@@ -223,5 +231,53 @@ describe('Genuine overrides routes tests', () => {
       .expect(res => {
         expect(res.text).toContain('A calculation or prisoner could not be found')
       })
+  })
+  it('GET /specialist-support/calculation/:calculationReference/reason should show the options', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/specialist-support/calculation/123/reason')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Other')
+        expect(res.text).toContain('Select the reason for the override')
+        expect(res.text).toContain('Order of imprisonment/warrant doesn’t match trial record sheet')
+      })
+  })
+  it('POST /specialist-support/calculation/:calculationReference/reason without selection  will show error', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .post('/specialist-support/calculation/123/reason')
+      .type('form')
+      .send({ overrideReason: null })
+      .expect(302)
+      .expect('Location', '/specialist-support/calculation/123/reason?noRadio=true')
+  })
+  it('POST /specialist-support/calculation/:calculationReference/reason without other reason  will show error', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .post('/specialist-support/calculation/123/reason')
+      .type('form')
+      .send({ overrideReason: 'other', otherReason: '' })
+      .expect(302)
+      .expect('Location', '/specialist-support/calculation/123/reason?noOtherReason=true')
+  })
+  it('POST /specialist-support/calculation/:calculationReference/reason with reason will redirect', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(stubbedPrisonerData)
+    fakeApi.post(`/specialist-support/genuine-override`).reply(200, {} as GenuineOverride)
+    return request(app)
+      .post('/specialist-support/calculation/123/reason')
+      .type('form')
+      .send({ overrideReason: 'terror', otherReason: '' })
+      .expect(302)
+      .expect('Location', '/specialist-support/calculation/123/select-date-types')
   })
 })
