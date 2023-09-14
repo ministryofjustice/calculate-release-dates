@@ -234,6 +234,20 @@ export default function Index({
       '/specialist-support/calculation/:calculationReference/enter-date',
       genuineOverrideAccessRoutes.loadEnterDatePage
     )
+    post(
+      '/specialist-support/calculation/:calculationReference/enter-date',
+      genuineOverrideAccessRoutes.submitEnterDatePage
+    )
+    get(
+      '/specialist-support/calculation/:calculationReference/confirm-override',
+      genuineOverrideAccessRoutes.loadConfirmOverridePage
+    )
+    get('/specialist-support/calculation/:calculationReference/remove-date', genuineOverrideAccessRoutes.loadRemoveDate)
+    post(
+      '/specialist-support/calculation/:calculationReference/remove-date',
+      genuineOverrideAccessRoutes.submitRemoveDate
+    )
+    get('/specialist-support/calculation/:calculationReference/change-date', genuineOverrideAccessRoutes.loadChangeDate)
   }
 
   const compareRoutes = () => {

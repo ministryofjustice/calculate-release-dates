@@ -12,7 +12,11 @@ import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
-import { GenuineOverride } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  GenuineOverride,
+  ManualEntryDate,
+  SubmittedDate,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualEntryService from '../services/manualEntryService'
 
 export default class GenuineOverrideRoutes {
@@ -434,6 +438,7 @@ export default class GenuineOverrideRoutes {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
       const { username, caseloads, token } = res.locals.user
+      const { year, month, day } = req.query
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
@@ -445,9 +450,162 @@ export default class GenuineOverrideRoutes {
         caseloads,
         token
       )
-      return res.render('pages/genuineOverrides/dateEntry', { prisonerDetail, calculationReference })
+      if (req.session.selectedManualEntryDates[releaseDates.prisonerId].length === 0) {
+        return res.redirect(`/specialist-support/calculation/${calculationReference}/select-date-types`)
+      }
+      let previousDate
+      if (year && month && day) {
+        previousDate = { year, month, day } as SubmittedDate
+      }
+      const date = this.manualEntryService.getNextDateToEnter(
+        req.session.selectedManualEntryDates[releaseDates.prisonerId]
+      )
+      if (date && date.dateType !== 'None') {
+        return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, previousDate })
+      }
+      return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
     }
     throw FullPageError.notFoundError()
+  }
+
+  public submitEnterDatePage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { username, caseloads, token } = res.locals.user
+      const { calculationReference } = req.params
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+
+      const storeDateResponse = this.manualEntryService.storeDate(
+        req.session.selectedManualEntryDates[releaseDates.prisonerId],
+        req.body
+      )
+      if (!storeDateResponse.success && storeDateResponse.message && !storeDateResponse.isNone) {
+        const { date, message, enteredDate } = storeDateResponse
+        const error = message
+        return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, error, enteredDate })
+      }
+      if (storeDateResponse.success && !storeDateResponse.message) {
+        req.session.selectedManualEntryDates[releaseDates.prisonerId].find(
+          (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType
+        ).date = storeDateResponse.date.date
+        return res.redirect(`/specialist-support/calculation/${calculationReference}/enter-date`)
+      }
+      return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadConfirmOverridePage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { username, caseloads, token } = res.locals.user
+      const { calculationReference } = req.params
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+      const rows = this.manualEntryService.getConfirmationConfiguration(req, releaseDates.prisonerId, true)
+
+      return res.render('pages/genuineOverrides/confirmOverride', { prisonerDetail, rows, calculationReference })
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadChangeDate: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { username, token } = res.locals.user
+      const { calculationReference } = req.params
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      const { date } = this.manualEntryService.changeDate(req, releaseDates.prisonerId)
+      return res.redirect(
+        `/specialist-support/calculation/${calculationReference}/enter-date?year=${date.year}&month=${date.month}&day=${date.day}`
+      )
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { calculationReference } = req.params
+    const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+      username,
+      calculationReference,
+      token
+    )
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+      username,
+      releaseDates.prisonerId,
+      caseloads,
+      token
+    )
+    const dateToRemove: string = <string>req.query.dateType
+    if (
+      req.session.selectedManualEntryDates[releaseDates.prisonerId].some(
+        (d: ManualEntryDate) => d.dateType === dateToRemove
+      )
+    ) {
+      const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+      return res.render('pages/genuineOverrides/removeDate', {
+        prisonerDetail,
+        dateToRemove,
+        fullDateName,
+        calculationReference,
+      })
+    }
+    return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
+  }
+
+  public submitRemoveDate: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { calculationReference } = req.params
+
+    const dateToRemove: string = <string>req.query.dateType
+    const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+      username,
+      calculationReference,
+      token
+    )
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+      username,
+      releaseDates.prisonerId,
+      caseloads,
+      token
+    )
+    const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+    if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
+      const error = true
+      return res.render('pages/genuineOverrides/removeDate', {
+        prisonerDetail,
+        dateToRemove,
+        fullDateName,
+        error,
+        calculationReference,
+      })
+    }
+    const remainingDates = this.manualEntryService.removeDate(req, releaseDates.prisonerId)
+    if (remainingDates === 0) {
+      return res.redirect(`/specialist-support/calculation/${calculationReference}/select-date-types`)
+    }
+    return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
   }
 
   private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {
