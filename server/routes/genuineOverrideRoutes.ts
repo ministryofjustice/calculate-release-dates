@@ -13,6 +13,7 @@ import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import { GenuineOverride } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ManualEntryService from '../services/manualEntryService'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -22,7 +23,8 @@ export default class GenuineOverrideRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly checkInformationService: CheckInformationService,
     private readonly userInputService: UserInputService,
-    private readonly viewReleaseDatesService: ViewReleaseDatesService
+    private readonly viewReleaseDatesService: ViewReleaseDatesService,
+    private readonly manualEntryService: ManualEntryService
   ) {
     // intentionally left blank
   }
@@ -149,7 +151,12 @@ export default class GenuineOverrideRoutes {
       if (errors.messages.length > 0) {
         return res.redirect(`/calculation/${calculation.prisonerId}/check-information?hasErrors=true`)
       }
-
+      if (!req.session.selectedManualEntryDates) {
+        req.session.selectedManualEntryDates = {}
+      }
+      if (req.session.selectedManualEntryDates[calculation.prisonerId]) {
+        req.session.selectedManualEntryDates[calculation.prisonerId] = []
+      }
       const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
         username,
         calculation.prisonerId,
@@ -219,7 +226,7 @@ export default class GenuineOverrideRoutes {
         false
       )
 
-      return res.render('pages/genuineOverrides/calculationSummary', { model, formError })
+      return res.render('pages/genuineOverrides/calculationSummary', { model, formError, calculationReference })
     }
     throw FullPageError.notFoundError()
   }
@@ -328,7 +335,12 @@ export default class GenuineOverrideRoutes {
         caseloads,
         token
       )
-      return res.render('pages/genuineOverrides/reason', { prisonerDetail, noRadio, noOtherReason })
+      return res.render('pages/genuineOverrides/reason', {
+        prisonerDetail,
+        noRadio,
+        noOtherReason,
+        calculationReference,
+      })
     }
     throw FullPageError.notFoundError()
   }
@@ -371,8 +383,69 @@ export default class GenuineOverrideRoutes {
         caseloads,
         token
       )
-      const config = {}
-      return res.render('pages/genuineOverrides/dateTypeSelection', { prisonerDetail, config })
+      const { config } = this.manualEntryService.verifySelectedDateType(req, releaseDates.prisonerId, false, true)
+      return res.render('pages/genuineOverrides/dateTypeSelection', { prisonerDetail, config, calculationReference })
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public submitSelectDatesPage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { calculationReference } = req.params
+      const { username, caseloads, token } = res.locals.user
+
+      if (!req.session.selectedManualEntryDates) {
+        req.session.selectedManualEntryDates = {}
+      }
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+
+      const { error, config } = this.manualEntryService.verifySelectedDateType(
+        req,
+        releaseDates.prisonerId,
+        false,
+        false
+      )
+      if (error) {
+        const insufficientDatesSelected = true
+        return res.render('pages/genuineOverrides/dateTypeSelection', {
+          prisonerDetail,
+          insufficientDatesSelected,
+          config,
+        })
+      }
+      this.manualEntryService.addManuallyCalculatedDateTypes(req, releaseDates.prisonerId)
+
+      return res.redirect(`/specialist-support/calculation/${calculationReference}/enter-date`)
+    }
+    throw FullPageError.notFoundError()
+  }
+
+  public loadEnterDatePage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { calculationReference } = req.params
+      const { username, caseloads, token } = res.locals.user
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+      return res.render('pages/genuineOverrides/dateEntry', { prisonerDetail, calculationReference })
     }
     throw FullPageError.notFoundError()
   }
