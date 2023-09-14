@@ -16,10 +16,11 @@
 {% block beforeContent %}
     {{ super() }}
     <nav>
-        {{ govukBackLink( {
+        {{ govukBackLink({
             text: "Check sentence and offence information",
-            href: "/specialist-support/calculation/" + calculationReference + "/sentence-and-offence-information"
+            href: "/calculation/" + prisonerDetail.offenderNo + "/check-information-unsupported"
         }) }}
+    </nav>
 {% endblock %}
 {% block content %}
     <div class="govuk-grid-row">
@@ -29,8 +30,8 @@
                 rows: rows
             }) }}
             <p class="govuk-body govuk-!-margin-bottom-8">
-            <a href="/calculation/{{ prisonerDetail.offenderNo }}/manual-entry/select-dates?addExtra=true"
-               class="govuk-link govuk-link--no-visited-state">Add another release date</a>
+                <a href="/specialist-support/calculation/{{ calculationReference }}/select-date-types?addExtra=true"
+                   class="govuk-link govuk-link--no-visited-state">Add another release date</a>
             </p>
         </div>
     </div>
@@ -40,7 +41,7 @@
             correct. These dates will be saved in NOMIS as a manual calculation.</p>
         {{ govukButton({
             text: "Confirm and save to NOMIS",
-            href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/save"
+            href: "/specialist-support/calculation/" + calculationReference + "/override/complete"
         }) }}
     </div>
 {% endblock %}

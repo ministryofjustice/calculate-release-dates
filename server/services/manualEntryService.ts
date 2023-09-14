@@ -335,12 +335,14 @@ export default class ManualEntryService {
     return DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
   }
 
-  public getConfirmationConfiguration(req: Request, nomsId: string) {
+  public getConfirmationConfiguration(req: Request, nomsId: string, isSpecialistSupport = false) {
     return req.session.selectedManualEntryDates[nomsId]
       .map((d: ManualEntryDate) => {
         const dateValue = this.dateString(d)
         const text = FULL_STRING_LOOKUP[d.dateType]
-        const items = this.getItems(nomsId, d, text)
+        const items = isSpecialistSupport
+          ? this.getSpecialistSupportItems(req.params.calculationReference, d, text)
+          : this.getItems(nomsId, d, text)
         return {
           key: {
             text,
@@ -378,6 +380,21 @@ export default class ManualEntryService {
       return items.filter(it => it.text !== 'Change')
     }
     return items
+  }
+
+  private getSpecialistSupportItems(calculationReference: string, d: ManualEntryDate, text: string) {
+    return [
+      {
+        href: `/specialist-support/calculation/${calculationReference}/change-date?dateType=${d.dateType}`,
+        text: 'Change',
+        visuallyHiddenText: `Change ${text}`,
+      },
+      {
+        href: `/specialist-support/calculation/${calculationReference}/remove-date?dateType=${d.dateType}`,
+        text: 'Remove',
+        visuallyHiddenText: `Remove ${text}`,
+      },
+    ]
   }
 
   public fullStringLookup(dateType: string): string {
