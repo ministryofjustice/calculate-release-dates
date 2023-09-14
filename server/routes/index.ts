@@ -91,7 +91,8 @@ export default function Index({
     calculateReleaseDatesService,
     checkInformationService,
     userInputService,
-    viewReleaseDatesService
+    viewReleaseDatesService,
+    manualEntryService
   )
 
   const indexRoutes = () => {
@@ -224,6 +225,14 @@ export default function Index({
     get(
       '/specialist-support/calculation/:calculationReference/select-date-types',
       genuineOverrideAccessRoutes.loadSelectDatesPage
+    )
+    post(
+      '/specialist-support/calculation/:calculationReference/select-date-types',
+      genuineOverrideAccessRoutes.submitSelectDatesPage
+    )
+    get(
+      '/specialist-support/calculation/:calculationReference/enter-date',
+      genuineOverrideAccessRoutes.loadEnterDatePage
     )
   }
 

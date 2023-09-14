@@ -1,0 +1,129 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - determinite manual entry" %}
+{% set pageId = "determinite selection" %}
+
+{% block aside %}
+    {% set prisonerDetail = prisonerDetail %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink( {
+            text: "Check sentence and offence information",
+            href: "/specialist-support/calculation/" + calculationReference + "/sentence-and-offence-information"
+        }) }}
+    </nav>
+{% endblock %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form class="form" method="post">
+                {% if error %}
+                    {{ govukDateInput({
+                        id: date.dateType,
+                        name: 'dateEntry',
+                        fieldset: {
+                            legend: {
+                                text: "Enter the " + date.dateText,
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--xl"
+                            }
+                        },
+                        hint: {
+                            text: "For example, 27 3 2007"
+                        },
+                        errorMessage: {
+                            text: error
+                        },
+                        items: [
+                            {
+                                classes: "govuk-input--width-2 govuk-input--error",
+                                name: "day",
+                                value: enteredDate.day
+                            },
+                            {
+                                classes: "govuk-input--width-2 govuk-input--error",
+                                name: "month",
+                                value: enteredDate.month
+                            },
+                            {
+                                classes: "govuk-input--width-4 govuk-input--error",
+                                name: "year",
+                                value: enteredDate.year
+                            }
+                        ]
+                    }) }}
+                    {% elif previousDate %}
+                    {{ govukDateInput({
+                        id: date.dateType,
+                        name: 'dateEntry',
+                        fieldset: {
+                            legend: {
+                                text: "Enter the " + date.dateText,
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--xl"
+                            }
+                        },
+                        hint: {
+                            text: "For example, 27 3 2007"
+                        },
+                        items: [
+                            {
+                                classes: "govuk-input--width-2",
+                                name: "day",
+                                value: previousDate.day
+                            },
+                            {
+                                classes: "govuk-input--width-2",
+                                name: "month",
+                                value: previousDate.month
+                            },
+                            {
+                                classes: "govuk-input--width-4",
+                                name: "year",
+                                value: previousDate.year
+                            }
+                        ]
+                    }) }}
+                {% else %}
+                    {{ govukDateInput({
+                        id: date.dateType,
+                        name: 'dateEntry',
+                        fieldset: {
+                            legend: {
+                                text: "Enter the " + date.dateText,
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--xl"
+                            }
+                        },
+                        hint: {
+                            text: "For example, 27 3 2007"
+                        }
+                    }) }}
+                {% endif %}
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                <input type="hidden" name="dateType" value="{{ date.dateType }}"/>
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    value: 'submit-date',
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'date-entry' }
+                }) }}
+            </form>
+        </div>
+    </div>
+    <script nonce="{{ cspNonce }}" type="application/javascript">
+        document.getElementsByName('day')[0].type = 'number'
+        document.getElementsByName('month')[0].type = 'number'
+        document.getElementsByName('year')[0].type = 'number'
+    </script>
+{% endblock %}

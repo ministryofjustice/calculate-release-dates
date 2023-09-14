@@ -1,4 +1,5 @@
 {% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -7,7 +8,17 @@
 {% set pageId = "specialistSupportReason" %}
 
 {% block aside %}
-    {% include "../../../views/pages/partials/prisonerIdentityBar.njk" %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink( {
+            text: "Check sentence and offence information",
+            href: "/specialist-support/calculation/" + calculationReference + "/sentence-and-offence-information"
+        }) }}
+    </nav>
 {% endblock %}
 
 {% block content %}
