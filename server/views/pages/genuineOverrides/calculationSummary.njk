@@ -18,7 +18,7 @@
     {{ super() }}
     <nav>
         {{ govukBackLink( {
-            text: "Check sentence and offence information",
+            text: "Review sentence and offence information",
             href: "/specialist-support/calculation/" + calculationReference + "/sentence-and-offence-information"
         }) }}
     </nav>
@@ -61,10 +61,7 @@
                             },
                             {
                                 value: "no",
-                                text: "No, I need to override these dates",
-                                attributes: {
-                                disabled: true
-                            }
+                                text: "No, I need to override these dates"
                             }
                         ],
                         errorMessage: {
