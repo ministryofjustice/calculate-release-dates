@@ -359,6 +359,17 @@ export interface components {
       savedCalculation?: string
       isOverridden: boolean
     }
+    ManualEntryDates: {
+      selectedManualEntryDates: components['schemas']['ManualEntryDate'][]
+    }
+    GenuineOverrideDateRequest: {
+      manualEntryRequest: components['schemas']['ManualEntryDates']
+      originalCalculationReference: string
+    }
+    GenuineOverrideDateResponse: {
+      calculationReference: string
+      originalCalculationReference: string
+    }
     RelevantRemand: {
       /** Format: date */
       from: string

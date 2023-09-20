@@ -39,9 +39,15 @@
         <h2 class="govuk-heading-m">Confirm and save to NOMIS</h2>
         <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is
             correct. These dates will be saved in NOMIS as a manual calculation.</p>
-        {{ govukButton({
-            text: "Confirm and save to NOMIS",
-            href: "/specialist-support/calculation/" + calculationReference + "/override/complete"
-        }) }}
+        <form method="post">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+            {{ govukButton({
+                text: "Confirm and save to NOMIS",
+                type: submit,
+                value: 'submit-override',
+                preventDoubleClick: true,
+                attributes: {  'data-qa': 'submit-override' }
+            }) }}
+        </form>
     </div>
 {% endblock %}

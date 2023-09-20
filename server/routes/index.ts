@@ -92,7 +92,8 @@ export default function Index({
     checkInformationService,
     userInputService,
     viewReleaseDatesService,
-    manualEntryService
+    manualEntryService,
+    manualCalculationService
   )
 
   const indexRoutes = () => {
@@ -217,7 +218,7 @@ export default function Index({
       genuineOverrideAccessRoutes.submitCalculationPage
     )
     get(
-      '/specialist-support/calculation/:calculationReference/complete/:calculationRequestId',
+      '/specialist-support/calculation/:calculationReference/complete',
       genuineOverrideAccessRoutes.loadConfirmationPage
     )
     get('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.loadReasonPage)
@@ -241,6 +242,10 @@ export default function Index({
     get(
       '/specialist-support/calculation/:calculationReference/confirm-override',
       genuineOverrideAccessRoutes.loadConfirmOverridePage
+    )
+    post(
+      '/specialist-support/calculation/:calculationReference/confirm-override',
+      genuineOverrideAccessRoutes.submitConfirmOverridePage
     )
     get('/specialist-support/calculation/:calculationReference/remove-date', genuineOverrideAccessRoutes.loadRemoveDate)
     post(
