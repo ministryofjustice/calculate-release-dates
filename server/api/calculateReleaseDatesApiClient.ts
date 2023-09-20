@@ -7,6 +7,8 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
   GenuineOverride,
+  GenuineOverrideDateRequest,
+  GenuineOverrideDateResponse,
   ManualEntryDate,
   SubmitCalculationRequest,
   ValidationMessage,
@@ -155,5 +157,12 @@ export default class CalculateReleaseDatesApiClient {
       path: '/specialist-support/genuine-override',
       data: overrideRequest,
     }) as Promise<GenuineOverride>
+  }
+
+  storeOverrideCalculation(overrideCalculationRequest: GenuineOverrideDateRequest) {
+    return this.restClient.post({
+      path: '/specialist-support/genuine-override/calculation',
+      data: overrideCalculationRequest,
+    }) as Promise<GenuineOverrideDateResponse>
   }
 }

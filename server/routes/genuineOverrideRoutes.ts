@@ -18,6 +18,7 @@ import {
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualEntryService from '../services/manualEntryService'
+import ManualCalculationService from '../services/manualCalculationService'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -28,7 +29,8 @@ export default class GenuineOverrideRoutes {
     private readonly checkInformationService: CheckInformationService,
     private readonly userInputService: UserInputService,
     private readonly viewReleaseDatesService: ViewReleaseDatesService,
-    private readonly manualEntryService: ManualEntryService
+    private readonly manualEntryService: ManualEntryService,
+    private readonly manualCalculationService: ManualCalculationService
   ) {
     // intentionally left blank
   }
@@ -266,9 +268,7 @@ export default class GenuineOverrideRoutes {
             }
           )
           // This uses the new calculation reference, so it can be used in the email for the OMU staff for a link to the view journey
-          return res.redirect(
-            `/specialist-support/calculation/${bookingCalculation.calculationReference}/complete/${bookingCalculation.calculationRequestId}`
-          )
+          return res.redirect(`/specialist-support/calculation/${bookingCalculation.calculationReference}/complete`)
         } catch (error) {
           // TODO Move handling of validation errors from the api into the service layer
           logger.error(error)
@@ -305,11 +305,11 @@ export default class GenuineOverrideRoutes {
 
   public loadConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
-      const { calculationRequestId } = req.params
+      const { calculationReference } = req.params
       const { username, caseloads, token } = res.locals.user
-      const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
-        Number(calculationRequestId),
+        calculationReference,
         token
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
@@ -544,68 +544,94 @@ export default class GenuineOverrideRoutes {
   }
 
   public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
-    const { calculationReference } = req.params
-    const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
-      username,
-      calculationReference,
-      token
-    )
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(
-      username,
-      releaseDates.prisonerId,
-      caseloads,
-      token
-    )
-    const dateToRemove: string = <string>req.query.dateType
-    if (
-      req.session.selectedManualEntryDates[releaseDates.prisonerId].some(
-        (d: ManualEntryDate) => d.dateType === dateToRemove
-      )
-    ) {
-      const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
-      return res.render('pages/genuineOverrides/removeDate', {
-        prisonerDetail,
-        dateToRemove,
-        fullDateName,
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { username, caseloads, token } = res.locals.user
+      const { calculationReference } = req.params
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
         calculationReference,
-      })
+        token
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+      const dateToRemove: string = <string>req.query.dateType
+      if (
+        req.session.selectedManualEntryDates[releaseDates.prisonerId].some(
+          (d: ManualEntryDate) => d.dateType === dateToRemove
+        )
+      ) {
+        const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+        return res.render('pages/genuineOverrides/removeDate', {
+          prisonerDetail,
+          dateToRemove,
+          fullDateName,
+          calculationReference,
+        })
+      }
+      return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
     }
-    return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
+    throw FullPageError.notFoundError()
   }
 
   public submitRemoveDate: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
-    const { calculationReference } = req.params
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { username, caseloads, token } = res.locals.user
+      const { calculationReference } = req.params
 
-    const dateToRemove: string = <string>req.query.dateType
-    const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
-      username,
-      calculationReference,
-      token
-    )
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(
-      username,
-      releaseDates.prisonerId,
-      caseloads,
-      token
-    )
-    const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
-    if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
-      const error = true
-      return res.render('pages/genuineOverrides/removeDate', {
-        prisonerDetail,
-        dateToRemove,
-        fullDateName,
-        error,
+      const dateToRemove: string = <string>req.query.dateType
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
         calculationReference,
-      })
+        token
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        username,
+        releaseDates.prisonerId,
+        caseloads,
+        token
+      )
+      const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+      if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
+        const error = true
+        return res.render('pages/genuineOverrides/removeDate', {
+          prisonerDetail,
+          dateToRemove,
+          fullDateName,
+          error,
+          calculationReference,
+        })
+      }
+      const remainingDates = this.manualEntryService.removeDate(req, releaseDates.prisonerId)
+      if (remainingDates === 0) {
+        return res.redirect(`/specialist-support/calculation/${calculationReference}/select-date-types`)
+      }
+      return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
     }
-    const remainingDates = this.manualEntryService.removeDate(req, releaseDates.prisonerId)
-    if (remainingDates === 0) {
-      return res.redirect(`/specialist-support/calculation/${calculationReference}/select-date-types`)
+    throw FullPageError.notFoundError()
+  }
+
+  public submitConfirmOverridePage: RequestHandler = async (req, res): Promise<void> => {
+    if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
+      const { username, token } = res.locals.user
+      const { calculationReference } = req.params
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        username,
+        calculationReference,
+        token
+      )
+      const manualCalculationResponse = await this.manualCalculationService.storeGenuineOverrideCalculation(
+        calculationReference,
+        releaseDates.prisonerId,
+        req,
+        token
+      )
+      return res.redirect(`/specialist-support/calculation/${manualCalculationResponse.calculationReference}/complete`)
     }
-    return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
+    throw FullPageError.notFoundError()
   }
 
   private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {
