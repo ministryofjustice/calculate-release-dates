@@ -425,6 +425,7 @@ export default class GenuineOverrideRoutes {
           prisonerDetail,
           insufficientDatesSelected,
           config,
+          calculationReference,
         })
       }
       this.manualEntryService.addManuallyCalculatedDateTypes(req, releaseDates.prisonerId)
@@ -461,7 +462,12 @@ export default class GenuineOverrideRoutes {
         req.session.selectedManualEntryDates[releaseDates.prisonerId]
       )
       if (date && date.dateType !== 'None') {
-        return res.render('pages/genuineOverrides/dateEntry', { prisonerDetail, date, previousDate })
+        return res.render('pages/genuineOverrides/dateEntry', {
+          prisonerDetail,
+          date,
+          previousDate,
+          calculationReference,
+        })
       }
       return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
     }
@@ -491,7 +497,13 @@ export default class GenuineOverrideRoutes {
       if (!storeDateResponse.success && storeDateResponse.message && !storeDateResponse.isNone) {
         const { date, message, enteredDate } = storeDateResponse
         const error = message
-        return res.render('pages/genuineOverrides/dateEntry', { prisonerDetail, date, error, enteredDate })
+        return res.render('pages/genuineOverrides/dateEntry', {
+          prisonerDetail,
+          date,
+          error,
+          enteredDate,
+          calculationReference,
+        })
       }
       if (storeDateResponse.success && !storeDateResponse.message) {
         req.session.selectedManualEntryDates[releaseDates.prisonerId].find(
