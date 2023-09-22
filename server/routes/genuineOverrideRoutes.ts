@@ -265,6 +265,7 @@ export default class GenuineOverrideRoutes {
                 breakdownHtml,
               },
               approvedDates,
+              isSpecialistSupport: true,
             }
           )
           // This uses the new calculation reference, so it can be used in the email for the OMU staff for a link to the view journey

@@ -348,6 +348,7 @@ export interface components {
     SubmitCalculationRequest: {
       calculationFragments: components['schemas']['CalculationFragments']
       approvedDates: components['schemas']['ManualEntryDate'][]
+      isSpecialistSupport?: boolean
     }
     CalculationResults: {
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']

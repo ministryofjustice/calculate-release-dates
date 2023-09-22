@@ -171,6 +171,7 @@ export default class CalculationRoutes {
             breakdownHtml,
           },
           approvedDates,
+          isSpecialistSupport: false,
         }
       )
       res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
