@@ -7,7 +7,7 @@ context('Healthcheck', () => {
     })
 
     it('Health check page is visible', () => {
-      cy.request('/health').its('body.healthy').should('equal', true)
+      cy.request('/health').its('body.status').should('equal', 'UP')
     })
 
     it('Ping is visible and UP', () => {
@@ -26,8 +26,8 @@ context('Healthcheck', () => {
       cy.task('stubTokenVerificationPing', 500)
 
       cy.request({ url: '/health', method: 'GET', failOnStatusCode: false }).then(response => {
-        expect(response.body.checks.hmppsAuth).to.equal('OK')
-        expect(response.body.checks.tokenVerification).to.contain({ status: 500, retries: 2 })
+        expect(response.body.components.hmppsAuth.status).to.equal('UP')
+        expect(response.body.components.tokenVerification.status).to.contain({ status: 500, retries: 2 })
       })
     })
   })
