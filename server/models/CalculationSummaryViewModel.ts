@@ -21,7 +21,8 @@ export default class CalculationSummaryViewModel {
     public validationErrors?: ErrorMessages,
     public calculationSummaryUnavailable?: boolean,
     public dpsEntryPoint?: boolean,
-    public approvedDates?: { [key: string]: string }
+    public approvedDates?: { [key: string]: string },
+    public overrideReason?: string
   ) {
     // intentionally left blank
   }

@@ -41,6 +41,32 @@ export default {
             HDCED: '2016-12-24',
           },
           calculationRequestId: 123,
+          calculationReference: 123,
+          prisonerId: 'A1234AB',
+          bookingId: 1234,
+          calculationStatus: 'CONFIRMED',
+          approvedDates: {},
+        },
+      },
+    })
+  },
+  stubGetGenuineOverride: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/specialist-support/genuine-override/calculation/([0-9]*)`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          dates: {
+            SLED: '2018-11-05',
+            CRD: '2017-05-07',
+            HDCED: '2016-12-24',
+          },
+          calculationRequestId: 123,
+          calculationReference: 123,
           prisonerId: 'A1234AB',
           bookingId: 1234,
           calculationStatus: 'CONFIRMED',
