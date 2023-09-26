@@ -165,4 +165,10 @@ export default class CalculateReleaseDatesApiClient {
       data: overrideCalculationRequest,
     }) as Promise<GenuineOverrideDateResponse>
   }
+
+  getGenuineOverride(calculationReference: string) {
+    return this.restClient.get({
+      path: `/specialist-support/genuine-override/calculation/${calculationReference}`,
+    }) as Promise<GenuineOverride>
+  }
 }

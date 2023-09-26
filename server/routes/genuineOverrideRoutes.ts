@@ -361,7 +361,10 @@ export default class GenuineOverrideRoutes {
       if (overrideReason === 'other' && otherReason === '') {
         return res.redirect(`/specialist-support/calculation/${calculationReference}/reason?noOtherReason=true`)
       }
-      const reason = overrideReason === 'other' && otherReason ? `Other: ${otherReason}` : overrideReason
+      const reason =
+        overrideReason === 'other' && otherReason
+          ? `Other: ${otherReason[0].toLowerCase() + otherReason.slice(1)}`
+          : overrideReason
       const genuineOverride = {
         reason,
         originalCalculationRequest: calculationReference,

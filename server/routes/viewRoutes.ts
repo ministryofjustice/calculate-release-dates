@@ -9,6 +9,12 @@ import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import EntryPointService from '../services/entryPointService'
 import SentenceTypes from '../models/SentenceTypes'
+import { GenuineOverride } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+
+const overrideReasons = {
+  terror: 'of terrorism or terror-related offences',
+  warrantMismatch: 'the order of imprisonment/warrant doesn’t match trial record sheet',
+}
 
 export default class ViewRoutes {
   constructor(
@@ -112,6 +118,7 @@ export default class ViewRoutes {
       releaseDates,
       token
     )
+
     try {
       const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
         calculationRequestId,
@@ -123,6 +130,7 @@ export default class ViewRoutes {
         calculationRequestId,
         token
       )
+      const override = await this.getOverride(releaseDates.calculationReference, token)
       const hasNone = releaseDates.dates.None !== undefined
       const approvedDates = releaseDates.approvedDates ? this.indexBy(releaseDates.approvedDates) : null
       return new CalculationSummaryViewModel(
@@ -139,7 +147,8 @@ export default class ViewRoutes {
         null,
         false,
         this.entryPointService.isDpsEntryPoint(req),
-        approvedDates
+        approvedDates,
+        this.getOverrideReason(override)
       )
     } catch (error) {
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
@@ -166,6 +175,28 @@ export default class ViewRoutes {
           true,
           this.entryPointService.isDpsEntryPoint(req)
         )
+      }
+      throw error
+    }
+  }
+
+  private getOverrideReason(override: GenuineOverride): string {
+    if (override && override.reason) {
+      const reason = overrideReasons[override.reason]
+      if (reason) {
+        return reason
+      }
+      return override.reason.replace('Other: ', '')
+    }
+    return undefined
+  }
+
+  private async getOverride(calculationReference: string, token: string): Promise<GenuineOverride> {
+    try {
+      return await this.calculateReleaseDatesService.getGenuineOverride(calculationReference, token)
+    } catch (error) {
+      if (error.data.status === 404) {
+        return Promise.resolve({} as never)
       }
       throw error
     }

@@ -5,6 +5,7 @@ import {
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
+  GenuineOverride,
   ReleaseDateCalculationBreakdown,
   SubmitCalculationRequest,
   ValidationMessage,
@@ -368,5 +369,9 @@ export default class CalculateReleaseDatesService {
       messageType: ErrorMessageType[type],
       messages,
     }
+  }
+
+  async getGenuineOverride(calculationReference: string, token: string): Promise<GenuineOverride> {
+    return new CalculateReleaseDatesApiClient(token).getGenuineOverride(calculationReference)
   }
 }

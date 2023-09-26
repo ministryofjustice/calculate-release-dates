@@ -18,6 +18,7 @@ import {
   CalculationBreakdown,
   CalculationSentenceUserInput,
   CalculationUserInputs,
+  GenuineOverride,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
@@ -486,6 +487,46 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('The calculation breakdown cannot be shown on this page.')
           expect(res.text).toContain(
             'To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/A1234AA/check-information">calculate release dates again.'
+          )
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary for a genuine override should display the other reason', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
+        reason: 'Other: reason',
+        savedCalculation: '123',
+        originalCalculationRequest: '456',
+        isOverridden: true,
+      } as GenuineOverride)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain(
+            'These dates have been manually entered by the Specialist support team because reason'
+          )
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary for a genuine override should look up reason', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
+        reason: 'terror',
+        savedCalculation: '123',
+        originalCalculationRequest: '456',
+        isOverridden: true,
+      } as GenuineOverride)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain(
+            'These dates have been manually entered by the Specialist support team because of terrorism or terror-related offences'
           )
         })
     })
