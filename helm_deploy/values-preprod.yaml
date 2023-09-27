@@ -22,6 +22,6 @@ generic-service:
     DIGITAL_PRISON_SERVICES_URL: "https://digital-preprod.prison.service.justice.gov.uk"
     MANUAL_ENTRY_TOGGLE: "true"
     APPROVED_DATES_TOGGLE: "true"
-
+    DPS_BANNER_ENABLED: "false"
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

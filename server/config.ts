@@ -103,5 +103,6 @@ export default {
     edsSopcRecalls: get('EDS_SOPC_RECALLS', false) === 'true',
     manualEntry: get('MANUAL_ENTRY_TOGGLE', false) === 'true',
     approvedDates: get('APPROVED_DATES_TOGGLE', false) === 'true',
+    dpsBannerEnabled: get('DPS_BANNER_ENABLED', false) === 'true',
   },
 }
