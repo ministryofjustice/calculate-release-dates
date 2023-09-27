@@ -23,6 +23,7 @@ generic-service:
     DIGITAL_PRISON_SERVICES_URL: "https://digital-dev.prison.service.justice.gov.uk"
     MANUAL_ENTRY_TOGGLE: "true"
     APPROVED_DATES_TOGGLE: "true"
+    DPS_BANNER_ENABLED: "true"
   # Switches off the allow list in the DEV env only.
   allowlist: null
 
