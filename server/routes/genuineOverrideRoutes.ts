@@ -651,6 +651,29 @@ export default class GenuineOverrideRoutes {
     throw FullPageError.notFoundError()
   }
 
+  public loadGenuineOverrideRequestPage: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { calculationReference } = req.params
+
+    const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+      username,
+      calculationReference,
+      token
+    )
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+      username,
+      releaseDates.prisonerId,
+      caseloads,
+      token
+    )
+    const { calculationRequestId } = releaseDates
+    return res.render('pages/genuineOverrides/requestSupport', {
+      prisonerDetail,
+      calculationReference,
+      calculationRequestId,
+    })
+  }
+
   private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {
     return nunjucksEnv().render('pages/fragments/breakdownFragment.njk', {
       model: {
