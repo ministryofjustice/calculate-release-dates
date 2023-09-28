@@ -17,5 +17,6 @@ generic-service:
     MANUAL_ENTRY_TOGGLE: "true"
     APPROVED_DATES_TOGGLE: "true"
     DPS_BANNER_ENABLED: "false"
+    SPECIALIST_SUPPORT_ENABLED: "false"
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

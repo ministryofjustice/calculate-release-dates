@@ -793,4 +793,24 @@ describe('Calculation routes tests', () => {
         expect(res.redirect).toBeTruthy()
       })
   })
+  it('GET /calculation/:nomsId/summary/:calculationRequestId with specialist support on should display help text', () => {
+    config.featureToggles.specialistSupport = true
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('If you think the calculation is wrong')
+        expect(res.text).toContain('contact the specialist')
+        expect(res.text).toContain('support team')
+      })
+  })
 })

@@ -142,6 +142,7 @@ export default class ViewRoutes {
         sentencesAndOffences,
         hasNone,
         true,
+        releaseDates.calculationReference,
         breakdown?.calculationBreakdown,
         breakdown?.releaseDatesWithAdjustments,
         null,
@@ -162,6 +163,7 @@ export default class ViewRoutes {
           null,
           false,
           true,
+          releaseDates.calculationReference,
           null,
           null,
           {

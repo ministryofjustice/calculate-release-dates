@@ -24,6 +24,7 @@ generic-service:
     MANUAL_ENTRY_TOGGLE: "true"
     APPROVED_DATES_TOGGLE: "true"
     DPS_BANNER_ENABLED: "true"
+    SPECIALIST_SUPPORT_ENABLED: "true"
   # Switches off the allow list in the DEV env only.
   allowlist: null
 
