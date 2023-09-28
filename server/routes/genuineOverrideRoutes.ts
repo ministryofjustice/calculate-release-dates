@@ -225,6 +225,7 @@ export default class GenuineOverrideRoutes {
         sentencesAndOffences,
         false,
         false,
+        releaseDates.calculationReference,
         breakdown?.calculationBreakdown,
         breakdown?.releaseDatesWithAdjustments,
         validationErrors,
