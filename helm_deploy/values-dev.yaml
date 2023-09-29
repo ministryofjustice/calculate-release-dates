@@ -25,6 +25,7 @@ generic-service:
     APPROVED_DATES_TOGGLE: "true"
     DPS_BANNER_ENABLED: "true"
     SPECIALIST_SUPPORT_ENABLED: "true"
+    COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
   # Switches off the allow list in the DEV env only.
   allowlist: null
 

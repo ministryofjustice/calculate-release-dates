@@ -19,6 +19,7 @@ import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { Services } from './services'
 import setUpCurrentUser from './middleware/setUpCurrentUser'
 import setUpCsrf from './middleware/setUpCsrf'
+import setUpFrontendComponents from "./middleware/setUpDPSFrontendComponents";
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -44,9 +45,12 @@ export default function createApp(services: Services): express.Application {
   }
 
   app.use(authorisationMiddleware)
+  app.use(setUpFrontendComponents(services))
   app.use(routes(services))
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
+
+
 
   return app
 }
