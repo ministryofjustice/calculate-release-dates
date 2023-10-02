@@ -12,6 +12,7 @@ import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
 import GenuineOverrideRoutes from './genuineOverrideRoutes'
+import GenuineOverridesEmailTemplateService from '../services/genuineOverridesEmailTemplateService'
 
 export default function Index({
   prisonerService,
@@ -83,7 +84,7 @@ export default function Index({
   )
 
   const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService, approvedDatesService, manualEntryService)
-
+  const genuineOverridesEmailTemplateService = new GenuineOverridesEmailTemplateService()
   const genuineOverrideAccessRoutes = new GenuineOverrideRoutes(
     userPermissionsService,
     entryPointService,
@@ -93,7 +94,8 @@ export default function Index({
     userInputService,
     viewReleaseDatesService,
     manualEntryService,
-    manualCalculationService
+    manualCalculationService,
+    genuineOverridesEmailTemplateService
   )
 
   const indexRoutes = () => {
