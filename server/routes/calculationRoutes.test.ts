@@ -625,8 +625,8 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('From 6 June, the policy for calculating HDCED has changed')
-        expect(res.text).toContain('This service has calculated the HDCED using the new policy rules')
+        expect(res.text).not.toContain('From 6 June, the policy for calculating HDCED has changed')
+        expect(res.text).not.toContain('This service has calculated the HDCED using the new policy rules')
       })
   })
 
@@ -645,8 +645,8 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('This service has calculated the HDCED using the new policy rules.')
-        expect(res.text).toContain('From 6 June, the policy for calculating HDCED has changed')
+        expect(res.text).not.toContain('This service has calculated the HDCED using the new policy rules.')
+        expect(res.text).not.toContain('From 6 June, the policy for calculating HDCED has changed')
       })
   })
 

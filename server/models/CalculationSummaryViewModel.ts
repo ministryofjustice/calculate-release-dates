@@ -188,13 +188,16 @@ export default class CalculationSummaryViewModel {
   }
 
   public hdcedBannerConfig(): string {
-    if (this.releaseDates?.HDCED) {
-      const now = dayjs()
-      const hdcedChangeDate = dayjs('2023-06-06')
-      if (now.isBefore(hdcedChangeDate)) {
-        return '<h2 class="govuk-heading-m">From 6 June, the policy for calculating HDCED will change</h2> <p class="govuk-body">For this calculation, this service has used the existing HDCED policy rules. From 6 June, this service will calculate HDCEDs using the new policy rules.</p><p class="govuk-body">NOMIS has already been updated to reflect the new policy.</p>'
+    // eslint-disable-next-line no-constant-condition
+    if (false) {
+      if (this.releaseDates?.HDCED) {
+        const now = dayjs()
+        const hdcedChangeDate = dayjs('2023-06-06')
+        if (now.isBefore(hdcedChangeDate)) {
+          return '<h2 class="govuk-heading-m">From 6 June, the policy for calculating HDCED will change</h2> <p class="govuk-body">For this calculation, this service has used the existing HDCED policy rules. From 6 June, this service will calculate HDCEDs using the new policy rules.</p><p class="govuk-body">NOMIS has already been updated to reflect the new policy.</p>'
+        }
+        return '<h2 class="govuk-heading-m">From 6 June, the policy for calculating HDCED has changed</h2><p class="govuk-body">This service has calculated the HDCED using the new policy rules.</p>'
       }
-      return '<h2 class="govuk-heading-m">From 6 June, the policy for calculating HDCED has changed</h2><p class="govuk-body">This service has calculated the HDCED using the new policy rules.</p>'
     }
     return ''
   }
