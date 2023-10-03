@@ -94,6 +94,9 @@ export default {
     digitalPrisonServices: {
       ui_url: get('DIGITAL_PRISON_SERVICES_URL', 'http://localhost:3000/dps', requiredInProduction),
     },
+    frontendComponents: {
+      url: get('COMPONENT_API_URL', 'http://localhost:8082', requiredInProduction),
+    },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   analytics: {

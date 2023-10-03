@@ -1,11 +1,14 @@
-import {RequestHandler} from 'express'
-import {Services} from "../services";
-import logger from "../../logger";
+import { RequestHandler } from 'express'
+import { Services } from '../services'
+import logger from '../../logger'
 
-export default function setUpFrontendComponents({ dpsFront }: Services): RequestHandler {
+export default function setUpFrontendComponents({ frontEndComponentService }: Services): RequestHandler {
   return async (req, res, next) => {
     try {
-      const { header, footer } = await componentService.getComponents(['header', 'footer'], res.locals.user.token)
+      const { header, footer } = await frontEndComponentService.getComponents(
+        ['header', 'footer'],
+        res.locals.user.token
+      )
 
       res.locals.feComponents = {
         header: header.html,
