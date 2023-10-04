@@ -19,6 +19,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualEntryService from '../services/manualEntryService'
 import ManualCalculationService from '../services/manualCalculationService'
+import GenuineOverridesEmailTemplateService from '../services/genuineOverridesEmailTemplateService'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -30,7 +31,8 @@ export default class GenuineOverrideRoutes {
     private readonly userInputService: UserInputService,
     private readonly viewReleaseDatesService: ViewReleaseDatesService,
     private readonly manualEntryService: ManualEntryService,
-    private readonly manualCalculationService: ManualCalculationService
+    private readonly manualCalculationService: ManualCalculationService,
+    private readonly genuineOverridesEmailTemplateService: GenuineOverridesEmailTemplateService
   ) {
     // intentionally left blank
   }
@@ -269,6 +271,13 @@ export default class GenuineOverrideRoutes {
               isSpecialistSupport: true,
             }
           )
+          const genuineOverride = {
+            reason: '',
+            originalCalculationRequest: calculationReference,
+            savedCalculation: bookingCalculation.calculationReference,
+            isOverridden: false,
+          } as GenuineOverride
+          await new CalculateReleaseDatesApiClient(token).storeOverrideReason(genuineOverride)
           // This uses the new calculation reference, so it can be used in the email for the OMU staff for a link to the view journey
           return res.redirect(`/specialist-support/calculation/${bookingCalculation.calculationReference}/complete`)
         } catch (error) {
@@ -320,7 +329,19 @@ export default class GenuineOverrideRoutes {
         caseloads,
         token
       )
-      return res.render('pages/genuineOverrides/confirmation', { prisonerDetail })
+      const override = await this.calculateReleaseDatesService.getGenuineOverride(calculationReference, token)
+      const emailContent = override.isOverridden
+        ? this.genuineOverridesEmailTemplateService.getIncorrectCalculationEmail(
+            calculationReference,
+            prisonerDetail,
+            releaseDates.calculationRequestId
+          )
+        : this.genuineOverridesEmailTemplateService.getCorrectCalculationEmail(
+            calculationReference,
+            prisonerDetail,
+            releaseDates.calculationRequestId
+          )
+      return res.render('pages/genuineOverrides/confirmation', { prisonerDetail, emailContent })
     }
     throw FullPageError.notFoundError()
   }
