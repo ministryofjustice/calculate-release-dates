@@ -7,8 +7,8 @@ export default class FrontendComponentsApiClient {
 
   token: string
 
-  constructor(token: string) {
-    this.restClient = new RestClient('Frontend Components API', config.apis.frontendComponents as ApiConfig, token)
+  constructor() {
+    this.restClient = new RestClient('Frontend Components API', config.apis.frontendComponents as ApiConfig, '')
   }
 
   async getComponents<T extends AvailableComponent[]>(

@@ -96,6 +96,10 @@ export default {
     },
     frontendComponents: {
       url: get('COMPONENT_API_URL', 'http://localhost:8082', requiredInProduction),
+      timeout: {
+        response: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE', 5000)),
+      },
     },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),

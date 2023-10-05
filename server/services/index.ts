@@ -16,6 +16,7 @@ import DateValidationService from './dateValidationService'
 import QuestionsService from './questionsService'
 import CheckInformationService from './checkInformationService'
 import FrontEndComponentsService from './frontEndComponentsService'
+import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
 
 export const services = () => {
   const { hmppsAuthClient } = dataAccess()
@@ -47,7 +48,7 @@ export const services = () => {
     entryPointService,
     userInputService
   )
-  const frontEndComponentService = new FrontEndComponentsService()
+  const frontEndComponentService = new FrontEndComponentsService(new FrontendComponentsApiClient())
 
   return {
     userService,
