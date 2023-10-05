@@ -2,6 +2,7 @@ import express, { Response, Router } from 'express'
 import helmet from 'helmet'
 import crypto from 'crypto'
 import { IncomingMessage } from 'http'
+import config from '../config'
 
 export default function setUpWebSecurity(): Router {
   const router = express.Router()
@@ -27,10 +28,12 @@ export default function setUpWebSecurity(): Router {
             (req: IncomingMessage, res: Response) => `'nonce-${res.locals.cspNonce}'`,
             'code.jquery.com',
             "'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='",
+            config.apis.frontendComponents.url,
           ],
           connectSrc: ["'self'", '*.googletagmanager.com', '*.google-analytics.com', '*.analytics.google.com'],
-          styleSrc: ["'self'", 'code.jquery.com'],
-          fontSrc: ["'self'"],
+          styleSrc: ["'self'", config.apis.frontendComponents.url, 'code.jquery.com'],
+          fontSrc: ["'self'", config.apis.frontendComponents.url],
+          imgSrc: ["'self'", config.apis.frontendComponents.url, 'data:'],
         },
       },
     })

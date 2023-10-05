@@ -61,13 +61,27 @@
           crossorigin="anonymous"></script>
   <link href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
 
+  {% if featureToggles.dpsBannerEnabled %}
+    {% for css in feComponents.cssIncludes %}
+      <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
+    {% endfor %}
+  {% endif %}
+
 {% endblock %}
 
 {% block pageTitle %}{{pageTitle | default(applicationName)}}
 {% endblock %}
 
 {% block header %}
-  {% include "./header.njk" %}
+  {% if featureToggles.dpsBannerEnabled %}
+    {% if feComponents.header %}
+      {{ feComponents.header | safe }}
+    {% else %}
+      {% include "./header.njk" %}
+    {% endif %}
+  {% else %}
+    {% include "./header.njk" %}
+  {% endif %}
 {% endblock %}
 
 {% block bodyStart %}{% endblock %}
@@ -86,8 +100,21 @@
   <script src="/assets/govuk/all.js"></script>
   <script src="/assets/govukFrontendInit.js"></script>
   <script src="/assets/moj/all.js"></script>
+  {% if featureToggles.dpsBannerEnabled %}
+    {% for js in feComponents.jsIncludes %}
+      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+    {% endfor %}
+  {% endif %}
 {% endblock %}
 
 {% block footer %}
-  {% include "./footer.njk" %}
+  {% if featureToggles.dpsBannerEnabled %}
+    {% if feComponents.footer %}
+      {{ feComponents.footer | safe }}
+    {% else %}
+      {% include "./footer.njk" %}
+    {% endif %}
+  {% else %}
+    {% include "./footer.njk" %}
+  {% endif %}
 {% endblock %}
