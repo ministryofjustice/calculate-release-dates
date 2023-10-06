@@ -10,6 +10,7 @@ import {
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,
   ManualEntryDate,
+  NonFridayReleaseDay,
   SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
@@ -170,5 +171,9 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/specialist-support/genuine-override/calculation/${calculationReference}`,
     }) as Promise<GenuineOverride>
+  }
+
+  getNonReleaseFridayDay(date: string): Promise<NonFridayReleaseDay> {
+    return this.restClient.get({ path: `/non-friday-release/${date}` }) as Promise<NonFridayReleaseDay>
   }
 }

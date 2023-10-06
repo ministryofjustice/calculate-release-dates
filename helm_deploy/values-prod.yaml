@@ -19,5 +19,6 @@ generic-service:
     DPS_BANNER_ENABLED: "false"
     SPECIALIST_SUPPORT_ENABLED: "false"
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
+    NON_FRIDAY_RELEASE_TOGGLE: "false"
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
