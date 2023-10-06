@@ -208,6 +208,10 @@ export default class GenuineOverrideRoutes {
         releaseDates,
         token
       )
+      const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
+        releaseDates,
+        token
+      )
       const serverErrors = req.flash('serverErrors')
       let validationErrors = null
       if (serverErrors && serverErrors[0]) {
@@ -228,6 +232,7 @@ export default class GenuineOverrideRoutes {
         false,
         false,
         releaseDates.calculationReference,
+        nonFridayReleaseAdjustments,
         breakdown?.calculationBreakdown,
         breakdown?.releaseDatesWithAdjustments,
         validationErrors,

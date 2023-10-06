@@ -1,6 +1,10 @@
 import dayjs from 'dayjs'
 import { DateTime } from 'luxon'
-import { CalculationBreakdown, WorkingDay } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  CalculationBreakdown,
+  NonFridayReleaseDay,
+  WorkingDay,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { PrisonApiOffenderSentenceAndOffences, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
@@ -17,6 +21,7 @@ export default class CalculationSummaryViewModel {
     public hasNone: boolean,
     public viewJourney: boolean,
     public calculationReference: string,
+    public nonFridayReleaseAdjustments: { [key: string]: NonFridayReleaseDay },
     public calculationBreakdown?: CalculationBreakdown,
     public releaseDatesWithAdjustments?: ReleaseDateWithAdjustments[],
     public validationErrors?: ErrorMessages,
@@ -205,7 +210,11 @@ export default class CalculationSummaryViewModel {
   public getHints(type: string): string[] {
     const hints = [] as string[]
     const longFormat = 'cccc, dd LLLL yyyy'
-    if (this.weekendAdjustments[type]) {
+    if (this.nonFridayReleaseAdjustments[type]) {
+      hints.push(
+        `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${type}-non-friday-release">The <a href="#">non-friday release policy</a> applies to this release date.</p>`
+      )
+    } else if (this.weekendAdjustments[type]) {
       const releaseDate = DateTime.fromISO(this.weekendAdjustments[type].date).toFormat(longFormat)
       hints.push(
         `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${type}-weekend-adjustment">${releaseDate} when adjusted to a working day</p>`

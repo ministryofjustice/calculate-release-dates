@@ -48,6 +48,10 @@ export default class CalculationRoutes {
       releaseDates,
       token
     )
+    const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
+      releaseDates,
+      token
+    )
     const serverErrors = req.flash('serverErrors')
     let validationErrors = null
     if (serverErrors && serverErrors[0]) {
@@ -84,6 +88,7 @@ export default class CalculationRoutes {
       false,
       false,
       releaseDates.calculationReference,
+      nonFridayReleaseAdjustments,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments,
       validationErrors,
@@ -130,6 +135,11 @@ export default class CalculationRoutes {
       releaseDates,
       token
     )
+    const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
+      releaseDates,
+      token
+    )
+
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
     const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token)
     const hasNone = 'None' in releaseDates.dates
@@ -144,6 +154,7 @@ export default class CalculationRoutes {
       hasNone,
       true,
       releaseDates.calculationReference,
+      nonFridayReleaseAdjustments,
       breakdown?.calculationBreakdown,
       breakdown?.releaseDatesWithAdjustments,
       null,

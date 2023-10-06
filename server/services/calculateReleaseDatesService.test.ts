@@ -4,6 +4,7 @@ import config from '../config'
 import {
   BookingCalculation,
   CalculationBreakdown,
+  NonFridayReleaseDay,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -188,6 +189,36 @@ describe('Calculate release dates service tests', () => {
       CRD: adjustedCrd,
       PED: adjustedPed,
     })
+  })
+
+  it('Test non Friday release dates turned on', async () => {
+    config.featureToggles.nonFridayRelease = true
+    const adjustedCrd: NonFridayReleaseDay = {
+      date: '2021-10-27',
+      usePolicy: true,
+    }
+
+    fakeApi.get(`/non-friday-release/${calculationResults.dates.CRD}`).reply(200, adjustedCrd)
+
+    const result = await calculateReleaseDatesService.getNonFridayReleaseAdjustments(calculationResults, token)
+
+    expect(result).toEqual({
+      CRD: adjustedCrd,
+    })
+  })
+
+  it('Test non Friday release dates turned off', async () => {
+    config.featureToggles.nonFridayRelease = false
+    const adjustedCrd: NonFridayReleaseDay = {
+      date: '2021-10-27',
+      usePolicy: true,
+    }
+
+    fakeApi.get(`/non-friday-release/${calculationResults.dates.CRD}`).reply(200, adjustedCrd)
+
+    const result = await calculateReleaseDatesService.getNonFridayReleaseAdjustments(calculationResults, token)
+
+    expect(result).toEqual({})
   })
 
   describe('Test getting effective dates and breakdown', () => {
