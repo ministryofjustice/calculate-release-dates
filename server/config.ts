@@ -112,5 +112,6 @@ export default {
     approvedDates: get('APPROVED_DATES_TOGGLE', false) === 'true',
     dpsBannerEnabled: get('DPS_BANNER_ENABLED', false) === 'true',
     specialistSupport: get('SPECIALIST_SUPPORT_ENABLED', false) === 'true',
+    nonFridayRelease: get('NON_FRIDAY_RELEASE_TOGGLE', false) === 'true',
   },
 }

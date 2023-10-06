@@ -72,6 +72,13 @@ export interface paths {
   '/queue-admin/get-dlq-messages/{dlqName}': {
     get: operations['getDlqMessages']
   }
+  '/non-friday-release/{date}': {
+    /**
+     * Find the non friday release day from a given date
+     * @description Finds the non friday release day, adjusting for weekends and bank holidays
+     */
+    get: operations['nonFridayReleaseDay']
+  }
   '/manual-calculation/{bookingId}/has-indeterminate-sentences': {
     /**
      * Determine if a booking has any indeterminate sentences
@@ -416,6 +423,11 @@ export interface components {
       /** Format: int32 */
       messagesReturnedCount: number
       messages: components['schemas']['DlqMessage'][]
+    }
+    NonFridayReleaseDay: {
+      /** Format: date */
+      date: string
+      usePolicy: boolean
     }
     CalculationSentenceQuestion: {
       /** Format: int32 */
@@ -1049,6 +1061,42 @@ export interface operations {
       200: {
         content: {
           '*/*': components['schemas']['GetDlqResult']
+        }
+      }
+    }
+  }
+
+  /**
+   * Find the non friday release day from a given date
+   * @description Finds the non friday release day, adjusting for weekends and bank holidays
+   */
+  nonFridayReleaseDay: {
+    parameters: {
+      path: {
+        /**
+         * @description The date to adjust
+         * @example 2021-10-28
+         */
+        date: string
+      }
+    }
+    responses: {
+      /** @description Returns non friday release day */
+      200: {
+        content: {
+          'application/json': components['schemas']['NonFridayReleaseDay']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['NonFridayReleaseDay']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['NonFridayReleaseDay']
         }
       }
     }

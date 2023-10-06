@@ -18,3 +18,4 @@ export type SubmitCalculationRequest = components['schemas']['SubmitCalculationR
 export type GenuineOverride = components['schemas']['GenuineOverride']
 export type GenuineOverrideDateRequest = components['schemas']['GenuineOverrideDateRequest']
 export type GenuineOverrideDateResponse = components['schemas']['GenuineOverrideDateResponse']
+export type NonFridayReleaseDay = components['schemas']['NonFridayReleaseDay']
