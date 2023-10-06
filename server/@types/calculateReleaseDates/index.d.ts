@@ -180,7 +180,7 @@ export interface paths {
      * Get release dates for a calculationRequestId
      * @description This endpoint will return the release dates based on a calculationRequestId
      */
-    get: operations['getCalculationResults_1']
+    get: operations['getCalculationResults']
   }
   '/calculation/prisoner-details/{calculationRequestId}': {
     /**
@@ -401,7 +401,7 @@ export interface components {
     }
     CalculatedReleaseDates: {
       dates: {
-        [key: string]: string
+        [key: string]: string | undefined
       }
       /** Format: int64 */
       calculationRequestId: number
@@ -449,7 +449,7 @@ export interface components {
         | 'MANUAL_OVERRIDE'
         | 'CALCULATED_BY_SPECIALIST_SUPPORT'
       approvedDates?: {
-        [key: string]: string
+        [key: string]: string | undefined
       }
       /** Format: uuid */
       calculationReference: string
@@ -538,10 +538,10 @@ export interface components {
       offenceCode: string
       offenceDescription: string
       indicators: string[]
-      isPcscSec250: boolean
-      isPcscSds: boolean
-      isPcscSdsPlus: boolean
-      isScheduleFifteenMaximumLife: boolean
+      pcscSec250: boolean
+      pcscSds: boolean
+      pcscSdsPlus: boolean
+      scheduleFifteenMaximumLife: boolean
     }
     SentenceAndOffences: {
       /** Format: int64 */
@@ -644,10 +644,10 @@ export interface components {
       consecutiveSentence?: components['schemas']['ConsecutiveSentenceBreakdown']
       /** @description Breakdown details in a map keyed by release date type */
       breakdownByReleaseDateType: {
-        [key: string]: components['schemas']['ReleaseDateCalculationBreakdown']
+        [key: string]: components['schemas']['ReleaseDateCalculationBreakdown'] | undefined
       }
       otherDates: {
-        [key: string]: string
+        [key: string]: string | undefined
       }
     }
     ConcurrentSentenceBreakdown: {
@@ -657,7 +657,7 @@ export interface components {
       /** Format: int32 */
       sentenceLengthDays: number
       dates: {
-        [key: string]: components['schemas']['DateBreakdown']
+        [key: string]: components['schemas']['DateBreakdown'] | undefined
       }
       /** Format: int32 */
       lineSequence: number
@@ -672,7 +672,7 @@ export interface components {
       /** Format: int32 */
       sentenceLengthDays: number
       dates: {
-        [key: string]: components['schemas']['DateBreakdown']
+        [key: string]: components['schemas']['DateBreakdown'] | undefined
       }
       sentenceParts: components['schemas']['ConsecutiveSentencePart'][]
     }
@@ -729,7 +729,7 @@ export interface components {
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
-        [key: string]: components['schemas']['AdjustmentDuration']
+        [key: string]: components['schemas']['AdjustmentDuration'] | undefined
       }
       /**
        * Format: int32
@@ -1488,47 +1488,6 @@ export interface operations {
     }
   }
   /**
-   * Get release dates for a calculationRequestId
-   * @description This endpoint will return the release dates based on a calculationRequestId
-   */
-  getCalculationResults: {
-    parameters: {
-      path: {
-        /**
-         * @description The calculationRequestId of the results
-         * @example 123ABC
-         */
-        calculationReference: string
-      }
-    }
-    responses: {
-      /** @description Returns calculated dates */
-      200: {
-        content: {
-          'application/json': components['schemas']['CalculatedReleaseDates']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['CalculatedReleaseDates']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['CalculatedReleaseDates']
-        }
-      }
-      /** @description No calculation exists for this calculationRequestId */
-      404: {
-        content: {
-          'application/json': components['schemas']['CalculatedReleaseDates']
-        }
-      }
-    }
-  }
-  /**
    * Return which sentences and offences may be considered for different calculation rules
    * @description This endpoint will return which sentences and offences may be considered for different calculation rules.We will have to ask the user for clarification if any of the rules apply beacuse we cannot trust input data from NOMIS
    */
@@ -1695,7 +1654,7 @@ export interface operations {
    * Get release dates for a calculationRequestId
    * @description This endpoint will return the release dates based on a calculationRequestId
    */
-  getCalculationResults_1: {
+  getCalculationResults: {
     parameters: {
       path: {
         /**
