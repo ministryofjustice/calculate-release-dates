@@ -20,39 +20,6 @@ export interface paths {
      */
     post: operations['validate']
   }
-  '/specialist-support/genuine-override': {
-    /**
-     * Store a genuine override
-     * @description This endpoint will return a response model which indicates the success of storing a genuine override
-     */
-    post: operations['storeGenuineOverride']
-  }
-  '/specialist-support/genuine-override/calculation': {
-    /**
-     * Store a genuine override
-     * @description This endpoint will return a response model which indicates the success of storing a genuine override
-     */
-    post: operations['storeGenuineOverrideDates']
-  }
-  '/manual-calculation/{prisonerId}': {
-    /**
-     * Store a manual calculation
-     * @description This endpoint will return a response model which indicates the success of storing a manual calculation
-     */
-    post: operations['storeManualCalculation']
-  }
-  '/comparison': {
-    /**
-     * List all Comparisons performed using presets
-     * @description This endpoint will return all the comparisons for your caseload
-     */
-    get: operations['getComparisons']
-    /**
-     * Create a record of a new calculation
-     * @description This endpoint will create a new calculation and return the new calculation object
-     */
-    post: operations['createComparison']
-  }
   '/calculation/{prisonerId}': {
     /**
      * Calculate release dates for a prisoner - preliminary calculation, this does not publish to NOMIS
@@ -102,13 +69,6 @@ export interface paths {
      */
     get: operations['validateSupported']
   }
-  '/specialist-support/genuine-override/calculation/{calculationReference}': {
-    /**
-     * Get a genuine override
-     * @description This endpoint will return a response model which returns a genuine override
-     */
-    get: operations['getGenuineOverride']
-  }
   '/queue-admin/get-dlq-messages/{dlqName}': {
     get: operations['getDlqMessages']
   }
@@ -125,27 +85,6 @@ export interface paths {
      * @description This endpoint will return true if a booking has any indeterminate sentences
      */
     get: operations['hasIndeterminateSentences']
-  }
-  '/comparison/{comparisonReference}/count/': {
-    /**
-     * Returns a count of the number of people compared for a particular caseload
-     * @description This endpoint will count all the people associated to a specific comparison
-     */
-    get: operations['getCountOfPersonsInComparison']
-  }
-  '/comparison/manual': {
-    /**
-     * List all comparisons which were performed manually
-     * @description This endpoint will return all of the manually performed calculations recorded in the service. This is not limited by caseload, but requires the MANUAL_COMPARER role.
-     */
-    get: operations['getManualComparisons']
-  }
-  '/calculationReference/{calculationReference}': {
-    /**
-     * Get release dates for a calculationRequestId
-     * @description This endpoint will return the release dates based on a calculationRequestId
-     */
-    get: operations['getCalculationResults']
   }
   '/calculation/{prisonerId}/user-questions': {
     /**
@@ -216,16 +155,58 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
-    DlqMessage: {
-      body: {
-        [key: string]: Record<string, never>
+    Message: {
+      messageId?: string
+      receiptHandle?: string
+      body?: string
+      attributes?: {
+        [key: string]: string | undefined
       }
-      messageId: string
+      messageAttributes?: {
+        [key: string]: components['schemas']['MessageAttributeValue'] | undefined
+      }
+      md5OfMessageAttributes?: string
+      md5OfBody?: string
+    }
+    MessageAttributeValue: {
+      stringValue?: string
+      binaryValue?: {
+        /** Format: int32 */
+        short?: number
+        char?: string
+        /** Format: int32 */
+        int?: number
+        /** Format: int64 */
+        long?: number
+        /** Format: float */
+        float?: number
+        /** Format: double */
+        double?: number
+        direct?: boolean
+        readOnly?: boolean
+      }
+      stringListValues?: string[]
+      binaryListValues?: {
+        /** Format: int32 */
+        short?: number
+        char?: string
+        /** Format: int32 */
+        int?: number
+        /** Format: int64 */
+        long?: number
+        /** Format: float */
+        float?: number
+        /** Format: double */
+        double?: number
+        direct?: boolean
+        readOnly?: boolean
+      }[]
+      dataType?: string
     }
     RetryDlqResult: {
       /** Format: int32 */
       messagesFoundCount: number
-      messages: components['schemas']['DlqMessage'][]
+      messages: components['schemas']['Message'][]
     }
     PurgeQueueResult: {
       /** Format: int32 */
@@ -312,93 +293,6 @@ export interface components {
       /** @enum {string} */
       type: 'UNSUPPORTED_SENTENCE' | 'UNSUPPORTED_CALCULATION' | 'VALIDATION'
     }
-    GenuineOverrideRequest: {
-      reason: string
-      originalCalculationRequest: string
-      savedCalculation?: string
-      isOverridden: boolean
-    }
-    GenuineOverrideResponse: {
-      reason: string
-      originalCalculationRequest: string
-      savedCalculation: string
-      isOverridden: boolean
-    }
-    GenuineOverrideDateRequest: {
-      manualEntryRequest: components['schemas']['ManualEntryRequest']
-      originalCalculationReference: string
-    }
-    ManualEntryRequest: {
-      selectedManualEntryDates: components['schemas']['ManualEntrySelectedDate'][]
-    }
-    ManualEntrySelectedDate: {
-      /** @enum {string} */
-      dateType:
-        | 'CRD'
-        | 'LED'
-        | 'SED'
-        | 'NPD'
-        | 'ARD'
-        | 'TUSED'
-        | 'PED'
-        | 'SLED'
-        | 'HDCED'
-        | 'NCRD'
-        | 'ETD'
-        | 'MTD'
-        | 'LTD'
-        | 'DPRRD'
-        | 'PRRD'
-        | 'ESED'
-        | 'ERSED'
-        | 'TERSED'
-        | 'APD'
-        | 'HDCAD'
-        | 'None'
-        | 'Tariff'
-        | 'ROTL'
-      dateText: string
-      date?: components['schemas']['SubmittedDate']
-    }
-    SubmittedDate: {
-      /** Format: int32 */
-      day: number
-      /** Format: int32 */
-      month: number
-      /** Format: int32 */
-      year: number
-    }
-    GenuineOverrideDateResponse: {
-      calculationReference: string
-      originalCalculationReference: string
-    }
-    ManualCalculationResponse: {
-      enteredDates?: {
-        [key: string]: string
-      }
-      /** Format: int64 */
-      calculationRequestId: number
-    }
-    ComparisonInput: {
-      criteria?: components['schemas']['JsonNode']
-      /** @description Was it manually input */
-      manualInput: boolean
-      /** @description The prison the analysis was run against */
-      prison?: string
-    }
-    /** @description Criteria */
-    JsonNode: Record<string, never>
-    Comparison: {
-      comparisonShortReference: string
-      criteria: components['schemas']['JsonNode']
-      prison?: string
-      manualInput: boolean
-      /** Format: date-time */
-      calculatedAt: string
-      calculatedByUsername: string
-      /** Format: int64 */
-      numberOfPeopleCompared?: number
-    }
     CalculatedReleaseDates: {
       dates: {
         [key: string]: string | undefined
@@ -407,6 +301,7 @@ export interface components {
       calculationRequestId: number
       /** Format: int64 */
       bookingId: number
+      calculationReference: string
       prisonerId: string
       /** @enum {string} */
       calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST'
@@ -440,26 +335,48 @@ export interface components {
           isoBased?: boolean
         }
       }
-      /** @enum {string} */
-      calculationType:
-        | 'CALCULATED'
-        | 'MANUAL_DETERMINATE'
-        | 'MANUAL_INDETERMINATE'
-        | 'CALCULATED_WITH_APPROVED_DATES'
-        | 'MANUAL_OVERRIDE'
-        | 'CALCULATED_BY_SPECIALIST_SUPPORT'
       approvedDates?: {
         [key: string]: string | undefined
       }
-      /** Format: uuid */
-      calculationReference: string
     }
     CalculationFragments: {
       breakdownHtml: string
     }
+    SubmittedDate: {
+      day: string
+      month: string
+      year: string
+    }
+    ManualEntryDate: {
+      dateType: string
+      dateText: string
+      date?: components['schemas']['SubmittedDate']
+    }
+    SubmitCalculationRequest: {
+      calculationFragments: components['schemas']['CalculationFragments']
+      approvedDates: components['schemas']['ManualEntryDate'][]
+      isSpecialistSupport?: boolean
+    }
     CalculationResults: {
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
       validationMessages: components['schemas']['ValidationMessage'][]
+    }
+    GenuineOverride: {
+      reason: string
+      originalCalculationRequest: string
+      savedCalculation?: string
+      isOverridden: boolean
+    }
+    ManualEntryDates: {
+      selectedManualEntryDates: components['schemas']['ManualEntryDate'][]
+    }
+    GenuineOverrideDateRequest: {
+      manualEntryRequest: components['schemas']['ManualEntryDates']
+      originalCalculationReference: string
+    }
+    GenuineOverrideDateResponse: {
+      calculationReference: string
+      originalCalculationReference: string
     }
     RelevantRemand: {
       /** Format: date */
@@ -474,38 +391,31 @@ export interface components {
     RelevantRemandCalculationRequest: {
       relevantRemands: components['schemas']['RelevantRemand'][]
       sentence: components['schemas']['RelevantRemandSentence']
-      /** Format: date */
-      calculateAt: string
     }
     RelevantRemandSentence: {
       /** Format: int32 */
       sequence: number
       /** Format: date */
       sentenceDate: string
-      /** Format: date */
-      recallDate?: string
       /** Format: int64 */
       bookingId: number
     }
     RelevantRemandCalculationResult: {
       /** Format: date */
       releaseDate?: string
-      /** Format: date */
-      postRecallReleaseDate?: string
-      /** Format: int32 */
-      unusedDeductions: number
       validationMessages: components['schemas']['ValidationMessage'][]
-    }
-    SubmitCalculationRequest: {
-      calculationFragments: components['schemas']['CalculationFragments']
-      approvedDates?: components['schemas']['ManualEntrySelectedDate'][]
-      isSpecialistSupport?: boolean
     }
     WorkingDay: {
       /** Format: date */
       date: string
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
+    }
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never> | undefined
+      }
+      messageId: string
     }
     GetDlqResult: {
       /** Format: int32 */
@@ -591,12 +501,6 @@ export interface components {
       alertType: string
       alertCode: string
     }
-    AssignedLivingUnit: {
-      agencyId: string
-      locationId: number
-      description: string
-      agencyName: string
-    }
     PrisonerDetails: {
       /** Format: int64 */
       bookingId: number
@@ -607,7 +511,6 @@ export interface components {
       dateOfBirth: string
       alerts: components['schemas']['Alert'][]
       agencyId: string
-      assignedLivingUnit?: components['schemas']['AssignedLivingUnit']
     }
     /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
@@ -788,8 +691,6 @@ export interface components {
   pathItems: never
 }
 
-export type $defs = Record<string, never>
-
 export type external = Record<string, never>
 
 export interface operations {
@@ -869,161 +770,6 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
-        }
-      }
-    }
-  }
-  /**
-   * Store a genuine override
-   * @description This endpoint will return a response model which indicates the success of storing a genuine override
-   */
-  storeGenuineOverride: {
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['GenuineOverrideRequest']
-      }
-    }
-    responses: {
-      /** @description Returns a GenuineOverrideResponse */
-      200: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Store a genuine override
-   * @description This endpoint will return a response model which indicates the success of storing a genuine override
-   */
-  storeGenuineOverrideDates: {
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['GenuineOverrideDateRequest']
-      }
-    }
-    responses: {
-      /** @description Returns a GenuineOverrideResponse */
-      200: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideDateResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideDateResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideDateResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Store a manual calculation
-   * @description This endpoint will return a response model which indicates the success of storing a manual calculation
-   */
-  storeManualCalculation: {
-    parameters: {
-      path: {
-        prisonerId: string
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ManualEntryRequest']
-      }
-    }
-    responses: {
-      /** @description Returns a ManualCalculationResponse */
-      201: {
-        content: {
-          'application/json': components['schemas']['ManualCalculationResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['ManualCalculationResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['ManualCalculationResponse']
-        }
-      }
-    }
-  }
-  /**
-   * List all Comparisons performed using presets
-   * @description This endpoint will return all the comparisons for your caseload
-   */
-  getComparisons: {
-    responses: {
-      /** @description Returns a list of comparisons Comparison */
-      200: {
-        content: {
-          'application/json': components['schemas']['Comparison'][]
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['Comparison'][]
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['Comparison'][]
-        }
-      }
-    }
-  }
-  /**
-   * Create a record of a new calculation
-   * @description This endpoint will create a new calculation and return the new calculation object
-   */
-  createComparison: {
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ComparisonInput']
-      }
-    }
-    responses: {
-      /** @description Returns a new Comparison */
-      200: {
-        content: {
-          'application/json': components['schemas']['Comparison']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['Comparison']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['Comparison']
         }
       }
     }
@@ -1160,7 +906,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['SubmitCalculationRequest']
+        'application/json': components['schemas']['CalculationFragments']
       }
     }
     responses: {
@@ -1301,46 +1047,9 @@ export interface operations {
       }
     }
   }
-  /**
-   * Get a genuine override
-   * @description This endpoint will return a response model which returns a genuine override
-   */
-  getGenuineOverride: {
-    parameters: {
-      path: {
-        calculationReference: string
-      }
-    }
-    responses: {
-      /** @description Returns a GenuineOverrideResponse */
-      200: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Not Found, a genuine override doesn't exist for the calculation reference */
-      404: {
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-    }
-  }
   getDlqMessages: {
     parameters: {
-      query?: {
+      query: {
         maxMessages?: number
       }
       path: {
@@ -1356,6 +1065,7 @@ export interface operations {
       }
     }
   }
+
   /**
    * Find the non friday release day from a given date
    * @description Finds the non friday release day, adjusting for weekends and bank holidays
@@ -1422,67 +1132,6 @@ export interface operations {
       403: {
         content: {
           'application/json': boolean
-        }
-      }
-    }
-  }
-  /**
-   * Returns a count of the number of people compared for a particular caseload
-   * @description This endpoint will count all the people associated to a specific comparison
-   */
-  getCountOfPersonsInComparison: {
-    parameters: {
-      path: {
-        /**
-         * @description The short reference of the comparison
-         * @example A1B2C3D4
-         */
-        comparisonReference: string
-      }
-    }
-    responses: {
-      /** @description Returns a list of comparisons Comparison */
-      200: {
-        content: {
-          'application/json': number
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': number
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': number
-        }
-      }
-    }
-  }
-  /**
-   * List all comparisons which were performed manually
-   * @description This endpoint will return all of the manually performed calculations recorded in the service. This is not limited by caseload, but requires the MANUAL_COMPARER role.
-   */
-  getManualComparisons: {
-    responses: {
-      /** @description Returns a list of comparisons Comparison */
-      200: {
-        content: {
-          'application/json': components['schemas']['Comparison'][]
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['Comparison'][]
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['Comparison'][]
         }
       }
     }
