@@ -6,6 +6,7 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
   GenuineOverride,
+  NonFridayReleaseDay,
   ReleaseDateCalculationBreakdown,
   SubmitCalculationRequest,
   ValidationMessage,
@@ -19,6 +20,7 @@ import { arithmeticToWords, daysArithmeticToWords, longDateFormat } from '../uti
 import ReleaseDateType from '../enumerations/releaseDateType'
 import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ErrorMessage from '../types/ErrorMessage'
+import config from '../config'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
@@ -349,6 +351,23 @@ export default class CalculateReleaseDatesService {
       const adjustment = await client.getPreviousWorkingDay(calculation.dates.LTD)
       if (adjustment.date !== calculation.dates.LTD) {
         adjustments.LTD = adjustment
+      }
+    }
+    return adjustments
+  }
+
+  async getNonFridayReleaseAdjustments(
+    calculation: BookingCalculation,
+    token: string
+  ): Promise<{ [key: string]: NonFridayReleaseDay }> {
+    const client = new CalculateReleaseDatesApiClient(token)
+    const adjustments: { [key: string]: NonFridayReleaseDay } = {}
+    if (config.featureToggles.nonFridayRelease) {
+      if (calculation.dates.CRD) {
+        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.CRD)
+        if (adjustment.date !== calculation.dates.CRD) {
+          adjustments.CRD = adjustment
+        }
       }
     }
     return adjustments

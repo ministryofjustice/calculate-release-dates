@@ -14,6 +14,7 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import {
   BookingCalculation,
   CalculationBreakdown,
+  NonFridayReleaseDay,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import EntryPointService from '../services/entryPointService'
@@ -107,6 +108,13 @@ const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
     date: '2021-10-05',
     adjustedForWeekend: true,
     adjustedForBankHoliday: true,
+  },
+}
+const stubbedNoNonFridayReleaseAdjustments: { [key: string]: NonFridayReleaseDay } = {}
+const stubbedNonFridayReleaseAdjustments: { [key: string]: NonFridayReleaseDay } = {
+  CRD: {
+    date: '2021-02-04',
+    usePolicy: true,
   },
 }
 
@@ -302,6 +310,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -344,6 +353,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -367,6 +377,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(pedAdjustedByCrdAndBeforePrrdReleaseDates())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: pedAdjustedByCrdAndBeforePrrdBreakdown(),
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -392,6 +403,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(hdcedAdjustedToArdReleaseDates())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: hdcedAdjustedToArd(),
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -410,6 +422,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanCrd())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -430,6 +443,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanArd())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -450,6 +464,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanPed())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -470,6 +485,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanHdcedWithCrd())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -491,6 +507,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanHdcedWithCrd())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -512,6 +529,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanHdcedWithArd())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -533,6 +551,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdBeforeHdcedAndCrd())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -554,6 +573,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdBeforePedAndCrd())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -575,6 +595,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedBeforeMtdBeforeCrd())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -594,6 +615,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedBeforeCrdBeforeMtd())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -615,6 +637,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -634,6 +657,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -654,6 +678,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedLicenceCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -672,6 +697,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedAdjustedByArdReleaseDate())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: ersedAdjustedByArdBreakdown(),
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -705,6 +731,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedAdjustedByArdReleaseDate())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -723,6 +750,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedAdjustedByArdReleaseDate())
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -748,6 +776,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     return request(app)
       .get('/calculation/A1234AB/summary/123456/print')
       .expect(200)
@@ -798,6 +827,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
     calculateReleaseDatesService.getBreakdown.mockResolvedValue({
       calculationBreakdown: stubbedCalculationBreakdown,
       releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
@@ -811,6 +841,25 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('If you think the calculation is wrong')
         expect(res.text).toContain('contact the specialist')
         expect(res.text).toContain('support team')
+      })
+  })
+  it('GET /calculation/:nomsId/summary/:calculationRequestId with non Friday release returns should display hint text', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNonFridayReleaseAdjustments)
+    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+      calculationBreakdown: stubbedCalculationBreakdown,
+      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    })
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).not.toContain('Tuesday, 02 February 2021 when adjusted to a working day')
+        expect(res.text).toContain('The <a href="#">non-friday release policy</a> applies to this release date.')
       })
   })
 })

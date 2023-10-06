@@ -118,6 +118,10 @@ export default class ViewRoutes {
       releaseDates,
       token
     )
+    const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
+      releaseDates,
+      token
+    )
 
     try {
       const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
@@ -143,6 +147,7 @@ export default class ViewRoutes {
         hasNone,
         true,
         releaseDates.calculationReference,
+        nonFridayReleaseAdjustments,
         breakdown?.calculationBreakdown,
         breakdown?.releaseDatesWithAdjustments,
         null,
@@ -164,6 +169,7 @@ export default class ViewRoutes {
           false,
           true,
           releaseDates.calculationReference,
+          nonFridayReleaseAdjustments,
           null,
           null,
           {
