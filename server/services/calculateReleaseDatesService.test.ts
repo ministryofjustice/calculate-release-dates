@@ -1,4 +1,5 @@
 import nock from 'nock'
+import dayjs from 'dayjs'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import config from '../config'
 import {
@@ -193,6 +194,33 @@ describe('Calculate release dates service tests', () => {
 
   it('Test non Friday release dates turned on', async () => {
     config.featureToggles.nonFridayRelease = true
+    const futureCalculation: BookingCalculation = {
+      dates: {
+        CRD: dayjs().add(7, 'day').format('YYYY-MM-DD'),
+      },
+      effectiveSentenceLength: null,
+      calculationReference: 'ABC123',
+      calculationRequestId,
+      prisonerId,
+      bookingId: 123,
+      calculationStatus: 'CONFIRMED',
+    }
+    const adjustedCrd: NonFridayReleaseDay = {
+      date: '2021-10-27',
+      usePolicy: true,
+    }
+
+    fakeApi.get(`/non-friday-release/${futureCalculation.dates.CRD}`).reply(200, adjustedCrd)
+
+    const result = await calculateReleaseDatesService.getNonFridayReleaseAdjustments(futureCalculation, token)
+
+    expect(result).toEqual({
+      CRD: adjustedCrd,
+    })
+  })
+
+  it('Test non Friday release dates turned on date in the past', async () => {
+    config.featureToggles.nonFridayRelease = true
     const adjustedCrd: NonFridayReleaseDay = {
       date: '2021-10-27',
       usePolicy: true,
@@ -202,9 +230,7 @@ describe('Calculate release dates service tests', () => {
 
     const result = await calculateReleaseDatesService.getNonFridayReleaseAdjustments(calculationResults, token)
 
-    expect(result).toEqual({
-      CRD: adjustedCrd,
-    })
+    expect(result).toEqual({})
   })
 
   it('Test non Friday release dates turned off', async () => {
