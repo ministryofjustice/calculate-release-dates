@@ -27,6 +27,7 @@ generic-service:
     SPECIALIST_SUPPORT_ENABLED: "true"
     COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     NON_FRIDAY_RELEASE_TOGGLE: "true"
+    FRONTEND_COMPONENT_API_TIMEOUT: 500
   # Switches off the allow list in the DEV env only.
   allowlist: null
 

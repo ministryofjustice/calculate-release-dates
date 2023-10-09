@@ -61,10 +61,12 @@
           crossorigin="anonymous"></script>
   <link href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
 
-  {% if featureToggles.dpsBannerEnabled %}
-    {% for css in feComponents.cssIncludes %}
-      <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
-    {% endfor %}
+  {% if feComponents.cssIncludes %}
+    {% if featureToggles.dpsBannerEnabled %}
+      {% for css in feComponents.cssIncludes %}
+        <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
+      {% endfor %}
+    {% endif %}
   {% endif %}
 
 {% endblock %}
@@ -77,7 +79,7 @@
     {% if feComponents.header %}
       {{ feComponents.header | safe }}
     {% else %}
-      {% include "./header.njk" %}
+      {% include "./fallback_header.njk" %}
     {% endif %}
   {% else %}
     {% include "./header.njk" %}
@@ -112,7 +114,7 @@
     {% if feComponents.footer %}
       {{ feComponents.footer | safe }}
     {% else %}
-      {% include "./footer.njk" %}
+      {% include "./fallback_footer.njk" %}
     {% endif %}
   {% else %}
     {% include "./footer.njk" %}
