@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
   BookingCalculation,
@@ -363,7 +364,8 @@ export default class CalculateReleaseDatesService {
     const client = new CalculateReleaseDatesApiClient(token)
     const adjustments: { [key: string]: NonFridayReleaseDay } = {}
     if (config.featureToggles.nonFridayRelease) {
-      if (calculation.dates.CRD) {
+      const now = dayjs()
+      if (calculation.dates.CRD && now.isBefore(dayjs(calculation.dates.CRD))) {
         const adjustment = await client.getNonReleaseFridayDay(calculation.dates.CRD)
         if (adjustment.date !== calculation.dates.CRD) {
           adjustments.CRD = adjustment
