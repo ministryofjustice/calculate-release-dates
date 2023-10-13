@@ -59,9 +59,16 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<BookingCalculation>
   }
 
-  getCalculationResultsByReference(calculationReference: string): Promise<BookingCalculation> {
+  getCalculationResultsByReference(
+    calculationReference: string,
+    checkForChanges: boolean
+  ): Promise<BookingCalculation> {
+    let url = `/calculationReference/${calculationReference}`
+    if (checkForChanges) {
+      url += `?checkForChange=${checkForChanges}`
+    }
     return this.restClient.get({
-      path: `/calculationReference/${calculationReference}`,
+      path: url,
     }) as Promise<BookingCalculation>
   }
 

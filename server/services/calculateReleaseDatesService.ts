@@ -57,9 +57,13 @@ export default class CalculateReleaseDatesService {
   async getCalculationResultsByReference(
     username: string,
     calculationReference: string,
-    token: string
+    token: string,
+    checkForChanges = false
   ): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).getCalculationResultsByReference(calculationReference)
+    return new CalculateReleaseDatesApiClient(token).getCalculationResultsByReference(
+      calculationReference,
+      checkForChanges
+    )
   }
 
   async getCalculationUserQuestions(prisonId: string, token: string): Promise<CalculationUserQuestions> {

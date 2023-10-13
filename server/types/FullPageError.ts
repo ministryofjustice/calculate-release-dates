@@ -45,6 +45,15 @@ export class FullPageError extends Error {
     error.status = 404
     return error
   }
+
+  static theDataHasChangedPage(): FullPageError {
+    const error = new FullPageError(
+      'The offence, sentence or adjustments data has changed since the override was requested'
+    )
+    error.errorKey = FullPageErrorType.DATA_CHANGED_AFTER_SUPPORT_REQUEST_RAISED
+    error.status = 409
+    return error
+  }
 }
 
 export enum FullPageErrorType {
@@ -53,4 +62,5 @@ export enum FullPageErrorType {
   NO_CALCULATION_SUBMITTED,
   NOT_FOUND,
   CALCULATION_OR_PRISONER_NOT_FOUND,
+  DATA_CHANGED_AFTER_SUPPORT_REQUEST_RAISED,
 }

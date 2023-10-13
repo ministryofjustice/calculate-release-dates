@@ -103,7 +103,8 @@ export default class GenuineOverrideRoutes {
         const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
           username,
           calculationReference,
-          token
+          token,
+          true
         )
         const prisonerDetail = await this.prisonerService.getPrisonerDetailForSpecialistSupport(
           username,
@@ -118,6 +119,9 @@ export default class GenuineOverrideRoutes {
         }
         return res.render('pages/genuineOverrides/confirm', { calculation, prisonerDetail })
       } catch (error) {
+        if (error && error.status === 409) {
+          throw FullPageError.theDataHasChangedPage()
+        }
         throw FullPageError.couldNotLoadConfirmPage()
       }
     }
