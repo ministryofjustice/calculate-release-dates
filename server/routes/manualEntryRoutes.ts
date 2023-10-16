@@ -229,7 +229,7 @@ export default class ManualEntryRoutes {
         req.session.selectedManualEntryDates[nomsId].length === 1 &&
         req.session.selectedManualEntryDates[nomsId][0].dateType === 'None'
       const baseUrl = `/calculation/${nomsId}/complete/${response.calculationRequestId}`
-      const fullUrl = isNone ? `${baseUrl}?noDates=true` : `${baseUrl}?manual=true`
+      const fullUrl = isNone ? `${baseUrl}?noDates=true` : `${baseUrl}`
       return res.redirect(fullUrl)
     } catch (error) {
       // TODO Move handling of validation errors from the api into the service layer

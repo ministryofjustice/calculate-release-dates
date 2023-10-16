@@ -70,7 +70,7 @@ context('End to end happy path of user journey', () => {
 
     calculationCompletePage
       .title()
-      .should('contain.text', 'Calculation complete for')
+      .should('contain.text', 'Release dates saved to NOMIS for')
       .should('contain.text', 'Marvin Haggler')
   })
 
@@ -102,7 +102,7 @@ context('End to end happy path of user journey', () => {
 
     calculationCompletePage
       .title()
-      .should('contain.text', 'Calculation complete for')
+      .should('contain.text', 'Release dates saved to NOMIS for')
       .should('contain.text', 'Marvin Haggler')
   })
 
