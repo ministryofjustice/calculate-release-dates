@@ -219,7 +219,7 @@ export default class CalculationRoutes {
   public complete: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    const { noDates, manual } = req.query
+    const { noDates } = req.query
     this.entryPointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
@@ -231,17 +231,11 @@ export default class CalculationRoutes {
     if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
       throw FullPageError.notFoundError()
     }
-    const hasApprovedDates =
-      req.session.selectedApprovedDates != null &&
-      req.session.selectedApprovedDates[nomsId] != null &&
-      req.session.selectedApprovedDates[nomsId].length > 0
     this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
     res.render('pages/calculation/calculationComplete', {
       prisonerDetail,
       calculationRequestId,
       noDates,
-      manual,
-      hasApprovedDates,
     })
   }
 

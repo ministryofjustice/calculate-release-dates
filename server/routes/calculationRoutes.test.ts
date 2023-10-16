@@ -720,7 +720,7 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toMatch(/Calculation complete for<br>\s*Anon Nobody/)
+        expect(res.text).toMatch(/Release dates saved to NOMIS for<br>\s*Anon Nobody/)
         expect(res.text).toContain('Back to Digital Prison Service (DPS) search')
         expect(entryPointService.clearEntryPoint).toBeCalled()
         expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')

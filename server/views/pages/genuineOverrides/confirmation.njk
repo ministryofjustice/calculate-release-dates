@@ -14,13 +14,8 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-panel govuk-panel--confirmation">
 
-                {% if manual %}
-                    {% include "../partials/complete/calculationSavedManual.njk" %}
-                    {% elif noDates %}
+                {% if noDates %}
                     {% include "../partials/complete/calculationSavedNoDates.njk" %}
-                    {% elif hasApprovedDates %}
-                    {% include "../partials/complete/calculationSavedApprovedDates.njk" %}
-
                 {% else %}
                     {% include "../partials/complete/calculationSavedCalculated.njk" %}
                 {% endif %}
