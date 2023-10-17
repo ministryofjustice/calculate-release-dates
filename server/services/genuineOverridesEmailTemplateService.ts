@@ -20,7 +20,7 @@ Prisoner ID: ${prisonerDetail.offenderNo}%0D
 %0D
 The team can confirm that the release dates calculated by the service were incorrect.%0D 
 %0D
-The correct release dates for this prisoner have been submitted. You can view the calculation in the calculation look up service by clicking this link, or copying and pasting it into your browser: ${config.domain}/view/${prisonerDetail.offenderNo}/calculation-summary/${calculationId}.%0D 
+The correct release dates for this prisoner have been submitted. You can view the calculation in the calculation look up service by clicking this link, or copying and pasting it into your browser: ${config.domain}/view/${prisonerDetail.offenderNo}/sentences-and-offences/${calculationId}.%0D 
 %0D
 [Add any details that could help explain the mismatch in the calculated dates]%0D
 %0D
@@ -52,7 +52,7 @@ Prisoner ID: ${prisonerDetail.offenderNo}%0D
 %0D
 The team can confirm that the release dates calculated by the service were correct.%0D
 %0D
-The final release dates for this prisoner have been submitted. You can view the calculation in the calculation look up service by clicking this link, or copying and pasting it into your browser: ${config.domain}/view/${prisonerDetail.offenderNo}/calculation-summary/${calculationId}.%0D 
+The final release dates for this prisoner have been submitted. You can view the calculation in the calculation look up service by clicking this link, or copying and pasting it into your browser: ${config.domain}/view/${prisonerDetail.offenderNo}/sentences-and-offences/${calculationId}.%0D 
 %0D
 An explanation of the discrepancy can be found below:%0D
 %0D
