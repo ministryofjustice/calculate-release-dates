@@ -23,6 +23,7 @@ import ApprovedDatesService from '../../services/approvedDatesService'
 import CheckInformationService from '../../services/checkInformationService'
 import QuestionsService from '../../services/questionsService'
 import FrontEndComponentsService from '../../services/frontEndComponentsService'
+import ComparisonService from '../../services/comparisonService'
 
 const user = {
   name: 'anon nobody',
@@ -88,6 +89,7 @@ export const appWithAllRoutes = (overrides: Partial<Services> = {}, production =
     checkInformationService: {} as CheckInformationService,
     questionsService: {} as QuestionsService,
     frontEndComponentService: {} as FrontEndComponentsService,
+    comparisonService: {} as ComparisonService,
     ...overrides,
   })
   auth.default.authenticationMiddleware = () => (req, res, next) => next()

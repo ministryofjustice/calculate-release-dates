@@ -6,6 +6,7 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import OneThousandCalculationsService from '../services/oneThousandCalculationsService'
 import UserPermissionsService from '../services/userPermissionsService'
 import PrisonerService from '../services/prisonerService'
+import ComparisonService from '../services/comparisonService'
 
 export const comparePaths = {
   COMPARE_INDEX: '/compare',
@@ -23,7 +24,8 @@ export default class CompareRoutes {
     private readonly oneThousandCalculationsService: OneThousandCalculationsService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly bulkLoadService: UserPermissionsService,
-    private readonly prisonerService: PrisonerService
+    private readonly prisonerService: PrisonerService,
+    private readonly comparisonService: ComparisonService
   ) {
     // intentionally left blank
   }
@@ -92,9 +94,10 @@ export default class CompareRoutes {
     return
   }
   public run: RequestHandler = async (req, res) => {
-    const uuid = uuidv4()
-    const shortReference = uuid.substring(0, 8)
-    return res.redirect(`/compare/result/${shortReference}`)
+    const { selectedOMU } = req.body
+    const { token } = res.locals.user
+    const comparison = await this.comparisonService.createPrisonComparison(selectedOMU, token)
+    return res.redirect(`/compare/result/${comparison.comparisonShortReference}`)
   }
 
   public detail: RequestHandler = async (req, res) => {

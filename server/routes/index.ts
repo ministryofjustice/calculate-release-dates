@@ -27,6 +27,7 @@ export default function Index({
   approvedDatesService,
   checkInformationService,
   questionsService,
+  comparisonService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -53,7 +54,8 @@ export default function Index({
     oneThousandCalculationsService,
     calculateReleaseDatesService,
     userPermissionsService,
-    prisonerService
+    prisonerService,
+    comparisonService
   )
 
   const otherAccessRoutes = new OtherRoutes(

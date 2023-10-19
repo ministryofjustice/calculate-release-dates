@@ -20,6 +20,32 @@ export interface paths {
      */
     post: operations['validate']
   }
+
+  '/comparison': {
+    /**
+     * List all Comparisons performed using presets
+     * @description This endpoint will return all the comparisons for your caseload
+     */
+    get: operations['getComparisons']
+    /**
+     * Create a record of a new calculation
+     * @description This endpoint will create a new calculation and return the new calculation object
+     */
+    post: operations['createComparison']
+  }
+  '/comparison/manual': {
+    /**
+     * List all comparisons which were performed manually
+     * @description This endpoint will return all of the manually performed calculations recorded in the service. This is not limited by caseload, but requires the MANUAL_COMPARER role.
+     */
+    get: operations['getManualComparisons']
+    /**
+     * Create a record of a new manual calculation
+     * @description This endpoint will create a new manual comparison and return the new manual comparison object
+     */
+    post: operations['createComparison_1']
+  }
+
   '/calculation/{prisonerId}': {
     /**
      * Calculate release dates for a prisoner - preliminary calculation, this does not publish to NOMIS
@@ -85,6 +111,41 @@ export interface paths {
      * @description This endpoint will return true if a booking has any indeterminate sentences
      */
     get: operations['hasIndeterminateSentences']
+  }
+  '/comparison/{comparisonReference}': {
+    /**
+     * Returns the people for a particular caseload
+     * @description This endpoint return the people associated to a specific comparison
+     */
+    get: operations['getComparisonByShortReference']
+  }
+  '/comparison/{comparisonReference}/count': {
+    /**
+     * Returns a count of the number of people compared for a particular caseload
+     * @description This endpoint will count all the people associated to a specific comparison
+     */
+    get: operations['getCountOfPersonsInComparison']
+  }
+  '/comparison/manual/{comparisonReference}': {
+    /**
+     * Returns the people for a particular caseload
+     * @description This endpoint return the people associated to a specific comparison
+     */
+    get: operations['getComparisonByShortReference_1']
+  }
+  '/comparison/manual/{comparisonReference}/count': {
+    /**
+     * Returns a count of the number of people compared for a particular caseload
+     * @description This endpoint will count all the people associated to a specific comparison
+     */
+    get: operations['getCountOfPersonsInComparison_1']
+  }
+  '/calculationReference/{calculationReference}': {
+    /**
+     * Get release dates for a calculationRequestId
+     * @description This endpoint will return the release dates based on a calculationRequestId
+     */
+    get: operations['getCalculationResults']
   }
   '/calculation/{prisonerId}/user-questions': {
     /**
@@ -292,6 +353,34 @@ export interface components {
       message: string
       /** @enum {string} */
       type: 'UNSUPPORTED_SENTENCE' | 'UNSUPPORTED_CALCULATION' | 'VALIDATION'
+    }
+    ComparisonInput: {
+      criteria?: components['schemas']['JsonNode']
+      /** @description The prison the analysis was run against */
+      prison?: string
+    }
+    /** @description Criteria */
+    JsonNode: Record<string, never>
+    Comparison: {
+      comparisonShortReference: string
+      criteria: components['schemas']['JsonNode']
+      prison?: string
+      manualInput: boolean
+      /** Format: date-time */
+      calculatedAt: string
+      calculatedByUsername: string
+      comparisonStatus: components['schemas']['ComparisonStatus']
+      /** Format: int64 */
+      numberOfPeopleCompared?: number
+    }
+    ComparisonStatus: {
+      /** Format: int32 */
+      id: number
+      name: string
+    }
+    ManualComparisonInput: {
+      /** @description The prisoner ids the analysis was run against */
+      prisonerIds: string[]
     }
     CalculatedReleaseDates: {
       dates: {
@@ -775,6 +864,121 @@ export interface operations {
     }
   }
   /**
+   * List all Comparisons performed using presets
+   * @description This endpoint will return all the comparisons for your caseload
+   */
+  getComparisons: {
+    responses: {
+      /** @description Returns a list of comparisons Comparison */
+      200: {
+        content: {
+          'application/json': components['schemas']['Comparison'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['Comparison'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['Comparison'][]
+        }
+      }
+    }
+  }
+  /**
+   * Create a record of a new calculation
+   * @description This endpoint will create a new calculation and return the new calculation object
+   */
+  createComparison: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ComparisonInput']
+      }
+    }
+    responses: {
+      /** @description Returns a new Comparison */
+      200: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+    }
+  }
+  /**
+   * List all comparisons which were performed manually
+   * @description This endpoint will return all of the manually performed calculations recorded in the service. This is not limited by caseload, but requires the MANUAL_COMPARER role.
+   */
+  getManualComparisons: {
+    responses: {
+      /** @description Returns a list of comparisons Comparison */
+      200: {
+        content: {
+          'application/json': components['schemas']['Comparison'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['Comparison'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['Comparison'][]
+        }
+      }
+    }
+  }
+  /**
+   * Create a record of a new manual calculation
+   * @description This endpoint will create a new manual comparison and return the new manual comparison object
+   */
+  createComparison_1: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ManualComparisonInput']
+      }
+    }
+    responses: {
+      /** @description Returns a new Comparison */
+      200: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+    }
+  }
+
+  /**
    * Calculate release dates for a prisoner - preliminary calculation, this does not publish to NOMIS
    * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS
    */
@@ -1132,6 +1336,147 @@ export interface operations {
       403: {
         content: {
           'application/json': boolean
+        }
+      }
+    }
+  }
+
+  /**
+   * Returns the people for a particular caseload
+   * @description This endpoint return the people associated to a specific comparison
+   */
+  getComparisonByShortReference: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+      }
+    }
+    responses: {
+      /** @description Returns a list of comparisons Comparison */
+      200: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+    }
+  }
+  /**
+   * Returns a count of the number of people compared for a particular caseload
+   * @description This endpoint will count all the people associated to a specific comparison
+   */
+  getCountOfPersonsInComparison: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+      }
+    }
+    responses: {
+      /** @description Returns a list of comparisons Comparison */
+      200: {
+        content: {
+          'application/json': number
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': number
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': number
+        }
+      }
+    }
+  }
+  /**
+   * Returns the people for a particular caseload
+   * @description This endpoint return the people associated to a specific comparison
+   */
+  getComparisonByShortReference_1: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+      }
+    }
+    responses: {
+      /** @description Returns a list of comparisons Comparison */
+      200: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['Comparison']
+        }
+      }
+    }
+  }
+  /**
+   * Returns a count of the number of people compared for a particular caseload
+   * @description This endpoint will count all the people associated to a specific comparison
+   */
+  getCountOfPersonsInComparison_1: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+      }
+    }
+    responses: {
+      /** @description Returns a list of comparisons Comparison */
+      200: {
+        content: {
+          'application/json': number
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': number
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': number
         }
       }
     }
