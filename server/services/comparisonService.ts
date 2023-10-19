@@ -5,4 +5,8 @@ export default class ComparisonService {
   async createPrisonComparison(selectedOMU: string, token: string): Promise<Comparison> {
     return new CalculateReleaseDatesApiClient(token).createPrisonComparison(selectedOMU)
   }
+
+  async getPrisonComparison(bulkComparisonId: string, token: string): Promise<Comparison> {
+    return new CalculateReleaseDatesApiClient(token).getPrisonComparison(bulkComparisonId)
+  }
 }

@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express'
 import { stringify } from 'csv-stringify'
-import { v4 as uuidv4 } from 'uuid'
 import logger from '../../logger'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import OneThousandCalculationsService from '../services/oneThousandCalculationsService'
@@ -74,7 +73,9 @@ export default class CompareRoutes {
   }
 
   public result: RequestHandler = async (req, res) => {
-    const bulkComparisonDetailId = uuidv4()
+    const { bulkComparisonResultId } = req.params
+    const { token } = res.locals.user
+    const comparison = await this.comparisonService.getPrisonComparison(bulkComparisonResultId, token)
 
     // retrieve the information about the bulkComparison
     const bulkComparison = {
@@ -88,8 +89,8 @@ export default class CompareRoutes {
 
     res.render('pages/compare/resultOverview', {
       allowBulkComparison,
-      bulkComparison,
-      bulkComparisonDetailId,
+      comparison,
+      bulkComparisonResultId,
     })
     return
   }
