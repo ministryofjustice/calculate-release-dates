@@ -74,7 +74,9 @@ export default class CompareRoutes {
   }
 
   public result: RequestHandler = async (req, res) => {
-    const bulkComparisonDetailId = uuidv4()
+    const { bulkComparisonResultId } = req.params
+    const { token } = res.locals.user
+    const comparison = await this.comparisonService.getPrisonComparison(bulkComparisonResultId, token)
 
     // retrieve the information about the bulkComparison
     const bulkComparison = {
@@ -88,8 +90,8 @@ export default class CompareRoutes {
 
     res.render('pages/compare/resultOverview', {
       allowBulkComparison,
-      bulkComparison,
-      bulkComparisonDetailId,
+      comparison,
+      bulkComparisonResultId,
     })
     return
   }

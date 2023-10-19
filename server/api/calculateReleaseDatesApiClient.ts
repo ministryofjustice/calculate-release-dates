@@ -191,4 +191,8 @@ export default class CalculateReleaseDatesApiClient {
       data: { criteria: {}, prison },
     }) as Promise<Comparison>
   }
+
+  getPrisonComparison(comparisonReference: string): Promise<Comparison> {
+    return this.restClient.get({ path: `/comparison/${comparisonReference}` }) as Promise<Comparison>
+  }
 }
