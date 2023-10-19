@@ -33,19 +33,15 @@
     <h1 class="govuk-heading-xl">Bulk Comparisons</h1>
 
     <ul class="gem-c-document-list gem-c-document-list--no-underline">
-
-        <li class="gem-c-document-list__item  ">
-            <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/ABC123">Kirkham - 14th July 2023</a>
+        {% for comparison in comparisons %}
+            <li class="gem-c-document-list__item">
+            <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/{{ comparison.comparisonShortReference }}">{{ comparison.prison }} - {{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
             <p class="gem-c-document-list__item-description ">
-                Jane Doe ( 9 mismatches from 2103 results)
+                {{ comparison.calculatedByUsername }} ( 9 mismatches from {{ comparison.numberOfPeopleCompared }} results)
             </p>
          </li>
-        <li class="gem-c-document-list__item  ">
-            <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/DEF321">Kirkham - 14th July 2023</a>
-            <p class="gem-c-document-list__item-description ">
-                Jane Doe ( 13 mismatches from 2103 results)
-            </p>
-        </li>
+        {& endfor &}
+        
     </ul>
 
 {% endblock %}

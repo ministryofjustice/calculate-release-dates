@@ -9,4 +9,8 @@ export default class ComparisonService {
   async getPrisonComparison(bulkComparisonId: string, token: string): Promise<Comparison> {
     return new CalculateReleaseDatesApiClient(token).getPrisonComparison(bulkComparisonId)
   }
+
+  async getPrisonComparisons(token: string): Promise<Comparison[]> {
+    return new CalculateReleaseDatesApiClient(token).getPrisonComparisons()
+  }
 }
