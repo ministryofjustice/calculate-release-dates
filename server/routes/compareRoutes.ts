@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express'
 import { stringify } from 'csv-stringify'
-import { v4 as uuidv4 } from 'uuid'
 import logger from '../../logger'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import OneThousandCalculationsService from '../services/oneThousandCalculationsService'
