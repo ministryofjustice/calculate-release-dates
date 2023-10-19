@@ -6,6 +6,7 @@ import {
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
+  Comparison,
   GenuineOverride,
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,
@@ -182,5 +183,12 @@ export default class CalculateReleaseDatesApiClient {
 
   getNonReleaseFridayDay(date: string): Promise<NonFridayReleaseDay> {
     return this.restClient.get({ path: `/non-friday-release/${date}` }) as Promise<NonFridayReleaseDay>
+  }
+
+  createPrisonComparison(prison: string): Promise<Comparison> {
+    return this.restClient.post({
+      path: '/comparison',
+      data: { criteria: {}, prison },
+    }) as Promise<Comparison>
   }
 }

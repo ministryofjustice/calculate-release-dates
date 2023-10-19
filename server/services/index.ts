@@ -17,6 +17,7 @@ import QuestionsService from './questionsService'
 import CheckInformationService from './checkInformationService'
 import FrontEndComponentsService from './frontEndComponentsService'
 import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
+import ComparisonService from './comparisonService'
 
 export const services = () => {
   const { hmppsAuthClient } = dataAccess()
@@ -49,6 +50,7 @@ export const services = () => {
     userInputService
   )
   const frontEndComponentService = new FrontEndComponentsService(new FrontendComponentsApiClient())
+  const comparisonService = new ComparisonService()
 
   return {
     userService,
@@ -65,6 +67,7 @@ export const services = () => {
     checkInformationService,
     questionsService,
     frontEndComponentService,
+    comparisonService,
   }
 }
 
