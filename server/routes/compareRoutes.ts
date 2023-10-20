@@ -53,7 +53,7 @@ export default class CompareRoutes {
   public list: RequestHandler = async (req, res) => {
     const { userRoles, token } = res.locals.user
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
-    const comparisons = this.comparisonService.getPrisonComparisons(token)
+    const comparisons = await this.comparisonService.getPrisonComparisons(token)
     res.render('pages/compare/list', {
       allowBulkComparison,
       comparisons,
@@ -62,12 +62,12 @@ export default class CompareRoutes {
   }
 
   public manual_list: RequestHandler = async (req, res) => {
-    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
-    const usersCaseload = await this.prisonerService.getUsersCaseloads(res.locals.user.username, res.locals.user.token)
-    const caseloadRadios = usersCaseload.map(caseload => ({ text: caseload.description, value: caseload.caseLoadId }))
+    const { userRoles, token } = res.locals.user
+    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
+    const comparisons = await this.comparisonService.getManualComparisons(token)
     res.render('pages/compare/manualList', {
       allowBulkComparison,
-      caseloadRadios,
+      comparisons,
     })
     return
   }

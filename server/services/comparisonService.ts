@@ -13,4 +13,8 @@ export default class ComparisonService {
   async getPrisonComparisons(token: string): Promise<Comparison[]> {
     return new CalculateReleaseDatesApiClient(token).getPrisonComparisons()
   }
+
+  async getManualComparisons(token: string): Promise<Comparison[]> {
+    return new CalculateReleaseDatesApiClient(token).getManualComparisons()
+  }
 }
