@@ -5,7 +5,6 @@ import EntryPointService from './entryPointService'
 import ViewReleaseDatesService from './viewReleaseDatesService'
 import UserInputService from './userInputService'
 import { dataAccess } from '../data'
-import OneThousandCalculationsService from './oneThousandCalculationsService'
 import ManualCalculationService from './manualCalculationService'
 import ManualEntryService from './manualEntryService'
 import UserPermissionsService from './userPermissionsService'
@@ -27,10 +26,6 @@ export const services = () => {
   const entryPointService = new EntryPointService()
   const viewReleaseDatesService = new ViewReleaseDatesService()
   const userInputService = new UserInputService()
-  const oneThousandCalculationsService = new OneThousandCalculationsService(
-    prisonerService,
-    calculateReleaseDatesService
-  )
   const manualCalculationService = new ManualCalculationService()
   const manualEntryValidationService = new ManualEntryValidationService()
   const dateTypeConfigurationService = new DateTypeConfigurationService()
@@ -59,7 +54,6 @@ export const services = () => {
     entryPointService,
     viewReleaseDatesService,
     userInputService,
-    oneThousandCalculationsService,
     manualCalculationService,
     manualEntryService,
     userPermissionsService,

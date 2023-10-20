@@ -20,7 +20,6 @@ export default function Index({
   entryPointService,
   viewReleaseDatesService,
   userInputService,
-  oneThousandCalculationsService,
   manualCalculationService,
   manualEntryService,
   userPermissionsService,
@@ -51,18 +50,13 @@ export default function Index({
   const searchAccessRoutes = new SearchRoutes(prisonerService)
 
   const compareAccessRoutes = new CompareRoutes(
-    oneThousandCalculationsService,
     calculateReleaseDatesService,
     userPermissionsService,
     prisonerService,
     comparisonService
   )
 
-  const otherAccessRoutes = new OtherRoutes(
-    oneThousandCalculationsService,
-    calculateReleaseDatesService,
-    prisonerService
-  )
+  const otherAccessRoutes = new OtherRoutes(prisonerService)
   const startRoutes = new StartRoutes(entryPointService, prisonerService, userPermissionsService)
   const viewAccessRoutes = new ViewRoutes(
     viewReleaseDatesService,
@@ -273,6 +267,7 @@ export default function Index({
     get(comparePaths.COMPARE_DETAIL, compareAccessRoutes.detail)
     get(comparePaths.COMPARE_LIST, compareAccessRoutes.list)
     get(comparePaths.COMPARE_MANUAL_LIST, compareAccessRoutes.manual_list)
+    get(comparePaths.COMPARE_MANUAL_RESULT, compareAccessRoutes.manualResult)
   }
 
   indexRoutes()

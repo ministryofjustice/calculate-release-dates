@@ -15,7 +15,6 @@ import PrisonerService from '../../services/prisonerService'
 import EntryPointService from '../../services/entryPointService'
 import ViewReleaseDatesService from '../../services/viewReleaseDatesService'
 import UserInputService from '../../services/userInputService'
-import OneThousandCalculationsService from '../../services/oneThousandCalculationsService'
 import ManualCalculationService from '../../services/manualCalculationService'
 import ManualEntryService from '../../services/manualEntryService'
 import UserPermissionsService from '../../services/userPermissionsService'
@@ -81,7 +80,6 @@ export const appWithAllRoutes = (overrides: Partial<Services> = {}, production =
     entryPointService: {} as EntryPointService,
     viewReleaseDatesService: {} as ViewReleaseDatesService,
     userInputService: {} as UserInputService,
-    oneThousandCalculationsService: {} as OneThousandCalculationsService,
     manualCalculationService: {} as ManualCalculationService,
     manualEntryService: {} as ManualEntryService,
     userPermissionsService: {} as UserPermissionsService,

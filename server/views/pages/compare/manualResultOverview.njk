@@ -5,7 +5,7 @@
 {% block beforeContent %}
     {{ super() }}
     <nav>
-        {% set overviewPath = "/compare/result/" + comparison.comparisonShortReference  %}
+        {% set overviewPath = "/compare/manual/result/" + comparison.comparisonShortReference  %}
         {{ govukBreadcrumbs({
             items: [
                 {
@@ -88,7 +88,7 @@
                 },
                 actions: {
                     items: [{
-                        href: "/compare/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                        href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
                         text: "view details",
                         visuallyHiddenText: "name"
                     }]
@@ -103,7 +103,7 @@
                 },
                 actions: {
                     items: [{
-                        href: "/compare/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                        href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
                         text: "view details",
                         visuallyHiddenText: "name"
                     }]
@@ -119,7 +119,7 @@
             },
                 actions: {
                    items: [{
-                        href: "/compare/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                        href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
                         text: "view details",
                         visuallyHiddenText: "name"
                     }]
@@ -134,7 +134,7 @@
             },
                 actions: {
                 items: [{
-                    href: "/compare/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                    href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
                     text: "view details",
                     visuallyHiddenText: "name"
                 }]
@@ -149,7 +149,7 @@
                 },
                 actions: {
                 items: [{
-                    href: "/compare/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                    href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
                     text: "view details",
                     visuallyHiddenText: "name"
                 }]
