@@ -29,8 +29,8 @@
     "generate-calculate-release-dates-api-types": "openapi-typescript https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/calculateReleaseDates/index.d.ts"
   },
   "engines": {
-    "node": ">=19 <21",
-    "npm": "^9"
+    "node": "^20",
+    "npm": "^10"
   },
   "jest": {
     "preset": "ts-jest",
@@ -153,7 +153,7 @@
     "@typescript-eslint/parser": "^6.5.0",
     "axe-core": "^4.7.2",
     "concurrently": "^8.2.1",
-    "cypress": "^12.12.0",
+    "cypress": "^13.0.0",
     "cypress-axe": "^1.4.0",
     "cypress-multi-reporters": "^1.6.3",
     "eslint": "^8.48.0",
