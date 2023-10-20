@@ -14,6 +14,8 @@ const comparisonService = new ComparisonService() as jest.Mocked<ComparisonServi
 
 beforeEach(() => {
   app = appWithAllRoutes({ userPermissionsService, comparisonService })
+  userPermissionsService.allowBulkComparison.mockReturnValue(true)
+  userPermissionsService.allowManualComparison.mockReturnValue(true)
 })
 
 afterEach(() => {
@@ -58,6 +60,7 @@ describe('Compare routes tests', () => {
       .post('/compare/manual')
       .send({ prisonerIds: 'ABC123D\r\n' })
       .expect(200)
+      .redirects(1)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Bulk Comparison Results')
