@@ -1,15 +1,9 @@
 import { RequestHandler } from 'express'
 import path from 'path'
-import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
-import OneThousandCalculationsService from '../services/oneThousandCalculationsService'
 
 export default class OtherRoutes {
-  constructor(
-    private readonly oneThousandCalculationsService: OneThousandCalculationsService,
-    private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly prisonerService: PrisonerService
-  ) {
+  constructor(private readonly prisonerService: PrisonerService) {
     // intentionally left blank
   }
 

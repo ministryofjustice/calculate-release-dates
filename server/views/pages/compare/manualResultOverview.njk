@@ -1,0 +1,178 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {% set overviewPath = "/compare/manual/result/" + comparison.comparisonShortReference  %}
+        {{ govukBreadcrumbs({
+            items: [
+                {
+                    text: "Home",
+                    href: "/"
+                },
+                {
+                    text: "Bulk Compare",
+                    href: "/compare/"
+                },
+                {
+                    text: comparison.calculatedAt | date('DD MMMM YYYY'),
+                    href: overviewPath
+                }
+            ]
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="govuk-heading-xl">Bulk Comparison Results</h1>
+
+    <h3 class="govuk-heading-m">Overview</h3>
+    {{ govukSummaryList({
+        rows: [
+            {
+                key: {
+                    text: "Prison"
+                },
+                value: {
+                    text: comparison.prison
+                }
+            },
+            {
+                key: {
+                    text: "Bulk Calculation by"
+                },
+                value: {
+                    text: comparison.calculatedByUsername
+                }
+            },
+            {
+                key: {
+                    text: "Bulk Calculation on"
+                },
+                value: {
+                    text: comparison.calculatedAt | date('DD MMMM YYYY')
+                }
+            },
+            {
+                key: {
+                    text: "Comparisons Performed"
+                },
+                value: {
+                    text: comparison.numberOfPeopleCompared
+                }
+            },
+            {
+                key: {
+                    text: "Anomolies Found"
+                },
+                value: {
+                    text: "6"
+                }
+            }
+        ]
+    }) }}
+
+    <h3 class="govuk-heading-m">Mismatches</h3>
+
+    {{ govukSummaryList({
+        rows: [
+            {
+                key: {
+                    text: "A8031DY &nbsp; <strong class=\"govuk-tag govuk-tag--red\">RIE</strong>" | safe
+                },
+                value: {
+                    text: "Release dates mismatch"
+                },
+                actions: {
+                    items: [{
+                        href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                        text: "view details",
+                        visuallyHiddenText: "name"
+                    }]
+                }
+            },
+            {
+                key: {
+                    text: "A8756DZ &nbsp; <strong class=\"govuk-tag govuk-tag--purple\">RIE FUTURE</strong>" | safe
+                },
+                value: {
+                    text: "Unsupported calculation"
+                },
+                actions: {
+                    items: [{
+                        href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                        text: "view details",
+                        visuallyHiddenText: "name"
+                    }]
+                }
+            }
+            ,
+            {
+                key: {
+                text: "A1798DZ &nbsp; <strong class=\"govuk-tag govuk-tag--green\">NONE</strong>" | safe
+            },
+                value: {
+                text: "NOMIS input errors"
+            },
+                actions: {
+                   items: [{
+                        href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                        text: "view details",
+                        visuallyHiddenText: "name"
+                    }]
+                }
+            },
+            {
+                key: {
+                text: "A8031DY &nbsp; <strong class=\"govuk-tag govuk-tag--grey\">TODO</strong>" | safe
+            },
+                value: {
+                text: "Release dates mismatch"
+            },
+                actions: {
+                items: [{
+                    href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                    text: "view details",
+                    visuallyHiddenText: "name"
+                }]
+            }
+            },
+            {
+                key: {
+                    text: "A8756DZ &nbsp; <strong class=\"govuk-tag govuk-tag--grey\">TODO</strong>" | safe
+                },
+                value: {
+                    text: "Unsupported calculation"
+                },
+                actions: {
+                items: [{
+                    href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
+                    text: "view details",
+                    visuallyHiddenText: "name"
+                }]
+            }
+            }
+            ,
+            {
+                key: {
+                    text: "A1798DZ &nbsp; <strong class=\"govuk-tag govuk-tag--blue\">INVESTIGATION</strong>" | safe
+                },
+                value: {
+                text: "NOMIS input errors"
+            },
+                actions: {
+                items: [{
+                    href: "#",
+                    text: "view details",
+                    visuallyHiddenText: "name"
+                }]
+            }
+            }
+        ]
+    }) }}
+
+
+{% endblock %}
