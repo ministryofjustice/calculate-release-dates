@@ -32,6 +32,7 @@ const user = {
   displayName: 'Anon Nobody',
   caseloads: ['LEI'],
   caseloadDescriptions: ['Leicester (HMP)'],
+  caseloadMap: new Map<string, string>([['LEI', 'Leicester (HMP)']]),
 }
 
 class MockUserService extends UserService {

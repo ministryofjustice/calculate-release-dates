@@ -35,9 +35,9 @@
     <ul class="gem-c-document-list gem-c-document-list--no-underline">
         {% for comparison in comparisons %}
             <li class="gem-c-document-list__item">
-            <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/{{ comparison.comparisonShortReference }}">{{ comparison.prison }} - {{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
+            <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/{{ comparison.comparisonShortReference }}">{{ comparison.prisonName }} - {{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
             <p class="gem-c-document-list__item-description ">
-                {{ comparison.calculatedByUsername }} ( 9 mismatches from {{ comparison.numberOfPeopleCompared }} results)
+                {{ comparison.calculatedBy }} ( {{ comparison.numberOfMismatches }} mismatches from {{ comparison.numberOfPeopleCompared }} results)
             </p>
          </li>
         {% endfor %}

@@ -7,6 +7,7 @@ interface UserDetails {
   displayName: string
   caseloads: string[]
   caseloadDescriptions: string[]
+  caseloadMap: Map<string, string>
 }
 
 export default class UserService {
@@ -22,6 +23,7 @@ export default class UserService {
       displayName: convertToTitleCase(user.name as string),
       caseloads: userCaseloads.map(uc => uc.caseLoadId),
       caseloadDescriptions: userCaseloads.map(uc => uc.description),
+      caseloadMap: new Map(userCaseloads.map(uc => [uc.caseLoadId, uc.description])),
     }
   }
 }
