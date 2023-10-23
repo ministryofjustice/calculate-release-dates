@@ -4,6 +4,8 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import UserPermissionsService from '../services/userPermissionsService'
 import PrisonerService from '../services/prisonerService'
 import ComparisonService from '../services/comparisonService'
+import ListComparisonViewModel from '../models/ListComparisonViewModel'
+import ComparisonResultOverviewModel from '../models/ComparisonResultOverviewModel'
 
 export const comparePaths = {
   COMPARE_INDEX: '/compare',
@@ -49,9 +51,10 @@ export default class CompareRoutes {
   }
 
   public list: RequestHandler = async (req, res) => {
-    const { userRoles, token } = res.locals.user
+    const { userRoles, token, caseloadMap } = res.locals.user
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
-    const comparisons = await this.comparisonService.getPrisonComparisons(token)
+    const prisonComparisons = await this.comparisonService.getPrisonComparisons(token)
+    const comparisons = prisonComparisons.map(comparison => new ListComparisonViewModel(comparison, caseloadMap))
     res.render('pages/compare/list', {
       allowBulkComparison,
       comparisons,
@@ -72,12 +75,12 @@ export default class CompareRoutes {
 
   public result: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId } = req.params
-    const { token, userRoles } = res.locals.user
+    const { token, userRoles, caseloadMap } = res.locals.user
     const comparison = await this.comparisonService.getPrisonComparison(bulkComparisonResultId, token)
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
     return res.render('pages/compare/resultOverview', {
       allowBulkComparison,
-      comparison,
+      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap),
       bulkComparisonResultId,
     })
   }
