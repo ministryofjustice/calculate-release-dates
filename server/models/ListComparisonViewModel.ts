@@ -1,4 +1,4 @@
-import type { Comparison } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import type { Comparison, ComparisonSummary } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ListComparisonViewModel {
   comparisonShortReference: string
@@ -13,12 +13,12 @@ export default class ListComparisonViewModel {
 
   numberOfPeopleCompared: number
 
-  constructor(comparison: Comparison, prisons: Map<string, string>) {
+  constructor(comparison: ComparisonSummary, prisons: Map<string, string>) {
     this.comparisonShortReference = comparison.comparisonShortReference
     this.prisonName = prisons.get(comparison.prison) ?? comparison.prison
     this.calculatedAt = comparison.calculatedAt
     this.calculatedBy = comparison.calculatedByUsername
-    this.numberOfMismatches = 9 // TODO: expose from API
+    this.numberOfMismatches = comparison.numberOfMismatches
     this.numberOfPeopleCompared = comparison.numberOfPeopleCompared
   }
 }
