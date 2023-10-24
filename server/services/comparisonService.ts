@@ -1,4 +1,4 @@
-import type { Comparison } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import type { Comparison, ComparisonSummary } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 
 export default class ComparisonService {
@@ -10,7 +10,7 @@ export default class ComparisonService {
     return new CalculateReleaseDatesApiClient(token).getPrisonComparison(bulkComparisonId)
   }
 
-  async getPrisonComparisons(token: string): Promise<Comparison[]> {
+  async getPrisonComparisons(token: string): Promise<ComparisonSummary[]> {
     return new CalculateReleaseDatesApiClient(token).getPrisonComparisons()
   }
 

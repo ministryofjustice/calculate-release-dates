@@ -21,3 +21,4 @@ export type GenuineOverrideDateResponse = components['schemas']['GenuineOverride
 export type NonFridayReleaseDay = components['schemas']['NonFridayReleaseDay']
 export type ComparisonInput = components['schemas']['ComparisonInput']
 export type Comparison = components['schemas']['Comparison']
+export type ComparisonSummary = components['schemas']['ComparisonSummary']

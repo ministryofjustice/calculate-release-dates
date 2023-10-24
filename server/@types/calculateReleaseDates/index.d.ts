@@ -518,6 +518,17 @@ export interface components {
       date: string
       usePolicy: boolean
     }
+    ComparisonSummary: {
+      comparisonShortReference: string
+      prison?: string
+      /** Format: date-time */
+      calculatedAt: string
+      calculatedByUsername: string
+      /** Format: int64 */
+      numberOfMismatches: number
+      /** Format: int64 */
+      numberOfPeopleCompared: number
+    }
     CalculationSentenceQuestion: {
       /** Format: int32 */
       sentenceSequence: number
@@ -872,19 +883,19 @@ export interface operations {
       /** @description Returns a list of comparisons Comparison */
       200: {
         content: {
-          'application/json': components['schemas']['Comparison'][]
+          'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['Comparison'][]
+          'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['Comparison'][]
+          'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
     }

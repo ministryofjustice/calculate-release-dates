@@ -7,6 +7,7 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
   Comparison,
+  ComparisonSummary,
   GenuineOverride,
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,
@@ -196,8 +197,8 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({ path: `/comparison/${comparisonReference}` }) as Promise<Comparison>
   }
 
-  getPrisonComparisons(): Promise<Comparison[]> {
-    return this.restClient.get({ path: '/comparison' }) as Promise<Comparison[]>
+  getPrisonComparisons(): Promise<ComparisonSummary[]> {
+    return this.restClient.get({ path: '/comparison' }) as Promise<ComparisonSummary[]>
   }
 
   getManualComparisons(): Promise<Comparison[]> {
