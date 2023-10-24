@@ -18,7 +18,7 @@ export default class ComparisonResultMismatch {
     let message = comparisonMismatchSummary.validationMessages
       .map(validationMessage => validationMessage.message)
       .join(', ')
-    if (!comparisonMismatchSummary.isMatch) {
+    if (!message && !comparisonMismatchSummary.isMatch) {
       message = 'Release dates mismatch'
     }
     this.value = {
