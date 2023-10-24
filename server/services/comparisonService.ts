@@ -1,4 +1,8 @@
-import type { Comparison, ComparisonSummary } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import type {
+  Comparison,
+  ComparisonOverview,
+  ComparisonSummary,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 
 export default class ComparisonService {
@@ -6,7 +10,7 @@ export default class ComparisonService {
     return new CalculateReleaseDatesApiClient(token).createPrisonComparison(selectedOMU)
   }
 
-  async getPrisonComparison(bulkComparisonId: string, token: string): Promise<Comparison> {
+  async getPrisonComparison(bulkComparisonId: string, token: string): Promise<ComparisonOverview> {
     return new CalculateReleaseDatesApiClient(token).getPrisonComparison(bulkComparisonId)
   }
 
