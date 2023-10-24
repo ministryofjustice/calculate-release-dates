@@ -1,3 +1,5 @@
+import { ComparisonMismatchSummary } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+
 interface ActionItem {
   href: string
   text: string
@@ -11,13 +13,21 @@ export default class ComparisonResultMismatch {
 
   actions: { items: ActionItem[] }
 
-  constructor(nomsNumber: string, mismatchReason: string, comparisonId: string, mismatchId: string) {
-    this.key = { text: nomsNumber }
-    this.value = { text: mismatchReason }
+  constructor(comparisonMismatchSummary: ComparisonMismatchSummary, comparisonId: string) {
+    this.key = { text: comparisonMismatchSummary.personId }
+    let message = comparisonMismatchSummary.validationMessages
+      .map(validationMessage => validationMessage.message)
+      .join(', ')
+    if (!comparisonMismatchSummary.isMatch) {
+      message = 'Release dates mismatch'
+    }
+    this.value = {
+      text: message,
+    }
     this.actions = {
       items: [
         {
-          href: `/compare/result/${comparisonId}/detail/${mismatchId}`,
+          href: `/compare/result/${comparisonId}/detail/${comparisonMismatchSummary.shortReference}`,
           text: 'view details',
           visuallyHiddenText: 'name',
         },

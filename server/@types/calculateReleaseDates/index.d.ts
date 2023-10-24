@@ -529,6 +529,25 @@ export interface components {
       /** Format: int64 */
       numberOfPeopleCompared: number
     }
+    ComparisonMismatchSummary: {
+      personId: string
+      isValid: boolean
+      isMatch: boolean
+      validationMessages: components['schemas']['ValidationMessage'][]
+      shortReference: string
+    }
+    ComparisonOverview: {
+      comparisonShortReference: string
+      prison?: string
+      /** Format: date-time */
+      calculatedAt: string
+      calculatedByUsername: string
+      /** Format: int64 */
+      numberOfMismatches: number
+      /** Format: int64 */
+      numberOfPeopleCompared: number
+      mismatches: components['schemas']['ComparisonMismatchSummary'][]
+    }
     CalculationSentenceQuestion: {
       /** Format: int32 */
       sentenceSequence: number
@@ -1370,19 +1389,19 @@ export interface operations {
       /** @description Returns a list of comparisons Comparison */
       200: {
         content: {
-          'application/json': components['schemas']['Comparison']
+          'application/json': components['schemas']['ComparisonOverview']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['Comparison']
+          'application/json': components['schemas']['ComparisonOverview']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['Comparison']
+          'application/json': components['schemas']['ComparisonOverview']
         }
       }
     }
