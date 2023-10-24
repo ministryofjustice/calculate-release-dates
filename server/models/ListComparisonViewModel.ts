@@ -1,4 +1,4 @@
-import type { Comparison, ComparisonSummary } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import type { ComparisonSummary } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ListComparisonViewModel {
   comparisonShortReference: string
