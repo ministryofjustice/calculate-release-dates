@@ -959,19 +959,19 @@ export interface operations {
       /** @description Returns a list of comparisons Comparison */
       200: {
         content: {
-          'application/json': components['schemas']['Comparison'][]
+          'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['Comparison'][]
+          'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['Comparison'][]
+          'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
     }
@@ -1459,19 +1459,19 @@ export interface operations {
       /** @description Returns a list of comparisons Comparison */
       200: {
         content: {
-          'application/json': components['schemas']['Comparison']
+          'application/json': components['schemas']['ComparisonOverview']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['Comparison']
+          'application/json': components['schemas']['ComparisonOverview']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['Comparison']
+          'application/json': components['schemas']['ComparisonOverview']
         }
       }
     }

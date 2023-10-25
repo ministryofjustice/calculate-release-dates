@@ -63,9 +63,10 @@ export default class CompareRoutes {
   }
 
   public manual_list: RequestHandler = async (req, res) => {
-    const { userRoles, token } = res.locals.user
+    const { userRoles, token, caseloadMap } = res.locals.user
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
-    const comparisons = await this.comparisonService.getManualComparisons(token)
+    const manualComparisons = await this.comparisonService.getManualComparisons(token)
+    const comparisons = manualComparisons.map(comparison => new ListComparisonViewModel(comparison, caseloadMap))
     res.render('pages/compare/manualList', {
       allowBulkComparison,
       comparisons,
@@ -80,19 +81,19 @@ export default class CompareRoutes {
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
     return res.render('pages/compare/resultOverview', {
       allowBulkComparison,
-      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap),
+      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap, false),
       bulkComparisonResultId,
     })
   }
 
   public manualResult: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId } = req.params
-    const { token, userRoles } = res.locals.user
+    const { token, userRoles, caseloadMap } = res.locals.user
     const comparison = await this.comparisonService.getManualComparison(bulkComparisonResultId, token)
     const allowManualComparison = this.bulkLoadService.allowManualComparison(userRoles)
     return res.render('pages/compare/manualResultOverview', {
       allowManualComparison,
-      comparison,
+      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap, true),
       bulkComparisonResultId,
     })
   }

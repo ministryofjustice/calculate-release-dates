@@ -202,8 +202,8 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({ path: '/comparison' }) as Promise<ComparisonSummary[]>
   }
 
-  getManualComparisons(): Promise<Comparison[]> {
-    return this.restClient.get({ path: '/comparison/manual' }) as Promise<Comparison[]>
+  getManualComparisons(): Promise<ComparisonSummary[]> {
+    return this.restClient.get({ path: '/comparison/manual' }) as Promise<ComparisonSummary[]>
   }
 
   createManualComparison(prisonerIds: string[]): Promise<Comparison> {
@@ -213,7 +213,7 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<Comparison>
   }
 
-  getManualComparison(comparisonReference: string): Promise<Comparison> {
-    return this.restClient.get({ path: `/comparison/manual/${comparisonReference}` }) as Promise<Comparison>
+  getManualComparison(comparisonReference: string): Promise<ComparisonOverview> {
+    return this.restClient.get({ path: `/comparison/manual/${comparisonReference}` }) as Promise<ComparisonOverview>
   }
 }

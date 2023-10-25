@@ -13,7 +13,7 @@ export default class ComparisonResultMismatch {
 
   actions: { items: ActionItem[] }
 
-  constructor(comparisonMismatchSummary: ComparisonMismatchSummary, comparisonId: string) {
+  constructor(comparisonMismatchSummary: ComparisonMismatchSummary, comparisonId: string, isManual: boolean) {
     this.key = { text: comparisonMismatchSummary.personId }
     let message = comparisonMismatchSummary.validationMessages
       .map(validationMessage => validationMessage.message)
@@ -24,10 +24,14 @@ export default class ComparisonResultMismatch {
     this.value = {
       text: message,
     }
+    let href = `/compare/result/${comparisonId}/detail/${comparisonMismatchSummary.shortReference}`
+    if (isManual) {
+      href = `/compare/manual/result/${comparisonId}/detail/${comparisonMismatchSummary.shortReference}`
+    }
     this.actions = {
       items: [
         {
-          href: `/compare/result/${comparisonId}/detail/${comparisonMismatchSummary.shortReference}`,
+          href,
           text: 'view details',
           visuallyHiddenText: 'name',
         },
