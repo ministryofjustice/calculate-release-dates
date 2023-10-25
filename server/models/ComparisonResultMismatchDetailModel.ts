@@ -34,7 +34,7 @@ export default class ComparisonResultMismatchDetailModel {
       this.createDateRow('DPRRD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
       this.createDateRow('TERSED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
       this.createDateRow('ESED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
-    ]
+    ].filter(row => row)
   }
 
   private createDateRow(
@@ -45,7 +45,10 @@ export default class ComparisonResultMismatchDetailModel {
     nomisDates: {
       [key: string]: string
     }
-  ): Array<{ text: string }> {
-    return [{ text: key }, { text: crdsDates[key] ?? '' }, { text: nomisDates[key] ?? '' }]
+  ): Array<{ text: string }> | undefined {
+    if (crdsDates[key] || nomisDates[key]) {
+      return [{ text: key }, { text: crdsDates[key] ?? '' }, { text: nomisDates[key] ?? '' }]
+    }
+    return undefined
   }
 }
