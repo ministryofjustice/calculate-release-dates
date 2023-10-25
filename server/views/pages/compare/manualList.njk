@@ -42,7 +42,7 @@
             <li class="gem-c-document-list__item">
             <a class="gem-c-document-list__item-title govuk-link" href="/compare/manual/result/{{ comparison.comparisonShortReference }}">{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
             <p class="gem-c-document-list__item-description ">
-                {{ comparison.calculatedByUsername }} ( 9 mismatches from {{ comparison.numberOfPeopleCompared }} results)
+                {{ comparison.calculatedBy }} ( {{ comparison.numberOfMismatches }} mismatches from {{ comparison.numberOfPeopleCompared }} results)
             </p>
          </li>
         {% endfor %}

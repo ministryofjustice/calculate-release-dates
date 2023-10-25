@@ -45,7 +45,7 @@
                     text: "Bulk Calculation by"
                 },
                 value: {
-                    text: comparison.calculatedByUsername
+                    text: comparison.calculatedBy
                 }
             },
             {
@@ -69,7 +69,7 @@
                     text: "Anomalies Found"
                 },
                 value: {
-                    text: "6"
+                    text: comparison.numberOfMismatches
                 }
             }
         ]
@@ -77,102 +77,7 @@
 
     <h3 class="govuk-heading-m">Mismatches</h3>
 
-    {{ govukSummaryList({
-        rows: [
-            {
-                key: {
-                    text: "A8031DY &nbsp; <strong class=\"govuk-tag govuk-tag--red\">RIE</strong>" | safe
-                },
-                value: {
-                    text: "Release dates mismatch"
-                },
-                actions: {
-                    items: [{
-                        href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
-                        text: "view details",
-                        visuallyHiddenText: "name"
-                    }]
-                }
-            },
-            {
-                key: {
-                    text: "A8756DZ &nbsp; <strong class=\"govuk-tag govuk-tag--purple\">RIE FUTURE</strong>" | safe
-                },
-                value: {
-                    text: "Unsupported calculation"
-                },
-                actions: {
-                    items: [{
-                        href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
-                        text: "view details",
-                        visuallyHiddenText: "name"
-                    }]
-                }
-            }
-            ,
-            {
-                key: {
-                text: "A1798DZ &nbsp; <strong class=\"govuk-tag govuk-tag--green\">NONE</strong>" | safe
-            },
-                value: {
-                text: "NOMIS input errors"
-            },
-                actions: {
-                   items: [{
-                        href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
-                        text: "view details",
-                        visuallyHiddenText: "name"
-                    }]
-                }
-            },
-            {
-                key: {
-                text: "A8031DY &nbsp; <strong class=\"govuk-tag govuk-tag--grey\">TODO</strong>" | safe
-            },
-                value: {
-                text: "Release dates mismatch"
-            },
-                actions: {
-                items: [{
-                    href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
-                    text: "view details",
-                    visuallyHiddenText: "name"
-                }]
-            }
-            },
-            {
-                key: {
-                    text: "A8756DZ &nbsp; <strong class=\"govuk-tag govuk-tag--grey\">TODO</strong>" | safe
-                },
-                value: {
-                    text: "Unsupported calculation"
-                },
-                actions: {
-                items: [{
-                    href: "/compare/manual/result/" + bulkComparisonResultId + "/detail/" + bulkComparisonResultId ,
-                    text: "view details",
-                    visuallyHiddenText: "name"
-                }]
-            }
-            }
-            ,
-            {
-                key: {
-                    text: "A1798DZ &nbsp; <strong class=\"govuk-tag govuk-tag--blue\">INVESTIGATION</strong>" | safe
-                },
-                value: {
-                text: "NOMIS input errors"
-            },
-                actions: {
-                items: [{
-                    href: "#",
-                    text: "view details",
-                    visuallyHiddenText: "name"
-                }]
-            }
-            }
-        ]
-    }) }}
+    {{ govukSummaryList({rows: comparison.mismatches}) }}
 
 
 {% endblock %}

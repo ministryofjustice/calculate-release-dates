@@ -16,15 +16,17 @@ export default class ComparisonResultOverviewModel {
 
   mismatches: ComparisonResultMismatch[]
 
-  constructor(comparison: ComparisonOverview, prisons: Map<string, string>) {
+  constructor(comparison: ComparisonOverview, prisons: Map<string, string>, isManual: boolean) {
     this.comparisonShortReference = comparison.comparisonShortReference
-    this.prisonName = prisons.get(comparison.prison) ?? comparison.prison
+    if (!isManual) {
+      this.prisonName = prisons.get(comparison.prison) ?? comparison.prison
+    }
     this.calculatedAt = comparison.calculatedAt
     this.calculatedBy = comparison.calculatedByUsername
     this.numberOfMismatches = comparison.numberOfMismatches
     this.numberOfPeopleCompared = comparison.numberOfPeopleCompared
     this.mismatches = comparison.mismatches.map(
-      mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference)
+      mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, isManual)
     )
   }
 }
