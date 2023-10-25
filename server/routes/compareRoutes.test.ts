@@ -3,11 +3,7 @@ import { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
 import UserPermissionsService from '../services/userPermissionsService'
 import ComparisonService from '../services/comparisonService'
-import {
-  Comparison,
-  ComparisonOverview,
-  ComparisonSummary,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { Comparison, ComparisonOverview } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 let app: Express
 
@@ -34,7 +30,7 @@ const comparison = {
   numberOfPeopleCompared: 10,
 } as Comparison
 
-const comparisonSummary = {
+const comparisonOverview = {
   comparisonShortReference: comparison.comparisonShortReference,
   calculatedAt: comparison.calculatedAt,
   numberOfPeopleCompared: 10,
@@ -66,7 +62,7 @@ describe('Compare routes tests', () => {
 
   it('POST /compare/manual should return the Manual Comparison input page', () => {
     comparisonService.createManualComparison.mockResolvedValue(comparison)
-    comparisonService.getManualComparison.mockResolvedValue(comparisonSummary)
+    comparisonService.getManualComparison.mockResolvedValue(comparisonOverview)
 
     return request(app)
       .post('/compare/manual')
