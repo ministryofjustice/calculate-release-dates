@@ -1,0 +1,51 @@
+import { ComparisonPersonOverview } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+
+export default class ComparisonResultMismatchDetailModel {
+  nomisReference: string
+
+  bookingId: number
+
+  calculatedAt: string
+
+  dates: Array<Array<{ text: string }>>
+
+  constructor(comparisonPerson: ComparisonPersonOverview) {
+    this.nomisReference = comparisonPerson.personId
+    this.bookingId = comparisonPerson.bookingId
+    this.calculatedAt = comparisonPerson.calculatedAt
+    this.dates = [
+      this.createDateRow('SED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('ARD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('CRD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('NPD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('PRRD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('LED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('HDCED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('PED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('HDCAD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('APD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('ROTL', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('ERSED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('ETD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('MTD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('LTD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('TUSED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('Tariff', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('DPRRD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('TERSED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('ESED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+    ]
+  }
+
+  private createDateRow(
+    key: string,
+    crdsDates: {
+      [key: string]: string
+    },
+    nomisDates: {
+      [key: string]: string
+    }
+  ): Array<{ text: string }> {
+    return [{ text: key }, { text: crdsDates[key] ?? '' }, { text: nomisDates[key] ?? '' }]
+  }
+}

@@ -1,6 +1,7 @@
 import type {
   Comparison,
   ComparisonOverview,
+  ComparisonPersonOverview,
   ComparisonSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
@@ -28,5 +29,16 @@ export default class ComparisonService {
 
   async getManualComparison(bulkComparisonId: string, token: string): Promise<ComparisonOverview> {
     return new CalculateReleaseDatesApiClient(token).getManualComparison(bulkComparisonId)
+  }
+
+  async getPrisonMismatchComparison(
+    bulkComparisonId: string,
+    bulkComparisonMismatchId: string,
+    token: string
+  ): Promise<ComparisonPersonOverview> {
+    return new CalculateReleaseDatesApiClient(token).getPrisonMismatchComparison(
+      bulkComparisonId,
+      bulkComparisonMismatchId
+    )
   }
 }

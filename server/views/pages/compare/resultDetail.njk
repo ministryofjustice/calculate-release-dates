@@ -10,8 +10,8 @@
 {% block beforeContent %}
     {{ super() }}
     <nav>
-        {% set overviewPath = "/compare/result/" + bulkComparison.result.id  %}
-        {% set detailPath = "/compare/result/" + bulkComparison.result.id + '/detail/' + bulkComparison.detail.id %}
+        {% set overviewPath = "/compare/result/" + bulkComparisonResultId  %}
+        {% set detailPath = "/compare/result/" + bulkComparisonResultId + '/detail/' + bulkComparisonDetailId %}
         {{ govukBreadcrumbs({
             items: [
                 {
@@ -23,7 +23,7 @@
                     href: "/compare/"
                 },
                 {
-                    text: bulkComparison.result.name,
+                    text: bulkComparison.calculatedAt | date('DD MMMM YYYY'),
                     href: overviewPath
                 },
                 {
@@ -47,7 +47,7 @@
                     text: "NOMIS reference"
                 },
                 value: {
-                    text: bulkComparison.detail.person
+                    text: nomisReference
                 }
             },
             {
@@ -55,7 +55,7 @@
                     text: "Booking"
                 },
                 value: {
-                    text: bulkComparison.detail.booking
+                    text: bookingId
                 }
             },
             {
@@ -63,7 +63,7 @@
                     text: "Showing Latest Dates"
                 },
                 value: {
-                    text: bulkComparison.detail.lastestDates
+                    text: "True"
                 }
             },
             {
@@ -71,7 +71,7 @@
                     text: "Source of latest calculation"
                 },
                 value: {
-                    text: bulkComparison.detail.currentCalculation.source
+                    text: "NOMIS"
                 }
             },
             {
@@ -79,7 +79,7 @@
                     text: "Date of latest calculation"
                 },
                 value: {
-                    text: bulkComparison.detail.currentCalculation.date
+                    text: bulkComparison.calculatedAt | date('DD MMMM YYYY')
                 }
             }
         ]
@@ -109,7 +109,7 @@
                     classes: "govuk-!-width-one-quarter"
                 }
             ],
-            rows: bulkComparison.detail.dates
+            rows: bulkComparison.dates
         }) }}
 
     <h3 class="govuk-heading-l">Record Discrepancy</h3>
