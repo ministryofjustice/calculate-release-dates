@@ -310,19 +310,19 @@ export default class CalculateReleaseDatesService {
   ): Promise<{ [key: string]: WorkingDay }> {
     const client = new CalculateReleaseDatesApiClient(token)
     const adjustments: { [key: string]: WorkingDay } = {}
-    if (calculation.dates.CRD) {
+    if (this.existsAndIsInFuture(calculation.dates.CRD)) {
       const adjustment = await client.getPreviousWorkingDay(calculation.dates.CRD)
       if (adjustment.date !== calculation.dates.CRD) {
         adjustments.CRD = adjustment
       }
     }
-    if (calculation.dates.ARD) {
+    if (this.existsAndIsInFuture(calculation.dates.ARD)) {
       const adjustment = await client.getPreviousWorkingDay(calculation.dates.ARD)
       if (adjustment.date !== calculation.dates.ARD) {
         adjustments.ARD = adjustment
       }
     }
-    if (calculation.dates.PRRD) {
+    if (this.existsAndIsInFuture(calculation.dates.PRRD)) {
       const adjustment = await client.getPreviousWorkingDay(calculation.dates.PRRD)
       if (adjustment.date !== calculation.dates.PRRD) {
         adjustments.PRRD = adjustment
@@ -361,6 +361,11 @@ export default class CalculateReleaseDatesService {
     return adjustments
   }
 
+  private existsAndIsInFuture(date: string): boolean {
+    const now = dayjs()
+    return date && now.isBefore(dayjs(date))
+  }
+
   async getNonFridayReleaseAdjustments(
     calculation: BookingCalculation,
     token: string
@@ -391,10 +396,7 @@ export default class CalculateReleaseDatesService {
   }
 
   private isNonFridayReleaseEligible(date: string): boolean {
-    const now = dayjs()
-    return (
-      date && now.isBefore(dayjs(date)) && config.featureToggles.nonFridayReleasePolicyStartDate.isBefore(dayjs(date))
-    )
+    return this.existsAndIsInFuture(date) && config.featureToggles.nonFridayReleasePolicyStartDate.isBefore(dayjs(date))
   }
 
   async validateBackend(prisonId: string, userInput: CalculationUserInputs, token: string): Promise<ErrorMessages> {
