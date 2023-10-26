@@ -219,6 +219,32 @@ describe('Calculate release dates service tests', () => {
     })
   })
 
+  it('Test non Friday release dates turned on with policy start date in the future', async () => {
+    config.featureToggles.nonFridayRelease = true
+    config.featureToggles.nonFridayReleasePolicyStartDate = dayjs().add(1, 'year')
+    const futureCalculation: BookingCalculation = {
+      dates: {
+        CRD: dayjs().add(7, 'day').format('YYYY-MM-DD'),
+      },
+      effectiveSentenceLength: null,
+      calculationReference: 'ABC123',
+      calculationRequestId,
+      prisonerId,
+      bookingId: 123,
+      calculationStatus: 'CONFIRMED',
+    }
+    const adjustedCrd: NonFridayReleaseDay = {
+      date: '2021-10-27',
+      usePolicy: true,
+    }
+
+    fakeApi.get(`/non-friday-release/${futureCalculation.dates.CRD}`).reply(200, adjustedCrd)
+
+    const result = await calculateReleaseDatesService.getNonFridayReleaseAdjustments(futureCalculation, token)
+
+    expect(result).toEqual({})
+  })
+
   it('Test non Friday release dates turned on date in the past', async () => {
     config.featureToggles.nonFridayRelease = true
     const adjustedCrd: NonFridayReleaseDay = {
