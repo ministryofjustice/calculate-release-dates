@@ -223,7 +223,7 @@ export default class CalculateReleaseDatesApiClient {
     mismatchReference: string
   ): Promise<ComparisonPersonOverview> {
     return this.restClient.get({
-      path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}`,
+      path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}`,
     }) as Promise<ComparisonPersonOverview>
   }
 }
