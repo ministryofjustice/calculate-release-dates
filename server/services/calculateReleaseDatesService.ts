@@ -375,6 +375,18 @@ export default class CalculateReleaseDatesService {
           adjustments.CRD = adjustment
         }
       }
+      if (calculation.dates.ARD && now.isBefore(dayjs(calculation.dates.ARD))) {
+        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.ARD)
+        if (adjustment.date !== calculation.dates.ARD) {
+          adjustments.ARD = adjustment
+        }
+      }
+      if (calculation.dates.PRRD && now.isBefore(dayjs(calculation.dates.PRRD))) {
+        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.PRRD)
+        if (adjustment.date !== calculation.dates.PRRD) {
+          adjustments.PRRD = adjustment
+        }
+      }
     }
     return adjustments
   }
