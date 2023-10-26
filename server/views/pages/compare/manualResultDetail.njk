@@ -10,8 +10,8 @@
 {% block beforeContent %}
     {{ super() }}
     <nav>
-        {% set overviewPath = "/compare/result/" + bulkComparisonResultId  %}
-        {% set detailPath = "/compare/result/" + bulkComparisonResultId + '/detail/' + bulkComparisonDetailId %}
+        {% set overviewPath = "/compare/manual/result/" + bulkComparisonResultId  %}
+        {% set detailPath = "/compare/manual/result/" + bulkComparisonResultId + '/detail/' + bulkComparisonDetailId %}
         {{ govukBreadcrumbs({
             items: [
                 {

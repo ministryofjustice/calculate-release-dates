@@ -41,4 +41,15 @@ export default class ComparisonService {
       bulkComparisonMismatchId
     )
   }
+
+  async getManualMismatchComparison(
+    bulkComparisonId: string,
+    bulkComparisonMismatchId: string,
+    token: string
+  ): Promise<ComparisonPersonOverview> {
+    return new CalculateReleaseDatesApiClient(token).getManualMismatchComparison(
+      bulkComparisonId,
+      bulkComparisonMismatchId
+    )
+  }
 }
