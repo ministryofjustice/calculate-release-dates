@@ -144,7 +144,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/calculate-release-dates/working-day/previous/2017-05-07`,
+        urlPattern: `/calculate-release-dates/working-day/previous/.*`,
       },
       response: {
         status: 200,
