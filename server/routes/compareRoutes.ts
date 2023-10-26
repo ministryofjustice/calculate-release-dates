@@ -6,6 +6,7 @@ import PrisonerService from '../services/prisonerService'
 import ComparisonService from '../services/comparisonService'
 import ListComparisonViewModel from '../models/ListComparisonViewModel'
 import ComparisonResultOverviewModel from '../models/ComparisonResultOverviewModel'
+import ComparisonResultMismatchDetailModel from '../models/ComparisonResultMismatchDetailModel'
 
 export const comparePaths = {
   COMPARE_INDEX: '/compare',
@@ -106,34 +107,22 @@ export default class CompareRoutes {
   }
 
   public detail: RequestHandler = async (req, res) => {
-    const bulkComparison = {
-      result: {
-        id: req.params.bulkComparisonDetailId,
-        name: '1 Jan 2023',
-      },
-      detail: {
-        id: req.params.bulkComparisonResultId,
-        person: 'A8031DY',
-        booking: '1232122',
-        latestDates: true,
-        currentCalculation: {
-          source: 'NOMIS',
-          date: '13 March 2023',
-        },
-        dates: [
-          [{ text: 'CRD' }, { text: '06/05/2022' }, { text: '06/05/2022' }, { text: '06/05/2022' }],
-          [{ text: 'SLED' }, { text: '06/05/2022' }, { text: '06/05/2022' }, { text: '06/05/2022' }],
-          [{ text: 'HDCED' }, { text: '06/05/2022' }, { text: '06/05/2022' }, { text: '06/05/2022' }],
-        ],
-      },
-    }
+    const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
+    const { token, userRoles } = res.locals.user
+    const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      token
+    )
 
     // retrieve the information about the bulkComparison
-    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
+    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
 
     res.render('pages/compare/resultDetail', {
       allowBulkComparison,
-      bulkComparison,
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
     })
     return
   }

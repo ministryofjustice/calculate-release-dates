@@ -119,6 +119,13 @@ export interface paths {
      */
     get: operations['getComparisonByShortReference']
   }
+  '/comparison/{comparisonReference}/mismatch/{mismatchReference}': {
+    /**
+     * Returns the mismatch for a particular comparison
+     * @description This endpoint return the mismatch for a particular comparison
+     */
+    get: operations['getComparisonMismatchByShortReference']
+  }
   '/comparison/{comparisonReference}/count': {
     /**
      * Returns a count of the number of people compared for a particular caseload
@@ -132,6 +139,13 @@ export interface paths {
      * @description This endpoint return the people associated to a specific comparison
      */
     get: operations['getComparisonByShortReference_1']
+  }
+  '/comparison/manual/{comparisonReference}/mismatch/{mismatchReference}': {
+    /**
+     * Returns the mismatch for a particular comparison
+     * @description This endpoint return the mismatch for a particular comparison
+     */
+    get: operations['getManualComparisonMismatchByShortReference']
   }
   '/comparison/manual/{comparisonReference}/count': {
     /**
@@ -547,6 +561,23 @@ export interface components {
       /** Format: int64 */
       numberOfPeopleCompared: number
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
+    }
+    ComparisonPersonOverview: {
+      personId: string
+      isValid: boolean
+      isMatch: boolean
+      validationMessages: components['schemas']['ValidationMessage'][]
+      shortReference: string
+      /** Format: int64 */
+      bookingId: number
+      /** Format: date-time */
+      calculatedAt: string
+      crdsDates: {
+        [key: string]: string
+      }
+      nomisDates: {
+        [key: string]: string
+      }
     }
     CalculationSentenceQuestion: {
       /** Format: int32 */
@@ -1407,6 +1438,46 @@ export interface operations {
     }
   }
   /**
+   * Returns the mismatch for a particular comparison
+   * @description This endpoint return the mismatch for a particular comparison
+   */
+  getComparisonMismatchByShortReference: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+        /**
+         * @description The short reference of the mismatch
+         * @example A1B2C3D4
+         */
+        mismatchReference: string
+      }
+    }
+    responses: {
+      /** @description Returns a details of a comparison mismatch */
+      200: {
+        content: {
+          'application/json': components['schemas']['ComparisonPersonOverview']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ComparisonPersonOverview']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ComparisonPersonOverview']
+        }
+      }
+    }
+  }
+  /**
    * Returns a count of the number of people compared for a particular caseload
    * @description This endpoint will count all the people associated to a specific comparison
    */
@@ -1472,6 +1543,46 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['ComparisonOverview']
+        }
+      }
+    }
+  }
+  /**
+   * Returns the mismatch for a particular comparison
+   * @description This endpoint return the mismatch for a particular comparison
+   */
+  getManualComparisonMismatchByShortReference: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+        /**
+         * @description The short reference of the mismatch
+         * @example A1B2C3D4
+         */
+        mismatchReference: string
+      }
+    }
+    responses: {
+      /** @description Returns a details of a comparison mismatch */
+      200: {
+        content: {
+          'application/json': components['schemas']['ComparisonPersonOverview']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ComparisonPersonOverview']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ComparisonPersonOverview']
         }
       }
     }
