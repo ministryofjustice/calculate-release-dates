@@ -163,6 +163,19 @@ describe('Calculate release dates service tests', () => {
   })
 
   it('Test weekend adjustments', async () => {
+    const futureCalculation: BookingCalculation = {
+      dates: {
+        CRD: dayjs().add(7, 'day').format('YYYY-MM-DD'),
+        HDCED: dayjs().add(10, 'day').format('YYYY-MM-DD'),
+        PED: dayjs().add(15, 'day').format('YYYY-MM-DD'),
+      },
+      effectiveSentenceLength: null,
+      calculationReference: 'ABC123',
+      calculationRequestId,
+      prisonerId,
+      bookingId: 123,
+      calculationStatus: 'CONFIRMED',
+    }
     const adjustedCrd: WorkingDay = {
       date: '2021-10-27',
       adjustedForBankHoliday: false,
@@ -179,15 +192,37 @@ describe('Calculate release dates service tests', () => {
       adjustedForWeekend: true,
     }
 
-    fakeApi.get(`/working-day/previous/${calculationResults.dates.CRD}`).reply(200, adjustedCrd)
-    fakeApi.get(`/working-day/next/${calculationResults.dates.HDCED}`).reply(200, adjustedHdced)
-    fakeApi.get(`/working-day/previous/${calculationResults.dates.PED}`).reply(200, adjustedPed)
+    fakeApi.get(`/working-day/previous/${futureCalculation.dates.CRD}`).reply(200, adjustedCrd)
+    fakeApi.get(`/working-day/next/${futureCalculation.dates.HDCED}`).reply(200, adjustedHdced)
+    fakeApi.get(`/working-day/previous/${futureCalculation.dates.PED}`).reply(200, adjustedPed)
 
-    const result = await calculateReleaseDatesService.getWeekendAdjustments('user', calculationResults, token)
+    const result = await calculateReleaseDatesService.getWeekendAdjustments('user', futureCalculation, token)
 
     expect(result).toEqual({
       HDCED: adjustedHdced,
       CRD: adjustedCrd,
+      PED: adjustedPed,
+    })
+  })
+
+  it('weekend adjustments in the past for CRD do not appear', async () => {
+    const adjustedHdced: WorkingDay = {
+      date: '2021-10-29',
+      adjustedForBankHoliday: false,
+      adjustedForWeekend: true,
+    }
+    const adjustedPed: WorkingDay = {
+      date: '2022-09-02',
+      adjustedForBankHoliday: false,
+      adjustedForWeekend: true,
+    }
+
+    fakeApi.get(`/working-day/next/${calculationResults.dates.HDCED}`).reply(200, adjustedHdced)
+    fakeApi.get(`/working-day/previous/${calculationResults.dates.PED}`).reply(200, adjustedPed)
+    const result = await calculateReleaseDatesService.getWeekendAdjustments('user', calculationResults, token)
+
+    expect(result).toEqual({
+      HDCED: adjustedHdced,
       PED: adjustedPed,
     })
   })

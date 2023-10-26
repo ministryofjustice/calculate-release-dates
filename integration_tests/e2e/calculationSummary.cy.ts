@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import CalculationSummaryPage from '../pages/calculationSummary'
 import ErrorPage from '../pages/error'
 import Page from '../pages/page'
@@ -24,7 +25,7 @@ context('Calculation summary', () => {
     const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
     calculationSummaryPage.submitToNomisButton().should('exist')
     calculationSummaryPage.sledDate().should('contain.text', 'Monday, 05 November 2018')
-    calculationSummaryPage.crdDate().should('contain.text', 'Sunday, 07 May 2017')
+    calculationSummaryPage.crdDate().should('contain.text', dayjs().add(7, 'day').format('dddd, DD MMMM YYYY'))
     calculationSummaryPage
       .crdWeekendAdjustment()
       .should('contain.text', 'Friday, 05 May 2017 when adjusted to a working day')
