@@ -18,6 +18,7 @@ export const comparePaths = {
   COMPARE_RESULT: '/compare/result/:bulkComparisonResultId',
   COMPARE_DETAIL: '/compare/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId',
   COMPARE_MANUAL_RESULT: '/compare/manual/result/:bulkComparisonResultId',
+  COMPARE_MANUAL_DETAIL: '/compare/manual/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId',
 }
 
 export default class CompareRoutes {
@@ -120,6 +121,26 @@ export default class CompareRoutes {
 
     res.render('pages/compare/resultDetail', {
       allowBulkComparison,
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
+    })
+    return
+  }
+
+  public manualDetail: RequestHandler = async (req, res) => {
+    const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
+    const { token, userRoles } = res.locals.user
+    const comparisonMismatch = await this.comparisonService.getManualMismatchComparison(
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      token
+    )
+
+    const allowManualComparison = this.bulkLoadService.allowManualComparison(userRoles)
+
+    res.render('pages/compare/manualResultDetail', {
+      allowManualComparison,
       bulkComparisonResultId,
       bulkComparisonDetailId,
       bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),

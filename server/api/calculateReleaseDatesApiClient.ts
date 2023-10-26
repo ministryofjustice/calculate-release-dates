@@ -226,4 +226,13 @@ export default class CalculateReleaseDatesApiClient {
       path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}`,
     }) as Promise<ComparisonPersonOverview>
   }
+
+  getManualMismatchComparison(
+    comparisonReference: string,
+    mismatchReference: string
+  ): Promise<ComparisonPersonOverview> {
+    return this.restClient.get({
+      path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}`,
+    }) as Promise<ComparisonPersonOverview>
+  }
 }
