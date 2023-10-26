@@ -1,4 +1,5 @@
 import { SuperAgentRequest } from 'superagent'
+import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
 
 export default {
@@ -37,7 +38,7 @@ export default {
         jsonBody: {
           dates: {
             SLED: '2018-11-05',
-            CRD: '2017-05-07',
+            CRD: dayjs().add(7, 'day').format('YYYY-MM-DD'),
             HDCED: '2016-12-24',
           },
           calculationRequestId: 123,
@@ -126,7 +127,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/calculate-release-dates/working-day/next/2016-12-24`,
+        urlPattern: `/calculate-release-dates/working-day/next/.*`,
       },
       response: {
         status: 200,
