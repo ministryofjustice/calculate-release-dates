@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import 'dotenv/config'
 
 const production = process.env.NODE_ENV === 'production'
@@ -113,5 +114,6 @@ export default {
     dpsBannerEnabled: get('DPS_BANNER_ENABLED', false) === 'true',
     specialistSupport: get('SPECIALIST_SUPPORT_ENABLED', false) === 'true',
     nonFridayRelease: get('NON_FRIDAY_RELEASE_TOGGLE', false) === 'true',
+    nonFridayReleasePolicyStartDate: dayjs(get('NON_FRIDAY_RELEASE_START_DATE', '2023-10-26')),
   },
 }
