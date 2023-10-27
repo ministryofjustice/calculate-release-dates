@@ -1,6 +1,7 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 {% block beforeContent %}
     {{ super() }}
@@ -28,6 +29,16 @@
 {% block content %}
 
     <h1 class="govuk-heading-xl">Bulk Comparison Results</h1>
+
+    {% if comparison.status === 'PROCESSING' %}
+        {% set bannerHtml %}
+            <h2 class="govuk-heading-l">Comparison is still processing</h2>
+        {% endset %}
+        {{ mojBanner({
+            type: 'information',
+            html: bannerHtml
+        }) }}
+    {% endif %}
 
     <h3 class="govuk-heading-m">Overview</h3>
     {{ govukSummaryList({

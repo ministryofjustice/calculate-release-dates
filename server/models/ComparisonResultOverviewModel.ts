@@ -16,6 +16,8 @@ export default class ComparisonResultOverviewModel {
 
   mismatches: ComparisonResultMismatch[]
 
+  status: string
+
   constructor(comparison: ComparisonOverview, prisons: Map<string, string>, isManual: boolean) {
     this.comparisonShortReference = comparison.comparisonShortReference
     if (!isManual) {
@@ -28,5 +30,6 @@ export default class ComparisonResultOverviewModel {
     this.mismatches = comparison.mismatches.map(
       mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, isManual)
     )
+    this.status = comparison.status
   }
 }
