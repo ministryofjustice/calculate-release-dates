@@ -561,6 +561,7 @@ export interface components {
       /** Format: int64 */
       numberOfPeopleCompared: number
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
+      status: string
     }
     ComparisonPersonOverview: {
       personId: string
