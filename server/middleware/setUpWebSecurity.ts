@@ -34,6 +34,7 @@ export default function setUpWebSecurity(): Router {
           styleSrc: ["'self'", config.apis.frontendComponents.url, 'code.jquery.com'],
           fontSrc: ["'self'", config.apis.frontendComponents.url],
           imgSrc: ["'self'", config.apis.frontendComponents.url, 'data:'],
+          formAction: ["'self'", config.apis.digitalPrisonServices.ui_url],
         },
       },
     })
