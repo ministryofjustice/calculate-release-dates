@@ -328,31 +328,31 @@ export default class CalculateReleaseDatesService {
         adjustments.PRRD = adjustment
       }
     }
-    if (calculation.dates.HDCED) {
+    if (this.existsAndIsInFuture(calculation.dates.HDCED)) {
       const adjustment = await client.getNextWorkingDay(calculation.dates.HDCED)
       if (adjustment.date !== calculation.dates.HDCED) {
         adjustments.HDCED = adjustment
       }
     }
-    if (calculation.dates.PED) {
+    if (this.existsAndIsInFuture(calculation.dates.PED)) {
       const adjustment = await client.getPreviousWorkingDay(calculation.dates.PED)
       if (adjustment.date !== calculation.dates.PED) {
         adjustments.PED = adjustment
       }
     }
-    if (calculation.dates.ETD) {
+    if (this.existsAndIsInFuture(calculation.dates.ETD)) {
       const adjustment = await client.getPreviousWorkingDay(calculation.dates.ETD)
       if (adjustment.date !== calculation.dates.ETD) {
         adjustments.ETD = adjustment
       }
     }
-    if (calculation.dates.MTD) {
+    if (this.existsAndIsInFuture(calculation.dates.MTD)) {
       const adjustment = await client.getPreviousWorkingDay(calculation.dates.MTD)
       if (adjustment.date !== calculation.dates.MTD) {
         adjustments.MTD = adjustment
       }
     }
-    if (calculation.dates.LTD) {
+    if (this.existsAndIsInFuture(calculation.dates.LTD)) {
       const adjustment = await client.getPreviousWorkingDay(calculation.dates.LTD)
       if (adjustment.date !== calculation.dates.LTD) {
         adjustments.LTD = adjustment
