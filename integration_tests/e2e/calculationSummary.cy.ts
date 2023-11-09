@@ -29,7 +29,7 @@ context('Calculation summary', () => {
     calculationSummaryPage
       .crdWeekendAdjustment()
       .should('contain.text', 'Friday, 05 May 2017 when adjusted to a working day')
-    calculationSummaryPage.hdcedDate().should('contain.text', 'Saturday, 24 December 2016')
+    calculationSummaryPage.hdcedDate().should('contain.text', dayjs().add(3, 'day').format('dddd, DD MMMM YYYY'))
     calculationSummaryPage
       .hdcedWeekendAdjustment()
       .should('contain.text', 'Wednesday, 28 December 2016 when adjusted to a working day')

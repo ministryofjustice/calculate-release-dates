@@ -39,7 +39,7 @@ export default {
           dates: {
             SLED: '2018-11-05',
             CRD: dayjs().add(7, 'day').format('YYYY-MM-DD'),
-            HDCED: '2016-12-24',
+            HDCED: dayjs().add(3, 'day').format('YYYY-MM-DD'),
           },
           calculationRequestId: 123,
           calculationReference: 123,
