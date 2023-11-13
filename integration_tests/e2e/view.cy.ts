@@ -7,7 +7,7 @@ context('View journey tests', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubManageUser')
     cy.task('stubPrisonerSearch')
     cy.task('stubGetUserCaseloads')
     cy.task('stubGetPrisonerDetails')

@@ -1,22 +1,23 @@
 import nock from 'nock'
 import UserService from './userService'
-import HmppsAuthClient, { User } from '../data/hmppsAuthClient'
 import { PrisonApiUserCaseloads } from '../@types/prisonApi/prisonClientTypes'
 import config from '../config'
+import { ManageUsersApiClient } from '../data'
+import { User } from '../data/manageUsersApiClient'
 
-jest.mock('../data/hmppsAuthClient')
+jest.mock('../data/manageUsersApiClient')
 
 const token = 'some token'
 
 describe('User service', () => {
-  let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
+  let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
   let userService: UserService
 
   let fakeApi: nock.Scope
   beforeEach(() => {
     config.apis.prisonApi.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.prisonApi.url)
-    hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+    manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
   })
   afterEach(() => {
     nock.cleanAll()
@@ -28,12 +29,12 @@ describe('User service', () => {
     } as PrisonApiUserCaseloads
 
     beforeEach(() => {
-      hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-      userService = new UserService(hmppsAuthClient)
+      manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
+      userService = new UserService(manageUsersApiClient)
     })
 
     it('Retrieves and formats user name also has correct caseloads', async () => {
-      hmppsAuthClient.getUser.mockResolvedValue({ name: 'anon nobody' } as User)
+      manageUsersApiClient.getUser.mockResolvedValue({ name: 'anon nobody' } as User)
       fakeApi.get(`/api/users/me/caseLoads`).reply(200, [caseload])
 
       const result = await userService.getUser(token)
@@ -42,7 +43,7 @@ describe('User service', () => {
       expect(result.caseloads).toEqual(['MDI'])
     })
     it('Propagates error', async () => {
-      hmppsAuthClient.getUser.mockRejectedValue(new Error('some error'))
+      manageUsersApiClient.getUser.mockRejectedValue(new Error('some error'))
 
       await expect(userService.getUser(token)).rejects.toEqual(new Error('some error'))
     })

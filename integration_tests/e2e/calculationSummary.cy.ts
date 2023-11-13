@@ -8,7 +8,7 @@ context('Calculation summary', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubManageUser')
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetCalculationResults')
     cy.task('stubGetCalculationBreakdown')

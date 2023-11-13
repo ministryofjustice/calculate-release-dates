@@ -19,8 +19,8 @@ import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
 import ComparisonService from './comparisonService'
 
 export const services = () => {
-  const { hmppsAuthClient } = dataAccess()
-  const userService = new UserService(hmppsAuthClient)
+  const { hmppsAuthClient, manageUsersApiClient } = dataAccess()
+  const userService = new UserService(manageUsersApiClient)
   const calculateReleaseDatesService = new CalculateReleaseDatesService()
   const prisonerService = new PrisonerService(hmppsAuthClient)
   const entryPointService = new EntryPointService()
