@@ -14,12 +14,12 @@ export default class ComparisonResultMismatchDetailModel {
     this.bookingId = comparisonPerson.bookingId
     this.calculatedAt = comparisonPerson.calculatedAt
     this.dates = [
-      this.createDateRow('SED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('SED', comparisonPerson.crdsDates, comparisonPerson.nomisDates, 'SLED'),
       this.createDateRow('ARD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
       this.createDateRow('CRD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
       this.createDateRow('NPD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
       this.createDateRow('PRRD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
-      this.createDateRow('LED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
+      this.createDateRow('LED', comparisonPerson.crdsDates, comparisonPerson.nomisDates, 'SLED'),
       this.createDateRow('HDCED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
       this.createDateRow('PED', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
       this.createDateRow('HDCAD', comparisonPerson.crdsDates, comparisonPerson.nomisDates),
@@ -44,10 +44,11 @@ export default class ComparisonResultMismatchDetailModel {
     },
     nomisDates: {
       [key: string]: string
-    }
+    },
+    crdsDateKey: string = ''
   ): Array<{ text: string }> | undefined {
-    if (crdsDates[key] || nomisDates[key]) {
-      return [{ text: key }, { text: crdsDates[key] ?? '' }, { text: nomisDates[key] ?? '' }]
+    if (crdsDates[crdsDateKey] || crdsDates[key] || nomisDates[key]) {
+      return [{ text: key }, { text: crdsDates[crdsDateKey] ?? crdsDates[key] ?? '' }, { text: nomisDates[key] ?? '' }]
     }
     return undefined
   }
