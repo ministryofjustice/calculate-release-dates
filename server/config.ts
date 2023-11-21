@@ -123,5 +123,6 @@ export default {
     specialistSupport: get('SPECIALIST_SUPPORT_ENABLED', false) === 'true',
     nonFridayRelease: get('NON_FRIDAY_RELEASE_TOGGLE', false) === 'true',
     nonFridayReleasePolicyStartDate: dayjs(get('NON_FRIDAY_RELEASE_START_DATE', '2023-10-26')),
+    changesSinceLastCalculation: get('CHANGES_SINCE_LAST_CALCULATION', false) === 'true',
   },
 }

@@ -1,8 +1,8 @@
-import SentenceRowViewModel from './SentenceRowViewModel'
-import { AnalyzedSentenceAndOffences } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
+import ViewRouteSentenceRowViewModel from './ViewRouteSentenceRowViewModel'
 
-export default class CourtCaseTableViewModel {
-  public sentences: SentenceRowViewModel[]
+export default class ViewRouteCourtCaseTableViewModel {
+  public sentences: ViewRouteSentenceRowViewModel[]
 
   public caseSequence: number
 
@@ -10,12 +10,12 @@ export default class CourtCaseTableViewModel {
 
   public courtDescription: string
 
-  constructor(sentencesAndOffences: AnalyzedSentenceAndOffences[]) {
+  constructor(sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]) {
     this.caseSequence = sentencesAndOffences[0].caseSequence
     this.caseReference = sentencesAndOffences[0].caseReference
     this.courtDescription = sentencesAndOffences[0].courtDescription
     this.sentences = sentencesAndOffences
-      .map(sentence => new SentenceRowViewModel(sentence))
+      .map(sentence => new ViewRouteSentenceRowViewModel(sentence))
       .sort((a, b) => a.sentencesAndOffence.lineSequence - b.sentencesAndOffence.lineSequence)
   }
 }

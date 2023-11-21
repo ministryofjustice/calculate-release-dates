@@ -2,6 +2,7 @@ import { RequestHandler, Response } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import {
+  AnalyzedSentenceAndOffences,
   CalculationSentenceUserInput,
   CalculationUserInputs,
   CalculationUserQuestions,
@@ -11,7 +12,7 @@ import EntryPointService from '../services/entryPointService'
 import AlternativeReleaseIntroViewModel from '../models/AlternativeReleaseIntroViewModel'
 import CalculationQuestionTypes from '../models/CalculationQuestionTypes'
 import SelectOffencesViewModel from '../models/SelectOffencesViewModel'
-import { PrisonApiOffenderSentenceAndOffences, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 
 export default class CalculationQuestionRoutes {
@@ -37,7 +38,7 @@ export default class CalculationQuestionRoutes {
         return res.redirect(`/calculation/${nomsId}/alternative-release-arangements`)
       }
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-      const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
+      const sentencesAndOffences = await this.calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences(
         username,
         prisonerDetail.bookingId,
         token
@@ -49,7 +50,7 @@ export default class CalculationQuestionRoutes {
 
   private renderSelectPage(
     res: Response,
-    sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
+    sentencesAndOffences: AnalyzedSentenceAndOffences[],
     calculationQuestions: CalculationUserQuestions,
     prisonerDetail: PrisonApiPrisoner,
     type: CalculationQuestionTypes,
@@ -78,7 +79,7 @@ export default class CalculationQuestionRoutes {
       const { nomsId } = req.params
       const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-      const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
+      const sentencesAndOffences = await this.calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences(
         username,
         prisonerDetail.bookingId,
         token

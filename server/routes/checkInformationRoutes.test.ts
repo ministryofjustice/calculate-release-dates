@@ -5,7 +5,6 @@ import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
   PrisonApiBookingAndSentenceAdjustments,
-  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
@@ -16,6 +15,7 @@ import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import UserInputService from '../services/userInputService'
 import {
+  AnalyzedSentenceAndOffences,
   CalculationSentenceQuestion,
   CalculationSentenceUserInput,
   CalculationUserInputs,
@@ -103,7 +103,8 @@ const stubbedSentencesAndOffences = [
       {},
       { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
     ],
-  } as PrisonApiOffenderSentenceAndOffences,
+    sentenceAndOffenceAnalysis: 'NEW',
+  } as AnalyzedSentenceAndOffences,
   {
     terms: [
       {
@@ -118,7 +119,8 @@ const stubbedSentencesAndOffences = [
     consecutiveToSequence: 1,
     sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [{ offenceEndDate: '2021-02-03' }],
-  } as PrisonApiOffenderSentenceAndOffences,
+    sentenceAndOffenceAnalysis: 'NEW',
+  } as AnalyzedSentenceAndOffences,
   {
     sentenceSequence: 3,
     lineSequence: 3,
@@ -151,7 +153,8 @@ const stubbedSentencesAndOffences = [
         offenceDescription: 'Access / exit by unofficial route - railway bye-law',
       },
     ],
-  },
+    sentenceAndOffenceAnalysis: 'NEW',
+  } as AnalyzedSentenceAndOffences,
   {
     sentenceSequence: 4,
     lineSequence: 4,
@@ -201,7 +204,8 @@ const stubbedSentencesAndOffences = [
         indicators: ['D', '50', '51'],
       },
     ],
-  },
+    sentenceAndOffenceAnalysis: 'NEW',
+  } as AnalyzedSentenceAndOffences,
   {
     bookingId: 1203025,
     sentenceSequence: 4,
@@ -224,7 +228,8 @@ const stubbedSentencesAndOffences = [
       },
     ],
     fineAmount: 3000,
-  },
+    sentenceAndOffenceAnalysis: 'NEW',
+  } as AnalyzedSentenceAndOffences,
   {
     bookingId: 1203780,
     sentenceSequence: 5,
@@ -249,7 +254,8 @@ const stubbedSentencesAndOffences = [
         indicators: [],
       },
     ],
-  },
+    sentenceAndOffenceAnalysis: 'NEW',
+  } as AnalyzedSentenceAndOffences,
 ]
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [

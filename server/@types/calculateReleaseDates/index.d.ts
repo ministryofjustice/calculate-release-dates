@@ -580,6 +580,60 @@ export interface components {
         [key: string]: string
       }
     }
+    AnalyzedSentenceAndOffences: {
+      /**
+       * Format: int64
+       * @description The bookingId this sentence and offence(s) relates to
+       */
+      bookingId?: number
+      /**
+       * Format: int32
+       * @description Sentence sequence - a unique identifier a sentence on a booking
+       */
+      sentenceSequence?: number
+      /**
+       * Format: int32
+       * @description This sentence is consecutive to this sequence (if populated)
+       */
+      consecutiveToSequence?: number
+      /**
+       * Format: int64
+       * @description Sentence line sequence - a number representing the order
+       */
+      lineSequence?: number
+      /**
+       * Format: int64
+       * @description Case sequence - a number representing the order of the case this sentence belongs to
+       */
+      caseSequence?: number
+      /** @description Case reference - a string identifying the case this sentence belongs to */
+      caseReference?: string
+      /** @description Court description - a string describing the the court that the case was heard at */
+      courtDescription?: string
+      /** @description This sentence status: A = Active I = Inactive */
+      sentenceStatus?: string
+      /** @description The sentence category e.g. 2003 or Licence */
+      sentenceCategory?: string
+      /** @description The sentence calculation type e.g. R or ADIMP_ORA */
+      sentenceCalculationType?: string
+      /** @description The sentence type description e.g. Standard Determinate Sentence */
+      sentenceTypeDescription?: string
+      /**
+       * Format: date
+       * @description The sentenced date for this sentence (aka court date)
+       */
+      sentenceDate?: string
+      /** @description The sentence terms of the sentence */
+      terms?: components['schemas']['OffenderSentenceTerm'][]
+      /** @description The offences related to this sentence (will usually only have one offence per sentence) */
+      offences?: components['schemas']['OffenderOffence'][]
+      /**
+       * Format: double
+       * @description The amount of fine related to the sentence and offence
+       */
+      fineAmount?: number
+      sentenceAndOffenceAnalysis: 'NEW' | 'SAME' | 'CHANGED'
+    }
     CalculationSentenceQuestion: {
       /** Format: int32 */
       sentenceSequence: number

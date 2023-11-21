@@ -1,4 +1,5 @@
 import {
+  AnalyzedSentenceAndOffences,
   CalculationUserInputs,
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -12,7 +13,7 @@ export default class SelectOffencesViewModel extends AbstractSelectOffencesViewM
   public cases: CourtCaseTableViewModel[]
 
   constructor(
-    sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
+    sentencesAndOffences: AnalyzedSentenceAndOffences[],
     calculationQuestions: CalculationUserQuestions,
     public calculationQuestionType: CalculationQuestionTypes,
     private userInputs: CalculationUserInputs
