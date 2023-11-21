@@ -6,9 +6,21 @@
             {% set sentence = sentenceModel.sentencesAndOffence %}
             {% for offence in sentence.offences %}
 
-                <div class="govuk-!-margin-bottom-6 sentence-card flex">
+                {% if featureToggles.changesSinceLastCalculation and sentence.sentenceAndOffenceAnalysis !== 'SAME' %}
+                <div class="govuk-!-margin-bottom-6 new-sentence-card flex">
                     <div class="govuk-grid-column-full govuk-!-margin-top-4">
-                        <h3 class="govuk-body-s govuk-!-margin-bottom-0">Count {{ sentence.lineSequence }}</h3>
+                        <h3 class="govuk-body-s govuk-!-margin-bottom-0">Count {{ sentence.lineSequence }}
+                            <span class="govuk-!-margin-left-4">
+                                <strong class="govuk-tag govuk-tag--moj-blue">{{ sentence.sentenceAndOffenceAnalysis }}</strong>
+                            </span>
+                        </h3>
+                {% else %}
+                    <div class="govuk-!-margin-bottom-6 sentence-card flex">
+                        <div class="govuk-grid-column-full govuk-!-margin-top-4">
+                            <h3 class="govuk-body-s govuk-!-margin-bottom-0">Count {{ sentence.lineSequence }}
+                            </h3>
+                {% endif %}
+                        {#                        {% endif %} #}
                         <h4 class="govuk-heading-s govuk-!-margin-bottom-1">{{ offence.offenceDescription }}</h4>
                         <p class="govuk-body-s">
                             {% if (offence.offenceEndDate and offence.offenceStartDate and offence.offenceEndDate !== offence.offenceStartDate) %}
