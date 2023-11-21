@@ -22,6 +22,7 @@ generic-service:
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
     NON_FRIDAY_RELEASE_TOGGLE: "false"
     NON_FRIDAY_RELEASE_START_DATE: "2023-10-26"
+    CHANGES_SINCE_LAST_CALCULATION: "false"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
