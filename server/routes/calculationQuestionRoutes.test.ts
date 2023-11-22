@@ -3,15 +3,12 @@ import type { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
-import {
-  PrisonApiOffenderSentenceAndOffences,
-  PrisonApiPrisoner,
-  PrisonApiSentenceDetail,
-} from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import EntryPointService from '../services/entryPointService'
 import UserInputService from '../services/userInputService'
 import {
+  AnalyzedSentenceAndOffences,
   CalculationSentenceQuestion,
   CalculationSentenceUserInput,
   CalculationUserInputs,
@@ -80,7 +77,8 @@ const stubbedSentencesAndOffences = [
         offenceCode: 'abc',
       },
     ],
-  } as PrisonApiOffenderSentenceAndOffences,
+    sentenceAndOffenceAnalysis: 'SAME',
+  } as AnalyzedSentenceAndOffences,
   {
     terms: [
       {
@@ -95,7 +93,8 @@ const stubbedSentencesAndOffences = [
     consecutiveToSequence: 1,
     sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [{ offenceEndDate: '2021-02-03', offenceCode: 'def' }],
-  } as PrisonApiOffenderSentenceAndOffences,
+    sentenceAndOffenceAnalysis: 'SAME',
+  } as AnalyzedSentenceAndOffences,
   {
     sentenceSequence: 3,
     lineSequence: 3,
@@ -122,7 +121,8 @@ const stubbedSentencesAndOffences = [
         offenceDescription: 'Access / exit by unofficial route - railway bye-law',
       },
     ],
-  },
+    sentenceAndOffenceAnalysis: 'SAME',
+  } as AnalyzedSentenceAndOffences,
 ]
 const stubbedUserQuestions = {
   sentenceQuestions: [
@@ -196,7 +196,7 @@ describe('Calculation question routes tests', () => {
 
   it('GET /calculation/:nomsId/select-offences-that-appear-in-list-a should return detail about the sds+ questions', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
 
@@ -217,7 +217,7 @@ describe('Calculation question routes tests', () => {
 
   it('GET /calculation/:nomsId/select-offences-that-appear-in-list-b should return detail about the sds+ questions', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
 
@@ -245,7 +245,7 @@ describe('Calculation question routes tests', () => {
 
   it('POST /calculation/:nomsId/select-offences-that-appear-in-list-a should save the user input to session', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     return request(app)
@@ -276,7 +276,7 @@ describe('Calculation question routes tests', () => {
 
   it('POST /calculation/:nomsId/select-offences-that-appear-in-list-b should save the user input to session', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     return request(app)
@@ -307,7 +307,7 @@ describe('Calculation question routes tests', () => {
 
   it('POST /calculation/:nomsId/select-offences-that-appear-in-list-b without selecting any offences but selecting none apply', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     return request(app)
@@ -338,7 +338,7 @@ describe('Calculation question routes tests', () => {
 
   it('POST /calculation/:nomsId/select-offences-that-appear-in-list-b without selecting any offences OR none apply', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     return request(app)

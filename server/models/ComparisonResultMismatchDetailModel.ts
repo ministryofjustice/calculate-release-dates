@@ -45,7 +45,7 @@ export default class ComparisonResultMismatchDetailModel {
     nomisDates: {
       [key: string]: string
     },
-    crdsDateKey: string = ''
+    crdsDateKey = ''
   ): Array<{ text: string }> | undefined {
     if (crdsDates[crdsDateKey] || crdsDates[key] || nomisDates[key]) {
       return [{ text: key }, { text: crdsDates[crdsDateKey] ?? crdsDates[key] ?? '' }, { text: nomisDates[key] ?? '' }]

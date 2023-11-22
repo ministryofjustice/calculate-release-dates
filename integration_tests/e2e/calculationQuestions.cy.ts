@@ -8,6 +8,7 @@ context('Calculation questions page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetSentencesAndOffences')
+    cy.task('stubGetAnalyzedSentencesAndOffences')
     cy.task('stubGetUserCaseloads')
     cy.task('stubCalculationQuestions')
   })
