@@ -579,6 +579,9 @@ export interface components {
       nomisDates: {
         [key: string]: string
       }
+      overrideDates: {
+        [key: string]: string
+      }
     }
     CalculationSentenceQuestion: {
       /** Format: int32 */
