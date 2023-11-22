@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
+  AnalyzedSentenceAndOffences,
   BookingCalculation,
   CalculationBreakdown,
   CalculationResults,
@@ -22,6 +23,7 @@ import ReleaseDateType from '../enumerations/releaseDateType'
 import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ErrorMessage from '../types/ErrorMessage'
 import config from '../config'
+import { FullPageError } from '../types/FullPageError'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
@@ -98,6 +100,20 @@ export default class CalculateReleaseDatesService {
         releaseDatesWithAdjustments: null,
       }
     }
+  }
+
+  async getActiveAnalyzedSentencesAndOffences(
+    username: string,
+    bookingId: number,
+    token: string
+  ): Promise<AnalyzedSentenceAndOffences[]> {
+    const sentencesAndOffences = await new CalculateReleaseDatesApiClient(token).getAnalyzedSentencesAndOffences(
+      bookingId
+    )
+    if (sentencesAndOffences.length === 0) {
+      throw FullPageError.noSentences()
+    }
+    return sentencesAndOffences.filter((s: AnalyzedSentenceAndOffences) => s.sentenceStatus === 'A')
   }
 
   private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {

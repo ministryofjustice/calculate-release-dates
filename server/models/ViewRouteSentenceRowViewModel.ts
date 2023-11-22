@@ -1,6 +1,8 @@
-import { PrisonApiOffenderSentenceTerm } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonApiOffenderSentenceAndOffences,
+  PrisonApiOffenderSentenceTerm,
+} from '../@types/prisonApi/prisonClientTypes'
 import SentenceTypes from './SentenceTypes'
-import { AnalyzedSentenceAndOffences } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 // TODO remove when we get rid of the old sentenceTable design.
 type AggregatedTerm = {
@@ -10,7 +12,7 @@ type AggregatedTerm = {
   days: number
 }
 
-export default class SentenceRowViewModel {
+export default class ViewRouteSentenceRowViewModel {
   // TODO remove when we get rid of the old sentenceTable design.
   private allTerms: AggregatedTerm
 
@@ -18,7 +20,7 @@ export default class SentenceRowViewModel {
 
   private licenceTerm: PrisonApiOffenderSentenceTerm[]
 
-  constructor(public sentencesAndOffence: AnalyzedSentenceAndOffences) {
+  constructor(public sentencesAndOffence: PrisonApiOffenderSentenceAndOffences) {
     this.imprisonmentTerm = sentencesAndOffence.terms.filter(term => term.code === 'IMP')
     this.licenceTerm = sentencesAndOffence.terms.filter(term => term.code === 'LIC')
   }
