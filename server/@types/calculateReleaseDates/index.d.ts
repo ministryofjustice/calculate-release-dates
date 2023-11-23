@@ -582,6 +582,9 @@ export interface components {
       overrideDates: {
         [key: string]: string
       }
+      breakdownByReleaseDateType: {
+        [key: string]: components['schemas']['ReleaseDateCalculationBreakdown'] | undefined
+      }
     }
     AnalyzedSentenceAndOffences: {
       /**

@@ -1,4 +1,7 @@
-import { ComparisonPersonOverview } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  ComparisonPersonOverview,
+  ReleaseDateCalculationBreakdown,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ComparisonResultMismatchDetailModel {
   nomisReference: string
@@ -9,10 +12,16 @@ export default class ComparisonResultMismatchDetailModel {
 
   dates: Array<Array<{ text: string }>>
 
+  hdced14DayRuleAppled: string
+
   constructor(comparisonPerson: ComparisonPersonOverview) {
     this.nomisReference = comparisonPerson.personId
     this.bookingId = comparisonPerson.bookingId
     this.calculatedAt = comparisonPerson.calculatedAt
+    this.hdced14DayRuleAppled = this.isHdced14DayRule(
+      comparisonPerson.crdsDates,
+      comparisonPerson.breakdownByReleaseDateType
+    )
     this.dates = [
       this.createDateRow(
         'SED',
@@ -161,5 +170,15 @@ export default class ComparisonResultMismatchDetailModel {
       ]
     }
     return undefined
+  }
+
+  private isHdced14DayRule(
+    crdsDates: { [key: string]: string },
+    breakdown: { [key: string]: ReleaseDateCalculationBreakdown }
+  ): string {
+    if (crdsDates.HDCED) {
+      return breakdown?.HDCED?.rules?.includes('HDCED_MINIMUM_CUSTODIAL_PERIOD') ? 'Yes' : 'No'
+    }
+    return 'N/A'
   }
 }
