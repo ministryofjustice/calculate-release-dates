@@ -856,7 +856,9 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).not.toContain('Tuesday, 02 February 2021 when adjusted to a working day')
-        expect(res.text).toContain('The <a href="#">non-friday release policy</a> applies to this release date.')
+        expect(res.text).toContain(
+          'The Discretionary Friday/Pre-Bank Holiday Release Scheme Policy (opens in new tab)</a> applies to this release date.'
+        )
       })
   })
 })
