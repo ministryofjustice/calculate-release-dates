@@ -152,7 +152,7 @@ export default class ComparisonResultMismatchDetailModel {
     },
     crdsDateKey: string = ''
   ): Array<{ text: string }> | undefined {
-    if (crdsDates[crdsDateKey] || crdsDates[key] || nomisDates[key]) {
+    if (crdsDates[crdsDateKey] || crdsDates[key] || nomisDates[key] || overrideDates[key]) {
       return [
         { text: key },
         { text: crdsDates[crdsDateKey] ?? crdsDates[key] ?? '' },
