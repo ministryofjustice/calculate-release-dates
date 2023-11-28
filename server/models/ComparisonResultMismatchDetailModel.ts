@@ -12,16 +12,19 @@ export default class ComparisonResultMismatchDetailModel {
 
   dates: Array<Array<{ text: string }>>
 
-  hdced14DayRuleAppled: string
+  hdced14DayRuleApplied: string
+
+  activeSexOffender?: string
 
   constructor(comparisonPerson: ComparisonPersonOverview) {
     this.nomisReference = comparisonPerson.personId
     this.bookingId = comparisonPerson.bookingId
     this.calculatedAt = comparisonPerson.calculatedAt
-    this.hdced14DayRuleAppled = this.isHdced14DayRule(
+    this.hdced14DayRuleApplied = this.isHdced14DayRule(
       comparisonPerson.crdsDates,
       comparisonPerson.breakdownByReleaseDateType
     )
+    this.activeSexOffender = this.isActiveSexOffender(comparisonPerson)
     this.dates = [
       this.createDateRow(
         'SED',
@@ -180,5 +183,13 @@ export default class ComparisonResultMismatchDetailModel {
       return breakdown?.HDCED?.rules?.includes('HDCED_MINIMUM_CUSTODIAL_PERIOD') ? 'Yes' : 'No'
     }
     return 'N/A'
+  }
+
+  private isActiveSexOffender(comparisonPerson: ComparisonPersonOverview) {
+    if (comparisonPerson.isActiveSexOffender === null) {
+      return null
+    }
+
+    return comparisonPerson.isActiveSexOffender ? 'Yes' : 'No'
   }
 }
