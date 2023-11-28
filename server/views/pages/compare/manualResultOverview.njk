@@ -3,6 +3,13 @@
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
+{% block head %}
+    {{ super() }}
+    {% if comparison.status === 'PROCESSING' %}
+        <meta http-equiv="refresh" content="5" />
+    {% endif %}
+{% endblock %}
+
 {% block beforeContent %}
     {{ super() }}
     <nav>
