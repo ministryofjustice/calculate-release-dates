@@ -407,6 +407,24 @@ export default class CalculateReleaseDatesService {
           adjustments.PRRD = adjustment
         }
       }
+      if (this.isNonFridayReleaseEligible(calculation.dates.ETD)) {
+        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.ETD)
+        if (adjustment.date !== calculation.dates.ETD) {
+          adjustments.ETD = adjustment
+        }
+      }
+      if (this.isNonFridayReleaseEligible(calculation.dates.MTD)) {
+        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.MTD)
+        if (adjustment.date !== calculation.dates.MTD) {
+          adjustments.MTD = adjustment
+        }
+      }
+      if (this.isNonFridayReleaseEligible(calculation.dates.LTD)) {
+        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.LTD)
+        if (adjustment.date !== calculation.dates.LTD) {
+          adjustments.LTD = adjustment
+        }
+      }
     }
     return adjustments
   }
