@@ -567,6 +567,7 @@ export interface components {
       personId: string
       isValid: boolean
       isMatch: boolean
+      isActiveSexOffender?: boolean
       validationMessages: components['schemas']['ValidationMessage'][]
       shortReference: string
       /** Format: int64 */
