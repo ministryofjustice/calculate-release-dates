@@ -212,7 +212,7 @@ export default class CalculationSummaryViewModel {
     const longFormat = 'cccc, dd LLLL yyyy'
     if (this.nonFridayReleaseAdjustments[type]) {
       hints.push(
-        `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${type}-non-friday-release">The <a href="#">non-friday release policy</a> applies to this release date.</p>`
+        `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${type}-non-friday-release"><a class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/discretionary-fridaypre-bank-holiday-release-scheme-policy-framework">The Discretionary Friday/Pre-Bank Holiday Release Scheme Policy (opens in new tab)</a> applies to this release date.</p>`
       )
     } else if (this.weekendAdjustments[type]) {
       const releaseDate = DateTime.fromISO(this.weekendAdjustments[type].date).toFormat(longFormat)

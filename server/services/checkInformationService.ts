@@ -46,7 +46,7 @@ export default class CheckInformationService {
       nomsId = calculation.prisonerId
     }
 
-    const sentencesAndOffences = await this.prisonerService.getActiveSentencesAndOffences(
+    const sentencesAndOffences = await this.calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences(
       username,
       prisonerDetail.bookingId,
       token

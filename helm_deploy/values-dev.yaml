@@ -30,6 +30,8 @@ generic-service:
     NON_FRIDAY_RELEASE_TOGGLE: "true"
     NON_FRIDAY_RELEASE_START_DATE: "2023-10-26"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
+    CHANGES_SINCE_LAST_CALCULATION: "true"
+    CALCULATION_REASON_TOGGLE: "false"
   # Switches off the allow list in the DEV env only.
   allowlist: null
 

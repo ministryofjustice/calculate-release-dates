@@ -1,62 +1,62 @@
 import {
-  AnalyzedSentenceAndOffences,
   CalculationSentenceUserInput,
   CalculationUserInputs,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   PrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderOffence,
+  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import { groupBy, indexBy } from '../utils/utils'
-import AdjustmentsViewModel from './AdjustmentsViewModel'
 import CalculationQuestionTypes from './CalculationQuestionTypes'
-import CourtCaseTableViewModel from './CourtCaseTableViewModel'
 import SentenceTypes from './SentenceTypes'
+import ViewRouteAdjustmentsViewModel from './ViewRouteAdjustmentsViewModel'
+import ViewRouteCourtCaseTableViewModel from './ViewRouteCourtCaseTableViewModel'
 
-export default class SentenceAndOffenceViewModel {
-  public adjustments: AdjustmentsViewModel
+export default class ViewRouteSentenceAndOffenceViewModel {
+  public adjustments: ViewRouteAdjustmentsViewModel
 
-  public cases: CourtCaseTableViewModel[]
+  public cases: ViewRouteCourtCaseTableViewModel[]
 
-  public sentenceSequenceToSentence: Map<number, AnalyzedSentenceAndOffences>
+  public sentenceSequenceToSentence: Map<number, PrisonApiOffenderSentenceAndOffences>
 
   public offenceCount: number
 
   public returnToCustodyDate?: string
 
-  public sentencesAndOffences: AnalyzedSentenceAndOffences[]
+  public sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
 
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
     public dpsEntryPoint: boolean,
-    sentencesAndOffences: AnalyzedSentenceAndOffences[],
+    sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: PrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages
   ) {
-    this.adjustments = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
+    this.adjustments = new ViewRouteAdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
-      groupBy(sentencesAndOffences, (sent: AnalyzedSentenceAndOffences) => sent.caseSequence).values()
+      groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values()
     )
-      .map(sentences => new CourtCaseTableViewModel(sentences))
+      .map(sentences => new ViewRouteCourtCaseTableViewModel(sentences))
       .sort((a, b) => a.caseSequence - b.caseSequence)
     this.sentenceSequenceToSentence = indexBy(
       sentencesAndOffences,
-      (sent: AnalyzedSentenceAndOffences) => sent.sentenceSequence
+      (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
     )
-    const reducer = (previousValue: number, currentValue: AnalyzedSentenceAndOffences) =>
+    const reducer = (previousValue: number, currentValue: PrisonApiOffenderSentenceAndOffences) =>
       previousValue + currentValue.offences.length
     this.offenceCount = sentencesAndOffences.reduce(reducer, 0)
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
     this.sentencesAndOffences = sentencesAndOffences
   }
 
-  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffences, offence: PrisonApiOffenderOffence): boolean {
+  public rowIsSdsPlus(sentence: PrisonApiOffenderSentenceAndOffences, offence: PrisonApiOffenderOffence): boolean {
     const input =
       this.userInputs &&
       this.userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
@@ -91,13 +91,13 @@ export default class SentenceAndOffenceViewModel {
 
   public getMultipleOffencesToASentence(): object {
     return Array.from(
-      groupBy(this.sentencesAndOffences, (sent: AnalyzedSentenceAndOffences) => sent.caseSequence).values()
+      groupBy(this.sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values()
     )
-      .filter((sentences: AnalyzedSentenceAndOffences[]) =>
-        sentences.some((sent: AnalyzedSentenceAndOffences) => sent.offences.length > 1)
+      .filter((sentences: PrisonApiOffenderSentenceAndOffences[]) =>
+        sentences.some((sent: PrisonApiOffenderSentenceAndOffences) => sent.offences.length > 1)
       )
       .flatMap(sentences =>
-        sentences.map((sentence: AnalyzedSentenceAndOffences) => {
+        sentences.map((sentence: PrisonApiOffenderSentenceAndOffences) => {
           return sentence.offences.length > 1 ? [sentence.caseSequence, sentence.lineSequence] : undefined
         })
       )

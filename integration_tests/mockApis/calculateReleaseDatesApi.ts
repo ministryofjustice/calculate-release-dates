@@ -538,4 +538,79 @@ export default {
       },
     })
   },
+  stubGetAnalyzedSentencesAndOffences: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/sentence-and-offence-information/1234',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            terms: [
+              {
+                years: 3,
+              },
+            ],
+            sentenceCalculationType: 'ADIMP',
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            caseSequence: 1,
+            lineSequence: 1,
+            caseReference: 'ABC123',
+            sentenceSequence: 1,
+            sentenceStatus: 'A',
+            offences: [
+              {
+                offenceEndDate: '2021-02-03',
+                offenceCode: 'abc',
+                offenderChargeId: 111,
+                offenceDescription: 'Doing a crime',
+              },
+            ],
+          },
+          {
+            terms: [
+              {
+                years: 2,
+              },
+            ],
+            sentenceCalculationType: 'ADIMP',
+            caseSequence: 2,
+            lineSequence: 2,
+            caseReference: 'ABC234',
+            sentenceSequence: 2,
+            consecutiveToSequence: 1,
+            sentenceStatus: 'A',
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            offences: [
+              {
+                offenceEndDate: '2021-02-05',
+                offenceCode: 'def',
+                offenderChargeId: 222,
+                offenceDescription: 'Doing another crime',
+              },
+            ],
+          },
+          {
+            terms: [
+              {
+                years: 10,
+              },
+            ],
+            sentenceCalculationType: 'ADIMP',
+            caseSequence: 2,
+            lineSequence: 3,
+            caseReference: 'ABC345',
+            sentenceSequence: 3,
+            consecutiveToSequence: 1,
+            sentenceStatus: 'I',
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            offences: [{ offenceEndDate: '2021-02-05', offenceDescription: 'Doing a crime' }],
+          },
+        ],
+      },
+    })
+  },
 }

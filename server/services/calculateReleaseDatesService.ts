@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
+  AnalyzedSentenceAndOffences,
   BookingCalculation,
   CalculationBreakdown,
   CalculationResults,
@@ -22,6 +23,7 @@ import ReleaseDateType from '../enumerations/releaseDateType'
 import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ErrorMessage from '../types/ErrorMessage'
 import config from '../config'
+import { FullPageError } from '../types/FullPageError'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
@@ -98,6 +100,20 @@ export default class CalculateReleaseDatesService {
         releaseDatesWithAdjustments: null,
       }
     }
+  }
+
+  async getActiveAnalyzedSentencesAndOffences(
+    username: string,
+    bookingId: number,
+    token: string
+  ): Promise<AnalyzedSentenceAndOffences[]> {
+    const sentencesAndOffences = await new CalculateReleaseDatesApiClient(token).getAnalyzedSentencesAndOffences(
+      bookingId
+    )
+    if (sentencesAndOffences.length === 0) {
+      throw FullPageError.noSentences()
+    }
+    return sentencesAndOffences.filter((s: AnalyzedSentenceAndOffences) => s.sentenceStatus === 'A')
   }
 
   private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
@@ -389,6 +405,24 @@ export default class CalculateReleaseDatesService {
         const adjustment = await client.getNonReleaseFridayDay(calculation.dates.PRRD)
         if (adjustment.date !== calculation.dates.PRRD) {
           adjustments.PRRD = adjustment
+        }
+      }
+      if (this.isNonFridayReleaseEligible(calculation.dates.ETD)) {
+        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.ETD)
+        if (adjustment.date !== calculation.dates.ETD) {
+          adjustments.ETD = adjustment
+        }
+      }
+      if (this.isNonFridayReleaseEligible(calculation.dates.MTD)) {
+        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.MTD)
+        if (adjustment.date !== calculation.dates.MTD) {
+          adjustments.MTD = adjustment
+        }
+      }
+      if (this.isNonFridayReleaseEligible(calculation.dates.LTD)) {
+        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.LTD)
+        if (adjustment.date !== calculation.dates.LTD) {
+          adjustments.LTD = adjustment
         }
       }
     }

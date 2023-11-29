@@ -1,7 +1,6 @@
 import { Request, RequestHandler } from 'express'
 import { DateTime } from 'luxon'
 import PrisonerService from '../services/prisonerService'
-import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
@@ -10,6 +9,8 @@ import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import EntryPointService from '../services/entryPointService'
 import SentenceTypes from '../models/SentenceTypes'
 import { GenuineOverride } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ViewRouteSentenceAndOffenceViewModel from '../models/ViewRouteSentenceAndOffenceViewModel'
+import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 
 const overrideReasons = {
   terror: 'of terrorism or terror-related offences',
@@ -66,12 +67,14 @@ export default class ViewRoutes {
         calculationRequestId,
         token
       )
-      const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
+      const returnToCustody = sentencesAndOffences.filter((s: PrisonApiOffenderSentenceAndOffences) =>
+        SentenceTypes.isSentenceFixedTermRecall(s)
+      ).length
         ? await this.viewReleaseDatesService.getReturnToCustodyDate(calculationRequestId, token)
         : null
 
       res.render('pages/view/sentencesAndOffences', {
-        model: new SentenceAndOffenceViewModel(
+        model: new ViewRouteSentenceAndOffenceViewModel(
           prisonerDetail,
           calculationUserInputs,
           this.entryPointService.isDpsEntryPoint(req),
