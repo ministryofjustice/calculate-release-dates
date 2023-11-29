@@ -20,7 +20,7 @@ generic-service:
     DPS_BANNER_ENABLED: "false"
     SPECIALIST_SUPPORT_ENABLED: "false"
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
-    NON_FRIDAY_RELEASE_TOGGLE: "false"
+    NON_FRIDAY_RELEASE_TOGGLE: "true"
     NON_FRIDAY_RELEASE_START_DATE: "2023-11-30"
     CHANGES_SINCE_LAST_CALCULATION: "false"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
