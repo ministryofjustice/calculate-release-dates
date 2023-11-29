@@ -242,4 +242,10 @@ export default class CalculateReleaseDatesApiClient {
       path: `/sentence-and-offence-information/${bookingId}`,
     }) as Promise<AnalyzedSentenceAndOffences[]>
   }
+
+  getAnalyzedAdjustments(bookingId: number): Promise<PrisonApiBookingAndSentenceAdjustments> {
+    return this.restClient.get({
+      path: `/booking-and-sentence-adjustments/${bookingId}`,
+    }) as Promise<PrisonApiBookingAndSentenceAdjustments>
+  }
 }

@@ -18,7 +18,11 @@
                         {% for adjustment in adjustments.recallSentenceRemand.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
+                                {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                    <strong class="govuk-tag govuk-tag--moj-blue">{{ adjustment.analysisResult }}</strong>
+                                {% endif %}
+                                </td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}</td>
                             </tr>
@@ -47,7 +51,11 @@
                         {% for adjustment in adjustments.remand.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                        <strong class="govuk-tag govuk-tag--moj-blue">{{ adjustment.analysisResult }}</strong>
+                                    {% endif %}
+                                </td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}</td>
                             </tr>
@@ -80,7 +88,11 @@
                                     .sentenceSequenceToSentence
                                     .get(adjustment.sentence) %}
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
+                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                        <strong class="govuk-tag govuk-tag--moj-blue">{{ adjustment.analysisResult }}</strong>
+                                    {% endif %}
+                                </td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}
                                 </td>
@@ -114,7 +126,11 @@
                                     .sentenceSequenceToSentence
                                     .get(adjustment.sentence) %}
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
+                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                        <strong class="govuk-tag govuk-tag--moj-blue">{{ adjustment.analysisResult }}</strong>
+                                    {% endif %}
+                                </td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}
                                 </td>
@@ -144,7 +160,11 @@
                         {% for adjustment in adjustments.restoredAdditionalDaysAwarded.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">Remitted {{ adjustment.from | date('DD MMMM YYYY') }}</td>
+                                <td class="govuk-table__cell">Remitted {{ adjustment.from | date('DD MMMM YYYY') }}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                        <strong class="govuk-tag govuk-tag--moj-blue">{{ adjustment.analysisResult }}</strong>
+                                    {% endif %}
+                                </td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}
                                 </td>
@@ -174,7 +194,10 @@
                         {% for adjustment in adjustments.unusedRemand.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                        <strong class="govuk-tag govuk-tag--moj-blue">{{ adjustment.analysisResult }}</strong>
+                                    {% endif %}</td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}</td>
                             </tr>
@@ -206,7 +229,11 @@
                         {% for adjustment in adjustments.additionalDaysAwarded.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">Awarded {{ adjustment.from | date('DD MMMM YYYY') }}</td>
+                                <td class="govuk-table__cell">Awarded {{ adjustment.from | date('DD MMMM YYYY') }}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                        <strong class="govuk-tag govuk-tag--moj-blue">{{ adjustment.analysisResult }}</strong>
+                                    {% endif %}
+                                </td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}
                                 </td>
@@ -236,7 +263,11 @@
                         {% for adjustment in adjustments.unlawfullyAtLarge.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">{{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <td class="govuk-table__cell">{{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                        <strong class="govuk-tag govuk-tag--moj-blue">{{ adjustment.analysisResult }}</strong>
+                                    {% endif %}
+                                </td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}
                                 </td>

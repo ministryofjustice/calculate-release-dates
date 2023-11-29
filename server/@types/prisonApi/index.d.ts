@@ -10351,6 +10351,7 @@ export interface components {
        * @example true
        */
       active?: boolean
+      analysisResult?: 'NEW' | 'SAME'
     }
     /** @description Adjustments associated at a booking level and a sentence level */
     BookingAndSentenceAdjustments: {
@@ -10392,6 +10393,7 @@ export interface components {
        * @example true
        */
       active?: boolean
+      analysisResult?: 'NEW' | 'SAME'
     }
   }
 }

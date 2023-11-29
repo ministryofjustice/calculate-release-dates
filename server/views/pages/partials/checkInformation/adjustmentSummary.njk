@@ -2,76 +2,109 @@
     <h3 class="govuk-heading-m govuk-!-margin-bottom-2">Deductions</h3>
     <table class="govuk-table">
         <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">Adjustment</th>
-                <th class="govuk-table__header" scope="col">Days</th>
-            </tr>
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Adjustment</th>
+            <th class="govuk-table__header" scope="col">Days</th>
+        </tr>
         </thead>
         <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <!-- Adjustment -->
-                <td class="govuk-table__cell">Recall remand</td>
-                <!-- Days -->
-                <td class="govuk-table__cell">{{ adjustments.recallSentenceRemand.aggregate | default(nilIndicator, true) }}</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <!-- Adjustment -->
-                <td class="govuk-table__cell">Remand</td>
-                <!-- Days -->
-                <td class="govuk-table__cell">
-                    {{ adjustments.remand.aggregate | default(nilIndicator, true) }}
-                </td>
-            </tr>
-            <tr class="govuk-table__row">
-                <!-- Adjustment -->
-                <td class="govuk-table__cell">Recall tagged bail</td>
-                <!-- Days -->
-                <td class="govuk-table__cell">{{ adjustments.recallSentenceTaggedBail.aggregate | default(nilIndicator, true) }}</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <!-- Adjustment -->
-                <td class="govuk-table__cell">Tagged bail</td>
-                <!-- Days -->
-                <td class="govuk-table__cell">
-                    {{ adjustments.taggedBail.aggregate | default(nilIndicator, true) }}
-                </td>
-            </tr>
-            <tr class="govuk-table__row">
-                <!-- Adjustment -->
-                <td class="govuk-table__cell">Restore additional days awarded (RADA)</td>
-                <!-- Days -->
-                <td class="govuk-table__cell">{{ adjustments.restoredAdditionalDaysAwarded.aggregate | default(nilIndicator, true) }}</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <!-- Adjustment -->
-                <td class="govuk-table__cell">Unused remand</td>
-                <!-- Days -->
-                <td class="govuk-table__cell">{{ adjustments.unusedRemand.aggregate | default(nilIndicator, true) }}</td>
-            </tr>
+        <tr class="govuk-table__row">
+            <!-- Adjustment -->
+            <td class="govuk-table__cell">Recall remand</td>
+            <!-- Days -->
+            <td class="govuk-table__cell">{{ adjustments.recallSentenceRemand.aggregate | default(nilIndicator, true) }}
+                {% if featureToggles.changesSinceLastCalculation and adjustments.recallSentenceRemand.aggregateNewDaysSinceLastCalculation > 0 %}
+                    ({{ adjustments.recallSentenceRemand.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <!-- Adjustment -->
+            <td class="govuk-table__cell">Remand</td>
+            <!-- Days -->
+            <td class="govuk-table__cell">
+                {{ adjustments.remand.aggregate | default(nilIndicator, true) }}
+                {% if featureToggles.changesSinceLastCalculation and adjustments.remand.aggregateNewDaysSinceLastCalculation > 0 %}
+                    ({{ adjustments.remand.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <!-- Adjustment -->
+            <td class="govuk-table__cell">Recall tagged bail</td>
+            <!-- Days -->
+            <td class="govuk-table__cell">{{ adjustments.recallSentenceTaggedBail.aggregate | default(nilIndicator, true) }}
+                {% if featureToggles.changesSinceLastCalculation and adjustments.recallSentenceTaggedBail.aggregateNewDaysSinceLastCalculation > 0 %}
+                    ({{ adjustments.recallSentenceTaggedBail.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <!-- Adjustment -->
+            <td class="govuk-table__cell">Tagged bail</td>
+            <!-- Days -->
+            <td class="govuk-table__cell">
+                {{ adjustments.taggedBail.aggregate | default(nilIndicator, true) }}
+                {% if featureToggles.changesSinceLastCalculation and adjustments.taggedBail.aggregateNewDaysSinceLastCalculation > 0 %}
+                    ({{ adjustments.taggedBail.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <!-- Adjustment -->
+            <td class="govuk-table__cell">Restore additional days awarded (RADA)</td>
+            <!-- Days -->
+            <td class="govuk-table__cell">
+                {{ adjustments.restoredAdditionalDaysAwarded.aggregate | default(nilIndicator, true) }}
+                {% if featureToggles.changesSinceLastCalculation and adjustments.restoredAdditionalDaysAwarded.aggregateNewDaysSinceLastCalculation > 0 %}
+                    ({{ adjustments.restoredAdditionalDaysAwarded.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <!-- Adjustment -->
+            <td class="govuk-table__cell">Unused remand</td>
+            <!-- Days -->
+            <td class="govuk-table__cell">
+                {{ adjustments.unusedRemand.aggregate | default(nilIndicator, true) }}
+                {% if featureToggles.changesSinceLastCalculation and adjustments.unusedRemand.aggregateNewDaysSinceLastCalculation > 0 %}
+                    ({{ adjustments.unusedRemand.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                {% endif %}
+            </td>
+        </tr>
         </tbody>
     </table>
     <h3 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-8 ">Additions</h3>
     <table class="govuk-table">
         <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">Adjustment</th>
-                <th class="govuk-table__header" scope="col">Days</th>
-            </tr>
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Adjustment</th>
+            <th class="govuk-table__header" scope="col">Days</th>
+        </tr>
         </thead>
         <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <!-- Adjustment -->
-                <td class="govuk-table__cell">Additional days awarded (ADA)</td>
-                <!-- Days -->
-                <td class="govuk-table__cell">{{ adjustments.additionalDaysAwarded.aggregate | default(nilIndicator, true) }}</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <!-- Adjustment -->
-                <td class="govuk-table__cell">Unlawfully at large (UAL)</td>
-                <!-- Days -->
-                <td class="govuk-table__cell">{{ adjustments.unlawfullyAtLarge.aggregate | default(nilIndicator, true) }}
-                </td>
-            </tr>
+        <tr class="govuk-table__row">
+            <!-- Adjustment -->
+            <td class="govuk-table__cell">Additional days awarded (ADA)</td>
+            <!-- Days -->
+            <td class="govuk-table__cell">
+                {{ adjustments.additionalDaysAwarded.aggregate | default(nilIndicator, true) }}
+                {% if featureToggles.changesSinceLastCalculation and adjustments.additionalDaysAwarded.aggregateNewDaysSinceLastCalculation > 0 %}
+                    ({{ adjustments.additionalDaysAwarded.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <!-- Adjustment -->
+            <td class="govuk-table__cell">Unlawfully at large (UAL)</td>
+            <!-- Days -->
+            <td class="govuk-table__cell">
+                {{ adjustments.unlawfullyAtLarge.aggregate | default(nilIndicator, true) }}
+                {% if featureToggles.changesSinceLastCalculation and adjustments.unlawfullyAtLarge.aggregateNewDaysSinceLastCalculation > 0 %}
+                    ({{ adjustments.unlawfullyAtLarge.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                {% endif %}
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>
