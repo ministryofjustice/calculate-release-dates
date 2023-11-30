@@ -167,12 +167,37 @@ export default class ComparisonResultMismatchDetailModel {
     if (crdsDates[crdsDateKey] || crdsDates[key] || nomisDates[key] || overrideDates[key]) {
       return [
         { text: key },
+        {
+          text: this.displayMismatchLabel(
+            crdsDates[crdsDateKey] ?? crdsDates[key],
+            nomisDates[key],
+            overrideDates[key] ?? ''
+          ),
+        },
         { text: crdsDates[crdsDateKey] ?? crdsDates[key] ?? '' },
         { text: nomisDates[key] ?? '' },
         { text: overrideDates[key] ?? '' },
       ]
     }
     return undefined
+  }
+
+  private displayMismatchLabel(crdsDate: string, nomisDate: string, overrideDate: string) {
+    if (crdsDate === overrideDate) {
+      return this.matchLabel()
+    }
+    if (overrideDate === '' && crdsDate === nomisDate) {
+      return this.matchLabel()
+    }
+    return this.mismatchLabel()
+  }
+
+  private matchLabel() {
+    return '<strong class="govuk-tag  govuk-tag--grey"> Match </strong>'
+  }
+
+  private mismatchLabel() {
+    return '<strong class="govuk-tag"> Mismatch </strong>'
   }
 
   private isHdced14DayRule(
