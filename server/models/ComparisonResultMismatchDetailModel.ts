@@ -163,7 +163,7 @@ export default class ComparisonResultMismatchDetailModel {
       [key: string]: string
     },
     crdsDateKey: string = ''
-  ): ({ text: string } | { html: string } | { text: string } | { text: string } | { text: string })[] {
+  ): ({ text: string } | { html: string })[] {
     if (crdsDates[crdsDateKey] || crdsDates[key] || nomisDates[key] || overrideDates[key]) {
       return [
         { text: key },
