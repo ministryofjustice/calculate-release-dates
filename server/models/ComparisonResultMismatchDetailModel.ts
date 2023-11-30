@@ -10,7 +10,7 @@ export default class ComparisonResultMismatchDetailModel {
 
   calculatedAt: string
 
-  dates: Array<Array<{ text: string }>>
+  dates: ({ text: string } | { html: string })[][]
 
   hdced14DayRuleApplied: string
 
@@ -163,12 +163,12 @@ export default class ComparisonResultMismatchDetailModel {
       [key: string]: string
     },
     crdsDateKey: string = ''
-  ): Array<{ text: string }> | undefined {
+  ): ({ text: string } | { html: string } | { text: string } | { text: string } | { text: string })[] {
     if (crdsDates[crdsDateKey] || crdsDates[key] || nomisDates[key] || overrideDates[key]) {
       return [
         { text: key },
         {
-          text: this.displayMismatchLabel(
+          html: this.displayMismatchLabel(
             crdsDates[crdsDateKey] ?? crdsDates[key],
             nomisDates[key],
             overrideDates[key] ?? ''
