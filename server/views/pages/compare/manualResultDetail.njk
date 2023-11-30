@@ -102,31 +102,7 @@
     }) }}
 
 
-
-        {{ govukTable({
-            caption: "Release Dates",
-            captionClasses: "govuk-table__caption--l",
-            firstCellIsHeader: true,
-            head: [
-                {
-                    text: "Date",
-                    classes: "govuk-!-width-one-quarter"
-                },
-                {
-                    text: "CRDS",
-                    classes: "govuk-!-width-one-quarter"
-                },
-                {
-                    text: "NOMIS",
-                    classes: "govuk-!-width-one-quarter"
-                },
-                {
-                    text: "User Override",
-                    classes: "govuk-!-width-one-quarter"
-                }
-            ],
-            rows: bulkComparison.dates
-        }) }}
+    {% include "releaseDatesMismatchTable.njk" %}
 
     <h3 class="govuk-heading-l">Record Discrepancy</h3>
 

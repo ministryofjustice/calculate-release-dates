@@ -1,0 +1,28 @@
+{{ govukTable({
+    caption: "Release Dates",
+    captionClasses: "govuk-table__caption--l",
+    firstCellIsHeader: true,
+    head: [
+        {
+            text: "Date",
+            classes: "govuk-!-width-one-fifth"
+        },
+        {
+            text: "Mismatch",
+            classes: "govuk-!-width-one-fifth"
+        },
+        {
+            text: "CRDS",
+            classes: "govuk-!-width-one-fifth"
+        },
+        {
+            text: "NOMIS",
+            classes: "govuk-!-width-one-fifth"
+        },
+        {
+            text: "User Override",
+            classes: "govuk-!-width-one-fifth"
+        }
+    ],
+    rows: bulkComparison.dates
+}) }}
