@@ -1,0 +1,213 @@
+
+<h3 class="govuk-heading-l">Record Discrepancy</h3>
+
+{{ govukRadios({
+    name: "mismatchPotentialImpactType",
+    fieldset: {
+        legend: {
+            text: "What is the (possible) impact of the mismatch?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--m"
+        }
+    },
+    items: [
+        {
+            value: "release-in-error",
+            text: "Potential RiE"
+        },
+        {
+            value: "unlawful-detention",
+            text: "Unlawful Detention "
+        },
+        {
+            value: "none",
+            text: "No Impact"
+        },
+        {
+            value: "other",
+            text: "Other"
+        }
+    ]
+}) }}
+
+{% set crdRadios %}
+    {% include "./radios/crd.njk" %}
+{% endset -%}
+{% set ersRadios %}
+    {% include "./radios/ers.njk" %}
+{% endset -%}
+{% set hdcRadios %}
+    {% include "./radios/hdc.njk" %}
+{% endset -%}
+{% set ledRadios %}
+    {% include "./radios/led.njk" %}
+{% endset -%}
+{% set pedRadios %}
+    {% include "./radios/ped.njk" %}
+{% endset -%}
+{% set prrdRadios %}
+    {% include "./radios/prrd.njk" %}
+{% endset -%}
+{% set sedRadios %}
+    {% include "./radios/sed.njk" %}
+{% endset -%}
+{% set tusedRadios %}
+    {% include "./radios/tused.njk" %}
+{% endset -%}
+
+{% set otherTextInput %}
+    {{ govukInput({
+        id: "other-mismatch-cause",
+        name: "otherCauseOfMismatch",
+        type: "text",
+        classes: "govuk-!-width-one-third",
+        label: {
+            text: "Other cause of mismatch"
+        }
+    }) }}
+{% endset -%}
+
+
+
+{{ govukRadios({
+        name: "mismatchClassification",
+        fieldset: {
+            legend: {
+                text: "What caused the mismatch?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--m"
+            }
+        },
+        items: [
+            {
+                value: "CRD",
+                text: "CRD",
+                conditional: {
+                    html: crdRadios
+                }
+            },
+            {
+                value: "ERSED",
+                text: "ERSED",
+                conditional: {
+                    html: ersRadios
+                }
+            },
+            {
+                value: "HDC",
+                text: "HDC",
+                conditional: {
+                    html: hdcRadios
+                }
+            },
+            {
+                value: "LED",
+                text: "LED",
+                conditional: {
+                    html: ledRadios
+                }
+            },
+            {
+                value: "PED",
+                text: "PED",
+                conditional: {
+                    html: pedRadios
+                }
+            },
+            {
+                value: "PRRD",
+                text: "PRRD",
+                conditional: {
+                    html: prrdRadios
+                }
+            },
+            {
+                value: "SED",
+                text: "SED",
+                conditional: {
+                    html: sedRadios
+                }
+            },
+            {
+                value: "TUSED",
+                text: "TUSED",
+                conditional: {
+                    html: tusedRadios
+                }
+            },
+            {
+                value: "OTHER",
+                text: "Other",
+                conditional: {
+                    html: otherTextInput
+                }
+            }
+        ]
+    }) }}
+
+
+    {{ govukTextarea({
+        name: "detail",
+        id: "detail",
+        label: {
+            text: "Provide any detail around this discrepency",
+            classes: "govuk-label--m",
+            isPageHeading: true
+        },
+        hint: {
+            text: "Do not include personal information, including sentence information"
+        }
+    }) }}
+
+
+{{ govukRadios({
+    name: "resolutionPriority",
+    fieldset: {
+        legend: {
+            text: "How urgent is the resolution of this problem",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--m"
+        }
+    },
+    items: [
+        {
+            value: "Severe",
+            text: "Severe (to be resolved immediately)"
+        },
+        {
+            value: "High",
+            text: "High  (to be resolved urgently)"
+        },
+        {
+            value: "Medium",
+            text: "Medium"
+        },
+        {
+            value: "Low",
+            text: "Low"
+        }
+    ]
+}) }}
+
+
+
+    {{ govukTextarea({
+        name: "further-action",
+        id: "further-action",
+        label: {
+            text: "Describe the recommended action that needs to be taken",
+            classes: "govuk-label--m",
+            isPageHeading: true
+        },
+        hint: {
+            text: "Do not include personal information, including sentence information"
+        }
+    }) }}
+
+    {{ govukButton({
+        text: "Record",
+        type: submit,
+        value: 'record-reason',
+        preventDoubleClick: true,
+        attributes: {  'data-qa': 'record-reason' }
+    }) }}

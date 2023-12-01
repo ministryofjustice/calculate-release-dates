@@ -2,6 +2,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
@@ -37,144 +38,77 @@
 
 {% block content %}
 
-<h1 class="govuk-heading-xl">Bulk Comparison Detail</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Bulk Comparison Detail</h1>
 
-    <h3 class="govuk-heading-l">Overview</h3>
-    {{ govukSummaryList({
-        rows: [
-            {
-                key: {
-                    text: "NOMIS reference"
-                },
-                value: {
-                    text: bulkComparison.nomisReference
-                }
-            },
-            {
-                key: {
-                    text: "Booking"
-                },
-                value: {
-                    text: bulkComparison.bookingId
-                }
-            },
-            {
-                key: {
-                    text: "Showing Latest Dates"
-                },
-                value: {
-                    text: "True"
-                }
-            },
-            {
-                key: {
-                    text: "Source of latest calculation"
-                },
-                value: {
-                    text: "NOMIS"
-                }
-            },
-            {
-                key: {
-                    text: "Date of latest calculation"
-                },
-                value: {
-                    text: bulkComparison.calculatedAt | date('DD MMMM YYYY')
-                }
-            },
-            {
-                key: {
-                    text: "HDCED 14 day rule applied"
-                },
-                value: {
-                    text: bulkComparison.hdced14DayRuleApplied
-                }
-            },
-            {
-                key: {
-                    text: "Registered sex offender"
-                },
-                value: {
-                    text: bulkComparison.activeSexOffender
-                }
-            }
-        ]
-    }) }}
+            <h3 class="govuk-heading-l">Overview</h3>
+            {{ govukSummaryList({
+                rows: [
+                    {
+                        key: {
+                            text: "NOMIS reference"
+                        },
+                        value: {
+                            text: bulkComparison.nomisReference
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Booking"
+                        },
+                        value: {
+                            text: bulkComparison.bookingId
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Showing Latest Dates"
+                        },
+                        value: {
+                            text: "True"
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Source of latest calculation"
+                        },
+                        value: {
+                            text: "NOMIS"
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Date of latest calculation"
+                        },
+                        value: {
+                            text: bulkComparison.calculatedAt | date('DD MMMM YYYY')
+                        }
+                    },
+                    {
+                        key: {
+                            text: "HDCED 14 day rule applied"
+                        },
+                        value: {
+                            text: bulkComparison.hdced14DayRuleApplied
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Registered sex offender"
+                        },
+                        value: {
+                            text: bulkComparison.activeSexOffender
+                        }
+                    }
+                ]
+            }) }}
 
-    {% include "./releaseDatesMismatchTable.njk" %}
+            {% include "./releaseDatesMismatchTable.njk" %}
 
-    <h3 class="govuk-heading-l">Record Discrepancy</h3>
+            {% include "./recordDiscrepencyPanel.njk" %}
 
-    {{ govukRadios({
-        name: "releaseInErrorType",
-        fieldset: {
-            legend: {
-                text: "Is there a possibility of release in error?",
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--m"
-            }
-        },
-        items: [
-            {
-                value: "future",
-                text: "Yes (in the future)"
-            },
-            {
-                value: "historical",
-                text: "Yes (historically) "
-            },
-            {
-                value: "no",
-                text: "No"
-            },
-            {
-                value: "Under Investigation",
-                text: "Investigation"
-            }
-        ]
-    }) }}
-
-    {{ govukRadios({
-        name: "releaseInErrorType",
-        fieldset: {
-            legend: {
-                text: "Is calculate release dates correct?",
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--m"
-            }
-        },
-        items: [
-            {
-                value: "true",
-                text: "Yes"
-            },
-            {
-                value: "false",
-                text: "No"
-            }
-        ]
-    }) }}
-
-    {{ govukTextarea({
-        name: "more-detail",
-        id: "more-detail",
-        label: {
-            text: "Provide any more detail around this discrepency?",
-            classes: "govuk-label--m",
-            isPageHeading: true
-        },
-        hint: {
-            text: "Do not include personal information, including sentence information"
-        }
-    }) }}
-
-    {{ govukButton({
-        text: "Record",
-        type: submit,
-        value: 'record-reason',
-        preventDoubleClick: true,
-        attributes: {  'data-qa': 'record-reason' }
-    }) }}
-
+        </div>
+    </div>
 
 {% endblock %}

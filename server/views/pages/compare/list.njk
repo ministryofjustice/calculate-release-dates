@@ -29,19 +29,22 @@
 
 {% block content %}
 
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Bulk Comparisons</h1>
+            <ul class="gem-c-document-list gem-c-document-list--no-underline">
+                {% for comparison in comparisons %}
+                    <li class="gem-c-document-list__item">
+                        <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/{{ comparison.comparisonShortReference }}">{{ comparison.prisonName }} - {{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
+                        <p class="gem-c-document-list__item-description ">
+                            {{ comparison.calculatedBy }} ( {{ comparison.numberOfMismatches }} mismatches from {{ comparison.numberOfPeopleCompared }} results)
+                        </p>
+                    </li>
+                {% endfor %}
 
-    <h1 class="govuk-heading-xl">Bulk Comparisons</h1>
+            </ul>
+        </div>
+    </div>
 
-    <ul class="gem-c-document-list gem-c-document-list--no-underline">
-        {% for comparison in comparisons %}
-            <li class="gem-c-document-list__item">
-            <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/{{ comparison.comparisonShortReference }}">{{ comparison.prisonName }} - {{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
-            <p class="gem-c-document-list__item-description ">
-                {{ comparison.calculatedBy }} ( {{ comparison.numberOfMismatches }} mismatches from {{ comparison.numberOfPeopleCompared }} results)
-            </p>
-         </li>
-        {% endfor %}
-        
-    </ul>
 
 {% endblock %}

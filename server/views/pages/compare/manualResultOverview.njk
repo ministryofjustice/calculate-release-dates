@@ -35,6 +35,9 @@
 
 {% block content %}
 
+
+    <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-xl">Bulk Comparison Results</h1>
 
     {% if comparison.status === 'PROCESSING' %}
@@ -97,5 +100,7 @@
 
     {{ govukSummaryList({rows: comparison.mismatches}) }}
 
+    </div>
+    </div>
 
 {% endblock %}

@@ -104,78 +104,7 @@
 
     {% include "./releaseDatesMismatchTable.njk" %}
 
-    <h3 class="govuk-heading-l">Record Discrepancy</h3>
-
-    {{ govukRadios({
-        name: "releaseInErrorType",
-        fieldset: {
-            legend: {
-                text: "Is there a possibility of release in error?",
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--m"
-            }
-        },
-        items: [
-            {
-                value: "future",
-                text: "Yes (in the future)"
-            },
-            {
-                value: "historical",
-                text: "Yes (historically) "
-            },
-            {
-                value: "no",
-                text: "No"
-            },
-            {
-                value: "Under Investigation",
-                text: "Investigation"
-            }
-        ]
-    }) }}
-
-    {{ govukRadios({
-        name: "releaseInErrorType",
-        fieldset: {
-            legend: {
-                text: "Is calculate release dates correct?",
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--m"
-            }
-        },
-        items: [
-            {
-                value: "true",
-                text: "Yes"
-            },
-            {
-                value: "false",
-                text: "No"
-            }
-        ]
-    }) }}
-
-    {{ govukTextarea({
-        name: "more-detail",
-        id: "more-detail",
-        label: {
-            text: "Provide any more detail around this discrepency?",
-            classes: "govuk-label--m",
-            isPageHeading: true
-        },
-        hint: {
-            text: "Do not include personal information, including sentence information"
-        }
-    }) }}
-
-    {{ govukButton({
-        text: "Record",
-        type: submit,
-        value: 'record-reason',
-        preventDoubleClick: true,
-        attributes: {  'data-qa': 'record-reason' }
-    }) }}
+    {% include "./recordDiscrepencyPanel.njk" %}
 
 
 {% endblock %}
