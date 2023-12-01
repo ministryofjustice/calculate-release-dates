@@ -1,0 +1,29 @@
+
+
+    {{ govukRadios({
+        classes: "govuk-radios--small",
+        name: "HDC-subType",
+
+        items: [
+            {
+                value: "new-rules",
+                text: "New rules not applied"
+            },
+            {
+                value: "14-day-rule",
+                text: "14-day rule not applied "
+            },
+            {
+                value: "ineligible",
+                text: "Ineligible for HDCED"
+            },
+            {
+                value: "recall",
+                text: "Recall related"
+            },
+            {
+                value: "other",
+                text: "Other"
+            }
+        ]
+    }) }}
