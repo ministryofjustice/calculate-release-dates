@@ -122,13 +122,6 @@ export default class PrisonerService {
     return new PrisonApiClient(token).getOffenderKeyDates(bookingId)
   }
 
-  async getBookingAndSentenceAdjustments(
-    bookingId: number,
-    token: string
-  ): Promise<PrisonApiBookingAndSentenceAdjustments> {
-    return new PrisonApiClient(token).getBookingAndSentenceAdjustments(bookingId)
-  }
-
   async getReturnToCustodyDate(bookingId: number, token: string): Promise<PrisonApiReturnToCustodyDate> {
     const { returnToCustodyDate } = await new PrisonApiClient(token).getFixedTermRecallDetails(bookingId)
     return { bookingId, returnToCustodyDate } as PrisonApiReturnToCustodyDate
