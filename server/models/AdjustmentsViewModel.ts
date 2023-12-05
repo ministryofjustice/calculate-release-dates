@@ -1,6 +1,6 @@
 import {
   PrisonApiBookingAdjustment,
-  PrisonApiBookingAndSentenceAdjustments,
+  AnalyzedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiSentenceAdjustmentValues,
 } from '../@types/prisonApi/prisonClientTypes'
 import { AnalyzedSentenceAndOffences } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -8,6 +8,7 @@ import { AnalyzedSentenceAndOffences } from '../@types/calculateReleaseDates/cal
 type AdjustmentViewModel = {
   aggregate: number
   details: AdjustmentDetailViewModel[]
+  aggregateNewDaysSinceLastCalculation: number
 }
 
 type AdjustmentDetailViewModel = {
@@ -15,6 +16,7 @@ type AdjustmentDetailViewModel = {
   to?: string
   days: number
   sentence?: number
+  analysisResult?: string
 }
 
 export default class AdjustmentsViewModel {
@@ -43,7 +45,7 @@ export default class AdjustmentsViewModel {
   public unusedRemand: AdjustmentViewModel
 
   constructor(
-    adjustments: PrisonApiBookingAndSentenceAdjustments,
+    adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
     sententencesAndOffences: AnalyzedSentenceAndOffences[]
   ) {
     this.additionalDaysAwarded = this.adjustmentViewModel(
@@ -96,6 +98,7 @@ export default class AdjustmentsViewModel {
         }
         return true
       })
+    const newAdjustments = filteredAdjustments.filter(a => a.analysisResult === 'NEW')
     return {
       aggregate: this.aggregateAdjustment(filteredAdjustments),
       details: filteredAdjustments.map(a => {
@@ -104,8 +107,10 @@ export default class AdjustmentsViewModel {
           to: a.toDate,
           days: a.numberOfDays,
           sentence: 'sentenceSequence' in a ? a.sentenceSequence : null,
+          analysisResult: a.analysisResult,
         }
       }),
+      aggregateNewDaysSinceLastCalculation: this.aggregateAdjustment(newAdjustments),
     }
   }
 

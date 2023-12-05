@@ -5,7 +5,7 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
-  PrisonApiBookingAndSentenceAdjustments,
+  AnalyzedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
@@ -174,7 +174,7 @@ const stubbedAdjustments = {
       active: true,
     },
   ],
-} as PrisonApiBookingAndSentenceAdjustments
+} as AnalyzedPrisonApiBookingAndSentenceAdjustments
 
 const stubbedCalculationResults = {
   dates: {

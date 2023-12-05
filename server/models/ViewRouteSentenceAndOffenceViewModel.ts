@@ -3,7 +3,7 @@ import {
   CalculationUserInputs,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
-  PrisonApiBookingAndSentenceAdjustments,
+  AnalyzedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderOffence,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
@@ -34,7 +34,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     public userInputs: CalculationUserInputs,
     public dpsEntryPoint: boolean,
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
-    adjustments: PrisonApiBookingAndSentenceAdjustments,
+    adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages

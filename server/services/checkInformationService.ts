@@ -51,7 +51,7 @@ export default class CheckInformationService {
       prisonerDetail.bookingId,
       token
     )
-    const adjustmentDetails = await this.prisonerService.getBookingAndSentenceAdjustments(
+    const adjustmentDetails = await this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(
       prisonerDetail.bookingId,
       token
     )

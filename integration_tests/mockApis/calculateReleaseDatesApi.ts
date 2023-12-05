@@ -358,11 +358,13 @@ export default {
               fromDate: '2021-02-03',
               toDate: '2021-03-08',
               active: true,
+              analysisResult: 'SAME',
             },
             {
               sentenceSequence: 1,
               type: 'TAGGED_BAIL',
               numberOfDays: 11,
+              analysisResult: 'SAME',
               active: true,
             },
             {
@@ -371,12 +373,14 @@ export default {
               numberOfDays: 13,
               fromDate: '2021-01-03',
               toDate: '2021-01-15',
+              analysisResult: 'SAME',
               active: false,
             },
             {
               sentenceSequence: 2,
               type: 'TAGGED_BAIL',
               numberOfDays: 7,
+              analysisResult: 'SAME',
               active: false,
             },
           ],
@@ -386,6 +390,7 @@ export default {
               numberOfDays: 29,
               fromDate: '2021-06-01',
               toDate: '2021-06-10',
+              analysisResult: 'SAME',
               active: true,
             },
             {
@@ -393,6 +398,7 @@ export default {
               numberOfDays: 10,
               fromDate: '2021-08-01',
               toDate: '2021-08-10',
+              analysisResult: 'SAME',
               active: false,
             },
             {
@@ -400,6 +406,7 @@ export default {
               numberOfDays: 4,
               fromDate: '2021-03-05',
               toDate: '2021-03-08',
+              analysisResult: 'SAME',
               active: false,
             },
             {
@@ -407,6 +414,7 @@ export default {
               numberOfDays: 5,
               fromDate: '2021-07-06',
               toDate: '2021-07-10',
+              analysisResult: 'SAME',
               active: false,
             },
             {
@@ -414,6 +422,7 @@ export default {
               numberOfDays: 3,
               fromDate: '2021-07-08',
               toDate: '2021-07-10',
+              analysisResult: 'SAME',
               active: false,
             },
           ],
@@ -535,6 +544,96 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {},
+      },
+    })
+  },
+  stubGetAnalyzedSentenceAdjustments: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/booking-and-sentence-adjustments/([0-9]*)',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          sentenceAdjustments: [
+            {
+              sentenceSequence: 1,
+              type: 'REMAND',
+              numberOfDays: 28,
+              fromDate: '2021-02-03',
+              toDate: '2021-03-08',
+              active: true,
+              analysisResult: 'SAME',
+            },
+            {
+              sentenceSequence: 1,
+              type: 'TAGGED_BAIL',
+              numberOfDays: 11,
+              active: true,
+              analysisResult: 'SAME',
+            },
+            {
+              sentenceSequence: 2,
+              type: 'REMAND',
+              numberOfDays: 13,
+              fromDate: '2021-01-03',
+              toDate: '2021-01-15',
+              active: false,
+              analysisResult: 'SAME',
+            },
+            {
+              sentenceSequence: 2,
+              type: 'TAGGED_BAIL',
+              numberOfDays: 7,
+              active: false,
+              analysisResult: 'SAME',
+            },
+          ],
+          bookingAdjustments: [
+            {
+              type: 'UNLAWFULLY_AT_LARGE',
+              numberOfDays: 29,
+              fromDate: '2021-06-01',
+              toDate: '2021-06-10',
+              active: true,
+              analysisResult: 'SAME',
+            },
+            {
+              type: 'UNLAWFULLY_AT_LARGE',
+              numberOfDays: 10,
+              fromDate: '2021-08-01',
+              toDate: '2021-08-10',
+              active: false,
+              analysisResult: 'SAME',
+            },
+            {
+              type: 'ADDITIONAL_DAYS_AWARDED',
+              numberOfDays: 4,
+              fromDate: '2021-03-05',
+              toDate: '2021-03-08',
+              active: false,
+              analysisResult: 'SAME',
+            },
+            {
+              type: 'ADDITIONAL_DAYS_AWARDED',
+              numberOfDays: 5,
+              fromDate: '2021-07-06',
+              toDate: '2021-07-10',
+              active: false,
+              analysisResult: 'SAME',
+            },
+            {
+              type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
+              numberOfDays: 3,
+              fromDate: '2021-07-08',
+              toDate: '2021-07-10',
+              active: false,
+              analysisResult: 'SAME',
+            },
+          ],
+        },
       },
     })
   },
