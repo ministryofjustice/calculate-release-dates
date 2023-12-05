@@ -264,7 +264,7 @@
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">{{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
-                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult !== 'SAME' %}
                                         <strong class="govuk-tag govuk-tag--moj-blue">{{ adjustment.analysisResult }}</strong>
                                     {% endif %}
                                 </td>

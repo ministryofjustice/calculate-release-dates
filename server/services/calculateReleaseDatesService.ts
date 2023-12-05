@@ -24,7 +24,7 @@ import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rules
 import ErrorMessage from '../types/ErrorMessage'
 import config from '../config'
 import { FullPageError } from '../types/FullPageError'
-import { PrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
+import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
@@ -83,7 +83,7 @@ export default class CalculateReleaseDatesService {
   async getBookingAndSentenceAdjustments(
     bookingId: number,
     token: string
-  ): Promise<PrisonApiBookingAndSentenceAdjustments> {
+  ): Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments> {
     return new CalculateReleaseDatesApiClient(token).getAnalyzedAdjustments(bookingId)
   }
 
