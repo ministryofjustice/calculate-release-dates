@@ -14,7 +14,7 @@
             <!-- Days -->
             <td class="govuk-table__cell">{{ adjustments.recallSentenceRemand.aggregate | default(nilIndicator, true) }}
                 {% if featureToggles.changesSinceLastCalculation and adjustments.recallSentenceRemand.aggregateNewDaysSinceLastCalculation > 0 %}
-                    ({{ adjustments.recallSentenceRemand.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                    ({{ adjustments.recallSentenceRemand.aggregateNewDaysSinceLastCalculation }} new {{ 'day' | pluralise(adjustments.recallSentenceRemand.aggregateNewDaysSinceLastCalculation) }}<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
                 {% endif %}
             </td>
         </tr>
@@ -25,7 +25,7 @@
             <td class="govuk-table__cell">
                 {{ adjustments.remand.aggregate | default(nilIndicator, true) }}
                 {% if featureToggles.changesSinceLastCalculation and adjustments.remand.aggregateNewDaysSinceLastCalculation > 0 %}
-                    ({{ adjustments.remand.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                    ({{ adjustments.remand.aggregateNewDaysSinceLastCalculation }} new {{ 'day' | pluralise(adjustments.remand.aggregateNewDaysSinceLastCalculation) }}<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
                 {% endif %}
             </td>
         </tr>
@@ -35,7 +35,7 @@
             <!-- Days -->
             <td class="govuk-table__cell">{{ adjustments.recallSentenceTaggedBail.aggregate | default(nilIndicator, true) }}
                 {% if featureToggles.changesSinceLastCalculation and adjustments.recallSentenceTaggedBail.aggregateNewDaysSinceLastCalculation > 0 %}
-                    ({{ adjustments.recallSentenceTaggedBail.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                    ({{ adjustments.recallSentenceTaggedBail.aggregateNewDaysSinceLastCalculation }} new {{ 'day' | pluralise(adjustments.recallSentenceTaggedBail.aggregateNewDaysSinceLastCalculation) }}<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
                 {% endif %}
             </td>
         </tr>
@@ -46,7 +46,7 @@
             <td class="govuk-table__cell">
                 {{ adjustments.taggedBail.aggregate | default(nilIndicator, true) }}
                 {% if featureToggles.changesSinceLastCalculation and adjustments.taggedBail.aggregateNewDaysSinceLastCalculation > 0 %}
-                    ({{ adjustments.taggedBail.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                    ({{ adjustments.taggedBail.aggregateNewDaysSinceLastCalculation }} new {{ 'day' | pluralise(adjustments.taggedBail.aggregateNewDaysSinceLastCalculation) }}<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
                 {% endif %}
             </td>
         </tr>
@@ -57,7 +57,7 @@
             <td class="govuk-table__cell">
                 {{ adjustments.restoredAdditionalDaysAwarded.aggregate | default(nilIndicator, true) }}
                 {% if featureToggles.changesSinceLastCalculation and adjustments.restoredAdditionalDaysAwarded.aggregateNewDaysSinceLastCalculation > 0 %}
-                    ({{ adjustments.restoredAdditionalDaysAwarded.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                    ({{ adjustments.restoredAdditionalDaysAwarded.aggregateNewDaysSinceLastCalculation }} new {{ 'day' | pluralise(adjustments.restoredAdditionalDaysAwarded.aggregateNewDaysSinceLastCalculation) }}<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
                 {% endif %}
             </td>
         </tr>
@@ -68,7 +68,7 @@
             <td class="govuk-table__cell">
                 {{ adjustments.unusedRemand.aggregate | default(nilIndicator, true) }}
                 {% if featureToggles.changesSinceLastCalculation and adjustments.unusedRemand.aggregateNewDaysSinceLastCalculation > 0 %}
-                    ({{ adjustments.unusedRemand.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                    ({{ adjustments.unusedRemand.aggregateNewDaysSinceLastCalculation }} new {{ 'day' | pluralise(adjustments.unusedRemand.aggregateNewDaysSinceLastCalculation) }}<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
                 {% endif %}
             </td>
         </tr>
@@ -90,7 +90,7 @@
             <td class="govuk-table__cell">
                 {{ adjustments.additionalDaysAwarded.aggregate | default(nilIndicator, true) }}
                 {% if featureToggles.changesSinceLastCalculation and adjustments.additionalDaysAwarded.aggregateNewDaysSinceLastCalculation > 0 %}
-                    ({{ adjustments.additionalDaysAwarded.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                    ({{ adjustments.additionalDaysAwarded.aggregateNewDaysSinceLastCalculation }} new {{ 'day' | pluralise(adjustments.additionalDaysAwarded.aggregateNewDaysSinceLastCalculation) }}<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
                 {% endif %}
             </td>
         </tr>
@@ -101,7 +101,7 @@
             <td class="govuk-table__cell">
                 {{ adjustments.unlawfullyAtLarge.aggregate | default(nilIndicator, true) }}
                 {% if featureToggles.changesSinceLastCalculation and adjustments.unlawfullyAtLarge.aggregateNewDaysSinceLastCalculation > 0 %}
-                    ({{ adjustments.unlawfullyAtLarge.aggregateNewDaysSinceLastCalculation }} new days<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
+                    ({{ adjustments.unlawfullyAtLarge.aggregateNewDaysSinceLastCalculation }} new {{ 'day' | pluralise(adjustments.unlawfullyAtLarge.aggregateNewDaysSinceLastCalculation) }}<span aria-hidden="true" hidden="hidden"> since the last calculation </span>)
                 {% endif %}
             </td>
         </tr>
