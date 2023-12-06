@@ -21,5 +21,5 @@ export default function authorisationMiddleware(req: Request, res: Response, nex
     return next()
   }
   req.session.returnTo = req.originalUrl
-  return res.redirect('/sign-in')
+  return res.redirect('/login')
 }

@@ -20,9 +20,9 @@ export default function setUpAuth(): Router {
     return res.render('autherror')
   })
 
-  router.get('/sign-in', passport.authenticate('oauth2'))
+  router.get('/login', passport.authenticate('oauth2'))
 
-  router.get('/sign-in/callback', (req, res, next) => {
+  router.get('/login/callback', (req, res, next) => {
     const authCallback: passport.AuthenticateCallback = (err, user, info) => {
       if (err) {
         logger.error('There was an error')

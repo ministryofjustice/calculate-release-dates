@@ -23,7 +23,7 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
       return next()
     }
     req.session.returnTo = req.originalUrl
-    return res.redirect('/sign-in')
+    return res.redirect('/login')
   }
 }
 
@@ -34,7 +34,7 @@ function init(): void {
       tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
       clientID: config.apis.hmppsAuth.apiClientId,
       clientSecret: config.apis.hmppsAuth.apiClientSecret,
-      callbackURL: `${config.domain}/sign-in/callback`,
+      callbackURL: `${config.domain}/login/callback`,
       state: true,
       customHeaders: { Authorization: generateOauthClientToken() },
     },
