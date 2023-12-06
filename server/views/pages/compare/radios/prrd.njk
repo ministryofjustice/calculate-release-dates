@@ -1,4 +1,8 @@
 
+    {% set otherTextInput %}
+        {% include "./otherInput.njk" %}
+    {% endset -%}
+
     {{ govukRadios({
         classes: "govuk-radios--small",
         name: "PRRD-subType",
@@ -10,7 +14,10 @@
             },
             {
                 value: "other",
-                text: "Other"
+                text: "Other",
+                conditional: {
+                    html: otherTextInput
+                }
             }
         ]
     }) }}
