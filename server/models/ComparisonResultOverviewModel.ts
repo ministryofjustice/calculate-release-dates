@@ -14,7 +14,11 @@ export default class ComparisonResultOverviewModel {
 
   numberOfPeopleCompared: number
 
-  mismatches: ComparisonResultMismatch[]
+  releaseDateMismatches: ComparisonResultMismatch[]
+
+  unsupportedSentenceTypeMismatches: ComparisonResultMismatch[]
+
+  validationErrorMismatches: ComparisonResultMismatch[]
 
   status: string
 
@@ -27,9 +31,18 @@ export default class ComparisonResultOverviewModel {
     this.calculatedBy = comparison.calculatedByUsername
     this.numberOfMismatches = comparison.numberOfMismatches
     this.numberOfPeopleCompared = comparison.numberOfPeopleCompared
-    this.mismatches = comparison.mismatches.map(
-      mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, isManual)
-    )
+
+    this.releaseDateMismatches = comparison.mismatches
+      .filter(mismatch => mismatch.misMatchType === 'RELEASE_DATES_MISMATCH')
+      .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, isManual))
+    this.unsupportedSentenceTypeMismatches = comparison.mismatches
+      .filter(mismatch => mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE')
+      .sort((a, b) => a.personId.localeCompare(b.personId))
+      .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, isManual))
+    this.validationErrorMismatches = comparison.mismatches
+      .filter(mismatch => mismatch.misMatchType === 'VALIDATION_ERROR')
+      .sort((a, b) => a.personId.localeCompare(b.personId))
+      .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, isManual))
     this.status = comparison.status
   }
 }

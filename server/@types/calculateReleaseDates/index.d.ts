@@ -549,6 +549,8 @@ export interface components {
       isMatch: boolean
       validationMessages: components['schemas']['ValidationMessage'][]
       shortReference: string
+      /** @enum {string} */
+      misMatchType: 'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE'
     }
     ComparisonOverview: {
       comparisonShortReference: string
@@ -567,6 +569,8 @@ export interface components {
       personId: string
       isValid: boolean
       isMatch: boolean
+      /** @enum {string} */
+      mismatchType: 'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE'
       isActiveSexOffender?: boolean
       validationMessages: components['schemas']['ValidationMessage'][]
       shortReference: string
