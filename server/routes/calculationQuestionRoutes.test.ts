@@ -15,6 +15,7 @@ import {
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import trimHtml from './testutils/testUtils'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -152,6 +153,11 @@ const stubbedUserInput = {
     } as CalculationSentenceUserInput,
   ],
 } as CalculationUserInputs
+const stubbedCalculationReasons = [
+  { id: 9, isOther: false, displayName: '2 day check' },
+  { id: 10, isOther: false, displayName: 'Appeal decision' },
+  { id: 11, isOther: true, displayName: 'Other' },
+]
 
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -390,6 +396,60 @@ describe('Calculation question routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('List D')
+      })
+  })
+
+  it('GET /calculation/:nomsId/alternative-release-arrangements should return calculation reasons page if enabled', () => {
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .get('/calculation/A1234AA/alternative-release-arrangements')
+      .expect(302)
+      .type('form')
+      .expect(res => {
+        expect(res.text).toContain('Found. Redirecting to /calculation/A1234AA/reason')
+      })
+  })
+
+  it('POST /calculation/:nomsId/reason should return to the alternative release arrangements once the calculation reason has been set', () => {
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .post('/calculation/A1234AA/reason/')
+      .type('form')
+      .send({ calculationReasonId: ['7'] })
+      .expect(302)
+      .expect(res => {
+        expect(res.text).toContain('Found. Redirecting to /calculation/A1234AA/alternative-release-arrangements')
+      })
+  })
+
+  it('POST /calculation/:nomsId/reason should return to the alternative release arrangements once if the other reason is selected and the text box has been filled', () => {
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .post('/calculation/A1234AA/reason/')
+      .type('form')
+      .send({ calculationReasonId: ['11'], otherReasonDescription: 'A reason for calculation' })
+      .expect(302)
+      .expect(res => {
+        expect(res.text).toContain('Found. Redirecting to /calculation/A1234AA/alternative-release-arrangements')
+      })
+  })
+
+  it('POST /calculation/:nomsId/reason should return to the reason page and display the error message if the other reason is selected and no text has been entered', () => {
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .post('/calculation/A1234AA/reason/')
+      .type('form')
+      .send({ calculationReasonId: ['11'], otherReasonDescription: '' })
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('The reason must not be empty.')
       })
   })
 })

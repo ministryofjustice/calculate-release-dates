@@ -920,6 +920,11 @@ export interface components {
       /** @enum {string} */
       type: 'RECALL_SENTENCE_REMAND' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'TAGGED_BAIL' | 'UNUSED_REMAND'
     }
+    CalculationReason: {
+      id: number
+      isOther: boolean
+      displayName: string
+    }
   }
   responses: never
   parameters: never
@@ -1991,6 +1996,34 @@ export interface operations {
       404: {
         content: {
           'application/json': components['schemas']['CalculationUserInputs']
+        }
+      }
+    }
+  }
+  getActiveCalculationReasons: {
+    responses: {
+      /** @description Returns list of active reasons */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculationReason'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CalculationReason'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CalculationReason'][]
+        }
+      }
+      /** @description No active calculation reasons were found */
+      404: {
+        content: {
+          'application/json': components['schemas']['CalculationReason'][]
         }
       }
     }

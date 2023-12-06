@@ -14,6 +14,7 @@ import CalculationQuestionTypes from '../models/CalculationQuestionTypes'
 import SelectOffencesViewModel from '../models/SelectOffencesViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import config from '../config'
 
 export default class CalculationQuestionRoutes {
   constructor(
@@ -188,6 +189,10 @@ export default class CalculationQuestionRoutes {
     const { nomsId } = req.params
     const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
 
+    if (config.featureToggles.calculationReasonToggle && req.session.calculationReasonId == null) {
+      return res.redirect(`/calculation/${nomsId}/reason`)
+    }
+
     if (calculationQuestions.sentenceQuestions.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
@@ -199,6 +204,35 @@ export default class CalculationQuestionRoutes {
       prisonerDetail,
       dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
     })
+  }
+
+  public selectCalculationReason: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+
+    return res.render('pages/calculation/reason', { reasons: calculationReasons, prisonerDetail })
+  }
+
+  public submitCalculationReason: RequestHandler = async (req, res): Promise<void> => {
+    const { username, caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const otherId = calculationReasons.find(calculation => calculation.isOther).id
+
+    if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length === 0) {
+      return res.render('pages/calculation/reason', {
+        reasons: calculationReasons,
+        prisonerDetail,
+        otherErrorMessage: { text: 'The reason must not be empty.', id: otherId },
+      })
+    }
+
+    req.session.calculationReasonId = req.body.calculationReasonId
+    req.session.otherReasonDescription = req.body.otherReasonDescription
+    return res.redirect(`/calculation/${nomsId}/alternative-release-arrangements`)
   }
 
   public offenceListA: RequestHandler = async (req, res): Promise<void> => {

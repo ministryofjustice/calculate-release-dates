@@ -1,0 +1,104 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - get caclulation reason" %}
+{% set pageId = "reason" %}
+
+{% block aside %}
+    {% include "../partials/prisonerIdentityBar.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {% if model.dpsEntryPoint %}
+        {% set backlink = "/?prisonId=" + model.prisonerDetail.offenderNo %}
+    {% else %}
+        {% set backlink = "/search/prisoners" %}
+    {% endif %}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backlink
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+                {{ otherErrorMessage }}
+
+                {% if otherErrorMessage|length %}
+                    {% set errorText = {text: otherErrorMessage.text  } %}
+                    {% set otherValueId = otherErrorMessage.id %}
+                {% endif %}
+
+                {% set otherReasonHtml %}
+                    {{ govukInput({
+                        id: "other-reason-description",
+                        name: "otherReasonDescription",
+                        type: "string",
+                        autocomplete: "string",
+                        classes: "govuk-!-width-one-third",
+                        errorMessage: errorText,
+                        label: {
+                            text: "Please enter the reason for this calculation"
+                        }
+                    }) }}
+                {% endset %}
+
+                {% set buttons = [ { } ] %}
+
+                {% for reason in reasons %}
+                    {% if reason.isOther %}
+                        {% set buttons = (buttons.push(
+                            {
+                                value: reason.id,
+                                text: reason.displayName,
+                                isOther: true,
+                                conditional: {
+                                html: otherReasonHtml }
+                            }
+                        ), buttons) %}
+                    {% else %}
+                        {% set buttons = (buttons.push(
+                            {
+                                value: reason.id,
+                                text: reason.displayName
+                            }
+                        ), buttons) %}
+                    {% endif %}
+                {% endfor %}
+
+                {{ govukRadios({
+                    name: 'calculationReasonId',
+                    fieldset: {
+                        legend: {
+                            text: "Why are you calculating release dates for " + prisonerDetail.firstName + " " + prisonerDetail.lastName +"?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--xl"
+                        }
+                    },
+                    hint: {
+                        text: "Select a reason for the calculation."
+                    },
+                    items: buttons,
+                    value: otherValueId
+                }) }}
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Submit Reason",
+                    type: submit,
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'reasons' }
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

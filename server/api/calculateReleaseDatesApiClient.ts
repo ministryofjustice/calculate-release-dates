@@ -4,6 +4,7 @@ import {
   AnalyzedSentenceAndOffences,
   BookingCalculation,
   CalculationBreakdown,
+  CalculationReason,
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
@@ -98,6 +99,10 @@ export default class CalculateReleaseDatesApiClient {
 
   getPreviousWorkingDay(date: string): Promise<WorkingDay> {
     return this.restClient.get({ path: `/working-day/previous/${date}` }) as Promise<WorkingDay>
+  }
+
+  getCalculationReasons(): Promise<CalculationReason[]> {
+    return this.restClient.get({ path: `/calculation-reasons/` }) as Promise<CalculationReason[]>
   }
 
   validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessage[]> {

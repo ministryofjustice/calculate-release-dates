@@ -4,6 +4,7 @@ import {
   AnalyzedSentenceAndOffences,
   BookingCalculation,
   CalculationBreakdown,
+  CalculationReason,
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
@@ -316,6 +317,10 @@ export default class CalculateReleaseDatesService {
 
   public async getCalculationBreakdown(calculationRequestId: number, token: string): Promise<CalculationBreakdown> {
     return new CalculateReleaseDatesApiClient(token).getCalculationBreakdown(calculationRequestId)
+  }
+
+  public async getCalculationReasons(token: string): Promise<CalculationReason[]> {
+    return new CalculateReleaseDatesApiClient(token).getCalculationReasons()
   }
 
   async confirmCalculation(
