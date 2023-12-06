@@ -13,15 +13,11 @@
     items: [
         {
             value: "release-in-error",
-            text: "Potential RiE"
+            text: "Potential Release in Error"
         },
         {
             value: "unlawful-detention",
-            text: "Unlawful Detention "
-        },
-        {
-            value: "none",
-            text: "No Impact"
+            text: "Potential Unlawful Detention "
         },
         {
             value: "other",
@@ -56,15 +52,7 @@
 {% endset -%}
 
 {% set otherTextInput %}
-    {{ govukInput({
-        id: "other-mismatch-cause",
-        name: "otherCauseOfMismatch",
-        type: "text",
-        classes: "govuk-!-width-one-third",
-        label: {
-            text: "Other cause of mismatch"
-        }
-    }) }}
+    {% include "./radios/otherInput.njk" %}
 {% endset -%}
 
 
@@ -153,43 +141,34 @@
             text: "Provide any detail around this discrepency",
             classes: "govuk-label--m",
             isPageHeading: true
-        },
-        hint: {
-            text: "Do not include personal information, including sentence information"
         }
     }) }}
 
 
-{{ govukRadios({
-    name: "resolutionPriority",
-    fieldset: {
-        legend: {
-            text: "How urgent is the resolution of this problem",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--m"
-        }
-    },
-    items: [
-        {
-            value: "Severe",
-            text: "Severe (to be resolved immediately)"
+    {{ govukRadios({
+        name: "resolutionPriority",
+        fieldset: {
+            legend: {
+                text: "How urgent is the resolution of this problem",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--m"
+            }
         },
-        {
-            value: "High",
-            text: "High  (to be resolved urgently)"
-        },
-        {
-            value: "Medium",
-            text: "Medium"
-        },
-        {
-            value: "Low",
-            text: "Low"
-        }
-    ]
-}) }}
-
-
+        items: [
+            {
+                value: "high",
+                text: "High Risk – release within 3 weeks"
+            },
+            {
+                value: "Medium",
+                text: "Medium risk – release in between 3 weeks and 3 months"
+            },
+            {
+                value: "Low",
+                text: "Low risk – release after 3 months"
+            }
+        ]
+    }) }}
 
     {{ govukTextarea({
         name: "further-action",
@@ -198,9 +177,6 @@
             text: "Describe the recommended action that needs to be taken",
             classes: "govuk-label--m",
             isPageHeading: true
-        },
-        hint: {
-            text: "Do not include personal information, including sentence information"
         }
     }) }}
 
