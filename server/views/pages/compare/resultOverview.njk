@@ -1,6 +1,7 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 {% block head %}
@@ -34,75 +35,119 @@
 {% endblock %}
 
 {% block content %}
-
-
     <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-xl">Bulk Comparison Results</h1>
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Bulk Comparison Results</h1>
 
-    {% if comparison.status === 'PROCESSING' %}
-        {% set bannerHtml %}
-            <h2 class="govuk-heading-l">Comparison is still processing</h2>
-        {% endset %}
-        {{ mojBanner({
-            type: 'information',
-            html: bannerHtml
-        }) }}
-    {% endif %}
+            {% if comparison.status === 'PROCESSING' %}
+                {% set bannerHtml %}
+                    <h2 class="govuk-heading-l">Comparison is still processing</h2>
+                {% endset %}
+                {{ mojBanner({
+                    type: 'information',
+                    html: bannerHtml
+                }) }}
+            {% endif %}
 
-    <h3 class="govuk-heading-m">Overview</h3>
-    {{ govukSummaryList({
-        rows: [
-            {
-                key: {
-                    text: "Prison"
-                },
-                value: {
-                    text: comparison.prisonName
-                }
-            },
-            {
-                key: {
-                    text: "Bulk Calculation by"
-                },
-                value: {
-                    text: comparison.calculatedBy
-                }
-            },
-            {
-                key: {
-                    text: "Bulk Calculation on"
-                },
-                value: {
-                    text: comparison.calculatedAt | date('DD MMMM YYYY')
-                }
-            },
-            {
-                key: {
-                    text: "Comparisons Performed"
-                },
-                value: {
-                    text: comparison.numberOfPeopleCompared
-                }
-            },
-            {
-                key: {
-                    text: "Anomalies Found"
-                },
-                value: {
-                    text: comparison.numberOfMismatches
-                }
-            }
-        ]
-    }) }}
+            <h3 class="govuk-heading-m">Overview</h3>
+            {{ govukSummaryList({
+                rows: [
+                    {
+                        key: {
+                            text: "Prison"
+                        },
+                        value: {
+                            text: comparison.prisonName
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Bulk Calculation by"
+                        },
+                        value: {
+                            text: comparison.calculatedBy
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Bulk Calculation on"
+                        },
+                        value: {
+                            text: comparison.calculatedAt | date('DD MMMM YYYY')
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Comparisons Performed"
+                        },
+                        value: {
+                            text: comparison.numberOfPeopleCompared
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Anomalies Found"
+                        },
+                        value: {
+                            text: comparison.numberOfMismatches
+                        }
+                    }
+                ]
+            }) }}
 
-    <h3 class="govuk-heading-m">Mismatches</h3>
+            <h3 class="govuk-heading-m">Mismatches</h3>
+            {% set releaseDateMismatchHtml %}
+                {{ govukSummaryList({
+                    rows: comparison.releaseDateMismatches
+                }) }}
+            {% endset -%}
 
-    {{ govukSummaryList({
-        rows: comparison.mismatches
-    }) }}
+            {% set unsupportedSentenceTypeHtml %}
+                {{ govukSummaryList({
+                    rows: comparison.unsupportedSentenceTypeMismatches
+                }) }}
+            {% endset -%}
 
+            {% set validationErrorHtml %}
+                {{ govukSummaryList({
+                    rows: comparison.validationErrorMismatches
+                }) }}
+            {% endset -%}
+
+            {% set tabs = [] %}
+            {% if comparison.releaseDateMismatches.length %}
+                {% set tabs = (tabs.push({
+                    label: "Release date mismatches",
+                    id: "release-date-mismatch",
+                    panel: {
+                        html: releaseDateMismatchHtml
+                    }
+                }), tabs) %}
+            {% endif %}
+
+            {% if comparison.unsupportedSentenceTypeMismatches.length %}
+                {% set tabs = (tabs.push({
+                    label: "Unsupported sentence type",
+                    id: "unsupported-sentence-type",
+                    panel: {
+                        html: unsupportedSentenceTypeHtml
+                    }
+                }), tabs) %}
+            {% endif %}
+
+            {% if comparison.validationErrorMismatches.length %}
+                {% set tabs = (tabs.push({
+                    label: "Validation error",
+                    id: "validation-error",
+                    panel: {
+                        html: validationErrorHtml
+                    }
+                }), tabs) %}
+            {% endif %}
+
+            {{ govukTabs({
+              items: tabs
+            }) }}
+        </div>
     </div>
-    </div>
-
 {% endblock %}
