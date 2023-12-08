@@ -32,8 +32,6 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-                {{ otherErrorMessage }}
-
                 {% if otherErrorMessage|length %}
                     {% set errorText = {text: otherErrorMessage.text  } %}
                     {% set otherValueId = otherErrorMessage.id %}
@@ -53,14 +51,14 @@
                     }) }}
                 {% endset %}
 
-                {% set buttons = [ { } ] %}
+                {% set buttons = [ ] %}
 
                 {% for reason in reasons %}
                     {% if reason.isOther %}
                         {% set buttons = (buttons.push(
                             {
                                 value: reason.id,
-                                text: reason.displayName,
+                                  text: reason.displayName,
                                 isOther: true,
                                 conditional: {
                                 html: otherReasonHtml }

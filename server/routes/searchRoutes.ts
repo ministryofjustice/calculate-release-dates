@@ -1,17 +1,20 @@
 import { RequestHandler } from 'express'
 import PrisonerService from '../services/prisonerService'
 import { PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
+import config from '../config'
 
 export default class SearchRoutes {
   constructor(private readonly prisonerService: PrisonerService) {
     // intentionally left blank
   }
 
-  public searchViewPrisoners: RequestHandler = this.searchPrisoners({ view: true })
+  public searchViewPrisoners: RequestHandler = this.searchPrisoners({ settings: { view: true, reason: false } })
 
-  public searchCalculatePrisoners: RequestHandler = this.searchPrisoners({ view: false })
+  public searchCalculatePrisoners: RequestHandler = this.searchPrisoners({
+    settings: { view: false, reason: config.featureToggles.calculationReasonToggle },
+  })
 
-  private searchPrisoners(settings: { view: boolean }): RequestHandler {
+  private searchPrisoners({ settings }: { settings: { view: boolean; reason: boolean } }): RequestHandler {
     const handler: RequestHandler = async (req, res): Promise<void> => {
       const { firstName, lastName, prisonerIdentifier } = req.query as Record<string, string>
       const { username, caseloads } = res.locals.user

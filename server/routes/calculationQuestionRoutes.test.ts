@@ -399,18 +399,6 @@ describe('Calculation question routes tests', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/alternative-release-arrangements should return calculation reasons page if enabled', () => {
-    config.featureToggles.calculationReasonToggle = true
-
-    return request(app)
-      .get('/calculation/A1234AA/alternative-release-arrangements')
-      .expect(302)
-      .type('form')
-      .expect(res => {
-        expect(res.text).toContain('Found. Redirecting to /calculation/A1234AA/reason')
-      })
-  })
-
   it('POST /calculation/:nomsId/reason should return to the alternative release arrangements once the calculation reason has been set', () => {
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
     config.featureToggles.calculationReasonToggle = true
