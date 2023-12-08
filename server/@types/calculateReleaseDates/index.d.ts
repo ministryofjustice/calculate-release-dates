@@ -590,6 +590,7 @@ export interface components {
       breakdownByReleaseDateType: {
         [key: string]: components['schemas']['ReleaseDateCalculationBreakdown'] | undefined
       }
+      sdsSentencesIdentified?: string[]
     }
     AnalyzedSentenceAndOffences: {
       /**

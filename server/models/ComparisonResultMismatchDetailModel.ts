@@ -16,6 +16,8 @@ export default class ComparisonResultMismatchDetailModel {
 
   activeSexOffender?: string
 
+  sdsPlusOffences?: string
+
   constructor(comparisonPerson: ComparisonPersonOverview) {
     this.nomisReference = comparisonPerson.personId
     this.bookingId = comparisonPerson.bookingId
@@ -25,6 +27,8 @@ export default class ComparisonResultMismatchDetailModel {
       comparisonPerson.breakdownByReleaseDateType
     )
     this.activeSexOffender = this.isActiveSexOffender(comparisonPerson)
+    this.sdsPlusOffences = comparisonPerson.sdsSentencesIdentified?.join('</br>')
+
     this.dates = [
       this.createDateRow(
         'SED',
