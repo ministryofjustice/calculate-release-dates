@@ -56,17 +56,17 @@ A potential release point halfway point of the Detention and Training Order sing
 #### Early-Transfer Date (ETD)
 
 A potential release point:
-* One month before the Mid-Term Date (MTD) for Detention and Training Order (DTO)/single terms of 8 months but less than 18 months 
-* Two months before Mid-Term Date (MTD) for Detention and Training Order (DTO)/single terms of 18 months to 2 years
+* One month before the Mid-Transfer Date (MTD) for Detention and Training Order (DTO) / single terms of 8 months but less than 18 months 
+* Two months before Mid-Transfer Date (MTD) for Detention and Training Order (DTO) / single terms of 18 months to 2 years
 
 #### Late-Transfer Date (LTD)
 
 A potential release point:
-* One months after the MTD for DTO/single terms of 8 months but less than 18 months 
-* Two months after the MTD for DTO/single terms of 18 months to 2 years
+* One months after the Mid-Transfer Date (MTD) for Detention and Training Order (DTO) / single terms of 8 months but less than 18 months 
+* Two months after the Mid-Transfer Date (MTD) for Detention and Training Order (DTO) / single terms of 18 months to 2 years
 
 ## Approved Release Dates
-### Types of release Date that need scheduling and approval. All approved dates are user input and not calculated dates.
+### Types of release date that need scheduling and approval. All approved dates are user input and not calculated dates.
 
 ### Approved Parole Date (APD)
 
