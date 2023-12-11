@@ -49,7 +49,7 @@ The Early Removal Scheme is the date where any foreign national serving a fixed 
 
 ### Detention and Training Order (DTO) Dates 
 
-#### Mid-Term Date (MTD)
+#### Mid-Transfer Date (MTD)
 
 A potential release point halfway point of the Detention and Training Order single term (automatic release date)
 
@@ -59,7 +59,7 @@ A potential release point:
 * One month before the Mid-Term Date (MTD) for Detention and Training Order (DTO)/single terms of 8 months but less than 18 months 
 * Two months before Mid-Term Date (MTD) for Detention and Training Order (DTO)/single terms of 18 months to 2 years
 
-#### Late-Term Date (ETD)
+#### Late-Transfer Date (LTD)
 
 A potential release point:
 * One months after the MTD for DTO/single terms of 8 months but less than 18 months 
