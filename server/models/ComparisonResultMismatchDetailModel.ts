@@ -16,6 +16,8 @@ export default class ComparisonResultMismatchDetailModel {
 
   activeSexOffender?: string
 
+  mismatchType: string
+
   constructor(comparisonPerson: ComparisonPersonOverview) {
     this.nomisReference = comparisonPerson.personId
     this.bookingId = comparisonPerson.bookingId
@@ -25,6 +27,7 @@ export default class ComparisonResultMismatchDetailModel {
       comparisonPerson.breakdownByReleaseDateType
     )
     this.activeSexOffender = this.isActiveSexOffender(comparisonPerson)
+    this.mismatchType = comparisonPerson.mismatchType
     this.dates = [
       this.createDateRow(
         'SED',
@@ -165,24 +168,32 @@ export default class ComparisonResultMismatchDetailModel {
     crdsDateKey: string = ''
   ): ({ text: string } | { html: string })[] {
     if (crdsDates[crdsDateKey] || crdsDates[key] || nomisDates[key] || overrideDates[key]) {
-      return [
-        { text: key },
-        {
+      const dateRow: ({ text: string } | { html: string })[] = [{ text: key }]
+      if (this.mismatchType !== 'VALIDATION_ERROR') {
+        dateRow.push({
           html: this.displayMismatchLabel(
+            key,
             crdsDates[crdsDateKey] ?? crdsDates[key],
             nomisDates[key],
             overrideDates[key] ?? ''
           ),
-        },
+        })
+      }
+      dateRow.push(
         { text: crdsDates[crdsDateKey] ?? crdsDates[key] ?? '' },
         { text: nomisDates[key] ?? '' },
-        { text: overrideDates[key] ?? '' },
-      ]
+        { text: overrideDates[key] ?? '' }
+      )
+      return dateRow
     }
     return undefined
   }
 
-  private displayMismatchLabel(crdsDate: string, nomisDate: string, overrideDate: string) {
+  private displayMismatchLabel(key: string, crdsDate: string, nomisDate: string, overrideDate: string) {
+    const datesNotApplicableForMatch = ['HDCAD', 'APD', 'ROTL', 'ESED']
+    if (datesNotApplicableForMatch.includes(key)) {
+      return this.notApplicableLabel()
+    }
     if (crdsDate === overrideDate) {
       return this.matchLabel()
     }
@@ -198,6 +209,10 @@ export default class ComparisonResultMismatchDetailModel {
 
   private mismatchLabel() {
     return '<strong class="govuk-tag"> Mismatch </strong>'
+  }
+
+  private notApplicableLabel() {
+    return '<strong class="govuk-tag  govuk-tag--orange"> Not Applicable </strong>'
   }
 
   private isHdced14DayRule(
