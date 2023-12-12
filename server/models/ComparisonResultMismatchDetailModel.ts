@@ -17,7 +17,7 @@ export default class ComparisonResultMismatchDetailModel {
   activeSexOffender?: string
 
   sdsPlusOffences?: string
-  
+
   mismatchType: string
 
   constructor(comparisonPerson: ComparisonPersonOverview) {
