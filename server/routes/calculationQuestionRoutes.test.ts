@@ -1,6 +1,5 @@
 import request from 'supertest'
 import type { Express } from 'express'
-import { post } from 'superagent'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
