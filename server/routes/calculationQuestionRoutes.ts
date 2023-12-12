@@ -222,16 +222,32 @@ export default class CalculationQuestionRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const otherId = calculationReasons.find(calculation => calculation.isOther).id
 
+    if (req.body.calculationReasonId == null) {
+      return res.render('pages/calculation/reason', {
+        reasons: calculationReasons,
+        prisonerDetail,
+        errorMessage: { text: 'The reason must be selected.' },
+      })
+    }
+
     if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length === 0) {
       return res.render('pages/calculation/reason', {
         reasons: calculationReasons,
         prisonerDetail,
-        otherErrorMessage: { text: 'The reason must not be empty.', id: otherId },
+        otherErrorMessage: { text: 'The other reason must not be empty.', id: otherId },
       })
     }
 
-    req.session.calculationReasonId = req.body.calculationReasonId
-    req.session.otherReasonDescription = req.body.otherReasonDescription
+    if (config.featureToggles.calculationReasonToggle) {
+      if (req.session.calculationReasonId == null) {
+        req.session.calculationReasonId = {}
+        req.session.otherReasonDescription = {}
+      }
+    }
+
+    req.session.calculationReasonId[nomsId] = req.body.calculationReasonId
+    req.session.otherReasonDescription[nomsId] = req.body.otherReasonDescription
+
     return res.redirect(`/calculation/${nomsId}/alternative-release-arrangements`)
   }
 

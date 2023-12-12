@@ -12,8 +12,8 @@ declare module 'express-session' {
     selectedApprovedDates?: { string?: ManualEntryDate[] }
     HDCED?: { string?: string }
     HDCED_WEEKEND_ADJUSTED?: { string?: boolean }
-    calculationReasonId: number
-    otherReasonDescription: string
+    calculationReasonId?: { string?: number }
+    otherReasonDescription?: { string?: string }
   }
 }
 

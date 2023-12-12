@@ -1,5 +1,6 @@
 import request from 'supertest'
 import type { Express } from 'express'
+import { post } from 'superagent'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -427,6 +428,19 @@ describe('Calculation question routes tests', () => {
       })
   })
 
+  it('POST /calculation/:nomsId/reason should ask for the calculation reason if it has not been set', () => {
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .post('/calculation/A1234AA/reason/')
+      .type('form')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('The reason must be selected')
+      })
+  })
+
   it('POST /calculation/:nomsId/reason should return to the reason page and display the error message if the other reason is selected and no text has been entered', () => {
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
     config.featureToggles.calculationReasonToggle = true
@@ -437,7 +451,7 @@ describe('Calculation question routes tests', () => {
       .send({ calculationReasonId: ['11'], otherReasonDescription: '' })
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('The reason must not be empty.')
+        expect(res.text).toContain('The other reason must not be empty.')
       })
   })
 })

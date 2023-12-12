@@ -32,8 +32,12 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
+                {% if errorMessage|length %}
+                    {% set errorMessageText = {text: errorMessage.text} %}
+                {% endif %}
+
                 {% if otherErrorMessage|length %}
-                    {% set errorText = {text: otherErrorMessage.text  } %}
+                    {% set otherErrorText = {text: otherErrorMessage.text  } %}
                     {% set otherValueId = otherErrorMessage.id %}
                 {% endif %}
 
@@ -44,7 +48,7 @@
                         type: "string",
                         autocomplete: "string",
                         classes: "govuk-!-width-one-third",
-                        errorMessage: errorText,
+                        errorMessage: otherErrorText,
                         label: {
                             text: "Please enter the reason for this calculation"
                         }
@@ -86,6 +90,7 @@
                     hint: {
                         text: "Select a reason for the calculation."
                     },
+                    errorMessage: errorMessageText,
                     items: buttons,
                     value: otherValueId
                 }) }}
