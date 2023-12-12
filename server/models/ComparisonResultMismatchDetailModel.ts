@@ -30,7 +30,7 @@ export default class ComparisonResultMismatchDetailModel {
     )
     this.activeSexOffender = this.isActiveSexOffender(comparisonPerson)
 
-    this.sdsPlusOffences = comparisonPerson.sdsSentencesIdentified?.join('</br>')
+    this.sdsPlusOffences = this.getSdsSentenceCaseAndCount(comparisonPerson)
 
     this.mismatchType = comparisonPerson.mismatchType
 
@@ -237,5 +237,17 @@ export default class ComparisonResultMismatchDetailModel {
     }
 
     return comparisonPerson.isActiveSexOffender ? 'Yes' : 'No'
+  }
+
+  private getSdsSentenceCaseAndCount(comparisonPerson: ComparisonPersonOverview) {
+    let sdsCaseAndCountText = ''
+    if (comparisonPerson.sdsSentencesIdentified !== null) {
+      const caseAndCountList: string[] = []
+      comparisonPerson.sdsSentencesIdentified.forEach(sdsSentence => {
+        caseAndCountList.push(`Court case ${sdsSentence.caseSequence}, count ${sdsSentence.lineSequence}`)
+      })
+      sdsCaseAndCountText = caseAndCountList.join('</br>')
+    }
+    return sdsCaseAndCountText
   }
 }
