@@ -112,7 +112,9 @@
                 ]
             }) }}
 
-            {% include "./releaseDatesMismatchTable.njk" %}
+            {% if bulkComparison.mismatchType !== 'UNSUPPORTED_SENTENCE_TYPE' %}
+                {% include "./releaseDatesMismatchTable.njk" %}
+            {% endif %}
 
             {% include "./recordDiscrepencyPanel.njk" %}
 
