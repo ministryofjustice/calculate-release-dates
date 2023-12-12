@@ -16,6 +16,8 @@ export default class ComparisonResultMismatchDetailModel {
 
   activeSexOffender?: string
 
+  sdsPlusOffences?: string
+
   mismatchType: string
 
   constructor(comparisonPerson: ComparisonPersonOverview) {
@@ -27,7 +29,11 @@ export default class ComparisonResultMismatchDetailModel {
       comparisonPerson.breakdownByReleaseDateType
     )
     this.activeSexOffender = this.isActiveSexOffender(comparisonPerson)
+
+    this.sdsPlusOffences = this.getSdsSentenceCaseAndCount(comparisonPerson)
+
     this.mismatchType = comparisonPerson.mismatchType
+
     this.dates = [
       this.createDateRow(
         'SED',
@@ -231,5 +237,17 @@ export default class ComparisonResultMismatchDetailModel {
     }
 
     return comparisonPerson.isActiveSexOffender ? 'Yes' : 'No'
+  }
+
+  private getSdsSentenceCaseAndCount(comparisonPerson: ComparisonPersonOverview) {
+    let sdsCaseAndCountText = ''
+    if (comparisonPerson.sdsSentencesIdentified !== null) {
+      const caseAndCountList: string[] = []
+      comparisonPerson.sdsSentencesIdentified.forEach(sdsSentence => {
+        caseAndCountList.push(`Court case ${sdsSentence.caseSequence}, count ${sdsSentence.lineSequence}`)
+      })
+      sdsCaseAndCountText = caseAndCountList.join('</br>')
+    }
+    return sdsCaseAndCountText
   }
 }
