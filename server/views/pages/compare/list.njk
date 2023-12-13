@@ -1,9 +1,15 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% from "./list/comparisonListItem.njk" import comparisonListItem %}
+{% from "./list/comparisonListItem.njk" import noUserItems %}
+{% from "./list/comparisonListItem.njk" import noOtherItems %}
 
 {% set pageTitle = applicationName + " - Compare Release Dates" %}
 {% set pageId = "compare" %}
-
 
 {% block beforeContent %}
     {{ super() }}
@@ -27,24 +33,84 @@
     </nav>
 {% endblock %}
 
-{% block content %}
 
+{% block javascripts %}
+    <script src="/assets/accessible-autocomplete.min.js"></script>
+    <script id="autocomplete-script" src="/assets/js/autoCompletePrisonName.js"></script>
+{% endblock %}
+
+{% set otherComparisonsList %}
+    <ul class="gem-c-document-list gem-c-document-list--no-underline gem-c-document-list--no-top-border-first-child">
+        {% for comparison in otherComparisons %}
+            {{ comparisonListItem(comparison, true) }}
+        {% endfor %}
+        {% if otherComparisons.length == 0 %}
+            {{ noOtherItems() }}
+        {% endif %}
+     </ul>
+{% endset -%}
+
+{% set userComparisonsList %}
+    <ul class="gem-c-document-list gem-c-document-list--no-underline gem-c-document-list--no-top-border-first-child">
+        {% for comparison in userComparisons %}
+            {{ comparisonListItem(comparison, true) }}
+        {% endfor %}
+        {% if userComparisonsList.length == 0 %}
+            {{ noUserItems() }}
+        {% endif %}
+    </ul>
+{% endset -%}
+
+
+{% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Bulk Comparisons</h1>
-            <ul class="gem-c-document-list gem-c-document-list--no-underline">
-                {% for comparison in comparisons %}
-                    <li class="gem-c-document-list__item">
-                        <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/{{ comparison.comparisonShortReference }}">{{ comparison.prisonName }} - {{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
-                        <p class="gem-c-document-list__item-description ">
-                            {{ comparison.calculatedBy }} ( {{ comparison.numberOfMismatches }} mismatches from {{ comparison.numberOfPeopleCompared }} results)
-                        </p>
-                    </li>
-                {% endfor %}
+               <h3 class="govuk-heading-m">Filter comparisons by prison</h3>
+            <div class="govuk-grid-row">
 
-            </ul>
+                <form action="" class="form-inline">
+                <div class="govuk-grid-column-two-thirds">
+                    {{ govukSelect({
+                        id: "prison-name",
+                        name: "prisonName",
+                        items: prisons
+                    }) }}
+                </div>
+
+                <div class="govuk-grid-column-one-third">
+                    {{ govukButton({
+                      text: "Filter",
+                      classes: "govuk-button--primary"
+                    }) }}
+                 </form>
+                 <form action="" class="form-inline">
+                    {{ govukButton({
+                       text: "Clear",
+                       classes: "govuk-button--secondary"
+                    }) }}</form>
+                </div>
+            </div>
+
+            {{ govukTabs({
+              items: [
+                {
+                  label: "Your Comparisons",
+                  id: "your-comparisons",
+                  panel: {
+                    html: userComparisonsList
+                  }
+                },
+                {
+                  label: "Other's Comparisons",
+                  id: "other-comparisons",
+                  panel: {
+                    html: otherComparisonsList
+                  }
+                }
+              ]
+              })
+            }}
         </div>
     </div>
-
-
 {% endblock %}

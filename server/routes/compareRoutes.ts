@@ -49,31 +49,59 @@ export default class CompareRoutes {
       allowBulkComparison,
       caseloadRadios,
     })
-    return
   }
 
   public list: RequestHandler = async (req, res) => {
-    const { userRoles, token, caseloadMap } = res.locals.user
+    const { userRoles, token, caseloadMap, username } = res.locals.user
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
     const prisonComparisons = await this.comparisonService.getPrisonComparisons(token)
     const comparisons = prisonComparisons.map(comparison => new ListComparisonViewModel(comparison, caseloadMap))
+    let sortedComparisons = Array.from(comparisons).sort(function (a, b) {
+      return new Date(b.calculatedAt).valueOf() - new Date(a.calculatedAt).valueOf()
+    })
+
+    const inputPrison = req.query.prisonName
+
+    if (inputPrison) {
+      sortedComparisons = sortedComparisons.filter(comparison => comparison.prisonName == inputPrison)
+    }
+
+    const prisonsArray = [...new Set(comparisons.map(comparison => comparison.prisonName))]
+    const prisons = prisonsArray.map(prisonString => ({
+      value: prisonString,
+      text: prisonString,
+      selected: prisonString == inputPrison,
+    }))
+    prisons.unshift({
+      text: '',
+      value: '',
+      selected: false,
+    })
+    const userComparisons = sortedComparisons.filter(comparison => comparison.calculatedBy == username)
+    const otherComparisons = sortedComparisons.filter(comparison => comparison.calculatedBy !== username)
     res.render('pages/compare/list', {
       allowBulkComparison,
-      comparisons,
+      otherComparisons,
+      userComparisons,
+      prisons,
     })
-    return
   }
 
   public manual_list: RequestHandler = async (req, res) => {
-    const { userRoles, token, caseloadMap } = res.locals.user
+    const { userRoles, token, caseloadMap, username } = res.locals.user
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
     const manualComparisons = await this.comparisonService.getManualComparisons(token)
     const comparisons = manualComparisons.map(comparison => new ListComparisonViewModel(comparison, caseloadMap))
+    const sortedComparisons = Array.from(comparisons).sort(function (a, b) {
+      return new Date(b.calculatedAt).valueOf() - new Date(a.calculatedAt).valueOf()
+    })
+    const userComparisons = sortedComparisons.filter(comparison => comparison.calculatedBy == username)
+    const otherComparisons = sortedComparisons.filter(comparison => comparison.calculatedBy !== username)
     res.render('pages/compare/manualList', {
       allowBulkComparison,
-      comparisons,
+      otherComparisons,
+      userComparisons,
     })
-    return
   }
 
   public result: RequestHandler = async (req, res) => {

@@ -1,0 +1,25 @@
+{% macro comparisonListItem(comparison, includePrison=true) %}
+            <li class="gem-c-document-list__item">
+                <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/{{ comparison.comparisonShortReference }}">{% if includePrison %}{{ comparison.prisonName }} - {% endif %}{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
+                <p class="gem-c-document-list__item-description ">
+                     {{ comparison.numberOfMismatches }} mismatches from {{ comparison.numberOfPeopleCompared }} results
+                </p>
+                <p class="govuk-body-s"><time datetime="{{ comparison.calculatedAt | date('YYYY-MM-DD') }}">{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</time> by {{ comparison.calculatedBy }} </p>
+            </li>
+ {% endmacro %}
+
+
+{% macro noUserItems() %}
+
+            <li class="gem-c-document-list__item">
+                <p>No comparisons</p>
+            </li>
+ {% endmacro %}
+
+
+{% macro noOtherItems() %}
+            <li class="gem-c-document-list__item">
+                <p>No other users comparisons</p>
+            </li>
+ {% endmacro %}
+
