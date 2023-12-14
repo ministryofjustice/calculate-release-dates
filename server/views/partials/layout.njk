@@ -69,7 +69,12 @@
     {% endif %}
   {% endif %}
 
+
+  {% block javascripts %}
+  {% endblock %}
+
 {% endblock %}
+
 
 {% block pageTitle %}{{pageTitle | default(applicationName)}}
 {% endblock %}

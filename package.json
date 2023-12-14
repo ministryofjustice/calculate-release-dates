@@ -7,7 +7,7 @@
   "scripts": {
     "prepare": "husky install",
     "copy-views": "cp -R server/views dist/server/",
-    "compile-sass": "sass -q --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend --load-path=node_modules/@ministryofjustice/frontend --load-path=. ./assets/sass/application.sass:./assets/stylesheets/application.css ./assets/sass/application-ie8.sass:./assets/stylesheets/application-ie8.css --style compressed",
+    "compile-sass": "sass -q --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend --load-path=node_modules/@ministryofjustice/frontend  --load-path=node_modules/accessible-autocomplete --load-path=. ./assets/sass/application.sass:./assets/stylesheets/application.css ./assets/sass/application-ie8.sass:./assets/stylesheets/application-ie8.css --style compressed",
     "watch-ts": "tsc -w",
     "watch-views": "nodemon --watch server/views -e html,njk -x npm run copy-views",
     "watch-node": "DEBUG=gov-starter-server* nodemon --watch dist/ dist/server.js | bunyan -o short",
@@ -86,6 +86,7 @@
   },
   "dependencies": {
     "@ministryofjustice/frontend": "^1.8.0",
+    "accessible-autocomplete": "^2.0.4",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.7.3",
     "body-parser": "^1.20.2",
