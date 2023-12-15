@@ -44,10 +44,19 @@ export default class CompareRoutes {
   public choose: RequestHandler = async (req, res) => {
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
     const usersCaseload = await this.prisonerService.getUsersCaseloads(res.locals.user.username, res.locals.user.token)
-    const caseloadRadios = usersCaseload.map(caseload => ({ text: caseload.description, value: caseload.caseLoadId }))
+    const caseloadItems = usersCaseload.map(caseload => ({ text: caseload.description, value: caseload.caseLoadId }))
+
+    caseloadItems.unshift({
+      text: '',
+      value: '',
+    })
+
+    let errorMessage = ''
+
     res.render('pages/compare/choosePrison', {
       allowBulkComparison,
-      caseloadRadios,
+      caseloadItems,
+      errorMessage,
     })
   }
 
