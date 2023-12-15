@@ -1,33 +1,52 @@
 {% extends "../../partials/layout.njk" %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
 {% set pageTitle = applicationName + " - Compare Release Dates" %}
 {% set pageId = "compare" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBreadcrumbs({
+            items: [
+                {
+                    text: "Home",
+                    href: "/"
+                },
+                {
+                    text: "Bulk Compare",
+                    href: "/compare/"
+                }
+            ]
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/assets/accessible-autocomplete.min.js"></script>
+    <script id="autocomplete-script" src="/assets/js/autoCompletePrisonName.js"></script>
+{% endblock %}
 
 {% block content %}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form class="form" method="post" action="/compare/run">
-                <h1 class="govuk-heading-xl"></h1>
+                <h1 class="govuk-heading-xl">Select Prison for Report</h1>
 
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-
-                {{ govukRadios({
+                {{ govukSelect({
                     name: "selectedOMU",
-                    fieldset: {
-                        legend: {
-                            text: "Which Offender Management (OMU) do you want to perform a bulk comparison for?",
+                    id: "prison-name",
+                    label: {
+                            text: "Start typing the Offender Management (OMU) you want to perform a bulk comparison for?",
                             isPageHeading: true,
                             classes: "govuk-fieldset__legend--xl"
-                        }
                     },
-                    items: caseloadRadios,
-                    errorMessage: {
-                        text: "Please choose an Offender Management Unit"
-                    }
+                    items: caseloadItems
                 }) }}
 
                 {{ govukButton({
