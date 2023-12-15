@@ -144,7 +144,7 @@ const formatComparisonType = (comparisonType: ComparisonType) => {
     case ComparisonType.ESTABLISHMENT_FULL:
       return 'Full'
     case ComparisonType.ESTABLISHMENT_HDCED4PLUS:
-      return 'HDC4+'
+      return 'HDCED4+'
     case ComparisonType.MANUAL:
       return 'Manual'
     default:

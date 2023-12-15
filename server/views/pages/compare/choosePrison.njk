@@ -43,9 +43,8 @@
                     name: "selectedOMU",
                     id: "prison-name",
                     label: {
-                            text: "Start typing the Offender Management (OMU) you want to perform a bulk comparison for?",
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--xl"
+                        text: "Start typing the Offender Management (OMU) you want to perform a bulk comparison for",
+                        classes: "govuk-label--m"
                     },
                     items: caseloadItems
                 }) }}
@@ -55,16 +54,13 @@
                     fieldset: {
                         legend: {
                             text: "What type of bulk comparison should be run?",
-                            classes: "govuk-fieldset__legend--l"
+                            classes: "govuk-fieldset__legend--m"
                         }
                     },
                     items: [
-                        { text: ComparisonType.ESTABLISHMENT_FULL | formatComparisonType, value: ComparisonType.ESTABLISHMENT_FULL },
+                        { text: ComparisonType.ESTABLISHMENT_FULL | formatComparisonType, value: ComparisonType.ESTABLISHMENT_FULL, checked: true },
                         { text: ComparisonType.ESTABLISHMENT_HDCED4PLUS | formatComparisonType, value: ComparisonType.ESTABLISHMENT_HDCED4PLUS }
-                    ],
-                    errorMessage: {
-                        text: "Please choose a comparison type"
-                    }
+                    ]
                 }) }}
 
                 {{ govukButton({
