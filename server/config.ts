@@ -125,5 +125,6 @@ export default {
     nonFridayReleasePolicyStartDate: dayjs(get('NON_FRIDAY_RELEASE_START_DATE', '2023-10-26')),
     changesSinceLastCalculation: get('CHANGES_SINCE_LAST_CALCULATION', false) === 'true',
     calculationReasonToggle: get('CALCULATION_REASON_TOGGLE', false) === 'true',
+    hdc4ComparisonTabEnabled: get('HD4_COMPARISON_TAB_ENABLED', false) === 'true',
   },
 }

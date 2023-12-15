@@ -31,5 +31,6 @@ generic-service:
     CHANGES_SINCE_LAST_CALCULATION: "true"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     CALCULATION_REASON_TOGGLE: "false"
+    HD4_COMPARISON_TAB_ENABLED: "false"
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
