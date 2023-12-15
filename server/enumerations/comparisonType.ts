@@ -1,0 +1,7 @@
+enum CalculationRule {
+  ESTABLISHMENT_FULL = 'ESTABLISHMENT_FULL',
+  ESTABLISHMENT_HDCED4PLUS = 'ESTABLISHMENT_HDCED4PLUS',
+  MANUAL = 'MANUAL',
+}
+
+export default CalculationRule

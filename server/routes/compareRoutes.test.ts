@@ -4,6 +4,7 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import UserPermissionsService from '../services/userPermissionsService'
 import ComparisonService from '../services/comparisonService'
 import { Comparison, ComparisonOverview } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ComparisonType from '../enumerations/comparisonType'
 
 let app: Express
 
@@ -25,7 +26,7 @@ afterEach(() => {
 const comparison = {
   comparisonShortReference: 'ABC123',
   criteria: {},
-  manualInput: true,
+  comparisonType: ComparisonType.MANUAL,
   calculatedAt: '2023-10-20T08:19:39.800Z',
   numberOfPeopleCompared: 10,
 } as Comparison
