@@ -2,6 +2,7 @@
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
 {% set pageTitle = applicationName + " - Compare Release Dates" %}
@@ -47,6 +48,23 @@
                             classes: "govuk-fieldset__legend--xl"
                     },
                     items: caseloadItems
+                }) }}
+
+                {{ govukRadios({
+                    name: "comparisonType",
+                    fieldset: {
+                        legend: {
+                            text: "What type of bulk comparison should be run?",
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                        { text: ComparisonType.ESTABLISHMENT_FULL | formatComparisonType, value: ComparisonType.ESTABLISHMENT_FULL },
+                        { text: ComparisonType.ESTABLISHMENT_HDCED4PLUS | formatComparisonType, value: ComparisonType.ESTABLISHMENT_HDCED4PLUS }
+                    ],
+                    errorMessage: {
+                        text: "Please choose a comparison type"
+                    }
                 }) }}
 
                 {{ govukButton({

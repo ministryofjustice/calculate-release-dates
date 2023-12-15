@@ -1,7 +1,7 @@
-enum CalculationRule {
+enum ComparisonType {
   ESTABLISHMENT_FULL = 'ESTABLISHMENT_FULL',
   ESTABLISHMENT_HDCED4PLUS = 'ESTABLISHMENT_HDCED4PLUS',
   MANUAL = 'MANUAL',
 }
 
-export default CalculationRule
+export default ComparisonType

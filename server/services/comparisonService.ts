@@ -5,10 +5,15 @@ import type {
   ComparisonSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import ComparisonType from '../enumerations/comparisonType'
 
 export default class ComparisonService {
-  async createPrisonComparison(selectedOMU: string, token: string): Promise<Comparison> {
-    return new CalculateReleaseDatesApiClient(token).createPrisonComparison(selectedOMU)
+  async createPrisonComparison(
+    selectedOMU: string,
+    comparisonType: ComparisonType,
+    token: string
+  ): Promise<Comparison> {
+    return new CalculateReleaseDatesApiClient(token).createPrisonComparison(selectedOMU, comparisonType)
   }
 
   async getPrisonComparison(bulkComparisonId: string, token: string): Promise<ComparisonOverview> {

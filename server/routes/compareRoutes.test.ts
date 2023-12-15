@@ -33,6 +33,7 @@ const comparison = {
 
 const comparisonOverview = {
   comparisonShortReference: comparison.comparisonShortReference,
+  comparisonType: ComparisonType.MANUAL,
   calculatedAt: comparison.calculatedAt,
   numberOfPeopleCompared: 10,
   numberOfMismatches: 0,

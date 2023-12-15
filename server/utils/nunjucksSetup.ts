@@ -4,6 +4,7 @@ import express from 'express'
 import * as pathModule from 'path'
 import config from '../config'
 import applicationVersion from '../applicationVersion'
+import ComparisonType from '../enumerations/comparisonType'
 
 // TODO the use of nunjucks-date-filter is raising a deprecation warning, some dates are in this format 12/12/2030 ->
 // Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable
@@ -60,6 +61,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   njkEnv.addGlobal('authUrl', config.apis.hmppsAuth.url)
   njkEnv.addGlobal('featureToggles', config.featureToggles)
   njkEnv.addGlobal('digitalPrisonServicesUrl', config.apis.digitalPrisonServices.ui_url)
+  njkEnv.addGlobal('ComparisonType', ComparisonType)
 
   njkEnv.addFilter('initialiseName', (fullName: string) => {
     // this check is for the authError page
@@ -99,6 +101,10 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
       ? currency.toLocaleString(undefined, { style: 'currency', currency: 'GBP' })
       : ''
   })
+
+  njkEnv.addFilter('formatComparisonType', comparisonType => {
+    return formatComparisonType(comparisonType)
+  })
 }
 
 const getReleaseDateType = (dates: { [key: string]: unknown }): string => {
@@ -131,4 +137,17 @@ const getExpiryDateType = (dates: { [key: string]: unknown }): string => {
     return 'SED'
   }
   throw Error(`Couldn't find expiry date from dates map ${Object.keys(dates)}`)
+}
+
+const formatComparisonType = (comparisonType: ComparisonType) => {
+  switch (comparisonType) {
+    case ComparisonType.ESTABLISHMENT_FULL:
+      return 'Full'
+    case ComparisonType.ESTABLISHMENT_HDCED4PLUS:
+      return 'HDC4+'
+    case ComparisonType.MANUAL:
+      return 'Manual'
+    default:
+      throw Error(`Comparison type ${comparisonType} not recognised`)
+  }
 }

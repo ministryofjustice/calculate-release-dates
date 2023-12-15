@@ -27,6 +27,7 @@ import {
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
 import ManualCalculationResponse from '../models/ManualCalculationResponse'
+import ComparisonType from '../enumerations/comparisonType'
 
 export default class CalculateReleaseDatesApiClient {
   restClient: RestClient
@@ -189,10 +190,10 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({ path: `/non-friday-release/${date}` }) as Promise<NonFridayReleaseDay>
   }
 
-  createPrisonComparison(prison: string): Promise<Comparison> {
+  createPrisonComparison(prison: string, comparisonType: ComparisonType): Promise<Comparison> {
     return this.restClient.post({
       path: '/comparison',
-      data: { criteria: {}, prison },
+      data: { criteria: {}, prison, comparisonType },
     }) as Promise<Comparison>
   }
 
