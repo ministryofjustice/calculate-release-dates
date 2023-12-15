@@ -1,5 +1,6 @@
 import type { ComparisonOverview } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonResultMismatch from './ComparisonResultMismatch'
+import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
 
 export default class ComparisonResultOverviewModel {
@@ -23,6 +24,8 @@ export default class ComparisonResultOverviewModel {
 
   validationErrorMismatches: ComparisonResultMismatch[]
 
+  validationHdc4PlusMismatches: ComparisonResultMismatch[]
+
   status: string
 
   constructor(comparison: ComparisonOverview, prisons: Map<string, string>) {
@@ -44,8 +47,19 @@ export default class ComparisonResultOverviewModel {
       .filter(mismatch => mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE')
       .sort((a, b) => a.personId.localeCompare(b.personId))
       .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, isManual))
+
+    const validationErrorMismatchTypes = ['VALIDATION_ERROR']
+    if (config.featureToggles.hdc4ComparisonTabEnabled) {
+      this.validationHdc4PlusMismatches = comparison.mismatches
+        .filter(mismatch => mismatch.misMatchType === 'VALIDATION_ERROR_HDC4_PLUS')
+        .sort((a, b) => a.personId.localeCompare(b.personId))
+        .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, isManual))
+    } else {
+      validationErrorMismatchTypes.push('VALIDATION_ERROR_HDC4_PLUS')
+    }
+
     this.validationErrorMismatches = comparison.mismatches
-      .filter(mismatch => mismatch.misMatchType === 'VALIDATION_ERROR')
+      .filter(mismatch => validationErrorMismatchTypes.includes(mismatch.misMatchType))
       .sort((a, b) => a.personId.localeCompare(b.personId))
       .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, isManual))
     this.status = comparison.status

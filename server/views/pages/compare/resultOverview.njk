@@ -36,7 +36,7 @@
 
 {% block content %}
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-xl">Bulk Comparison Results</h1>
 
             {% if comparison.status === 'PROCESSING' %}
@@ -50,57 +50,71 @@
             {% endif %}
 
             <h3 class="govuk-heading-m">Overview</h3>
-            {{ govukSummaryList({
-                rows: [
-                    {
-                        key: {
-                            text: "Prison"
-                        },
-                        value: {
-                            text: comparison.prisonName
-                        }
+            {% set rows = [
+                {
+                    key: {
+                        text: "Prison"
                     },
-                    {
-                        key: {
-                            text: "Comparison type"
-                        },
-                        value: {
-                            text: comparison.comparisonType | formatComparisonType
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Bulk Calculation by"
-                        },
-                        value: {
-                            text: comparison.calculatedBy
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Bulk Calculation on"
-                        },
-                        value: {
-                            text: comparison.calculatedAt | date('DD MMMM YYYY')
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Comparisons Performed"
-                        },
-                        value: {
-                            text: comparison.numberOfPeopleCompared
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Anomalies Found"
-                        },
-                        value: {
-                            text: comparison.numberOfMismatches
-                        }
+                    value: {
+                        text: comparison.prisonName
                     }
-                ]
+                },
+                {
+                    key: {
+                        text: "Comparison type"
+                    },
+                    value: {
+                        text: comparison.comparisonType | formatComparisonType
+                    }
+                },
+                {
+                    key: {
+                      text: "Bulk Calculation by"
+                    },
+                    value: {
+                      text: comparison.calculatedBy
+                    }
+                },
+                {
+                    key: {
+                        text: "Bulk Calculation on"
+                    },
+                    value: {
+                        text: comparison.calculatedAt | date('DD MMMM YYYY')
+                    }
+                },
+                {
+                    key: {
+                        text: "Comparisons Performed"
+                    },
+                    value: {
+                        text: comparison.numberOfPeopleCompared
+                    }
+                },
+                {
+                    key: {
+                        text: "Anomalies Found"
+                    },
+                    value: {
+                        text: comparison.numberOfMismatches
+                    }
+                }
+            ] %}
+
+            {% if featureToggles.hdc4ComparisonTabEnabled %}
+                {% set rows = (rows.push(
+                    {
+                        key: {
+                            text: "Potential HDC4+ count"
+                        },
+                        value: {
+                            text: comparison.validationHdc4PlusMismatches.length
+                        }
+                    }), rows) %}
+            {% endif %}
+
+            {{ govukSummaryList({
+                rows: rows
             }) }}
 
             <h3 class="govuk-heading-m">Results</h3>
@@ -119,6 +133,12 @@
             {% set validationErrorHtml %}
                 {{ govukSummaryList({
                     rows: comparison.validationErrorMismatches
+                }) }}
+            {% endset -%}
+
+            {% set validationErrorHdc4PlusHtml %}
+                {{ govukSummaryList({
+                    rows: comparison.validationHdc4PlusMismatches
                 }) }}
             {% endset -%}
 
@@ -149,6 +169,16 @@
                     id: "validation-error",
                     panel: {
                         html: validationErrorHtml
+                    }
+                }), tabs) %}
+            {% endif %}
+
+            {% if featureToggles.hdc4ComparisonTabEnabled and comparison.validationHdc4PlusMismatches.length %}
+                {% set tabs = (tabs.push({
+                    label: "Potential HDC4+",
+                    id: "validation-error-hdc4-plus",
+                    panel: {
+                        html: validationErrorHdc4PlusHtml
                     }
                 }), tabs) %}
             {% endif %}

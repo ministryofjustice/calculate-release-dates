@@ -558,7 +558,12 @@ export interface components {
       validationMessages: components['schemas']['ValidationMessage'][]
       shortReference: string
       /** @enum {string} */
-      misMatchType: 'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE'
+      misMatchType:
+        | 'NONE'
+        | 'RELEASE_DATES_MISMATCH'
+        | 'VALIDATION_ERROR'
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'VALIDATION_ERROR_HDC4_PLUS'
     }
     ComparisonOverview: {
       comparisonShortReference: string
@@ -580,7 +585,12 @@ export interface components {
       isValid: boolean
       isMatch: boolean
       /** @enum {string} */
-      mismatchType: 'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE'
+      mismatchType:
+        | 'NONE'
+        | 'RELEASE_DATES_MISMATCH'
+        | 'VALIDATION_ERROR'
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'VALIDATION_ERROR_HDC4_PLUS'
       isActiveSexOffender?: boolean
       validationMessages: components['schemas']['ValidationMessage'][]
       shortReference: string
