@@ -1,10 +1,13 @@
 import type { ComparisonOverview } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonResultMismatch from './ComparisonResultMismatch'
+import ComparisonType from '../enumerations/comparisonType'
 
 export default class ComparisonResultOverviewModel {
   comparisonShortReference: string
 
   prisonName: string
+
+  comparisonType: ComparisonType
 
   calculatedAt: string
 
@@ -22,11 +25,13 @@ export default class ComparisonResultOverviewModel {
 
   status: string
 
-  constructor(comparison: ComparisonOverview, prisons: Map<string, string>, isManual: boolean) {
+  constructor(comparison: ComparisonOverview, prisons: Map<string, string>) {
+    const isManual = comparison.comparisonType === ComparisonType.MANUAL
     this.comparisonShortReference = comparison.comparisonShortReference
     if (!isManual) {
       this.prisonName = prisons.get(comparison.prison) ?? comparison.prison
     }
+    this.comparisonType = comparison.comparisonType as ComparisonType
     this.calculatedAt = comparison.calculatedAt
     this.calculatedBy = comparison.calculatedByUsername
     this.numberOfMismatches = comparison.numberOfMismatches

@@ -372,6 +372,11 @@ export interface components {
       criteria?: components['schemas']['JsonNode']
       /** @description The prison the analysis was run against */
       prison?: string
+      /**
+       * @description The type of comparison that was run
+       * @enum {string}
+       */
+      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
     }
     /** @description Criteria */
     JsonNode: Record<string, never>
@@ -379,7 +384,8 @@ export interface components {
       comparisonShortReference: string
       criteria: components['schemas']['JsonNode']
       prison?: string
-      manualInput: boolean
+      /** @enum {string} */
+      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
@@ -535,6 +541,8 @@ export interface components {
     ComparisonSummary: {
       comparisonShortReference: string
       prison?: string
+      /** @enum {string} */
+      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
@@ -555,6 +563,8 @@ export interface components {
     ComparisonOverview: {
       comparisonShortReference: string
       prison?: string
+      /** @enum {string} */
+      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string

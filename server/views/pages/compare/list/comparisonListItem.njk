@@ -1,8 +1,8 @@
 {% macro comparisonListItem(comparison, includePrison=true) %}
             <li class="gem-c-document-list__item">
-                <a class="gem-c-document-list__item-title govuk-link" href="/compare/result/{{ comparison.comparisonShortReference }}">{% if includePrison %}{{ comparison.prisonName }} - {% endif %}{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
+                <a class="gem-c-document-list__item-title govuk-link" href="/compare{{ '/manual' if comparison.comparisonType == ComparisonType.MANUAL }}/result/{{ comparison.comparisonShortReference }}">{% if includePrison %}{{ comparison.prisonName }} - {% endif %}{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
                 <p class="gem-c-document-list__item-description ">
-                     {{ comparison.numberOfMismatches }} mismatches from {{ comparison.numberOfPeopleCompared }} results
+                     {{ comparison.numberOfMismatches }} mismatches from {{ comparison.numberOfPeopleCompared }} results - {{ (comparison.comparisonType | formatComparisonType).toLowerCase() }} comparison
                 </p>
                 <p class="govuk-body-s"><time datetime="{{ comparison.calculatedAt | date('YYYY-MM-DD') }}">{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</time> by {{ comparison.calculatedBy }} </p>
             </li>

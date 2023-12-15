@@ -62,6 +62,14 @@
                     },
                     {
                         key: {
+                            text: "Comparison type"
+                        },
+                        value: {
+                            text: comparison.comparisonType | formatComparisonType
+                        }
+                    },
+                    {
+                        key: {
                             text: "Bulk Calculation by"
                         },
                         value: {
@@ -115,7 +123,7 @@
             {% endset -%}
 
             {% set tabs = [] %}
-            {% if comparison.releaseDateMismatches.length %}
+            {% if comparison.releaseDateMismatches.length and comparison.comparisonType != ComparisonType.ESTABLISHMENT_HDCED4PLUS %}
                 {% set tabs = (tabs.push({
                     label: "Release date mismatches",
                     id: "release-date-mismatch",
@@ -125,7 +133,7 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.unsupportedSentenceTypeMismatches.length %}
+            {% if comparison.unsupportedSentenceTypeMismatches.length and comparison.comparisonType != ComparisonType.ESTABLISHMENT_HDCED4PLUS %}
                 {% set tabs = (tabs.push({
                     label: "Unsupported sentence type",
                     id: "unsupported-sentence-type",

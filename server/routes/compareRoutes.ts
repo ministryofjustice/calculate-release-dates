@@ -120,7 +120,7 @@ export default class CompareRoutes {
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
     return res.render('pages/compare/resultOverview', {
       allowBulkComparison,
-      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap, false),
+      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap),
       bulkComparisonResultId,
     })
   }
@@ -132,15 +132,15 @@ export default class CompareRoutes {
     const allowManualComparison = this.bulkLoadService.allowManualComparison(userRoles)
     return res.render('pages/compare/manualResultOverview', {
       allowManualComparison,
-      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap, true),
+      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap),
       bulkComparisonResultId,
     })
   }
 
   public run: RequestHandler = async (req, res) => {
-    const { selectedOMU } = req.body
+    const { selectedOMU, comparisonType } = req.body
     const { token } = res.locals.user
-    const comparison = await this.comparisonService.createPrisonComparison(selectedOMU, token)
+    const comparison = await this.comparisonService.createPrisonComparison(selectedOMU, comparisonType, token)
     return res.redirect(`/compare/result/${comparison.comparisonShortReference}`)
   }
 
