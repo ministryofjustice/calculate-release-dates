@@ -36,16 +36,16 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form class="form" method="post" action="/compare/run">
-                <h1 class="govuk-heading-xl">Select Prison for Report</h1>
+                <h1 class="govuk-heading-xl">Select a Prison for Bulk Comparison</h1>
+
+
+                <h2 class="govuk-heading-m">Enter the prison name</h2>
 
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
                 {{ govukSelect({
                     name: "selectedOMU",
                     id: "prison-name",
-                    label: {
-                        text: "Start typing the Offender Management (OMU) you want to perform a bulk comparison for",
-                        classes: "govuk-label--m"
-                    },
+                    placeholder: "Start typing the name of the prison",
                     items: caseloadItems
                 }) }}
 
