@@ -32,7 +32,7 @@ generic-service:
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     CHANGES_SINCE_LAST_CALCULATION: "true"
     CALCULATION_REASON_TOGGLE: "false"
-    HD4_COMPARISON_TAB_ENABLED: "true"
+    HDC4_PLUS_COMPARISON_TAB_ENABLED: "true"
   # Switches off the allow list in the DEV env only.
   allowlist: null
 
