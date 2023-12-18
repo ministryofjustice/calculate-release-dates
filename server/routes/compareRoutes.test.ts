@@ -73,7 +73,7 @@ describe('Compare routes tests', () => {
       .redirects(1)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Bulk comparison eesults')
+        expect(res.text).toContain('Bulk comparison results')
       })
   })
 })
