@@ -1,4 +1,5 @@
 import { ComparisonMismatchSummary } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ComparisonType from '../enumerations/comparisonType'
 
 interface ActionItem {
   href: string
@@ -13,7 +14,11 @@ export default class ComparisonResultMismatch {
 
   actions: { items: ActionItem[] }
 
-  constructor(comparisonMismatchSummary: ComparisonMismatchSummary, comparisonId: string, isManual: boolean) {
+  constructor(
+    comparisonMismatchSummary: ComparisonMismatchSummary,
+    comparisonId: string,
+    comparisonType: ComparisonType
+  ) {
     this.key = { text: comparisonMismatchSummary.personId }
     let message = comparisonMismatchSummary.validationMessages
       .map(validationMessage => validationMessage.message)
@@ -24,18 +29,22 @@ export default class ComparisonResultMismatch {
     this.value = {
       text: message,
     }
-    let href = `/compare/result/${comparisonId}/detail/${comparisonMismatchSummary.shortReference}`
-    if (isManual) {
+    let href
+    if (comparisonType === ComparisonType.MANUAL) {
       href = `/compare/manual/result/${comparisonId}/detail/${comparisonMismatchSummary.shortReference}`
+    } else if (comparisonType !== ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
+      href = `/compare/result/${comparisonId}/detail/${comparisonMismatchSummary.shortReference}`
     }
-    this.actions = {
-      items: [
-        {
-          href,
-          text: 'view details',
-          visuallyHiddenText: 'name',
-        },
-      ],
+    if (href) {
+      this.actions = {
+        items: [
+          {
+            href,
+            text: 'view details',
+            visuallyHiddenText: 'name',
+          },
+        ],
+      }
     }
   }
 }

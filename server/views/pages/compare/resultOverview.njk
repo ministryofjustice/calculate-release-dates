@@ -143,7 +143,7 @@
             {% endset -%}
 
             {% set tabs = [] %}
-            {% if comparison.releaseDateMismatches.length and comparison.comparisonType != ComparisonType.ESTABLISHMENT_HDCED4PLUS %}
+            {% if comparison.releaseDateMismatches.length %}
                 {% set tabs = (tabs.push({
                     label: "Release date mismatches",
                     id: "release-date-mismatch",
@@ -153,7 +153,7 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.unsupportedSentenceTypeMismatches.length and comparison.comparisonType != ComparisonType.ESTABLISHMENT_HDCED4PLUS %}
+            {% if comparison.unsupportedSentenceTypeMismatches.length %}
                 {% set tabs = (tabs.push({
                     label: "Unsupported sentence type",
                     id: "unsupported-sentence-type",
