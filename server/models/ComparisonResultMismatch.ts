@@ -40,7 +40,7 @@ export default class ComparisonResultMismatch {
         items: [
           {
             href,
-            text: 'view details',
+            text: 'View details',
             visuallyHiddenText: 'name',
           },
         ],
