@@ -47,7 +47,10 @@ describe('Compare routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Perform bulk comparison of variations between offenders release dates')
+        expect(res.text).toContain(
+          'Identify and compare any differences in the release dates' +
+            ' calculated by staff, NOMIS and the Calculate release dates service.'
+        )
       })
   })
 
