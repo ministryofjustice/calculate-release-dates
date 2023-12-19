@@ -66,30 +66,27 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Bulk Comparisons</h1>
-               <h3 class="govuk-heading-m">Filter comparisons by prison</h3>
+            <h3 class="govuk-heading-m">Filter comparisons by prison</h3>
             <div class="govuk-grid-row">
 
                 <form action="" class="form-inline">
-                <div class="govuk-grid-column-two-thirds">
-                    {{ govukSelect({
-                        id: "prison-name",
-                        name: "prisonName",
-                        items: prisons
-                    }) }}
-                </div>
-
-                <div class="govuk-grid-column-one-third">
-                    {{ govukButton({
-                      text: "Filter",
-                      classes: "govuk-button--primary"
-                    }) }}
-                 </form>
-                 <form action="" class="form-inline">
-                    {{ govukButton({
-                       text: "Clear",
-                       classes: "govuk-button--secondary"
-                    }) }}</form>
-                </div>
+                    <div class="govuk-grid-column-two-thirds">
+                        {{ govukSelect({
+                            id: "prison-name",
+                            name: "prisonName",
+                            items: prisons
+                        }) }}
+                    </div>
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-button-group">
+                            {{ govukButton({
+                              text: "Filter",
+                              classes: "govuk-button--primary"
+                            }) }}
+                             <a href="/compare/list" type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">Clear</a>
+                        </div>
+                    </div>
+                </form>
             </div>
 
             {{ govukTabs({
