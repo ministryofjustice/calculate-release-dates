@@ -145,7 +145,7 @@
             {% set tabs = [] %}
             {% if comparison.releaseDateMismatches.length %}
                 {% set tabs = (tabs.push({
-                    label: "Release date mismatches",
+                    label: "Release date mismatches" + " ("+comparison.releaseDateMismatches.length + ")",
                     id: "release-date-mismatch",
                     panel: {
                         html: releaseDateMismatchHtml
@@ -155,7 +155,7 @@
 
             {% if comparison.unsupportedSentenceTypeMismatches.length %}
                 {% set tabs = (tabs.push({
-                    label: "Unsupported sentence type",
+                    label: "Unsupported sentence type" + " ("+comparison.unsupportedSentenceTypeMismatches.length + ")",
                     id: "unsupported-sentence-type",
                     panel: {
                         html: unsupportedSentenceTypeHtml
@@ -165,7 +165,7 @@
 
             {% if comparison.validationErrorMismatches.length %}
                 {% set tabs = (tabs.push({
-                    label: "Validation error",
+                    label: "Validation error" + " ("+comparison.validationErrorMismatches.length + ")",
                     id: "validation-error",
                     panel: {
                         html: validationErrorHtml
@@ -175,7 +175,7 @@
 
             {% if featureToggles.hdc4ComparisonTabEnabled and comparison.validationHdc4PlusMismatches.length %}
                 {% set tabs = (tabs.push({
-                    label: "Potential HDC4+",
+                    label: "Potential HDC4+" + " ("+comparison.validationHdc4PlusMismatches.length + ")",
                     id: "validation-error-hdc4-plus",
                     panel: {
                         html: validationErrorHdc4PlusHtml
