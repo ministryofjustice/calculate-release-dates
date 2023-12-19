@@ -73,10 +73,16 @@ export default class CheckInformationRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
     }
 
+    const calculationRequestModel = await this.calculateReleaseDatesService.getCalculationRequestModel(
+      req,
+      userInputs,
+      nomsId
+    )
+
     const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
       username,
       nomsId,
-      userInputs,
+      calculationRequestModel,
       token
     )
     return res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)

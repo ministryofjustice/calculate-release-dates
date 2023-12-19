@@ -5,6 +5,7 @@ import {
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
+  CalculationRequestModel,
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
@@ -15,7 +16,7 @@ import {
   GenuineOverride,
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,
-  ManualEntryDate,
+  ManualEntryRequest,
   NonFridayReleaseDay,
   SubmitCalculationRequest,
   ValidationMessage,
@@ -47,17 +48,23 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.post({ path: '/test/calculation-by-booking', data: booking }) as Promise<BookingCalculation>
   }
 
-  calculatePreliminaryReleaseDates(prisonerId: string, userInput: CalculationUserInputs): Promise<BookingCalculation> {
+  calculatePreliminaryReleaseDates(
+    prisonerId: string,
+    calculationRequestModel: CalculationRequestModel
+  ): Promise<BookingCalculation> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}`,
-      data: userInput || null,
+      data: calculationRequestModel || null,
     }) as Promise<BookingCalculation>
   }
 
-  calculateTestReleaseDates(prisonerId: string, userInput: CalculationUserInputs): Promise<CalculationResults> {
+  calculateTestReleaseDates(
+    prisonerId: string,
+    calculationRequestModel: CalculationRequestModel
+  ): Promise<CalculationResults> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}/test`,
-      data: userInput || null,
+      data: calculationRequestModel,
     }) as Promise<CalculationResults>
   }
 
@@ -164,10 +171,10 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<boolean>
   }
 
-  storeManualCalculation(nomsId: string, selectedManualEntryDates: ManualEntryDate[]) {
+  storeManualCalculation(nomsId: string, manualEntryRequest: ManualEntryRequest) {
     return this.restClient.post({
       path: `/manual-calculation/${nomsId}`,
-      data: { selectedManualEntryDates },
+      data: manualEntryRequest,
     }) as Promise<ManualCalculationResponse>
   }
 

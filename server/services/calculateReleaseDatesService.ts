@@ -1,10 +1,12 @@
 import dayjs from 'dayjs'
+import { Request } from 'express'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
   AnalyzedSentenceAndOffences,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
+  CalculationRequestModel,
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
@@ -38,19 +40,22 @@ export default class CalculateReleaseDatesService {
   async calculateTestReleaseDates(
     username: string,
     prisonerId: string,
-    userInput: CalculationUserInputs,
+    calculationRequestModel: CalculationRequestModel,
     token: string
   ): Promise<CalculationResults> {
-    return new CalculateReleaseDatesApiClient(token).calculateTestReleaseDates(prisonerId, userInput)
+    return new CalculateReleaseDatesApiClient(token).calculateTestReleaseDates(prisonerId, calculationRequestModel)
   }
 
   async calculatePreliminaryReleaseDates(
     username: string,
     prisonerId: string,
-    userInput: CalculationUserInputs,
+    calculationRequestModel: CalculationRequestModel,
     token: string
   ): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(prisonerId, userInput)
+    return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(
+      prisonerId,
+      calculationRequestModel
+    )
   }
 
   async getCalculationResults(
@@ -109,6 +114,18 @@ export default class CalculateReleaseDatesService {
         releaseDatesWithAdjustments: null,
       }
     }
+  }
+
+  async getCalculationRequestModel(
+    req: Request,
+    userInputs: CalculationUserInputs,
+    nomsId: string
+  ): Promise<CalculationRequestModel> {
+    return {
+      userInputs,
+      calculationReasonId: req.session.calculationReasonId[nomsId],
+      otherReasonDescription: req.session.otherReasonDescription[nomsId],
+    } as CalculationRequestModel
   }
 
   async getActiveAnalyzedSentencesAndOffences(

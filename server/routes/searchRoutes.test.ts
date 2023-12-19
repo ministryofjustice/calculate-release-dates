@@ -95,9 +95,10 @@ describe('GET Search routes for /search/prisoners', () => {
   })
 
   it('Should link to the reason page if enabled', () => {
-    config.featureToggles.calculationReasonToggle = true
-    prisonerService.getUsersCaseloads.mockResolvedValue([caseload])
     prisonerService.searchPrisoners.mockResolvedValue([prisoner])
+
+    config.featureToggles.calculationReasonToggle = true
+    app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService })
 
     return request(app)
       .get('/search/prisoners?prisonerIdentifier=A123456')

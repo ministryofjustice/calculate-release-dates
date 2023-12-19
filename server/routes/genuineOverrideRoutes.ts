@@ -13,6 +13,7 @@ import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
+  CalculationRequestModel,
   GenuineOverride,
   ManualEntryDate,
   SubmittedDate,
@@ -169,10 +170,17 @@ export default class GenuineOverrideRoutes {
       if (req.session.selectedManualEntryDates[calculation.prisonerId]) {
         req.session.selectedManualEntryDates[calculation.prisonerId] = []
       }
+
+      const calculationRequestModel = {
+        userInputs,
+        calculationReasonId: req.session.calculationReasonId[calculation.prisonerId],
+        otherReasonDescription: req.session.otherReasonDescription[calculation.prisonerId],
+      } as CalculationRequestModel
+
       const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
         username,
         calculation.prisonerId,
-        userInputs,
+        calculationRequestModel,
         token
       )
       return res.redirect(

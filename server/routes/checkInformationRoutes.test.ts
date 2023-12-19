@@ -583,6 +583,12 @@ describe('Check information routes tests', () => {
       bookingId: 123,
       calculationStatus: 'PRELIMINARY',
     })
+    calculateReleaseDatesService.getCalculationRequestModel.mockResolvedValue({
+      calculationReasonId: 1,
+      otherReasonDescription: 'other',
+      userInputs: stubbedUserInput,
+    })
+
     return request(app)
       .post('/calculation/A1234AA/check-information')
       .type('form')
@@ -599,7 +605,13 @@ describe('Check information routes tests', () => {
         expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
           expect.anything(),
           'A1234AA',
-          { ...stubbedUserInput, calculateErsed: true },
+          {
+            ...{
+              calculationReasonId: 1,
+              otherReasonDescription: 'other',
+              userInputs: { ...stubbedUserInput, calculateErsed: true },
+            },
+          },
           expect.anything()
         )
       })

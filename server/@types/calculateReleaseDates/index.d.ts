@@ -304,6 +304,11 @@ export interface components {
       /** @description Whether to use offence indicators from another system for the calculation or user's input. */
       useOffenceIndicators: boolean
     }
+    CalculationRequestModel: {
+      userInputs: CalculationUserInputs
+      calculationReasonId: number
+      otherReasonDescription: string
+    }
     /** @description Validation message details */
     ValidationMessage: {
       /**
@@ -478,6 +483,11 @@ export interface components {
     }
     ManualEntryDates: {
       selectedManualEntryDates: components['schemas']['ManualEntryDate'][]
+    }
+    ManualEntryRequest: {
+      manualEntryDates: components['schemas']['ManualEntryDates']
+      calculationReasonId: number
+      otherReasonDescription: string
     }
     GenuineOverrideDateRequest: {
       manualEntryRequest: components['schemas']['ManualEntryDates']
