@@ -712,4 +712,28 @@ export default {
       },
     })
   },
+  stubGetActiveCalculationReasons: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation-reasons/`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            id: 1,
+            displayName: 'A reason',
+            isOther: 'false',
+          },
+          {
+            id: 2,
+            displayName: 'Other',
+            isOther: 'true',
+          },
+        ],
+      },
+    })
+  },
 }

@@ -9,6 +9,7 @@ import SelectOffencesPage from '../pages/selectOffences'
 import ViewCalculationSummary from '../pages/viewCalculationSummary'
 import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
+import CalculationReasonPage from '../pages/reasonForCalculation'
 
 context('End to end happy path of user journey', () => {
   beforeEach(() => {
@@ -36,6 +37,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubCalculationUserInputs')
     cy.task('stubSupportedValidation')
     cy.task('stubGetGenuineOverride')
+    cy.task('stubGetActiveCalculationReasons')
   })
 
   it('Standalone user journey', () => {
@@ -46,6 +48,10 @@ context('End to end happy path of user journey', () => {
     const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
+
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.submitReason().click()
 
     const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
     alternativeReleaseIntro.continueButton().click()
@@ -79,6 +85,10 @@ context('End to end happy path of user journey', () => {
     cy.signIn()
     const indexPage = IndexPage.goTo('A1234AB')
     indexPage.startNowButton().click()
+
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.submitReason().click()
 
     const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
     alternativeReleaseIntro.continueButton().click()

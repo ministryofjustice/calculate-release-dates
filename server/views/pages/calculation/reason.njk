@@ -62,17 +62,19 @@
                         {% set buttons = (buttons.push(
                             {
                                 value: reason.id,
-                                  text: reason.displayName,
+                                text: reason.displayName,
                                 isOther: true,
                                 conditional: {
-                                html: otherReasonHtml }
+                                html: otherReasonHtml },
+                                attributes: {'data-qa': 'reasonRadio-'+reason.id}
                             }
                         ), buttons) %}
                     {% else %}
                         {% set buttons = (buttons.push(
                             {
                                 value: reason.id,
-                                text: reason.displayName
+                                text: reason.displayName,
+                                attributes: {'data-qa': 'reasonRadio-'+reason.id}
                             }
                         ), buttons) %}
                     {% endif %}
@@ -99,7 +101,7 @@
                     text: "Submit Reason",
                     type: submit,
                     preventDoubleClick: true,
-                    attributes: {  'data-qa': 'reasons' }
+                    attributes: {  'data-qa': 'submitReason' }
                 }) }}
             </form>
         </div>
