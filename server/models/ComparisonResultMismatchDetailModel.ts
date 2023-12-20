@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import {
   ComparisonPersonOverview,
   ReleaseDateCalculationBreakdown,
@@ -179,19 +180,20 @@ export default class ComparisonResultMismatchDetailModel {
         dateRow.push({
           html: this.displayMismatchLabel(
             key,
-            crdsDates[crdsDateKey] ?? crdsDates[key],
-            nomisDates[key],
-            overrideDates[key] ?? ''
+            this.formatDate(crdsDates[crdsDateKey] ?? crdsDates[key]),
+            this.formatDate(nomisDates[key]),
+            this.formatDate(overrideDates[key])
           ),
         })
       }
       dateRow.push(
-        { text: crdsDates[crdsDateKey] ?? crdsDates[key] ?? '' },
-        { text: nomisDates[key] ?? '' },
-        { text: overrideDates[key] ?? '' }
+        { text: this.formatDate(crdsDates[crdsDateKey] ?? crdsDates[key]) },
+        { text: this.formatDate(nomisDates[key]) },
+        { text: this.formatDate(overrideDates[key]) }
       )
       return dateRow
     }
+
     return undefined
   }
 
@@ -207,6 +209,10 @@ export default class ComparisonResultMismatchDetailModel {
       return this.matchLabel()
     }
     return this.mismatchLabel()
+  }
+
+  private formatDate(date: string) {
+    return date ? DateTime.fromISO(date).toFormat('dd-MM-yyyy') : ''
   }
 
   private matchLabel() {
