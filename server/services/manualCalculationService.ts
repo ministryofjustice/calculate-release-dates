@@ -4,6 +4,7 @@ import ManualCalculationResponse from '../models/ManualCalculationResponse'
 import {
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,
+  ManualEntryRequest,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ManualCalculationService {
@@ -12,10 +13,11 @@ export default class ManualCalculationService {
   }
 
   async storeManualCalculation(prisonerId: string, req: Request, token: string): Promise<ManualCalculationResponse> {
-    return new CalculateReleaseDatesApiClient(token).storeManualCalculation(
-      prisonerId,
-      req.session.selectedManualEntryDates[prisonerId]
-    )
+    return new CalculateReleaseDatesApiClient(token).storeManualCalculation(prisonerId, {
+      manualEntryDates: req.session.selectedManualEntryDates[prisonerId],
+      calculationReasonId: req.session.calculationReasonId[prisonerId],
+      otherReasonDescription: req.session.otherReasonDescription[prisonerId],
+    } as ManualEntryRequest)
   }
 
   async storeGenuineOverrideCalculation(

@@ -177,6 +177,11 @@ export default function Index({
     get('/schedule-15-list-d', calculationQuestionRoutes.offenceListD)
   }
 
+  const reasonRoutes = () => {
+    get('/calculation/:nomsId/reason', calculationQuestionRoutes.selectCalculationReason)
+    post('/calculation/:nomsId/reason', calculationQuestionRoutes.submitCalculationReason)
+  }
+
   const searchRoutes = () => {
     get('/search/prisoners', searchAccessRoutes.searchCalculatePrisoners)
     get('/view/search/prisoners', searchAccessRoutes.searchViewPrisoners)
@@ -274,6 +279,7 @@ export default function Index({
   indexRoutes()
   calculationRoutes()
   questionRoutes()
+  reasonRoutes()
   checkInformationRoutes()
   manualEntryRoutes()
   searchRoutes()

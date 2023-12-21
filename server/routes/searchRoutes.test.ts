@@ -6,6 +6,7 @@ import UserService from '../services/userService'
 import { PrisonApiUserCaseloads } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { Prisoner } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -90,6 +91,21 @@ describe('GET Search routes for /search/prisoners', () => {
       .expect(res => {
         expect(res.text).toContain('A123456')
         expect(res.text).not.toContain('There are no matching results')
+      })
+  })
+
+  it('Should link to the reason page if enabled', () => {
+    prisonerService.searchPrisoners.mockResolvedValue([prisoner])
+
+    config.featureToggles.calculationReasonToggle = true
+    app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService })
+
+    return request(app)
+      .get('/search/prisoners?prisonerIdentifier=A123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('/calculation/A123456/reason')
       })
   })
 })

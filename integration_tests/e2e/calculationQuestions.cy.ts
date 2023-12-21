@@ -1,5 +1,6 @@
 import AlternativeReleaseIntroPage from '../pages/alternativeReleaseIntro'
 import SelectOffencesPage from '../pages/selectOffences'
+import CalculationReasonPage from '../pages/reasonForCalculation'
 
 context('Calculation questions page', () => {
   beforeEach(() => {
@@ -11,10 +12,16 @@ context('Calculation questions page', () => {
     cy.task('stubGetAnalyzedSentencesAndOffences')
     cy.task('stubGetUserCaseloads')
     cy.task('stubCalculationQuestions')
+    cy.task('stubGetActiveCalculationReasons')
   })
 
-  it('Visit alternative release intro page and test functionality', () => {
+  it('Visit alternative release intro page via the calculation reason page and test functionality', () => {
     cy.signIn()
+
+    cy.visit(`/calculation/A1234AB/alternative-release-arrangements`)
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.submitReason().click()
     const alternativeReleaseIntro = AlternativeReleaseIntroPage.goTo('A1234AB')
     alternativeReleaseIntro.continueButton().click()
 
@@ -49,9 +56,12 @@ context('Calculation questions page', () => {
       ) // Validation on not selecting anything
   })
 
-  it('Alternative release intro page is accessible', () => {
+  it('Alternative release intro page is accessible via the calculation reason page', () => {
     cy.signIn()
-    AlternativeReleaseIntroPage.goTo('A1234AB')
+    cy.visit(`/calculation/A1234AB/alternative-release-arrangements`)
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.submitReason().click()
     cy.injectAxe()
     cy.checkA11y()
   })
