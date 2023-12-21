@@ -216,15 +216,15 @@ export default class ComparisonResultMismatchDetailModel {
   }
 
   private matchLabel() {
-    return '<strong class="govuk-tag  govuk-tag--grey"> Match </strong>'
+    return '<strong class="govuk-tag govuk-tag--blue"> Match </strong>'
   }
 
   private mismatchLabel() {
-    return '<strong class="govuk-tag"> Mismatch </strong>'
+    return '<strong class="govuk-tag govuk-tag--red"> Mismatch </strong>'
   }
 
   private notApplicableLabel() {
-    return '<strong class="govuk-tag  govuk-tag--orange"> Not Applicable </strong>'
+    return '<strong class="govuk-tag govuk-tag--grey"> Not Applicable </strong>'
   }
 
   private isHdced14DayRule(
