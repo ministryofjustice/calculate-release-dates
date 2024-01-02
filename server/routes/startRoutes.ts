@@ -2,6 +2,7 @@ import { RequestHandler } from 'express'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import UserPermissionsService from '../services/userPermissionsService'
+import config from '../config'
 
 export default class StartRoutes {
   constructor(
@@ -18,7 +19,11 @@ export default class StartRoutes {
       this.entryPointService.setDpsEntrypointCookie(res, prisonId)
       const { username, caseloads, token } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, prisonId, caseloads, token)
-      return res.render('pages/index', { prisonId, prisonerDetail })
+      return res.render('pages/index', {
+        prisonId,
+        prisonerDetail,
+        reason: config.featureToggles.calculationReasonToggle,
+      })
     }
     const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
     this.entryPointService.setStandaloneEntrypointCookie(res)
