@@ -121,6 +121,10 @@ export default class CalculateReleaseDatesService {
     userInputs: CalculationUserInputs,
     nomsId: string
   ): Promise<CalculationRequestModel> {
+    if (req.session.calculationReasonId === undefined) {
+      req.session.calculationReasonId = {}
+      req.session.otherReasonDescription = {}
+    }
     return {
       userInputs,
       calculationReasonId: config.featureToggles.calculationReasonToggle ? req.session.calculationReasonId[nomsId] : '',
