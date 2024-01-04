@@ -122,7 +122,7 @@ export default class CalculateReleaseDatesService {
     nomsId: string
   ): Promise<CalculationRequestModel> {
     return {
-      userInputs,
+      calculationUserInputs: userInputs,
       calculationReasonId: config.featureToggles.calculationReasonToggle ? req.session.calculationReasonId[nomsId] : '',
       otherReasonDescription: config.featureToggles.calculationReasonToggle
         ? req.session.otherReasonDescription[nomsId]

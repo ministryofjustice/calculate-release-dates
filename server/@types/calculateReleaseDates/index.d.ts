@@ -305,7 +305,7 @@ export interface components {
       useOffenceIndicators: boolean
     }
     CalculationRequestModel: {
-      userInputs: CalculationUserInputs
+      calculationUserInputs: CalculationUserInputs
       calculationReasonId: number
       otherReasonDescription: string
     }

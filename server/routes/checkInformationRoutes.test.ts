@@ -586,7 +586,7 @@ describe('Check information routes tests', () => {
     calculateReleaseDatesService.getCalculationRequestModel.mockResolvedValue({
       calculationReasonId: 1,
       otherReasonDescription: 'other',
-      userInputs: stubbedUserInput,
+      calculationUserInputs: stubbedUserInput,
     })
 
     return request(app)

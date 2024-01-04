@@ -172,7 +172,7 @@ export default class GenuineOverrideRoutes {
       }
 
       const calculationRequestModel = {
-        userInputs,
+        calculationUserInputs: userInputs,
         calculationReasonId: req.session.calculationReasonId[calculation.prisonerId],
         otherReasonDescription: req.session.otherReasonDescription[calculation.prisonerId],
       } as CalculationRequestModel
