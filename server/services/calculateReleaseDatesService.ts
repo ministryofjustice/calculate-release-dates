@@ -52,11 +52,10 @@ export default class CalculateReleaseDatesService {
     calculationRequestModel: CalculationRequestModel,
     token: string
   ): Promise<BookingCalculation> {
-    const b = await new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(
+    return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(
       prisonerId,
       calculationRequestModel
     )
-    return b
   }
 
   async getCalculationResults(
