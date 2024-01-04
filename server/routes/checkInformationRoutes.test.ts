@@ -609,7 +609,7 @@ describe('Check information routes tests', () => {
             ...{
               calculationReasonId: 1,
               otherReasonDescription: 'other',
-              userInputs: { ...stubbedUserInput, calculateErsed: true },
+              calculationUserInputs: { ...stubbedUserInput, calculateErsed: true },
             },
           },
           expect.anything()
