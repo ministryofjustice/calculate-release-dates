@@ -75,6 +75,12 @@ export default class ComparisonResultMismatchDetailModel {
         'SLED'
       ),
       this.createDateRow(
+        'HDCED4PLUS',
+        comparisonPerson.crdsDates,
+        comparisonPerson.nomisDates,
+        comparisonPerson.overrideDates
+      ),
+      this.createDateRow(
         'HDCED',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,

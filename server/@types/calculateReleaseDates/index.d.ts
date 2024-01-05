@@ -574,6 +574,7 @@ export interface components {
         | 'VALIDATION_ERROR'
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'VALIDATION_ERROR_HDC4_PLUS'
+      hdcedFourPlusDate: string
     }
     ComparisonOverview: {
       comparisonShortReference: string
@@ -862,6 +863,8 @@ export interface components {
         | 'HDCED_GE_MIN_PERIOD_LT_MIDPOINT'
         | 'HDCED_GE_MIDPOINT_LT_MAX_PERIOD'
         | 'HDCED_MINIMUM_CUSTODIAL_PERIOD'
+        | 'CONSECUTIVE_SENTENCE_HDCED_MINIMUM_CUSTODIAL_PERIOD'
+        | 'CONSECUTIVE_SENTENCE_HDCED_MINIMUM_CUSTODIAL_PERIOD_LAST_SENTENCE_SDS'
         | 'TUSED_LICENCE_PERIOD_LT_1Y'
         | 'LED_CONSEC_ORA_AND_NON_ORA'
         | 'UNUSED_ADA'
