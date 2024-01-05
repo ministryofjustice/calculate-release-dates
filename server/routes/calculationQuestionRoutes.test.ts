@@ -436,7 +436,7 @@ describe('Calculation question routes tests', () => {
       .type('form')
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('The reason must be selected')
+        expect(res.text).toContain('You must select a reason for the calculation')
       })
   })
 
@@ -450,7 +450,7 @@ describe('Calculation question routes tests', () => {
       .send({ calculationReasonId: ['11'], otherReasonDescription: '' })
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('The other reason must not be empty.')
+        expect(res.text).toContain('You must enter a reason for the calculation')
       })
   })
 })

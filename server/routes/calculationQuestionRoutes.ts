@@ -226,7 +226,7 @@ export default class CalculationQuestionRoutes {
       return res.render('pages/calculation/reason', {
         reasons: calculationReasons,
         prisonerDetail,
-        errorMessage: { text: 'The reason must be selected.' },
+        errorMessage: { text: 'You must select a reason for the calculation' },
       })
     }
 
@@ -234,7 +234,7 @@ export default class CalculationQuestionRoutes {
       return res.render('pages/calculation/reason', {
         reasons: calculationReasons,
         prisonerDetail,
-        otherErrorMessage: { text: 'The other reason must not be empty.', id: otherId },
+        otherErrorMessage: { text: 'You must enter a reason for the calculation', id: otherId },
       })
     }
 

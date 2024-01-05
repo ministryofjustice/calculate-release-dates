@@ -50,7 +50,7 @@
                         classes: "govuk-!-width-one-third",
                         errorMessage: otherErrorText,
                         label: {
-                            text: "Please enter the reason for this calculation"
+                            text: "Enter the reason for the calculation"
                         }
                     }) }}
                 {% endset %}
@@ -84,13 +84,10 @@
                     name: 'calculationReasonId',
                     fieldset: {
                         legend: {
-                            text: "Why are you calculating release dates for " + prisonerDetail.firstName + " " + prisonerDetail.lastName +"?",
+                            text: "Select a reason for the calculation",
                             isPageHeading: true,
                             classes: "govuk-fieldset__legend--xl"
                         }
-                    },
-                    hint: {
-                        text: "Select a reason for the calculation."
                     },
                     errorMessage: errorMessageText,
                     items: buttons,
@@ -98,7 +95,7 @@
                 }) }}
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
                 {{ govukButton({
-                    text: "Submit Reason",
+                    text: "Continue",
                     type: submit,
                     preventDoubleClick: true,
                     attributes: {  'data-qa': 'submitReason' }
