@@ -142,8 +142,14 @@
                 }) }}
             {% endset -%}
 
+            {% set hdc4PlusHtml %}
+                {{ govukSummaryList({
+                    rows: comparison.hdced4PlusMismatches
+                }) }}
+            {% endset %}
+
             {% set tabs = [] %}
-            {% if comparison.releaseDateMismatches.length %}
+            {% if comparison.releaseDateMismatches.length and comparison.comparisonType !== 'ESTABLISHMENT_HDCED4PLUS' %}
                 {% set tabs = (tabs.push({
                     label: "Release date mismatches" + " ("+comparison.releaseDateMismatches.length + ")",
                     id: "release-date-mismatch",
@@ -153,7 +159,7 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.unsupportedSentenceTypeMismatches.length %}
+            {% if comparison.unsupportedSentenceTypeMismatches.length and comparison.comparisonType !== 'ESTABLISHMENT_HDCED4PLUS' %}
                 {% set tabs = (tabs.push({
                     label: "Unsupported sentence type" + " ("+comparison.unsupportedSentenceTypeMismatches.length + ")",
                     id: "unsupported-sentence-type",
@@ -163,7 +169,7 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.validationErrorMismatches.length %}
+            {% if comparison.validationErrorMismatches.length and comparison.comparisonType !== 'ESTABLISHMENT_HDCED4PLUS' %}
                 {% set tabs = (tabs.push({
                     label: "Validation error" + " ("+comparison.validationErrorMismatches.length + ")",
                     id: "validation-error",
@@ -173,12 +179,21 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if featureToggles.hdc4ComparisonTabEnabled and comparison.validationHdc4PlusMismatches.length %}
+            {% if featureToggles.hdc4ComparisonTabEnabled and comparison.validationHdc4PlusMismatches.length and comparison.comparisonType === 'ESTABLISHMENT_HDCED4PLUS' %}
                 {% set tabs = (tabs.push({
                     label: "Potential HDC4+" + " ("+comparison.validationHdc4PlusMismatches.length + ")",
                     id: "validation-error-hdc4-plus",
                     panel: {
                         html: validationErrorHdc4PlusHtml
+                    }
+                }), tabs) %}
+            {% endif %}
+            {% if featureToggles.hdc4ComparisonTabEnabled and comparison.hdced4PlusMismatches.length %}
+                {% set tabs = (tabs.push({
+                    label: "HDC4+" + " ("+comparison.hdced4PlusMismatches.length + ")",
+                    id: "hdc4-plus",
+                    panel: {
+                        html: hdc4PlusHtml
                     }
                 }), tabs) %}
             {% endif %}
