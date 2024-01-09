@@ -485,8 +485,8 @@ export interface components {
       selectedManualEntryDates: components['schemas']['ManualEntryDate'][]
     }
     ManualEntryRequest: {
-      manualEntryDates: components['schemas']['ManualEntryDates']
-      calculationReasonId: number
+      selectedManualEntryDates: components['schemas']['ManualEntryDates']
+      reasonForCalculationId: number
       otherReasonDescription: string
     }
     GenuineOverrideDateRequest: {
