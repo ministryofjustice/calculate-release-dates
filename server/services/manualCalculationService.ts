@@ -13,6 +13,10 @@ export default class ManualCalculationService {
   }
 
   async storeManualCalculation(prisonerId: string, req: Request, token: string): Promise<ManualCalculationResponse> {
+    if (req.session.calculationReasonId == null) {
+      req.session.calculationReasonId = {}
+      req.session.otherReasonDescription = {}
+    }
     return new CalculateReleaseDatesApiClient(token).storeManualCalculation(prisonerId, {
       selectedManualEntryDates: req.session.selectedManualEntryDates[prisonerId],
       reasonForCalculationId: req.session.calculationReasonId[prisonerId],
