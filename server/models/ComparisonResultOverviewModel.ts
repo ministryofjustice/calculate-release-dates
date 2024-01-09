@@ -1,6 +1,5 @@
 import type { ComparisonOverview } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonResultMismatch from './ComparisonResultMismatch'
-import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
 import Hdced4PlusResultDate from './Hdced4PlusResultDate'
 
@@ -22,6 +21,8 @@ export default class ComparisonResultOverviewModel {
   releaseDateMismatches: ComparisonResultMismatch[]
 
   unsupportedSentenceTypeMismatches: ComparisonResultMismatch[]
+
+  unsupportedSentenceTypeHdc4PlusMismatches: ComparisonResultMismatch[]
 
   validationErrorMismatches: ComparisonResultMismatch[]
 
@@ -46,13 +47,25 @@ export default class ComparisonResultOverviewModel {
     this.releaseDateMismatches = comparison.mismatches
       .filter(mismatch => mismatch.misMatchType === 'RELEASE_DATES_MISMATCH')
       .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, comparisonType))
-    this.unsupportedSentenceTypeMismatches = comparison.mismatches
-      .filter(mismatch => mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE')
-      .sort((a, b) => a.personId.localeCompare(b.personId))
-      .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, comparisonType))
+
+    if (this.comparisonType === ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
+      this.unsupportedSentenceTypeHdc4PlusMismatches = comparison.mismatches
+        .filter(mismatch => mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS')
+        .sort((a, b) => a.personId.localeCompare(b.personId))
+        .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, comparisonType))
+    } else {
+      this.unsupportedSentenceTypeMismatches = comparison.mismatches
+        .filter(
+          mismatch =>
+            mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS' ||
+            mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE'
+        )
+        .sort((a, b) => a.personId.localeCompare(b.personId))
+        .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, comparisonType))
+    }
 
     const validationErrorMismatchTypes = ['VALIDATION_ERROR']
-    if (config.featureToggles.hdc4ComparisonTabEnabled) {
+    if (comparisonType === ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
       this.validationHdc4PlusMismatches = comparison.mismatches
         .filter(mismatch => mismatch.misMatchType === 'VALIDATION_ERROR_HDC4_PLUS')
         .sort((a, b) => a.personId.localeCompare(b.personId))
@@ -67,6 +80,7 @@ export default class ComparisonResultOverviewModel {
       .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, comparisonType))
     this.status = comparison.status
     this.hdced4PlusMismatches = comparison.mismatches
+      .filter(mismatch => !['VALIDATION_ERROR', 'VALIDATION_ERROR_HDC4_PLUS'].includes(mismatch.misMatchType))
       .filter(mismatch => !!mismatch.hdcedFourPlusDate)
       .map(mismatch => new Hdced4PlusResultDate(mismatch))
   }
