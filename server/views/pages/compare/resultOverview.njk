@@ -130,6 +130,12 @@
                 }) }}
             {% endset -%}
 
+            {% set unsupportedSentenceTypeHdc4PlusHtml %}
+                {{ govukSummaryList({
+                    rows: comparison.unsupportedSentenceTypeHdc4PlusMismatches
+                }) }}
+            {% endset -%}
+
             {% set validationErrorHtml %}
                 {{ govukSummaryList({
                     rows: comparison.validationErrorMismatches
@@ -165,6 +171,16 @@
                     id: "unsupported-sentence-type",
                     panel: {
                         html: unsupportedSentenceTypeHtml
+                    }
+                }), tabs) %}
+            {% endif %}
+
+            {% if comparison.unsupportedSentenceTypeHdc4PlusMismatches.length %}
+                {% set tabs = (tabs.push({
+                    label: "Unsupported sentence types for HDC4+" + " ("+comparison.unsupportedSentenceTypeHdc4PlusMismatches.length + ")",
+                    id: "unsupported-sentence-type-hdc4-plus",
+                    panel: {
+                        html: unsupportedSentenceTypeHdc4PlusHtml
                     }
                 }), tabs) %}
             {% endif %}
