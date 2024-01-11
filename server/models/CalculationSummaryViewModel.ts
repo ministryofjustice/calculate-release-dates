@@ -9,6 +9,7 @@ import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseD
 import { PrisonApiOffenderSentenceAndOffences, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import SentenceTypes from './SentenceTypes'
+import config from '../config'
 
 export default class CalculationSummaryViewModel {
   constructor(
@@ -205,6 +206,13 @@ export default class CalculationSummaryViewModel {
       }
     }
     return ''
+  }
+
+  public displayErs2024Banner() {
+    if (config.featureToggles.ers2024BannerEnabled && this.releaseDates?.ERSED) {
+      return true
+    }
+    return false
   }
 
   public getHints(type: string): string[] {
