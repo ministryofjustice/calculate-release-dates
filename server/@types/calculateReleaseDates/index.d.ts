@@ -880,6 +880,7 @@ export interface components {
         | 'ERSED_ADJUSTED_TO_CONCURRENT_TERM'
         | 'ERSED_BEFORE_SENTENCE_DATE'
         | 'ERSED_ADJUSTED_TO_MTD'
+        | 'ERSED_MAX_PERIOD'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {

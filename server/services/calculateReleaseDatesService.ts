@@ -283,6 +283,16 @@ export default class CalculateReleaseDatesService {
         )}`
       )
     }
+    if (rules.includes('ERSED_MAX_PERIOD')) {
+      const ruleSpecificAdjustment = rulesWithExtraAdjustments.ERSED_MAX_PERIOD
+      return CalculateReleaseDatesService.createAdjustmentRow(
+        releaseDate,
+        ReleaseDateType.ERSED,
+        `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)} ${arithmeticToWords(
+          ruleSpecificAdjustment
+        )}`
+      )
+    }
     return CalculateReleaseDatesService.createAdjustmentRow(
       releaseDate,
       ReleaseDateType.ERSED,
