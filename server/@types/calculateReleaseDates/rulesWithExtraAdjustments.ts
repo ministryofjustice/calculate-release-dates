@@ -9,4 +9,5 @@ export type RulesWithExtraAdjustments = {
   HDCED_MINIMUM_CUSTODIAL_PERIOD: AdjustmentDuration
   TUSED_LICENCE_PERIOD_LT_1Y: AdjustmentDuration
   ERSED_ONE_YEAR: AdjustmentDuration
+  ERSED_MAX_PERIOD: AdjustmentDuration
 }
