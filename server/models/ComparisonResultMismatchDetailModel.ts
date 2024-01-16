@@ -7,6 +7,8 @@ import {
 export default class ComparisonResultMismatchDetailModel {
   nomisReference: string
 
+  lastName: string
+
   bookingId: number
 
   calculatedAt: string
@@ -23,6 +25,7 @@ export default class ComparisonResultMismatchDetailModel {
 
   constructor(comparisonPerson: ComparisonPersonOverview) {
     this.nomisReference = comparisonPerson.personId
+    this.lastName = comparisonPerson.lastName
     this.bookingId = comparisonPerson.bookingId
     this.calculatedAt = comparisonPerson.calculatedAt
     this.hdced14DayRuleApplied = this.isHdced14DayRule(
