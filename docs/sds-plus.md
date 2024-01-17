@@ -4,6 +4,8 @@
 
 The Sentencing Bill 2020 introduces a notable change in the release provisions for serious offenders through a framework known as SDS+ (SDS+ (Standard Determinate Sentence Plus). Central to SDS+ is the establishment of a two-thirds release point, signaling a departure from automatic halfway release practices for specific serious offences.
 
+[More details on Sentence Calculation Policy Framework - Page 33](https://assets.publishing.service.gov.uk/media/62a9e0f9e90e070397a010f2/sc-annex-a-operational-guidance.pdf#page=33)
+
 ## Key Features of SDS+
 
 ### 1. Two-Thirds Release Point for 'Max-Life' Sexual Offences
