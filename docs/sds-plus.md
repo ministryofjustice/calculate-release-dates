@@ -12,7 +12,7 @@ A key aspect of SDS+ is the introduction of a two-thirds release point for indiv
 (SDS) of 4 years or more is imposed.
 
 ### 2. Targeted Release Point Change for Violent Offenders
-SDS+ introduces a targeted release point change for violent offenders, particularly those receiving an SDS of 4 to 7 years for serious violent crimes.
+After 2022, SDS+ introduced a targeted release point change for violent offenders, particularly those receiving an SDS of 4 to 7 years for 4 Specified violent offences (Manslaughter, Soliciting Murder, Attempt or Conspiracy to Murder).
 
 ## Outcome Lists:
 
@@ -51,7 +51,7 @@ SDS+ introduces a targeted release point change for violent offenders, particula
 #### For Section 250 and Section 91 Sentence Types:
 
 - **List A:**
-    - Apply if the sentence type is  SEC250 and SEC250_ORA, SEC91_03 AND SEC91_03 ORA .
+    - Apply if the sentence type is  SEC250, SEC250_ORA, SEC91_03 and SEC91_03 ORA .
     - Identify as SDS+ if the sentence date is before 28/6/22, the sentence length is 7 years or more, and meets the conditions of List A.
 
 - **List C:**
