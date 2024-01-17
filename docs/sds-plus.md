@@ -48,10 +48,10 @@ SDS+ introduces a targeted release point change for violent offenders, particula
   - Apply if the sentence type is Standard Determinate (SDS incl ADIMP or ADIMP_ORA).
   - Identify as SDS+ if the sentence date is on or after 28/6/22, the sentence length is 7 years or more, and meets the conditions of List D.
 
-#### For SEC250 and SEC250_ORA Sentence Types:
+#### For SEC250 and SEC250 ORA and SEC91 and SEC91 ORA Sentence Types:
 
 - **List A:**
-    - Apply if the sentence type is SEC250 and SEC250_ORA.
+    - Apply if the sentence type is  SEC250 and SEC250_ORA, SEC91_03 AND SEC91_03 ORA .
     - Identify as SDS+ if the sentence date is before 28/6/22, the sentence length is 7 years or more, and meets the conditions of List A.
 
 - **List C:**
