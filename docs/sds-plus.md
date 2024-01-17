@@ -51,7 +51,7 @@ SDS+ introduces a targeted release point change for violent offenders, particula
 #### For SEC250 and SEC250_ORA Sentence Types:
 
 - **List A:**
-    - Apply if the sentence type is YOI or YOI_ORA.
+    - Apply if the sentence type is SEC250 and SEC250_ORA.
     - Identify as SDS+ if the sentence date is before 28/6/22, the sentence length is 7 years or more, and meets the conditions of List A.
 
 - **List C:**
