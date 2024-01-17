@@ -563,6 +563,7 @@ export interface components {
     }
     ComparisonMismatchSummary: {
       personId: string
+      lastName: string
       isValid: boolean
       isMatch: boolean
       validationMessages: components['schemas']['ValidationMessage'][]
@@ -594,6 +595,7 @@ export interface components {
     }
     ComparisonPersonOverview: {
       personId: string
+      lastName: string
       isValid: boolean
       isMatch: boolean
       /** @enum {string} */
