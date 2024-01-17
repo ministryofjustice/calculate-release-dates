@@ -4,6 +4,8 @@
 
 The Sentencing Bill 2020 introduces a notable change in the release provisions for serious offenders through a framework known as SDS+ (SDS+ (Standard Determinate Sentence Plus). Central to SDS+ is the establishment of a two-thirds release point, signaling a departure from automatic halfway release practices for specific serious offences.
 
+[More details on Sentence Calculation Policy Framework - Page 33](https://assets.publishing.service.gov.uk/media/62a9e0f9e90e070397a010f2/sc-annex-a-operational-guidance.pdf#page=33)
+
 ## Key Features of SDS+
 
 ### 1. Two-Thirds Release Point for 'Max-Life' Sexual Offences
@@ -48,10 +50,10 @@ After 2022, SDS+ introduced a targeted release point change for violent offender
   - Apply if the sentence type is Standard Determinate (SDS incl ADIMP or ADIMP_ORA).
   - Identify as SDS+ if the sentence date is on or after 28/6/22, the sentence length is 7 years or more, and meets the conditions of List D.
 
-#### For Section 250 and Section 91 Sentence Types:
+#### For Section 250 Sentence Types:
 
 - **List A:**
-    - Apply if the sentence type is  SEC250, SEC250_ORA, SEC91_03 and SEC91_03 ORA .
+    - Apply if the sentence type is  SEC250 & SEC250_ORA.
     - Identify as SDS+ if the sentence date is before 28/6/22, the sentence length is 7 years or more, and meets the conditions of List A.
 
 - **List C:**
