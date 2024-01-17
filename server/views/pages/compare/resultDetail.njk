@@ -43,73 +43,88 @@
             <h1 class="govuk-heading-xl">Bulk Comparison Detail</h1>
 
             <h3 class="govuk-heading-l">Overview</h3>
-            {{ govukSummaryList({
-                rows: [
-                    {
-                        key: {
-                            text: "NOMIS reference"
-                        },
-                        value: {
-                            text: bulkComparison.nomisReference
-                        }
+            {% set rows = [
+                {
+                    key: {
+                        text: "NOMIS reference"
                     },
-                    {
-                        key: {
-                            text: "Booking"
-                        },
-                        value: {
-                            text: bulkComparison.bookingId
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Showing Latest Dates"
-                        },
-                        value: {
-                            text: "True"
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Source of latest calculation"
-                        },
-                        value: {
-                            text: "NOMIS"
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Date of latest calculation"
-                        },
-                        value: {
-                            text: bulkComparison.calculatedAt | date('DD MMMM YYYY')
-                        }
-                    },
-                    {
-                        key: {
-                            text: "HDCED 14 day rule applied"
-                        },
-                        value: {
-                            text: bulkComparison.hdced14DayRuleApplied
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Registered sex offender"
-                        },
-                        value: {
-                            text: bulkComparison.activeSexOffender
-                        }
-                    },
-                    {
-                        key: {
-                            text: "SDS+ sentences identified"
-                        },
-                        value: {
-                            html: bulkComparison.sdsPlusOffences
-                        }
+                    value: {
+                        text: bulkComparison.nomisReference
                     }
+                }
                 ]
+            %}
+            {% if bulkComparison.lastName %}
+                {% set rows = (rows.push(
+                {
+                    key: {
+                        text: "Last name"
+                    },
+                    value: {
+                      text: bulkComparison.lastName
+                    }
+                }), rows) %}
+            {% endif %}
+            {% set rows = (rows.push(
+              {
+                key: {
+                  text: "Booking"
+                },
+                value: {
+                  text: bulkComparison.bookingId
+                }
+              },
+              {
+                key: {
+                  text: "Showing Latest Dates"
+                },
+                value: {
+                  text: "True"
+                }
+              },
+              {
+                key: {
+                  text: "Source of latest calculation"
+                },
+                value: {
+                  text: "NOMIS"
+                }
+              },
+              {
+                key: {
+                  text: "Date of latest calculation"
+              },
+                value: {
+                  text: bulkComparison.calculatedAt | date('DD MMMM YYYY')
+                }
+              },
+              {
+                key: {
+                  text: "HDCED 14 day rule applied"
+                },
+                value: {
+                  text: bulkComparison.hdced14DayRuleApplied
+                }
+              },
+              {
+                key: {
+                  text: "Registered sex offender"
+                },
+                value: {
+                  text: bulkComparison.activeSexOffender
+                }
+              },
+              {
+                key: {
+                  text: "SDS+ sentences identified"
+              },
+                value: {
+                  html: bulkComparison.sdsPlusOffences
+              }
+            }), rows) %}
+
+            {{ govukSummaryList({
+                rows: rows
             }) }}
 
             {% if bulkComparison.mismatchType !== 'UNSUPPORTED_SENTENCE_TYPE' %}

@@ -8,7 +8,7 @@ interface ActionItem {
 }
 
 export default class ComparisonResultMismatch {
-  key: { text: string }
+  key: { html: string }
 
   value: { text: string }
 
@@ -19,7 +19,9 @@ export default class ComparisonResultMismatch {
     comparisonId: string,
     comparisonType: ComparisonType
   ) {
-    this.key = { text: comparisonMismatchSummary.personId }
+    this.key = {
+      html: this.getOffenderDetails(comparisonMismatchSummary),
+    }
     let message = comparisonMismatchSummary.validationMessages
       .map(validationMessage => validationMessage.message)
       .join(', ')
@@ -46,5 +48,13 @@ export default class ComparisonResultMismatch {
         ],
       }
     }
+  }
+
+  private getOffenderDetails(comparisonMismatchSummary: ComparisonMismatchSummary) {
+    let offenderDetails = `<span class="comparison-person">${comparisonMismatchSummary.personId}</span>`
+    if (comparisonMismatchSummary.lastName) {
+      offenderDetails += `<span>${comparisonMismatchSummary.lastName}</span>`
+    }
+    return offenderDetails
   }
 }
