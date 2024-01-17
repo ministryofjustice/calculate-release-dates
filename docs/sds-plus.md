@@ -34,7 +34,7 @@ SDS+ introduces a targeted release point change for violent offenders, particula
 
 ### SDS+ Identification Conditions:
 
-#### For Standard Determinate (SDS incl ADIMP or ADIMP_ORA) Sentence Types:
+#### For Standard Determinate (SDS incl ADIMP or ADIMP_ORA) and  YOI (including YOI_ORA) Sentence Types Sentence Types:
 
 - **List A:**
   - Apply if the sentence type is Standard Determinate (SDS incl ADIMP or ADIMP_ORA).
@@ -46,23 +46,13 @@ SDS+ introduces a targeted release point change for violent offenders, particula
 
 - **List D:**
   - Apply if the sentence type is Standard Determinate (SDS incl ADIMP or ADIMP_ORA).
-  - Identify as SDS+ if the sentence date is on or after 28/6/22, the sentence length is 7 years or more, and meets the conditions of List D.
-
-#### For YOI and YOI_ORA Sentence Types:
-
-- **List A:**
-  - Apply if the sentence type is YOI or YOI_ORA.
-  - Identify as SDS+ if the sentence date is before 28/6/22, the sentence length is 7 years or more, and meets the conditions of List A.
-
-- **List B:**
-  - Apply if the sentence type is YOI or YOI_ORA.
-  - Identify as SDS+ if the sentence date is on or after 28/6/22, the sentence length is 4 years or more and less than 7 years, and meets the conditions of List B.
-
-- **List D:**
-  - Apply if the sentence type is YOI or YOI_ORA.
   - Identify as SDS+ if the sentence date is on or after 28/6/22, the sentence length is 7 years or more, and meets the conditions of List D.
 
 #### For SEC250 and SEC250_ORA Sentence Types:
+
+- **List A:**
+    - Apply if the sentence type is YOI or YOI_ORA.
+    - Identify as SDS+ if the sentence date is before 28/6/22, the sentence length is 7 years or more, and meets the conditions of List A.
 
 - **List C:**
   - Apply if the sentence type is SEC250 or SEC250_ORA.
