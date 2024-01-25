@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { DateTime } from 'luxon'
 import {
   CalculationBreakdown,
+  CalculationReason,
   NonFridayReleaseDay,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -23,6 +24,10 @@ export default class CalculationSummaryViewModel {
     public viewJourney: boolean,
     public calculationReference: string,
     public nonFridayReleaseAdjustments: { [key: string]: NonFridayReleaseDay },
+    public calculationReasonVisible: boolean,
+    public calculationReason?: CalculationReason,
+    public otherReasonDescription?: string,
+    public calculationDate?: string,
     public calculationBreakdown?: CalculationBreakdown,
     public releaseDatesWithAdjustments?: ReleaseDateWithAdjustments[],
     public validationErrors?: ErrorMessages,
