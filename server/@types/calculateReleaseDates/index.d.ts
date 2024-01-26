@@ -1444,7 +1444,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['SubmitCalculationRequest']
+        'application/json': components['schemas']['CalculationFragments']
       }
     }
     responses: {
