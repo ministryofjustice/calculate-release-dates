@@ -1,24 +1,23 @@
+{% from "./otherInput.njk" import otherInput %}
 
     {% set otherTextInput %}
-        {% include "./otherInput.njk" %}
+        {{ otherInput('TUSED-otherInput', discrepancy.causes.TUSED.other) }}
     {% endset -%}
 
     {{ govukRadios({
         classes: "govuk-radios--small",
-        name: "SED-subType",
-
+        name: "TUSED-subType",
+        errorMessage: validationErrors | findError('TUSED-subType'),
         items: [
             {
-                value: "date-not-calculated",
-                text: "Date not calculated"
+                value: "DATE_NOT_CALCULATED",
+                text: "Date not calculated",
+                checked: discrepancy.causes.TUSED.subCategory == 'DATE_NOT_CALCULATED'
             },
             {
-                value: "recall-related",
-                text: "Recall Related"
-            },
-            {
-                value: "other",
+                value: "OTHER",
                 text: "Other",
+                checked: discrepancy.causes.TUSED.subCategory == 'OTHER',
                 conditional: {
                     html: otherTextInput
                 }

@@ -7,6 +7,11 @@ import ComparisonService from '../services/comparisonService'
 import ListComparisonViewModel from '../models/ListComparisonViewModel'
 import ComparisonResultOverviewModel from '../models/ComparisonResultOverviewModel'
 import ComparisonResultMismatchDetailModel from '../models/ComparisonResultMismatchDetailModel'
+import {
+  ComparisonPersonDiscrepancyCause,
+  ComparisonPersonDiscrepancyRequest,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { FieldValidationError } from '../types/FieldValidationError'
 
 export const comparePaths = {
   COMPARE_INDEX: '/compare',
@@ -146,43 +151,172 @@ export default class CompareRoutes {
 
   public detail: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
-    const { token, userRoles } = res.locals.user
+    const { token } = res.locals.user
     const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
       token
     )
 
-    // retrieve the information about the bulkComparison
-    const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
+    let discrepancy = null
+    if (comparisonMismatch.hasDiscrepancyRecord) {
+      const discrepancySummary = await this.comparisonService.getComparisonPersonDiscrepancy(
+        bulkComparisonResultId,
+        bulkComparisonDetailId,
+        token
+      )
+      discrepancy = { ...discrepancySummary, causes: this.summaryCausesToFormCauses(discrepancySummary.causes) }
+    }
 
     res.render('pages/compare/resultDetail', {
-      allowBulkComparison,
       bulkComparisonResultId,
       bulkComparisonDetailId,
       bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
+      discrepancy,
     })
     return
   }
 
+  public submitDetail: RequestHandler = async (req, res) => {
+    const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
+    const { token } = res.locals.user
+    const { impact, causes, detail, priority, action } = req.body
+    const formCauses = Array.isArray(causes) ? causes : [causes]
+
+    const validationErrors = this.validateFormData(req.body)
+
+    const mismatchCauses: ComparisonPersonDiscrepancyCause[] = formCauses.map(cause => {
+      const subCategory = cause === 'OTHER' ? cause : req.body[`${cause}-subType`]
+      return {
+        category: cause,
+        subCategory,
+        other: subCategory === 'OTHER' ? req.body[`${cause}-otherInput`] : undefined,
+      }
+    })
+
+    if (Object.keys(validationErrors).length === 0) {
+      const discrepancy: ComparisonPersonDiscrepancyRequest = {
+        impact,
+        causes: mismatchCauses,
+        detail,
+        priority,
+        action,
+      }
+
+      await this.comparisonService.createComparisonPersonDiscrepancy(
+        bulkComparisonResultId,
+        bulkComparisonDetailId,
+        discrepancy,
+        token
+      )
+      return res.redirect(`/compare/result/${bulkComparisonResultId}`)
+    }
+
+    const discrepancy = {
+      impact,
+      detail,
+      priority,
+      action,
+      causes: this.summaryCausesToFormCauses(mismatchCauses),
+    }
+
+    const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      token
+    )
+
+    return res.render('pages/compare/resultDetail', {
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
+      discrepancy,
+      validationErrors,
+    })
+  }
+
   public manualDetail: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
-    const { token, userRoles } = res.locals.user
+    const { token } = res.locals.user
     const comparisonMismatch = await this.comparisonService.getManualMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
       token
     )
 
-    const allowManualComparison = this.bulkLoadService.allowManualComparison(userRoles)
+    let discrepancy = null
+    if (comparisonMismatch.hasDiscrepancyRecord) {
+      const discrepancySummary = await this.comparisonService.getComparisonPersonDiscrepancy(
+        bulkComparisonResultId,
+        bulkComparisonDetailId,
+        token
+      )
+      discrepancy = { ...discrepancySummary, causes: this.summaryCausesToFormCauses(discrepancySummary.causes) }
+    }
 
-    res.render('pages/compare/manualResultDetail', {
-      allowManualComparison,
+    return res.render('pages/compare/manualResultDetail', {
       bulkComparisonResultId,
       bulkComparisonDetailId,
       bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
+      discrepancy,
     })
-    return
+  }
+
+  public submitManualDetail: RequestHandler = async (req, res) => {
+    const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
+    const { token } = res.locals.user
+    const { impact, causes, detail, priority, action } = req.body
+    const formCauses = Array.isArray(causes) ? causes : [causes]
+
+    const validationErrors = this.validateFormData(req.body)
+    const mismatchCauses: ComparisonPersonDiscrepancyCause[] = formCauses.map(cause => {
+      const subCategory = cause === 'OTHER' ? cause : req.body[`${cause}-subType`]
+      return {
+        category: cause,
+        subCategory,
+        other: subCategory === 'OTHER' ? req.body[`${cause}-otherInput`] : undefined,
+      }
+    })
+
+    if (Object.keys(validationErrors).length === 0) {
+      const discrepancy: ComparisonPersonDiscrepancyRequest = {
+        impact,
+        causes: mismatchCauses,
+        detail,
+        priority,
+        action,
+      }
+
+      await this.comparisonService.createComparisonPersonDiscrepancy(
+        bulkComparisonResultId,
+        bulkComparisonDetailId,
+        discrepancy,
+        token
+      )
+      return res.redirect(`/compare/manual/result/${bulkComparisonResultId}`)
+    }
+
+    const discrepancy = {
+      impact,
+      detail,
+      priority,
+      action,
+      causes: this.summaryCausesToFormCauses(mismatchCauses),
+    }
+
+    const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      token
+    )
+
+    return res.render('pages/compare/resultDetail', {
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
+      discrepancy,
+      validationErrors,
+    })
   }
 
   /* eslint-disable */
@@ -229,5 +363,49 @@ export default class CompareRoutes {
         validationErrors,
       })
     }
+  }
+
+  private summaryCausesToFormCauses(summaryCauses: ComparisonPersonDiscrepancyCause[]) {
+    return summaryCauses.reduce((obj, item) => {
+      return {
+        ...obj,
+        [item['category']]: item,
+      }
+    }, {})
+  }
+
+  private validateFormData(formData: any): FieldValidationError[] {
+    const { impact, causes, detail, priority, action } = formData
+    const formCauses = Array.isArray(causes) ? causes : [causes]
+
+    const validationErrors: FieldValidationError[] = []
+    if (!impact) {
+      validationErrors.push({ field: 'impact', message: 'Enter the impact of the mismatch' })
+    }
+
+    if (!causes) {
+      validationErrors.push({ field: 'causes', message: 'Select the cause of the discrepancy' })
+    }
+
+    if (!detail) {
+      validationErrors.push({ field: 'detail', message: 'Enter detail on the discrepancy' })
+    }
+
+    if (!priority) {
+      validationErrors.push({ field: 'priority', message: 'Select the priority of resolving this problem' })
+    }
+
+    if (!action) {
+      validationErrors.push({ field: 'action', message: 'Enter the recommended action' })
+    }
+
+    formCauses.forEach(cause => {
+      const subCategory = cause === 'OTHER' ? cause : formData[`${cause}-subType`]
+      if (!subCategory) {
+        validationErrors.push({ field: `${cause}-subType`, message: `Select the cause of the ${cause} discrepancy` })
+      }
+    })
+
+    return validationErrors
   }
 }

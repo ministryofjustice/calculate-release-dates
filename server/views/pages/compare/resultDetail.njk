@@ -131,8 +131,9 @@
                 {% include "./releaseDatesMismatchTable.njk" %}
             {% endif %}
 
-            {% include "./recordDiscrepencyPanel.njk" %}
-
+            {% if bulkComparison.mismatchType === 'RELEASE_DATES_MISMATCH' %}
+                {% include "./recordDiscrepencyPanel.njk" %}
+            {% endif %}
         </div>
     </div>
 

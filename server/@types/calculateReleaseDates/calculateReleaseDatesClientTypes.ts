@@ -29,3 +29,6 @@ export type ComparisonMismatchSummary = components['schemas']['ComparisonMismatc
 export type ComparisonPersonOverview = components['schemas']['ComparisonPersonOverview']
 export type AnalyzedSentenceAndOffences = components['schemas']['AnalyzedSentenceAndOffences']
 export type CalculationReason = components['schemas']['CalculationReason']
+export type ComparisonPersonDiscrepancyRequest = components['schemas']['CreateComparisonDiscrepancyRequest']
+export type ComparisonPersonDiscrepancySummary = components['schemas']['ComparisonDiscrepancySummary']
+export type ComparisonPersonDiscrepancyCause = components['schemas']['DiscrepancyCause']

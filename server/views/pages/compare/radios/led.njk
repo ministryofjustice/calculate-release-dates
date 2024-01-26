@@ -1,20 +1,23 @@
+{% from "./otherInput.njk" import otherInput %}
 
-{% set otherTextInput %}
-    {% include "./otherInput.njk" %}
-{% endset -%}
+    {% set otherTextInput %}
+        {{ otherInput('LED-otherInput', discrepancy.causes.LED.other) }}
+    {% endset -%}
 
     {{ govukRadios({
         classes: "govuk-radios--small",
         name: "LED-subType",
-
+        errorMessage: validationErrors | findError('LED-subType'),
         items: [
             {
-                value: "date-not-calculated",
-                text: "Date not calculated"
+                value: "DATE_NOT_CALCULATED",
+                text: "Date not calculated",
+                checked: discrepancy.causes.LED.subCategory == 'DATE_NOT_CALCULATED'
             },
             {
-                value: "other",
+                value: "OTHER",
                 text: "Other",
+                checked: discrepancy.causes.LED.subCategory == 'OTHER',
                 conditional: {
                     html: otherTextInput
                 }

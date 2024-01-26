@@ -11,6 +11,8 @@ import {
   CalculationUserQuestions,
   Comparison,
   ComparisonOverview,
+  ComparisonPersonDiscrepancyRequest,
+  ComparisonPersonDiscrepancySummary,
   ComparisonPersonOverview,
   ComparisonSummary,
   GenuineOverride,
@@ -239,6 +241,26 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}`,
     }) as Promise<ComparisonPersonOverview>
+  }
+
+  getMismatchDiscrepancy(
+    comparisonReference: string,
+    mismatchReference: string
+  ): Promise<ComparisonPersonDiscrepancySummary> {
+    return this.restClient.get({
+      path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
+    }) as Promise<ComparisonPersonDiscrepancySummary>
+  }
+
+  createMismatchDiscrepancy(
+    comparisonReference: string,
+    mismatchReference: string,
+    discrepancy: ComparisonPersonDiscrepancyRequest
+  ): Promise<ComparisonPersonDiscrepancySummary> {
+    return this.restClient.post({
+      path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
+      data: discrepancy,
+    }) as Promise<ComparisonPersonDiscrepancySummary>
   }
 
   getManualMismatchComparison(

@@ -1,9 +1,14 @@
-{{ govukInput({
-    id: "other-mismatch-cause",
-    name: "otherCauseOfMismatch",
-    type: "text",
-    classes: "govuk-!-width-one-third",
-    label: {
-        text: "Other cause of mismatch"
-    }
-}) }}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% macro otherInput(inputId, value) %}
+    {{ govukInput({
+        id: inputId,
+        name: inputId,
+        type: "text",
+        value: value,
+        classes: "govuk-!-width-one-third",
+        label: {
+            text: "Other cause of mismatch"
+        }
+    }) }}
+{% endmacro %}
