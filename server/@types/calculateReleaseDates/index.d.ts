@@ -825,12 +825,6 @@ export interface components {
       alertType: string
       alertCode: string
     }
-    AssignedLivingUnit: {
-      agencyId: string
-      locationId: number
-      description: string
-      agencyName: string
-    }
     PrisonerDetails: {
       /** Format: int64 */
       bookingId: number
