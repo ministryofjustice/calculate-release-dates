@@ -5,6 +5,7 @@ import * as pathModule from 'path'
 import config from '../config'
 import applicationVersion from '../applicationVersion'
 import ComparisonType from '../enumerations/comparisonType'
+import { FieldValidationError } from '../types/FieldValidationError'
 
 // TODO the use of nunjucks-date-filter is raising a deprecation warning, some dates are in this format 12/12/2030 ->
 // Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable
@@ -104,6 +105,24 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   njkEnv.addFilter('formatComparisonType', comparisonType => {
     return formatComparisonType(comparisonType)
+  })
+
+  njkEnv.addFilter('errorSummaryList', (array = []) => {
+    return array.map((error: FieldValidationError) => ({
+      text: error.message,
+      href: `#${error.field}`,
+    }))
+  })
+
+  // eslint-disable-next-line no-use-before-define,default-param-last
+  njkEnv.addFilter('findError', (array: FieldValidationError[] = [], formFieldId: string) => {
+    const item = array.find(error => error.field === formFieldId)
+    if (item) {
+      return {
+        text: item.message,
+      }
+    }
+    return null
   })
 }
 

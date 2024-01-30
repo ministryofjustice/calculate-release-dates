@@ -1,20 +1,23 @@
+{% from "./otherInput.njk" import otherInput %}
 
     {% set otherTextInput %}
-        {% include "./otherInput.njk" %}
+        {{ otherInput('PRRD-otherInput', discrepancy.causes.PRRD.other) }}
     {% endset -%}
 
     {{ govukRadios({
         classes: "govuk-radios--small",
         name: "PRRD-subType",
-
+        errorMessage: validationErrors | findError('PRRD-subType'),
         items: [
             {
-                value: "remand-ual-related",
-                text: "Remand or UAL related"
+                value: "REMAND_OR_UAL_RELATED",
+                text: "Remand/UAL related",
+                checked: discrepancy.causes.PRRD.subCategory == 'REMAND_OR_UAL_RELATED'
             },
             {
-                value: "other",
+                value: "OTHER",
                 text: "Other",
+                checked: discrepancy.causes.PRRD.subCategory == 'OTHER',
                 conditional: {
                     html: otherTextInput
                 }

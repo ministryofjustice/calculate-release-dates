@@ -1,32 +1,38 @@
+{% from "./otherInput.njk" import otherInput %}
 
     {% set otherTextInput %}
-        {% include "./otherInput.njk" %}
+        {{ otherInput('HDCED-otherInput', discrepancy.causes.HDCED.other) }}
     {% endset -%}
 
     {{ govukRadios({
         classes: "govuk-radios--small",
-        name: "HDC-subType",
-
+        name: "HDCED-subType",
+        errorMessage: validationErrors | findError('HDCED-subType'),
         items: [
             {
-                value: "new-rules",
-                text: "New rules not applied"
+                value: "NEW_RULES_NOT_APPLIED",
+                text: "New rules not applied",
+                checked: discrepancy.causes.HDCED.subCategory == 'NEW_RULES_NOT_APPLIED'
             },
             {
-                value: "14-day-rule",
-                text: "14-day rule not applied "
+                value: "FOURTEEN_DAY_RULE_NOT_APPLIED",
+                text: "14-day rule not applied",
+                checked: discrepancy.causes.HDCED.subCategory == 'FOURTEEN_DAY_RULE_NOT_APPLIED'
             },
             {
-                value: "ineligible",
-                text: "Ineligible for HDCED"
+                value: "INELIGIBLE_FOR_HDC",
+                text: "Ineligible for HDC",
+                checked: discrepancy.causes.HDCED.subCategory == 'INELIGIBLE_FOR_HDC'
             },
             {
-                value: "recall",
-                text: "Recall related"
+                value: "RECALL_RELATED",
+                text: "Recall related",
+                checked: discrepancy.causes.HDCED.subCategory == 'RECALL_RELATED'
             },
             {
-                value: "other",
+                value: "OTHER",
                 text: "Other",
+                checked: discrepancy.causes.HDCED.subCategory == 'OTHER',
                 conditional: {
                     html: otherTextInput
                 }

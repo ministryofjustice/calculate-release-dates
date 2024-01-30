@@ -1,27 +1,26 @@
+{% from "./otherInput.njk" import otherInput %}
 
     {% set otherTextInput %}
-        {% include "./otherInput.njk" %}
+        {{ otherInput('ERSED-otherInput', discrepancy.causes.ERSED.other) }}
     {% endset -%}
 
     {{ govukRadios({
         classes: "govuk-radios--small",
-        name: "ERS-subType",
-
+        name: "ERSED-subType",
+        errorMessage: validationErrors | findError('ERSED-subType'),
         items: [
             {
-                value: "new-rules-not-applied",
-                text: "New rules not applied"
+                value: "NEW_RULES_NOT_APPLIED",
+                text: "New rules not applied",
+                checked: discrepancy.causes.ERSED.subCategory == 'NEW_RULES_NOT_APPLIED'
             },
             {
-                value: "other",
-                text: "Other"
-            },
-            {
-                value: "other",
+                value: "OTHER",
                 text: "Other",
+                checked: discrepancy.causes.ERSED.subCategory == 'OTHER',
                 conditional: {
-                html: otherTextInput
-            }
+                    html: otherTextInput
+                }
             }
         ]
     }) }}

@@ -1,20 +1,23 @@
+{% from "./otherInput.njk" import otherInput %}
 
     {% set otherTextInput %}
-        {% include "./otherInput.njk" %}
+        {{ otherInput('CRD-otherInput', discrepancy.causes.CRD.other) }}
     {% endset -%}
 
     {{ govukRadios({
         classes: "govuk-radios--small",
         name: "CRD-subType",
-
+        errorMessage: validationErrors | findError('CRD-subType'),
         items: [
             {
-                value: "sds-plus",
-                text: "SDS+"
+                value: "SDS_PLUS",
+                text: "SDS+",
+                checked: discrepancy.causes.CRD.subCategory == 'SDS_PLUS'
             },
             {
-                value: "other",
+                value: "OTHER",
                 text: "Other",
+                checked: discrepancy.causes.CRD.subCategory == 'OTHER',
                 conditional: {
                     html: otherTextInput
                 }

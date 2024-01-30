@@ -1,64 +1,84 @@
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "./radios/otherInput.njk" import otherInput %}
 
 <h3 class="govuk-heading-l">Record Discrepancy</h3>
 
-{{ govukRadios({
-    name: "mismatchPotentialImpactType",
-    fieldset: {
-        legend: {
-            text: "What is the (possible) impact of the mismatch?",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--m"
-        }
-    },
-    items: [
-        {
-            value: "release-in-error",
-            text: "Potential Release in Error"
+{% set errorSummaryList = validationErrors | errorSummaryList %}
+
+{% if errorSummaryList.length > 0 %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-8">
+            {{ govukErrorSummary({
+                titleText: "There is a problem",
+                errorList: errorSummaryList,
+                classes: 'govuk-!-margin-top-5 govuk-!-margin-bottom-0'
+            }) }}
+        </div>
+    </div>
+{% endif %}
+
+<form method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+    {{ govukRadios({
+        name: "impact",
+        value: discrepancy.impact,
+        fieldset: {
+            legend: {
+                text: "What is the (possible) impact of the mismatch?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--m"
+            }
         },
-        {
-            value: "unlawful-detention",
-            text: "Potential Unlawful Detention "
-        },
-        {
-            value: "other",
-            text: "Other"
-        }
-    ]
-}) }}
+        errorMessage: validationErrors | findError('impact'),
+        items: [
+            {
+                value: "POTENTIAL_RELEASE_IN_ERROR",
+                text: "Potential RiE"
+            },
+            {
+                value: "POTENTIAL_UNLAWFUL_DETENTION",
+                text: "Potential Unlawful Detention "
+            },
+            {
+                value: "OTHER",
+                text: "No impact NOMIS is correct"
+            }
+        ]
+    }) }}
 
-{% set crdRadios %}
-    {% include "./radios/crd.njk" %}
-{% endset -%}
-{% set ersRadios %}
-    {% include "./radios/ers.njk" %}
-{% endset -%}
-{% set hdcRadios %}
-    {% include "./radios/hdc.njk" %}
-{% endset -%}
-{% set ledRadios %}
-    {% include "./radios/led.njk" %}
-{% endset -%}
-{% set pedRadios %}
-    {% include "./radios/ped.njk" %}
-{% endset -%}
-{% set prrdRadios %}
-    {% include "./radios/prrd.njk" %}
-{% endset -%}
-{% set sedRadios %}
-    {% include "./radios/sed.njk" %}
-{% endset -%}
-{% set tusedRadios %}
-    {% include "./radios/tused.njk" %}
-{% endset -%}
+    {% set crdRadios %}
+        {% include "./radios/crd.njk" %}
+    {% endset -%}
+    {% set ersRadios %}
+        {% include "./radios/ers.njk" %}
+    {% endset -%}
+    {% set hdcRadios %}
+        {% include "./radios/hdc.njk" %}
+    {% endset -%}
+    {% set ledRadios %}
+        {% include "./radios/led.njk" %}
+    {% endset -%}
+    {% set pedRadios %}
+        {% include "./radios/ped.njk" %}
+    {% endset -%}
+    {% set prrdRadios %}
+        {% include "./radios/prrd.njk" %}
+    {% endset -%}
+    {% set sedRadios %}
+        {% include "./radios/sed.njk" %}
+    {% endset -%}
+    {% set tusedRadios %}
+        {% include "./radios/tused.njk" %}
+    {% endset -%}
 
-{% set otherTextInput %}
-    {% include "./radios/otherInput.njk" %}
-{% endset -%}
+    {% set otherTextInput %}
+        {{ otherInput('OTHER-otherInput', discrepancy.causes.OTHER.other) }}
+    {% endset -%}
 
-
-
-{{ govukRadios({
-        name: "mismatchClassification",
+    {{ govukCheckboxes({
+        name: "causes",
         fieldset: {
             legend: {
                 text: "What caused the mismatch?",
@@ -66,10 +86,12 @@
                 classes: "govuk-fieldset__legend--m"
             }
         },
+        errorMessage: validationErrors | findError('causes'),
         items: [
             {
                 value: "CRD",
                 text: "CRD",
+                checked: discrepancy.causes.CRD,
                 conditional: {
                     html: crdRadios
                 }
@@ -77,13 +99,15 @@
             {
                 value: "ERSED",
                 text: "ERSED",
+                checked: discrepancy.causes.ERSED,
                 conditional: {
                     html: ersRadios
                 }
             },
             {
-                value: "HDC",
-                text: "HDC",
+                value: "HDCED",
+                text: "HDCED",
+                checked: discrepancy.causes.HDCED,
                 conditional: {
                     html: hdcRadios
                 }
@@ -91,6 +115,7 @@
             {
                 value: "LED",
                 text: "LED",
+                checked: discrepancy.causes.LED,
                 conditional: {
                     html: ledRadios
                 }
@@ -98,6 +123,7 @@
             {
                 value: "PED",
                 text: "PED",
+                checked: discrepancy.causes.PED,
                 conditional: {
                     html: pedRadios
                 }
@@ -105,6 +131,7 @@
             {
                 value: "PRRD",
                 text: "PRRD",
+                checked: discrepancy.causes.PRRD,
                 conditional: {
                     html: prrdRadios
                 }
@@ -112,6 +139,7 @@
             {
                 value: "SED",
                 text: "SED",
+                checked: discrepancy.causes.SED,
                 conditional: {
                     html: sedRadios
                 }
@@ -119,6 +147,7 @@
             {
                 value: "TUSED",
                 text: "TUSED",
+                checked: discrepancy.causes.TUSED,
                 conditional: {
                     html: tusedRadios
                 }
@@ -126,6 +155,7 @@
             {
                 value: "OTHER",
                 text: "Other",
+                checked: discrepancy.causes.OTHER,
                 conditional: {
                     html: otherTextInput
                 }
@@ -133,20 +163,21 @@
         ]
     }) }}
 
-
     {{ govukTextarea({
         name: "detail",
         id: "detail",
+        value: discrepancy.detail,
+        errorMessage: validationErrors | findError('detail'),
         label: {
-            text: "Provide any detail around this discrepency",
+            text: "Provide any detail around this discrepancy",
             classes: "govuk-label--m",
             isPageHeading: true
         }
     }) }}
 
-
     {{ govukRadios({
-        name: "resolutionPriority",
+        name: "priority",
+        value: discrepancy.priority,
         fieldset: {
             legend: {
                 text: "How urgent is the resolution of this problem",
@@ -154,25 +185,28 @@
                 classes: "govuk-fieldset__legend--m"
             }
         },
+        errorMessage: validationErrors | findError('priority'),
         items: [
             {
-                value: "high",
+                value: "HIGH_RISK",
                 text: "High Risk – release within 3 weeks"
             },
             {
-                value: "Medium",
+                value: "MEDIUM_RISK",
                 text: "Medium risk – release in between 3 weeks and 3 months"
             },
             {
-                value: "Low",
+                value: "LOW_RISK",
                 text: "Low risk – release after 3 months"
             }
         ]
     }) }}
 
     {{ govukTextarea({
-        name: "further-action",
-        id: "further-action",
+        name: "action",
+        id: "action",
+        value: discrepancy.action,
+        errorMessage: validationErrors | findError('action'),
         label: {
             text: "Describe the recommended action that needs to be taken",
             classes: "govuk-label--m",
@@ -187,3 +221,4 @@
         preventDoubleClick: true,
         attributes: {  'data-qa': 'record-reason' }
     }) }}
+</form>

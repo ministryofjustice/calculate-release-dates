@@ -33,6 +33,18 @@ export interface paths {
      */
     post: operations['createComparison']
   }
+  '/comparison/{comparisonReference}/mismatch/{mismatchReference}/discrepancy': {
+    /**
+     * Returns the latest discrepancy for a comparison person
+     * @description This endpoint returns the mismatch discrepancy for a particular comparison person
+     */
+    get: operations['getComparisonPersonDiscrepancy']
+    /**
+     * Create a copmarison person discrepancy record
+     * @description This endpoint will create a new comparison person discrepancy and return a summary of it
+     */
+    post: operations['createComparisonPersonDiscrepancy']
+  }
   '/comparison/manual': {
     /**
      * List all comparisons which were performed manually
@@ -403,6 +415,65 @@ export interface components {
       id: number
       name: string
     }
+    CreateComparisonDiscrepancyRequest: {
+      /**
+       * @description The impact of the discrepancy
+       * @enum {string}
+       */
+      impact: 'POTENTIAL_RELEASE_IN_ERROR' | 'POTENTIAL_UNLAWFUL_DETENTION' | 'OTHER'
+      /** @description The causes for the mismatch */
+      causes: components['schemas']['DiscrepancyCause'][]
+      /** @description Any extra detail about the discrepancy */
+      detail?: string
+      /**
+       * @description The priority of resolving the discrepancy
+       * @enum {string}
+       */
+      priority: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK'
+      /** @description The recommended action that needs to be taken for this discrepancy */
+      action: string
+    }
+    /** @description The causes for the mismatch */
+    DiscrepancyCause: {
+      /**
+       * @description A mismatch cause category
+       * @enum {string}
+       */
+      category: 'CRD' | 'ERSED' | 'HDCED' | 'LED' | 'PED' | 'PRRD' | 'SED' | 'TUSED' | 'OTHER'
+      /**
+       * @description A subcategory for a cause of the mismatch
+       * @enum {string}
+       */
+      subCategory:
+        | 'SDS_PLUS'
+        | 'NEW_RULES_NOT_APPLIED'
+        | 'FOURTEEN_DAY_RULE_NOT_APPLIED'
+        | 'INELIGIBLE_FOR_HDC'
+        | 'RECALL_RELATED'
+        | 'DATE_NOT_CALCULATED'
+        | 'REMAND_OR_UAL_RELATED'
+        | 'OTHER'
+      /** @description Any other information on the mismatch cause */
+      other?: string
+    }
+    ComparisonDiscrepancySummary: {
+      /**
+       * @description The impact of the discrepancy
+       * @enum {string}
+       */
+      impact: 'POTENTIAL_RELEASE_IN_ERROR' | 'POTENTIAL_UNLAWFUL_DETENTION' | 'OTHER'
+      /** @description The causes for the mismatch */
+      causes: components['schemas']['DiscrepancyCause'][]
+      /** @description Any extra detail about the discrepancy */
+      detail?: string
+      /**
+       * @description The priority of resolving the discrepancy
+       * @enum {string}
+       */
+      priority: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK'
+      /** @description The recommended action that needs to be taken for this discrepancy */
+      action: string
+    }
     ManualComparisonInput: {
       /** @description The prisoner ids the analysis was run against */
       prisonerIds: string[]
@@ -602,12 +673,14 @@ export interface components {
       lastName: string
       isValid: boolean
       isMatch: boolean
+      hasDiscrepancyRecord: boolean
       /** @enum {string} */
       mismatchType:
         | 'NONE'
         | 'RELEASE_DATES_MISMATCH'
         | 'VALIDATION_ERROR'
         | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
         | 'VALIDATION_ERROR_HDC4_PLUS'
       isActiveSexOffender?: boolean
       validationMessages: components['schemas']['ValidationMessage'][]
@@ -1090,6 +1163,91 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['Comparison']
+        }
+      }
+    }
+  }
+  /**
+   * Returns the latest discrepancy for a comparison person
+   * @description This endpoint returns the mismatch discrepancy for a particular comparison person
+   */
+  getComparisonPersonDiscrepancy: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+        /**
+         * @description The short reference of the mismatch
+         * @example A1B2C3D4
+         */
+        mismatchReference: string
+      }
+    }
+    responses: {
+      /** @description Returns a summary of a comparison person discrepancy */
+      200: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+    }
+  }
+  /**
+   * Create a copmarison person discrepancy record
+   * @description This endpoint will create a new comparison person discrepancy and return a summary of it
+   */
+  createComparisonPersonDiscrepancy: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+        /**
+         * @description The short reference of the mismatch
+         * @example A1B2C3D4
+         */
+        mismatchReference: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateComparisonDiscrepancyRequest']
+      }
+    }
+    responses: {
+      /** @description New discrepancy created and summary returned */
+      200: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
     }
