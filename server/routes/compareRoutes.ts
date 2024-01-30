@@ -50,11 +50,12 @@ export default class CompareRoutes {
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
     const usersCaseload = await this.prisonerService.getUsersCaseloads(res.locals.user.username, res.locals.user.token)
     const caseloadItems = usersCaseload.map(caseload => ({ text: caseload.description, value: caseload.caseLoadId }))
-
+    caseloadItems.push({ text: 'All prisons in caseload **Run With Caution**', value: 'all' })
     caseloadItems.unshift({
       text: '',
       value: '',
     })
+    caseloadItems.sort((a, b) => a.text.localeCompare(b.text))
 
     let errorMessage = ''
 
