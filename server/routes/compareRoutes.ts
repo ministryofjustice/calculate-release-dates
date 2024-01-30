@@ -121,7 +121,7 @@ export default class CompareRoutes {
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
     return res.render('pages/compare/resultOverview', {
       allowBulkComparison,
-      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap, token),
+      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap),
       bulkComparisonResultId,
     })
   }
@@ -133,7 +133,7 @@ export default class CompareRoutes {
     const allowManualComparison = this.bulkLoadService.allowManualComparison(userRoles)
     return res.render('pages/compare/manualResultOverview', {
       allowManualComparison,
-      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap, token),
+      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap),
       bulkComparisonResultId,
     })
   }

@@ -2,7 +2,6 @@ import type { ComparisonOverview } from '../@types/calculateReleaseDates/calcula
 import ComparisonResultMismatch from './ComparisonResultMismatch'
 import ComparisonType from '../enumerations/comparisonType'
 import Hdced4PlusResultDate from './Hdced4PlusResultDate'
-import PrisonApiClient from '../api/prisonApiClient'
 
 export default class ComparisonResultOverviewModel {
   comparisonShortReference: string
@@ -33,7 +32,7 @@ export default class ComparisonResultOverviewModel {
 
   hdced4PlusMismatches: Hdced4PlusResultDate[]
 
-  constructor(comparison: ComparisonOverview, prisons: Map<string, string>, token: string) {
+  constructor(comparison: ComparisonOverview, prisons: Map<string, string>) {
     this.comparisonShortReference = comparison.comparisonShortReference
     const comparisonType = comparison.comparisonType as ComparisonType
     if (comparisonType !== ComparisonType.MANUAL) {
