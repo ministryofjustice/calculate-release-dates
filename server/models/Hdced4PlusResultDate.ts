@@ -5,18 +5,21 @@ export default class Hdced4PlusResultDate {
 
   value: { text: string }
 
-  constructor(comparisonMismatchSummary: ComparisonMismatchSummary) {
-    this.key = { html: this.getOffenderDetails(comparisonMismatchSummary) }
+  constructor(comparisonMismatchSummary: ComparisonMismatchSummary, prison: string) {
+    this.key = { html: this.getOffenderDetails(comparisonMismatchSummary, prison) }
     const message = comparisonMismatchSummary.hdcedFourPlusDate
     this.value = {
       text: message,
     }
   }
 
-  private getOffenderDetails(comparisonMismatchSummary: ComparisonMismatchSummary) {
+  private getOffenderDetails(comparisonMismatchSummary: ComparisonMismatchSummary, prison: string) {
     let offenderDetails = `<span class="comparison-person">${comparisonMismatchSummary.personId}</span>`
     if (comparisonMismatchSummary.lastName) {
-      offenderDetails += `<span>${comparisonMismatchSummary.lastName}</span>`
+      offenderDetails += `<span class="comparison-person">${comparisonMismatchSummary.lastName}</span>`
+    }
+    if (prison === 'all') {
+      offenderDetails += `<span>${comparisonMismatchSummary.establishment}</span>`
     }
     return offenderDetails
   }

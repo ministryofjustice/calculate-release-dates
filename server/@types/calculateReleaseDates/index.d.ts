@@ -577,6 +577,7 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
         | 'VALIDATION_ERROR_HDC4_PLUS'
       hdcedFourPlusDate: string
+      establishment: string
     }
     ComparisonOverview: {
       comparisonShortReference: string

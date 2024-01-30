@@ -2,6 +2,7 @@ import type { ComparisonOverview } from '../@types/calculateReleaseDates/calcula
 import ComparisonResultMismatch from './ComparisonResultMismatch'
 import ComparisonType from '../enumerations/comparisonType'
 import Hdced4PlusResultDate from './Hdced4PlusResultDate'
+import PrisonApiClient from '../api/prisonApiClient'
 
 export default class ComparisonResultOverviewModel {
   comparisonShortReference: string
@@ -32,7 +33,7 @@ export default class ComparisonResultOverviewModel {
 
   hdced4PlusMismatches: Hdced4PlusResultDate[]
 
-  constructor(comparison: ComparisonOverview, prisons: Map<string, string>) {
+  constructor(comparison: ComparisonOverview, prisons: Map<string, string>, token: string) {
     this.comparisonShortReference = comparison.comparisonShortReference
     const comparisonType = comparison.comparisonType as ComparisonType
     if (comparisonType !== ComparisonType.MANUAL) {
@@ -82,6 +83,7 @@ export default class ComparisonResultOverviewModel {
     this.hdced4PlusMismatches = comparison.mismatches
       .filter(mismatch => !['VALIDATION_ERROR', 'VALIDATION_ERROR_HDC4_PLUS'].includes(mismatch.misMatchType))
       .filter(mismatch => !!mismatch.hdcedFourPlusDate)
-      .map(mismatch => new Hdced4PlusResultDate(mismatch))
+      .sort((a, b) => a.establishment.localeCompare(b.establishment))
+      .map(mismatch => new Hdced4PlusResultDate(mismatch, comparison.prison))
   }
 }

@@ -45,11 +45,12 @@ export default class CompareRoutes {
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
     const usersCaseload = await this.prisonerService.getUsersCaseloads(res.locals.user.username, res.locals.user.token)
     const caseloadItems = usersCaseload.map(caseload => ({ text: caseload.description, value: caseload.caseLoadId }))
-
+    caseloadItems.push({ text: 'All prisons in caseload **Run With Caution**', value: 'all' })
     caseloadItems.unshift({
       text: '',
       value: '',
     })
+    caseloadItems.sort((a, b) => a.text.localeCompare(b.text))
 
     let errorMessage = ''
 
@@ -120,7 +121,7 @@ export default class CompareRoutes {
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
     return res.render('pages/compare/resultOverview', {
       allowBulkComparison,
-      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap),
+      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap, token),
       bulkComparisonResultId,
     })
   }
@@ -132,7 +133,7 @@ export default class CompareRoutes {
     const allowManualComparison = this.bulkLoadService.allowManualComparison(userRoles)
     return res.render('pages/compare/manualResultOverview', {
       allowManualComparison,
-      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap),
+      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap, token),
       bulkComparisonResultId,
     })
   }
