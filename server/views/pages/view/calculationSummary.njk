@@ -4,6 +4,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
 
 {% set pageTitle = applicationName + " - calculation summary" %}
 {% set pageId = "view-calculation-summary" %}
@@ -16,7 +18,7 @@
 {% endblock %}
 
 {% block beforeContent %}
-    {{super()}}
+    {{ super() }}
 
     {% if model.calculationSummaryUnavailable %}
         {% if model.dpsEntryPoint %}
@@ -40,17 +42,47 @@
     {% include "../partials/ersedCannotHappenNotificationBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Dates {% if model.prisonerDetail %}for {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}
-                {% endif %}
-            </h1>
+            <span class="govuk-caption-xl">Look up a calculation</span>
+            <h1 class="govuk-heading-xl">Calculation summary</h1>
+
+            {% if model.calculationReason.isOther %}
+                {% set reason = "Other (" + model.otherReasonDescription + ")" %}
+            {% else %}
+                {% set reason = model.calculationReason.displayName %}
+            {% endif %}
+
+            {% if model.calculationReasonVisible and model.calculationReason|length %}
+                <h2 class="govuk-heading-m">Calculation details</h2>
+                {{ govukSummaryList({
+                    classes: "govuk-summary-list--no-border",
+                    rows: [
+                        {
+                            key: {
+                            text: "Date"
+                        },
+                            value: {
+                            text: model.calculationDate
+                        }
+                        },{
+                            key: {
+                                text: "Reason"
+                            },
+                            value: {
+                                text: reason
+                            }
+                        }]
+                }) }}
+            {% endif %}
             <p class="govuk-body govuk-!-margin-top-8">
-                <a href={{"/view/" + model.nomsId + "/calculation-summary/" + model.calculationRequestId + "/print"}}>Print calculation summary</a>
+                <a href={{ "/view/" + model.nomsId + "/calculation-summary/" + model.calculationRequestId + "/print" }}>Print
+                    calculation summary</a>
             </p>
             <p class="govuk-body">
                 <a class="govuk-link" href="/view/search/prisoners">View previous calculation for another person</a>
             </p>
             <p class="govuk-body govuk-!-margin-bottom-0">
-                <a class="govuk-link" href={{model.digitalPrisonServicesUrl}}>Back to Digital Prison Service (DPS) search</a>
+                <a class="govuk-link" href={{ model.digitalPrisonServicesUrl }}>Back to Digital Prison Service (DPS)
+                    search</a>
             </p>
 
             <h2 class="govuk-heading-l govuk-!-margin-top-9">Final release dates with adjustments</h2>
@@ -90,15 +122,17 @@
             <nav class="pagination" role="navigation" aria-label="Pagination">
                 <ul class="pagination__list">
                     <li class="pagination__item pagination__item--previous">
-                        <a href={{"/view/" + nomsId + "/sentences-and-offences/" + model.calculationRequestId}} class="govuk-link pagination__link" data-qa="previous-page-button">
-                            <span class="pagination__link-title">
-                                <svg class="gem-c-pagination__link-icon" xmlns="http://www.w3.org/2000/svg" height="13" width="17" viewBox="0 0 17 13">
+                        <a href={{ "/view/" + nomsId + "/sentences-and-offences/" + model.calculationRequestId }} class="govuk-link
+                           pagination__link" data-qa="previous-page-button">
+                        <span class="pagination__link-title">
+                                <svg class="gem-c-pagination__link-icon" xmlns="http://www.w3.org/2000/svg" height="13"
+                                     width="17" viewBox="0 0 17 13">
                                     <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
                                 </svg>
                                 <span class="pagination__link-text">Previous page</span>
                             </span>
-                            <span class="pagination__link-divider visually-hidden">:</span>
-                            <span class="pagination__link-label">Release dates</span>
+                        <span class="pagination__link-divider visually-hidden">:</span>
+                        <span class="pagination__link-label">Release dates</span>
                         </a>
                     </li>
                 </ul>

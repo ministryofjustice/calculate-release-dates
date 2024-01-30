@@ -11,6 +11,8 @@ import SentenceTypes from '../models/SentenceTypes'
 import { GenuineOverride } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewRouteSentenceAndOffenceViewModel from '../models/ViewRouteSentenceAndOffenceViewModel'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
+import { longDateFormat } from '../utils/utils'
+import config from '../config'
 
 const overrideReasons = {
   terror: 'of terrorism or terror-related offences',
@@ -137,6 +139,12 @@ export default class ViewRoutes {
         calculationRequestId,
         token
       )
+      const bookingCalculation = await this.calculateReleaseDatesService.getCalculationResults(
+        username,
+        calculationRequestId,
+        token
+      )
+
       const override = await this.getOverride(releaseDates.calculationReference, token)
       const hasNone = releaseDates.dates.None !== undefined
       const approvedDates = releaseDates.approvedDates ? this.indexBy(releaseDates.approvedDates) : null
@@ -151,6 +159,12 @@ export default class ViewRoutes {
         true,
         releaseDates.calculationReference,
         nonFridayReleaseAdjustments,
+        config.featureToggles.calculationReasonToggle,
+        bookingCalculation.calculationReason,
+        bookingCalculation.otherReasonDescription,
+        bookingCalculation.calculationDate === undefined
+          ? undefined
+          : longDateFormat(bookingCalculation.calculationDate),
         breakdown?.calculationBreakdown,
         breakdown?.releaseDatesWithAdjustments,
         null,
@@ -173,6 +187,10 @@ export default class ViewRoutes {
           true,
           releaseDates.calculationReference,
           nonFridayReleaseAdjustments,
+          config.featureToggles.calculationReasonToggle,
+          null,
+          null,
+          null,
           null,
           null,
           {

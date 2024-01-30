@@ -23,6 +23,7 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -443,6 +444,9 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('HDCED with adjustments')
           expect(res.text).toContain('13 May 2029')
           expect(res.text).toContain('14 May 2029 minus 1 day')
+          expect(res.text).not.toContain('Reason')
+          expect(res.text).not.toContain('A calculation reason')
+          expect(res.text).not.toContain('13 January 2024')
         })
     })
 
@@ -551,6 +555,63 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain(
             'These dates have been manually entered by the Specialist support team because of terrorism or terror-related offences'
           )
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary should display the reason if it exists and the toggle is enabled', () => {
+      stubbedCalculationResults.calculationReason = { id: 1, displayName: 'A calculation reason', isOther: false }
+      stubbedCalculationResults.calculationDate = '2024-01-13'
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
+        stubbedNoNonFridayReleaseAdjustments
+      )
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
+
+      config.featureToggles.calculationReasonToggle = true
+
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Reason')
+          expect(res.text).toContain('A calculation reason')
+          expect(res.text).toContain('13 January 2024')
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary should display the other reason if it was selected', () => {
+      stubbedCalculationResults.calculationReason = { id: 2, displayName: 'Other', isOther: true }
+      stubbedCalculationResults.otherReasonDescription = 'Another reason for calculation'
+      stubbedCalculationResults.calculationDate = '2024-01-19'
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
+        stubbedNoNonFridayReleaseAdjustments
+      )
+      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+        calculationBreakdown: stubbedCalculationBreakdown,
+        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      })
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
+
+      config.featureToggles.calculationReasonToggle = true
+
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Reason')
+          expect(res.text).toContain('Other (Another reason for calculation)')
+          expect(res.text).toContain('19 January 2024')
         })
     })
   })

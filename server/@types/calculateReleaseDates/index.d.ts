@@ -452,6 +452,10 @@ export interface components {
       approvedDates?: {
         [key: string]: string | undefined
       }
+      calculationReason?: components['schemas']['CalculationReason']
+      otherReasonDescription?: string
+      /** Format: date */
+      calculationDate?: string
     }
     CalculationFragments: {
       breakdownHtml: string
