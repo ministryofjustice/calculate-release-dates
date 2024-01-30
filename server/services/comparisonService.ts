@@ -68,6 +68,17 @@ export default class ComparisonService {
     return new CalculateReleaseDatesApiClient(token).getMismatchDiscrepancy(bulkComparisonId, bulkComparisonMismatchId)
   }
 
+  async getManualComparisonPersonDiscrepancy(
+    bulkComparisonId: string,
+    bulkComparisonMismatchId: string,
+    token: string
+  ): Promise<ComparisonPersonDiscrepancySummary> {
+    return new CalculateReleaseDatesApiClient(token).getManualMismatchDiscrepancy(
+      bulkComparisonId,
+      bulkComparisonMismatchId
+    )
+  }
+
   async createComparisonPersonDiscrepancy(
     bulkComparisonId: string,
     bulkComparisonMismatchId: string,
@@ -75,6 +86,19 @@ export default class ComparisonService {
     token: string
   ): Promise<ComparisonPersonDiscrepancySummary> {
     return new CalculateReleaseDatesApiClient(token).createMismatchDiscrepancy(
+      bulkComparisonId,
+      bulkComparisonMismatchId,
+      discrepancy
+    )
+  }
+
+  async createManualComparisonPersonDiscrepancy(
+    bulkComparisonId: string,
+    bulkComparisonMismatchId: string,
+    discrepancy: ComparisonPersonDiscrepancyRequest,
+    token: string
+  ): Promise<ComparisonPersonDiscrepancySummary> {
+    return new CalculateReleaseDatesApiClient(token).createManualMismatchDiscrepancy(
       bulkComparisonId,
       bulkComparisonMismatchId,
       discrepancy

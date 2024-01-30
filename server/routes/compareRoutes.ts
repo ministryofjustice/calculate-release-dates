@@ -246,7 +246,7 @@ export default class CompareRoutes {
 
     let discrepancy = null
     if (comparisonMismatch.hasDiscrepancyRecord) {
-      const discrepancySummary = await this.comparisonService.getComparisonPersonDiscrepancy(
+      const discrepancySummary = await this.comparisonService.getManualComparisonPersonDiscrepancy(
         bulkComparisonResultId,
         bulkComparisonDetailId,
         token
@@ -287,7 +287,7 @@ export default class CompareRoutes {
         action,
       }
 
-      await this.comparisonService.createComparisonPersonDiscrepancy(
+      await this.comparisonService.createManualComparisonPersonDiscrepancy(
         bulkComparisonResultId,
         bulkComparisonDetailId,
         discrepancy,
@@ -304,7 +304,7 @@ export default class CompareRoutes {
       causes: this.summaryCausesToFormCauses(mismatchCauses),
     }
 
-    const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
+    const comparisonMismatch = await this.comparisonService.getManualMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
       token
