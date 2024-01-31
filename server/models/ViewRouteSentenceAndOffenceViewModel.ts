@@ -37,17 +37,17 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
-    public validationErrors?: ErrorMessages
+    public validationErrors?: ErrorMessages,
   ) {
     this.adjustments = new ViewRouteAdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
-      groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values()
+      groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values(),
     )
       .map(sentences => new ViewRouteCourtCaseTableViewModel(sentences))
       .sort((a, b) => a.caseSequence - b.caseSequence)
     this.sentenceSequenceToSentence = indexBy(
       sentencesAndOffences,
-      (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence
+      (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence,
     )
     const reducer = (previousValue: number, currentValue: PrisonApiOffenderSentenceAndOffences) =>
       previousValue + currentValue.offences.length
@@ -91,15 +91,15 @@ export default class ViewRouteSentenceAndOffenceViewModel {
 
   public getMultipleOffencesToASentence(): object {
     return Array.from(
-      groupBy(this.sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values()
+      groupBy(this.sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values(),
     )
       .filter((sentences: PrisonApiOffenderSentenceAndOffences[]) =>
-        sentences.some((sent: PrisonApiOffenderSentenceAndOffences) => sent.offences.length > 1)
+        sentences.some((sent: PrisonApiOffenderSentenceAndOffences) => sent.offences.length > 1),
       )
       .flatMap(sentences =>
         sentences.map((sentence: PrisonApiOffenderSentenceAndOffences) => {
           return sentence.offences.length > 1 ? [sentence.caseSequence, sentence.lineSequence] : undefined
-        })
+        }),
       )
       .filter((it: []) => it !== undefined)
   }

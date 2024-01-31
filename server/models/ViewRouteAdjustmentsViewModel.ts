@@ -44,45 +44,45 @@ export default class ViewRouteAdjustmentsViewModel {
 
   constructor(
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
-    sententencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
+    sententencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
   ) {
     this.additionalDaysAwarded = this.adjustmentViewModel(
       adjustments.bookingAdjustments.filter(a => a.type === 'ADDITIONAL_DAYS_AWARDED'),
-      sententencesAndOffences
+      sententencesAndOffences,
     )
     this.recallSentenceRemand = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'RECALL_SENTENCE_REMAND'),
-      sententencesAndOffences
+      sententencesAndOffences,
     )
     this.recallSentenceTaggedBail = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'RECALL_SENTENCE_TAGGED_BAIL'),
-      sententencesAndOffences
+      sententencesAndOffences,
     )
     this.remand = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'REMAND'),
-      sententencesAndOffences
+      sententencesAndOffences,
     )
     this.unusedRemand = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'UNUSED_REMAND'),
-      sententencesAndOffences
+      sententencesAndOffences,
     )
     this.restoredAdditionalDaysAwarded = this.adjustmentViewModel(
       adjustments.bookingAdjustments.filter(a => a.type === 'RESTORED_ADDITIONAL_DAYS_AWARDED'),
-      sententencesAndOffences
+      sententencesAndOffences,
     )
     this.taggedBail = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'TAGGED_BAIL'),
-      sententencesAndOffences
+      sententencesAndOffences,
     )
     this.unlawfullyAtLarge = this.adjustmentViewModel(
       adjustments.bookingAdjustments.filter(a => a.type === 'UNLAWFULLY_AT_LARGE'),
-      sententencesAndOffences
+      sententencesAndOffences,
     )
   }
 
   private adjustmentViewModel(
     adjustments: (PrisonApiBookingAdjustment | PrisonApiSentenceAdjustmentValues)[],
-    sententencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
+    sententencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
   ): AdjustmentViewModel {
     // Filter any sentence adjustments linked to a sentence thats not present on the booking (inactive).
     const filteredAdjustments = adjustments

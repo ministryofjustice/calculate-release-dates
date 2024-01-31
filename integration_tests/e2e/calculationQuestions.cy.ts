@@ -52,7 +52,7 @@ context('Calculation questions page', () => {
       .errorSummary()
       .should(
         'contain.text',
-        `You must select at least one offence. If none apply, select 'None of the sentences include Schedule 15 offences from list C'.`
+        `You must select at least one offence. If none apply, select 'None of the sentences include Schedule 15 offences from list C'.`,
       ) // Validation on not selecting anything
   })
 

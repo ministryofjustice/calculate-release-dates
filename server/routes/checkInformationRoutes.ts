@@ -14,7 +14,7 @@ export default class CheckInformationRoutes {
     private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService,
     private readonly checkInformationService: CheckInformationService,
-    private readonly questionsService: QuestionsService
+    private readonly questionsService: QuestionsService,
   ) {
     // intentionally left blank
   }
@@ -76,14 +76,14 @@ export default class CheckInformationRoutes {
     const calculationRequestModel = await this.calculateReleaseDatesService.getCalculationRequestModel(
       req,
       userInputs,
-      nomsId
+      nomsId,
     )
 
     const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
       username,
       nomsId,
       calculationRequestModel,
-      token
+      token,
     )
     return res.redirect(`/calculation/${nomsId}/summary/${releaseDates.calculationRequestId}`)
   }

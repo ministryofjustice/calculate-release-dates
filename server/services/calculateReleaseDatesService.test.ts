@@ -134,7 +134,7 @@ describe('Calculate release dates service tests', () => {
         'user',
         prisonerId,
         null,
-        token
+        token,
       )
 
       expect(result).toEqual(calculationResults)
@@ -230,7 +230,7 @@ describe('Calculate release dates service tests', () => {
     const result = await calculateReleaseDatesService.getWeekendAdjustments(
       'user',
       calculationResultsWithDatesInPast,
-      token
+      token,
     )
     expect(result).toEqual({})
   })

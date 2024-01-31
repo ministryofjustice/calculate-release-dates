@@ -30,7 +30,7 @@ export default class ComparisonResultMismatchDetailModel {
     this.calculatedAt = comparisonPerson.calculatedAt
     this.hdced14DayRuleApplied = this.isHdced14DayRule(
       comparisonPerson.crdsDates,
-      comparisonPerson.breakdownByReleaseDateType
+      comparisonPerson.breakdownByReleaseDateType,
     )
     this.activeSexOffender = this.isActiveSexOffender(comparisonPerson)
 
@@ -44,128 +44,128 @@ export default class ComparisonResultMismatchDetailModel {
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
         comparisonPerson.overrideDates,
-        'SLED'
+        'SLED',
       ),
       this.createDateRow(
         'ARD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'CRD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'NPD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'PRRD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'LED',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
         comparisonPerson.overrideDates,
-        'SLED'
+        'SLED',
       ),
       this.createDateRow(
         'HDCED4PLUS',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'HDCED',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'PED',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'HDCAD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'APD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'ROTL',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'ERSED',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'ETD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'MTD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'LTD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'TUSED',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'Tariff',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'DPRRD',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'TERSED',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
       this.createDateRow(
         'ESED',
         comparisonPerson.crdsDates,
         comparisonPerson.nomisDates,
-        comparisonPerson.overrideDates
+        comparisonPerson.overrideDates,
       ),
     ].filter(row => row)
   }
@@ -181,7 +181,7 @@ export default class ComparisonResultMismatchDetailModel {
     overrideDates: {
       [key: string]: string
     },
-    crdsDateKey: string = ''
+    crdsDateKey: string = '',
   ): ({ text: string } | { html: string })[] {
     if (crdsDates[crdsDateKey] || crdsDates[key] || nomisDates[key] || overrideDates[key]) {
       const dateRow: ({ text: string } | { html: string })[] = [{ text: key }]
@@ -191,14 +191,14 @@ export default class ComparisonResultMismatchDetailModel {
             key,
             this.formatDate(crdsDates[crdsDateKey] ?? crdsDates[key]),
             this.formatDate(nomisDates[key]),
-            this.formatDate(overrideDates[key])
+            this.formatDate(overrideDates[key]),
           ),
         })
       }
       dateRow.push(
         { text: this.formatDate(crdsDates[crdsDateKey] ?? crdsDates[key]) },
         { text: this.formatDate(nomisDates[key]) },
-        { text: this.formatDate(overrideDates[key]) }
+        { text: this.formatDate(overrideDates[key]) },
       )
       return dateRow
     }
@@ -238,7 +238,7 @@ export default class ComparisonResultMismatchDetailModel {
 
   private isHdced14DayRule(
     crdsDates: { [key: string]: string },
-    breakdown: { [key: string]: ReleaseDateCalculationBreakdown }
+    breakdown: { [key: string]: ReleaseDateCalculationBreakdown },
   ): string {
     if (crdsDates.HDCED) {
       return breakdown?.HDCED?.rules?.includes('HDCED_MINIMUM_CUSTODIAL_PERIOD') ? 'Yes' : 'No'

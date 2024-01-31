@@ -41,7 +41,7 @@ export default class CalculateReleaseDatesService {
     username: string,
     prisonerId: string,
     calculationRequestModel: CalculationRequestModel,
-    token: string
+    token: string,
   ): Promise<CalculationResults> {
     return new CalculateReleaseDatesApiClient(token).calculateTestReleaseDates(prisonerId, calculationRequestModel)
   }
@@ -50,18 +50,18 @@ export default class CalculateReleaseDatesService {
     username: string,
     prisonerId: string,
     calculationRequestModel: CalculationRequestModel,
-    token: string
+    token: string,
   ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(
       prisonerId,
-      calculationRequestModel
+      calculationRequestModel,
     )
   }
 
   async getCalculationResults(
     username: string,
     calculationRequestId: number,
-    token: string
+    token: string,
   ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
   }
@@ -70,11 +70,11 @@ export default class CalculateReleaseDatesService {
     username: string,
     calculationReference: string,
     token: string,
-    checkForChanges = false
+    checkForChanges = false,
   ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).getCalculationResultsByReference(
       calculationReference,
-      checkForChanges
+      checkForChanges,
     )
   }
 
@@ -88,14 +88,14 @@ export default class CalculateReleaseDatesService {
 
   async getBookingAndSentenceAdjustments(
     bookingId: number,
-    token: string
+    token: string,
   ): Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments> {
     return new CalculateReleaseDatesApiClient(token).getAnalyzedAdjustments(bookingId)
   }
 
   async getBreakdown(
     calculationRequestId: number,
-    token: string
+    token: string,
   ): Promise<{
     calculationBreakdown?: CalculationBreakdown
     releaseDatesWithAdjustments: ReleaseDateWithAdjustments[]
@@ -119,7 +119,7 @@ export default class CalculateReleaseDatesService {
   async getCalculationRequestModel(
     req: Request,
     userInputs: CalculationUserInputs,
-    nomsId: string
+    nomsId: string,
   ): Promise<CalculationRequestModel> {
     return {
       calculationUserInputs: userInputs,
@@ -133,10 +133,10 @@ export default class CalculateReleaseDatesService {
   async getActiveAnalyzedSentencesAndOffences(
     username: string,
     bookingId: number,
-    token: string
+    token: string,
   ): Promise<AnalyzedSentenceAndOffences[]> {
     const sentencesAndOffences = await new CalculateReleaseDatesApiClient(token).getAnalyzedSentencesAndOffences(
-      bookingId
+      bookingId,
     )
     if (sentencesAndOffences.length === 0) {
       throw FullPageError.noSentences()
@@ -149,21 +149,21 @@ export default class CalculateReleaseDatesService {
     if (breakdown.breakdownByReleaseDateType.LED) {
       const ledDetails = breakdown.breakdownByReleaseDateType.LED
       releaseDatesWithAdjustments.push(
-        this.ledRulesToAdjustmentRow(ledDetails.releaseDate, ledDetails.unadjustedDate, ledDetails.adjustedDays)
+        this.ledRulesToAdjustmentRow(ledDetails.releaseDate, ledDetails.unadjustedDate, ledDetails.adjustedDays),
       )
     }
     if (breakdown.breakdownByReleaseDateType.SLED || breakdown.breakdownByReleaseDateType.SED) {
       CalculateReleaseDatesService.standardAdjustmentRow(
         breakdown.breakdownByReleaseDateType.SLED ? ReleaseDateType.SLED : ReleaseDateType.SED,
         breakdown.breakdownByReleaseDateType.SLED || breakdown.breakdownByReleaseDateType.SED,
-        releaseDatesWithAdjustments
+        releaseDatesWithAdjustments,
       )
     }
     if (breakdown.breakdownByReleaseDateType.CRD || breakdown.breakdownByReleaseDateType.ARD) {
       CalculateReleaseDatesService.standardAdjustmentRow(
         breakdown.breakdownByReleaseDateType.CRD ? ReleaseDateType.CRD : ReleaseDateType.ARD,
         breakdown.breakdownByReleaseDateType.CRD || breakdown.breakdownByReleaseDateType.ARD,
-        releaseDatesWithAdjustments
+        releaseDatesWithAdjustments,
       )
     }
     if (breakdown.breakdownByReleaseDateType.HDCED) {
@@ -174,8 +174,8 @@ export default class CalculateReleaseDatesService {
           hdcedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
           hdcedDetails.releaseDate,
           hdcedDetails.unadjustedDate,
-          hdcedDetails.adjustedDays
-        )
+          hdcedDetails.adjustedDays,
+        ),
       )
     }
     if (breakdown.breakdownByReleaseDateType.TUSED) {
@@ -186,8 +186,8 @@ export default class CalculateReleaseDatesService {
           tusedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
           tusedDetails.releaseDate,
           tusedDetails.unadjustedDate,
-          tusedDetails.adjustedDays
-        )
+          tusedDetails.adjustedDays,
+        ),
       )
     }
     if (breakdown.breakdownByReleaseDateType.ERSED) {
@@ -204,8 +204,8 @@ export default class CalculateReleaseDatesService {
             ersedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
             ersedDetails.releaseDate,
             ersedDetails.unadjustedDate,
-            ersedDetails.adjustedDays
-          )
+            ersedDetails.adjustedDays,
+          ),
         )
       }
     }
@@ -215,16 +215,16 @@ export default class CalculateReleaseDatesService {
   private static standardAdjustmentRow(
     releaseDateType: ReleaseDateType,
     releaseDateCalculationBreakdown: ReleaseDateCalculationBreakdown,
-    releaseDatesWithAdjustments: ReleaseDateWithAdjustments[]
+    releaseDatesWithAdjustments: ReleaseDateWithAdjustments[],
   ) {
     releaseDatesWithAdjustments.push(
       CalculateReleaseDatesService.createAdjustmentRow(
         releaseDateCalculationBreakdown.releaseDate,
         releaseDateType,
         `${longDateFormat(releaseDateCalculationBreakdown.unadjustedDate)} ${daysArithmeticToWords(
-          releaseDateCalculationBreakdown.adjustedDays
-        )}`
-      )
+          releaseDateCalculationBreakdown.adjustedDays,
+        )}`,
+      ),
     )
   }
 
@@ -233,14 +233,14 @@ export default class CalculateReleaseDatesService {
     rulesWithExtraAdjustments: RulesWithExtraAdjustments,
     releaseDate: string,
     unadjustedDate: string,
-    adjustedDays: number
+    adjustedDays: number,
   ): ReleaseDateWithAdjustments {
     if (rules.includes(CalculationRule.HDCED_MINIMUM_CUSTODIAL_PERIOD)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_MINIMUM_CUSTODIAL_PERIOD
       return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
         ReleaseDateType.HDCED,
-        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`
+        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`,
       )
     }
 
@@ -250,8 +250,8 @@ export default class CalculateReleaseDatesService {
         releaseDate,
         ReleaseDateType.HDCED,
         `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
-          adjustedDays
-        )}`
+          adjustedDays,
+        )}`,
       )
     }
 
@@ -260,7 +260,7 @@ export default class CalculateReleaseDatesService {
       return CalculateReleaseDatesService.createAdjustmentRow(
         releaseDate,
         ReleaseDateType.HDCED,
-        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`
+        `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)}`,
       )
     }
     return null
@@ -271,7 +271,7 @@ export default class CalculateReleaseDatesService {
     rulesWithExtraAdjustments: RulesWithExtraAdjustments,
     releaseDate: string,
     unadjustedDate: string,
-    adjustedDays: number
+    adjustedDays: number,
   ): ReleaseDateWithAdjustments {
     if (rules.includes('ERSED_ONE_YEAR')) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments.ERSED_ONE_YEAR
@@ -279,8 +279,8 @@ export default class CalculateReleaseDatesService {
         releaseDate,
         ReleaseDateType.ERSED,
         `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)} ${arithmeticToWords(
-          ruleSpecificAdjustment
-        )}`
+          ruleSpecificAdjustment,
+        )}`,
       )
     }
     if (rules.includes('ERSED_MAX_PERIOD')) {
@@ -289,14 +289,14 @@ export default class CalculateReleaseDatesService {
         releaseDate,
         ReleaseDateType.ERSED,
         `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)} ${arithmeticToWords(
-          ruleSpecificAdjustment
-        )}`
+          ruleSpecificAdjustment,
+        )}`,
       )
     }
     return CalculateReleaseDatesService.createAdjustmentRow(
       releaseDate,
       ReleaseDateType.ERSED,
-      `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)}`
+      `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)}`,
     )
   }
 
@@ -305,7 +305,7 @@ export default class CalculateReleaseDatesService {
     rulesWithExtraAdjustments: RulesWithExtraAdjustments,
     releaseDate: string,
     unadjustedDate: string,
-    adjustedDays: number
+    adjustedDays: number,
   ): ReleaseDateWithAdjustments {
     if (rules.includes(CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments[CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y]
@@ -313,8 +313,8 @@ export default class CalculateReleaseDatesService {
         releaseDate,
         ReleaseDateType.TUSED,
         `${longDateFormat(unadjustedDate)} ${arithmeticToWords(ruleSpecificAdjustment)} ${daysArithmeticToWords(
-          adjustedDays
-        )}`
+          adjustedDays,
+        )}`,
       )
     }
     return null
@@ -323,19 +323,19 @@ export default class CalculateReleaseDatesService {
   private ledRulesToAdjustmentRow(
     releaseDate: string,
     unadjustedDate: string,
-    adjustedDays: number
+    adjustedDays: number,
   ): ReleaseDateWithAdjustments {
     return CalculateReleaseDatesService.createAdjustmentRow(
       releaseDate,
       ReleaseDateType.LED,
-      `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)}`
+      `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)}`,
     )
   }
 
   private static createAdjustmentRow(
     releaseDate: string,
     releaseDateType: ReleaseDateType,
-    hintText: string
+    hintText: string,
   ): ReleaseDateWithAdjustments {
     return {
       releaseDate,
@@ -356,7 +356,7 @@ export default class CalculateReleaseDatesService {
     username: string,
     calculationRequestId: number,
     token: string,
-    body: SubmitCalculationRequest
+    body: SubmitCalculationRequest,
   ): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).confirmCalculation(calculationRequestId, body)
   }
@@ -364,7 +364,7 @@ export default class CalculateReleaseDatesService {
   async getWeekendAdjustments(
     username: string,
     calculation: BookingCalculation,
-    token: string
+    token: string,
   ): Promise<{ [key: string]: WorkingDay }> {
     const client = new CalculateReleaseDatesApiClient(token)
     const adjustments: { [key: string]: WorkingDay } = {}
@@ -426,7 +426,7 @@ export default class CalculateReleaseDatesService {
 
   async getNonFridayReleaseAdjustments(
     calculation: BookingCalculation,
-    token: string
+    token: string,
   ): Promise<{ [key: string]: NonFridayReleaseDay }> {
     const client = new CalculateReleaseDatesApiClient(token)
     const adjustments: { [key: string]: NonFridayReleaseDay } = {}

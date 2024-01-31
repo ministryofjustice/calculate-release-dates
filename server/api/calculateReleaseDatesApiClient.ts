@@ -40,7 +40,7 @@ export default class CalculateReleaseDatesApiClient {
     this.restClient = new RestClient(
       'Calculate release dates API',
       config.apis.calculateReleaseDates as ApiConfig,
-      token
+      token,
     )
   }
 
@@ -52,7 +52,7 @@ export default class CalculateReleaseDatesApiClient {
 
   calculatePreliminaryReleaseDates(
     prisonerId: string,
-    calculationRequestModel: CalculationRequestModel
+    calculationRequestModel: CalculationRequestModel,
   ): Promise<BookingCalculation> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}`,
@@ -62,7 +62,7 @@ export default class CalculateReleaseDatesApiClient {
 
   calculateTestReleaseDates(
     prisonerId: string,
-    calculationRequestModel: CalculationRequestModel
+    calculationRequestModel: CalculationRequestModel,
   ): Promise<CalculationResults> {
     return this.restClient.post({
       path: `/calculation/${prisonerId}/test`,
@@ -78,7 +78,7 @@ export default class CalculateReleaseDatesApiClient {
 
   getCalculationResultsByReference(
     calculationReference: string,
-    checkForChanges: boolean
+    checkForChanges: boolean,
   ): Promise<BookingCalculation> {
     let url = `/calculationReference/${calculationReference}`
     if (checkForChanges) {
@@ -236,7 +236,7 @@ export default class CalculateReleaseDatesApiClient {
 
   getPrisonMismatchComparison(
     comparisonReference: string,
-    mismatchReference: string
+    mismatchReference: string,
   ): Promise<ComparisonPersonOverview> {
     return this.restClient.get({
       path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}`,
@@ -245,7 +245,7 @@ export default class CalculateReleaseDatesApiClient {
 
   getMismatchDiscrepancy(
     comparisonReference: string,
-    mismatchReference: string
+    mismatchReference: string,
   ): Promise<ComparisonPersonDiscrepancySummary> {
     return this.restClient.get({
       path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
@@ -254,7 +254,7 @@ export default class CalculateReleaseDatesApiClient {
 
   getManualMismatchDiscrepancy(
     comparisonReference: string,
-    mismatchReference: string
+    mismatchReference: string,
   ): Promise<ComparisonPersonDiscrepancySummary> {
     return this.restClient.get({
       path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
@@ -264,7 +264,7 @@ export default class CalculateReleaseDatesApiClient {
   createMismatchDiscrepancy(
     comparisonReference: string,
     mismatchReference: string,
-    discrepancy: ComparisonPersonDiscrepancyRequest
+    discrepancy: ComparisonPersonDiscrepancyRequest,
   ): Promise<ComparisonPersonDiscrepancySummary> {
     return this.restClient.post({
       path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
@@ -275,7 +275,7 @@ export default class CalculateReleaseDatesApiClient {
   createManualMismatchDiscrepancy(
     comparisonReference: string,
     mismatchReference: string,
-    discrepancy: ComparisonPersonDiscrepancyRequest
+    discrepancy: ComparisonPersonDiscrepancyRequest,
   ): Promise<ComparisonPersonDiscrepancySummary> {
     return this.restClient.post({
       path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
@@ -285,7 +285,7 @@ export default class CalculateReleaseDatesApiClient {
 
   getManualMismatchComparison(
     comparisonReference: string,
-    mismatchReference: string
+    mismatchReference: string,
   ): Promise<ComparisonPersonOverview> {
     return this.restClient.get({
       path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}`,

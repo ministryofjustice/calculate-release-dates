@@ -58,7 +58,7 @@ export default class ComparisonResultOverviewModel {
         .filter(
           mismatch =>
             mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS' ||
-            mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE'
+            mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE',
         )
         .sort((a, b) => a.personId.localeCompare(b.personId))
         .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, comparisonType))

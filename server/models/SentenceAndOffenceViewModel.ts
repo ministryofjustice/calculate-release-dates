@@ -37,17 +37,17 @@ export default class SentenceAndOffenceViewModel {
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
-    public validationErrors?: ErrorMessages
+    public validationErrors?: ErrorMessages,
   ) {
     this.adjustments = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
-      groupBy(sentencesAndOffences, (sent: AnalyzedSentenceAndOffences) => sent.caseSequence).values()
+      groupBy(sentencesAndOffences, (sent: AnalyzedSentenceAndOffences) => sent.caseSequence).values(),
     )
       .map(sentences => new CourtCaseTableViewModel(sentences))
       .sort((a, b) => a.caseSequence - b.caseSequence)
     this.sentenceSequenceToSentence = indexBy(
       sentencesAndOffences,
-      (sent: AnalyzedSentenceAndOffences) => sent.sentenceSequence
+      (sent: AnalyzedSentenceAndOffences) => sent.sentenceSequence,
     )
     const reducer = (previousValue: number, currentValue: AnalyzedSentenceAndOffences) =>
       previousValue + currentValue.offences.length
@@ -91,15 +91,15 @@ export default class SentenceAndOffenceViewModel {
 
   public getMultipleOffencesToASentence(): object {
     return Array.from(
-      groupBy(this.sentencesAndOffences, (sent: AnalyzedSentenceAndOffences) => sent.caseSequence).values()
+      groupBy(this.sentencesAndOffences, (sent: AnalyzedSentenceAndOffences) => sent.caseSequence).values(),
     )
       .filter((sentences: AnalyzedSentenceAndOffences[]) =>
-        sentences.some((sent: AnalyzedSentenceAndOffences) => sent.offences.length > 1)
+        sentences.some((sent: AnalyzedSentenceAndOffences) => sent.offences.length > 1),
       )
       .flatMap(sentences =>
         sentences.map((sentence: AnalyzedSentenceAndOffences) => {
           return sentence.offences.length > 1 ? [sentence.caseSequence, sentence.lineSequence] : undefined
-        })
+        }),
       )
       .filter((it: []) => it !== undefined)
   }

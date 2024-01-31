@@ -23,7 +23,7 @@ export default class DateValidationService {
     const oneHundredYearsAfter = now.plus({ years: 100 })
     if (dateAsDate < oneHundredYearsBefore || dateAsDate > oneHundredYearsAfter) {
       const message = `The date entered must be between ${oneHundredYearsBefore.toFormat(
-        'dd MM yyyy'
+        'dd MM yyyy',
       )} and ${oneHundredYearsAfter.toFormat('dd MM yyyy')}`
       const items = allItems.map(it => {
         return { ...it, classes: `${it.classes} govuk-input--error` }
@@ -36,7 +36,7 @@ export default class DateValidationService {
   public singleItemsErrored(
     dates: ManualEntryDate[],
     allItems: DateInputItem[],
-    enteredDate: EnteredDate
+    enteredDate: EnteredDate,
   ): StorageResponseModel {
     let i = 0
     let message = 'The date entered must include a'

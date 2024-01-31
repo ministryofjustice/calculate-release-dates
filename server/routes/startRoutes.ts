@@ -8,7 +8,7 @@ export default class StartRoutes {
   constructor(
     private readonly entryPointService: EntryPointService,
     private readonly prisonerService: PrisonerService,
-    private readonly userPermissionsService: UserPermissionsService
+    private readonly userPermissionsService: UserPermissionsService,
   ) {
     // intentionally left blank
   }

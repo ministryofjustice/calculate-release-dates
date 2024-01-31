@@ -5,7 +5,7 @@ export default class GenuineOverridesEmailTemplateService {
   public getIncorrectCalculationEmail(
     calculationReference: string,
     prisonerDetail: PrisonApiPrisoner,
-    calculationId: number
+    calculationId: number,
   ): string {
     return `
 Query ref: ${calculationReference}%0D
@@ -37,7 +37,7 @@ The Specialist support team%0D
   public getCorrectCalculationEmail(
     calculationReference: string,
     prisonerDetail: PrisonApiPrisoner,
-    calculationId: number
+    calculationId: number,
   ): string {
     return `
 Query ref: ${calculationReference}%0D

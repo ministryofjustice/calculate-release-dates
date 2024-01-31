@@ -17,7 +17,7 @@ export default class ComparisonResultMismatch {
   constructor(
     comparisonMismatchSummary: ComparisonMismatchSummary,
     comparisonId: string,
-    comparisonType: ComparisonType
+    comparisonType: ComparisonType,
   ) {
     this.key = {
       html: this.getOffenderDetails(comparisonMismatchSummary),

@@ -13,7 +13,7 @@ describe('Manual Entry Validation', () => {
   it('Should return a validation string if a pair found', () => {
     const msg = underTest.validatePairs(['ARD', 'CRD'])
     expect(msg).toBe(
-      '<div class="govuk-error-message">The following release dates cannot be selected together:<ul><li>CRD and ARD</li></ul>Reselect your dates or <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate%20release%20dates%20-%20Support">contact the Calculate release dates team</a> for support.</div>'
+      '<div class="govuk-error-message">The following release dates cannot be selected together:<ul><li>CRD and ARD</li></ul>Reselect your dates or <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate%20release%20dates%20-%20Support">contact the Calculate release dates team</a> for support.</div>',
     )
   })
   it('Should return undefined if there are no matches', () => {
@@ -23,7 +23,7 @@ describe('Manual Entry Validation', () => {
   it('Should show all pairs if there are more than one', () => {
     const msg = underTest.validatePairs(['ARD', 'CRD', 'HDCED', 'HDCAD', 'PRRD', 'PED', 'APD'])
     expect(msg).toBe(
-      '<div class="govuk-error-message">The following release dates cannot be selected together:<ul><li>CRD and ARD</li>\n<li>HDCED and PRRD</li>\n<li>HDCAD and PRRD</li>\n<li>PED and PRRD</li>\n<li>HDCED and PED</li>\n<li>HDCAD and PED</li>\n<li>HDCAD and APD</li></ul>Reselect your dates or <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate%20release%20dates%20-%20Support">contact the Calculate release dates team</a> for support.</div>'
+      '<div class="govuk-error-message">The following release dates cannot be selected together:<ul><li>CRD and ARD</li>\n<li>HDCED and PRRD</li>\n<li>HDCAD and PRRD</li>\n<li>PED and PRRD</li>\n<li>HDCED and PED</li>\n<li>HDCAD and PED</li>\n<li>HDCAD and APD</li></ul>Reselect your dates or <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate%20release%20dates%20-%20Support">contact the Calculate release dates team</a> for support.</div>',
     )
   })
 })

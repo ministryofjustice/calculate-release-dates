@@ -28,7 +28,7 @@ export default class ManualCalculationService {
     originalCalculationReference: string,
     prisonerId: string,
     req: Request,
-    token: string
+    token: string,
   ): Promise<GenuineOverrideDateResponse> {
     const request = {
       originalCalculationReference,
