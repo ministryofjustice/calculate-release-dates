@@ -2,7 +2,6 @@ import request from 'supertest'
 import type { Express } from 'express'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
-import { PrisonApiUserCaseloads } from '../@types/prisonApi/prisonClientTypes'
 import { Prisoner } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 import config from '../config'
 
@@ -11,10 +10,6 @@ jest.mock('../services/prisonerService')
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 
 let app: Express
-
-const caseload = {
-  caseLoadId: 'MDI',
-} as PrisonApiUserCaseloads
 
 const prisoner = {
   prisonerNumber: 'A123456',
