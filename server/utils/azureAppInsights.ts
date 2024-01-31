@@ -1,49 +1,35 @@
-import { config } from 'dotenv'
 import { Contracts, setup, defaultClient, TelemetryClient, DistributedTracingModes } from 'applicationinsights'
 import { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
-import applicationVersion from '../applicationVersion'
+import type { ApplicationInfo } from '../applicationInfo'
 
 export type ContextObject = {
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   [name: string]: any
 }
 
-function defaultName(): string {
-  const {
-    packageData: { name },
-  } = applicationVersion
-  return name
-}
-
-function version(): string {
-  const { buildNumber } = applicationVersion
-  return buildNumber
-}
-
-export function initialiseAppInsights(name = defaultName()): void {
-  // Loads .env file contents into | process.env
-  config()
-  if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+export function initialiseAppInsights(): void {
+  if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     // eslint-disable-next-line no-console
     console.log('Enabling azure application insights')
 
     setup().setDistributedTracingMode(DistributedTracingModes.AI_AND_W3C).start()
-    defaultClient.context.tags['ai.cloud.role'] = name
-    defaultClient.context.tags['ai.application.ver'] = version()
-    defaultClient.addTelemetryProcessor(addUserDataToRequests)
   }
 }
 
-export function buildAppInsightsClient(name = defaultName()): TelemetryClient {
-  if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
-    defaultClient.context.tags['ai.cloud.role'] = name
-    defaultClient.context.tags['ai.application.ver'] = version()
+export function buildAppInsightsClient(
+  { applicationName, buildNumber }: ApplicationInfo,
+  overrideName?: string,
+): TelemetryClient {
+  if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+    defaultClient.context.tags['ai.cloud.role'] = overrideName || applicationName
+    defaultClient.context.tags['ai.application.ver'] = buildNumber
+    defaultClient.addTelemetryProcessor(addUserDataToRequests)
     return defaultClient
   }
   return null
 }
 
-export function addUserDataToRequests(envelope: EnvelopeTelemetry, contextObjects: ContextObject): boolean {
+export function addUserDataToRequests(envelope: EnvelopeTelemetry, contextObjects: ContextObject | undefined): boolean {
   const isRequest = envelope.data.baseType === Contracts.TelemetryTypeString.Request
   if (isRequest) {
     const { username } = contextObjects?.['http.ServerRequest']?.res?.locals?.user || {}

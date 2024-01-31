@@ -79,7 +79,7 @@ export default class ApprovedDatesService {
     }
     const dates = this.dateTypeConfigurationService.configure(
       req.body.dateSelect,
-      req.session.selectedApprovedDates[req.params.nomsId]
+      req.session.selectedApprovedDates[req.params.nomsId],
     )
     // Do validation here
     req.session.selectedApprovedDates[req.params.nomsId] = [
@@ -92,10 +92,10 @@ export default class ApprovedDatesService {
 
   public changeDate(req: Request, nomsId: string): ManualEntryDate {
     const date = req.session.selectedApprovedDates[nomsId].find(
-      (d: ManualEntryDate) => d.dateType === req.query.dateType
+      (d: ManualEntryDate) => d.dateType === req.query.dateType,
     )
     req.session.selectedApprovedDates[nomsId] = req.session.selectedApprovedDates[nomsId].filter(
-      (d: ManualEntryDate) => d.dateType !== req.query.dateType
+      (d: ManualEntryDate) => d.dateType !== req.query.dateType,
     )
     req.session.selectedApprovedDates[nomsId].push({
       dateType: req.query.dateType,
@@ -109,7 +109,7 @@ export default class ApprovedDatesService {
     const dateToRemove = req.query.dateType
     if (req.body['remove-date'] === 'yes') {
       req.session.selectedApprovedDates[nomsId] = req.session.selectedApprovedDates[nomsId].filter(
-        (d: ManualEntryDate) => d.dateType !== dateToRemove
+        (d: ManualEntryDate) => d.dateType !== dateToRemove,
       )
     }
   }

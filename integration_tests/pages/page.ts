@@ -13,7 +13,9 @@ export default abstract class Page {
     cy.get(`#${this.pageId}`).should('exist')
   }
 
-  signOut = (): PageElement => cy.get('[data-qa=logout]')
+  signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   errorSummary = (): PageElement => cy.get('.govuk-error-summary')
+
+  manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 }

@@ -42,7 +42,7 @@ export default class SentenceTypes {
   }
 
   public static isSentenceFixedTermRecall(
-    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences
+    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
     return this.fixedTermRecallTypes.includes(sentence.sentenceCalculationType)
   }
@@ -60,19 +60,19 @@ export default class SentenceTypes {
   }
 
   public static isSentenceSopcRecall(
-    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences
+    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
     return this.sopcRecallSentenceTypes.includes(sentence.sentenceCalculationType)
   }
 
   public static isSentenceEdsRecall(
-    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences
+    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
     return this.edsRecallSentenceTypes.includes(sentence.sentenceCalculationType)
   }
 
   public static isSentenceStandardRecall(
-    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences
+    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
     return this.standardRecallSentenceTypes.includes(sentence.sentenceCalculationType)
   }
@@ -91,7 +91,7 @@ export default class SentenceTypes {
   }
 
   public static isSentenceErsedElligible(
-    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences
+    sentence: AnalyzedSentenceAndOffences | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
     return !(this.isRecall(sentence) || this.isSentenceAfine(sentence) || this.isSentenceDto(sentence))
   }

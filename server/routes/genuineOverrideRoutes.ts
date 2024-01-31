@@ -33,7 +33,7 @@ export default class GenuineOverrideRoutes {
     private readonly viewReleaseDatesService: ViewReleaseDatesService,
     private readonly manualEntryService: ManualEntryService,
     private readonly manualCalculationService: ManualCalculationService,
-    private readonly genuineOverridesEmailTemplateService: GenuineOverridesEmailTemplateService
+    private readonly genuineOverridesEmailTemplateService: GenuineOverridesEmailTemplateService,
   ) {
     // intentionally left blank
   }
@@ -47,12 +47,12 @@ export default class GenuineOverrideRoutes {
         const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
           username,
           calculationReference,
-          token
+          token,
         )
         const prisonerDetail = await this.prisonerService.getPrisonerDetailForSpecialistSupport(
           username,
           calculation.prisonerId,
-          token
+          token,
         )
         return res.render('pages/genuineOverrides/index', { calculationReference, prisonerDetail })
       }
@@ -81,7 +81,7 @@ export default class GenuineOverrideRoutes {
         const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
           username,
           calculationReference,
-          token
+          token,
         )
         if (!calculation) {
           const calculationReferenceNotFound = true
@@ -105,12 +105,12 @@ export default class GenuineOverrideRoutes {
           username,
           calculationReference,
           token,
-          true
+          true,
         )
         const prisonerDetail = await this.prisonerService.getPrisonerDetailForSpecialistSupport(
           username,
           calculation.prisonerId,
-          token
+          token,
         )
         if (!calculation) {
           throw new Error()
@@ -154,7 +154,7 @@ export default class GenuineOverrideRoutes {
       const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, calculation.prisonerId)
       userInputs.calculateErsed = req.body.ersed === 'true'
@@ -181,10 +181,10 @@ export default class GenuineOverrideRoutes {
         username,
         calculation.prisonerId,
         calculationRequestModel,
-        token
+        token,
       )
       return res.redirect(
-        `/specialist-support/calculation/${calculationReference}/summary/${releaseDates.calculationRequestId}`
+        `/specialist-support/calculation/${calculationReference}/summary/${releaseDates.calculationRequestId}`,
       )
     }
     throw FullPageError.notFoundError()
@@ -199,12 +199,12 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
         username,
         calculationRequestId,
-        token
+        token,
       )
       const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       if (releaseDates.prisonerId !== calculation.prisonerId) {
         throw FullPageError.notFoundError()
@@ -213,16 +213,16 @@ export default class GenuineOverrideRoutes {
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
       const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
         username,
         releaseDates,
-        token
+        token,
       )
       const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
         releaseDates,
-        token
+        token,
       )
       const serverErrors = req.flash('serverErrors')
       let validationErrors = null
@@ -232,7 +232,7 @@ export default class GenuineOverrideRoutes {
       const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
       const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(
         calculationRequestId,
-        token
+        token,
       )
       const model = new CalculationSummaryViewModel(
         releaseDates.dates,
@@ -253,7 +253,7 @@ export default class GenuineOverrideRoutes {
         breakdown?.releaseDatesWithAdjustments,
         validationErrors,
         false,
-        false
+        false,
       )
 
       return res.render('pages/genuineOverrides/calculationSummary', { model, formError, calculationReference })
@@ -267,7 +267,7 @@ export default class GenuineOverrideRoutes {
       const { calculationReference, calculationRequestId } = req.params
       if (!doYouAgree) {
         return res.redirect(
-          `/specialist-support/calculation/${calculationReference}/summary/${calculationRequestId}?formError=true`
+          `/specialist-support/calculation/${calculationReference}/summary/${calculationRequestId}?formError=true`,
         )
       }
       if (doYouAgree === 'yes') {
@@ -290,7 +290,7 @@ export default class GenuineOverrideRoutes {
               },
               approvedDates,
               isSpecialistSupport: true,
-            }
+            },
           )
           const genuineOverride = {
             reason: '',
@@ -314,7 +314,7 @@ export default class GenuineOverrideRoutes {
                     href: `/specialist-support/calculation/${calculationReference}/sentence-and-offence-information'`,
                   },
                 ],
-              } as ErrorMessages)
+              } as ErrorMessages),
             )
           } else {
             req.flash(
@@ -322,7 +322,7 @@ export default class GenuineOverrideRoutes {
               JSON.stringify({
                 messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
                 messageType: ErrorMessageType.SAVE_DATES,
-              } as ErrorMessages)
+              } as ErrorMessages),
             )
           }
           return res.redirect(`/specialist-support/calculation/${calculationReference}/summary/${calculationRequestId}`)
@@ -342,25 +342,25 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
       const override = await this.calculateReleaseDatesService.getGenuineOverride(calculationReference, token)
       const emailContent = override.isOverridden
         ? this.genuineOverridesEmailTemplateService.getIncorrectCalculationEmail(
             calculationReference,
             prisonerDetail,
-            releaseDates.calculationRequestId
+            releaseDates.calculationRequestId,
           )
         : this.genuineOverridesEmailTemplateService.getCorrectCalculationEmail(
             calculationReference,
             prisonerDetail,
-            releaseDates.calculationRequestId
+            releaseDates.calculationRequestId,
           )
       return res.render('pages/genuineOverrides/confirmation', { prisonerDetail, emailContent })
     }
@@ -375,13 +375,13 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
       return res.render('pages/genuineOverrides/reason', {
         prisonerDetail,
@@ -426,13 +426,13 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
       const { config } = this.manualEntryService.verifySelectedDateType(req, releaseDates.prisonerId, false, true)
       return res.render('pages/genuineOverrides/dateTypeSelection', { prisonerDetail, config, calculationReference })
@@ -451,20 +451,20 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
 
       const { error, config } = this.manualEntryService.verifySelectedDateType(
         req,
         releaseDates.prisonerId,
         false,
-        false
+        false,
       )
       if (error) {
         const insufficientDatesSelected = true
@@ -490,13 +490,13 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
       if (req.session.selectedManualEntryDates[releaseDates.prisonerId].length === 0) {
         return res.redirect(`/specialist-support/calculation/${calculationReference}/select-date-types`)
@@ -506,7 +506,7 @@ export default class GenuineOverrideRoutes {
         previousDate = { year, month, day } as SubmittedDate
       }
       const date = this.manualEntryService.getNextDateToEnter(
-        req.session.selectedManualEntryDates[releaseDates.prisonerId]
+        req.session.selectedManualEntryDates[releaseDates.prisonerId],
       )
       if (date && date.dateType !== 'None') {
         return res.render('pages/genuineOverrides/dateEntry', {
@@ -528,18 +528,18 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
 
       const storeDateResponse = this.manualEntryService.storeDate(
         req.session.selectedManualEntryDates[releaseDates.prisonerId],
-        req.body
+        req.body,
       )
       if (!storeDateResponse.success && storeDateResponse.message && !storeDateResponse.isNone) {
         const { date, message, enteredDate } = storeDateResponse
@@ -554,7 +554,7 @@ export default class GenuineOverrideRoutes {
       }
       if (storeDateResponse.success && !storeDateResponse.message) {
         req.session.selectedManualEntryDates[releaseDates.prisonerId].find(
-          (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType
+          (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType,
         ).date = storeDateResponse.date.date
         return res.redirect(`/specialist-support/calculation/${calculationReference}/enter-date`)
       }
@@ -570,13 +570,13 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
       const rows = this.manualEntryService.getConfirmationConfiguration(req, releaseDates.prisonerId, true)
 
@@ -592,11 +592,11 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const { date } = this.manualEntryService.changeDate(req, releaseDates.prisonerId)
       return res.redirect(
-        `/specialist-support/calculation/${calculationReference}/enter-date?year=${date.year}&month=${date.month}&day=${date.day}`
+        `/specialist-support/calculation/${calculationReference}/enter-date?year=${date.year}&month=${date.month}&day=${date.day}`,
       )
     }
     throw FullPageError.notFoundError()
@@ -609,18 +609,18 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
       const dateToRemove: string = <string>req.query.dateType
       if (
         req.session.selectedManualEntryDates[releaseDates.prisonerId].some(
-          (d: ManualEntryDate) => d.dateType === dateToRemove
+          (d: ManualEntryDate) => d.dateType === dateToRemove,
         )
       ) {
         const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
@@ -645,13 +645,13 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
         releaseDates.prisonerId,
         caseloads,
-        token
+        token,
       )
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
       if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
@@ -680,13 +680,13 @@ export default class GenuineOverrideRoutes {
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       const manualCalculationResponse = await this.manualCalculationService.storeGenuineOverrideCalculation(
         calculationReference,
         releaseDates.prisonerId,
         req,
-        token
+        token,
       )
       return res.redirect(`/specialist-support/calculation/${manualCalculationResponse.calculationReference}/complete`)
     }
@@ -700,13 +700,13 @@ export default class GenuineOverrideRoutes {
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
       username,
       calculationReference,
-      token
+      token,
     )
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(
       username,
       releaseDates.prisonerId,
       caseloads,
-      token
+      token,
     )
     const { calculationRequestId } = releaseDates
     return res.render('pages/genuineOverrides/requestSupport', {

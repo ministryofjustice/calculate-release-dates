@@ -43,7 +43,7 @@ const stubbedPrisonerData = {
 let app: Express
 
 beforeEach(() => {
-  app = appWithAllRoutes({ entryPointService, prisonerService, userPermissionsService })
+  app = appWithAllRoutes({ services: { entryPointService, prisonerService, userPermissionsService } })
 })
 
 afterEach(() => {
@@ -94,7 +94,7 @@ describe('Start routes tests', () => {
       .expect(res => {
         expect(res.text).toContain('Supported sentences')
         expect(res.text).toContain(
-          'The Calculate release dates service supports CJA (Criminal Justice Act) 2003 and 2020 sentences only. The sentences currently supported are:'
+          'The Calculate release dates service supports CJA (Criminal Justice Act) 2003 and 2020 sentences only. The sentences currently supported are:',
         )
         expect(res.text).toContain('href="/"')
       })

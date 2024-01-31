@@ -1,33 +1,22 @@
 import request from 'supertest'
 import type { Express } from 'express'
-import { appWithAllRoutes } from './testutils/appSetup'
+import { appWithAllRoutes, user } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
-import UserService from '../services/userService'
-import { PrisonApiUserCaseloads } from '../@types/prisonApi/prisonClientTypes'
-import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { Prisoner } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
 import config from '../config'
 
-jest.mock('../services/userService')
-jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 
-const userService = new UserService(null) as jest.Mocked<UserService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 
 let app: Express
-
-const caseload = {
-  caseLoadId: 'MDI',
-} as PrisonApiUserCaseloads
 
 const prisoner = {
   prisonerNumber: 'A123456',
 } as Prisoner
 
 beforeEach(() => {
-  app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService })
+  app = appWithAllRoutes({ services: { prisonerService } })
 })
 
 afterEach(() => {
@@ -58,7 +47,12 @@ describe('GET Search routes for /search/prisoners', () => {
   })
 
   it('Should should return no results if user has no caseloads', () => {
-    prisonerService.getUsersCaseloads.mockResolvedValue([])
+    app = appWithAllRoutes({
+      services: { prisonerService },
+      userSupplier: () => {
+        return { ...user, caseloads: [] }
+      },
+    })
     prisonerService.searchPrisoners.mockResolvedValue([])
     return request(app)
       .get('/search/prisoners?firstName=oj')
@@ -70,7 +64,12 @@ describe('GET Search routes for /search/prisoners', () => {
   })
 
   it('Should should return no results if if there is no match', () => {
-    prisonerService.getUsersCaseloads.mockResolvedValue([caseload])
+    app = appWithAllRoutes({
+      services: { prisonerService },
+      userSupplier: () => {
+        return { ...user, caseloads: ['MDI'] }
+      },
+    })
     prisonerService.searchPrisoners.mockResolvedValue([])
     return request(app)
       .get('/search/prisoners?firstName=oj')
@@ -82,7 +81,12 @@ describe('GET Search routes for /search/prisoners', () => {
   })
 
   it('Should display matching results', () => {
-    prisonerService.getUsersCaseloads.mockResolvedValue([caseload])
+    app = appWithAllRoutes({
+      services: { prisonerService },
+      userSupplier: () => {
+        return { ...user, caseloads: ['MDI'] }
+      },
+    })
     prisonerService.searchPrisoners.mockResolvedValue([prisoner])
     return request(app)
       .get('/search/prisoners?firstName=oj')
@@ -98,7 +102,12 @@ describe('GET Search routes for /search/prisoners', () => {
     prisonerService.searchPrisoners.mockResolvedValue([prisoner])
 
     config.featureToggles.calculationReasonToggle = true
-    app = appWithAllRoutes({ userService, prisonerService, calculateReleaseDatesService })
+    app = appWithAllRoutes({
+      services: { prisonerService },
+      userSupplier: () => {
+        return { ...user, caseloads: ['MDI'] }
+      },
+    })
 
     return request(app)
       .get('/search/prisoners?prisonerIdentifier=A123456')

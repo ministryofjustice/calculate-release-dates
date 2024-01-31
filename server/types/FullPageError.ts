@@ -48,7 +48,7 @@ export class FullPageError extends Error {
 
   static theDataHasChangedPage(): FullPageError {
     const error = new FullPageError(
-      'The offence, sentence or adjustments data has changed since the override was requested'
+      'The offence, sentence or adjustments data has changed since the override was requested',
     )
     error.errorKey = FullPageErrorType.DATA_CHANGED_AFTER_SUPPORT_REQUEST_RAISED
     error.status = 409

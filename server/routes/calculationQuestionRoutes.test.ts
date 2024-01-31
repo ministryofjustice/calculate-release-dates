@@ -23,9 +23,9 @@ jest.mock('../services/prisonerService')
 jest.mock('../services/entryPointService')
 jest.mock('../services/userInputService')
 
-const userService = new UserService(null) as jest.Mocked<UserService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 
@@ -161,11 +161,7 @@ const stubbedCalculationReasons = [
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    userService,
-    prisonerService,
-    calculateReleaseDatesService,
-    entryPointService,
-    userInputService,
+    services: { userService, prisonerService, calculateReleaseDatesService, entryPointService, userInputService },
   })
 })
 
@@ -187,7 +183,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain('/?prisonId=A1234AA')
         expect(res.text).toContain('Some sentences could have alternative release arrangements')
         expect(res.text).toContain(
-          'Some offences for these sentences could be Schedule 15 offences. You must identify the ones that are, by looking them up on the lists.'
+          'Some offences for these sentences could be Schedule 15 offences. You must identify the ones that are, by looking them up on the lists.',
         )
       })
   })
@@ -354,7 +350,7 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain(
-          `<a href="#unselect-all">You must select at least one offence. If none apply, select &#39;None of the sentences include Schedule 15 offences from list B&#39;.</a>`
+          `<a href="#unselect-all">You must select at least one offence. If none apply, select &#39;None of the sentences include Schedule 15 offences from list B&#39;.</a>`,
         )
       })
   })

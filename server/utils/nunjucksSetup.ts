@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
+import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
-import * as pathModule from 'path'
+import { initialiseName } from './utils'
+import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
-import applicationVersion from '../applicationVersion'
 import ComparisonType from '../enumerations/comparisonType'
 import { FieldValidationError } from '../types/FieldValidationError'
 
@@ -21,16 +22,18 @@ export function nunjucksEnv(): nunjucks.Environment {
   return njkEnv
 }
 
-export default function nunjucksSetup(app: express.Express, path: pathModule.PlatformPath): void {
+export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Calculate release dates'
+  app.locals.environmentName = config.environmentName
+  app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
 
   // Cachebusting version string
   if (production) {
     // Version only changes with new commits
-    app.locals.version = applicationVersion.shortHash
+    app.locals.version = applicationInfo.gitShortHash
   } else {
     // Version changes every request
     app.use((req, res, next) => {
@@ -50,7 +53,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
     {
       autoescape: true,
       express: app,
-    }
+    },
   )
 
   // Expose the google tag manager container ID to the nunjucks environment
@@ -64,14 +67,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   njkEnv.addGlobal('digitalPrisonServicesUrl', config.apis.digitalPrisonServices.ui_url)
   njkEnv.addGlobal('ComparisonType', ComparisonType)
 
-  njkEnv.addFilter('initialiseName', (fullName: string) => {
-    // this check is for the authError page
-    if (!fullName) {
-      return null
-    }
-    const array = fullName.split(' ')
-    return `${array[0][0]}. ${array.reverse()[0]}`
-  })
+  njkEnv.addFilter('initialiseName', initialiseName)
 
   njkEnv.addFilter('formatListAsString', (list?: string[]) => {
     return list ? `[${list.map(i => `'${i}'`).join(',')}]` : '[]'

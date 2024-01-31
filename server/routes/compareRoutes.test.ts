@@ -14,7 +14,7 @@ const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserP
 const comparisonService = new ComparisonService() as jest.Mocked<ComparisonService>
 
 beforeEach(() => {
-  app = appWithAllRoutes({ userPermissionsService, comparisonService })
+  app = appWithAllRoutes({ services: { userPermissionsService, comparisonService } })
   userPermissionsService.allowBulkComparison.mockReturnValue(true)
   userPermissionsService.allowManualComparison.mockReturnValue(true)
 })
@@ -49,7 +49,7 @@ describe('Compare routes tests', () => {
       .expect(res => {
         expect(res.text).toContain(
           'Identify and compare any differences in the release dates' +
-            ' calculated by staff, NOMIS and the Calculate release dates service.'
+            ' calculated by staff, NOMIS and the Calculate release dates service.',
         )
       })
   })

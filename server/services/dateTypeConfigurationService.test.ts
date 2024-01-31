@@ -12,7 +12,7 @@ describe('dateTypeConfigurationService', () => {
           dateText: 'CRD (Conditional release date)',
           date: { day: '03', month: '03', year: '2017' },
         } as ManualEntryDate,
-      ]
+      ],
     )
     expect(configured).toEqual([
       {

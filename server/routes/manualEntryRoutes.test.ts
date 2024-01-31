@@ -24,7 +24,7 @@ const dateValidationService = new DateValidationService()
 const manualEntryService = new ManualEntryService(
   manualEntryValidationService,
   dateTypeConfigurationService,
-  dateValidationService
+  dateValidationService,
 )
 let app: Express
 
@@ -59,10 +59,12 @@ const stubbedPrisonerData = {
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    calculateReleaseDatesService,
-    prisonerService,
-    manualCalculationService,
-    manualEntryService,
+    services: {
+      calculateReleaseDatesService,
+      prisonerService,
+      manualCalculationService,
+      manualEntryService,
+    },
   })
 })
 

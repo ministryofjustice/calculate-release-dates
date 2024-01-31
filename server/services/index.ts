@@ -19,10 +19,10 @@ import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
 import ComparisonService from './comparisonService'
 
 export const services = () => {
-  const { hmppsAuthClient, manageUsersApiClient } = dataAccess()
-  const userService = new UserService(manageUsersApiClient)
+  const { applicationInfo, hmppsAuthClient, manageUsersApiClient } = dataAccess()
   const calculateReleaseDatesService = new CalculateReleaseDatesService()
   const prisonerService = new PrisonerService(hmppsAuthClient)
+  const userService = new UserService(manageUsersApiClient, prisonerService)
   const entryPointService = new EntryPointService()
   const viewReleaseDatesService = new ViewReleaseDatesService()
   const userInputService = new UserInputService()
@@ -33,7 +33,7 @@ export const services = () => {
   const manualEntryService = new ManualEntryService(
     manualEntryValidationService,
     dateTypeConfigurationService,
-    dateValidationService
+    dateValidationService,
   )
   const userPermissionsService = new UserPermissionsService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
@@ -42,12 +42,13 @@ export const services = () => {
     calculateReleaseDatesService,
     prisonerService,
     entryPointService,
-    userInputService
+    userInputService,
   )
   const frontEndComponentService = new FrontEndComponentsService(new FrontendComponentsApiClient())
   const comparisonService = new ComparisonService()
 
   return {
+    applicationInfo,
     userService,
     prisonerService,
     calculateReleaseDatesService,
@@ -66,3 +67,5 @@ export const services = () => {
 }
 
 export type Services = ReturnType<typeof services>
+
+export { UserService }

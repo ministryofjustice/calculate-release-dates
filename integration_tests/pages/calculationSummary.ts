@@ -9,7 +9,7 @@ export default class CalculationSummaryPage extends CalculationSummaryCommon {
   public static goTo(
     prisonerId: string,
     calculationRequestId: string,
-    failOnStatusCode?: boolean
+    failOnStatusCode?: boolean,
   ): CalculationSummaryPage {
     this.visit(prisonerId, calculationRequestId, failOnStatusCode)
     return new CalculationSummaryPage()

@@ -203,7 +203,7 @@ export default class ManualEntryService {
   constructor(
     private readonly manualEntryValidationService: ManualEntryValidationService,
     private readonly dateTypeConfigurationService: DateTypeConfigurationService,
-    private readonly dateValidationService: DateValidationService
+    private readonly dateValidationService: DateValidationService,
   ) {
     // intentionally left blank
   }
@@ -212,7 +212,7 @@ export default class ManualEntryService {
     req: Request,
     nomsId: string,
     hasIndeterminateSentences: boolean,
-    firstLoad: boolean
+    firstLoad: boolean,
   ): { error: boolean; config: DateSelectConfiguration } {
     if (!req.session.selectedManualEntryDates) {
       req.session.selectedManualEntryDates = {}
@@ -267,7 +267,7 @@ export default class ManualEntryService {
   public addManuallyCalculatedDateTypes(req: Request, nomsId: string): void {
     const dates = this.dateTypeConfigurationService.configure(
       req.body.dateSelect,
-      req.session.selectedManualEntryDates[nomsId]
+      req.session.selectedManualEntryDates[nomsId],
     )
     // Do validation here
     req.session.selectedManualEntryDates[nomsId] = [...req.session.selectedManualEntryDates[nomsId], ...dates]
@@ -313,7 +313,7 @@ export default class ManualEntryService {
           dates,
           enteredDate,
           allItems,
-          'The date entered must be a real date'
+          'The date entered must be a real date',
         )
       }
       const notWithinOneHundredYears = this.dateValidationService.notWithinOneHundredYears(dates, enteredDate, allItems)
@@ -405,7 +405,7 @@ export default class ManualEntryService {
     const dateToRemove = req.query.dateType
     if (req.body['remove-date'] === 'yes') {
       req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
-        (d: ManualEntryDate) => d.dateType !== dateToRemove
+        (d: ManualEntryDate) => d.dateType !== dateToRemove,
       )
     }
     return req.session.selectedManualEntryDates[nomsId].length
@@ -413,10 +413,10 @@ export default class ManualEntryService {
 
   public changeDate(req: Request, nomsId: string): ManualEntryDate {
     const date = req.session.selectedManualEntryDates[nomsId].find(
-      (d: ManualEntryDate) => d.dateType === req.query.dateType
+      (d: ManualEntryDate) => d.dateType === req.query.dateType,
     )
     req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
-      (d: ManualEntryDate) => d.dateType !== req.query.dateType
+      (d: ManualEntryDate) => d.dateType !== req.query.dateType,
     )
     req.session.selectedManualEntryDates[nomsId].push({
       dateType: req.query.dateType,

@@ -120,11 +120,11 @@ dist
 assets/stylesheets/*.css
 .idea
 .vscode
-build-info.json
 dist/
 test_results/
-cypress/videos/
-cypress/screenshots/
+integration_tests/videos/
+integration_tests/screenshots/
 */*.iml
-*.iml
 **/Chart.lock
+.DS_Store
+*.iml

@@ -1,6 +1,11 @@
+import promClient from 'prom-client'
+import { createMetricsApp } from './monitoring/metricsApp'
 import createApp from './app'
 import { services } from './services'
 
-const app = createApp(services())
+promClient.collectDefaultMetrics()
 
-export default app
+const app = createApp(services())
+const metricsApp = createMetricsApp()
+
+export { app, metricsApp }

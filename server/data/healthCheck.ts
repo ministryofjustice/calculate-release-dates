@@ -15,7 +15,7 @@ export function serviceCheckFactory(
   name: string,
   url: string,
   agentOptions: AgentConfig,
-  serviceTimeout: ServiceTimeout = new ServiceTimeout()
+  serviceTimeout: ServiceTimeout = new ServiceTimeout(),
 ): ServiceCheck {
   const keepaliveAgent = url.startsWith('https') ? new HttpsAgent(agentOptions) : new Agent(agentOptions)
 
@@ -34,7 +34,7 @@ export function serviceCheckFactory(
             logger.error(error.stack, `Error calling ${name}`)
             reject(error)
           } else if (result.status === 200) {
-            resolve('OK')
+            resolve('UP')
           } else {
             reject(result.status)
           }

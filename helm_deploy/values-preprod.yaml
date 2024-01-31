@@ -33,5 +33,7 @@ generic-service:
     CALCULATION_REASON_TOGGLE: "false"
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "true"
     ERS2024_BANNER_ENABLED: "true"
+    ENVIRONMENT_NAME: PRE-PRODUCTION
+
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

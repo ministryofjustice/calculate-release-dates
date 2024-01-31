@@ -13,7 +13,7 @@ export default class FrontendComponentsApiClient {
 
   async getComponents<T extends AvailableComponent[]>(
     components: T,
-    authToken: string
+    authToken: string,
   ): Promise<Record<T[number], FrontendComponent>> {
     return this.restClient.get({
       path: `/components`,

@@ -41,8 +41,7 @@ const stubbedPrisonerData = {
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    prisonerService,
-    approvedDatesService,
+    services: { prisonerService, approvedDatesService },
   })
 })
 

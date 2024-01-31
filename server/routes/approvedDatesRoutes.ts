@@ -10,7 +10,7 @@ export default class ApprovedDatesRoutes {
   constructor(
     private readonly prisonerService: PrisonerService,
     private readonly approvedDatesService: ApprovedDatesService,
-    private readonly manualEntryService: ManualEntryService
+    private readonly manualEntryService: ManualEntryService,
   ) {
     // intentionally left blank
   }
@@ -120,7 +120,7 @@ export default class ApprovedDatesRoutes {
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedApprovedDates[nomsId].find(
-        (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType
+        (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType,
       ).date = storeDateResponse.date.date
       return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/submit-dates`)
     }
@@ -131,7 +131,7 @@ export default class ApprovedDatesRoutes {
     const { nomsId, calculationRequestId } = req.params
     const { date } = this.approvedDatesService.changeDate(req, nomsId)
     return res.redirect(
-      `/calculation/${nomsId}/${calculationRequestId}/submit-dates?year=${date.year}&month=${date.month}&day=${date.day}`
+      `/calculation/${nomsId}/${calculationRequestId}/submit-dates?year=${date.year}&month=${date.month}&day=${date.day}`,
     )
   }
 

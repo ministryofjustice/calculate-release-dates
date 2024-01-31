@@ -5,7 +5,7 @@
     "jest": true
   },
 
-  "plugins": ["import"],
+  "plugins": ["import", "no-only-tests"],
 
   "settings": {
     "import/parsers": {
@@ -50,7 +50,7 @@
         "prettier/prettier": [
           "error",
           {
-            "trailingComma": "es5",
+            "trailingComma": "all",
             "singleQuote": true,
             "printWidth": 120,
             "semi": false,
@@ -85,29 +85,22 @@
         "tsx": "never"
       }
     ],
-    "comma-dangle": [
-      "error",
-      {
-        "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
-        "exports": "always-multiline",
-        "functions": "never"
-      }
-    ],
+    "comma-dangle": ["error", "always-multiline"],
     "import/no-extraneous-dependencies": [
       "error",
-      { "devDependencies": ["**/*.test.js", "**/*.test.ts", "cypress.config.ts"] }
+      { "devDependencies": ["**/*.test.js", "**/*.test.ts", "**/testutils/**", "cypress.config.ts"] }
     ],
+    "no-only-tests/no-only-tests": "error",
     "prettier/prettier": [
       "error",
       {
-        "trailingComma": "es5",
+        "trailingComma": "all",
         "singleQuote": true,
         "printWidth": 120,
         "semi": false,
         "arrowParens": "avoid"
       }
-    ]
+    ],
+    "no-empty-function": ["error", { "allow": ["constructors", "arrowFunctions"] }]
   }
 }

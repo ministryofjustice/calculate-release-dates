@@ -10,7 +10,7 @@ import { arraysContainSameItemsAsStrings, unique } from '../utils/utils'
 export default class QuestionsService {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly userInputService: UserInputService
+    private readonly userInputService: UserInputService,
   ) {
     // intentionally blank
   }
@@ -35,7 +35,7 @@ export default class QuestionsService {
 
   private async allQuestionsHaveBeenAnswered(
     calculationQuestions: CalculationUserQuestions,
-    userInputs: CalculationUserInputs
+    userInputs: CalculationUserInputs,
   ): Promise<boolean> {
     if (!userInputs) {
       return calculationQuestions.sentenceQuestions.length === 0

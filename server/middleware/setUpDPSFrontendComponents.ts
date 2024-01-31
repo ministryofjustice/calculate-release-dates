@@ -7,7 +7,7 @@ export default function setUpFrontendComponents({ frontEndComponentService }: Se
     try {
       const { header, footer } = await frontEndComponentService.getComponents(
         ['header', 'footer'],
-        res.locals.user.token
+        res.locals.user.token,
       )
 
       res.locals.feComponents = {

@@ -24,7 +24,7 @@ export default class ViewRoutes {
     private readonly viewReleaseDatesService: ViewReleaseDatesService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entryPointService: EntryPointService
+    private readonly entryPointService: EntryPointService,
   ) {
     // intentionally left blank
   }
@@ -37,7 +37,7 @@ export default class ViewRoutes {
       const latestCalculation = await this.viewReleaseDatesService.getLatestCalculation(
         nomsId,
         prisonerDetail.bookingId,
-        token
+        token,
       )
       res.redirect(`/view/${nomsId}/sentences-and-offences/${latestCalculation.calculationRequestId}`)
     } catch (error) {
@@ -55,22 +55,22 @@ export default class ViewRoutes {
       const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
         calculationRequestId,
         caseloads,
-        token
+        token,
       )
       const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(
         calculationRequestId,
-        token
+        token,
       )
       const adjustmentDetails = await this.viewReleaseDatesService.getBookingAndSentenceAdjustments(
         calculationRequestId,
-        token
+        token,
       )
       const calculationUserInputs = await this.viewReleaseDatesService.getCalculationUserInputs(
         calculationRequestId,
-        token
+        token,
       )
       const returnToCustody = sentencesAndOffences.filter((s: PrisonApiOffenderSentenceAndOffences) =>
-        SentenceTypes.isSentenceFixedTermRecall(s)
+        SentenceTypes.isSentenceFixedTermRecall(s),
       ).length
         ? await this.viewReleaseDatesService.getReturnToCustodyDate(calculationRequestId, token)
         : null
@@ -83,7 +83,7 @@ export default class ViewRoutes {
           sentencesAndOffences,
           adjustmentDetails,
           true,
-          returnToCustody
+          returnToCustody,
         ),
         calculationRequestId,
         nomsId,
@@ -111,38 +111,38 @@ export default class ViewRoutes {
     username: string,
     token: string,
     caseloads: string[],
-    req: Request
+    req: Request,
   ): Promise<CalculationSummaryViewModel> {
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
       username,
       calculationRequestId,
-      token
+      token,
     )
     const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
       username,
       releaseDates,
-      token
+      token,
     )
     const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
       releaseDates,
-      token
+      token,
     )
 
     try {
       const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
         calculationRequestId,
         caseloads,
-        token
+        token,
       )
       const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
       const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(
         calculationRequestId,
-        token
+        token,
       )
       const bookingCalculation = await this.calculateReleaseDatesService.getCalculationResults(
         username,
         calculationRequestId,
-        token
+        token,
       )
 
       const override = await this.getOverride(releaseDates.calculationReference, token)
@@ -171,7 +171,7 @@ export default class ViewRoutes {
         false,
         this.entryPointService.isDpsEntryPoint(req),
         approvedDates,
-        this.getOverrideReason(override)
+        this.getOverrideReason(override),
       )
     } catch (error) {
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
@@ -202,7 +202,7 @@ export default class ViewRoutes {
             messageType: ErrorMessageType.MISSING_PRISON_API_DATA,
           } as ErrorMessages,
           true,
-          this.entryPointService.isDpsEntryPoint(req)
+          this.entryPointService.isDpsEntryPoint(req),
         )
       }
       throw error

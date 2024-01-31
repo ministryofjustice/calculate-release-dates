@@ -12,7 +12,7 @@ export default class ManualEntryRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly manualCalculationService: ManualCalculationService,
-    private readonly manualEntryService: ManualEntryService
+    private readonly manualEntryService: ManualEntryService,
   ) {
     // intentionally left blank
   }
@@ -32,7 +32,7 @@ export default class ManualEntryRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
-      token
+      token,
     )
     return res.render('pages/manualEntry/manualEntry', { prisonerDetail, hasIndeterminateSentences })
   }
@@ -52,14 +52,14 @@ export default class ManualEntryRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
-      token
+      token,
     )
 
     const { error, config } = this.manualEntryService.verifySelectedDateType(
       req,
       nomsId,
       hasIndeterminateSentences,
-      false
+      false,
     )
     if (error) {
       const insufficientDatesSelected = true
@@ -87,7 +87,7 @@ export default class ManualEntryRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
-      token
+      token,
     )
     const firstLoad = !req.query.addExtra
     const { config } = this.manualEntryService.verifySelectedDateType(req, nomsId, hasIndeterminateSentences, firstLoad)
@@ -138,7 +138,7 @@ export default class ManualEntryRoutes {
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedManualEntryDates[nomsId].find(
-        (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType
+        (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType,
       ).date = storeDateResponse.date.date
       return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
     }
@@ -211,7 +211,7 @@ export default class ManualEntryRoutes {
 
     const { date } = this.manualEntryService.changeDate(req, nomsId)
     return res.redirect(
-      `/calculation/${nomsId}/manual-entry/enter-date?year=${date.year}&month=${date.month}&day=${date.day}`
+      `/calculation/${nomsId}/manual-entry/enter-date?year=${date.year}&month=${date.month}&day=${date.day}`,
     )
   }
 
@@ -244,7 +244,7 @@ export default class ManualEntryRoutes {
                 href: `/calculation/${nomsId}/check-information`,
               },
             ],
-          } as ErrorMessages)
+          } as ErrorMessages),
         )
       } else {
         req.flash(
@@ -252,7 +252,7 @@ export default class ManualEntryRoutes {
           JSON.stringify({
             messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
             messageType: ErrorMessageType.SAVE_DATES,
-          } as ErrorMessages)
+          } as ErrorMessages),
         )
       }
       return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)

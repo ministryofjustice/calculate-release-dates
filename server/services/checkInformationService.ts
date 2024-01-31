@@ -14,7 +14,7 @@ export default class CheckInformationService {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly entryPointService: EntryPointService,
-    private readonly userInputService: UserInputService
+    private readonly userInputService: UserInputService,
   ) {
     // intentionally blank
   }
@@ -22,7 +22,7 @@ export default class CheckInformationService {
   public async checkInformation(
     req: Request,
     res: Response,
-    requireUserInputs: boolean
+    requireUserInputs: boolean,
   ): Promise<SentenceAndOffenceViewModel> {
     const { username, caseloads, token } = res.locals.user
     const { calculationReference } = req.params
@@ -40,7 +40,7 @@ export default class CheckInformationService {
       const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
-        token
+        token,
       )
       prisonerDetail = await this.prisonerService.getPrisonerDetail(username, calculation.prisonerId, caseloads, token)
       nomsId = calculation.prisonerId
@@ -49,11 +49,11 @@ export default class CheckInformationService {
     const sentencesAndOffences = await this.calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences(
       username,
       prisonerDetail.bookingId,
-      token
+      token,
     )
     const adjustmentDetails = await this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(
       prisonerDetail.bookingId,
-      token
+      token,
     )
     const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
       ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
@@ -77,7 +77,7 @@ export default class CheckInformationService {
       adjustmentDetails,
       false,
       returnToCustody,
-      validationMessages
+      validationMessages,
     )
   }
 }

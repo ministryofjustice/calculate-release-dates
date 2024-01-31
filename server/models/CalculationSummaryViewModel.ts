@@ -34,7 +34,7 @@ export default class CalculationSummaryViewModel {
     public calculationSummaryUnavailable?: boolean,
     public dpsEntryPoint?: boolean,
     public approvedDates?: { [key: string]: string },
-    public overrideReason?: string
+    public overrideReason?: string,
   ) {
     // intentionally left blank
   }
@@ -225,40 +225,40 @@ export default class CalculationSummaryViewModel {
     const longFormat = 'cccc, dd LLLL yyyy'
     if (this.nonFridayReleaseAdjustments[type]) {
       hints.push(
-        `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${type}-non-friday-release"><a class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/discretionary-fridaypre-bank-holiday-release-scheme-policy-framework">The Discretionary Friday/Pre-Bank Holiday Release Scheme Policy (opens in new tab)</a> applies to this release date.</p>`
+        `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${type}-non-friday-release"><a class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/discretionary-fridaypre-bank-holiday-release-scheme-policy-framework">The Discretionary Friday/Pre-Bank Holiday Release Scheme Policy (opens in new tab)</a> applies to this release date.</p>`,
       )
     } else if (this.weekendAdjustments[type]) {
       const releaseDate = DateTime.fromISO(this.weekendAdjustments[type].date).toFormat(longFormat)
       hints.push(
-        `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${type}-weekend-adjustment">${releaseDate} when adjusted to a working day</p>`
+        `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${type}-weekend-adjustment">${releaseDate} when adjusted to a working day</p>`,
       )
     }
     if (type === 'ARD' && this.displayArdBeforeMtd()) {
       hints.push(
-        '<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Automatic Release Date (ARD)</p>'
+        '<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Automatic Release Date (ARD)</p>',
       )
     }
     if (type === 'CRD' && this.displayCrdBeforeMtd()) {
       hints.push(
-        '<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Conditional Release Date (CRD)</p>'
+        '<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Conditional Release Date (CRD)</p>',
       )
     }
     if (type === 'PED') {
       if (this.displayPedAdjustmentHint()) {
         const inserts = this.displayPedAdjustmentHint()
         hints.push(
-          `<p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the ${inserts} of a concurrent sentence or default term</p>`
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">PED adjusted for the ${inserts} of a concurrent sentence or default term</p>`,
         )
       }
       if (this.pedBeforePRRD()) {
         const prrd = DateTime.fromISO(this.calculationBreakdown.otherDates.PRRD).toFormat(longFormat)
         hints.push(
-          `<p class="govuk-body govuk-hint govuk-!-font-size-16">The post recall release date (PRRD) of ${prrd} is later than the PED</p>`
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">The post recall release date (PRRD) of ${prrd} is later than the PED</p>`,
         )
       }
       if (this.displayPedBeforeMtd()) {
         hints.push(
-          '<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Parole Eligibility Date (PED)</p>'
+          '<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Parole Eligibility Date (PED)</p>',
         )
       }
     }
@@ -266,18 +266,18 @@ export default class CalculationSummaryViewModel {
       if (this.displayHdcedAdjustmentHint()) {
         const content = this.displayHdcedAdjustmentHint()
         hints.push(
-          `<p class="govuk-body govuk-hint govuk-!-font-size-16">HDCED adjusted for the ${content} of a concurrent sentence or default term</p>`
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">HDCED adjusted for the ${content} of a concurrent sentence or default term</p>`,
         )
       }
       if (this.hdcedBeforePRRD()) {
         const prrd = DateTime.fromISO(this.calculationBreakdown.otherDates.PRRD).toFormat(longFormat)
         hints.push(
-          `<p class="govuk-body govuk-hint govuk-!-font-size-16">Release on HDC must not take place before the PRRD ${prrd}</p>`
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">Release on HDC must not take place before the PRRD ${prrd}</p>`,
         )
       }
       if (this.displayHdcedBeforeMtd()) {
         hints.push(
-          `<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Home detention curfew eligibility date (HDCED)</p>`
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">The Detention and training order (DTO) release date is later than the Home detention curfew eligibility date (HDCED)</p>`,
         )
       }
     }
@@ -287,12 +287,12 @@ export default class CalculationSummaryViewModel {
     if (type === 'ERSED') {
       if (this.displayErsedAdjustmentHint()) {
         hints.push(
-          `<p class="govuk-body govuk-hint govuk-!-font-size-16">ERSED adjusted for the ARD of a concurrent default term</p>`
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">ERSED adjusted for the ARD of a concurrent default term</p>`,
         )
       }
       if (this.ersedAdjustedByMtd()) {
         hints.push(
-          `<p class="govuk-body govuk-hint govuk-!-font-size-16">Adjusted to Mid term date (MTD) of the Detention and training order (DTO)</p>`
+          `<p class="govuk-body govuk-hint govuk-!-font-size-16">Adjusted to Mid term date (MTD) of the Detention and training order (DTO)</p>`,
         )
       }
     }

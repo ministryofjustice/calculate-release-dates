@@ -36,20 +36,20 @@ jest.mock('../services/userInputService')
 jest.mock('../services/checkInformationService')
 jest.mock('../services/questionsService')
 
-const userService = new UserService(null) as jest.Mocked<UserService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 const questionsService = new QuestionsService(
   calculateReleaseDatesService,
-  userInputService
+  userInputService,
 ) as jest.Mocked<QuestionsService>
 const checkInformationService = new CheckInformationService(
   calculateReleaseDatesService,
   prisonerService,
   entryPointService,
-  userInputService
+  userInputService,
 ) as jest.Mocked<CheckInformationService>
 
 let app: Express
@@ -331,13 +331,15 @@ const stubbedReturnToCustodyDate = {
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    userService,
-    prisonerService,
-    calculateReleaseDatesService,
-    entryPointService,
-    userInputService,
-    questionsService,
-    checkInformationService,
+    services: {
+      userService,
+      prisonerService,
+      calculateReleaseDatesService,
+      entryPointService,
+      userInputService,
+      questionsService,
+      checkInformationService,
+    },
   })
   config.featureToggles.approvedDates = true
 })
@@ -359,7 +361,7 @@ describe('Check information routes tests', () => {
       stubbedAdjustments,
       false,
       stubbedReturnToCustodyDate,
-      null
+      null,
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -420,7 +422,7 @@ describe('Check information routes tests', () => {
       stubbedAdjustments,
       false,
       stubbedReturnToCustodyDate,
-      null
+      null,
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -444,7 +446,7 @@ describe('Check information routes tests', () => {
       stubbedEmptyAdjustments,
       false,
       stubbedReturnToCustodyDate,
-      null
+      null,
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -474,7 +476,7 @@ describe('Check information routes tests', () => {
       {
         messages: [{ text: 'An error occurred with the nomis information' }],
         messageType: ErrorMessageType.VALIDATION,
-      } as never
+      } as never,
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -528,7 +530,7 @@ describe('Check information routes tests', () => {
       stubbedAdjustments,
       false,
       stubbedReturnToCustodyDate,
-      { messages: [] } as never
+      { messages: [] } as never,
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -551,7 +553,7 @@ describe('Check information routes tests', () => {
       stubbedAdjustments,
       false,
       null,
-      { messages: [] } as never
+      { messages: [] } as never,
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -560,10 +562,10 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'Court case 1 count 1 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.'
+          'Court case 1 count 1 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.',
         )
         expect(res.text).toContain(
-          'Court case 3 count 3 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.'
+          'Court case 3 count 3 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.',
         )
       })
   })
@@ -600,7 +602,7 @@ describe('Check information routes tests', () => {
         expect(calculateReleaseDatesService.validateBackend).toBeCalledWith(
           expect.anything(),
           { ...stubbedUserInput, calculateErsed: true },
-          expect.anything()
+          expect.anything(),
         )
         expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
           expect.anything(),
@@ -612,7 +614,7 @@ describe('Check information routes tests', () => {
               calculationUserInputs: { ...stubbedUserInput, calculateErsed: true },
             },
           },
-          expect.anything()
+          expect.anything(),
         )
       })
   })

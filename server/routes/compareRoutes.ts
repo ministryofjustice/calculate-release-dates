@@ -31,7 +31,7 @@ export default class CompareRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly bulkLoadService: UserPermissionsService,
     private readonly prisonerService: PrisonerService,
-    private readonly comparisonService: ComparisonService
+    private readonly comparisonService: ComparisonService,
   ) {
     // intentionally left blank
   }
@@ -48,7 +48,7 @@ export default class CompareRoutes {
 
   public choose: RequestHandler = async (req, res) => {
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(res.locals.user.userRoles)
-    const usersCaseload = await this.prisonerService.getUsersCaseloads(res.locals.user.username, res.locals.user.token)
+    const usersCaseload = await this.prisonerService.getUsersCaseloads(res.locals.user.token)
     const caseloadItems = usersCaseload.map(caseload => ({ text: caseload.description, value: caseload.caseLoadId }))
     caseloadItems.push({ text: 'All prisons in caseload **Run With Caution**', value: 'all' })
     caseloadItems.unshift({
@@ -156,7 +156,7 @@ export default class CompareRoutes {
     const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
-      token
+      token,
     )
 
     let discrepancy = null
@@ -164,7 +164,7 @@ export default class CompareRoutes {
       const discrepancySummary = await this.comparisonService.getComparisonPersonDiscrepancy(
         bulkComparisonResultId,
         bulkComparisonDetailId,
-        token
+        token,
       )
       discrepancy = { ...discrepancySummary, causes: this.summaryCausesToFormCauses(discrepancySummary.causes) }
     }
@@ -208,7 +208,7 @@ export default class CompareRoutes {
         bulkComparisonResultId,
         bulkComparisonDetailId,
         discrepancy,
-        token
+        token,
       )
       return res.redirect(`/compare/result/${bulkComparisonResultId}`)
     }
@@ -224,7 +224,7 @@ export default class CompareRoutes {
     const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
-      token
+      token,
     )
 
     return res.render('pages/compare/resultDetail', {
@@ -242,7 +242,7 @@ export default class CompareRoutes {
     const comparisonMismatch = await this.comparisonService.getManualMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
-      token
+      token,
     )
 
     let discrepancy = null
@@ -250,7 +250,7 @@ export default class CompareRoutes {
       const discrepancySummary = await this.comparisonService.getManualComparisonPersonDiscrepancy(
         bulkComparisonResultId,
         bulkComparisonDetailId,
-        token
+        token,
       )
       discrepancy = { ...discrepancySummary, causes: this.summaryCausesToFormCauses(discrepancySummary.causes) }
     }
@@ -292,7 +292,7 @@ export default class CompareRoutes {
         bulkComparisonResultId,
         bulkComparisonDetailId,
         discrepancy,
-        token
+        token,
       )
       return res.redirect(`/compare/manual/result/${bulkComparisonResultId}`)
     }
@@ -308,7 +308,7 @@ export default class CompareRoutes {
     const comparisonMismatch = await this.comparisonService.getManualMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
-      token
+      token,
     )
 
     return res.render('pages/compare/resultDetail', {
