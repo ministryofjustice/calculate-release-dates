@@ -28,7 +28,7 @@ export default class PrisonerService {
     username: string,
     nomsId: string,
     userCaseloads: string[],
-    token: string
+    token: string,
   ): Promise<PrisonApiPrisoner> {
     return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, true, false)
   }
@@ -37,7 +37,7 @@ export default class PrisonerService {
     username: string,
     nomsId: string,
     userCaseloads: string[],
-    token: string
+    token: string,
   ): Promise<PrisonApiPrisoner> {
     return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, false, false)
   }
@@ -45,7 +45,7 @@ export default class PrisonerService {
   async getPrisonerDetailForSpecialistSupport(
     username: string,
     nomsId: string,
-    token: string
+    token: string,
   ): Promise<PrisonApiPrisoner> {
     return this.getPrisonerDetailImpl(nomsId, [], token, false, true)
   }
@@ -55,7 +55,7 @@ export default class PrisonerService {
     userCaseloads: string[],
     token: string,
     includeReleased: boolean,
-    isSpecialistSupport: boolean
+    isSpecialistSupport: boolean,
   ): Promise<PrisonApiPrisoner> {
     try {
       const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
@@ -88,7 +88,7 @@ export default class PrisonerService {
   async getActiveSentencesAndOffences(
     username: string,
     bookingId: number,
-    token: string
+    token: string,
   ): Promise<PrisonApiOffenderSentenceAndOffences[]> {
     const sentencesAndOffences = await new PrisonApiClient(token).getSentencesAndOffences(bookingId)
     if (sentencesAndOffences.length === 0) {
@@ -100,7 +100,7 @@ export default class PrisonerService {
   async getSentencesAndOffences(
     username: string,
     bookingId: number,
-    token: string
+    token: string,
   ): Promise<PrisonApiOffenderSentenceAndOffences[]> {
     const sentencesAndOffences = await new PrisonApiClient(token).getSentencesAndOffences(bookingId)
     if (sentencesAndOffences.length === 0) {
@@ -109,7 +109,7 @@ export default class PrisonerService {
     return sentencesAndOffences
   }
 
-  async getUsersCaseloads(username: string, token: string): Promise<PrisonApiUserCaseloads[]> {
+  async getUsersCaseloads(token: string): Promise<PrisonApiUserCaseloads[]> {
     return new PrisonApiClient(token).getUsersCaseloads()
   }
 

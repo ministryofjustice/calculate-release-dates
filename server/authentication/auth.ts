@@ -1,6 +1,7 @@
 import passport from 'passport'
 import { Strategy } from 'passport-oauth2'
 import type { RequestHandler } from 'express'
+
 import config from '../config'
 import generateOauthClientToken from './clientCredentials'
 import type { TokenVerifier } from '../data/tokenVerification'
@@ -23,7 +24,7 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
       return next()
     }
     req.session.returnTo = req.originalUrl
-    return res.redirect('/login')
+    return res.redirect('/sign-in')
   }
 }
 
@@ -34,13 +35,13 @@ function init(): void {
       tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
       clientID: config.apis.hmppsAuth.apiClientId,
       clientSecret: config.apis.hmppsAuth.apiClientSecret,
-      callbackURL: `${config.domain}/login/callback`,
+      callbackURL: `${config.domain}/sign-in/callback`,
       state: true,
       customHeaders: { Authorization: generateOauthClientToken() },
     },
     (token, refreshToken, params, profile, done) => {
-      return done(null, { token, username: params.user_name, authSource: params.auth_source })
-    }
+      return done(null, { token, username: params.user_name, authSource: params.auth_source, userRoles: [] })
+    },
   )
 
   passport.use(strategy)

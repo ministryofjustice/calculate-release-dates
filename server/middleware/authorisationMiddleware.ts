@@ -1,25 +1,28 @@
-import jwtDecode from 'jwt-decode'
-import { Request, Response, NextFunction } from 'express'
+import { jwtDecode } from 'jwt-decode'
+import type { RequestHandler } from 'express'
+
 import logger from '../../logger'
-import AuthorisedRoles from '../enumerations/authorisedRoles'
+import asyncMiddleware from './asyncMiddleware'
 
-const isAuthorisedRole = (role: string): boolean =>
-  Object.keys(AuthorisedRoles)
-    .map(key => AuthorisedRoles[key])
-    .includes(role)
+export default function authorisationMiddleware(authorisedRoles: string[] = []): RequestHandler {
+  return asyncMiddleware((req, res, next) => {
+    // authorities in the user token will always be prefixed by ROLE_.
+    // Convert roles that are passed into this function without the prefix so that we match correctly.
+    const authorisedAuthorities = authorisedRoles.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`))
+    if (res.locals?.user?.token) {
+      const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
 
-export default function authorisationMiddleware(req: Request, res: Response, next: NextFunction): void {
-  if (res.locals && res.locals.user && res.locals.user.token) {
-    const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
-    if (!roles.some(isAuthorisedRole)) {
-      logger.error('User is not authorised to access this service')
-      return res.redirect('/authError')
+      if (authorisedAuthorities.length && !roles.some(role => authorisedAuthorities.includes(role))) {
+        logger.error('User is not authorised to access this')
+        return res.redirect('/authError')
+      }
+
+      res.locals.user.userRoles = roles
+
+      return next()
     }
 
-    res.locals.user.userRoles = roles
-
-    return next()
-  }
-  req.session.returnTo = req.originalUrl
-  return res.redirect('/login')
+    req.session.returnTo = req.originalUrl
+    return res.redirect('/sign-in')
+  })
 }

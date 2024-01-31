@@ -2,6 +2,6 @@ import Page from './page'
 
 export default class AuthSignInPage extends Page {
   constructor() {
-    super('sign-in-page')
+    super('Sign in')
   }
 }

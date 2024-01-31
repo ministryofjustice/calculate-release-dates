@@ -44,9 +44,9 @@ jest.mock('../services/entryPointService')
 jest.mock('../services/userInputService')
 jest.mock('../services/viewReleaseDatesService')
 
-const userService = new UserService(null) as jest.Mocked<UserService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
@@ -289,12 +289,14 @@ const stubbedErsedIneligibleSentencesAndOffences = [
 ]
 beforeEach(() => {
   app = appWithAllRoutes({
-    userService,
-    prisonerService,
-    calculateReleaseDatesService,
-    entryPointService,
-    userInputService,
-    viewReleaseDatesService,
+    services: {
+      userService,
+      prisonerService,
+      calculateReleaseDatesService,
+      entryPointService,
+      userInputService,
+      viewReleaseDatesService,
+    },
   })
 })
 
@@ -338,7 +340,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('13 May 2029')
         expect(res.text).toContain('14 May 2029 minus 1 day')
         expect(res.text).toContain(
-          `Some release dates and details are not included because they are not relevant to this person's sentences`
+          `Some release dates and details are not included because they are not relevant to this person's sentences`,
         )
         expect(res.text).toContain(`Monday, 03 February 2020`)
         expect(res.text).toContain(`ERSED`)
@@ -365,7 +367,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).not.toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
         expect(res.text).toContain('Important')
         expect(res.text).toContain(
-          'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
+          'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.',
         )
       })
   })
@@ -387,11 +389,11 @@ describe('Calculation routes tests', () => {
       .expect(res => {
         expect(res.text).toContain('PED adjusted for the CRD of a concurrent sentence or default term')
         expect(res.text).toContain(
-          'The post recall release date (PRRD) of Tuesday, 18 March 2025 is later than the PED'
+          'The post recall release date (PRRD) of Tuesday, 18 March 2025 is later than the PED',
         )
         expect(res.text).not.toContain('Important')
         expect(res.text).not.toContain(
-          'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
+          'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.',
         )
       })
   })
@@ -431,7 +433,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'The Detention and training order (DTO) release date is later than the Conditional Release Date (CRD)'
+          'The Detention and training order (DTO) release date is later than the Conditional Release Date (CRD)',
         )
       })
   })
@@ -452,7 +454,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'The Detention and training order (DTO) release date is later than the Automatic Release Date (ARD)'
+          'The Detention and training order (DTO) release date is later than the Automatic Release Date (ARD)',
         )
       })
   })
@@ -473,7 +475,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'The Detention and training order (DTO) release date is later than the Parole Eligibility Date (PED)'
+          'The Detention and training order (DTO) release date is later than the Parole Eligibility Date (PED)',
         )
       })
   })
@@ -495,7 +497,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'The Detention and training order (DTO) release date is later than the Home detention curfew eligibility date (HDCED)'
+          'The Detention and training order (DTO) release date is later than the Home detention curfew eligibility date (HDCED)',
         )
       })
   })
@@ -517,7 +519,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Conditional release date)'
+          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Conditional release date)',
         )
       })
   })
@@ -539,7 +541,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Automatic release date)'
+          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Automatic release date)',
         )
       })
   })
@@ -561,7 +563,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'Release from the Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Home Detention Curfew Eligibility Date)'
+          'Release from the Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Home Detention Curfew Eligibility Date)',
         )
       })
   })
@@ -583,7 +585,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Parole Eligibility Date)'
+          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Parole Eligibility Date)',
         )
       })
   })
@@ -625,7 +627,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'Early removal cannot happen as release from the Detention Training Order (DTO) is later than the Conditional Release Date (CRD).'
+          'Early removal cannot happen as release from the Detention Training Order (DTO) is later than the Conditional Release Date (CRD).',
         )
         expect(res.text).toContain('Important')
       })
@@ -857,7 +859,7 @@ describe('Calculation routes tests', () => {
       .expect(res => {
         expect(res.text).not.toContain('Tuesday, 02 February 2021 when adjusted to a working day')
         expect(res.text).toContain(
-          'The Discretionary Friday/Pre-Bank Holiday Release Scheme Policy (opens in new tab)</a> applies to this release date.'
+          'The Discretionary Friday/Pre-Bank Holiday Release Scheme Policy (opens in new tab)</a> applies to this release date.',
         )
       })
   })

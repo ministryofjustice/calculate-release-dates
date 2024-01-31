@@ -37,7 +37,7 @@ export default function Index({
     prisonerService,
     entryPointService,
     userInputService,
-    viewReleaseDatesService
+    viewReleaseDatesService,
   )
   const checkInformationAccessRoutes = new CheckInformationRoutes(
     calculateReleaseDatesService,
@@ -45,7 +45,7 @@ export default function Index({
     entryPointService,
     userInputService,
     checkInformationService,
-    questionsService
+    questionsService,
   )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
 
@@ -53,7 +53,7 @@ export default function Index({
     calculateReleaseDatesService,
     userPermissionsService,
     prisonerService,
-    comparisonService
+    comparisonService,
   )
 
   const otherAccessRoutes = new OtherRoutes(prisonerService)
@@ -62,21 +62,21 @@ export default function Index({
     viewReleaseDatesService,
     calculateReleaseDatesService,
     prisonerService,
-    entryPointService
+    entryPointService,
   )
 
   const calculationQuestionRoutes = new CalculationQuestionRoutes(
     calculateReleaseDatesService,
     prisonerService,
     entryPointService,
-    userInputService
+    userInputService,
   )
 
   const manualEntryAccessRoutes = new ManualEntryRoutes(
     calculateReleaseDatesService,
     prisonerService,
     manualCalculationService,
-    manualEntryService
+    manualEntryService,
   )
 
   const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService, approvedDatesService, manualEntryService)
@@ -91,7 +91,7 @@ export default function Index({
     viewReleaseDatesService,
     manualEntryService,
     manualCalculationService,
-    genuineOverridesEmailTemplateService
+    genuineOverridesEmailTemplateService,
   )
 
   const indexRoutes = () => {
@@ -110,7 +110,7 @@ export default function Index({
     get('/calculation/:nomsId/check-information-unsupported', checkInformationAccessRoutes.unsupportedCheckInformation)
     post(
       '/calculation/:nomsId/check-information-unsupported',
-      checkInformationAccessRoutes.submitUnsupportedCheckInformation
+      checkInformationAccessRoutes.submitUnsupportedCheckInformation,
     )
     get('/calculation/:nomsId/manual-entry', manualEntryAccessRoutes.landingPage)
     get('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.dateSelection)
@@ -129,20 +129,20 @@ export default function Index({
   const approvedDatesRoutes = () => {
     get(
       '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
-      approvedDatesAccessRoutes.askApprovedDatesQuestion
+      approvedDatesAccessRoutes.askApprovedDatesQuestion,
     )
     post(
       '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
-      approvedDatesAccessRoutes.submitApprovedDatesQuestion
+      approvedDatesAccessRoutes.submitApprovedDatesQuestion,
     )
     get('/calculation/:nomsId/:calculationRequestId/store', calculationAccessRoutes.submitCalculationSummary)
     get(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
-      approvedDatesAccessRoutes.selectedApprovedDateTypes
+      approvedDatesAccessRoutes.selectedApprovedDateTypes,
     )
     post(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
-      approvedDatesAccessRoutes.submitApprovedDateTypes
+      approvedDatesAccessRoutes.submitApprovedDateTypes,
     )
     get('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.loadSubmitDates)
     post('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.storeSubmitDates)
@@ -201,7 +201,7 @@ export default function Index({
   const specialistSupportRoutes = () => {
     get(
       '/calculation/:calculationReference/request-support',
-      genuineOverrideAccessRoutes.loadGenuineOverrideRequestPage
+      genuineOverrideAccessRoutes.loadGenuineOverrideRequestPage,
     )
     get('/specialist-support/', genuineOverrideAccessRoutes.startPage)
     get('/specialist-support/search/', genuineOverrideAccessRoutes.loadSearch)
@@ -210,54 +210,54 @@ export default function Index({
     post('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.submitConfirmPage)
     get(
       '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
-      genuineOverrideAccessRoutes.loadCheckSentenceAndInformationPage
+      genuineOverrideAccessRoutes.loadCheckSentenceAndInformationPage,
     )
     post(
       '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
-      genuineOverrideAccessRoutes.submitCheckSentenceAndInformationPage
+      genuineOverrideAccessRoutes.submitCheckSentenceAndInformationPage,
     )
     get(
       '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
-      genuineOverrideAccessRoutes.loadCalculationPage
+      genuineOverrideAccessRoutes.loadCalculationPage,
     )
     post(
       '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
-      genuineOverrideAccessRoutes.submitCalculationPage
+      genuineOverrideAccessRoutes.submitCalculationPage,
     )
     get(
       '/specialist-support/calculation/:calculationReference/complete',
-      genuineOverrideAccessRoutes.loadConfirmationPage
+      genuineOverrideAccessRoutes.loadConfirmationPage,
     )
     get('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.loadReasonPage)
     post('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.submitReasonPage)
     get(
       '/specialist-support/calculation/:calculationReference/select-date-types',
-      genuineOverrideAccessRoutes.loadSelectDatesPage
+      genuineOverrideAccessRoutes.loadSelectDatesPage,
     )
     post(
       '/specialist-support/calculation/:calculationReference/select-date-types',
-      genuineOverrideAccessRoutes.submitSelectDatesPage
+      genuineOverrideAccessRoutes.submitSelectDatesPage,
     )
     get(
       '/specialist-support/calculation/:calculationReference/enter-date',
-      genuineOverrideAccessRoutes.loadEnterDatePage
+      genuineOverrideAccessRoutes.loadEnterDatePage,
     )
     post(
       '/specialist-support/calculation/:calculationReference/enter-date',
-      genuineOverrideAccessRoutes.submitEnterDatePage
+      genuineOverrideAccessRoutes.submitEnterDatePage,
     )
     get(
       '/specialist-support/calculation/:calculationReference/confirm-override',
-      genuineOverrideAccessRoutes.loadConfirmOverridePage
+      genuineOverrideAccessRoutes.loadConfirmOverridePage,
     )
     post(
       '/specialist-support/calculation/:calculationReference/confirm-override',
-      genuineOverrideAccessRoutes.submitConfirmOverridePage
+      genuineOverrideAccessRoutes.submitConfirmOverridePage,
     )
     get('/specialist-support/calculation/:calculationReference/remove-date', genuineOverrideAccessRoutes.loadRemoveDate)
     post(
       '/specialist-support/calculation/:calculationReference/remove-date',
-      genuineOverrideAccessRoutes.submitRemoveDate
+      genuineOverrideAccessRoutes.submitRemoveDate,
     )
     get('/specialist-support/calculation/:calculationReference/change-date', genuineOverrideAccessRoutes.loadChangeDate)
   }

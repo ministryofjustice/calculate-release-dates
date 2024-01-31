@@ -113,7 +113,7 @@ describe('Prisoner service related tests', () => {
     it('Test fetching user caseloads', async () => {
       fakeApi.get(`/api/users/me/caseLoads`).reply(200, [caseload])
 
-      const result = await prisonerService.getUsersCaseloads('user', token)
+      const result = await prisonerService.getUsersCaseloads(token)
 
       expect(result).toEqual([caseload])
     })

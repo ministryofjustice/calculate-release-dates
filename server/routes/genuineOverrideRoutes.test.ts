@@ -69,7 +69,9 @@ const stubbedPrisonerData = {
 beforeEach(() => {
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
-  app = appWithAllRoutes({ userPermissionsService, entryPointService, calculateReleaseDatesService, prisonerService })
+  app = appWithAllRoutes({
+    services: { userPermissionsService, entryPointService, calculateReleaseDatesService, prisonerService },
+  })
 })
 
 afterEach(() => {
@@ -167,7 +169,7 @@ describe('Genuine overrides routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'The calculation reference number you entered could not be found. Check the reference and try again.'
+          'The calculation reference number you entered could not be found. Check the reference and try again.',
         )
       })
   })

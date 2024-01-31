@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import type { Request, Response } from 'express'
+
 import authorisationMiddleware from './authorisationMiddleware'
 
 function createToken(authorities: string[]) {
@@ -26,27 +27,47 @@ describe('authorisationMiddleware', () => {
           token: createToken(authorities),
         },
       },
-      redirect: (redirectUrl: string) => {
-        return redirectUrl
-      },
+      redirect: jest.fn(),
     } as unknown as Response
   }
 
-  it('should redirect when no required roles', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('should return next when no required roles', () => {
     const res = createResWithToken({ authorities: [] })
-    const authorisationResponse = authorisationMiddleware(req, res, next)
-    expect(authorisationResponse).toEqual('/authError')
+
+    authorisationMiddleware()(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
   })
 
   it('should redirect when user has no authorised roles', () => {
-    const res = createResWithToken({ authorities: ['NOT_IN_THE_LIST'] })
-    const authorisationResponse = authorisationMiddleware(req, res, next)
-    expect(authorisationResponse).toEqual('/authError')
+    const res = createResWithToken({ authorities: [] })
+
+    authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+
+    expect(next).not.toHaveBeenCalled()
+    expect(res.redirect).toHaveBeenCalledWith('/authError')
   })
 
   it('should return next when user has authorised role', () => {
-    const res = createResWithToken({ authorities: ['ROLE_RELEASE_DATES_CALCULATOR'] })
-    const authorisationResponse = authorisationMiddleware(req, res, next)
-    expect(authorisationResponse).toEqual(next())
+    const res = createResWithToken({ authorities: ['ROLE_SOME_REQUIRED_ROLE'] })
+
+    authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
+  })
+
+  it('should return next when user has authorised role and middleware created with ROLE_ prefix', () => {
+    const res = createResWithToken({ authorities: ['ROLE_SOME_REQUIRED_ROLE'] })
+
+    authorisationMiddleware(['ROLE_SOME_REQUIRED_ROLE'])(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
   })
 })

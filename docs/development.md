@@ -2,6 +2,8 @@
 ## Method 1 - connecting to the services in the DEV environment
 1. Create a `.env` file in the root of the project with the following content - Note - you will need to get the secret values from DEV:
 ```   
+   ENVIRONMENT_NAME=dev
+   REDIS_ENABLED=false
    HMPPS_AUTH_URL="https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
    TOKEN_VERIFICATION_API_URL="https://token-verification-api-dev.prison.service.justice.gov.uk"
    CALCULATE_RELEASE_DATES_API_URL="https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk"
@@ -11,16 +13,11 @@
    SYSTEM_CLIENT_SECRET= FILL THIS IN WITH SECRET FROM DEV!!
 ```   
 
-2. Start the redis container.
-
-   `$ docker-compose -f docker-compose-dev.yml up -d`
-
-
-4. Start a local `calculate-release-dates` service with `$ npm run start`, which will use the `.env` file to set
+2. Start a local `calculate-release-dates` service with `$ npm run start`, which will use the `.env` file to set
    up its environment to reference the DEV APIs.
 
 
-5. Bear in mind that the login details, and all data you will see, will be from the `calculate-release-dates-db` and APIs in the DEV
+3. Bear in mind that the login details, and all data you will see, will be from the `calculate-release-dates-db` and APIs in the DEV
    environment. Only the redis functions will be local operations.
 
 ## Method 2 - running everything locally

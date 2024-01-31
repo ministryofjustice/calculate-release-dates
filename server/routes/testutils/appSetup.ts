@@ -1,97 +1,69 @@
-import express, { Express, Router } from 'express'
+import express, { Express } from 'express'
 import cookieSession from 'cookie-session'
-import createError from 'http-errors'
-import path from 'path'
+import { NotFound } from 'http-errors'
 
-import flash from 'connect-flash'
-import allRoutes from '../index'
+import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
-import UserService from '../../services/userService'
 import * as auth from '../../authentication/auth'
-import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
-import { Services } from '../../services'
-import PrisonerService from '../../services/prisonerService'
-import EntryPointService from '../../services/entryPointService'
-import ViewReleaseDatesService from '../../services/viewReleaseDatesService'
-import UserInputService from '../../services/userInputService'
-import ManualCalculationService from '../../services/manualCalculationService'
-import ManualEntryService from '../../services/manualEntryService'
-import UserPermissionsService from '../../services/userPermissionsService'
-import ApprovedDatesService from '../../services/approvedDatesService'
-import CheckInformationService from '../../services/checkInformationService'
-import QuestionsService from '../../services/questionsService'
-import FrontEndComponentsService from '../../services/frontEndComponentsService'
-import ComparisonService from '../../services/comparisonService'
+import type { Services } from '../../services'
+import type { ApplicationInfo } from '../../applicationInfo'
 
-const user = {
-  name: 'anon nobody',
-  firstName: 'anon',
-  lastName: 'nobody',
+const testAppInfo: ApplicationInfo = {
+  applicationName: 'test',
+  buildNumber: '1',
+  gitRef: 'long ref',
+  gitShortHash: 'short ref',
+  branchName: 'main',
+}
+
+export const user: Express.User = {
+  name: 'FIRST LAST',
+  userId: 'id',
+  token: 'token',
   username: 'user1',
-  displayName: 'Anon Nobody',
-  caseloads: ['LEI'],
-  caseloadDescriptions: ['Leicester (HMP)'],
-  caseloadMap: new Map<string, string>([['LEI', 'Leicester (HMP)']]),
+  displayName: 'First Last',
+  active: true,
+  activeCaseLoadId: 'MDI',
+  authSource: 'NOMIS',
+  userRoles: ['ROLE'],
 }
 
-class MockUserService extends UserService {
-  constructor() {
-    super(undefined)
-  }
+export const flashProvider = jest.fn()
 
-  async getUser(token: string) {
-    return {
-      token,
-      ...user,
-    }
-  }
-}
-
-function appSetup({ router, production = false }: { router: Router; production?: boolean }): Express {
+function appSetup(services: Services, production: boolean, userSupplier: () => Express.User): Express {
   const app = express()
 
   app.set('view engine', 'njk')
 
-  nunjucksSetup(app, path)
-
+  nunjucksSetup(app, testAppInfo)
+  app.use(cookieSession({ keys: [''] }))
   app.use((req, res, next) => {
-    req.user = { ...user, token: 'token1', authSource: 'nomis', username: 'user1' }
-    res.locals = { user: { ...req.user } }
+    req.user = userSupplier()
+    req.flash = flashProvider
+    res.locals = {
+      user: { ...req.user },
+    }
     next()
   })
-
-  app.use(flash())
-  app.use(cookieSession({ keys: [''] }))
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
-  app.use('/', router)
-  app.use((req, res, next) => next(createError(404, 'Not found')))
+  app.use(routes(services))
+  app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
 
   return app
 }
 
-// eslint-disable-next-line import/prefer-default-export
-export const appWithAllRoutes = (overrides: Partial<Services> = {}, production = false): Express => {
-  const router = allRoutes({
-    userService: new MockUserService(),
-    prisonerService: {} as PrisonerService,
-    calculateReleaseDatesService: {} as CalculateReleaseDatesService,
-    entryPointService: {} as EntryPointService,
-    viewReleaseDatesService: {} as ViewReleaseDatesService,
-    userInputService: {} as UserInputService,
-    manualCalculationService: {} as ManualCalculationService,
-    manualEntryService: {} as ManualEntryService,
-    userPermissionsService: {} as UserPermissionsService,
-    approvedDatesService: {} as ApprovedDatesService,
-    checkInformationService: {} as CheckInformationService,
-    questionsService: {} as QuestionsService,
-    frontEndComponentService: {} as FrontEndComponentsService,
-    comparisonService: {} as ComparisonService,
-    ...overrides,
-  })
+export function appWithAllRoutes({
+  production = false,
+  services = {},
+  userSupplier = () => user,
+}: {
+  production?: boolean
+  services?: Partial<Services>
+  userSupplier?: () => Express.User
+}): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-
-  return appSetup({ router, production })
+  return appSetup(services as Services, production, userSupplier)
 }

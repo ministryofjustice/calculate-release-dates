@@ -3,8 +3,9 @@
     "target": "es5",
     "noEmit": true,
     "lib": ["es5", "dom", "es2015.promise"],
-    "types": ["cypress"],
-    "esModuleInterop": true
+    "types": ["cypress", "express", "express-session"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
 }

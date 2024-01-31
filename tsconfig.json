@@ -6,7 +6,6 @@
     "moduleResolution": "node",
     "outDir": "./dist",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "skipLibCheck": true,
     "noEmit": false,
     "allowJs": true,
@@ -14,12 +13,9 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
     "experimentalDecorators": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"],
-    "lib": ["ES2020.Promise"],
-    "ignoreDeprecations": "5.0"
   },
   "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "cypress.config.ts"],
-  "include": ["**/*.js", "**/*.ts"]
+  "include": ["**/*.js", "**/*.ts"],
 }

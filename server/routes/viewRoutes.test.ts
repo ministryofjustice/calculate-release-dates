@@ -31,9 +31,9 @@ jest.mock('../services/prisonerService')
 jest.mock('../services/entryPointService')
 jest.mock('../services/viewReleaseDatesService')
 
-const userService = new UserService(null) as jest.Mocked<UserService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
 
@@ -259,11 +259,13 @@ const stubbedUserInput = {
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    userService,
-    prisonerService,
-    calculateReleaseDatesService,
-    entryPointService,
-    viewReleaseDatesService,
+    services: {
+      userService,
+      prisonerService,
+      calculateReleaseDatesService,
+      entryPointService,
+      viewReleaseDatesService,
+    },
   })
 })
 
@@ -317,7 +319,7 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('SDS+')
           expect(res.text).not.toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
           expect(res.text).toContain(
-            'An Early removal scheme eligibility date (ERSED) was included in this calculation'
+            'An Early removal scheme eligibility date (ERSED) was included in this calculation',
           )
         })
     })
@@ -334,7 +336,7 @@ describe('View journey routes tests', () => {
         .expect(res => {
           expect(res.text).not.toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
           expect(res.text).not.toContain(
-            'An Early removal scheme eligibility date (ERSED) was included in this calculation'
+            'An Early removal scheme eligibility date (ERSED) was included in this calculation',
           )
         })
     })
@@ -343,7 +345,7 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments
+        stubbedNoNonFridayReleaseAdjustments,
       )
       calculateReleaseDatesService.getBreakdown.mockResolvedValue({
         calculationBreakdown: stubbedCalculationBreakdown,
@@ -358,7 +360,7 @@ describe('View journey routes tests', () => {
         .expect(res => {
           expect(res.text).toContain('Important')
           expect(res.text).toContain(
-            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
+            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.',
           )
         })
     })
@@ -367,7 +369,7 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments
+        stubbedNoNonFridayReleaseAdjustments,
       )
       calculateReleaseDatesService.getBreakdown.mockResolvedValue({
         calculationBreakdown: stubbedCalculationBreakdown,
@@ -382,7 +384,7 @@ describe('View journey routes tests', () => {
         .expect(res => {
           expect(res.text).not.toContain('Important')
           expect(res.text).not.toContain(
-            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.'
+            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.',
           )
         })
     })
@@ -412,7 +414,7 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments
+        stubbedNoNonFridayReleaseAdjustments,
       )
       calculateReleaseDatesService.getBreakdown.mockResolvedValue({
         calculationBreakdown: stubbedCalculationBreakdown,
@@ -455,7 +457,7 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments
+        stubbedNoNonFridayReleaseAdjustments,
       )
       calculateReleaseDatesService.getBreakdown.mockResolvedValue({
         calculationBreakdown: stubbedCalculationBreakdown,
@@ -488,7 +490,7 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments
+        stubbedNoNonFridayReleaseAdjustments,
       )
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
@@ -507,7 +509,7 @@ describe('View journey routes tests', () => {
           expect(res.text).not.toContain('Calculation breakdown')
           expect(res.text).toContain('The calculation breakdown cannot be shown on this page.')
           expect(res.text).toContain(
-            'To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/A1234AA/check-information">calculate release dates again.'
+            'To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/A1234AA/check-information">calculate release dates again.',
           )
         })
     })
@@ -516,7 +518,7 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments
+        stubbedNoNonFridayReleaseAdjustments,
       )
       calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
         reason: 'Other: reason',
@@ -530,7 +532,7 @@ describe('View journey routes tests', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).toContain(
-            'These dates have been manually entered by the Specialist support team because reason'
+            'These dates have been manually entered by the Specialist support team because reason',
           )
         })
     })
@@ -539,7 +541,7 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments
+        stubbedNoNonFridayReleaseAdjustments,
       )
       calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
         reason: 'terror',
@@ -553,7 +555,7 @@ describe('View journey routes tests', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).toContain(
-            'These dates have been manually entered by the Specialist support team because of terrorism or terror-related offences'
+            'These dates have been manually entered by the Specialist support team because of terrorism or terror-related offences',
           )
         })
     })
@@ -564,7 +566,7 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments
+        stubbedNoNonFridayReleaseAdjustments,
       )
       calculateReleaseDatesService.getBreakdown.mockResolvedValue({
         calculationBreakdown: stubbedCalculationBreakdown,
@@ -593,7 +595,7 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
       calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments
+        stubbedNoNonFridayReleaseAdjustments,
       )
       calculateReleaseDatesService.getBreakdown.mockResolvedValue({
         calculationBreakdown: stubbedCalculationBreakdown,

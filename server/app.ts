@@ -1,25 +1,25 @@
 import express from 'express'
 
-import path from 'path'
 import createError from 'http-errors'
 
-import csurf from 'csurf'
-import cookieParser from 'cookie-parser'
-import routes from './routes'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
-
-import setUpWebSession from './middleware/setUpWebSession'
-import setUpStaticResources from './middleware/setUpStaticResources'
-import setUpWebSecurity from './middleware/setUpWebSecurity'
-import setUpAuthentication from './middleware/setUpAuthentication'
-import setUpHealthChecks from './middleware/setUpHealthChecks'
-import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
-import { Services } from './services'
-import setUpCurrentUser from './middleware/setUpCurrentUser'
+import { metricsMiddleware } from './monitoring/metricsApp'
+
+import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
+import setUpCurrentUser from './middleware/setUpCurrentUser'
+import setUpHealthChecks from './middleware/setUpHealthChecks'
 import setUpFrontendComponents from './middleware/setUpDPSFrontendComponents'
+import setUpStaticResources from './middleware/setUpStaticResources'
+import setUpWebRequestParsing from './middleware/setupRequestParsing'
+import setUpWebSecurity from './middleware/setUpWebSecurity'
+import setUpWebSession from './middleware/setUpWebSession'
+import AuthorisedRoles from './enumerations/authorisedRoles'
+
+import routes from './routes'
+import type { Services } from './services'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -28,25 +28,20 @@ export default function createApp(services: Services): express.Application {
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
-  app.use(setUpHealthChecks())
+  app.use(metricsMiddleware)
+  app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
-  nunjucksSetup(app, path)
+  nunjucksSetup(app, services.applicationInfo)
   app.use(setUpAuthentication())
-  app.use(cookieParser())
+  app.use(authorisationMiddleware(Object.values(AuthorisedRoles)))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-
-  // CSRF protection
-  if (process.env.NODE_ENV !== 'test') {
-    app.use(csurf())
-  }
-
-  app.use(authorisationMiddleware)
   app.use(setUpFrontendComponents(services))
   app.use(routes(services))
+
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
 

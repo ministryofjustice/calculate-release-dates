@@ -26,20 +26,20 @@ describe('GET 404', () => {
       .expect(res => {
         expect(res.text).toContain('<pre>')
         expect(res.text).toContain(
-          'Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>'
+          'Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>',
         )
       })
   })
 
   it('should render content without stack in production mode', () => {
-    return request(appWithAllRoutes({ calculateReleaseDatesService }, true))
+    return request(appWithAllRoutes({ production: true, services: { calculateReleaseDatesService } }))
       .get('/unknown')
       .expect(404)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).not.toContain('<pre>')
         expect(res.text).toContain(
-          'Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>'
+          'Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>',
         )
       })
   })
