@@ -82,7 +82,12 @@ export default class ComparisonResultOverviewModel {
     this.hdced4PlusMismatches = comparison.mismatches
       .filter(mismatch => !['VALIDATION_ERROR', 'VALIDATION_ERROR_HDC4_PLUS'].includes(mismatch.misMatchType))
       .filter(mismatch => !!mismatch.hdcedFourPlusDate)
-      .sort((a, b) => a.establishment.localeCompare(b.establishment))
+      .sort((a, b) => {
+        if (a.establishment != null && b.establishment != null) {
+          return a.establishment.localeCompare(b.establishment)
+        }
+        return 0
+      })
       .map(mismatch => new Hdced4PlusResultDate(mismatch, comparison.prison))
   }
 }
