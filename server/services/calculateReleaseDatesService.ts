@@ -485,4 +485,8 @@ export default class CalculateReleaseDatesService {
   async getGenuineOverride(calculationReference: string, token: string): Promise<GenuineOverrideRequest> {
     return new CalculateReleaseDatesApiClient(token).getGenuineOverride(calculationReference)
   }
+
+  async validateBookingForManualEntry(prisonerId: string, token: string): Promise<ValidationMessage[]> {
+    return new CalculateReleaseDatesApiClient(token).getBookingManualEntryValidation(prisonerId)
+  }
 }

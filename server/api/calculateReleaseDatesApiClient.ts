@@ -91,7 +91,7 @@ export default class CalculateReleaseDatesApiClient {
 
   getCalculationBreakdown(calculationRequestId: number): Promise<CalculationBreakdown> {
     return this.restClient.get({
-      path: `/calculation/breakdown/${calculationRequestId}`,
+      path: `/${calculationRequestId}`,
     }) as Promise<CalculationBreakdown>
   }
 
@@ -302,5 +302,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/booking-and-sentence-adjustments/${bookingId}`,
     }) as Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments>
+  }
+
+  getBookingManualEntryValidation(prisonerId: string) {
+    return this.restClient.get({
+      path: `/validation/${prisonerId}/manual-entry-validation`,
+    }) as Promise<ValidationMessage[]>
   }
 }

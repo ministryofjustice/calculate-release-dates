@@ -25,6 +25,8 @@ export default class CheckInformationRoutes {
     if (config.featureToggles.manualEntry) {
       const unsupportedSentenceOrCalculationMessages =
         await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+      const unsupportedSentenceValidationMessages =
+        await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
       if (unsupportedSentenceOrCalculationMessages.length > 0) {
         return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
       }
