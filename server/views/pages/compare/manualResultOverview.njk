@@ -135,6 +135,16 @@
             {% endset -%}
 
             {% set tabs = [] %}
+            {% if comparison.validationHdc4PlusMismatches.length %}
+                {% set tabs = (tabs.push({
+                    label: "Potential HDC4+",
+                    id: "validation-error-hdc4-plus",
+                    panel: {
+                        html: validationErrorHdc4PlusHtml
+                    }
+                }), tabs) %}
+            {% endif %}
+
             {% if comparison.releaseDateMismatches.length %}
                 {% set tabs = (tabs.push({
                     label: "Release date mismatches",
@@ -161,16 +171,6 @@
                     id: "validation-error",
                     panel: {
                         html: validationErrorHtml
-                    }
-                }), tabs) %}
-            {% endif %}
-
-            {% if featureToggles.hdc4ComparisonTabEnabled and comparison.validationHdc4PlusMismatches.length %}
-                {% set tabs = (tabs.push({
-                    label: "Potential HDC4+",
-                    id: "validation-error-hdc4-plus",
-                    panel: {
-                        html: validationErrorHdc4PlusHtml
                     }
                 }), tabs) %}
             {% endif %}
