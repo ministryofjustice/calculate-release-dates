@@ -14,8 +14,8 @@ import { nunjucksEnv } from '../utils/nunjucksSetup'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
   CalculationRequestModel,
-  GenuineOverride,
-  ManualEntryDate,
+  GenuineOverrideRequest,
+  ManualEntrySelectedDate,
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualEntryService from '../services/manualEntryService'
@@ -297,7 +297,7 @@ export default class GenuineOverrideRoutes {
             originalCalculationRequest: calculationReference,
             savedCalculation: bookingCalculation.calculationReference,
             isOverridden: false,
-          } as GenuineOverride
+          } as GenuineOverrideRequest
           await new CalculateReleaseDatesApiClient(token).storeOverrideReason(genuineOverride)
           // This uses the new calculation reference, so it can be used in the email for the OMU staff for a link to the view journey
           return res.redirect(`/specialist-support/calculation/${bookingCalculation.calculationReference}/complete`)
@@ -412,7 +412,7 @@ export default class GenuineOverrideRoutes {
         reason,
         originalCalculationRequest: calculationReference,
         isOverridden: true,
-      } as GenuineOverride
+      } as GenuineOverrideRequest
       await new CalculateReleaseDatesApiClient(token).storeOverrideReason(genuineOverride)
       return res.redirect(`/specialist-support/calculation/${calculationReference}/select-date-types`)
     }
@@ -503,7 +503,7 @@ export default class GenuineOverrideRoutes {
       }
       let previousDate
       if (year && month && day) {
-        previousDate = { year, month, day } as SubmittedDate
+        previousDate = { year, month, day } as unknown as SubmittedDate
       }
       const date = this.manualEntryService.getNextDateToEnter(
         req.session.selectedManualEntryDates[releaseDates.prisonerId],
@@ -554,7 +554,7 @@ export default class GenuineOverrideRoutes {
       }
       if (storeDateResponse.success && !storeDateResponse.message) {
         req.session.selectedManualEntryDates[releaseDates.prisonerId].find(
-          (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType,
+          (d: ManualEntrySelectedDate) => d.dateType === storeDateResponse.date.dateType,
         ).date = storeDateResponse.date.date
         return res.redirect(`/specialist-support/calculation/${calculationReference}/enter-date`)
       }
@@ -620,7 +620,7 @@ export default class GenuineOverrideRoutes {
       const dateToRemove: string = <string>req.query.dateType
       if (
         req.session.selectedManualEntryDates[releaseDates.prisonerId].some(
-          (d: ManualEntryDate) => d.dateType === dateToRemove,
+          (d: ManualEntrySelectedDate) => d.dateType === dateToRemove,
         )
       ) {
         const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)

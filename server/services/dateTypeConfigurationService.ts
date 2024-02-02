@@ -1,4 +1,4 @@
-import { ManualEntryDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export const FULL_STRING_LOOKUP = {
   SED: 'SED (Sentence expiry date)',
@@ -24,24 +24,24 @@ export const FULL_STRING_LOOKUP = {
 }
 
 export default class DateTypeConfigurationService {
-  public configure(dateList: string | string[], sessionList: ManualEntryDate[]): ManualEntryDate[] {
+  public configure(dateList: string | string[], sessionList: ManualEntrySelectedDate[]): ManualEntrySelectedDate[] {
     const selectedDateTypes: string[] = Array.isArray(dateList) ? dateList : [dateList]
     return selectedDateTypes
       .map((date: string) => {
         if (date !== undefined) {
-          const existingDate = sessionList.find((d: ManualEntryDate) => d !== undefined && d.dateType === date)
+          const existingDate = sessionList.find((d: ManualEntrySelectedDate) => d !== undefined && d.dateType === date)
           if (existingDate) {
             return {
               dateType: date,
               dateText: FULL_STRING_LOOKUP[date],
               date: existingDate.date,
-            } as ManualEntryDate
+            } as ManualEntrySelectedDate
           }
           return {
             dateType: date,
             dateText: FULL_STRING_LOOKUP[date],
             date: undefined,
-          } as ManualEntryDate
+          } as ManualEntrySelectedDate
         }
         return null
       })

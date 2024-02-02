@@ -5,7 +5,10 @@ import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
 import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
-import { ManualEntryDate, SubmittedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  ManualEntrySelectedDate,
+  SubmittedDate,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -109,7 +112,7 @@ export default class ManualEntryRoutes {
     }
     let previousDate
     if (year && month && day) {
-      previousDate = { year, month, day } as SubmittedDate
+      previousDate = { year, month, day } as unknown as SubmittedDate
     }
     const date = this.manualEntryService.getNextDateToEnter(req.session.selectedManualEntryDates[nomsId])
     if (date && date.dateType !== 'None') {
@@ -138,7 +141,7 @@ export default class ManualEntryRoutes {
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedManualEntryDates[nomsId].find(
-        (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType,
+        (d: ManualEntrySelectedDate) => d.dateType === storeDateResponse.date.dateType,
       ).date = storeDateResponse.date.date
       return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
     }
@@ -171,7 +174,9 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
     const dateToRemove: string = <string>req.query.dateType
-    if (req.session.selectedManualEntryDates[nomsId].some((d: ManualEntryDate) => d.dateType === dateToRemove)) {
+    if (
+      req.session.selectedManualEntryDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)
+    ) {
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
       return res.render('pages/manualEntry/removeDate', { prisonerDetail, dateToRemove, fullDateName })
     }

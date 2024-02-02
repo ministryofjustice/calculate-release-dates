@@ -6,7 +6,10 @@ import UserPermissionsService from '../services/userPermissionsService'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { BookingCalculation, GenuineOverride } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  GenuineOverrideRequest,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
 import config from '../config'
 
@@ -34,6 +37,7 @@ const stubbedCalculationResults = {
   effectiveSentenceLength: {},
   prisonerId: 'A1234AB',
   calculationStatus: 'CONFIRMED',
+  calculationType: 'CALCULATED',
   calculationReference: 'ABC123',
   bookingId: 123,
   approvedDates: {},
@@ -274,7 +278,7 @@ describe('Genuine overrides routes tests', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
     prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(stubbedPrisonerData)
-    fakeApi.post(`/specialist-support/genuine-override`).reply(200, {} as GenuineOverride)
+    fakeApi.post(`/specialist-support/genuine-override`).reply(200, {} as GenuineOverrideRequest)
     return request(app)
       .post('/specialist-support/calculation/123/reason')
       .type('form')

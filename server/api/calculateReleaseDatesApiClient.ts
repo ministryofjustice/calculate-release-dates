@@ -15,7 +15,7 @@ import {
   ComparisonPersonDiscrepancySummary,
   ComparisonPersonOverview,
   ComparisonSummary,
-  GenuineOverride,
+  GenuineOverrideRequest,
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,
   ManualEntryRequest,
@@ -180,11 +180,11 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<ManualCalculationResponse>
   }
 
-  storeOverrideReason(overrideRequest: GenuineOverride) {
+  storeOverrideReason(overrideRequest: GenuineOverrideRequest) {
     return this.restClient.post({
       path: '/specialist-support/genuine-override',
       data: overrideRequest,
-    }) as Promise<GenuineOverride>
+    }) as Promise<GenuineOverrideRequest>
   }
 
   storeOverrideCalculation(overrideCalculationRequest: GenuineOverrideDateRequest) {
@@ -197,7 +197,7 @@ export default class CalculateReleaseDatesApiClient {
   getGenuineOverride(calculationReference: string) {
     return this.restClient.get({
       path: `/specialist-support/genuine-override/calculation/${calculationReference}`,
-    }) as Promise<GenuineOverride>
+    }) as Promise<GenuineOverrideRequest>
   }
 
   getNonReleaseFridayDay(date: string): Promise<NonFridayReleaseDay> {
