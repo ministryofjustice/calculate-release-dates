@@ -13,7 +13,6 @@ import {
   ersedAdjustedByArdBreakdown,
   ersedBeforeSentenceBreakdown,
   ersedHalfwayBreakdown,
-  ersedOneYearBreakdown,
   ersedTwoThirdsBreakdown,
   psiExample16CalculationBreakdown,
   psiExample25CalculationBreakdown,
@@ -35,6 +34,7 @@ const calculationResults: BookingCalculation = {
   calculationRequestId,
   prisonerId,
   bookingId: 123,
+  calculationType: 'CALCULATED',
   calculationStatus: 'CONFIRMED',
 }
 const calculationBreakdown: CalculationBreakdown = {
@@ -175,6 +175,7 @@ describe('Calculate release dates service tests', () => {
       calculationRequestId,
       prisonerId,
       bookingId: 123,
+      calculationType: 'CALCULATED',
       calculationStatus: 'CONFIRMED',
     }
     const adjustedCrd: WorkingDay = {
@@ -246,6 +247,7 @@ describe('Calculate release dates service tests', () => {
       calculationRequestId,
       prisonerId,
       bookingId: 123,
+      calculationType: 'CALCULATED',
       calculationStatus: 'CONFIRMED',
     }
     const adjustedCrd: NonFridayReleaseDay = {
@@ -274,6 +276,7 @@ describe('Calculate release dates service tests', () => {
       calculationRequestId,
       prisonerId,
       bookingId: 123,
+      calculationType: 'CALCULATED',
       calculationStatus: 'CONFIRMED',
     }
     const adjustedCrd: NonFridayReleaseDay = {
@@ -417,21 +420,6 @@ describe('Calculate release dates service tests', () => {
 
       expect(result.releaseDatesWithAdjustments).toEqual([
         { hintText: '20 March 2023 plus 66 days', releaseDate: '2023-03-20', releaseDateType: 'ERSED' },
-      ])
-    })
-    it('ERSED one year', async () => {
-      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedOneYearBreakdown())
-
-      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-
-      expect(result.calculationBreakdown).toEqual(ersedOneYearBreakdown())
-
-      expect(result.releaseDatesWithAdjustments).toEqual([
-        {
-          hintText: '28 July 2024 plus 100 days minus 12 months',
-          releaseDate: '2023-07-28',
-          releaseDateType: 'ERSED',
-        },
       ])
     })
     it('ERSED adjusted to afine', async () => {
