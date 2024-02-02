@@ -98,7 +98,6 @@ export default class AdjustmentsViewModel {
         }
         return true
       })
-    const newAdjustments = filteredAdjustments.filter(a => a.analysisResult === 'NEW')
     return {
       aggregate: this.aggregateAdjustment(filteredAdjustments),
       details: filteredAdjustments.map(a => {
@@ -107,10 +106,9 @@ export default class AdjustmentsViewModel {
           to: a.toDate,
           days: a.numberOfDays,
           sentence: 'sentenceSequence' in a ? a.sentenceSequence : null,
-          analysisResult: a.analysisResult,
         }
       }),
-      aggregateNewDaysSinceLastCalculation: this.aggregateAdjustment(newAdjustments),
+      aggregateNewDaysSinceLastCalculation: this.aggregateAdjustment([]),
     }
   }
 
