@@ -1,6 +1,8 @@
 # Running and developing locally
 ## Method 1 - connecting to the services in the DEV environment
-1. Create a `.env` file in the root of the project with the following content - Note - you will need to get the secret values from DEV:
+1. Ensure that you have env var`NODE_OPTIONS` set to `-r dotenv/config`, else the `.env` file will not be read
+
+2. Create a `.env` file in the root of the project with the following content - Note - you will need to get the secret values from DEV:
 ```   
    ENVIRONMENT_NAME=dev
    REDIS_ENABLED=false
@@ -13,11 +15,11 @@
    SYSTEM_CLIENT_SECRET= FILL THIS IN WITH SECRET FROM DEV!!
 ```   
 
-2. Start a local `calculate-release-dates` service with `$ npm run start`, which will use the `.env` file to set
+3. Start a local `calculate-release-dates` service with `$ npm run start`, which will use the `.env` file to set
    up its environment to reference the DEV APIs.
 
 
-3. Bear in mind that the login details, and all data you will see, will be from the `calculate-release-dates-db` and APIs in the DEV
+4. Bear in mind that the login details, and all data you will see, will be from the `calculate-release-dates-db` and APIs in the DEV
    environment. Only the redis functions will be local operations.
 
 ## Method 2 - running everything locally
