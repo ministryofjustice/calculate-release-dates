@@ -20,7 +20,31 @@ export interface paths {
      */
     post: operations['validate']
   }
-
+  '/unused-deductions/{prisonerId}/calculation': {
+    /** Calculate unused deductions. */
+    post: operations['calculate']
+  }
+  '/specialist-support/genuine-override': {
+    /**
+     * Store a genuine override
+     * @description This endpoint will return a response model which indicates the success of storing a genuine override
+     */
+    post: operations['storeGenuineOverride']
+  }
+  '/specialist-support/genuine-override/calculation': {
+    /**
+     * Store a genuine override
+     * @description This endpoint will return a response model which indicates the success of storing a genuine override
+     */
+    post: operations['storeGenuineOverrideDates']
+  }
+  '/manual-calculation/{prisonerId}': {
+    /**
+     * Store a manual calculation
+     * @description This endpoint will return a response model which indicates the success of storing a manual calculation
+     */
+    post: operations['storeManualCalculation']
+  }
   '/comparison': {
     /**
      * List all Comparisons performed using presets
@@ -35,12 +59,12 @@ export interface paths {
   }
   '/comparison/{comparisonReference}/mismatch/{mismatchReference}/discrepancy': {
     /**
-     * Returns the latest discrepancy for a comparison person
-     * @description This endpoint returns the mismatch discrepancy for a particular comparison person
+     * Returns the latest discrepancy record for a comparison person
+     * @description This endpoint returns the mismatch discrepancy for a particular mismatch
      */
     get: operations['getComparisonPersonDiscrepancy']
     /**
-     * Create a copmarison person discrepancy record
+     * Create a comparison person discrepancy record
      * @description This endpoint will create a new comparison person discrepancy and return a summary of it
      */
     post: operations['createComparisonPersonDiscrepancy']
@@ -57,13 +81,24 @@ export interface paths {
      */
     post: operations['createComparison_1']
   }
-
+  '/comparison/manual/{comparisonReference}/mismatch/{mismatchReference}/discrepancy': {
+    /**
+     * Returns the latest discrepancy record for a comparison person
+     * @description This endpoint returns the mismatch discrepancy for a particular mismatch
+     */
+    get: operations['getComparisonPersonDiscrepancy_1']
+    /**
+     * Create a comparison person discrepancy record
+     * @description This endpoint will create a new comparison person discrepancy and return a summary of it
+     */
+    post: operations['createComparisonPersonDiscrepancy_1']
+  }
   '/calculation/{prisonerId}': {
     /**
      * Calculate release dates for a prisoner - preliminary calculation, this does not publish to NOMIS
      * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS
      */
-    post: operations['calculate']
+    post: operations['calculate_1']
   }
   '/calculation/{prisonerId}/test': {
     /**
@@ -107,6 +142,20 @@ export interface paths {
      */
     get: operations['validateSupported']
   }
+  '/specialist-support/genuine-override/calculation/{calculationReference}': {
+    /**
+     * Get a genuine override
+     * @description This endpoint will return a response model which returns a genuine override
+     */
+    get: operations['getGenuineOverride']
+  }
+  '/sentence-and-offence-information/{bookingId}': {
+    /**
+     * Get sentence and offence information
+     * @description This endpoint will return a response model which lists sentence and offence information. It will notify if there have been any changed since last calculation
+     */
+    get: operations['getSentencesAndOffences']
+  }
   '/queue-admin/get-dlq-messages/{dlqName}': {
     get: operations['getDlqMessages']
   }
@@ -123,6 +172,13 @@ export interface paths {
      * @description This endpoint will return true if a booking has any indeterminate sentences
      */
     get: operations['hasIndeterminateSentences']
+  }
+  '/historicCalculations/{nomsId}': {
+    /**
+     * Get historic calculations for a prisoner
+     * @description This endpoint will return a list of calculations performed for a given prisoner
+     */
+    get: operations['getCalculationResults']
   }
   '/comparison/{comparisonReference}': {
     /**
@@ -171,7 +227,7 @@ export interface paths {
      * Get release dates for a calculationRequestId
      * @description This endpoint will return the release dates based on a calculationRequestId
      */
-    get: operations['getCalculationResults']
+    get: operations['getCalculationResults_1']
   }
   '/calculation/{prisonerId}/user-questions': {
     /**
@@ -206,7 +262,7 @@ export interface paths {
      * Get release dates for a calculationRequestId
      * @description This endpoint will return the release dates based on a calculationRequestId
      */
-    get: operations['getCalculationResults']
+    get: operations['getCalculationResults_2']
   }
   '/calculation/prisoner-details/{calculationRequestId}': {
     /**
@@ -236,64 +292,32 @@ export interface paths {
      */
     get: operations['get']
   }
+  '/calculation-reasons/': {
+    get: operations['getActiveCalculationReasons']
+  }
+  '/booking-and-sentence-adjustments/{bookingId}': {
+    /**
+     * Get booking and sentence adjusments
+     * @description This endpoint will return a response model which shows booking and sentence adjustments. It will notify if there are new adjustments since last calculation
+     */
+    get: operations['getBookingAndSentenceAdjustments']
+  }
 }
 
 export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
-    Message: {
-      messageId?: string
-      receiptHandle?: string
-      body?: string
-      attributes?: {
-        [key: string]: string | undefined
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never>
       }
-      messageAttributes?: {
-        [key: string]: components['schemas']['MessageAttributeValue'] | undefined
-      }
-      md5OfMessageAttributes?: string
-      md5OfBody?: string
-    }
-    MessageAttributeValue: {
-      stringValue?: string
-      binaryValue?: {
-        /** Format: int32 */
-        short?: number
-        char?: string
-        /** Format: int32 */
-        int?: number
-        /** Format: int64 */
-        long?: number
-        /** Format: float */
-        float?: number
-        /** Format: double */
-        double?: number
-        direct?: boolean
-        readOnly?: boolean
-      }
-      stringListValues?: string[]
-      binaryListValues?: {
-        /** Format: int32 */
-        short?: number
-        char?: string
-        /** Format: int32 */
-        int?: number
-        /** Format: int64 */
-        long?: number
-        /** Format: float */
-        float?: number
-        /** Format: double */
-        double?: number
-        direct?: boolean
-        readOnly?: boolean
-      }[]
-      dataType?: string
+      messageId: string
     }
     RetryDlqResult: {
       /** Format: int32 */
       messagesFoundCount: number
-      messages: components['schemas']['Message'][]
+      messages: components['schemas']['DlqMessage'][]
     }
     PurgeQueueResult: {
       /** Format: int32 */
@@ -315,11 +339,6 @@ export interface components {
       calculateErsed: boolean
       /** @description Whether to use offence indicators from another system for the calculation or user's input. */
       useOffenceIndicators: boolean
-    }
-    CalculationRequestModel: {
-      calculationUserInputs: CalculationUserInputs
-      calculationReasonId: number
-      otherReasonDescription: string
     }
     /** @description Validation message details */
     ValidationMessage: {
@@ -385,6 +404,111 @@ export interface components {
       /** @enum {string} */
       type: 'UNSUPPORTED_SENTENCE' | 'UNSUPPORTED_CALCULATION' | 'VALIDATION'
     }
+    AdjustmentServiceAdjustment: {
+      /** Format: uuid */
+      id?: string
+      /** Format: int64 */
+      bookingId: number
+      /** Format: int32 */
+      sentenceSequence?: number
+      person: string
+      /** @enum {string} */
+      adjustmentType:
+        | 'REMAND'
+        | 'TAGGED_BAIL'
+        | 'UNLAWFULLY_AT_LARGE'
+        | 'LAWFULLY_AT_LARGE'
+        | 'ADDITIONAL_DAYS_AWARDED'
+        | 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED'
+        | 'SPECIAL_REMISSION'
+        | 'UNUSED_DEDUCTIONS'
+      /** Format: date */
+      toDate?: string
+      /** Format: date */
+      fromDate?: string
+      /** Format: int32 */
+      days?: number
+      /** Format: int32 */
+      daysBetween?: number
+      /** Format: int32 */
+      effectiveDays?: number
+    }
+    UnusedDeductionCalculationResponse: {
+      /** Format: int32 */
+      unusedDeductions?: number
+      validationMessages: components['schemas']['ValidationMessage'][]
+    }
+    GenuineOverrideRequest: {
+      reason: string
+      originalCalculationRequest: string
+      savedCalculation?: string
+      isOverridden: boolean
+    }
+    GenuineOverrideResponse: {
+      reason: string
+      originalCalculationRequest: string
+      savedCalculation: string
+      isOverridden: boolean
+    }
+    GenuineOverrideDateRequest: {
+      manualEntryRequest: components['schemas']['ManualEntryRequest']
+      originalCalculationReference: string
+    }
+    ManualEntryRequest: {
+      selectedManualEntryDates: components['schemas']['ManualEntrySelectedDate'][]
+      /** Format: int64 */
+      reasonForCalculationId: number
+      otherReasonDescription?: string
+    }
+    ManualEntrySelectedDate: {
+      /** @enum {string} */
+      dateType:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
+      dateText: string
+      date?: components['schemas']['SubmittedDate']
+    }
+    SubmittedDate: {
+      /** Format: int32 */
+      day: number
+      /** Format: int32 */
+      month: number
+      /** Format: int32 */
+      year: number
+    }
+    GenuineOverrideDateResponse: {
+      calculationReference: string
+      originalCalculationReference: string
+    }
+    ManualCalculationResponse: {
+      enteredDates?: {
+        [key: string]: string
+      }
+      /** Format: int64 */
+      calculationRequestId: number
+    }
     ComparisonInput: {
       criteria?: components['schemas']['JsonNode']
       /** @description The prison the analysis was run against */
@@ -395,7 +519,7 @@ export interface components {
        */
       comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
     }
-    /** @description Criteria */
+    /** @description Criteria used in the comparison */
     JsonNode: Record<string, never>
     Comparison: {
       comparisonShortReference: string
@@ -408,7 +532,9 @@ export interface components {
       calculatedByUsername: string
       comparisonStatus: components['schemas']['ComparisonStatus']
       /** Format: int64 */
-      numberOfPeopleCompared?: number
+      numberOfPeopleCompared: number
+      /** Format: int64 */
+      numberOfMismatches: number
     }
     ComparisonStatus: {
       /** Format: int32 */
@@ -423,8 +549,8 @@ export interface components {
       impact: 'POTENTIAL_RELEASE_IN_ERROR' | 'POTENTIAL_UNLAWFUL_DETENTION' | 'OTHER'
       /** @description The causes for the mismatch */
       causes: components['schemas']['DiscrepancyCause'][]
-      /** @description Any extra detail about the discrepancy */
-      detail?: string
+      /** @description Detail about the discrepancy */
+      detail: string
       /**
        * @description The priority of resolving the discrepancy
        * @enum {string}
@@ -478,15 +604,20 @@ export interface components {
       /** @description The prisoner ids the analysis was run against */
       prisonerIds: string[]
     }
+    CalculationRequestModel: {
+      calculationUserInputs?: components['schemas']['CalculationUserInputs']
+      /** Format: int64 */
+      calculationReasonId: number
+      otherReasonDescription?: string
+    }
     CalculatedReleaseDates: {
       dates: {
-        [key: string]: string | undefined
+        [key: string]: string
       }
       /** Format: int64 */
       calculationRequestId: number
       /** Format: int64 */
       bookingId: number
-      calculationReference: string
       prisonerId: string
       /** @enum {string} */
       calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST'
@@ -520,9 +651,19 @@ export interface components {
           isoBased?: boolean
         }
       }
+      /** @enum {string} */
+      calculationType:
+        | 'CALCULATED'
+        | 'MANUAL_DETERMINATE'
+        | 'MANUAL_INDETERMINATE'
+        | 'CALCULATED_WITH_APPROVED_DATES'
+        | 'MANUAL_OVERRIDE'
+        | 'CALCULATED_BY_SPECIALIST_SUPPORT'
       approvedDates?: {
-        [key: string]: string | undefined
+        [key: string]: string
       }
+      /** Format: uuid */
+      calculationReference: string
       calculationReason?: components['schemas']['CalculationReason']
       otherReasonDescription?: string
       /** Format: date */
@@ -531,46 +672,15 @@ export interface components {
     CalculationFragments: {
       breakdownHtml: string
     }
-    SubmittedDate: {
-      day: string
-      month: string
-      year: string
-    }
-    ManualEntryDate: {
-      dateType: string
-      dateText: string
-      date?: components['schemas']['SubmittedDate']
-    }
-    SubmitCalculationRequest: {
-      calculationFragments: components['schemas']['CalculationFragments']
-      approvedDates: components['schemas']['ManualEntryDate'][]
-      isSpecialistSupport?: boolean
+    CalculationReason: {
+      /** Format: int64 */
+      id: number
+      isOther: boolean
+      displayName: string
     }
     CalculationResults: {
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
       validationMessages: components['schemas']['ValidationMessage'][]
-    }
-    GenuineOverride: {
-      reason: string
-      originalCalculationRequest: string
-      savedCalculation?: string
-      isOverridden: boolean
-    }
-    ManualEntryDates: {
-      selectedManualEntryDates: components['schemas']['ManualEntryDate'][]
-    }
-    ManualEntryRequest: {
-      selectedManualEntryDates: components['schemas']['ManualEntryDates']
-      reasonForCalculationId: number
-      otherReasonDescription: string
-    }
-    GenuineOverrideDateRequest: {
-      manualEntryRequest: components['schemas']['ManualEntryDates']
-      originalCalculationReference: string
-    }
-    GenuineOverrideDateResponse: {
-      calculationReference: string
-      originalCalculationReference: string
     }
     RelevantRemand: {
       /** Format: date */
@@ -585,19 +695,32 @@ export interface components {
     RelevantRemandCalculationRequest: {
       relevantRemands: components['schemas']['RelevantRemand'][]
       sentence: components['schemas']['RelevantRemandSentence']
+      /** Format: date */
+      calculateAt: string
     }
     RelevantRemandSentence: {
       /** Format: int32 */
       sequence: number
       /** Format: date */
       sentenceDate: string
+      /** Format: date */
+      recallDate?: string
       /** Format: int64 */
       bookingId: number
     }
     RelevantRemandCalculationResult: {
       /** Format: date */
       releaseDate?: string
+      /** Format: date */
+      postRecallReleaseDate?: string
+      /** Format: int32 */
+      unusedDeductions: number
       validationMessages: components['schemas']['ValidationMessage'][]
+    }
+    SubmitCalculationRequest: {
+      calculationFragments: components['schemas']['CalculationFragments']
+      approvedDates?: components['schemas']['ManualEntrySelectedDate'][]
+      isSpecialistSupport?: boolean
     }
     WorkingDay: {
       /** Format: date */
@@ -706,84 +829,6 @@ export interface components {
       sdsSentencesIdentified?: components['schemas']['SentenceAndOffences'][]
     }
     AnalyzedSentenceAndOffences: {
-      /**
-       * Format: int64
-       * @description The bookingId this sentence and offence(s) relates to
-       */
-      bookingId?: number
-      /**
-       * Format: int32
-       * @description Sentence sequence - a unique identifier a sentence on a booking
-       */
-      sentenceSequence?: number
-      /**
-       * Format: int32
-       * @description This sentence is consecutive to this sequence (if populated)
-       */
-      consecutiveToSequence?: number
-      /**
-       * Format: int64
-       * @description Sentence line sequence - a number representing the order
-       */
-      lineSequence?: number
-      /**
-       * Format: int64
-       * @description Case sequence - a number representing the order of the case this sentence belongs to
-       */
-      caseSequence?: number
-      /** @description Case reference - a string identifying the case this sentence belongs to */
-      caseReference?: string
-      /** @description Court description - a string describing the the court that the case was heard at */
-      courtDescription?: string
-      /** @description This sentence status: A = Active I = Inactive */
-      sentenceStatus?: string
-      /** @description The sentence category e.g. 2003 or Licence */
-      sentenceCategory?: string
-      /** @description The sentence calculation type e.g. R or ADIMP_ORA */
-      sentenceCalculationType?: string
-      /** @description The sentence type description e.g. Standard Determinate Sentence */
-      sentenceTypeDescription?: string
-      /**
-       * Format: date
-       * @description The sentenced date for this sentence (aka court date)
-       */
-      sentenceDate?: string
-      /** @description The sentence terms of the sentence */
-      terms?: components['schemas']['OffenderSentenceTerm'][]
-      /** @description The offences related to this sentence (will usually only have one offence per sentence) */
-      offences?: components['schemas']['OffenderOffence'][]
-      /**
-       * Format: double
-       * @description The amount of fine related to the sentence and offence
-       */
-      fineAmount?: number
-      sentenceAndOffenceAnalysis: 'NEW' | 'SAME' | 'CHANGED'
-    }
-    CalculationSentenceQuestion: {
-      /** Format: int32 */
-      sentenceSequence: number
-      /** @enum {string} */
-      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
-    }
-    CalculationUserQuestions: {
-      sentenceQuestions: components['schemas']['CalculationSentenceQuestion'][]
-    }
-    OffenderOffence: {
-      /** Format: int64 */
-      offenderChargeId: number
-      /** Format: date */
-      offenceStartDate?: string
-      /** Format: date */
-      offenceEndDate?: string
-      offenceCode: string
-      offenceDescription: string
-      indicators: string[]
-      pcscSec250: boolean
-      pcscSds: boolean
-      pcscSdsPlus: boolean
-      scheduleFifteenMaximumLife: boolean
-    }
-    SentenceAndOffences: {
       /** Format: int64 */
       bookingId: number
       /** Format: int32 */
@@ -805,6 +850,23 @@ export interface components {
       caseReference?: string
       courtDescription?: string
       fineAmount?: number
+      /** @enum {string} */
+      sentenceAndOffenceAnalysis: 'NEW' | 'UPDATED' | 'SAME'
+    }
+    OffenderOffence: {
+      /** Format: int64 */
+      offenderChargeId: number
+      /** Format: date */
+      offenceStartDate?: string
+      /** Format: date */
+      offenceEndDate?: string
+      offenceCode: string
+      offenceDescription: string
+      indicators: string[]
+      isScheduleFifteenMaximumLife: boolean
+      isPcscSec250: boolean
+      isPcscSds: boolean
+      isPcscSdsPlus: boolean
     }
     SentenceTerms: {
       /** Format: int32 */
@@ -817,30 +879,86 @@ export interface components {
       days: number
       code: string
     }
-    ReturnToCustodyDate: {
-      /** Format: int64 */
-      bookingId: number
-      /** Format: date */
-      returnToCustodyDate: string
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
-    Alert: {
+    NonFridayReleaseDay: {
       /** Format: date */
-      dateCreated: string
-      /** Format: date */
-      dateExpires?: string
-      alertType: string
-      alertCode: string
+      date: string
+      usePolicy: boolean
     }
-    PrisonerDetails: {
+    CalculationViewConfiguration: {
+      reference: string
       /** Format: int64 */
-      bookingId: number
-      offenderNo: string
-      firstName: string
-      lastName: string
+      calcId: number
+    }
+    HistoricCalculation: {
+      /** Format: date-time */
+      calculationDate: string
+      /** @enum {string} */
+      calculationSource: 'NOMIS' | 'CRDS'
+      calculationViewConfiguration?: components['schemas']['CalculationViewConfiguration']
+      commentText: string
+      /** @enum {string} */
+      calculationType?:
+        | 'CALCULATED'
+        | 'MANUAL_DETERMINATE'
+        | 'MANUAL_INDETERMINATE'
+        | 'CALCULATED_WITH_APPROVED_DATES'
+        | 'MANUAL_OVERRIDE'
+        | 'CALCULATED_BY_SPECIALIST_SUPPORT'
+    }
+    ComparisonSummary: {
+      comparisonShortReference: string
+      prison?: string
+      /** @enum {string} */
+      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      /** Format: date-time */
+      calculatedAt: string
+      calculatedByUsername: string
+      /** Format: int64 */
+      numberOfMismatches: number
+      /** Format: int64 */
+      numberOfPeopleCompared: number
+    }
+    ComparisonMismatchSummary: {
+      personId: string
+      lastName?: string
+      isValid: boolean
+      isMatch: boolean
+      validationMessages: components['schemas']['ValidationMessage'][]
+      shortReference: string
+      /** @enum {string} */
+      misMatchType:
+        | 'NONE'
+        | 'RELEASE_DATES_MISMATCH'
+        | 'VALIDATION_ERROR'
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
+        | 'VALIDATION_ERROR_HDC4_PLUS'
+      sdsSentencesIdentified: components['schemas']['JsonNode']
       /** Format: date */
-      dateOfBirth: string
-      alerts: components['schemas']['Alert'][]
-      agencyId: string
+      hdcedFourPlusDate?: string
+      establishment?: string
+    }
+    ComparisonOverview: {
+      comparisonShortReference: string
+      prison?: string
+      /** @enum {string} */
+      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      /** Format: date-time */
+      calculatedAt: string
+      calculatedByUsername: string
+      /** Format: int64 */
+      numberOfMismatches: number
+      /** Format: int64 */
+      numberOfPeopleCompared: number
+      mismatches: components['schemas']['ComparisonMismatchSummary'][]
+      status: string
     }
     /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
@@ -871,16 +989,165 @@ export interface components {
         | 'Eras'
         | 'Forever'
     }
+    ComparisonPersonOverview: {
+      personId: string
+      lastName?: string
+      isValid: boolean
+      isMatch: boolean
+      hasDiscrepancyRecord: boolean
+      /** @enum {string} */
+      mismatchType:
+        | 'NONE'
+        | 'RELEASE_DATES_MISMATCH'
+        | 'VALIDATION_ERROR'
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
+        | 'VALIDATION_ERROR_HDC4_PLUS'
+      isActiveSexOffender?: boolean
+      validationMessages: components['schemas']['ValidationMessage'][]
+      shortReference: string
+      /** Format: int64 */
+      bookingId: number
+      /** Format: date-time */
+      calculatedAt: string
+      crdsDates: {
+        [key: string]: string
+      }
+      nomisDates: {
+        [key: string]: string
+      }
+      overrideDates: {
+        [key: string]: string
+      }
+      breakdownByReleaseDateType: {
+        [key: string]: components['schemas']['ReleaseDateCalculationBreakdown']
+      }
+      sdsSentencesIdentified: components['schemas']['SentenceAndOffences'][]
+    }
+    /** @description Calculation breakdown details for a release date type */
+    ReleaseDateCalculationBreakdown: {
+      /**
+       * @description Calculation rules used to determine this calculation.
+       * @example [
+       *   "HDCED_GE_MIN_PERIOD_LT_MIDPOINT"
+       * ]
+       */
+      rules: (
+        | 'HDCED_GE_MIN_PERIOD_LT_MIDPOINT'
+        | 'HDCED_GE_MIDPOINT_LT_MAX_PERIOD'
+        | 'HDCED_MINIMUM_CUSTODIAL_PERIOD'
+        | 'CONSECUTIVE_SENTENCE_HDCED_MINIMUM_CUSTODIAL_PERIOD'
+        | 'CONSECUTIVE_SENTENCE_HDCED_CALCULATION'
+        | 'TUSED_LICENCE_PERIOD_LT_1Y'
+        | 'LED_CONSEC_ORA_AND_NON_ORA'
+        | 'UNUSED_ADA'
+        | 'IMMEDIATE_RELEASE'
+        | 'PED_EQUAL_TO_LATEST_NON_PED_CONDITIONAL_RELEASE'
+        | 'PED_EQUAL_TO_LATEST_NON_PED_ACTUAL_RELEASE'
+        | 'HDCED_ADJUSTED_TO_CONCURRENT_CONDITIONAL_RELEASE'
+        | 'HDCED_ADJUSTED_TO_CONCURRENT_ACTUAL_RELEASE'
+        | 'ERSED_TWO_THIRDS'
+        | 'ERSED_HALFWAY'
+        | 'ERSED_MAX_PERIOD'
+        | 'ERSED_MIXED_TERMS'
+        | 'ERSED_ADJUSTED_TO_CONCURRENT_TERM'
+        | 'ERSED_BEFORE_SENTENCE_DATE'
+        | 'ERSED_ADJUSTED_TO_MTD'
+      )[]
+      /** @description Adjustments details associated that are specifically added as part of a rule */
+      rulesWithExtraAdjustments: {
+        [key: string]: components['schemas']['AdjustmentDuration']
+      }
+      /**
+       * Format: int32
+       * @description Amount of adjustment in days
+       */
+      adjustedDays: number
+      /**
+       * Format: date
+       * @description Final release date (after all adjustments have been applied)
+       */
+      releaseDate: string
+      /**
+       * Format: date
+       * @description Based on the screen design, the unadjusted date isn't derived in a consistent manner but is set as per the screen design
+       */
+      unadjustedDate: string
+    }
+    SentenceAndOffences: {
+      /** Format: int64 */
+      bookingId: number
+      /** Format: int32 */
+      sentenceSequence: number
+      /** Format: int32 */
+      lineSequence: number
+      /** Format: int32 */
+      caseSequence: number
+      /** Format: int32 */
+      consecutiveToSequence?: number
+      sentenceStatus: string
+      sentenceCategory: string
+      sentenceCalculationType: string
+      sentenceTypeDescription: string
+      /** Format: date */
+      sentenceDate: string
+      terms: components['schemas']['SentenceTerms'][]
+      offences: components['schemas']['OffenderOffence'][]
+      caseReference?: string
+      courtDescription?: string
+      fineAmount?: number
+    }
+    CalculationSentenceQuestion: {
+      /** Format: int32 */
+      sentenceSequence: number
+      /** @enum {string} */
+      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
+    }
+    CalculationUserQuestions: {
+      sentenceQuestions: components['schemas']['CalculationSentenceQuestion'][]
+    }
+    ReturnToCustodyDate: {
+      /** Format: int64 */
+      bookingId: number
+      /** Format: date */
+      returnToCustodyDate: string
+    }
+    Alert: {
+      /** Format: date */
+      dateCreated: string
+      /** Format: date */
+      dateExpires?: string
+      alertType: string
+      alertCode: string
+    }
+    AssignedLivingUnit: {
+      agencyId: string
+      locationId: number
+      description: string
+      agencyName: string
+    }
+    PrisonerDetails: {
+      /** Format: int64 */
+      bookingId: number
+      offenderNo: string
+      firstName: string
+      lastName: string
+      /** Format: date */
+      dateOfBirth: string
+      alerts: components['schemas']['Alert'][]
+      agencyId: string
+      assignedLivingUnit?: components['schemas']['AssignedLivingUnit']
+    }
     /** @description Calculation breakdown details */
     CalculationBreakdown: {
       concurrentSentences: components['schemas']['ConcurrentSentenceBreakdown'][]
       consecutiveSentence?: components['schemas']['ConsecutiveSentenceBreakdown']
       /** @description Breakdown details in a map keyed by release date type */
       breakdownByReleaseDateType: {
-        [key: string]: components['schemas']['ReleaseDateCalculationBreakdown'] | undefined
+        [key: string]: components['schemas']['ReleaseDateCalculationBreakdown']
       }
       otherDates: {
-        [key: string]: string | undefined
+        [key: string]: string
       }
     }
     ConcurrentSentenceBreakdown: {
@@ -890,7 +1157,7 @@ export interface components {
       /** Format: int32 */
       sentenceLengthDays: number
       dates: {
-        [key: string]: components['schemas']['DateBreakdown'] | undefined
+        [key: string]: components['schemas']['DateBreakdown']
       }
       /** Format: int32 */
       lineSequence: number
@@ -905,7 +1172,7 @@ export interface components {
       /** Format: int32 */
       sentenceLengthDays: number
       dates: {
-        [key: string]: components['schemas']['DateBreakdown'] | undefined
+        [key: string]: components['schemas']['DateBreakdown']
       }
       sentenceParts: components['schemas']['ConsecutiveSentencePart'][]
     }
@@ -932,56 +1199,6 @@ export interface components {
       daysFromSentenceStart: number
       /** Format: int64 */
       adjustedByDays: number
-    }
-    /** @description Calculation breakdown details for a release date type */
-    ReleaseDateCalculationBreakdown: {
-      /**
-       * @description Calculation rules used to determine this calculation.
-       * @example [
-       *   "HDCED_GE_MIN_PERIOD_LT_MIDPOINT"
-       * ]
-       */
-      rules: (
-        | 'HDCED_GE_MIN_PERIOD_LT_MIDPOINT'
-        | 'HDCED_GE_MIDPOINT_LT_MAX_PERIOD'
-        | 'HDCED_MINIMUM_CUSTODIAL_PERIOD'
-        | 'CONSECUTIVE_SENTENCE_HDCED_MINIMUM_CUSTODIAL_PERIOD'
-        | 'CONSECUTIVE_SENTENCE_HDCED_MINIMUM_CUSTODIAL_PERIOD_LAST_SENTENCE_SDS'
-        | 'TUSED_LICENCE_PERIOD_LT_1Y'
-        | 'LED_CONSEC_ORA_AND_NON_ORA'
-        | 'UNUSED_ADA'
-        | 'IMMEDIATE_RELEASE'
-        | 'PED_EQUAL_TO_LATEST_NON_PED_CONDITIONAL_RELEASE'
-        | 'PED_EQUAL_TO_LATEST_NON_PED_ACTUAL_RELEASE'
-        | 'HDCED_ADJUSTED_TO_CONCURRENT_CONDITIONAL_RELEASE'
-        | 'HDCED_ADJUSTED_TO_CONCURRENT_ACTUAL_RELEASE'
-        | 'ERSED_TWO_THIRDS'
-        | 'ERSED_HALFWAY'
-        | 'ERSED_ONE_YEAR'
-        | 'ERSED_ADJUSTED_TO_CONCURRENT_TERM'
-        | 'ERSED_BEFORE_SENTENCE_DATE'
-        | 'ERSED_ADJUSTED_TO_MTD'
-        | 'ERSED_MAX_PERIOD'
-      )[]
-      /** @description Adjustments details associated that are specifically added as part of a rule */
-      rulesWithExtraAdjustments: {
-        [key: string]: components['schemas']['AdjustmentDuration'] | undefined
-      }
-      /**
-       * Format: int32
-       * @description Amount of adjustment in days
-       */
-      adjustedDays: number
-      /**
-       * Format: date
-       * @description Final release date (after all adjustments have been applied)
-       */
-      releaseDate: string
-      /**
-       * Format: date
-       * @description Based on the screen design, the unadjusted date isn't derived in a consistent manner but is set as per the screen design
-       */
-      unadjustedDate: string
     }
     BookingAdjustment: {
       active: boolean
@@ -1016,10 +1233,42 @@ export interface components {
       /** @enum {string} */
       type: 'RECALL_SENTENCE_REMAND' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'TAGGED_BAIL' | 'UNUSED_REMAND'
     }
-    CalculationReason: {
-      id: number
-      isOther: boolean
-      displayName: string
+    AnalyzedBookingAdjustment: {
+      active: boolean
+      /** Format: date */
+      fromDate: string
+      /** Format: date */
+      toDate?: string
+      /** Format: int32 */
+      numberOfDays: number
+      /** @enum {string} */
+      type:
+        | 'ADDITIONAL_DAYS_AWARDED'
+        | 'LAWFULLY_AT_LARGE'
+        | 'RESTORED_ADDITIONAL_DAYS_AWARDED'
+        | 'SPECIAL_REMISSION'
+        | 'UNLAWFULLY_AT_LARGE'
+      /** @enum {string} */
+      analysisResult: 'NEW' | 'SAME'
+    }
+    AnalyzedBookingAndSentenceAdjustments: {
+      bookingAdjustments: components['schemas']['AnalyzedBookingAdjustment'][]
+      sentenceAdjustments: components['schemas']['AnalyzedSentenceAdjustment'][]
+    }
+    AnalyzedSentenceAdjustment: {
+      /** Format: int32 */
+      sentenceSequence: number
+      active: boolean
+      /** Format: date */
+      fromDate?: string
+      /** Format: date */
+      toDate?: string
+      /** Format: int32 */
+      numberOfDays: number
+      /** @enum {string} */
+      type: 'RECALL_SENTENCE_REMAND' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'TAGGED_BAIL' | 'UNUSED_REMAND'
+      /** @enum {string} */
+      analysisResult: 'NEW' | 'SAME'
     }
   }
   responses: never
@@ -1028,6 +1277,8 @@ export interface components {
   headers: never
   pathItems: never
 }
+
+export type $defs = Record<string, never>
 
 export type external = Record<string, never>
 
@@ -1112,6 +1363,141 @@ export interface operations {
       }
     }
   }
+  /** Calculate unused deductions. */
+  calculate: {
+    parameters: {
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AdjustmentServiceAdjustment'][]
+      }
+    }
+    responses: {
+      /** @description Calculated */
+      200: {
+        content: {
+          'application/json': components['schemas']['UnusedDeductionCalculationResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['UnusedDeductionCalculationResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['UnusedDeductionCalculationResponse']
+        }
+      }
+    }
+  }
+  /**
+   * Store a genuine override
+   * @description This endpoint will return a response model which indicates the success of storing a genuine override
+   */
+  storeGenuineOverride: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GenuineOverrideRequest']
+      }
+    }
+    responses: {
+      /** @description Returns a GenuineOverrideResponse */
+      200: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideResponse']
+        }
+      }
+    }
+  }
+  /**
+   * Store a genuine override
+   * @description This endpoint will return a response model which indicates the success of storing a genuine override
+   */
+  storeGenuineOverrideDates: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GenuineOverrideDateRequest']
+      }
+    }
+    responses: {
+      /** @description Returns a GenuineOverrideResponse */
+      200: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideDateResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideDateResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideDateResponse']
+        }
+      }
+    }
+  }
+  /**
+   * Store a manual calculation
+   * @description This endpoint will return a response model which indicates the success of storing a manual calculation
+   */
+  storeManualCalculation: {
+    parameters: {
+      path: {
+        prisonerId: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ManualEntryRequest']
+      }
+    }
+    responses: {
+      /** @description Returns a ManualCalculationResponse */
+      201: {
+        content: {
+          'application/json': components['schemas']['ManualCalculationResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ManualCalculationResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ManualCalculationResponse']
+        }
+      }
+    }
+  }
   /**
    * List all Comparisons performed using presets
    * @description This endpoint will return all the comparisons for your caseload
@@ -1143,6 +1529,11 @@ export interface operations {
    * @description This endpoint will create a new calculation and return the new calculation object
    */
   createComparison: {
+    parameters: {
+      header: {
+        Authorization: string
+      }
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['ComparisonInput']
@@ -1170,8 +1561,8 @@ export interface operations {
     }
   }
   /**
-   * Returns the latest discrepancy for a comparison person
-   * @description This endpoint returns the mismatch discrepancy for a particular comparison person
+   * Returns the latest discrepancy record for a comparison person
+   * @description This endpoint returns the mismatch discrepancy for a particular mismatch
    */
   getComparisonPersonDiscrepancy: {
     parameters: {
@@ -1210,7 +1601,7 @@ export interface operations {
     }
   }
   /**
-   * Create a copmarison person discrepancy record
+   * Create a comparison person discrepancy record
    * @description This endpoint will create a new comparison person discrepancy and return a summary of it
    */
   createComparisonPersonDiscrepancy: {
@@ -1285,6 +1676,11 @@ export interface operations {
    * @description This endpoint will create a new manual comparison and return the new manual comparison object
    */
   createComparison_1: {
+    parameters: {
+      header: {
+        Authorization: string
+      }
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['ManualComparisonInput']
@@ -1311,12 +1707,96 @@ export interface operations {
       }
     }
   }
-
+  /**
+   * Returns the latest discrepancy record for a comparison person
+   * @description This endpoint returns the mismatch discrepancy for a particular mismatch
+   */
+  getComparisonPersonDiscrepancy_1: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+        /**
+         * @description The short reference of the mismatch
+         * @example A1B2C3D4
+         */
+        mismatchReference: string
+      }
+    }
+    responses: {
+      /** @description Returns a summary of a comparison person discrepancy */
+      200: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+    }
+  }
+  /**
+   * Create a comparison person discrepancy record
+   * @description This endpoint will create a new comparison person discrepancy and return a summary of it
+   */
+  createComparisonPersonDiscrepancy_1: {
+    parameters: {
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+        /**
+         * @description The short reference of the mismatch
+         * @example A1B2C3D4
+         */
+        mismatchReference: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateComparisonDiscrepancyRequest']
+      }
+    }
+    responses: {
+      /** @description New discrepancy created and summary returned */
+      200: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ComparisonDiscrepancySummary']
+        }
+      }
+    }
+  }
   /**
    * Calculate release dates for a prisoner - preliminary calculation, this does not publish to NOMIS
    * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS
    */
-  calculate: {
+  calculate_1: {
     parameters: {
       path: {
         /**
@@ -1326,9 +1806,9 @@ export interface operations {
         prisonerId: string
       }
     }
-    requestBody?: {
+    requestBody: {
       content: {
-        'application/json': components['schemas']['CalculationUserInputs']
+        'application/json': components['schemas']['CalculationRequestModel']
       }
     }
     responses: {
@@ -1366,9 +1846,9 @@ export interface operations {
         prisonerId: string
       }
     }
-    requestBody?: {
+    requestBody: {
       content: {
-        'application/json': components['schemas']['CalculationUserInputs']
+        'application/json': components['schemas']['CalculationRequestModel']
       }
     }
     responses: {
@@ -1444,7 +1924,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CalculationFragments']
+        'application/json': components['schemas']['SubmitCalculationRequest']
       }
     }
     responses: {
@@ -1585,9 +2065,77 @@ export interface operations {
       }
     }
   }
+  /**
+   * Get a genuine override
+   * @description This endpoint will return a response model which returns a genuine override
+   */
+  getGenuineOverride: {
+    parameters: {
+      path: {
+        calculationReference: string
+      }
+    }
+    responses: {
+      /** @description Returns a GenuineOverrideResponse */
+      200: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideResponse']
+        }
+      }
+      /** @description Not Found, a genuine override doesn't exist for the calculation reference */
+      404: {
+        content: {
+          'application/json': components['schemas']['GenuineOverrideResponse']
+        }
+      }
+    }
+  }
+  /**
+   * Get sentence and offence information
+   * @description This endpoint will return a response model which lists sentence and offence information. It will notify if there have been any changed since last calculation
+   */
+  getSentencesAndOffences: {
+    parameters: {
+      path: {
+        bookingId: number
+      }
+    }
+    responses: {
+      /** @description Returns a List<AnalyzedSentenceAndOffences */
+      200: {
+        content: {
+          'application/json': components['schemas']['AnalyzedSentenceAndOffences'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['AnalyzedSentenceAndOffences'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['AnalyzedSentenceAndOffences'][]
+        }
+      }
+    }
+  }
   getDlqMessages: {
     parameters: {
-      query: {
+      query?: {
         maxMessages?: number
       }
       path: {
@@ -1603,7 +2151,6 @@ export interface operations {
       }
     }
   }
-
   /**
    * Find the non friday release day from a given date
    * @description Finds the non friday release day, adjusting for weekends and bank holidays
@@ -1625,14 +2172,14 @@ export interface operations {
           'application/json': components['schemas']['NonFridayReleaseDay']
         }
       }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
+      /** @description Bad Request */
+      400: {
         content: {
           'application/json': components['schemas']['NonFridayReleaseDay']
         }
       }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
         content: {
           'application/json': components['schemas']['NonFridayReleaseDay']
         }
@@ -1674,7 +2221,47 @@ export interface operations {
       }
     }
   }
-
+  /**
+   * Get historic calculations for a prisoner
+   * @description This endpoint will return a list of calculations performed for a given prisoner
+   */
+  getCalculationResults: {
+    parameters: {
+      path: {
+        /**
+         * @description The nomsId of the prisoner
+         * @example AD123A
+         */
+        nomsId: string
+      }
+    }
+    responses: {
+      /** @description Returns historic calculations */
+      200: {
+        content: {
+          'application/json': components['schemas']['HistoricCalculation'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['HistoricCalculation'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['HistoricCalculation'][]
+        }
+      }
+      /** @description This prisoner id does not exist */
+      404: {
+        content: {
+          'application/json': components['schemas']['HistoricCalculation'][]
+        }
+      }
+    }
+  }
   /**
    * Returns the people for a particular caseload
    * @description This endpoint return the people associated to a specific comparison
@@ -1896,6 +2483,50 @@ export interface operations {
     }
   }
   /**
+   * Get release dates for a calculationRequestId
+   * @description This endpoint will return the release dates based on a calculationRequestId
+   */
+  getCalculationResults_1: {
+    parameters: {
+      query?: {
+        checkForChange?: boolean
+      }
+      path: {
+        /**
+         * @description The calculationRequestId of the results
+         * @example 123ABC
+         */
+        calculationReference: string
+      }
+    }
+    responses: {
+      /** @description Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+      /** @description No calculation exists for this calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+    }
+  }
+  /**
    * Return which sentences and offences may be considered for different calculation rules
    * @description This endpoint will return which sentences and offences may be considered for different calculation rules.We will have to ask the user for clarification if any of the rules apply beacuse we cannot trust input data from NOMIS
    */
@@ -2062,7 +2693,7 @@ export interface operations {
    * Get release dates for a calculationRequestId
    * @description This endpoint will return the release dates based on a calculationRequestId
    */
-  getCalculationResults: {
+  getCalculationResults_2: {
     parameters: {
       path: {
         /**
@@ -2181,34 +2812,6 @@ export interface operations {
       }
     }
   }
-  getActiveCalculationReasons: {
-    responses: {
-      /** @description Returns list of active reasons */
-      200: {
-        content: {
-          'application/json': components['schemas']['CalculationReason'][]
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['CalculationReason'][]
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['CalculationReason'][]
-        }
-      }
-      /** @description No active calculation reasons were found */
-      404: {
-        content: {
-          'application/json': components['schemas']['CalculationReason'][]
-        }
-      }
-    }
-  }
   /**
    * Get breakdown for a calculationRequestId
    * @description This endpoint will return the breakdown based on a calculationRequestId
@@ -2287,6 +2890,65 @@ export interface operations {
       404: {
         content: {
           'application/json': components['schemas']['BookingAndSentenceAdjustments']
+        }
+      }
+    }
+  }
+  getActiveCalculationReasons: {
+    responses: {
+      /** @description Returns list of active reasons */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculationReason'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CalculationReason'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CalculationReason'][]
+        }
+      }
+      /** @description No active calculation reasons were found */
+      404: {
+        content: {
+          'application/json': components['schemas']['CalculationReason'][]
+        }
+      }
+    }
+  }
+  /**
+   * Get booking and sentence adjusments
+   * @description This endpoint will return a response model which shows booking and sentence adjustments. It will notify if there are new adjustments since last calculation
+   */
+  getBookingAndSentenceAdjustments: {
+    parameters: {
+      path: {
+        bookingId: number
+      }
+    }
+    responses: {
+      /** @description Returns a List<AnalyzedSentenceAndOffences */
+      200: {
+        content: {
+          'application/json': components['schemas']['AnalyzedBookingAndSentenceAdjustments']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['AnalyzedBookingAndSentenceAdjustments']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['AnalyzedBookingAndSentenceAdjustments']
         }
       }
     }

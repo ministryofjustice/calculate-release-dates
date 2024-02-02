@@ -1,4 +1,7 @@
-import { CalculationUserInputs, ManualEntryDate } from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  CalculationUserInputs,
+  ManualEntrySelectedDate,
+} from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
 import type { UserDetails } from '../../services/userService'
 
 export default {}
@@ -9,8 +12,8 @@ declare module 'express-session' {
     returnTo: string
     nowInMinutes: number
     userInputs?: { string?: CalculationUserInputs }
-    selectedManualEntryDates?: { string?: ManualEntryDate[] }
-    selectedApprovedDates?: { string?: ManualEntryDate[] }
+    selectedManualEntryDates?: { string?: ManualEntrySelectedDate[] }
+    selectedApprovedDates?: { string?: ManualEntrySelectedDate[] }
     HDCED?: { string?: string }
     HDCED_WEEKEND_ADJUSTED?: { string?: boolean }
     calculationReasonId?: { string?: number }
