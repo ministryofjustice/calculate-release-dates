@@ -38,6 +38,7 @@ const comparisonOverview = {
   numberOfPeopleCompared: 10,
   numberOfMismatches: 0,
   mismatches: [],
+  hdc4PlusCalculated: [],
 } as ComparisonOverview
 
 describe('Compare routes tests', () => {
