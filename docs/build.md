@@ -2,9 +2,9 @@
 
 Ensure you have the appropriate tools installed:
 
-`node >= v19`
+`node >= v20`
 
-`npm >= v9.2.0`
+`npm >= v10`
 
 Then:
 
