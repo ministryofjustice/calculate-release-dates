@@ -84,9 +84,14 @@ export default class ComparisonResultOverviewModel {
       .filter(mismatch => !!mismatch.hdcedFourPlusDate)
       .sort((a, b) => {
         if (a.establishment != null && b.establishment != null) {
-          return a.establishment.localeCompare(b.establishment)
+          const establishmentComparison = a.establishment.localeCompare(b.establishment)
+          if (establishmentComparison) {
+            return establishmentComparison
+          }
         }
-        return 0
+        const dateA = Date.parse(a.hdcedFourPlusDate)
+        const dateB = Date.parse(b.hdcedFourPlusDate)
+        return dateA.valueOf() - dateB.valueOf()
       })
       .map(mismatch => new Hdced4PlusResultDate(mismatch, comparison.prison))
   }

@@ -155,6 +155,16 @@
             {% endset %}
 
             {% set tabs = [] %}
+            {% if comparison.hdced4PlusMismatches.length %}
+                {% set tabs = (tabs.push({
+                    label: "HDC4+" + " ("+comparison.hdced4PlusMismatches.length + ")",
+                    id: "hdc4-plus",
+                    panel: {
+                        html: hdc4PlusHtml
+                    }
+                }), tabs) %}
+            {% endif %}
+
             {% if comparison.releaseDateMismatches.length and comparison.comparisonType !== 'ESTABLISHMENT_HDCED4PLUS' %}
                 {% set tabs = (tabs.push({
                     label: "Release date mismatches" + " ("+comparison.releaseDateMismatches.length + ")",
@@ -195,21 +205,12 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if featureToggles.hdc4ComparisonTabEnabled and comparison.validationHdc4PlusMismatches.length and comparison.comparisonType === 'ESTABLISHMENT_HDCED4PLUS' %}
+            {% if comparison.validationHdc4PlusMismatches.length and comparison.comparisonType === 'ESTABLISHMENT_HDCED4PLUS' %}
                 {% set tabs = (tabs.push({
                     label: "Potential HDC4+" + " ("+comparison.validationHdc4PlusMismatches.length + ")",
                     id: "validation-error-hdc4-plus",
                     panel: {
                         html: validationErrorHdc4PlusHtml
-                    }
-                }), tabs) %}
-            {% endif %}
-            {% if featureToggles.hdc4ComparisonTabEnabled and comparison.hdced4PlusMismatches.length %}
-                {% set tabs = (tabs.push({
-                    label: "HDC4+" + " ("+comparison.hdced4PlusMismatches.length + ")",
-                    id: "hdc4-plus",
-                    panel: {
-                        html: hdc4PlusHtml
                     }
                 }), tabs) %}
             {% endif %}
