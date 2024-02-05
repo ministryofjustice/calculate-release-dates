@@ -78,8 +78,10 @@ export default class ComparisonResultOverviewModel {
       .filter(mismatch => validationErrorMismatchTypes.includes(mismatch.misMatchType))
       .sort((a, b) => a.personId.localeCompare(b.personId))
       .map(mismatch => new ComparisonResultMismatch(mismatch, comparison.comparisonShortReference, comparisonType))
+
     this.status = comparison.status
-    this.hdced4PlusMismatches = comparison.mismatches
+
+    this.hdced4PlusMismatches = comparison.hdc4PlusCalculated
       .filter(mismatch => !['VALIDATION_ERROR', 'VALIDATION_ERROR_HDC4_PLUS'].includes(mismatch.misMatchType))
       .filter(mismatch => !!mismatch.hdcedFourPlusDate)
       .sort((a, b) => {

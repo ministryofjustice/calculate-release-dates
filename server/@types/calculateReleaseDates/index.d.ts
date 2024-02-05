@@ -668,6 +668,7 @@ export interface components {
       numberOfPeopleCompared: number
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
       status: string
+      hdc4PlusCalculated: components['schemas']['ComparisonMismatchSummary'][]
     }
     ComparisonPersonOverview: {
       personId: string
