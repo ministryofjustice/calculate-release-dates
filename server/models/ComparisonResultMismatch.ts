@@ -1,4 +1,7 @@
-import { ComparisonMismatchSummary } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  ComparisonMismatchSummary,
+  type ComparisonOverview,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonType from '../enumerations/comparisonType'
 
 interface ActionItem {
@@ -14,13 +17,9 @@ export default class ComparisonResultMismatch {
 
   actions: { items: ActionItem[] }
 
-  constructor(
-    comparisonMismatchSummary: ComparisonMismatchSummary,
-    comparisonId: string,
-    comparisonType: ComparisonType,
-  ) {
+  constructor(comparisonMismatchSummary: ComparisonMismatchSummary, comparison: ComparisonOverview) {
     this.key = {
-      html: this.getOffenderDetails(comparisonMismatchSummary),
+      html: this.getOffenderDetails(comparisonMismatchSummary, comparison.prison),
     }
     let message = comparisonMismatchSummary.validationMessages
       .map(validationMessage => validationMessage.message)
@@ -31,11 +30,11 @@ export default class ComparisonResultMismatch {
     this.value = {
       text: message,
     }
-    let href
-    if (comparisonType === ComparisonType.MANUAL) {
-      href = `/compare/manual/result/${comparisonId}/detail/${comparisonMismatchSummary.shortReference}`
-    } else if (comparisonType !== ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
-      href = `/compare/result/${comparisonId}/detail/${comparisonMismatchSummary.shortReference}`
+    let href: string
+    if (comparison.comparisonType === ComparisonType.MANUAL) {
+      href = `/compare/manual/result/${comparison.comparisonShortReference}/detail/${comparisonMismatchSummary.shortReference}`
+    } else if (comparison.comparisonType !== ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
+      href = `/compare/result/${comparison.comparisonShortReference}/detail/${comparisonMismatchSummary.shortReference}`
     }
     if (href) {
       this.actions = {
@@ -50,11 +49,16 @@ export default class ComparisonResultMismatch {
     }
   }
 
-  private getOffenderDetails(comparisonMismatchSummary: ComparisonMismatchSummary) {
+  private getOffenderDetails(comparisonMismatchSummary: ComparisonMismatchSummary, prison: string) {
     let offenderDetails = `<span class="comparison-person">${comparisonMismatchSummary.personId}</span>`
     if (comparisonMismatchSummary.lastName) {
-      offenderDetails += `<span>${comparisonMismatchSummary.lastName}</span>`
+      offenderDetails += `<span class="comparison-person">${comparisonMismatchSummary.lastName}</span>`
     }
+
+    if (prison === 'all') {
+      offenderDetails += `<span>${comparisonMismatchSummary.establishment}</span>`
+    }
+
     return offenderDetails
   }
 }
