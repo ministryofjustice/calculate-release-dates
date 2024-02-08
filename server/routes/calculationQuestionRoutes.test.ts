@@ -242,7 +242,7 @@ describe('Calculation question routes tests', () => {
     return request(app)
       .get('/calculation/A1234AA/select-offences-that-appear-in-list-c')
       .expect(302)
-      .expect('Location', '/calculation/A1234AA/alternative-release-arangements')
+      .expect('Location', '/calculation/A1234AA/alternative-release-arrangements')
   })
 
   it('POST /calculation/:nomsId/select-offences-that-appear-in-list-a should save the user input to session', () => {

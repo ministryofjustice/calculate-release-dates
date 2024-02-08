@@ -150,6 +150,7 @@ export function pedAdjustedByCrdAndBeforePrrdReleaseDates(): BookingCalculation 
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
     calculationReference: 'ABC123',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -318,6 +319,7 @@ export function hdcedAdjustedToArdReleaseDates(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -337,6 +339,7 @@ export function mtdLaterThanCrd(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -356,6 +359,7 @@ export function mtdLaterThanArd(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -375,6 +379,7 @@ export function mtdLaterThanPed(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -394,6 +399,7 @@ export function mtdLaterThanHdcedWithCrd(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -413,6 +419,7 @@ export function mtdLaterThanHdcedWithArd(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -432,6 +439,7 @@ export function mtdBeforeHdcedAndCrd(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -451,6 +459,7 @@ export function mtdBeforePedAndCrd(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -470,6 +479,7 @@ export function ersedBeforeMtdBeforeCrd(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -489,6 +499,7 @@ export function ersedBeforeCrdBeforeMtd(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -508,6 +519,7 @@ export function ersedAdjustedByArdReleaseDate(): BookingCalculation {
     bookingId: 1,
     prisonerId: 'A1234AA',
     calculationStatus: 'PRELIMINARY',
+    calculationType: 'CALCULATED',
     calculationFragments: null,
     effectiveSentenceLength: null,
   }
@@ -540,27 +552,6 @@ export function ersedTwoThirdsBreakdown(): CalculationBreakdown {
         adjustedDays: 66,
         releaseDate: '2023-03-20',
         unadjustedDate: '2023-03-20',
-      },
-    },
-    otherDates: {},
-  }
-}
-export function ersedOneYearBreakdown(): CalculationBreakdown {
-  return {
-    concurrentSentences: [],
-    consecutiveSentence: null,
-    breakdownByReleaseDateType: {
-      ERSED: {
-        rules: ['ERSED_ONE_YEAR'],
-        rulesWithExtraAdjustments: {
-          ERSED_ONE_YEAR: {
-            adjustmentValue: -12,
-            type: 'Months',
-          },
-        },
-        adjustedDays: 100,
-        releaseDate: '2023-07-28',
-        unadjustedDate: '2024-07-28',
       },
     },
     otherDates: {},

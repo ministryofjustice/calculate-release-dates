@@ -10,7 +10,7 @@ import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import UserInputService from '../services/userInputService'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
-import { ManualEntryDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class CalculationRoutes {
   constructor(
@@ -30,7 +30,7 @@ export default class CalculationRoutes {
     if (
       req.session.selectedApprovedDates &&
       req.session.selectedApprovedDates[nomsId] &&
-      req.session.selectedApprovedDates[nomsId].some((date: ManualEntryDate) => date.date === undefined)
+      req.session.selectedApprovedDates[nomsId].some((date: ManualEntrySelectedDate) => date.date === undefined)
     ) {
       req.session.selectedApprovedDates[nomsId] = []
     }
@@ -104,7 +104,7 @@ export default class CalculationRoutes {
     res.render('pages/calculation/calculationSummary', { model })
   }
 
-  private indexBy(dates: ManualEntryDate[]) {
+  private indexBy(dates: ManualEntrySelectedDate[]) {
     const result = {}
     dates.forEach(date => {
       const dateString = `${date.date.year}-${date.date.month}-${date.date.day}`

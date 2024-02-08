@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import { DateSelectConfiguration } from './manualEntryService'
 import DateTypeConfigurationService, { FULL_STRING_LOOKUP } from './dateTypeConfigurationService'
-import { ManualEntryDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 const approvedDatesConfig = {
   name: 'dateSelect',
@@ -58,7 +58,7 @@ export default class ApprovedDatesService {
     for (const item of mergedConfig.items) {
       if (
         req.session.selectedApprovedDates[nomsId] &&
-        req.session.selectedApprovedDates[nomsId].some((d: ManualEntryDate) => d.dateType === item.value)
+        req.session.selectedApprovedDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === item.value)
       ) {
         item.checked = true
         item.attributes = {
@@ -90,18 +90,18 @@ export default class ApprovedDatesService {
     return { error, config: null }
   }
 
-  public changeDate(req: Request, nomsId: string): ManualEntryDate {
+  public changeDate(req: Request, nomsId: string): ManualEntrySelectedDate {
     const date = req.session.selectedApprovedDates[nomsId].find(
-      (d: ManualEntryDate) => d.dateType === req.query.dateType,
+      (d: ManualEntrySelectedDate) => d.dateType === req.query.dateType,
     )
     req.session.selectedApprovedDates[nomsId] = req.session.selectedApprovedDates[nomsId].filter(
-      (d: ManualEntryDate) => d.dateType !== req.query.dateType,
+      (d: ManualEntrySelectedDate) => d.dateType !== req.query.dateType,
     )
     req.session.selectedApprovedDates[nomsId].push({
       dateType: req.query.dateType,
       dateText: FULL_STRING_LOOKUP[<string>req.query.dateType],
       date: undefined,
-    } as ManualEntryDate)
+    } as ManualEntrySelectedDate)
     return date
   }
 
@@ -109,7 +109,7 @@ export default class ApprovedDatesService {
     const dateToRemove = req.query.dateType
     if (req.body['remove-date'] === 'yes') {
       req.session.selectedApprovedDates[nomsId] = req.session.selectedApprovedDates[nomsId].filter(
-        (d: ManualEntryDate) => d.dateType !== dateToRemove,
+        (d: ManualEntrySelectedDate) => d.dateType !== dateToRemove,
       )
     }
   }

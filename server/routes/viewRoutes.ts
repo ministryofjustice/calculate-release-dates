@@ -8,7 +8,7 @@ import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import EntryPointService from '../services/entryPointService'
 import SentenceTypes from '../models/SentenceTypes'
-import { GenuineOverride } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { GenuineOverrideRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewRouteSentenceAndOffenceViewModel from '../models/ViewRouteSentenceAndOffenceViewModel'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { longDateFormat } from '../utils/utils'
@@ -209,7 +209,7 @@ export default class ViewRoutes {
     }
   }
 
-  private getOverrideReason(override: GenuineOverride): string {
+  private getOverrideReason(override: GenuineOverrideRequest): string {
     if (override && override.reason) {
       const reason = overrideReasons[override.reason]
       if (reason) {
@@ -220,7 +220,7 @@ export default class ViewRoutes {
     return undefined
   }
 
-  private async getOverride(calculationReference: string, token: string): Promise<GenuineOverride> {
+  private async getOverride(calculationReference: string, token: string): Promise<GenuineOverrideRequest> {
     try {
       return await this.calculateReleaseDatesService.getGenuineOverride(calculationReference, token)
     } catch (error) {

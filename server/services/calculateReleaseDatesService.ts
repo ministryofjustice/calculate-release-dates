@@ -10,7 +10,7 @@ import {
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
-  GenuineOverride,
+  GenuineOverrideRequest,
   NonFridayReleaseDay,
   ReleaseDateCalculationBreakdown,
   SubmitCalculationRequest,
@@ -273,16 +273,6 @@ export default class CalculateReleaseDatesService {
     unadjustedDate: string,
     adjustedDays: number,
   ): ReleaseDateWithAdjustments {
-    if (rules.includes('ERSED_ONE_YEAR')) {
-      const ruleSpecificAdjustment = rulesWithExtraAdjustments.ERSED_ONE_YEAR
-      return CalculateReleaseDatesService.createAdjustmentRow(
-        releaseDate,
-        ReleaseDateType.ERSED,
-        `${longDateFormat(unadjustedDate)} ${daysArithmeticToWords(adjustedDays)} ${arithmeticToWords(
-          ruleSpecificAdjustment,
-        )}`,
-      )
-    }
     if (rules.includes('ERSED_MAX_PERIOD')) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments.ERSED_MAX_PERIOD
       return CalculateReleaseDatesService.createAdjustmentRow(
@@ -492,7 +482,7 @@ export default class CalculateReleaseDatesService {
     }
   }
 
-  async getGenuineOverride(calculationReference: string, token: string): Promise<GenuineOverride> {
+  async getGenuineOverride(calculationReference: string, token: string): Promise<GenuineOverrideRequest> {
     return new CalculateReleaseDatesApiClient(token).getGenuineOverride(calculationReference)
   }
 }

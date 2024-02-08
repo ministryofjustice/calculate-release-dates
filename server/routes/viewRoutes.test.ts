@@ -18,7 +18,7 @@ import {
   CalculationBreakdown,
   CalculationSentenceUserInput,
   CalculationUserInputs,
-  GenuineOverride,
+  GenuineOverrideRequest,
   NonFridayReleaseDay,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -189,6 +189,7 @@ const stubbedCalculationResults = {
   calculationReference: 'ABC123',
   bookingId: 123,
   calculationStatus: 'CONFIRMED',
+  calculationType: 'CALCULATED',
   approvedDates: {},
 } as BookingCalculation
 const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
@@ -525,7 +526,7 @@ describe('View journey routes tests', () => {
         savedCalculation: '123',
         originalCalculationRequest: '456',
         isOverridden: true,
-      } as GenuineOverride)
+      } as GenuineOverrideRequest)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
@@ -548,7 +549,7 @@ describe('View journey routes tests', () => {
         savedCalculation: '123',
         originalCalculationRequest: '456',
         isOverridden: true,
-      } as GenuineOverride)
+      } as GenuineOverrideRequest)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)

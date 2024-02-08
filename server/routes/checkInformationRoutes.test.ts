@@ -584,6 +584,7 @@ describe('Check information routes tests', () => {
       calculationReference: 'ABC123',
       bookingId: 123,
       calculationStatus: 'PRELIMINARY',
+      calculationType: 'CALCULATED',
     })
     calculateReleaseDatesService.getCalculationRequestModel.mockResolvedValue({
       calculationReasonId: 1,

@@ -92,6 +92,7 @@ const stubbedCalculationResults = {
   prisonerId: 'A1234AB',
   calculationStatus: 'CONFIRMED',
   calculationReference: 'ABC123',
+  calculationType: 'CALCULATED',
   bookingId: 123,
   approvedDates: {},
 } as BookingCalculation
@@ -812,6 +813,7 @@ describe('Calculation routes tests', () => {
       calculationReference: 'ABC123',
       bookingId: 123,
       calculationStatus: 'PRELIMINARY',
+      calculationType: 'CALCULATED',
     })
     return request(app)
       .post('/calculation/A1234AB/summary/123456')

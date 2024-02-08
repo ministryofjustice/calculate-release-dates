@@ -91,7 +91,7 @@ context('Calculation summary', () => {
 
   it('Error when calc id doesnt match prisoner id', () => {
     cy.signIn()
-    CalculationSummaryPage.visit('NOTMATCHING', '97', false)
+    CalculationSummaryPage.visit('NOT_MATCHING', '97', false)
     const errorPage = Page.verifyOnPage(ErrorPage)
     errorPage.heading().contains('There is a problem')
   })

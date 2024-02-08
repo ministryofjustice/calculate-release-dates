@@ -4,7 +4,10 @@ import PrisonerService from '../services/prisonerService'
 import ApprovedDatesService from '../services/approvedDatesService'
 import ManualEntryService from '../services/manualEntryService'
 import { EnteredDate } from '../services/dateValidationService'
-import { ManualEntryDate, SubmittedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  ManualEntrySelectedDate,
+  SubmittedDate,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ApprovedDatesRoutes {
   constructor(
@@ -83,7 +86,7 @@ export default class ApprovedDatesRoutes {
     }
     let previousDate
     if (year && month && day) {
-      previousDate = { year, month, day } as SubmittedDate
+      previousDate = { year, month, day } as unknown as SubmittedDate
     }
     let hdced
     if (req.session.HDCED[nomsId]) {
@@ -120,7 +123,7 @@ export default class ApprovedDatesRoutes {
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedApprovedDates[nomsId].find(
-        (d: ManualEntryDate) => d.dateType === storeDateResponse.date.dateType,
+        (d: ManualEntrySelectedDate) => d.dateType === storeDateResponse.date.dateType,
       ).date = storeDateResponse.date.date
       return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/submit-dates`)
     }
@@ -140,7 +143,7 @@ export default class ApprovedDatesRoutes {
     const { nomsId, calculationRequestId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const dateToRemove: string = <string>req.query.dateType
-    if (req.session.selectedApprovedDates[nomsId].some((d: ManualEntryDate) => d.dateType === dateToRemove)) {
+    if (req.session.selectedApprovedDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)) {
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
       return res.render('pages/approvedDates/removeDate', { prisonerDetail, dateToRemove, fullDateName })
     }

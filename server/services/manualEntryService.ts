@@ -3,7 +3,10 @@ import { DateTime } from 'luxon'
 import ManualEntryValidationService from './manualEntryValidationService'
 import DateTypeConfigurationService, { FULL_STRING_LOOKUP } from './dateTypeConfigurationService'
 import DateValidationService, { DateInputItem, EnteredDate, StorageResponseModel } from './dateValidationService'
-import { ManualEntryDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  ManualEntrySelectedDate,
+  SubmittedDate,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 const order = {
   SED: 1,
@@ -251,7 +254,7 @@ export default class ManualEntryService {
     for (const item of mergedConfig.items) {
       if (
         req.session.selectedManualEntryDates[nomsId] &&
-        req.session.selectedManualEntryDates[nomsId].some((d: ManualEntryDate) => d.dateType === item.value)
+        req.session.selectedManualEntryDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === item.value)
       ) {
         item.checked = true
         item.attributes = {
@@ -273,15 +276,15 @@ export default class ManualEntryService {
     req.session.selectedManualEntryDates[nomsId] = [...req.session.selectedManualEntryDates[nomsId], ...dates]
   }
 
-  public getNextDateToEnter(dates: ManualEntryDate[]): ManualEntryDate {
-    const hasDateToEnter = dates.some((d: ManualEntryDate) => d !== undefined && d.date === undefined)
+  public getNextDateToEnter(dates: ManualEntrySelectedDate[]): ManualEntrySelectedDate {
+    const hasDateToEnter = dates.some((d: ManualEntrySelectedDate) => d !== undefined && d.date === undefined)
     if (hasDateToEnter) {
-      return dates.find((d: ManualEntryDate) => d !== undefined && d.date === undefined)
+      return dates.find((d: ManualEntrySelectedDate) => d !== undefined && d.date === undefined)
     }
     return undefined
   }
 
-  public storeDate(dates: ManualEntryDate[], enteredDate: EnteredDate): StorageResponseModel {
+  public storeDate(dates: ManualEntrySelectedDate[], enteredDate: EnteredDate): StorageResponseModel {
     if (enteredDate.dateType !== 'None') {
       const allItems: DateInputItem[] = [
         {
@@ -320,14 +323,14 @@ export default class ManualEntryService {
       if (notWithinOneHundredYears) {
         return notWithinOneHundredYears
       }
-      const date = dates.find((d: ManualEntryDate) => d.dateType === enteredDate.dateType)
-      date.date = enteredDate
+      const date = dates.find((d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType)
+      date.date = enteredDate as unknown as SubmittedDate
       return { success: true, isNone: false, date } as StorageResponseModel
     }
     return { success: false, isNone: true } as StorageResponseModel
   }
 
-  private dateString(selectedDate: ManualEntryDate): string {
+  private dateString(selectedDate: ManualEntrySelectedDate): string {
     if (selectedDate.dateType === 'None') {
       return ''
     }
@@ -337,7 +340,7 @@ export default class ManualEntryService {
 
   public getConfirmationConfiguration(req: Request, nomsId: string, isSpecialistSupport = false) {
     return req.session.selectedManualEntryDates[nomsId]
-      .map((d: ManualEntryDate) => {
+      .map((d: ManualEntrySelectedDate) => {
         const dateValue = this.dateString(d)
         const text = FULL_STRING_LOOKUP[d.dateType]
         const items = isSpecialistSupport
@@ -363,7 +366,7 @@ export default class ManualEntryService {
     return order[dateType]
   }
 
-  private getItems(nomsId: string, d: ManualEntryDate, text: string) {
+  private getItems(nomsId: string, d: ManualEntrySelectedDate, text: string) {
     const items = [
       {
         href: `/calculation/${nomsId}/manual-entry/change-date?dateType=${d.dateType}`,
@@ -382,7 +385,7 @@ export default class ManualEntryService {
     return items
   }
 
-  private getSpecialistSupportItems(calculationReference: string, d: ManualEntryDate, text: string) {
+  private getSpecialistSupportItems(calculationReference: string, d: ManualEntrySelectedDate, text: string) {
     return [
       {
         href: `/specialist-support/calculation/${calculationReference}/change-date?dateType=${d.dateType}`,
@@ -405,24 +408,24 @@ export default class ManualEntryService {
     const dateToRemove = req.query.dateType
     if (req.body['remove-date'] === 'yes') {
       req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
-        (d: ManualEntryDate) => d.dateType !== dateToRemove,
+        (d: ManualEntrySelectedDate) => d.dateType !== dateToRemove,
       )
     }
     return req.session.selectedManualEntryDates[nomsId].length
   }
 
-  public changeDate(req: Request, nomsId: string): ManualEntryDate {
+  public changeDate(req: Request, nomsId: string): ManualEntrySelectedDate {
     const date = req.session.selectedManualEntryDates[nomsId].find(
-      (d: ManualEntryDate) => d.dateType === req.query.dateType,
+      (d: ManualEntrySelectedDate) => d.dateType === req.query.dateType,
     )
     req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
-      (d: ManualEntryDate) => d.dateType !== req.query.dateType,
+      (d: ManualEntrySelectedDate) => d.dateType !== req.query.dateType,
     )
     req.session.selectedManualEntryDates[nomsId].push({
       dateType: req.query.dateType,
       dateText: FULL_STRING_LOOKUP[<string>req.query.dateType],
       date: undefined,
-    } as ManualEntryDate)
+    } as ManualEntrySelectedDate)
     return date
   }
 }

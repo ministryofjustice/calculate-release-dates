@@ -46,59 +46,58 @@ export default class AdjustmentsViewModel {
 
   constructor(
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
-    sententencesAndOffences: AnalyzedSentenceAndOffences[],
+    sentencesAndOffences: AnalyzedSentenceAndOffences[],
   ) {
     this.additionalDaysAwarded = this.adjustmentViewModel(
       adjustments.bookingAdjustments.filter(a => a.type === 'ADDITIONAL_DAYS_AWARDED'),
-      sententencesAndOffences,
+      sentencesAndOffences,
     )
     this.recallSentenceRemand = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'RECALL_SENTENCE_REMAND'),
-      sententencesAndOffences,
+      sentencesAndOffences,
     )
     this.recallSentenceTaggedBail = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'RECALL_SENTENCE_TAGGED_BAIL'),
-      sententencesAndOffences,
+      sentencesAndOffences,
     )
     this.remand = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'REMAND'),
-      sententencesAndOffences,
+      sentencesAndOffences,
     )
     this.unusedRemand = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'UNUSED_REMAND'),
-      sententencesAndOffences,
+      sentencesAndOffences,
     )
     this.restoredAdditionalDaysAwarded = this.adjustmentViewModel(
       adjustments.bookingAdjustments.filter(a => a.type === 'RESTORED_ADDITIONAL_DAYS_AWARDED'),
-      sententencesAndOffences,
+      sentencesAndOffences,
     )
     this.taggedBail = this.adjustmentViewModel(
       adjustments.sentenceAdjustments.filter(a => a.type === 'TAGGED_BAIL'),
-      sententencesAndOffences,
+      sentencesAndOffences,
     )
     this.unlawfullyAtLarge = this.adjustmentViewModel(
       adjustments.bookingAdjustments.filter(a => a.type === 'UNLAWFULLY_AT_LARGE'),
-      sententencesAndOffences,
+      sentencesAndOffences,
     )
   }
 
   private adjustmentViewModel(
     adjustments: (PrisonApiBookingAdjustment | PrisonApiSentenceAdjustmentValues)[],
-    sententencesAndOffences: AnalyzedSentenceAndOffences[],
+    sentencesAndOffences: AnalyzedSentenceAndOffences[],
   ): AdjustmentViewModel {
     // Filter any sentence adjustments linked to a sentence thats not present on the booking (inactive).
     const filteredAdjustments = adjustments
       .filter(a => a.active)
       .filter(a => {
         if ('sentenceSequence' in a) {
-          const sentence = sententencesAndOffences.find(s => {
+          const sentence = sentencesAndOffences.find(s => {
             return s.sentenceSequence === a.sentenceSequence
           })
           return !!sentence
         }
         return true
       })
-    const newAdjustments = filteredAdjustments.filter(a => a.analysisResult === 'NEW')
     return {
       aggregate: this.aggregateAdjustment(filteredAdjustments),
       details: filteredAdjustments.map(a => {
@@ -107,10 +106,9 @@ export default class AdjustmentsViewModel {
           to: a.toDate,
           days: a.numberOfDays,
           sentence: 'sentenceSequence' in a ? a.sentenceSequence : null,
-          analysisResult: a.analysisResult,
         }
       }),
-      aggregateNewDaysSinceLastCalculation: this.aggregateAdjustment(newAdjustments),
+      aggregateNewDaysSinceLastCalculation: this.aggregateAdjustment([]),
     }
   }
 

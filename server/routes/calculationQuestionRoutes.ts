@@ -36,7 +36,7 @@ export default class CalculationQuestionRoutes {
         return res.redirect(`/calculation/${nomsId}/check-information`)
       }
       if (!calculationQuestions.sentenceQuestions.find(question => question.userInputType === type.apiType)) {
-        return res.redirect(`/calculation/${nomsId}/alternative-release-arangements`)
+        return res.redirect(`/calculation/${nomsId}/alternative-release-arrangements`)
       }
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
       const sentencesAndOffences = await this.calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences(

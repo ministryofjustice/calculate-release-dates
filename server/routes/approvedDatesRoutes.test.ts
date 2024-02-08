@@ -60,7 +60,7 @@ describe('approvedDatesRoutes', () => {
         expect(res.text).toContain('Do you need to enter APD, HDCAD or ROTL dates for Anon Nobody?')
       })
   })
-  it('POST /calculation/:nomsId/:calcualtionRequestId/approved-dates-question without selecting shows error', () => {
+  it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question without selecting shows error', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .post('/calculation/A1234AA/123456/approved-dates-question')
@@ -72,7 +72,7 @@ describe('approvedDatesRoutes', () => {
         expect(res.text).toContain("Please select either 'Yes' or 'No, save the calculation to NOMIS'")
       })
   })
-  it('POST /calculation/:nomsId/:calcualtionRequestId/approved-dates-question selecting no redirects you to confirm', () => {
+  it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question selecting no redirects you to confirm', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .post('/calculation/A1234AA/123456/approved-dates-question')
@@ -96,7 +96,7 @@ describe('approvedDatesRoutes', () => {
         expect(res.redirect).toBeTruthy()
       })
   })
-  it('GET /calculation/:nomsId/:calculationRequestid/select-approved-dates shows list of approved dates', () => {
+  it('GET /calculation/:nomsId/:calculationRequestId/select-approved-dates shows list of approved dates', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('/calculation/A1234AA/123456/select-approved-dates')
