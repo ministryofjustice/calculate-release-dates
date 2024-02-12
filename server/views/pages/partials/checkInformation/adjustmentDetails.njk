@@ -19,7 +19,7 @@
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
-                                {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                     ({{ adjustment.analysisResult.toLowerCase() }})
                                 {% endif %}
                                 </td>
@@ -52,7 +52,7 @@
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
-                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}
                                 </td>
@@ -89,7 +89,7 @@
                                     .get(adjustment.sentence) %}
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}
-                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}
                                 </td>
@@ -127,7 +127,7 @@
                                     .get(adjustment.sentence) %}
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}
-                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}
                                 </td>
@@ -161,7 +161,7 @@
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">Remitted {{ adjustment.from | date('DD MMMM YYYY') }}
-                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}
                                 </td>
@@ -195,7 +195,7 @@
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
-                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}</td>
                                 <!-- Days -->
@@ -230,7 +230,7 @@
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">Awarded {{ adjustment.from | date('DD MMMM YYYY') }}
-                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult === 'NEW' %}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}
                                 </td>
@@ -264,7 +264,7 @@
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
                                 <td class="govuk-table__cell">{{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
-                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult !== 'SAME' %}
+                                    {% if featureToggles.changesSinceLastCalculation and adjustment.analysisResult?? and adjustment.analysisResult !== 'SAME' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}
                                 </td>
