@@ -728,106 +728,6 @@ export interface components {
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
     }
-    DlqMessage: {
-      body: {
-        [key: string]: Record<string, never> | undefined
-      }
-      messageId: string
-    }
-    GetDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      /** Format: int32 */
-      messagesReturnedCount: number
-      messages: components['schemas']['DlqMessage'][]
-    }
-    NonFridayReleaseDay: {
-      /** Format: date */
-      date: string
-      usePolicy: boolean
-    }
-    ComparisonSummary: {
-      comparisonShortReference: string
-      prison?: string
-      /** @enum {string} */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
-      /** Format: date-time */
-      calculatedAt: string
-      calculatedByUsername: string
-      /** Format: int64 */
-      numberOfMismatches: number
-      /** Format: int64 */
-      numberOfPeopleCompared: number
-    }
-    ComparisonMismatchSummary: {
-      personId: string
-      lastName: string
-      isValid: boolean
-      isMatch: boolean
-      validationMessages: components['schemas']['ValidationMessage'][]
-      shortReference: string
-      /** @enum {string} */
-      misMatchType:
-        | 'NONE'
-        | 'RELEASE_DATES_MISMATCH'
-        | 'VALIDATION_ERROR'
-        | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
-        | 'VALIDATION_ERROR_HDC4_PLUS'
-      hdcedFourPlusDate: string
-      establishment: string
-    }
-    ComparisonOverview: {
-      comparisonShortReference: string
-      prison?: string
-      /** @enum {string} */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
-      /** Format: date-time */
-      calculatedAt: string
-      calculatedByUsername: string
-      /** Format: int64 */
-      numberOfMismatches: number
-      /** Format: int64 */
-      numberOfPeopleCompared: number
-      mismatches: components['schemas']['ComparisonMismatchSummary'][]
-      status: string
-      hdc4PlusCalculated: components['schemas']['ComparisonMismatchSummary'][]
-    }
-    ComparisonPersonOverview: {
-      personId: string
-      lastName: string
-      isValid: boolean
-      isMatch: boolean
-      hasDiscrepancyRecord: boolean
-      /** @enum {string} */
-      mismatchType:
-        | 'NONE'
-        | 'RELEASE_DATES_MISMATCH'
-        | 'VALIDATION_ERROR'
-        | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
-        | 'VALIDATION_ERROR_HDC4_PLUS'
-      isActiveSexOffender?: boolean
-      validationMessages: components['schemas']['ValidationMessage'][]
-      shortReference: string
-      /** Format: int64 */
-      bookingId: number
-      /** Format: date-time */
-      calculatedAt: string
-      crdsDates: {
-        [key: string]: string
-      }
-      nomisDates: {
-        [key: string]: string
-      }
-      overrideDates: {
-        [key: string]: string
-      }
-      breakdownByReleaseDateType: {
-        [key: string]: components['schemas']['ReleaseDateCalculationBreakdown'] | undefined
-      }
-      sdsSentencesIdentified?: components['schemas']['SentenceAndOffences'][]
-    }
     AnalyzedSentenceAndOffences: {
       /** Format: int64 */
       bookingId: number
@@ -863,9 +763,9 @@ export interface components {
       offenceCode: string
       offenceDescription: string
       indicators: string[]
-      isScheduleFifteenMaximumLife: boolean
       isPcscSec250: boolean
       isPcscSds: boolean
+      isScheduleFifteenMaximumLife: boolean
       isPcscSdsPlus: boolean
     }
     SentenceTerms: {
@@ -959,6 +859,7 @@ export interface components {
       numberOfPeopleCompared: number
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
       status: string
+      hdc4PlusCalculated: components['schemas']['ComparisonMismatchSummary'][]
     }
     /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
