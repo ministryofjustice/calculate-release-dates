@@ -4,7 +4,7 @@ import type {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonResultMismatch from './ComparisonResultMismatch'
 import ComparisonType from '../enumerations/comparisonType'
-import Hdced4PlusResultDate from './Hdced4PlusResultDate'
+import Hdced4PlusResultDateTable from './Hdced4PlusResultDateTable'
 
 export default class ComparisonResultOverviewModel {
   comparisonShortReference: string
@@ -33,7 +33,7 @@ export default class ComparisonResultOverviewModel {
 
   status: string
 
-  hdced4PlusMismatches: Hdced4PlusResultDate[]
+  hdced4PlusMismatchesTable: Hdced4PlusResultDateTable
 
   constructor(comparison: ComparisonOverview, prisons: Map<string, string>) {
     this.comparisonShortReference = comparison.comparisonShortReference
@@ -84,21 +84,7 @@ export default class ComparisonResultOverviewModel {
 
     this.status = comparison.status
 
-    this.hdced4PlusMismatches = comparison.hdc4PlusCalculated
-      .filter(mismatch => !['VALIDATION_ERROR', 'VALIDATION_ERROR_HDC4_PLUS'].includes(mismatch.misMatchType))
-      .filter(mismatch => !!mismatch.hdcedFourPlusDate)
-      .sort((a, b) => {
-        if (a.establishment != null && b.establishment != null) {
-          const establishmentComparison = a.establishment.localeCompare(b.establishment)
-          if (establishmentComparison) {
-            return establishmentComparison
-          }
-        }
-        const dateA = Date.parse(a.hdcedFourPlusDate)
-        const dateB = Date.parse(b.hdcedFourPlusDate)
-        return dateA.valueOf() - dateB.valueOf()
-      })
-      .map(mismatch => new Hdced4PlusResultDate(mismatch, comparison.prison))
+    this.hdced4PlusMismatchesTable = new Hdced4PlusResultDateTable(comparison.hdc4PlusCalculated, comparison.prison)
   }
 
   private sortByEstablishmentAndPerson(mismatchA: ComparisonMismatchSummary, mismatchB: ComparisonMismatchSummary) {
