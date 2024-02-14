@@ -841,8 +841,6 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
         | 'VALIDATION_ERROR_HDC4_PLUS'
       sdsSentencesIdentified: components['schemas']['JsonNode']
-      /** Format: date */
-      hdcedFourPlusDate?: string
       establishment?: string
     }
     ComparisonOverview: {
@@ -859,7 +857,53 @@ export interface components {
       numberOfPeopleCompared: number
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
       status: string
-      hdc4PlusCalculated: components['schemas']['ComparisonMismatchSummary'][]
+      hdc4PlusCalculated: components['schemas']['HdcFourPlusComparisonMismatch'][]
+    }
+    HdcFourPlusComparisonMismatch: {
+      personId: string
+      lastName?: string
+      /** @enum {string} */
+      misMatchType:
+        | 'NONE'
+        | 'RELEASE_DATES_MISMATCH'
+        | 'VALIDATION_ERROR'
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
+        | 'VALIDATION_ERROR_HDC4_PLUS'
+      /** Format: date */
+      hdcedFourPlusDate: string
+      establishment?: string
+      releaseDate?: components['schemas']['ReleaseDate']
+    }
+    ReleaseDate: {
+      /** Format: date */
+      date: string
+      /** @enum {string} */
+      type:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
     }
     /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
