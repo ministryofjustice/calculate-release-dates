@@ -25,8 +25,7 @@ export default class CheckInformationRoutes {
     if (config.featureToggles.manualEntry) {
       const unsupportedSentenceOrCalculationMessages =
         await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
-      const unsupportedSentenceValidationMessages =
-        await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
+
       if (unsupportedSentenceOrCalculationMessages.length > 0) {
         return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
       }
@@ -45,12 +44,8 @@ export default class CheckInformationRoutes {
   public unsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
     const { token } = res.locals.user
     const { nomsId } = req.params
-    const unsupportedSentenceOrCalculationMessages =
-      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
-    if (unsupportedSentenceOrCalculationMessages.length === 0) {
-      return res.redirect(`/calculation/${nomsId}/check-information`)
-    }
-    const model = await this.checkInformationService.checkInformation(req, res, true)
+
+    const model = await this.checkInformationService.checkInformation(req, res, true, true)
 
     return res.render('pages/manualEntry/checkInformationUnsupported', {
       model,
@@ -59,6 +54,14 @@ export default class CheckInformationRoutes {
 
   public submitUnsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
+    const { token } = res.locals.user
+
+    const manualEntryValidationMessages =
+        await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
+
+    if (manualEntryValidationMessages.messages.length > 0){
+      return res.redirect(`/calculation/${nomsId}/check-information-unsupported?hasErrors=true`)
+    }
     return res.redirect(`/calculation/${nomsId}/manual-entry`)
   }
 

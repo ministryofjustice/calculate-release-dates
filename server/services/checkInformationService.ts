@@ -23,6 +23,7 @@ export default class CheckInformationService {
     req: Request,
     res: Response,
     requireUserInputs: boolean,
+    suppressSentenceTypeOrCalcErrors: boolean = false,
   ): Promise<SentenceAndOffenceViewModel> {
     const { username, caseloads, token } = res.locals.user
     const { calculationReference } = req.params
@@ -59,12 +60,18 @@ export default class CheckInformationService {
       ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
       : null
 
-    let validationMessages: ErrorMessages
     const userInputs = requireUserInputs
-      ? this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-      : ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
+        ? this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
+        : ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
+
+    let validationMessages: ErrorMessages
+
     if (req.query.hasErrors) {
+      if (suppressSentenceTypeOrCalcErrors){
+        validationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
+      } else {
       validationMessages = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
+      }
     } else {
       validationMessages = null
     }
