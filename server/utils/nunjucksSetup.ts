@@ -2,6 +2,7 @@
 import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
+import { personProfileName, personDateOfBirth, personStatus } from 'hmpps-design-system-frontend/hmpps/utils/utils'
 import { initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -27,8 +28,17 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Calculate release dates'
-  app.locals.environmentName = config.environmentName
-  app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+  app.locals.environmentName = applicationInfo.environmentName
+  app.locals.environmentNameColour = applicationInfo.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+  if (applicationInfo.environmentName === 'LOCAL') {
+    app.locals.environment = 'local'
+  } else if (applicationInfo.environmentName === 'DEV') {
+    app.locals.environment = 'dev'
+  } else if (applicationInfo.environmentName === 'PRE-PRODUCTION') {
+    app.locals.environment = 'pre'
+  } else {
+    app.locals.environment = 'prod'
+  }
 
   // Cachebusting version string
   if (production) {
@@ -122,6 +132,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     }
     return null
   })
+
+  njkEnv.addFilter('personProfileName', personProfileName)
+  njkEnv.addFilter('personDateOfBirth', personDateOfBirth)
+  njkEnv.addFilter('personStatus', personStatus)
 }
 
 const getReleaseDateType = (dates: { [key: string]: unknown }): string => {

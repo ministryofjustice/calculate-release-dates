@@ -15,6 +15,7 @@ const testAppInfo: ApplicationInfo = {
   gitRef: 'long ref',
   gitShortHash: 'short ref',
   branchName: 'main',
+  environmentName: 'LOCAL',
 }
 
 export const user: Express.User = {
