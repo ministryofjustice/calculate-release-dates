@@ -100,6 +100,7 @@
     "body-parser": "^1.20.2",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
+    "cheerio": "^1.0.0-rc.12",
     "compression": "^1.7.4",
     "connect-flash": "^0.1.1",
     "connect-redis": "^7.1.1",

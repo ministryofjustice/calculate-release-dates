@@ -6,6 +6,7 @@ import UserInputService from '../services/userInputService'
 import config from '../config'
 import CheckInformationService from '../services/checkInformationService'
 import QuestionsService from '../services/questionsService'
+import CheckInformationViewModel from '../models/CheckInformationViewModel'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -35,9 +36,7 @@ export default class CheckInformationRoutes {
       return res.redirect(`/calculation/${nomsId}/alternative-release-arrangements`)
     }
     const model = await this.checkInformationService.checkInformation(req, res, true)
-    return res.render('pages/calculation/checkInformation', {
-      model,
-    })
+    return res.render('pages/calculation/checkInformation', new CheckInformationViewModel(model))
   }
 
   public unsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {

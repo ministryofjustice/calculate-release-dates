@@ -15,6 +15,7 @@ import SelectOffencesViewModel from '../models/SelectOffencesViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import config from '../config'
+import CalculationReasonViewModel from '../models/CalculationReasonViewModel'
 
 export default class CalculationQuestionRoutes {
   constructor(
@@ -212,7 +213,7 @@ export default class CalculationQuestionRoutes {
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
 
-    return res.render('pages/calculation/reason', { reasons: calculationReasons, prisonerDetail })
+    return res.render('pages/calculation/reason', new CalculationReasonViewModel(prisonerDetail, calculationReasons))
   }
 
   public submitCalculationReason: RequestHandler = async (req, res): Promise<void> => {

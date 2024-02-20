@@ -27,6 +27,7 @@ import config from '../config'
 import QuestionsService from '../services/questionsService'
 import CheckInformationService from '../services/checkInformationService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
+import { expectMiniProfileNoLocation } from './testutils/layoutExpectations'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -62,7 +63,7 @@ const stubbedPrisonerData = {
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -406,6 +407,30 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
         expect(res.text).not.toContain('987654')
         expect(res.text).toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should display mini profilef', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfileNoLocation(res.text, { name: 'Anon Nobody', dob: '24 June 2000', prisonNumber: 'A1234AA' })
       })
   })
 

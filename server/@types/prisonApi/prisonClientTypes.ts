@@ -27,3 +27,4 @@ export type PrisonApiReturnToCustodyDate = {
   bookingId: number
   returnToCustodyDate: string
 }
+export type PrisonAPIAssignedLivingUnit = components['schemas']['AssignedLivingUnit']

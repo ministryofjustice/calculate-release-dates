@@ -51,6 +51,7 @@ context('End to end happy path of user journey', () => {
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.hasMiniProfile()
     calculationReasonPage.submitReason().click()
 
     const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
@@ -65,6 +66,7 @@ context('End to end happy path of user journey', () => {
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
+    checkInformationPage.hasMiniProfile()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
     calculationSummaryPage.submitToNomisButton().click()

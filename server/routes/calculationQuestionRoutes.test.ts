@@ -3,7 +3,11 @@ import type { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonAPIAssignedLivingUnit,
+  PrisonApiPrisoner,
+  PrisonApiSentenceDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import EntryPointService from '../services/entryPointService'
 import UserInputService from '../services/userInputService'
@@ -16,6 +20,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import trimHtml from './testutils/testUtils'
 import config from '../config'
+import { expectMiniProfile } from './testutils/layoutExpectations'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -37,7 +42,7 @@ const stubbedPrisonerData = {
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -56,6 +61,10 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 
 const stubbedSentencesAndOffences = [
@@ -447,6 +456,25 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('You must enter a reason for the calculation')
+      })
+  })
+
+  it('GET /calculation/:nomsId/reason should include the mini profile', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .get('/calculation/A1234AA/reason/')
+      .expect(200)
+      .expect(res => {
+        expectMiniProfile(res.text, {
+          name: 'Anon Nobody',
+          dob: '24 June 2000',
+          prisonNumber: 'A1234AA',
+          establishment: 'Foo Prison (HMP)',
+          location: 'D-2-003',
+        })
       })
   })
 })
