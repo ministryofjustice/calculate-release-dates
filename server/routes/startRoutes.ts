@@ -3,6 +3,7 @@ import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import UserPermissionsService from '../services/userPermissionsService'
 import config from '../config'
+import { indexViewModelForPrisoner, indexViewModelWithNoPrisoner } from '../models/IndexViewModel'
 
 export default class StartRoutes {
   constructor(
@@ -19,15 +20,14 @@ export default class StartRoutes {
       this.entryPointService.setDpsEntrypointCookie(res, prisonId)
       const { username, caseloads, token } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, prisonId, caseloads, token)
-      return res.render('pages/index', {
-        prisonId,
-        prisonerDetail,
-        reason: config.featureToggles.calculationReasonToggle,
-      })
+      return res.render(
+        'pages/index',
+        indexViewModelForPrisoner(prisonerDetail, prisonId, config.featureToggles.calculationReasonToggle),
+      )
     }
     const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
     this.entryPointService.setStandaloneEntrypointCookie(res)
-    return res.render('pages/index', { prisonId, allowBulkLoad })
+    return res.render('pages/index', indexViewModelWithNoPrisoner(allowBulkLoad, prisonId))
   }
 
   public supportedSentences: RequestHandler = async (req, res): Promise<void> => {

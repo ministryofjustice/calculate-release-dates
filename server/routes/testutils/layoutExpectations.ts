@@ -21,3 +21,8 @@ export function expectMiniProfileNoLocation(
   expect($('[data-qa=mini-profile-dob]').text()).toStrictEqual(prisoner.dob)
   expect($('[data-qa=mini-profile-offender-no]').text()).toStrictEqual(prisoner.prisonNumber)
 }
+
+export function expectNoMiniProfile(html: string) {
+  const $ = cheerio.load(html)
+  expect($('[data-qa=mini-profile-name]').length).toStrictEqual(0)
+}

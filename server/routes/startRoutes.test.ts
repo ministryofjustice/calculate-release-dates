@@ -3,8 +3,13 @@ import type { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonAPIAssignedLivingUnit,
+  PrisonApiPrisoner,
+  PrisonApiSentenceDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import UserPermissionsService from '../services/userPermissionsService'
+import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
 
 jest.mock('../services/entryPointService')
 jest.mock('../services/prisonerService')
@@ -19,7 +24,7 @@ const stubbedPrisonerData = {
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -38,6 +43,10 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 
 let app: Express
@@ -60,6 +69,7 @@ describe('Start routes tests', () => {
         expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/search/prisoners"')
         expect(res.text).not.toContain('A1234AA')
+        expectNoMiniProfile(res.text)
       })
       .expect(() => {
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
@@ -78,6 +88,13 @@ describe('Start routes tests', () => {
         expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/calculation/123/alternative-release-arrangements"')
         expect(res.text).toContain('A1234AA')
+        expectMiniProfile(res.text, {
+          name: 'Anon Nobody',
+          dob: '24 June 2000',
+          prisonNumber: 'A1234AA',
+          establishment: 'Foo Prison (HMP)',
+          location: 'D-2-003',
+        })
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
