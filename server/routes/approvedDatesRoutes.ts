@@ -10,6 +10,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ApprovedDatesQuestionViewModel from '../models/ApprovedDatesQuestionViewModel'
 import RemoveApprovedDateViewModel from '../models/RemoveApprovedDateViewModel'
+import SelectApprovedDatesViewModel from '../models/SelectApprovedDatesViewModel'
 
 export default class ApprovedDatesRoutes {
   constructor(
@@ -59,7 +60,10 @@ export default class ApprovedDatesRoutes {
     }
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const config = this.approvedDatesService.getConfig(req)
-    return res.render('pages/approvedDates/selectApprovedDates', { prisonerDetail, calculationRequestId, config })
+    return res.render(
+      'pages/approvedDates/selectApprovedDates',
+      new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config),
+    )
   }
 
   public submitApprovedDateTypes: RequestHandler = async (req, res): Promise<void> => {
@@ -74,12 +78,10 @@ export default class ApprovedDatesRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const { error, config } = this.approvedDatesService.submitApprovedDateTypes(req)
     if (error) {
-      return res.render('pages/approvedDates/selectApprovedDates', {
-        prisonerDetail,
-        calculationRequestId,
-        config,
-        error,
-      })
+      return res.render(
+        'pages/approvedDates/selectApprovedDates',
+        new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config, error),
+      )
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/submit-dates`)
   }

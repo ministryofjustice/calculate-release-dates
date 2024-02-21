@@ -91,13 +91,7 @@ describe('approvedDatesRoutes', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain("Please select either 'Yes' or 'No, save the calculation to NOMIS'")
-        expectMiniProfile(res.text, {
-          name: 'Anon Nobody',
-          dob: '24 June 2000',
-          prisonNumber: 'A1234AA',
-          establishment: 'Foo Prison (HMP)',
-          location: 'D-2-003',
-        })
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
   it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question selecting no redirects you to confirm', () => {
@@ -134,6 +128,7 @@ describe('approvedDatesRoutes', () => {
         expect(res.text).toContain('APD')
         expect(res.text).toContain('HDCAD')
         expect(res.text).toContain('ROTL')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
   it('POST /calculation/:nomsId/:calculationRequestId/select-approved-dates adds date to session', () => {
@@ -145,6 +140,20 @@ describe('approvedDatesRoutes', () => {
       .expect('Location', '/calculation/A1234AA/123456/submit-dates')
       .expect(res => {
         expect(res.text).not.toContain('Select at least one release date.')
+      })
+  })
+
+  it('POST /calculation/:nomsId/:calculationRequestId/select-approved-dates shows selection with error if no date selected', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .post('/calculation/A1234AA/123456/select-approved-dates')
+      .type('form')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('APD')
+        expect(res.text).toContain('HDCAD')
+        expect(res.text).toContain('ROTL')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
