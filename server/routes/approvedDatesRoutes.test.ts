@@ -10,11 +10,14 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import ApprovedDatesService from '../services/approvedDatesService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
 import { expectMiniProfile } from './testutils/layoutExpectations'
+import ManualEntryService from '../services/manualEntryService'
 
 let app: Express
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const dateTypeConfigurationService = new DateTypeConfigurationService()
-const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
+const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService) as jest.Mocked<ApprovedDatesService>
+const manualEntryService = new ManualEntryService(null, null, null) as jest.Mocked<ManualEntryService>
+
 jest.mock('../services/prisonerService')
 
 const stubbedPrisonerData = {
@@ -48,9 +51,17 @@ const stubbedPrisonerData = {
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 
+const expectedMiniProfile = {
+  name: 'Anon Nobody',
+  dob: '24 June 2000',
+  prisonNumber: 'A1234AA',
+  establishment: 'Foo Prison (HMP)',
+  location: 'D-2-003',
+}
+
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { prisonerService, approvedDatesService },
+    services: { prisonerService, approvedDatesService, manualEntryService },
   })
 })
 
@@ -67,13 +78,7 @@ describe('approvedDatesRoutes', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Do you need to enter APD, HDCAD or ROTL dates for Anon Nobody?')
-        expectMiniProfile(res.text, {
-          name: 'Anon Nobody',
-          dob: '24 June 2000',
-          prisonNumber: 'A1234AA',
-          establishment: 'Foo Prison (HMP)',
-          location: 'D-2-003',
-        })
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
   it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question without selecting shows error', () => {
@@ -140,6 +145,32 @@ describe('approvedDatesRoutes', () => {
       .expect('Location', '/calculation/A1234AA/123456/submit-dates')
       .expect(res => {
         expect(res.text).not.toContain('Select at least one release date.')
+      })
+  })
+
+  it('GET /calculation/:nomsId/:calculationRequestId/remove loads remove date page if the date is found', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    jest.spyOn(approvedDatesService, 'hasApprovedDateToRemove').mockReturnValue(true)
+    return request(app)
+      .get('/calculation/A1234AA/123456/remove?dateType=CRD')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)')
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('POST /calculation/:nomsId/:calculationRequestId/remove loads remove date page if submitting a date without confirmation', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .post('/calculation/A1234AA/123456/remove?dateType=CRD')
+      .type('form')
+      .send({ 'remove-date': '' })
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)')
+        expect(res.text).toContain('You must select either &#39;Yes&#39; or &#39;No&#39;')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 })

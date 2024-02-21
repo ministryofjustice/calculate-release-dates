@@ -9,6 +9,7 @@ import {
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ApprovedDatesQuestionViewModel from '../models/ApprovedDatesQuestionViewModel'
+import RemoveApprovedDateViewModel from '../models/RemoveApprovedDateViewModel'
 
 export default class ApprovedDatesRoutes {
   constructor(
@@ -150,9 +151,12 @@ export default class ApprovedDatesRoutes {
     const { nomsId, calculationRequestId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const dateToRemove: string = <string>req.query.dateType
-    if (req.session.selectedApprovedDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)) {
+    if (this.approvedDatesService.hasApprovedDateToRemove(req, nomsId, dateToRemove)) {
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
-      return res.render('pages/approvedDates/removeDate', { prisonerDetail, dateToRemove, fullDateName })
+      return res.render(
+        'pages/approvedDates/removeDate',
+        new RemoveApprovedDateViewModel(prisonerDetail, dateToRemove, fullDateName),
+      )
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
   }
@@ -164,8 +168,10 @@ export default class ApprovedDatesRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
-      const error = true
-      return res.render('pages/approvedDates/removeDate', { prisonerDetail, dateToRemove, fullDateName, error })
+      return res.render(
+        'pages/approvedDates/removeDate',
+        new RemoveApprovedDateViewModel(prisonerDetail, dateToRemove, fullDateName, true),
+      )
     }
     this.approvedDatesService.removeDate(req, nomsId)
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)

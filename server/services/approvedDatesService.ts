@@ -113,6 +113,14 @@ export default class ApprovedDatesService {
       )
     }
   }
+
+  public hasApprovedDateToRemove(req: Request, nomsId: string, dateToRemove: string): boolean {
+    return req.session.selectedApprovedDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)
+  }
+
+  public foo(): string {
+    return 'foo'
+  }
 }
 
 export interface SubmitApprovedDateTypesResponse {
