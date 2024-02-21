@@ -8,6 +8,7 @@ import {
   ManualEntrySelectedDate,
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ApprovedDatesQuestionViewModel from '../models/ApprovedDatesQuestionViewModel'
 
 export default class ApprovedDatesRoutes {
   constructor(
@@ -22,7 +23,10 @@ export default class ApprovedDatesRoutes {
     const { username, caseloads, token } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    return res.render('pages/approvedDates/approvedDatesQuestion', { prisonerDetail, calculationRequestId })
+    return res.render(
+      'pages/approvedDates/approvedDatesQuestion',
+      new ApprovedDatesQuestionViewModel(prisonerDetail, calculationRequestId),
+    )
   }
 
   public submitApprovedDatesQuestion: RequestHandler = async (req, res): Promise<void> => {
@@ -37,7 +41,10 @@ export default class ApprovedDatesRoutes {
       return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/store`)
     }
     const error = !hasApprovedDates
-    return res.render('pages/approvedDates/approvedDatesQuestion', { prisonerDetail, calculationRequestId, error })
+    return res.render(
+      'pages/approvedDates/approvedDatesQuestion',
+      new ApprovedDatesQuestionViewModel(prisonerDetail, calculationRequestId, error),
+    )
   }
 
   public selectedApprovedDateTypes: RequestHandler = async (req, res): Promise<void> => {

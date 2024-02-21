@@ -1,10 +1,15 @@
 import request from 'supertest'
 import { Express } from 'express'
 import PrisonerService from '../services/prisonerService'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonAPIAssignedLivingUnit,
+  PrisonApiPrisoner,
+  PrisonApiSentenceDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import { appWithAllRoutes } from './testutils/appSetup'
 import ApprovedDatesService from '../services/approvedDatesService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
+import { expectMiniProfile } from './testutils/layoutExpectations'
 
 let app: Express
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
@@ -18,7 +23,7 @@ const stubbedPrisonerData = {
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -37,6 +42,10 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 
 beforeEach(() => {
@@ -58,6 +67,13 @@ describe('approvedDatesRoutes', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Do you need to enter APD, HDCAD or ROTL dates for Anon Nobody?')
+        expectMiniProfile(res.text, {
+          name: 'Anon Nobody',
+          dob: '24 June 2000',
+          prisonNumber: 'A1234AA',
+          establishment: 'Foo Prison (HMP)',
+          location: 'D-2-003',
+        })
       })
   })
   it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question without selecting shows error', () => {
@@ -70,6 +86,13 @@ describe('approvedDatesRoutes', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain("Please select either 'Yes' or 'No, save the calculation to NOMIS'")
+        expectMiniProfile(res.text, {
+          name: 'Anon Nobody',
+          dob: '24 June 2000',
+          prisonNumber: 'A1234AA',
+          establishment: 'Foo Prison (HMP)',
+          location: 'D-2-003',
+        })
       })
   })
   it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question selecting no redirects you to confirm', () => {
