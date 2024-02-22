@@ -230,6 +230,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain('2 months')
         expect(res.text).toContain('id="checkbox-999" name="999" value="true" checked')
         expect(res.text).toContain('Continue')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
@@ -249,6 +250,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('id="checkbox-777" name="777" value="true"')
         expect(res.text).toContain('Continue')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
@@ -368,6 +370,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain(
           `<a href="#unselect-all">You must select at least one offence. If none apply, select &#39;None of the sentences include Schedule 15 offences from list B&#39;.</a>`,
         )
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 

@@ -17,6 +17,7 @@ import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import config from '../config'
 import CalculationReasonViewModel from '../models/CalculationReasonViewModel'
 import AlternativeReleaseIntroPageViewModel from '../models/AlternativeReleaseIntroPageViewModel'
+import SelectOffencesPageViewModel from '../models/SelectOffencesPageViewModel'
 
 export default class CalculationQuestionRoutes {
   constructor(
@@ -61,11 +62,10 @@ export default class CalculationQuestionRoutes {
     validationErrors?: ErrorMessages,
   ): void {
     const model = new SelectOffencesViewModel(sentencesAndOffences, calculationQuestions, type, userInputs)
-    return res.render('pages/questions/selectOffences', {
-      model,
-      prisonerDetail,
-      validationErrors,
-    })
+    return res.render(
+      'pages/questions/selectOffences',
+      new SelectOffencesPageViewModel(prisonerDetail, model, validationErrors),
+    )
   }
 
   public selectOffencesInListA: RequestHandler = this.handleListRequest(CalculationQuestionTypes.ORIGINAL)
