@@ -5,6 +5,7 @@ import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
@@ -27,7 +28,7 @@ import config from '../config'
 import QuestionsService from '../services/questionsService'
 import CheckInformationService from '../services/checkInformationService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
-import { expectMiniProfileNoLocation } from './testutils/layoutExpectations'
+import { expectMiniProfile, expectMiniProfileNoLocation } from './testutils/layoutExpectations'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -82,7 +83,18 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
+const expectedMiniProfile = {
+  name: 'Anon Nobody',
+  dob: '24 June 2000',
+  prisonNumber: 'A1234AA',
+  establishment: 'Foo Prison (HMP)',
+  location: 'D-2-003',
+}
 
 const stubbedSentencesAndOffences = [
   {
@@ -707,5 +719,30 @@ describe('Check information routes tests', () => {
       .get('/calculation/A1234AA/check-information')
       .expect(302)
       .expect('Location', '/calculation/A1234AA/alternative-release-arrangements')
+  })
+
+  it('GET /calculation/:nomsId/check-information-unsupported loads page and displays a mini profile', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information-unsupported')
+      .expect(200)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
   })
 })

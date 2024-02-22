@@ -7,6 +7,7 @@ import config from '../config'
 import CheckInformationService from '../services/checkInformationService'
 import QuestionsService from '../services/questionsService'
 import CheckInformationViewModel from '../models/CheckInformationViewModel'
+import ManualEntryCheckInformationUnsupportedViewModel from '../models/ManualEntryCheckInformationUnsupportedViewModel'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -49,9 +50,10 @@ export default class CheckInformationRoutes {
     }
     const model = await this.checkInformationService.checkInformation(req, res, true)
 
-    return res.render('pages/manualEntry/checkInformationUnsupported', {
-      model,
-    })
+    return res.render(
+      'pages/manualEntry/checkInformationUnsupported',
+      new ManualEntryCheckInformationUnsupportedViewModel(model),
+    )
   }
 
   public submitUnsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
