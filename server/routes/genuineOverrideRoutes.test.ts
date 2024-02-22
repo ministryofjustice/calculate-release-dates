@@ -24,7 +24,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import config from '../config'
-import { expectMiniProfile } from './testutils/layoutExpectations'
+import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import CheckInformationService from '../services/checkInformationService'
@@ -299,6 +299,7 @@ describe('Genuine overrides routes tests', () => {
         expect(res.text).toContain('Specialist support team override tool')
         expect(res.text).toContain('Anon')
         expect(res.text).toContain('Nobody')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
   it('GET /specialist-support/search should return the Specialist Support search page', () => {
@@ -311,6 +312,7 @@ describe('Genuine overrides routes tests', () => {
         expect(res.text).toContain('Specialist support team override tool')
         expect(res.text).toContain('Look up a calculation')
         expect(res.text).toContain('Enter the calculation reference number')
+        expectNoMiniProfile(res.text)
       })
   })
   it('GET /specialist-support/search should not return the Specialist Support search page if you do not have permission', () => {

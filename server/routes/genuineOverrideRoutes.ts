@@ -28,6 +28,7 @@ import GenuineOverridesConfirmationViewModel from '../models/GenuineOverridesCon
 import GenuineOverridesConfirmOverrideViewModel from '../models/GenuineOverridesConfirmOverrideViewModel'
 import GenuineOverridesDateEntryViewModel from '../models/GenuineOverridesDateEntryViewModel'
 import GenuineOverridesDateTypeSelectionViewModel from '../models/GenuineOverridesDateTypeSelectionViewModel'
+import GenuineOverridesIndexViewModel from '../models/GenuineOverridesIndexViewModel'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -61,10 +62,13 @@ export default class GenuineOverrideRoutes {
           calculation.prisonerId,
           token,
         )
-        return res.render('pages/genuineOverrides/index', { calculationReference, prisonerDetail })
+        return res.render(
+          'pages/genuineOverrides/index',
+          new GenuineOverridesIndexViewModel(calculationReference, prisonerDetail),
+        )
       }
       this.entryPointService.setStandaloneEntrypointCookie(res)
-      return res.render('pages/genuineOverrides/index', { calculationReference })
+      return res.render('pages/genuineOverrides/index', new GenuineOverridesIndexViewModel(calculationReference))
     }
     throw FullPageError.notFoundError()
   }
