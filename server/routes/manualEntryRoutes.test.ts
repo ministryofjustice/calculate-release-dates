@@ -122,6 +122,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Manual calculation required')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 

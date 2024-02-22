@@ -12,6 +12,7 @@ import {
 import ManualEntryConfirmationViewModel from '../models/ManualEntryConfirmationViewModel'
 import ManualEntryDateEntryViewModel from '../models/ManualEntryDateEntryViewModel'
 import ManualEntrySelectDatesViewModel from '../models/ManualEntrySelectDatesViewModel'
+import ManualEntryLandingPageViewModel from '../models/ManualEntryLandingPageViewModel'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -40,7 +41,10 @@ export default class ManualEntryRoutes {
       prisonerDetail.bookingId,
       token,
     )
-    return res.render('pages/manualEntry/manualEntry', { prisonerDetail, hasIndeterminateSentences })
+    return res.render(
+      'pages/manualEntry/manualEntry',
+      new ManualEntryLandingPageViewModel(prisonerDetail, hasIndeterminateSentences),
+    )
   }
 
   public submitSelectedDates: RequestHandler = async (req, res): Promise<void> => {
