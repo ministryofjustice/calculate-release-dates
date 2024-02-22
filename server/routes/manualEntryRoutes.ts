@@ -11,6 +11,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualEntryConfirmationViewModel from '../models/ManualEntryConfirmationViewModel'
 import ManualEntryDateEntryViewModel from '../models/ManualEntryDateEntryViewModel'
+import ManualEntrySelectDatesViewModel from '../models/ManualEntrySelectDatesViewModel'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -68,11 +69,10 @@ export default class ManualEntryRoutes {
     )
     if (error) {
       const insufficientDatesSelected = true
-      return res.render('pages/manualEntry/dateTypeSelection', {
-        prisonerDetail,
-        insufficientDatesSelected,
-        config,
-      })
+      return res.render(
+        'pages/manualEntry/dateTypeSelection',
+        new ManualEntrySelectDatesViewModel(prisonerDetail, config, insufficientDatesSelected),
+      )
     }
     this.manualEntryService.addManuallyCalculatedDateTypes(req, nomsId)
     return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
@@ -96,7 +96,10 @@ export default class ManualEntryRoutes {
     )
     const firstLoad = !req.query.addExtra
     const { config } = this.manualEntryService.verifySelectedDateType(req, nomsId, hasIndeterminateSentences, firstLoad)
-    return res.render('pages/manualEntry/dateTypeSelection', { prisonerDetail, config })
+    return res.render(
+      'pages/manualEntry/dateTypeSelection',
+      new ManualEntrySelectDatesViewModel(prisonerDetail, config),
+    )
   }
 
   public enterDate: RequestHandler = async (req, res): Promise<void> => {

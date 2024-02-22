@@ -279,4 +279,41 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
+
+  it('GET /calculation/:nomsId/manual-entry/select-dates shows select dates page with mini profile', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/select-dates')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('POST /calculation/:nomsId/manual-entry/select-dates shows select dates page with mini profile if there is an error', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    jest.spyOn(manualEntryService, 'verifySelectedDateType').mockReturnValue({
+      error: true,
+      config: undefined,
+    })
+    return request(app)
+      .post('/calculation/A1234AA/manual-entry/select-dates')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
 })
