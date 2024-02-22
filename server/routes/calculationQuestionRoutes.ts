@@ -16,6 +16,7 @@ import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import config from '../config'
 import CalculationReasonViewModel from '../models/CalculationReasonViewModel'
+import AlternativeReleaseIntroPageViewModel from '../models/AlternativeReleaseIntroPageViewModel'
 
 export default class CalculationQuestionRoutes {
   constructor(
@@ -200,11 +201,10 @@ export default class CalculationQuestionRoutes {
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const model = new AlternativeReleaseIntroViewModel(calculationQuestions)
-    return res.render('pages/questions/alternativeReleaseIntro', {
-      model,
-      prisonerDetail,
-      dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
-    })
+    return res.render(
+      'pages/questions/alternativeReleaseIntro',
+      new AlternativeReleaseIntroPageViewModel(prisonerDetail, model, this.entryPointService.isDpsEntryPoint(req)),
+    )
   }
 
   public selectCalculationReason: RequestHandler = async (req, res): Promise<void> => {

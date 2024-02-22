@@ -200,6 +200,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain(
           'Some offences for these sentences could be Schedule 15 offences. You must identify the ones that are, by looking them up on the lists.',
         )
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
