@@ -10,6 +10,7 @@ import {
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualEntryConfirmationViewModel from '../models/ManualEntryConfirmationViewModel'
+import ManualEntryDateEntryViewModel from '../models/ManualEntryDateEntryViewModel'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -117,7 +118,10 @@ export default class ManualEntryRoutes {
     }
     const date = this.manualEntryService.getNextDateToEnter(req.session.selectedManualEntryDates[nomsId])
     if (date && date.dateType !== 'None') {
-      return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, previousDate })
+      return res.render(
+        'pages/manualEntry/dateEntry',
+        new ManualEntryDateEntryViewModel(prisonerDetail, date, previousDate),
+      )
     }
     if (date && date.dateType === 'None') {
       return res.redirect(`/calculation/${nomsId}/manual-entry/no-dates-confirmation`)
@@ -137,8 +141,10 @@ export default class ManualEntryRoutes {
     const storeDateResponse = this.manualEntryService.storeDate(req.session.selectedManualEntryDates[nomsId], req.body)
     if (!storeDateResponse.success && storeDateResponse.message && !storeDateResponse.isNone) {
       const { date, message, enteredDate } = storeDateResponse
-      const error = message
-      return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, error, enteredDate })
+      return res.render(
+        'pages/manualEntry/dateEntry',
+        new ManualEntryDateEntryViewModel(prisonerDetail, date, undefined, message, enteredDate),
+      )
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedManualEntryDates[nomsId].find(
