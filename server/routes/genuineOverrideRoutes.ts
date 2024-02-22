@@ -27,6 +27,7 @@ import GenuineOverridesConfirmViewModel from '../models/GenuineOverridesConfirmV
 import GenuineOverridesConfirmationViewModel from '../models/GenuineOverridesConfirmationViewModel'
 import GenuineOverridesConfirmOverrideViewModel from '../models/GenuineOverridesConfirmOverrideViewModel'
 import GenuineOverridesDateEntryViewModel from '../models/GenuineOverridesDateEntryViewModel'
+import GenuineOverridesDateTypeSelectionViewModel from '../models/GenuineOverridesDateTypeSelectionViewModel'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -453,7 +454,10 @@ export default class GenuineOverrideRoutes {
         token,
       )
       const { config } = this.manualEntryService.verifySelectedDateType(req, releaseDates.prisonerId, false, true)
-      return res.render('pages/genuineOverrides/dateTypeSelection', { prisonerDetail, config, calculationReference })
+      return res.render(
+        'pages/genuineOverrides/dateTypeSelection',
+        new GenuineOverridesDateTypeSelectionViewModel(prisonerDetail, config, calculationReference),
+      )
     }
     throw FullPageError.notFoundError()
   }
@@ -485,13 +489,10 @@ export default class GenuineOverrideRoutes {
         false,
       )
       if (error) {
-        const insufficientDatesSelected = true
-        return res.render('pages/genuineOverrides/dateTypeSelection', {
-          prisonerDetail,
-          insufficientDatesSelected,
-          config,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/dateTypeSelection',
+          new GenuineOverridesDateTypeSelectionViewModel(prisonerDetail, config, calculationReference, true),
+        )
       }
       this.manualEntryService.addManuallyCalculatedDateTypes(req, releaseDates.prisonerId)
 

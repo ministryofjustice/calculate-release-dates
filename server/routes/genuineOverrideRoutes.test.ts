@@ -598,4 +598,38 @@ describe('Genuine overrides routes tests', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
+
+  it('GET /specialist-support/calculation/:calculationReference/select-date-types loads the select date types page with a mini profile', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualEntryService.verifySelectedDateType.mockReturnValue({
+      error: false,
+      config: undefined,
+    })
+    return request(app)
+      .get('/specialist-support/calculation/ABC/select-date-types')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('POST /specialist-support/calculation/:calculationReference/select-date-types loads the select date types page if there was an error validating', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualEntryService.verifySelectedDateType.mockReturnValue({
+      error: true,
+      config: undefined,
+    })
+    return request(app)
+      .post('/specialist-support/calculation/ABC/select-date-types')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
 })
