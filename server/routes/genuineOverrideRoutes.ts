@@ -29,6 +29,7 @@ import GenuineOverridesConfirmOverrideViewModel from '../models/GenuineOverrides
 import GenuineOverridesDateEntryViewModel from '../models/GenuineOverridesDateEntryViewModel'
 import GenuineOverridesDateTypeSelectionViewModel from '../models/GenuineOverridesDateTypeSelectionViewModel'
 import GenuineOverridesIndexViewModel from '../models/GenuineOverridesIndexViewModel'
+import GenuineOverridesLoadReasonsViewModel from '../models/GenuineOverridesLoadReasonsViewModel'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -394,7 +395,8 @@ export default class GenuineOverrideRoutes {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
       const { username, caseloads, token } = res.locals.user
-      const { noRadio, noOtherReason } = req.query
+      const noRadio = <string>req.query.noRadio === 'true'
+      const noOtherReason = <string>req.query.noOtherReason === 'true'
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
@@ -406,12 +408,10 @@ export default class GenuineOverrideRoutes {
         caseloads,
         token,
       )
-      return res.render('pages/genuineOverrides/reason', {
-        prisonerDetail,
-        noRadio,
-        noOtherReason,
-        calculationReference,
-      })
+      return res.render(
+        'pages/genuineOverrides/reason',
+        new GenuineOverridesLoadReasonsViewModel(prisonerDetail, noRadio, noOtherReason, calculationReference),
+      )
     }
     throw FullPageError.notFoundError()
   }

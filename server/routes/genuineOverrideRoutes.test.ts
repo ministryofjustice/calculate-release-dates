@@ -428,6 +428,7 @@ describe('Genuine overrides routes tests', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
     prisonerService.getPrisonerDetailForSpecialistSupport.mockResolvedValue(stubbedPrisonerData)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('/specialist-support/calculation/123/reason')
       .expect(200)
@@ -436,6 +437,7 @@ describe('Genuine overrides routes tests', () => {
         expect(res.text).toContain('Other')
         expect(res.text).toContain('Select the reason for the override')
         expect(res.text).toContain('Order of imprisonment/warrant doesn’t match trial record sheet')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
   it('POST /specialist-support/calculation/:calculationReference/reason without selection  will show error', () => {
