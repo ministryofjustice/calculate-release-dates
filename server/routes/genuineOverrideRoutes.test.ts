@@ -12,6 +12,7 @@ import {
   CalculationSentenceUserInput,
   CalculationUserInputs,
   GenuineOverrideRequest,
+  ManualEntrySelectedDate,
   NonFridayReleaseDay,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -29,9 +30,12 @@ import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import CheckInformationService from '../services/checkInformationService'
 import UserInputService from '../services/userInputService'
 import ManualEntryService from '../services/manualEntryService'
+import SessionSetup from './testutils/sessionSetup'
+import { StorageResponseModel } from '../services/dateValidationService'
 
 let app: Express
 let fakeApi: nock.Scope
+let sessionSetup: SessionSetup
 
 jest.mock('../services/userPermissionsService')
 jest.mock('../services/entryPointService')
@@ -237,9 +241,11 @@ const stubbedGenuineOverrideRequest = {
   originalCalculationRequest: '456',
   isOverridden: true,
 } as GenuineOverrideRequest
+
 beforeEach(() => {
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
+  sessionSetup = new SessionSetup()
   app = appWithAllRoutes({
     services: {
       userPermissionsService,
@@ -251,6 +257,7 @@ beforeEach(() => {
       userInputService,
       manualEntryService,
     },
+    sessionSetup,
   })
 })
 
@@ -524,6 +531,67 @@ describe('Genuine overrides routes tests', () => {
     manualEntryService.getConfirmationConfiguration.mockReturnValue([])
     return request(app)
       .get('/specialist-support/calculation/ABC/confirm-override')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /specialist-support/calculation/:calculationReference/enter-date shows enter date page with mini profile', () => {
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+      req.session.selectedManualEntryDates[stubbedCalculationResults.prisonerId] = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+    }
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualEntryService.getNextDateToEnter.mockReturnValue({
+      dateType: 'CRD',
+      dateText: 'CRD (Conditional release date)',
+      date: { day: 3, month: 3, year: 2017 },
+    } as ManualEntrySelectedDate)
+    return request(app)
+      .get('/specialist-support/calculation/ABC/enter-date')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('POST /specialist-support/calculation/:calculationReference/enter-date shows enter date page if submit errors with mini profile', () => {
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+      req.session.selectedManualEntryDates[stubbedCalculationResults.prisonerId] = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+    }
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualEntryService.storeDate.mockReturnValue({
+      success: false,
+      isNone: false,
+      message: 'Foo',
+    } as StorageResponseModel)
+    manualEntryService.getNextDateToEnter.mockReturnValue({
+      dateType: 'CRD',
+      dateText: 'CRD (Conditional release date)',
+      date: { day: 3, month: 3, year: 2017 },
+    } as ManualEntrySelectedDate)
+    return request(app)
+      .post('/specialist-support/calculation/ABC/enter-date')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {

@@ -26,6 +26,7 @@ import CheckInformationViewModel from '../models/CheckInformationViewModel'
 import GenuineOverridesConfirmViewModel from '../models/GenuineOverridesConfirmViewModel'
 import GenuineOverridesConfirmationViewModel from '../models/GenuineOverridesConfirmationViewModel'
 import GenuineOverridesConfirmOverrideViewModel from '../models/GenuineOverridesConfirmOverrideViewModel'
+import GenuineOverridesDateEntryViewModel from '../models/GenuineOverridesDateEntryViewModel'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -526,12 +527,10 @@ export default class GenuineOverrideRoutes {
         req.session.selectedManualEntryDates[releaseDates.prisonerId],
       )
       if (date && date.dateType !== 'None') {
-        return res.render('pages/genuineOverrides/dateEntry', {
-          prisonerDetail,
-          date,
-          previousDate,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/dateEntry',
+          new GenuineOverridesDateEntryViewModel(prisonerDetail, date, calculationReference, previousDate),
+        )
       }
       return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
     }
@@ -560,14 +559,17 @@ export default class GenuineOverrideRoutes {
       )
       if (!storeDateResponse.success && storeDateResponse.message && !storeDateResponse.isNone) {
         const { date, message, enteredDate } = storeDateResponse
-        const error = message
-        return res.render('pages/genuineOverrides/dateEntry', {
-          prisonerDetail,
-          date,
-          error,
-          enteredDate,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/dateEntry',
+          new GenuineOverridesDateEntryViewModel(
+            prisonerDetail,
+            date,
+            calculationReference,
+            undefined,
+            enteredDate,
+            message,
+          ),
+        )
       }
       if (storeDateResponse.success && !storeDateResponse.message) {
         req.session.selectedManualEntryDates[releaseDates.prisonerId].find(
