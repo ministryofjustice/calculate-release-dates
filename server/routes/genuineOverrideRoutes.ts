@@ -30,6 +30,7 @@ import GenuineOverridesDateEntryViewModel from '../models/GenuineOverridesDateEn
 import GenuineOverridesDateTypeSelectionViewModel from '../models/GenuineOverridesDateTypeSelectionViewModel'
 import GenuineOverridesIndexViewModel from '../models/GenuineOverridesIndexViewModel'
 import GenuineOverridesLoadReasonsViewModel from '../models/GenuineOverridesLoadReasonsViewModel'
+import GenuineOverridesRemoveDateViewModel from '../models/GenuineOverridesRemoveDateViewModel'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -651,12 +652,10 @@ export default class GenuineOverrideRoutes {
         )
       ) {
         const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
-        return res.render('pages/genuineOverrides/removeDate', {
-          prisonerDetail,
-          dateToRemove,
-          fullDateName,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/removeDate',
+          new GenuineOverridesRemoveDateViewModel(prisonerDetail, dateToRemove, fullDateName, calculationReference),
+        )
       }
       return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
     }
@@ -683,13 +682,16 @@ export default class GenuineOverrideRoutes {
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
       if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
         const error = true
-        return res.render('pages/genuineOverrides/removeDate', {
-          prisonerDetail,
-          dateToRemove,
-          fullDateName,
-          error,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/removeDate',
+          new GenuineOverridesRemoveDateViewModel(
+            prisonerDetail,
+            dateToRemove,
+            fullDateName,
+            calculationReference,
+            error,
+          ),
+        )
       }
       const remainingDates = this.manualEntryService.removeDate(req, releaseDates.prisonerId)
       if (remainingDates === 0) {

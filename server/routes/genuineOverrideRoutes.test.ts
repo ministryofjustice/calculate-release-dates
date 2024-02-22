@@ -619,7 +619,6 @@ describe('Genuine overrides routes tests', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
-
   it('POST /specialist-support/calculation/:calculationReference/select-date-types loads the select date types page if there was an error validating', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
@@ -630,6 +629,53 @@ describe('Genuine overrides routes tests', () => {
     })
     return request(app)
       .post('/specialist-support/calculation/ABC/select-date-types')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /specialist-support/calculation/:calculationReference/remove-date loads the remote dates page with a mini profile', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+      req.session.selectedManualEntryDates[stubbedCalculationResults.prisonerId] = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+    }
+    return request(app)
+      .get('/specialist-support/calculation/ABC/remove-date?dateType=CRD')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('POST /specialist-support/calculation/:calculationReference/remove-date loads the remote dates page with a mini profile on validation error', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+      req.session.selectedManualEntryDates[stubbedCalculationResults.prisonerId] = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+    }
+    return request(app)
+      .post('/specialist-support/calculation/ABC/remove-date?dateType=CRD')
+      .send({ 'remove-date': '' })
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
