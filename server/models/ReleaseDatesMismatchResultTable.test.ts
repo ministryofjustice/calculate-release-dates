@@ -2,7 +2,6 @@ import {
   ComparisonMismatchSummary,
   ComparisonOverview,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import MismatchResultTable from './MismatchResultTable'
 import ReleaseDatesMismatchResultTable from './ReleaseDatesMismatchResultTable'
 
 describe('Should contain table headings and rows for release date mismatches', () => {
