@@ -7,11 +7,28 @@ import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
+  AnalyzedSentenceAndOffences,
   BookingCalculation,
+  CalculationSentenceUserInput,
+  CalculationUserInputs,
   GenuineOverrideRequest,
+  NonFridayReleaseDay,
+  WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import {
+  AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  PrisonAPIAssignedLivingUnit,
+  PrisonApiPrisoner,
+  PrisonApiReturnToCustodyDate,
+  PrisonApiSentenceDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import config from '../config'
+import { expectMiniProfile } from './testutils/layoutExpectations'
+import ViewReleaseDatesService from '../services/viewReleaseDatesService'
+import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
+import CheckInformationService from '../services/checkInformationService'
+import UserInputService from '../services/userInputService'
+import ManualEntryService from '../services/manualEntryService'
 
 let app: Express
 let fakeApi: nock.Scope
@@ -20,11 +37,24 @@ jest.mock('../services/userPermissionsService')
 jest.mock('../services/entryPointService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
+jest.mock('../services/viewReleaseDatesService')
+jest.mock('../services/userInputService')
+jest.mock('../services/checkInformationService')
+jest.mock('../services/manualEntryService')
 
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
+const userInputService = new UserInputService() as jest.Mocked<UserInputService>
+const checkInformationService = new CheckInformationService(
+  calculateReleaseDatesService,
+  prisonerService,
+  entryPointService,
+  userInputService,
+) as jest.Mocked<CheckInformationService>
+const manualEntryService = new ManualEntryService(null, null, null) as jest.Mocked<ManualEntryService>
 
 const stubbedCalculationResults = {
   dates: {
@@ -43,13 +73,30 @@ const stubbedCalculationResults = {
   approvedDates: {},
 } as BookingCalculation
 
+const stubbedAnotherCalculationResults = {
+  dates: {
+    CRD: '2021-03-03',
+    SED: '2021-03-03',
+    HDCED: '2021-11-03',
+    ERSED: '2020-03-03',
+  },
+  calculationRequestId: 654321,
+  effectiveSentenceLength: {},
+  prisonerId: 'A1234AB',
+  calculationStatus: 'CONFIRMED',
+  calculationType: 'CALCULATED',
+  calculationReference: 'ABC123',
+  bookingId: 123,
+  approvedDates: {},
+} as BookingCalculation
+
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
   firstName: 'Anon',
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -68,13 +115,142 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 
+const expectedMiniProfile = {
+  name: 'Anon Nobody',
+  dob: '24 June 2000',
+  prisonNumber: 'A1234AA',
+  establishment: 'Foo Prison (HMP)',
+  location: 'D-2-003',
+}
+const stubbedSentencesAndOffences = [
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceCalculationType: 'ADIMP',
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    sentenceSequence: 1,
+    offences: [
+      { offenceEndDate: '2021-02-03' },
+      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+      { offenceStartDate: '2021-03-06' },
+      {},
+      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
+    ],
+  } as AnalyzedSentenceAndOffences,
+  {
+    terms: [
+      {
+        years: 2,
+      },
+    ],
+    caseSequence: 2,
+    lineSequence: 2,
+    sentenceSequence: 2,
+    consecutiveToSequence: 1,
+    sentenceCalculationType: 'ADIMP',
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+  } as AnalyzedSentenceAndOffences,
+]
+const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
+  CRD: {
+    date: '2021-02-02',
+    adjustedForWeekend: true,
+    adjustedForBankHoliday: false,
+  },
+  HDCED: {
+    date: '2021-10-05',
+    adjustedForWeekend: true,
+    adjustedForBankHoliday: true,
+  },
+}
+const stubbedNoNonFridayReleaseAdjustments: { [key: string]: NonFridayReleaseDay } = {}
+const stubbedUserInput = {
+  sentenceCalculationUserInputs: [
+    {
+      userInputType: 'ORIGINAL',
+      userChoice: true,
+      offenceCode: 'RL05016',
+      sentenceSequence: 3,
+    } as CalculationSentenceUserInput,
+    {
+      userInputType: 'ORIGINAL',
+      userChoice: true,
+      offenceCode: 'RL05016',
+      sentenceSequence: 3,
+    } as CalculationSentenceUserInput,
+  ],
+} as CalculationUserInputs
+const stubbedAdjustments = {
+  sentenceAdjustments: [
+    {
+      sentenceSequence: 1,
+      type: 'UNUSED_REMAND',
+      numberOfDays: 2,
+      fromDate: '2021-02-01',
+      toDate: '2021-02-02',
+      active: true,
+    },
+    {
+      sentenceSequence: 8,
+      type: 'REMAND',
+      numberOfDays: 98765,
+      fromDate: '2021-02-01',
+      toDate: '2021-02-02',
+      active: true,
+    },
+  ],
+  bookingAdjustments: [
+    {
+      type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
+      numberOfDays: 2,
+      fromDate: '2021-03-07',
+      toDate: '2021-03-08',
+      active: true,
+    },
+    {
+      type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
+      numberOfDays: 987654,
+      fromDate: '2021-03-07',
+      toDate: '2021-03-08',
+      active: false,
+    },
+  ],
+} as AnalyzedPrisonApiBookingAndSentenceAdjustments
+const stubbedReturnToCustodyDate = {
+  returnToCustodyDate: '2022-04-12',
+} as PrisonApiReturnToCustodyDate
+const stubbedGenuineOverrideRequest = {
+  reason: 'Other: reason',
+  savedCalculation: '123',
+  originalCalculationRequest: '456',
+  isOverridden: true,
+} as GenuineOverrideRequest
 beforeEach(() => {
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
   app = appWithAllRoutes({
-    services: { userPermissionsService, entryPointService, calculateReleaseDatesService, prisonerService },
+    services: {
+      userPermissionsService,
+      entryPointService,
+      calculateReleaseDatesService,
+      prisonerService,
+      viewReleaseDatesService,
+      checkInformationService,
+      userInputService,
+      manualEntryService,
+    },
   })
 })
 
@@ -212,6 +388,7 @@ describe('Genuine overrides routes tests', () => {
         expect(res.text).toContain('Specialist support team override tool')
         expect(res.text).toContain('Anon Nobody')
         expect(res.text).toContain('123')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
   it('GET /specialist-support/calculation/:calculationReference should return error if no prisoner found', () => {
@@ -285,5 +462,72 @@ describe('Genuine overrides routes tests', () => {
       .send({ overrideReason: 'terror', otherReason: '' })
       .expect(302)
       .expect('Location', '/specialist-support/calculation/123/select-date-types')
+  })
+
+  it('GET /specialist-support/calculation/:calculationReference/summary/:calculationRequestId should return the calculation summary with mini profile', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedAnotherCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
+    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
+
+    return request(app)
+      .get('/specialist-support/calculation/123/summary/654321')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /specialist-support/calculation/:calculationReference/sentence-and-offence-information shows check information page with mini profile', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/specialist-support/calculation/123/sentence-and-offence-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+  it('GET /specialist-support/calculation/:calculationReference/complete shows check confirmation page with mini profile', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getGenuineOverride.mockResolvedValue(stubbedGenuineOverrideRequest)
+    return request(app)
+      .get('/specialist-support/calculation/ABC/complete')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /specialist-support/calculation/:calculationReference/confirm-override shows check confirm override page with mini profile', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualEntryService.getConfirmationConfiguration.mockReturnValue([])
+    return request(app)
+      .get('/specialist-support/calculation/ABC/confirm-override')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
   })
 })

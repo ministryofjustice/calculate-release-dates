@@ -21,6 +21,11 @@ import {
 import ManualEntryService from '../services/manualEntryService'
 import ManualCalculationService from '../services/manualCalculationService'
 import GenuineOverridesEmailTemplateService from '../services/genuineOverridesEmailTemplateService'
+import GenuineOverridesCalculationSummaryPageViewModel from '../models/GenuineOverridesCalculationSummaryPageViewModel'
+import CheckInformationViewModel from '../models/CheckInformationViewModel'
+import GenuineOverridesConfirmViewModel from '../models/GenuineOverridesConfirmViewModel'
+import GenuineOverridesConfirmationViewModel from '../models/GenuineOverridesConfirmationViewModel'
+import GenuineOverridesConfirmOverrideViewModel from '../models/GenuineOverridesConfirmOverrideViewModel'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -118,7 +123,10 @@ export default class GenuineOverrideRoutes {
         if (!prisonerDetail) {
           throw new Error()
         }
-        return res.render('pages/genuineOverrides/confirm', { calculation, prisonerDetail })
+        return res.render(
+          'pages/genuineOverrides/confirm',
+          new GenuineOverridesConfirmViewModel(prisonerDetail, calculation),
+        )
       } catch (error) {
         if (error && error.status === 409) {
           throw FullPageError.theDataHasChangedPage()
@@ -140,9 +148,7 @@ export default class GenuineOverrideRoutes {
   public loadCheckSentenceAndInformationPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const model = await this.checkInformationService.checkInformation(req, res, false)
-      return res.render('pages/genuineOverrides/checkInformation', {
-        model,
-      })
+      return res.render('pages/genuineOverrides/checkInformation', new CheckInformationViewModel(model))
     }
     throw FullPageError.notFoundError()
   }
@@ -195,7 +201,7 @@ export default class GenuineOverrideRoutes {
       const { username, caseloads, token } = res.locals.user
       const calculationRequestId = Number(req.params.calculationRequestId)
       const { calculationReference } = req.params
-      const { formError } = req.query
+      const formError = <string>req.query.formError === 'true'
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
         username,
         calculationRequestId,
@@ -256,7 +262,15 @@ export default class GenuineOverrideRoutes {
         false,
       )
 
-      return res.render('pages/genuineOverrides/calculationSummary', { model, formError, calculationReference })
+      return res.render(
+        'pages/genuineOverrides/calculationSummary',
+        new GenuineOverridesCalculationSummaryPageViewModel(
+          model.prisonerDetail,
+          model,
+          formError,
+          calculationReference,
+        ),
+      )
     }
     throw FullPageError.notFoundError()
   }
@@ -362,7 +376,10 @@ export default class GenuineOverrideRoutes {
             prisonerDetail,
             releaseDates.calculationRequestId,
           )
-      return res.render('pages/genuineOverrides/confirmation', { prisonerDetail, emailContent })
+      return res.render(
+        'pages/genuineOverrides/confirmation',
+        new GenuineOverridesConfirmationViewModel(prisonerDetail, emailContent),
+      )
     }
     throw FullPageError.notFoundError()
   }
@@ -580,7 +597,10 @@ export default class GenuineOverrideRoutes {
       )
       const rows = this.manualEntryService.getConfirmationConfiguration(req, releaseDates.prisonerId, true)
 
-      return res.render('pages/genuineOverrides/confirmOverride', { prisonerDetail, rows, calculationReference })
+      return res.render(
+        'pages/genuineOverrides/confirmOverride',
+        new GenuineOverridesConfirmOverrideViewModel(prisonerDetail, rows, calculationReference),
+      )
     }
     throw FullPageError.notFoundError()
   }
