@@ -9,6 +9,7 @@ import {
   ManualEntrySelectedDate,
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ManualEntryConfirmationViewModel from '../models/ManualEntryConfirmationViewModel'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -161,7 +162,7 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
     const rows = this.manualEntryService.getConfirmationConfiguration(req, nomsId)
-    return res.render('pages/manualEntry/confirmation', { prisonerDetail, rows })
+    return res.render('pages/manualEntry/confirmation', new ManualEntryConfirmationViewModel(prisonerDetail, rows))
   }
 
   public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {

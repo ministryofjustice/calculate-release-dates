@@ -2,14 +2,23 @@ import request from 'supertest'
 import type { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonAPIAssignedLivingUnit,
+  PrisonApiPrisoner,
+  PrisonApiSentenceDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  ManualEntrySelectedDate,
+  ValidationMessage,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
 import ManualEntryValidationService from '../services/manualEntryValidationService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
 import DateValidationService from '../services/dateValidationService'
+import { expectMiniProfile } from './testutils/layoutExpectations'
+import SessionSetup from './testutils/sessionSetup'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -27,7 +36,7 @@ const manualEntryService = new ManualEntryService(
   dateValidationService,
 )
 let app: Express
-
+let sessionSetup: SessionSetup
 const stubbedEmptyMessages: ValidationMessage[] = []
 
 const stubbedPrisonerData = {
@@ -36,7 +45,7 @@ const stubbedPrisonerData = {
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -55,9 +64,21 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
+const expectedMiniProfile = {
+  name: 'Anon Nobody',
+  dob: '24 June 2000',
+  prisonNumber: 'A1234AA',
+  establishment: 'Foo Prison (HMP)',
+  location: 'D-2-003',
+}
 
 beforeEach(() => {
+  sessionSetup = new SessionSetup()
   app = appWithAllRoutes({
     services: {
       calculateReleaseDatesService,
@@ -65,6 +86,7 @@ beforeEach(() => {
       manualCalculationService,
       manualEntryService,
     },
+    sessionSetup,
   })
 })
 
@@ -170,6 +192,33 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('Select at least one release date.')
+      })
+  })
+
+  it('GET /calculation/:nomsId/manual-entry/confirmation shows confirmation page with mini profile', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+      req.session.selectedManualEntryDates.A1234AA = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+    }
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/confirmation')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 })
