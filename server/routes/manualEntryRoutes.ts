@@ -13,6 +13,7 @@ import ManualEntryConfirmationViewModel from '../models/ManualEntryConfirmationV
 import ManualEntryDateEntryViewModel from '../models/ManualEntryDateEntryViewModel'
 import ManualEntrySelectDatesViewModel from '../models/ManualEntrySelectDatesViewModel'
 import ManualEntryLandingPageViewModel from '../models/ManualEntryLandingPageViewModel'
+import ManualEntryNoDatesConfirmationViewModel from '../models/ManualEntryNoDatesConfirmationViewModel'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -311,6 +312,9 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/manual-entry/select-dates`)
     }
     const error = true
-    return res.render('pages/manualEntry/noDatesConfirmation', { prisonerDetail, error })
+    return res.render(
+      'pages/manualEntry/noDatesConfirmation',
+      new ManualEntryNoDatesConfirmationViewModel(prisonerDetail, error),
+    )
   }
 }

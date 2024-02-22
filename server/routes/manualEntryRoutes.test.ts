@@ -317,4 +317,23 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
+
+  it('POST /calculation/:nomsId/manual-entry/no-dates-confirmation shows no dates confirmation page with mini profile', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+    }
+    return request(app)
+      .post('/calculation/:nomsId/manual-entry/no-dates-confirmation')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
 })
