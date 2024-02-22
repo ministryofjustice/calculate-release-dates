@@ -804,6 +804,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('Anon Nobody')
         expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
         expect(res.text).toMatch(/Dates for/)
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 

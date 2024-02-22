@@ -66,7 +66,13 @@ const stubbedPrisonerData = {
     description: 'D-2-003',
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
-
+const expectedMiniProfile = {
+  name: 'Anon Nobody',
+  dob: '24 June 2000',
+  prisonNumber: 'A1234AA',
+  establishment: 'Foo Prison (HMP)',
+  location: 'D-2-003',
+}
 const stubbedSentencesAndOffences = [
   {
     terms: [
@@ -434,6 +440,7 @@ describe('Calculation question routes tests', () => {
 
   it('POST /calculation/:nomsId/reason should ask for the calculation reason if it has not been set', () => {
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     config.featureToggles.calculationReasonToggle = true
 
     return request(app)
@@ -442,10 +449,12 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('You must select a reason for the calculation')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
   it('POST /calculation/:nomsId/reason should return to the reason page and display the error message if the other reason is selected and no text has been entered', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
     config.featureToggles.calculationReasonToggle = true
 
@@ -456,6 +465,7 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('You must enter a reason for the calculation')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
@@ -468,13 +478,7 @@ describe('Calculation question routes tests', () => {
       .get('/calculation/A1234AA/reason/')
       .expect(200)
       .expect(res => {
-        expectMiniProfile(res.text, {
-          name: 'Anon Nobody',
-          dob: '24 June 2000',
-          prisonNumber: 'A1234AA',
-          establishment: 'Foo Prison (HMP)',
-          location: 'D-2-003',
-        })
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 })

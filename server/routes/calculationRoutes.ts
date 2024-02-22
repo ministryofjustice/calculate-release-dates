@@ -172,7 +172,7 @@ export default class CalculationRoutes {
       false,
       approvedDates,
     )
-    res.render('pages/calculation/printCalculationSummary', { model })
+    res.render('pages/calculation/printCalculationSummary', new CalculationSummaryPageViewModel(model))
   }
 
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {

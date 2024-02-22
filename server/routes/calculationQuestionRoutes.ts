@@ -224,19 +224,22 @@ export default class CalculationQuestionRoutes {
     const otherId = calculationReasons.find(calculation => calculation.isOther).id
 
     if (req.body.calculationReasonId == null) {
-      return res.render('pages/calculation/reason', {
-        reasons: calculationReasons,
-        prisonerDetail,
-        errorMessage: { text: 'You must select a reason for the calculation' },
-      })
+      return res.render(
+        'pages/calculation/reason',
+        new CalculationReasonViewModel(prisonerDetail, calculationReasons, {
+          text: 'You must select a reason for the calculation',
+        }),
+      )
     }
 
     if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length === 0) {
-      return res.render('pages/calculation/reason', {
-        reasons: calculationReasons,
-        prisonerDetail,
-        otherErrorMessage: { text: 'You must enter a reason for the calculation', id: otherId },
-      })
+      return res.render(
+        'pages/calculation/reason',
+        new CalculationReasonViewModel(prisonerDetail, calculationReasons, undefined, {
+          text: 'You must enter a reason for the calculation',
+          id: otherId,
+        }),
+      )
     }
 
     if (config.featureToggles.calculationReasonToggle) {
