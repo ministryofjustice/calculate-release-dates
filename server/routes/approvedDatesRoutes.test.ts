@@ -11,8 +11,12 @@ import ApprovedDatesService from '../services/approvedDatesService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import ManualEntryService from '../services/manualEntryService'
+import SessionSetup from './testutils/sessionSetup'
+import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { StorageResponseModel } from '../services/dateValidationService'
 
 let app: Express
+let sessionSetup: SessionSetup
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const dateTypeConfigurationService = new DateTypeConfigurationService()
 const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService) as jest.Mocked<ApprovedDatesService>
@@ -60,8 +64,10 @@ const expectedMiniProfile = {
 }
 
 beforeEach(() => {
+  sessionSetup = new SessionSetup()
   app = appWithAllRoutes({
     services: { prisonerService, approvedDatesService, manualEntryService },
+    sessionSetup,
   })
 })
 
@@ -179,6 +185,63 @@ describe('approvedDatesRoutes', () => {
       .expect(res => {
         expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)')
         expect(res.text).toContain('You must select either &#39;Yes&#39; or &#39;No&#39;')
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /calculation/:nomsId/:calculationRequestId/submit-dates loads submit dates page with mini profile', () => {
+    const nomsId = 'A1234AA'
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedApprovedDates = {}
+      req.session.selectedApprovedDates[nomsId] = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+      req.session.HDCED = {}
+      req.session.HDCED[nomsId] = '2020-01-01'
+      req.session.HDCED_WEEKEND_ADJUSTED = {}
+      req.session.HDCED_WEEKEND_ADJUSTED[nomsId] = false
+    }
+    jest.spyOn(manualEntryService, 'getNextDateToEnter').mockReturnValue({
+      dateType: 'CRD',
+      dateText: 'CRD (Conditional release date)',
+      date: { day: 3, month: 3, year: 2017 },
+    } as ManualEntrySelectedDate)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/calculation/A1234AA/123456/submit-dates')
+      .expect(200)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('POST /calculation/:nomsId/:calculationRequestId/submit-dates loads submit dates page with mini profile if storing fails', () => {
+    const nomsId = 'A1234AA'
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedApprovedDates = {}
+      req.session.selectedApprovedDates[nomsId] = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+    }
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    jest.spyOn(manualEntryService, 'storeDate').mockReturnValue({
+      success: false,
+      isNone: false,
+      message: 'Foo',
+    } as StorageResponseModel)
+
+    return request(app)
+      .post('/calculation/A1234AA/123456/submit-dates')
+      .expect(200)
+      .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })

@@ -11,6 +11,7 @@ import {
 import ApprovedDatesQuestionViewModel from '../models/ApprovedDatesQuestionViewModel'
 import RemoveApprovedDateViewModel from '../models/RemoveApprovedDateViewModel'
 import SelectApprovedDatesViewModel from '../models/SelectApprovedDatesViewModel'
+import ApprovedDatesSubmitDateViewModel from '../models/ApprovedDatesSubmitDateViewModel'
 
 export default class ApprovedDatesRoutes {
   constructor(
@@ -108,14 +109,17 @@ export default class ApprovedDatesRoutes {
     }
     const date = this.manualEntryService.getNextDateToEnter(req.session.selectedApprovedDates[nomsId])
     if (date) {
-      return res.render('pages/approvedDates/submitDate', {
-        prisonerDetail,
-        date,
-        previousDate,
-        calculationRequestId,
-        hdced,
-        hdcedWeekendAdjusted,
-      })
+      return res.render(
+        'pages/approvedDates/submitDate',
+        new ApprovedDatesSubmitDateViewModel(
+          prisonerDetail,
+          date,
+          previousDate,
+          calculationRequestId,
+          hdced,
+          hdcedWeekendAdjusted,
+        ),
+      )
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
   }
@@ -128,8 +132,19 @@ export default class ApprovedDatesRoutes {
     const storeDateResponse = this.manualEntryService.storeDate(req.session.selectedApprovedDates[nomsId], dateValue)
     if (!storeDateResponse.success && storeDateResponse.message) {
       const { date, message, enteredDate } = storeDateResponse
-      const error = message
-      return res.render('pages/approvedDates/submitDate', { prisonerDetail, date, error, enteredDate })
+      return res.render(
+        'pages/approvedDates/submitDate',
+        new ApprovedDatesSubmitDateViewModel(
+          prisonerDetail,
+          date,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          message,
+          enteredDate,
+        ),
+      )
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedApprovedDates[nomsId].find(
