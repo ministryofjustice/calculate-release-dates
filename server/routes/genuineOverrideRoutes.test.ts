@@ -682,4 +682,14 @@ describe('Genuine overrides routes tests', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
+
+  it('GET /calculation/:calculationReference/request-support loads the request support page with mini profile', () => {
+    request(app)
+      .get('/calculation/ABC/request-support')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
 })

@@ -31,6 +31,7 @@ import GenuineOverridesDateTypeSelectionViewModel from '../models/GenuineOverrid
 import GenuineOverridesIndexViewModel from '../models/GenuineOverridesIndexViewModel'
 import GenuineOverridesLoadReasonsViewModel from '../models/GenuineOverridesLoadReasonsViewModel'
 import GenuineOverridesRemoveDateViewModel from '../models/GenuineOverridesRemoveDateViewModel'
+import GenuineOverridesRequestSupportViewModel from '../models/GenuineOverridesRequestSupportViewModel'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -738,11 +739,10 @@ export default class GenuineOverrideRoutes {
       token,
     )
     const { calculationRequestId } = releaseDates
-    return res.render('pages/genuineOverrides/requestSupport', {
-      prisonerDetail,
-      calculationReference,
-      calculationRequestId,
-    })
+    return res.render(
+      'pages/genuineOverrides/requestSupport',
+      new GenuineOverridesRequestSupportViewModel(prisonerDetail, calculationReference, calculationRequestId),
+    )
   }
 
   private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {
