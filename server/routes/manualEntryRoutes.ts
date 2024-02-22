@@ -14,6 +14,7 @@ import ManualEntryDateEntryViewModel from '../models/ManualEntryDateEntryViewMod
 import ManualEntrySelectDatesViewModel from '../models/ManualEntrySelectDatesViewModel'
 import ManualEntryLandingPageViewModel from '../models/ManualEntryLandingPageViewModel'
 import ManualEntryNoDatesConfirmationViewModel from '../models/ManualEntryNoDatesConfirmationViewModel'
+import ManualEntryRemoteDateViewModel from '../models/ManualEntryRemoteDateViewModel'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -193,7 +194,10 @@ export default class ManualEntryRoutes {
       req.session.selectedManualEntryDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)
     ) {
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
-      return res.render('pages/manualEntry/removeDate', { prisonerDetail, dateToRemove, fullDateName })
+      return res.render(
+        'pages/manualEntry/removeDate',
+        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName),
+      )
     }
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }
@@ -210,8 +214,10 @@ export default class ManualEntryRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
-      const error = true
-      return res.render('pages/manualEntry/removeDate', { prisonerDetail, dateToRemove, fullDateName, error })
+      return res.render(
+        'pages/manualEntry/removeDate',
+        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName, true),
+      )
     }
     const remainingDates = this.manualEntryService.removeDate(req, nomsId)
     if (remainingDates === 0) {

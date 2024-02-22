@@ -329,7 +329,49 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       req.session.selectedManualEntryDates = {}
     }
     return request(app)
-      .post('/calculation/:nomsId/manual-entry/no-dates-confirmation')
+      .post('/calculation/A1234AA/manual-entry/no-dates-confirmation')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /calculation/:nomsId/manual-entry/remove-date should show the remove date page with mini profile', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+      req.session.selectedManualEntryDates.A1234AA = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+    }
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/remove-date?dateType=CRD')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('POST /calculation/:nomsId/manual-entry/remove-date should show the remove date page with mini profile if no confirmation option selected', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    return request(app)
+      .post('/calculation/A1234AA/manual-entry/remove-date?dateType=CRD')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
