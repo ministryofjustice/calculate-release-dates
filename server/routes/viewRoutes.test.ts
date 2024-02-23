@@ -335,6 +335,7 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain(
             'An Early removal scheme eligibility date (ERSED) was included in this calculation',
           )
+          expectMiniProfile(res.text, expectedMiniProfile)
         })
     })
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences without ERSED', () => {

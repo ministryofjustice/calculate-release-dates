@@ -14,6 +14,7 @@ import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prison
 import { longDateFormat } from '../utils/utils'
 import config from '../config'
 import ViewCalculateReleaseDatePageViewModel from '../models/ViewCalculateReleaseDatePageViewModel'
+import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageViewModel'
 
 const overrideReasons = {
   terror: 'of terrorism or terror-related offences',
@@ -76,19 +77,22 @@ export default class ViewRoutes {
         ? await this.viewReleaseDatesService.getReturnToCustodyDate(calculationRequestId, token)
         : null
 
-      res.render('pages/view/sentencesAndOffences', {
-        model: new ViewRouteSentenceAndOffenceViewModel(
-          prisonerDetail,
-          calculationUserInputs,
-          this.entryPointService.isDpsEntryPoint(req),
-          sentencesAndOffences,
-          adjustmentDetails,
-          true,
-          returnToCustody,
+      res.render(
+        'pages/view/sentencesAndOffences',
+        new SentenceAndOffencePageViewModel(
+          new ViewRouteSentenceAndOffenceViewModel(
+            prisonerDetail,
+            calculationUserInputs,
+            this.entryPointService.isDpsEntryPoint(req),
+            sentencesAndOffences,
+            adjustmentDetails,
+            true,
+            returnToCustody,
+          ),
+          calculationRequestId,
+          nomsId,
         ),
-        calculationRequestId,
-        nomsId,
-      })
+      )
     } catch (error) {
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
         res.redirect(`/view/${nomsId}/calculation-summary/${calculationRequestId}`)
