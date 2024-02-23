@@ -6,6 +6,7 @@ import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  PrisonAPIAssignedLivingUnit,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
@@ -24,6 +25,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import config from '../config'
+import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -45,7 +47,7 @@ const stubbedPrisonerData = {
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -64,7 +66,18 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
+const expectedMiniProfile = {
+  name: 'Anon Nobody',
+  dob: '24 June 2000',
+  prisonNumber: 'A1234AA',
+  establishment: 'Foo Prison (HMP)',
+  location: 'D-2-003',
+}
 
 const stubbedSentencesAndOffences = [
   {
@@ -410,7 +423,7 @@ describe('View journey routes tests', () => {
   })
 
   describe('View calculation tests', () => {
-    it('GET /view/:calculationRequestId/calculation-summary should return detail about the the calculation', () => {
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should return detail about the the calculation', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
@@ -450,6 +463,7 @@ describe('View journey routes tests', () => {
           expect(res.text).not.toContain('Reason')
           expect(res.text).not.toContain('A calculation reason')
           expect(res.text).not.toContain('13 January 2024')
+          expectMiniProfile(res.text, expectedMiniProfile)
         })
     })
 
@@ -473,10 +487,11 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('Anon Nobody')
           expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
           expect(res.text).toMatch(/Calculation/)
+          expectMiniProfile(res.text, expectedMiniProfile)
         })
     })
 
-    it('GET /view/:calculationRequestId/calculation-summary should display results even if prison-api data is not available', () => {
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display results even if prison-api data is not available', () => {
       const error = {
         status: 404,
         message: 'An error has occurred',
@@ -512,9 +527,11 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain(
             'To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/A1234AA/check-information">calculate release dates again.',
           )
+          expectNoMiniProfile(res.text)
         })
     })
-    it('GET /view/:calculationRequestId/calculation-summary for a genuine override should display the other reason', () => {
+
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId for a genuine override should display the other reason', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
@@ -537,7 +554,7 @@ describe('View journey routes tests', () => {
           )
         })
     })
-    it('GET /view/:calculationRequestId/calculation-summary for a genuine override should look up reason', () => {
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId for a genuine override should look up reason', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
       calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
@@ -560,7 +577,7 @@ describe('View journey routes tests', () => {
           )
         })
     })
-    it('GET /view/:calculationRequestId/calculation-summary should display the reason if it exists and the toggle is enabled', () => {
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the reason if it exists and the toggle is enabled', () => {
       stubbedCalculationResults.calculationReason = { id: 1, displayName: 'A calculation reason', isOther: false }
       stubbedCalculationResults.calculationDate = '2024-01-13'
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
