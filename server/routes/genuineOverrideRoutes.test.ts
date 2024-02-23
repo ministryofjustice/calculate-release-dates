@@ -684,7 +684,10 @@ describe('Genuine overrides routes tests', () => {
   })
 
   it('GET /calculation/:calculationReference/request-support loads the request support page with mini profile', () => {
-    request(app)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+
+    return request(app)
       .get('/calculation/ABC/request-support')
       .expect(200)
       .expect('Content-Type', /html/)
