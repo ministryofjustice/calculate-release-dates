@@ -519,6 +519,81 @@ describe('Check information routes tests', () => {
       })
   })
 
+  it(
+    'Unsupported type with NOMIS offence dates missing redirected to with error,' +
+      ' once resolved proceed to manual entry on submission',
+    async () => {
+      config.featureToggles.manualEntry = true
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+        {
+          type: 'UNSUPPORTED_SENTENCE',
+        } as ValidationMessage,
+      ])
+      calculateReleaseDatesService.validateBookingForManualEntry.mockReturnValue({
+        messages: [{ text: 'Court case 1 count 1 must include an offence date' }],
+        messageType: ErrorMessageType.VALIDATION,
+      } as never)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        true,
+        stubbedSentencesAndOffences,
+        stubbedAdjustments,
+        false,
+        stubbedReturnToCustodyDate,
+        {
+          messages: [{ text: 'Court case 1 count 1 must include an offence date' }],
+          messageType: ErrorMessageType.VALIDATION,
+        } as never,
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+
+      let requestRedirectLocation: string
+
+      // 1. Initial submission to calculate release dates returns redirect to error page
+      await request(app)
+        .post('/calculation/A1234AA/check-information-unsupported')
+        .expect(302)
+        .expect('Location', '/calculation/A1234AA/check-information-unsupported?hasErrors=true')
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          requestRedirectLocation = res.headers.location
+        })
+
+      // 2. Follow redirect to check page with errors
+      await request(app)
+        .get(requestRedirectLocation)
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain('Court case 1 count 1 must include an offence date')
+        })
+
+      const modelClearedErrors = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        true,
+        stubbedSentencesAndOffences,
+        stubbedAdjustments,
+        false,
+        stubbedReturnToCustodyDate,
+        { messages: [] } as never,
+      )
+
+      checkInformationService.checkInformation.mockResolvedValue(modelClearedErrors)
+      calculateReleaseDatesService.validateBookingForManualEntry.mockReturnValue({ messages: [] } as never)
+
+      // 3. Now that no validation errors are returned check redirect to manual entry page
+      await request(app)
+        .post('/calculation/A1234AA/check-information-unsupported')
+        .expect(302)
+        .expect('Location', '/calculation/A1234AA/manual-entry')
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+        })
+    },
+  )
+
   it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
     calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
