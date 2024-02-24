@@ -91,7 +91,7 @@ export default class CalculateReleaseDatesApiClient {
 
   getCalculationBreakdown(calculationRequestId: number): Promise<CalculationBreakdown> {
     return this.restClient.get({
-      path: `/${calculationRequestId}`,
+      path: `/calculation/breakdown/${calculationRequestId}`,
     }) as Promise<CalculationBreakdown>
   }
 
