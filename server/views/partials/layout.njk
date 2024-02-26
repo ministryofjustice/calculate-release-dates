@@ -1,6 +1,7 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "moj/components/header/macro.njk" import mojHeader %}
+{% from "hmpps/components/legal-information/service-header/macro.njk" import serviceHeader %}
 
 {% block head %}
 
@@ -76,6 +77,11 @@
   {% else %}
     {% include "./header.njk" %}
   {% endif %}
+
+  {% if featureToggles.useCCARDLayout %}
+      {{ serviceHeader(commonElementConfig.serviceHeader) }}
+  {% endif %}
+
 {% endblock %}
 
 {% block bodyStart %}{% endblock %}
