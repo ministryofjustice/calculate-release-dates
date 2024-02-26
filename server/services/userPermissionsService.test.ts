@@ -61,25 +61,4 @@ describe('UserPermissionService', () => {
       expect(isAllowed).toBeTruthy()
     })
   })
-  describe('hasAccessToAdjustments', () => {
-    it('Test that people with ROLE_ADJUSTMENTS_MAINTAINER and ROLE_RELEASE_DATES_CALCULATOR are valid', async () => {
-      const hasAccess = userPermissionsService.hasAccessToAdjustments([
-        'ROLE_RELEASE_DATES_CALCULATOR',
-        'ROLE_ADJUSTMENTS_MAINTAINER',
-      ])
-      expect(hasAccess).toBeTruthy()
-    })
-    it('Test that people with only ROLE_ADJUSTMENTS_MAINTAINER are valid', async () => {
-      const hasAccess = userPermissionsService.hasAccessToAdjustments(['ROLE_ADJUSTMENTS_MAINTAINER'])
-      expect(hasAccess).toBeTruthy()
-    })
-    it('Test that people with only ROLE_RELEASE_DATES_CALCULATOR are not valid', async () => {
-      const hasAccess = userPermissionsService.hasAccessToAdjustments(['ROLE_RELEASE_DATES_CALCULATOR'])
-      expect(hasAccess).toBeFalsy()
-    })
-    it('Test that people with no roles are not valid', async () => {
-      const hasAccess = userPermissionsService.hasAccessToAdjustments([])
-      expect(hasAccess).toBeFalsy()
-    })
-  })
 })

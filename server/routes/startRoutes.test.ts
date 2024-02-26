@@ -10,6 +10,7 @@ import {
 } from '../@types/prisonApi/prisonClientTypes'
 import UserPermissionsService from '../services/userPermissionsService'
 import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
+import config from '../config'
 
 jest.mock('../services/entryPointService')
 jest.mock('../services/prisonerService')
@@ -82,8 +83,8 @@ describe('Start routes tests', () => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(0)
       })
   })
-  it('GET ?prisonId=123 should return start page in DPS journey if user has only CRD roles', () => {
-    userPermissionsService.hasAccessToAdjustments.mockReturnValue(false)
+  it('GET ?prisonId=123 should return start page in DPS journey if CCARD feature toggle is off', () => {
+    config.featureToggles.useCCARDLayout = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('?prisonId=123')
@@ -107,9 +108,9 @@ describe('Start routes tests', () => {
         expect(prisonerService.getPrisonerDetail).toBeCalledTimes(1)
       })
   })
-  it('GET ?prisonId=123 should return start page in CCARD journey if user has adjustments roles', () => {
+  it('GET ?prisonId=123 should return start page in CCARD journey if CCARD feature toggle is on', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
-    userPermissionsService.hasAccessToAdjustments.mockReturnValue(true)
+    config.featureToggles.useCCARDLayout = true
 
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
