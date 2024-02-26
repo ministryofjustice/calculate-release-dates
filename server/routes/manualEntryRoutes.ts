@@ -294,7 +294,10 @@ export default class ManualEntryRoutes {
     if (unsupportedSentenceOrCalculationMessages.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
-    return res.render('pages/manualEntry/noDatesConfirmation', { prisonerDetail })
+    return res.render(
+      'pages/manualEntry/noDatesConfirmation',
+      new ManualEntryNoDatesConfirmationViewModel(prisonerDetail),
+    )
   }
 
   public submitNoDatesConfirmation: RequestHandler = async (req, res): Promise<void> => {
