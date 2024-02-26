@@ -137,6 +137,7 @@ export default {
     calculationReasonToggle: get('CALCULATION_REASON_TOGGLE', false) === 'true',
     hdc4ComparisonTabEnabled: get('HDC4_PLUS_COMPARISON_TAB_ENABLED', false) === 'true',
     ers2024BannerEnabled: get('ERS2024_BANNER_ENABLED', false) === 'true',
+    useCCARDLayout: get('USE_CCARD_LAYOUT', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
 }
