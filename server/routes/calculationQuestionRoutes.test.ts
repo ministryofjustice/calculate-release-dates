@@ -3,7 +3,11 @@ import type { Express } from 'express'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonAPIAssignedLivingUnit,
+  PrisonApiPrisoner,
+  PrisonApiSentenceDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import EntryPointService from '../services/entryPointService'
 import UserInputService from '../services/userInputService'
@@ -16,6 +20,7 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import trimHtml from './testutils/testUtils'
 import config from '../config'
+import { expectMiniProfile } from './testutils/layoutExpectations'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -37,7 +42,7 @@ const stubbedPrisonerData = {
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -56,8 +61,18 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
-
+const expectedMiniProfile = {
+  name: 'Anon Nobody',
+  dob: '24 June 2000',
+  prisonNumber: 'A1234AA',
+  establishment: 'Foo Prison (HMP)',
+  location: 'D-2-003',
+}
 const stubbedSentencesAndOffences = [
   {
     terms: [
@@ -185,6 +200,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain(
           'Some offences for these sentences could be Schedule 15 offences. You must identify the ones that are, by looking them up on the lists.',
         )
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
@@ -214,6 +230,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain('2 months')
         expect(res.text).toContain('id="checkbox-999" name="999" value="true" checked')
         expect(res.text).toContain('Continue')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
@@ -233,6 +250,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain('Court case 1')
         expect(res.text).toContain('id="checkbox-777" name="777" value="true"')
         expect(res.text).toContain('Continue')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
@@ -352,6 +370,7 @@ describe('Calculation question routes tests', () => {
         expect(res.text).toContain(
           `<a href="#unselect-all">You must select at least one offence. If none apply, select &#39;None of the sentences include Schedule 15 offences from list B&#39;.</a>`,
         )
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
@@ -425,6 +444,7 @@ describe('Calculation question routes tests', () => {
 
   it('POST /calculation/:nomsId/reason should ask for the calculation reason if it has not been set', () => {
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     config.featureToggles.calculationReasonToggle = true
 
     return request(app)
@@ -433,10 +453,12 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('You must select a reason for the calculation')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
   it('POST /calculation/:nomsId/reason should return to the reason page and display the error message if the other reason is selected and no text has been entered', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
     config.featureToggles.calculationReasonToggle = true
 
@@ -447,6 +469,20 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('You must enter a reason for the calculation')
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /calculation/:nomsId/reason should include the mini profile', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .get('/calculation/A1234AA/reason/')
+      .expect(200)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 })

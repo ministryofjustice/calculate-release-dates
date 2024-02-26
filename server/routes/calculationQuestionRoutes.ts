@@ -15,6 +15,9 @@ import SelectOffencesViewModel from '../models/SelectOffencesViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import config from '../config'
+import CalculationReasonViewModel from '../models/CalculationReasonViewModel'
+import AlternativeReleaseIntroPageViewModel from '../models/AlternativeReleaseIntroPageViewModel'
+import SelectOffencesPageViewModel from '../models/SelectOffencesPageViewModel'
 
 export default class CalculationQuestionRoutes {
   constructor(
@@ -59,11 +62,10 @@ export default class CalculationQuestionRoutes {
     validationErrors?: ErrorMessages,
   ): void {
     const model = new SelectOffencesViewModel(sentencesAndOffences, calculationQuestions, type, userInputs)
-    return res.render('pages/questions/selectOffences', {
-      model,
-      prisonerDetail,
-      validationErrors,
-    })
+    return res.render(
+      'pages/questions/selectOffences',
+      new SelectOffencesPageViewModel(prisonerDetail, model, validationErrors),
+    )
   }
 
   public selectOffencesInListA: RequestHandler = this.handleListRequest(CalculationQuestionTypes.ORIGINAL)
@@ -199,11 +201,10 @@ export default class CalculationQuestionRoutes {
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const model = new AlternativeReleaseIntroViewModel(calculationQuestions)
-    return res.render('pages/questions/alternativeReleaseIntro', {
-      model,
-      prisonerDetail,
-      dpsEntryPoint: this.entryPointService.isDpsEntryPoint(req),
-    })
+    return res.render(
+      'pages/questions/alternativeReleaseIntro',
+      new AlternativeReleaseIntroPageViewModel(prisonerDetail, model, this.entryPointService.isDpsEntryPoint(req)),
+    )
   }
 
   public selectCalculationReason: RequestHandler = async (req, res): Promise<void> => {
@@ -212,7 +213,7 @@ export default class CalculationQuestionRoutes {
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
 
-    return res.render('pages/calculation/reason', { reasons: calculationReasons, prisonerDetail })
+    return res.render('pages/calculation/reason', new CalculationReasonViewModel(prisonerDetail, calculationReasons))
   }
 
   public submitCalculationReason: RequestHandler = async (req, res): Promise<void> => {
@@ -223,19 +224,22 @@ export default class CalculationQuestionRoutes {
     const otherId = calculationReasons.find(calculation => calculation.isOther).id
 
     if (req.body.calculationReasonId == null) {
-      return res.render('pages/calculation/reason', {
-        reasons: calculationReasons,
-        prisonerDetail,
-        errorMessage: { text: 'You must select a reason for the calculation' },
-      })
+      return res.render(
+        'pages/calculation/reason',
+        new CalculationReasonViewModel(prisonerDetail, calculationReasons, {
+          text: 'You must select a reason for the calculation',
+        }),
+      )
     }
 
     if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length === 0) {
-      return res.render('pages/calculation/reason', {
-        reasons: calculationReasons,
-        prisonerDetail,
-        otherErrorMessage: { text: 'You must enter a reason for the calculation', id: otherId },
-      })
+      return res.render(
+        'pages/calculation/reason',
+        new CalculationReasonViewModel(prisonerDetail, calculationReasons, undefined, {
+          text: 'You must enter a reason for the calculation',
+          id: otherId,
+        }),
+      )
     }
 
     if (config.featureToggles.calculationReasonToggle) {

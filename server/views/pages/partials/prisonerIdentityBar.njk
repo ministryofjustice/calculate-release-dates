@@ -1,16 +1,16 @@
 {%- from "moj/components/identity-bar/macro.njk" import mojIdentityBar -%}
  {% if prisonerDetail %}
      {% if prisonerDetail.assignedLivingUnit and prisonerDetail.assignedLivingUnit.agencyName %}
-         {% set prisonerLocationHtml = '<strong>Establishment: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.assignedLivingUnit.agencyName +
-             '</span><strong>Location: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.assignedLivingUnit.description + '</span>' %}
+         {% set prisonerLocationHtml = '<strong>Establishment: </strong><span class="govuk-!-margin-right-5" data-qa="mini-profile-establishment">' + prisonerDetail.assignedLivingUnit.agencyName +
+             '</span><strong>Location: </strong><span class="govuk-!-margin-right-5" data-qa="mini-profile-location">' + prisonerDetail.assignedLivingUnit.description + '</span>' %}
      {% else %}
          {% set prisonerLocationHtml = '' %}
      {% endif %}
      {{ mojIdentityBar({
          title: {
-             html: '<span class="govuk-!-margin-right-5"><strong>Prisoner name: </strong>' + prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title + '</span>' +
-             '<strong> Date of birth: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.dateOfBirth | date("DD MMMM YYYY")  + '</span>' +
-             '<strong>Prison number: </strong><span class="govuk-!-margin-right-5">' + prisonerDetail.offenderNo + '</span>' + prisonerLocationHtml
+             html: '<strong>Prisoner name: </strong><span class="govuk-!-margin-right-5" data-qa="mini-profile-name">' + prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title + '</span>' +
+             '<strong> Date of birth: </strong><span class="govuk-!-margin-right-5" data-qa="mini-profile-dob">' + prisonerDetail.dateOfBirth | date("DD MMMM YYYY")  + '</span>' +
+             '<strong>Prison number: </strong><span class="govuk-!-margin-right-5"  data-qa="mini-profile-offender-no">' + prisonerDetail.offenderNo + '</span>' + prisonerLocationHtml
          }
      }) }}
  {% endif %}

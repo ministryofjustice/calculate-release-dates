@@ -8,6 +8,10 @@ import {
   ManualEntrySelectedDate,
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ApprovedDatesQuestionViewModel from '../models/ApprovedDatesQuestionViewModel'
+import RemoveApprovedDateViewModel from '../models/RemoveApprovedDateViewModel'
+import SelectApprovedDatesViewModel from '../models/SelectApprovedDatesViewModel'
+import ApprovedDatesSubmitDateViewModel from '../models/ApprovedDatesSubmitDateViewModel'
 
 export default class ApprovedDatesRoutes {
   constructor(
@@ -22,7 +26,10 @@ export default class ApprovedDatesRoutes {
     const { username, caseloads, token } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    return res.render('pages/approvedDates/approvedDatesQuestion', { prisonerDetail, calculationRequestId })
+    return res.render(
+      'pages/approvedDates/approvedDatesQuestion',
+      new ApprovedDatesQuestionViewModel(prisonerDetail, calculationRequestId),
+    )
   }
 
   public submitApprovedDatesQuestion: RequestHandler = async (req, res): Promise<void> => {
@@ -37,7 +44,10 @@ export default class ApprovedDatesRoutes {
       return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/store`)
     }
     const error = !hasApprovedDates
-    return res.render('pages/approvedDates/approvedDatesQuestion', { prisonerDetail, calculationRequestId, error })
+    return res.render(
+      'pages/approvedDates/approvedDatesQuestion',
+      new ApprovedDatesQuestionViewModel(prisonerDetail, calculationRequestId, error),
+    )
   }
 
   public selectedApprovedDateTypes: RequestHandler = async (req, res): Promise<void> => {
@@ -51,7 +61,10 @@ export default class ApprovedDatesRoutes {
     }
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const config = this.approvedDatesService.getConfig(req)
-    return res.render('pages/approvedDates/selectApprovedDates', { prisonerDetail, calculationRequestId, config })
+    return res.render(
+      'pages/approvedDates/selectApprovedDates',
+      new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config),
+    )
   }
 
   public submitApprovedDateTypes: RequestHandler = async (req, res): Promise<void> => {
@@ -66,12 +79,10 @@ export default class ApprovedDatesRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const { error, config } = this.approvedDatesService.submitApprovedDateTypes(req)
     if (error) {
-      return res.render('pages/approvedDates/selectApprovedDates', {
-        prisonerDetail,
-        calculationRequestId,
-        config,
-        error,
-      })
+      return res.render(
+        'pages/approvedDates/selectApprovedDates',
+        new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config, error),
+      )
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/submit-dates`)
   }
@@ -98,14 +109,17 @@ export default class ApprovedDatesRoutes {
     }
     const date = this.manualEntryService.getNextDateToEnter(req.session.selectedApprovedDates[nomsId])
     if (date) {
-      return res.render('pages/approvedDates/submitDate', {
-        prisonerDetail,
-        date,
-        previousDate,
-        calculationRequestId,
-        hdced,
-        hdcedWeekendAdjusted,
-      })
+      return res.render(
+        'pages/approvedDates/submitDate',
+        new ApprovedDatesSubmitDateViewModel(
+          prisonerDetail,
+          date,
+          previousDate,
+          calculationRequestId,
+          hdced,
+          hdcedWeekendAdjusted,
+        ),
+      )
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
   }
@@ -118,8 +132,19 @@ export default class ApprovedDatesRoutes {
     const storeDateResponse = this.manualEntryService.storeDate(req.session.selectedApprovedDates[nomsId], dateValue)
     if (!storeDateResponse.success && storeDateResponse.message) {
       const { date, message, enteredDate } = storeDateResponse
-      const error = message
-      return res.render('pages/approvedDates/submitDate', { prisonerDetail, date, error, enteredDate })
+      return res.render(
+        'pages/approvedDates/submitDate',
+        new ApprovedDatesSubmitDateViewModel(
+          prisonerDetail,
+          date,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          message,
+          enteredDate,
+        ),
+      )
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedApprovedDates[nomsId].find(
@@ -143,9 +168,12 @@ export default class ApprovedDatesRoutes {
     const { nomsId, calculationRequestId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const dateToRemove: string = <string>req.query.dateType
-    if (req.session.selectedApprovedDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)) {
+    if (this.approvedDatesService.hasApprovedDateToRemove(req, nomsId, dateToRemove)) {
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
-      return res.render('pages/approvedDates/removeDate', { prisonerDetail, dateToRemove, fullDateName })
+      return res.render(
+        'pages/approvedDates/removeDate',
+        new RemoveApprovedDateViewModel(prisonerDetail, dateToRemove, fullDateName),
+      )
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
   }
@@ -157,8 +185,10 @@ export default class ApprovedDatesRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
-      const error = true
-      return res.render('pages/approvedDates/removeDate', { prisonerDetail, dateToRemove, fullDateName, error })
+      return res.render(
+        'pages/approvedDates/removeDate',
+        new RemoveApprovedDateViewModel(prisonerDetail, dateToRemove, fullDateName, true),
+      )
     }
     this.approvedDatesService.removeDate(req, nomsId)
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)

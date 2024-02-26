@@ -5,6 +5,7 @@ import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiSentenceDetail,
@@ -27,6 +28,7 @@ import config from '../config'
 import QuestionsService from '../services/questionsService'
 import CheckInformationService from '../services/checkInformationService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
+import { expectMiniProfile, expectMiniProfileNoLocation } from './testutils/layoutExpectations'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -62,7 +64,7 @@ const stubbedPrisonerData = {
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -81,7 +83,18 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
+const expectedMiniProfile = {
+  name: 'Anon Nobody',
+  dob: '24 June 2000',
+  prisonNumber: 'A1234AA',
+  establishment: 'Foo Prison (HMP)',
+  location: 'D-2-003',
+}
 
 const stubbedSentencesAndOffences = [
   {
@@ -409,6 +422,30 @@ describe('Check information routes tests', () => {
       })
   })
 
+  it('GET /calculation/:nomsId/check-information should display mini profilef', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+    calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
+    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfileNoLocation(res.text, { name: 'Anon Nobody', dob: '24 June 2000', prisonNumber: 'A1234AA' })
+      })
+  })
+
   it('GET /calculation/:nomsId/check-information back button should reutrn to dps start page if no calc questions', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
@@ -682,5 +719,30 @@ describe('Check information routes tests', () => {
       .get('/calculation/A1234AA/check-information')
       .expect(302)
       .expect('Location', '/calculation/A1234AA/alternative-release-arrangements')
+  })
+
+  it('GET /calculation/:nomsId/check-information-unsupported loads page and displays a mini profile', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      true,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information-unsupported')
+      .expect(200)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
   })
 })
