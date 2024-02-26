@@ -120,32 +120,26 @@
 
             <h3 class="govuk-heading-m">Results</h3>
             {% set releaseDateMismatchHtml %}
-                {{ govukSummaryList({
-                    rows: comparison.releaseDateMismatches
+                {{ govukTable({
+                    firstCellIsHeader: true,
+                    head: comparison.releaseDateMismatchesTable.headings,
+                    rows: comparison.releaseDateMismatchesTable.rows
                 }) }}
             {% endset -%}
 
             {% set unsupportedSentenceTypeHtml %}
-                {{ govukSummaryList({
-                    rows: comparison.unsupportedSentenceTypeMismatches
-                }) }}
-            {% endset -%}
-
-            {% set unsupportedSentenceTypeHdc4PlusHtml %}
-                {{ govukSummaryList({
-                    rows: comparison.unsupportedSentenceTypeHdc4PlusMismatches
+                {{ govukTable({
+                    firstCellIsHeader: true,
+                    head: comparison.unsupportedSentenceMismatchesTable.headings,
+                    rows: comparison.unsupportedSentenceMismatchesTable.rows
                 }) }}
             {% endset -%}
 
             {% set validationErrorHtml %}
-                {{ govukSummaryList({
-                    rows: comparison.validationErrorMismatches
-                }) }}
-            {% endset -%}
-
-            {% set validationErrorHdc4PlusHtml %}
-                {{ govukSummaryList({
-                    rows: comparison.validationHdc4PlusMismatches
+                {{ govukTable({
+                    firstCellIsHeader: true,
+                    head: comparison.validationErrorMismatchesTable.headings,
+                    rows: comparison.validationErrorMismatchesTable.rows
                 }) }}
             {% endset -%}
 
@@ -168,9 +162,9 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.releaseDateMismatches.length and comparison.comparisonType !== 'ESTABLISHMENT_HDCED4PLUS' %}
+            {% if comparison.releaseDateMismatchesTable.rows.length and comparison.comparisonType !== 'ESTABLISHMENT_HDCED4PLUS' %}
                 {% set tabs = (tabs.push({
-                    label: "Release date mismatches" + " ("+comparison.releaseDateMismatches.length + ")",
+                    label: "Release date mismatches" + " ("+comparison.releaseDateMismatchesTable.rows.length + ")",
                     id: "release-date-mismatch",
                     panel: {
                         html: releaseDateMismatchHtml
@@ -178,42 +172,34 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.unsupportedSentenceTypeMismatches.length and comparison.comparisonType !== 'ESTABLISHMENT_HDCED4PLUS' %}
+            {% if comparison.comparisonType === 'ESTABLISHMENT_HDCED4PLUS' %}
+                {% set unsupportedSentenceLabel = "Unsupported sentence types for HDC4+" %}
+            {% else %}
+                {% set unsupportedSentenceLabel = "Unsupported sentence type" %}
+            {% endif %}
+
+            {% if comparison.unsupportedSentenceMismatchesTable.rows.length %}
                 {% set tabs = (tabs.push({
-                    label: "Unsupported sentence type" + " ("+comparison.unsupportedSentenceTypeMismatches.length + ")",
-                    id: "unsupported-sentence-type",
+                    label: unsupportedSentenceLabel + " ("+comparison.unsupportedSentenceMismatchesTable.rows.length + ")",
+                    id: "unsupported-sentence-type-tab",
                     panel: {
                         html: unsupportedSentenceTypeHtml
                     }
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.unsupportedSentenceTypeHdc4PlusMismatches.length %}
-                {% set tabs = (tabs.push({
-                    label: "Unsupported sentence types for HDC4+" + " ("+comparison.unsupportedSentenceTypeHdc4PlusMismatches.length + ")",
-                    id: "unsupported-sentence-type-hdc4-plus",
-                    panel: {
-                        html: unsupportedSentenceTypeHdc4PlusHtml
-                    }
-                }), tabs) %}
+            {% if comparison.comparisonType === 'ESTABLISHMENT_HDCED4PLUS' %}
+                {% set validationErrorLabel = "Potential HDC4+" %}
+            {% else %}
+                {% set validationErrorLabel = "Validation error" %}
             {% endif %}
 
-            {% if comparison.validationErrorMismatches.length and comparison.comparisonType !== 'ESTABLISHMENT_HDCED4PLUS' %}
+            {% if comparison.validationErrorMismatchesTable.rows.length %}
                 {% set tabs = (tabs.push({
-                    label: "Validation error" + " ("+comparison.validationErrorMismatches.length + ")",
-                    id: "validation-error",
+                    label: validationErrorLabel + " (" + comparison.validationErrorMismatchesTable.rows.length + ")",
+                    id: "validation-error-tab",
                     panel: {
                         html: validationErrorHtml
-                    }
-                }), tabs) %}
-            {% endif %}
-
-            {% if comparison.validationHdc4PlusMismatches.length and comparison.comparisonType === 'ESTABLISHMENT_HDCED4PLUS' %}
-                {% set tabs = (tabs.push({
-                    label: "Potential HDC4+" + " ("+comparison.validationHdc4PlusMismatches.length + ")",
-                    id: "validation-error-hdc4-plus",
-                    panel: {
-                        html: validationErrorHdc4PlusHtml
                     }
                 }), tabs) %}
             {% endif %}

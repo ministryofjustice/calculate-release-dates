@@ -1,10 +1,8 @@
-import type {
-  ComparisonMismatchSummary,
-  ComparisonOverview,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import ComparisonResultMismatch from './ComparisonResultMismatch'
+import type { ComparisonOverview } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonType from '../enumerations/comparisonType'
 import Hdced4PlusResultDateTable from './Hdced4PlusResultDateTable'
+import MismatchResultTable from './MismatchResultTable'
+import ReleaseDatesMismatchResultTable from './ReleaseDatesMismatchResultTable'
 
 export default class ComparisonResultOverviewModel {
   comparisonShortReference: string
@@ -21,17 +19,13 @@ export default class ComparisonResultOverviewModel {
 
   numberOfPeopleCompared: number
 
-  releaseDateMismatches: ComparisonResultMismatch[]
+  releaseDateMismatchesTable: ReleaseDatesMismatchResultTable
 
-  unsupportedSentenceTypeMismatches: ComparisonResultMismatch[]
-
-  unsupportedSentenceTypeHdc4PlusMismatches: ComparisonResultMismatch[]
-
-  validationErrorMismatches: ComparisonResultMismatch[]
-
-  validationHdc4PlusMismatches: ComparisonResultMismatch[]
+  unsupportedSentenceMismatchesTable: MismatchResultTable
 
   status: string
+
+  validationErrorMismatchesTable: MismatchResultTable
 
   hdced4PlusMismatchesTable: Hdced4PlusResultDateTable
 
@@ -47,53 +41,22 @@ export default class ComparisonResultOverviewModel {
     this.numberOfMismatches = comparison.numberOfMismatches
     this.numberOfPeopleCompared = comparison.numberOfPeopleCompared
 
-    this.releaseDateMismatches = comparison.mismatches
-      .filter(mismatch => mismatch.misMatchType === 'RELEASE_DATES_MISMATCH')
-      .map(mismatch => new ComparisonResultMismatch(mismatch, comparison))
+    this.releaseDateMismatchesTable = new ReleaseDatesMismatchResultTable(comparison)
 
-    if (this.comparisonType === ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
-      this.unsupportedSentenceTypeHdc4PlusMismatches = comparison.mismatches
-        .filter(mismatch => mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS')
-        .sort((a, b) => a.personId.localeCompare(b.personId))
-        .map(mismatch => new ComparisonResultMismatch(mismatch, comparison))
-    } else {
-      this.unsupportedSentenceTypeMismatches = comparison.mismatches
-        .filter(
-          mismatch =>
-            mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS' ||
-            mismatch.misMatchType === 'UNSUPPORTED_SENTENCE_TYPE',
-        )
-        .sort(this.sortByEstablishmentAndPerson)
-        .map(mismatch => new ComparisonResultMismatch(mismatch, comparison))
+    const unsupportedSentenceMismatchTypes = ['UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS']
+    if (this.comparisonType !== ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
+      unsupportedSentenceMismatchTypes.push('UNSUPPORTED_SENTENCE_TYPE')
     }
 
-    const validationErrorMismatchTypes = ['VALIDATION_ERROR']
-    if (comparisonType === ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
-      this.validationHdc4PlusMismatches = comparison.mismatches
-        .filter(mismatch => mismatch.misMatchType === 'VALIDATION_ERROR_HDC4_PLUS')
-        .sort(this.sortByEstablishmentAndPerson)
-        .map(mismatch => new ComparisonResultMismatch(mismatch, comparison))
-    } else {
-      validationErrorMismatchTypes.push('VALIDATION_ERROR_HDC4_PLUS')
-    }
+    this.unsupportedSentenceMismatchesTable = new MismatchResultTable(comparison, unsupportedSentenceMismatchTypes)
 
-    this.validationErrorMismatches = comparison.mismatches
-      .filter(mismatch => validationErrorMismatchTypes.includes(mismatch.misMatchType))
-      .sort(this.sortByEstablishmentAndPerson)
-      .map(mismatch => new ComparisonResultMismatch(mismatch, comparison))
+    const validationErrorMismatchTypes = ['VALIDATION_ERROR_HDC4_PLUS']
+    if (comparisonType !== ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
+      validationErrorMismatchTypes.push('VALIDATION_ERROR')
+    }
+    this.validationErrorMismatchesTable = new MismatchResultTable(comparison, validationErrorMismatchTypes)
 
     this.status = comparison.status
-
     this.hdced4PlusMismatchesTable = new Hdced4PlusResultDateTable(comparison.hdc4PlusCalculated, comparison.prison)
-  }
-
-  private sortByEstablishmentAndPerson(mismatchA: ComparisonMismatchSummary, mismatchB: ComparisonMismatchSummary) {
-    if (mismatchA.establishment != null && mismatchB.establishment != null) {
-      const establishmentComparison = mismatchA.establishment.localeCompare(mismatchB.establishment)
-      if (establishmentComparison) {
-        return establishmentComparison
-      }
-    }
-    return mismatchA.personId.localeCompare(mismatchB.personId)
   }
 }

@@ -2,6 +2,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 {% block head %}
@@ -111,31 +112,39 @@
 
             <h3 class="govuk-heading-m">Mismatches</h3>
             {% set releaseDateMismatchHtml %}
-                {{ govukSummaryList({
-                    rows: comparison.releaseDateMismatches
+                {{ govukTable({
+                    firstCellIsHeader: true,
+                    head: comparison.releaseDateMismatchesTable.headings,
+                    rows: comparison.releaseDateMismatchesTable.rows
                 }) }}
             {% endset -%}
 
             {% set unsupportedSentenceTypeHtml %}
-                {{ govukSummaryList({
-                    rows: comparison.unsupportedSentenceTypeMismatches
+                {{ govukTable({
+                    firstCellIsHeader: true,
+                    head: comparison.unsupportedSentenceMismatchesTable.headings,
+                    rows: comparison.unsupportedSentenceMismatchesTable.rows
                 }) }}
             {% endset -%}
 
             {% set validationErrorHtml %}
-                {{ govukSummaryList({
-                    rows: comparison.validationErrorMismatches
+                {{ govukTable({
+                    firstCellIsHeader: true,
+                    head: comparison.validationErrorMismatchesTable.headings,
+                    rows: comparison.validationErrorMismatchesTable.rows
                 }) }}
             {% endset -%}
 
-            {% set validationErrorHdc4PlusHtml %}
-                {{ govukSummaryList({
-                    rows: comparison.validationHdc4PlusMismatches
+            {% set hdc4PlusHtml %}
+                {{ govukTable({
+                    firstCellIsHeader: true,
+                    head: comparison.hdced4PlusMismatchesTable.headings,
+                    rows: comparison.hdced4PlusMismatchesTable.rows
                 }) }}
-            {% endset -%}
+            {% endset %}
 
             {% set tabs = [] %}
-            {% if comparison.validationHdc4PlusMismatches.length %}
+            {% if comparison.hdced4PlusMismatchesTable.rows.length %}
                 {% set tabs = (tabs.push({
                     label: "Potential HDC4+",
                     id: "validation-error-hdc4-plus",
@@ -145,7 +154,7 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.releaseDateMismatches.length %}
+            {% if comparison.releaseDateMismatchesTable.rows.length %}
                 {% set tabs = (tabs.push({
                     label: "Release date mismatches",
                     id: "release-date-mismatch",
@@ -155,7 +164,7 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.unsupportedSentenceTypeMismatches.length %}
+            {% if comparison.unsupportedSentenceMismatchesTable.rows.length %}
                 {% set tabs = (tabs.push({
                     label: "Unsupported sentence type",
                     id: "unsupported-sentence-type",
@@ -165,7 +174,7 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.validationErrorMismatches.length %}
+            {% if comparison.validationErrorMismatchesTable.rows.length %}
                 {% set tabs = (tabs.push({
                     label: "Validation error",
                     id: "validation-error",
