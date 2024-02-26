@@ -24,7 +24,7 @@ generic-service:
     DIGITAL_PRISON_SERVICES_URL: "https://digital-dev.prison.service.justice.gov.uk"
     MANUAL_ENTRY_TOGGLE: "true"
     APPROVED_DATES_TOGGLE: "true"
-    DPS_BANNER_ENABLED: "false"
+    DPS_BANNER_ENABLED: "true"
     SPECIALIST_SUPPORT_ENABLED: "true"
     COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     NON_FRIDAY_RELEASE_TOGGLE: "true"
@@ -34,6 +34,7 @@ generic-service:
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "true"
     CALCULATION_REASON_TOGGLE: "true"
     ERS2024_BANNER_ENABLED: "true"
+    USE_CCARD_LAYOUT: "true"
     ENVIRONMENT_NAME: DEV
   # Switches off the allow list in the DEV env only.
   allowlist: null

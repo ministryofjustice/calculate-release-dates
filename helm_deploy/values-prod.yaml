@@ -27,5 +27,6 @@ generic-service:
     CALCULATION_REASON_TOGGLE: "false"
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "false"
     ERS2024_BANNER_ENABLED: "true"
+    USE_CCARD_LAYOUT: "false"
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
