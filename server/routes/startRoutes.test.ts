@@ -1,7 +1,7 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from './testutils/appSetup'
+import { appWithAllRoutes } from './testutils/appSetup'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import {
@@ -54,18 +54,13 @@ const stubbedPrisonerData = {
 let app: Express
 
 beforeEach(() => {
-  app = appWithCustomUser(user)
+  app = appWithAllRoutes({
+    services: { entryPointService, prisonerService, userPermissionsService },
+  })
 })
 afterEach(() => {
   jest.resetAllMocks()
 })
-
-function appWithCustomUser(customUser: Express.User) {
-  return appWithAllRoutes({
-    services: { entryPointService, prisonerService, userPermissionsService },
-    userSupplier: () => customUser,
-  })
-}
 
 describe('Start routes tests', () => {
   it('GET / should return start page in standalone journey', () => {
