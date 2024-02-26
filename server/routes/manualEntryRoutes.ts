@@ -9,6 +9,12 @@ import {
   ManualEntrySelectedDate,
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ManualEntryConfirmationViewModel from '../models/ManualEntryConfirmationViewModel'
+import ManualEntryDateEntryViewModel from '../models/ManualEntryDateEntryViewModel'
+import ManualEntrySelectDatesViewModel from '../models/ManualEntrySelectDatesViewModel'
+import ManualEntryLandingPageViewModel from '../models/ManualEntryLandingPageViewModel'
+import ManualEntryNoDatesConfirmationViewModel from '../models/ManualEntryNoDatesConfirmationViewModel'
+import ManualEntryRemoteDateViewModel from '../models/ManualEntryRemoteDateViewModel'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -37,7 +43,10 @@ export default class ManualEntryRoutes {
       prisonerDetail.bookingId,
       token,
     )
-    return res.render('pages/manualEntry/manualEntry', { prisonerDetail, hasIndeterminateSentences })
+    return res.render(
+      'pages/manualEntry/manualEntry',
+      new ManualEntryLandingPageViewModel(prisonerDetail, hasIndeterminateSentences),
+    )
   }
 
   public submitSelectedDates: RequestHandler = async (req, res): Promise<void> => {
@@ -66,11 +75,10 @@ export default class ManualEntryRoutes {
     )
     if (error) {
       const insufficientDatesSelected = true
-      return res.render('pages/manualEntry/dateTypeSelection', {
-        prisonerDetail,
-        insufficientDatesSelected,
-        config,
-      })
+      return res.render(
+        'pages/manualEntry/dateTypeSelection',
+        new ManualEntrySelectDatesViewModel(prisonerDetail, config, insufficientDatesSelected),
+      )
     }
     this.manualEntryService.addManuallyCalculatedDateTypes(req, nomsId)
     return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
@@ -94,7 +102,10 @@ export default class ManualEntryRoutes {
     )
     const firstLoad = !req.query.addExtra
     const { config } = this.manualEntryService.verifySelectedDateType(req, nomsId, hasIndeterminateSentences, firstLoad)
-    return res.render('pages/manualEntry/dateTypeSelection', { prisonerDetail, config })
+    return res.render(
+      'pages/manualEntry/dateTypeSelection',
+      new ManualEntrySelectDatesViewModel(prisonerDetail, config),
+    )
   }
 
   public enterDate: RequestHandler = async (req, res): Promise<void> => {
@@ -116,7 +127,10 @@ export default class ManualEntryRoutes {
     }
     const date = this.manualEntryService.getNextDateToEnter(req.session.selectedManualEntryDates[nomsId])
     if (date && date.dateType !== 'None') {
-      return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, previousDate })
+      return res.render(
+        'pages/manualEntry/dateEntry',
+        new ManualEntryDateEntryViewModel(prisonerDetail, date, previousDate),
+      )
     }
     if (date && date.dateType === 'None') {
       return res.redirect(`/calculation/${nomsId}/manual-entry/no-dates-confirmation`)
@@ -136,8 +150,10 @@ export default class ManualEntryRoutes {
     const storeDateResponse = this.manualEntryService.storeDate(req.session.selectedManualEntryDates[nomsId], req.body)
     if (!storeDateResponse.success && storeDateResponse.message && !storeDateResponse.isNone) {
       const { date, message, enteredDate } = storeDateResponse
-      const error = message
-      return res.render('pages/manualEntry/dateEntry', { prisonerDetail, date, error, enteredDate })
+      return res.render(
+        'pages/manualEntry/dateEntry',
+        new ManualEntryDateEntryViewModel(prisonerDetail, date, undefined, message, enteredDate),
+      )
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
       req.session.selectedManualEntryDates[nomsId].find(
@@ -161,7 +177,7 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
     const rows = this.manualEntryService.getConfirmationConfiguration(req, nomsId)
-    return res.render('pages/manualEntry/confirmation', { prisonerDetail, rows })
+    return res.render('pages/manualEntry/confirmation', new ManualEntryConfirmationViewModel(prisonerDetail, rows))
   }
 
   public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
@@ -178,7 +194,10 @@ export default class ManualEntryRoutes {
       req.session.selectedManualEntryDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)
     ) {
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
-      return res.render('pages/manualEntry/removeDate', { prisonerDetail, dateToRemove, fullDateName })
+      return res.render(
+        'pages/manualEntry/removeDate',
+        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName),
+      )
     }
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }
@@ -195,8 +214,10 @@ export default class ManualEntryRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
-      const error = true
-      return res.render('pages/manualEntry/removeDate', { prisonerDetail, dateToRemove, fullDateName, error })
+      return res.render(
+        'pages/manualEntry/removeDate',
+        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName, true),
+      )
     }
     const remainingDates = this.manualEntryService.removeDate(req, nomsId)
     if (remainingDates === 0) {
@@ -273,7 +294,10 @@ export default class ManualEntryRoutes {
     if (unsupportedSentenceOrCalculationMessages.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
-    return res.render('pages/manualEntry/noDatesConfirmation', { prisonerDetail })
+    return res.render(
+      'pages/manualEntry/noDatesConfirmation',
+      new ManualEntryNoDatesConfirmationViewModel(prisonerDetail),
+    )
   }
 
   public submitNoDatesConfirmation: RequestHandler = async (req, res): Promise<void> => {
@@ -297,6 +321,9 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/manual-entry/select-dates`)
     }
     const error = true
-    return res.render('pages/manualEntry/noDatesConfirmation', { prisonerDetail, error })
+    return res.render(
+      'pages/manualEntry/noDatesConfirmation',
+      new ManualEntryNoDatesConfirmationViewModel(prisonerDetail, error),
+    )
   }
 }

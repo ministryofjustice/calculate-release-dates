@@ -21,6 +21,17 @@ import {
 import ManualEntryService from '../services/manualEntryService'
 import ManualCalculationService from '../services/manualCalculationService'
 import GenuineOverridesEmailTemplateService from '../services/genuineOverridesEmailTemplateService'
+import GenuineOverridesCalculationSummaryPageViewModel from '../models/GenuineOverridesCalculationSummaryPageViewModel'
+import CheckInformationViewModel from '../models/CheckInformationViewModel'
+import GenuineOverridesConfirmViewModel from '../models/GenuineOverridesConfirmViewModel'
+import GenuineOverridesConfirmationViewModel from '../models/GenuineOverridesConfirmationViewModel'
+import GenuineOverridesConfirmOverrideViewModel from '../models/GenuineOverridesConfirmOverrideViewModel'
+import GenuineOverridesDateEntryViewModel from '../models/GenuineOverridesDateEntryViewModel'
+import GenuineOverridesDateTypeSelectionViewModel from '../models/GenuineOverridesDateTypeSelectionViewModel'
+import GenuineOverridesIndexViewModel from '../models/GenuineOverridesIndexViewModel'
+import GenuineOverridesLoadReasonsViewModel from '../models/GenuineOverridesLoadReasonsViewModel'
+import GenuineOverridesRemoveDateViewModel from '../models/GenuineOverridesRemoveDateViewModel'
+import GenuineOverridesRequestSupportViewModel from '../models/GenuineOverridesRequestSupportViewModel'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -54,10 +65,13 @@ export default class GenuineOverrideRoutes {
           calculation.prisonerId,
           token,
         )
-        return res.render('pages/genuineOverrides/index', { calculationReference, prisonerDetail })
+        return res.render(
+          'pages/genuineOverrides/index',
+          new GenuineOverridesIndexViewModel(calculationReference, prisonerDetail),
+        )
       }
       this.entryPointService.setStandaloneEntrypointCookie(res)
-      return res.render('pages/genuineOverrides/index', { calculationReference })
+      return res.render('pages/genuineOverrides/index', new GenuineOverridesIndexViewModel(calculationReference))
     }
     throw FullPageError.notFoundError()
   }
@@ -118,7 +132,10 @@ export default class GenuineOverrideRoutes {
         if (!prisonerDetail) {
           throw new Error()
         }
-        return res.render('pages/genuineOverrides/confirm', { calculation, prisonerDetail })
+        return res.render(
+          'pages/genuineOverrides/confirm',
+          new GenuineOverridesConfirmViewModel(prisonerDetail, calculation),
+        )
       } catch (error) {
         if (error && error.status === 409) {
           throw FullPageError.theDataHasChangedPage()
@@ -140,9 +157,7 @@ export default class GenuineOverrideRoutes {
   public loadCheckSentenceAndInformationPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const model = await this.checkInformationService.checkInformation(req, res, false)
-      return res.render('pages/genuineOverrides/checkInformation', {
-        model,
-      })
+      return res.render('pages/genuineOverrides/checkInformation', new CheckInformationViewModel(model))
     }
     throw FullPageError.notFoundError()
   }
@@ -195,7 +210,7 @@ export default class GenuineOverrideRoutes {
       const { username, caseloads, token } = res.locals.user
       const calculationRequestId = Number(req.params.calculationRequestId)
       const { calculationReference } = req.params
-      const { formError } = req.query
+      const formError = <string>req.query.formError === 'true'
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
         username,
         calculationRequestId,
@@ -256,7 +271,15 @@ export default class GenuineOverrideRoutes {
         false,
       )
 
-      return res.render('pages/genuineOverrides/calculationSummary', { model, formError, calculationReference })
+      return res.render(
+        'pages/genuineOverrides/calculationSummary',
+        new GenuineOverridesCalculationSummaryPageViewModel(
+          model.prisonerDetail,
+          model,
+          formError,
+          calculationReference,
+        ),
+      )
     }
     throw FullPageError.notFoundError()
   }
@@ -362,7 +385,10 @@ export default class GenuineOverrideRoutes {
             prisonerDetail,
             releaseDates.calculationRequestId,
           )
-      return res.render('pages/genuineOverrides/confirmation', { prisonerDetail, emailContent })
+      return res.render(
+        'pages/genuineOverrides/confirmation',
+        new GenuineOverridesConfirmationViewModel(prisonerDetail, emailContent),
+      )
     }
     throw FullPageError.notFoundError()
   }
@@ -371,7 +397,8 @@ export default class GenuineOverrideRoutes {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
       const { username, caseloads, token } = res.locals.user
-      const { noRadio, noOtherReason } = req.query
+      const noRadio = <string>req.query.noRadio === 'true'
+      const noOtherReason = <string>req.query.noOtherReason === 'true'
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
@@ -383,12 +410,10 @@ export default class GenuineOverrideRoutes {
         caseloads,
         token,
       )
-      return res.render('pages/genuineOverrides/reason', {
-        prisonerDetail,
-        noRadio,
-        noOtherReason,
-        calculationReference,
-      })
+      return res.render(
+        'pages/genuineOverrides/reason',
+        new GenuineOverridesLoadReasonsViewModel(prisonerDetail, noRadio, noOtherReason, calculationReference),
+      )
     }
     throw FullPageError.notFoundError()
   }
@@ -435,7 +460,10 @@ export default class GenuineOverrideRoutes {
         token,
       )
       const { config } = this.manualEntryService.verifySelectedDateType(req, releaseDates.prisonerId, false, true)
-      return res.render('pages/genuineOverrides/dateTypeSelection', { prisonerDetail, config, calculationReference })
+      return res.render(
+        'pages/genuineOverrides/dateTypeSelection',
+        new GenuineOverridesDateTypeSelectionViewModel(prisonerDetail, config, calculationReference),
+      )
     }
     throw FullPageError.notFoundError()
   }
@@ -467,13 +495,10 @@ export default class GenuineOverrideRoutes {
         false,
       )
       if (error) {
-        const insufficientDatesSelected = true
-        return res.render('pages/genuineOverrides/dateTypeSelection', {
-          prisonerDetail,
-          insufficientDatesSelected,
-          config,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/dateTypeSelection',
+          new GenuineOverridesDateTypeSelectionViewModel(prisonerDetail, config, calculationReference, true),
+        )
       }
       this.manualEntryService.addManuallyCalculatedDateTypes(req, releaseDates.prisonerId)
 
@@ -509,12 +534,10 @@ export default class GenuineOverrideRoutes {
         req.session.selectedManualEntryDates[releaseDates.prisonerId],
       )
       if (date && date.dateType !== 'None') {
-        return res.render('pages/genuineOverrides/dateEntry', {
-          prisonerDetail,
-          date,
-          previousDate,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/dateEntry',
+          new GenuineOverridesDateEntryViewModel(prisonerDetail, date, calculationReference, previousDate),
+        )
       }
       return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
     }
@@ -543,14 +566,17 @@ export default class GenuineOverrideRoutes {
       )
       if (!storeDateResponse.success && storeDateResponse.message && !storeDateResponse.isNone) {
         const { date, message, enteredDate } = storeDateResponse
-        const error = message
-        return res.render('pages/genuineOverrides/dateEntry', {
-          prisonerDetail,
-          date,
-          error,
-          enteredDate,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/dateEntry',
+          new GenuineOverridesDateEntryViewModel(
+            prisonerDetail,
+            date,
+            calculationReference,
+            undefined,
+            enteredDate,
+            message,
+          ),
+        )
       }
       if (storeDateResponse.success && !storeDateResponse.message) {
         req.session.selectedManualEntryDates[releaseDates.prisonerId].find(
@@ -580,7 +606,10 @@ export default class GenuineOverrideRoutes {
       )
       const rows = this.manualEntryService.getConfirmationConfiguration(req, releaseDates.prisonerId, true)
 
-      return res.render('pages/genuineOverrides/confirmOverride', { prisonerDetail, rows, calculationReference })
+      return res.render(
+        'pages/genuineOverrides/confirmOverride',
+        new GenuineOverridesConfirmOverrideViewModel(prisonerDetail, rows, calculationReference),
+      )
     }
     throw FullPageError.notFoundError()
   }
@@ -624,12 +653,10 @@ export default class GenuineOverrideRoutes {
         )
       ) {
         const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
-        return res.render('pages/genuineOverrides/removeDate', {
-          prisonerDetail,
-          dateToRemove,
-          fullDateName,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/removeDate',
+          new GenuineOverridesRemoveDateViewModel(prisonerDetail, dateToRemove, fullDateName, calculationReference),
+        )
       }
       return res.redirect(`/specialist-support/calculation/${calculationReference}/confirm-override`)
     }
@@ -656,13 +683,16 @@ export default class GenuineOverrideRoutes {
       const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
       if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
         const error = true
-        return res.render('pages/genuineOverrides/removeDate', {
-          prisonerDetail,
-          dateToRemove,
-          fullDateName,
-          error,
-          calculationReference,
-        })
+        return res.render(
+          'pages/genuineOverrides/removeDate',
+          new GenuineOverridesRemoveDateViewModel(
+            prisonerDetail,
+            dateToRemove,
+            fullDateName,
+            calculationReference,
+            error,
+          ),
+        )
       }
       const remainingDates = this.manualEntryService.removeDate(req, releaseDates.prisonerId)
       if (remainingDates === 0) {
@@ -709,11 +739,10 @@ export default class GenuineOverrideRoutes {
       token,
     )
     const { calculationRequestId } = releaseDates
-    return res.render('pages/genuineOverrides/requestSupport', {
-      prisonerDetail,
-      calculationReference,
-      calculationRequestId,
-    })
+    return res.render(
+      'pages/genuineOverrides/requestSupport',
+      new GenuineOverridesRequestSupportViewModel(prisonerDetail, calculationReference, calculationRequestId),
+    )
   }
 
   private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {

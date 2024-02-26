@@ -5,7 +5,11 @@ import MockDate from 'mockdate'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
-import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
+import {
+  PrisonAPIAssignedLivingUnit,
+  PrisonApiPrisoner,
+  PrisonApiSentenceDetail,
+} from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
   AnalyzedSentenceAndOffences,
@@ -36,6 +40,7 @@ import {
 } from '../services/breakdownExamplesTestData'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import config from '../config'
+import { expectMiniProfile } from './testutils/layoutExpectations'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -59,7 +64,7 @@ const stubbedPrisonerData = {
   lastName: 'Nobody',
   latestLocationId: 'LEI',
   locationDescription: 'Inside - Leeds HMP',
-  dateOfBirth: '24/06/2000',
+  dateOfBirth: '2000-06-24',
   age: 21,
   activeFlag: true,
   legalStatus: 'REMAND',
@@ -78,7 +83,19 @@ const stubbedPrisonerData = {
     sentenceExpiryDate: '16/12/2030',
     licenceExpiryDate: '16/12/2030',
   } as PrisonApiSentenceDetail,
+  assignedLivingUnit: {
+    agencyName: 'Foo Prison (HMP)',
+    description: 'D-2-003',
+  } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
+
+const expectedMiniProfile = {
+  name: 'Anon Nobody',
+  dob: '24 June 2000',
+  prisonNumber: 'A1234AA',
+  establishment: 'Foo Prison (HMP)',
+  location: 'D-2-003',
+}
 
 const stubbedCalculationResults = {
   dates: {
@@ -346,6 +363,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain(`Monday, 03 February 2020`)
         expect(res.text).toContain(`ERSED`)
         expect(res.text).toContain('Early removal scheme eligibility date')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
@@ -724,6 +742,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('Back to Digital Prison Service (DPS) search')
         expect(entryPointService.clearEntryPoint).toBeCalled()
         expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
   it('GET /calculation/:nomsId/summary should return save to nomis button if approved dates off', () => {
@@ -785,6 +804,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('Anon Nobody')
         expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
         expect(res.text).toMatch(/Dates for/)
+        expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 

@@ -9,6 +9,7 @@ describe('Healthcheck', () => {
     gitRef: 'long ref',
     gitShortHash: 'short ref',
     branchName: 'main',
+    environmentName: 'LOCAL',
   }
 
   it('Healthcheck reports healthy', done => {

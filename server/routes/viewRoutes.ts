@@ -13,6 +13,8 @@ import ViewRouteSentenceAndOffenceViewModel from '../models/ViewRouteSentenceAnd
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { longDateFormat } from '../utils/utils'
 import config from '../config'
+import ViewCalculateReleaseDatePageViewModel from '../models/ViewCalculateReleaseDatePageViewModel'
+import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageViewModel'
 
 const overrideReasons = {
   terror: 'of terrorism or terror-related offences',
@@ -75,19 +77,22 @@ export default class ViewRoutes {
         ? await this.viewReleaseDatesService.getReturnToCustodyDate(calculationRequestId, token)
         : null
 
-      res.render('pages/view/sentencesAndOffences', {
-        model: new ViewRouteSentenceAndOffenceViewModel(
-          prisonerDetail,
-          calculationUserInputs,
-          this.entryPointService.isDpsEntryPoint(req),
-          sentencesAndOffences,
-          adjustmentDetails,
-          true,
-          returnToCustody,
+      res.render(
+        'pages/view/sentencesAndOffences',
+        new SentenceAndOffencePageViewModel(
+          new ViewRouteSentenceAndOffenceViewModel(
+            prisonerDetail,
+            calculationUserInputs,
+            this.entryPointService.isDpsEntryPoint(req),
+            sentencesAndOffences,
+            adjustmentDetails,
+            true,
+            returnToCustody,
+          ),
+          calculationRequestId,
+          nomsId,
         ),
-        calculationRequestId,
-        nomsId,
-      })
+      )
     } catch (error) {
       if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
         res.redirect(`/view/${nomsId}/calculation-summary/${calculationRequestId}`)
@@ -235,17 +240,23 @@ export default class ViewRoutes {
     const { nomsId } = req.params
     const { caseloads, token, username } = res.locals.user
     const calculationRequestId = Number(req.params.calculationRequestId)
-    res.render('pages/view/calculationSummary', {
-      model: await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads, req),
-    })
+    res.render(
+      'pages/view/calculationSummary',
+      new ViewCalculateReleaseDatePageViewModel(
+        await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads, req),
+      ),
+    )
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    res.render('pages/view/printCalculationSummary', {
-      model: await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads, req),
-    })
+    res.render(
+      'pages/view/printCalculationSummary',
+      new ViewCalculateReleaseDatePageViewModel(
+        await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads, req),
+      ),
+    )
   }
 }

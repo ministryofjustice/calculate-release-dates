@@ -11,6 +11,8 @@ import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import UserInputService from '../services/userInputService'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import CalculationCompleteViewModel from '../models/CalculationCompleteViewModel'
+import CalculationSummaryPageViewModel from '../models/CalculationSummaryPageViewModel'
 
 export default class CalculationRoutes {
   constructor(
@@ -101,7 +103,7 @@ export default class CalculationRoutes {
       approvedDates,
     )
 
-    res.render('pages/calculation/calculationSummary', { model })
+    res.render('pages/calculation/calculationSummary', new CalculationSummaryPageViewModel(model))
   }
 
   private indexBy(dates: ManualEntrySelectedDate[]) {
@@ -170,7 +172,7 @@ export default class CalculationRoutes {
       false,
       approvedDates,
     )
-    res.render('pages/calculation/printCalculationSummary', { model })
+    res.render('pages/calculation/printCalculationSummary', new CalculationSummaryPageViewModel(model))
   }
 
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
@@ -227,7 +229,7 @@ export default class CalculationRoutes {
   public complete: RequestHandler = async (req, res): Promise<void> => {
     const { username, caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    const { noDates } = req.query
+    const noDates: string = <string>req.query.noDates
     this.entryPointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
@@ -240,11 +242,10 @@ export default class CalculationRoutes {
       throw FullPageError.notFoundError()
     }
     this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
-    res.render('pages/calculation/calculationComplete', {
-      prisonerDetail,
-      calculationRequestId,
-      noDates,
-    })
+    res.render(
+      'pages/calculation/calculationComplete',
+      new CalculationCompleteViewModel(prisonerDetail, calculationRequestId, noDates),
+    )
   }
 
   private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {
