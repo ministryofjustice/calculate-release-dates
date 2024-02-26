@@ -61,16 +61,16 @@ export default class CheckInformationService {
       : null
 
     const userInputs = requireUserInputs
-        ? this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-        : ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
+      ? this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
+      : ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
 
     let validationMessages: ErrorMessages
 
     if (req.query.hasErrors) {
-      if (suppressSentenceTypeOrCalcErrors){
+      if (suppressSentenceTypeOrCalcErrors) {
         validationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
       } else {
-      validationMessages = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
+        validationMessages = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
       }
     } else {
       validationMessages = null

@@ -486,8 +486,10 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getGenuineOverride(calculationReference)
   }
 
-  async validateBookingForManualEntry(prisonerId: string, token: string): Promise<ErrorMessages>{
-    const validationMessages = await new CalculateReleaseDatesApiClient(token).getBookingManualEntryValidation(prisonerId)
+  async validateBookingForManualEntry(prisonerId: string, token: string): Promise<ErrorMessages> {
+    const validationMessages = await new CalculateReleaseDatesApiClient(token).getBookingManualEntryValidation(
+      prisonerId,
+    )
     return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
   }
 }

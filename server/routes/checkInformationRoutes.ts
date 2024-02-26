@@ -42,9 +42,6 @@ export default class CheckInformationRoutes {
   }
 
   public unsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { token } = res.locals.user
-    const { nomsId } = req.params
-
     const model = await this.checkInformationService.checkInformation(req, res, true, true)
 
     return res.render('pages/manualEntry/checkInformationUnsupported', {
@@ -56,10 +53,12 @@ export default class CheckInformationRoutes {
     const { nomsId } = req.params
     const { token } = res.locals.user
 
-    const manualEntryValidationMessages =
-        await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
+    const manualEntryValidationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(
+      nomsId,
+      token,
+    )
 
-    if (manualEntryValidationMessages.messages.length > 0){
+    if (manualEntryValidationMessages.messages.length > 0) {
       return res.redirect(`/calculation/${nomsId}/check-information-unsupported?hasErrors=true`)
     }
     return res.redirect(`/calculation/${nomsId}/manual-entry`)

@@ -3,7 +3,7 @@ import {
   ManualEntrySelectedDate,
 } from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
 import type { UserDetails } from '../../services/userService'
-import {ErrorMessages} from "../../types/ErrorMessages";
+import { ErrorMessages } from '../../types/ErrorMessages'
 
 export default {}
 
