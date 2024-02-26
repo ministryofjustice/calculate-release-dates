@@ -1,5 +1,6 @@
 import request from 'supertest'
 import type { Express } from 'express'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
@@ -118,7 +119,15 @@ describe('Start routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Calculations and release dates')
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=main-heading]').text()).toStrictEqual('Calculations and release dates')
+        expectMiniProfile(res.text, {
+          name: 'Anon Nobody',
+          dob: '24 June 2000',
+          prisonNumber: 'A1234AA',
+          establishment: 'Foo Prison (HMP)',
+          location: 'D-2-003',
+        })
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
