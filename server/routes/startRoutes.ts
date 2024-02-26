@@ -20,8 +20,11 @@ export default class StartRoutes {
       this.entryPointService.setDpsEntrypointCookie(res, prisonId)
       const { username, caseloads, token } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, prisonId, caseloads, token)
+      const template = this.userPermissionsService.hasAccessToAdjustments(res.locals.user.userRoles)
+        ? 'pages/ccardIndex'
+        : 'pages/index'
       return res.render(
-        'pages/index',
+        template,
         indexViewModelForPrisoner(prisonerDetail, prisonId, config.featureToggles.calculationReasonToggle),
       )
     }

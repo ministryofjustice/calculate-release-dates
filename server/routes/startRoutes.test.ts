@@ -1,6 +1,6 @@
 import request from 'supertest'
 import type { Express } from 'express'
-import { appWithAllRoutes } from './testutils/appSetup'
+import { appWithAllRoutes, user } from './testutils/appSetup'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import {
@@ -52,12 +52,18 @@ const stubbedPrisonerData = {
 let app: Express
 
 beforeEach(() => {
-  app = appWithAllRoutes({ services: { entryPointService, prisonerService, userPermissionsService } })
+  app = appWithCustomUser(user)
 })
-
 afterEach(() => {
   jest.resetAllMocks()
 })
+
+function appWithCustomUser(customUser: Express.User) {
+  return appWithAllRoutes({
+    services: { entryPointService, prisonerService, userPermissionsService },
+    userSupplier: () => customUser,
+  })
+}
 
 describe('Start routes tests', () => {
   it('GET / should return start page in standalone journey', () => {
@@ -76,9 +82,8 @@ describe('Start routes tests', () => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(0)
       })
   })
-  it('GET ?prisonId=123 should return start page in DPS journey', () => {
-    userPermissionsService.allowBulkLoad.mockReturnValue(true)
-
+  it('GET ?prisonId=123 should return start page in DPS journey if user has only CRD roles', () => {
+    userPermissionsService.hasAccessToAdjustments.mockReturnValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('?prisonId=123')
@@ -95,6 +100,24 @@ describe('Start routes tests', () => {
           establishment: 'Foo Prison (HMP)',
           location: 'D-2-003',
         })
+      })
+      .expect(() => {
+        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
+        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
+        expect(prisonerService.getPrisonerDetail).toBeCalledTimes(1)
+      })
+  })
+  it('GET ?prisonId=123 should return start page in CCARD journey if user has adjustments roles', () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    userPermissionsService.hasAccessToAdjustments.mockReturnValue(true)
+
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Calculations and release dates')
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
