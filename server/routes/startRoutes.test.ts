@@ -40,6 +40,7 @@ const stubbedPrisonerData = {
   imprisonmentStatusDescription: 'Serving Life Imprisonment',
   religion: 'Christian',
   agencyId: 'MDI',
+  status: 'ACTIVE IN',
   sentenceDetail: {
     sentenceStartDate: '12/12/2019',
     additionalDaysAwarded: 4,
@@ -148,11 +149,12 @@ describe('Start routes tests', () => {
         const $ = cheerio.load(res.text)
         expect($('[data-qa=main-heading]').text()).toStrictEqual('Calculations and release dates')
         expectMiniProfile(res.text, {
-          name: 'Anon Nobody',
-          dob: '24 June 2000',
+          name: 'Nobody, Anon',
+          dob: '24/06/2000',
           prisonNumber: 'A1234AA',
           establishment: 'Foo Prison (HMP)',
           location: 'D-2-003',
+          status: 'Active in',
         })
         expectServiceHeaderForPrisoner(res.text, 'A1234AA')
         expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)

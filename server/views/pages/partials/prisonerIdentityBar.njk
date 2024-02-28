@@ -1,5 +1,6 @@
 {%- from "moj/components/identity-bar/macro.njk" import mojIdentityBar -%}
- {% if prisonerDetail %}
+{%- from "hmpps/components/mini-profile/macro.njk" import miniProfile -%}
+ {% if prisonerDetail and not featureToggles.useCCARDLayout %}
      {% if prisonerDetail.assignedLivingUnit and prisonerDetail.assignedLivingUnit.agencyName %}
          {% set prisonerLocationHtml = '<strong>Establishment: </strong><span class="govuk-!-margin-right-5" data-qa="mini-profile-establishment">' + prisonerDetail.assignedLivingUnit.agencyName +
              '</span><strong>Location: </strong><span class="govuk-!-margin-right-5" data-qa="mini-profile-location">' + prisonerDetail.assignedLivingUnit.description + '</span>' %}
@@ -13,4 +14,7 @@
              '<strong>Prison number: </strong><span class="govuk-!-margin-right-5"  data-qa="mini-profile-offender-no">' + prisonerDetail.offenderNo + '</span>' + prisonerLocationHtml
          }
      }) }}
+ {% endif %}
+ {% if commonElementConfig.miniProfile and featureToggles.useCCARDLayout %}
+    {{ miniProfile(commonElementConfig.miniProfile.person, commonElementConfig.miniProfile.imageUrl, digitalPrisonServicesUrl + commonElementConfig.miniProfile.profileUrl) }}
  {% endif %}
