@@ -4,10 +4,6 @@
 {% set pageTitle = applicationName + " - Some sentences could have alternative release arrangements" %}
 {% set pageId = "alternative-release-intro" %}
 
-{% block aside %}
-    {% include "../partials/prisonerIdentityBar.njk" %}
-{% endblock %}
-
 {% block beforeContent %}
     {{ super() }}
     {% if dpsEntryPoint %}

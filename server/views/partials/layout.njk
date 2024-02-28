@@ -91,7 +91,7 @@
     {% if not featureToggles.useCCARDLayout %}
       {% include "../pages/partials/phaseBanner.njk" %}
     {% endif %}
-    {% block aside %}{% endblock %}
+    {% include "../pages/partials/prisonerIdentityBar.njk" %}
   </aside>
   <span class="govuk-visually-hidden" id="{{ pageId }}"></span>
 {% endblock %}

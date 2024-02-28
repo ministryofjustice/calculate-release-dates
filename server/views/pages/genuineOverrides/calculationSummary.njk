@@ -9,11 +9,6 @@
 {% set pageTitle = applicationName + " - calculation summary" %}
 {% set pageId = "genuine-overrides-calculation-summary" %}
 
-{% block aside %}
-    {% set prisonerDetail = model.prisonerDetail %}
-    {% include "../partials/prisonerIdentityBar.njk" %}
-{% endblock %}
-
 {% block beforeContent %}
     {{ super() }}
     <nav>

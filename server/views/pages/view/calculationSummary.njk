@@ -10,13 +10,6 @@
 {% set pageTitle = applicationName + " - calculation summary" %}
 {% set pageId = "view-calculation-summary" %}
 
-{% block aside %}
-    {% if model.prisonerDetail %}
-        {% set prisonerDetail = model.prisonerDetail %}
-        {% include "../partials/prisonerIdentityBar.njk" %}
-    {% endif %}
-{% endblock %}
-
 {% block beforeContent %}
     {{ super() }}
 
