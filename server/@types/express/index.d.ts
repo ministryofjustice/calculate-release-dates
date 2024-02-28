@@ -3,6 +3,7 @@ import {
   ManualEntrySelectedDate,
 } from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
 import type { UserDetails } from '../../services/userService'
+import { ErrorMessages } from '../../types/ErrorMessages'
 
 export default {}
 
@@ -18,6 +19,7 @@ declare module 'express-session' {
     HDCED_WEEKEND_ADJUSTED?: { string?: boolean }
     calculationReasonId?: { string?: number }
     otherReasonDescription?: { string?: string }
+    manualEntryValidationErrors?: ErrorMessages
   }
 }
 
