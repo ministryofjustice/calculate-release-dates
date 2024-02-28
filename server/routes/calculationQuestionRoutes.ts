@@ -252,7 +252,7 @@ export default class CalculationQuestionRoutes {
     req.session.calculationReasonId[nomsId] = req.body.calculationReasonId
     req.session.otherReasonDescription[nomsId] = req.body.otherReasonDescription
 
-    return res.redirect(`/calculation/${nomsId}/alternative-release-arrangements`)
+    return res.redirect(`/calculation/${nomsId}/check-information`)
   }
 
   public offenceListA: RequestHandler = async (req, res): Promise<void> => {

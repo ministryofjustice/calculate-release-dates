@@ -21,6 +21,7 @@ import {
 import trimHtml from './testutils/testUtils'
 import config from '../config'
 import { expectMiniProfile } from './testutils/layoutExpectations'
+import SessionSetup from './testutils/sessionSetup'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -185,12 +186,31 @@ afterEach(() => {
 })
 
 describe('Calculation question routes tests', () => {
+  it('GET /calculation/:nomsId/alternative-release-arrangements when reason has not been selected should redirect back to /reason', () => {
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .get('/calculation/A1234AA/alternative-release-arrangements')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/reason')
+  })
+
   it('GET /calculation/:nomsId/alternative-release-arrangements should return detail the alternative release arrangements', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
     entryPointService.isDpsEntryPoint.mockReturnValue(true)
 
-    return request(app)
+    config.featureToggles.calculationReasonToggle = true
+
+    const sessionSetUp = new SessionSetup()
+    sessionSetUp.sessionDoctor = req => {
+      req.session.calculationReasonId = '12345'
+    }
+    const sessionDoctoredApp = appWithAllRoutes({
+      services: { userService, prisonerService, calculateReleaseDatesService, entryPointService, userInputService },
+      sessionSetup: sessionSetUp,
+    })
+    return request(sessionDoctoredApp)
       .get('/calculation/A1234AA/alternative-release-arrangements')
       .expect(200)
       .expect('Content-Type', /html/)
@@ -204,9 +224,20 @@ describe('Calculation question routes tests', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/alternative-release-arrangements should redirect if no questions', () => {
+  it('GET /calculation/:nomsId/alternative-release-arrangements should redirect to check-information if no questions', () => {
+    config.featureToggles.calculationReasonToggle = true
+
+    const sessionSetUp = new SessionSetup()
+    sessionSetUp.sessionDoctor = req => {
+      req.session.calculationReasonId = '12345'
+    }
+    const sessionDoctoredApp = appWithAllRoutes({
+      services: { userService, prisonerService, calculateReleaseDatesService, entryPointService, userInputService },
+      sessionSetup: sessionSetUp,
+    })
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
-    return request(app)
+
+    return request(sessionDoctoredApp)
       .get('/calculation/A1234AA/alternative-release-arrangements')
       .expect(302)
       .expect('Location', '/calculation/A1234AA/check-information')
@@ -414,7 +445,7 @@ describe('Calculation question routes tests', () => {
       })
   })
 
-  it('POST /calculation/:nomsId/reason should return to the alternative release arrangements once the calculation reason has been set', () => {
+  it('POST /calculation/:nomsId/reason should return to check-information once the calculation reason has been set', () => {
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
     config.featureToggles.calculationReasonToggle = true
 
@@ -424,11 +455,11 @@ describe('Calculation question routes tests', () => {
       .send({ calculationReasonId: ['7'] })
       .expect(302)
       .expect(res => {
-        expect(res.text).toContain('Found. Redirecting to /calculation/A1234AA/alternative-release-arrangements')
+        expect(res.text).toContain('Found. Redirecting to /calculation/A1234AA/check-information')
       })
   })
 
-  it('POST /calculation/:nomsId/reason should return to the alternative release arrangements once if the other reason is selected and the text box has been filled', () => {
+  it('POST /calculation/:nomsId/reason should return to check-information routes if the other reason is selected and the text box has been filled', () => {
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
     config.featureToggles.calculationReasonToggle = true
 
@@ -438,7 +469,7 @@ describe('Calculation question routes tests', () => {
       .send({ calculationReasonId: ['11'], otherReasonDescription: 'A reason for calculation' })
       .expect(302)
       .expect(res => {
-        expect(res.text).toContain('Found. Redirecting to /calculation/A1234AA/alternative-release-arrangements')
+        expect(res.text).toContain('Found. Redirecting to /calculation/A1234AA/check-information')
       })
   })
 

@@ -112,7 +112,7 @@ describe('Start routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Calculate release dates')
-        expect(res.text).toContain('href="/calculation/123/alternative-release-arrangements"')
+        expect(res.text).toContain('href="/calculation/123/reason')
         expect(res.text).toContain('A1234AA')
         expectMiniProfile(res.text, {
           name: 'Anon Nobody',
