@@ -75,10 +75,12 @@ describe('Start routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
         expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/search/prisoners"')
         expect(res.text).not.toContain('A1234AA')
         expectNoMiniProfile(res.text)
+        expect($('.govuk-phase-banner__content__tag').text()).toContain('beta')
       })
       .expect(() => {
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
@@ -92,11 +94,13 @@ describe('Start routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
         expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/search/prisoners"')
         expect(res.text).not.toContain('A1234AA')
         expectNoMiniProfile(res.text)
         expectServiceHeader(res.text)
+        expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
       })
       .expect(() => {
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
@@ -111,6 +115,7 @@ describe('Start routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
         expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/calculation/123/alternative-release-arrangements"')
         expect(res.text).toContain('A1234AA')
@@ -121,6 +126,7 @@ describe('Start routes tests', () => {
           establishment: 'Foo Prison (HMP)',
           location: 'D-2-003',
         })
+        expect($('.govuk-phase-banner__content__tag').text()).toContain('beta')
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
@@ -149,6 +155,7 @@ describe('Start routes tests', () => {
           location: 'D-2-003',
         })
         expectServiceHeaderForPrisoner(res.text, 'A1234AA')
+        expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
