@@ -22,7 +22,7 @@
     "lint:fix": "eslint . --cache --max-warnings 0 --fix",
     "typecheck": "tsc && tsc -p integration_tests",
     "test": "export $(cat feature.env) && jest",
-    "test:ci": "jest --runInBand",
+    "test:ci": "export $(cat feature.env) && jest --runInBand",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "cypress run --config video=false",
     "int-test-ui": "cypress open --e2e --browser chrome",
