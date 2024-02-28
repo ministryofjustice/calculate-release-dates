@@ -42,4 +42,31 @@ describe('CommonLayoutViewModel', () => {
     }
     expect(model.commonElementConfig).toStrictEqual(expectedConfig)
   })
+  it('produces common view model config with prisoner details that has no location', () => {
+    const prisonerDetail: PrisonApiPrisoner = {
+      offenderNo: 'ABC123',
+      firstName: 'Anon',
+      lastName: 'Nobody',
+      dateOfBirth: '2000-06-20',
+      status: 'ACTIVE IN',
+    }
+    const model = new CommonLayoutViewModel(prisonerDetail)
+    const expectedConfig: CommonElementConfig = {
+      serviceHeader: { environment: 'prod', prisonNumber: 'ABC123' },
+      miniProfile: {
+        person: {
+          prisonerNumber: 'ABC123',
+          firstName: 'Anon',
+          lastName: 'Nobody',
+          dateOfBirth: '2000-06-20',
+          status: 'ACTIVE IN',
+          prisonName: undefined,
+          cellLocation: undefined,
+        },
+        profileUrl: '/prisoner/ABC123',
+        imageUrl: '/prisoner/ABC123/image',
+      },
+    }
+    expect(model.commonElementConfig).toStrictEqual(expectedConfig)
+  })
 })
