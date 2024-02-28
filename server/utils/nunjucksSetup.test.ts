@@ -35,7 +35,7 @@ describe('nunjucksSetup', () => {
 
       nunjucksSetup(app, testAppInfo)
 
-      expect(app.locals.environment).toStrictEqual(expectedEnvironment)
+      expect(app.locals.hmppsDesignSystemEnvironment).toStrictEqual(expectedEnvironment)
     }
   })
 })

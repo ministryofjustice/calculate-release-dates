@@ -1,5 +1,7 @@
 import dayjs from 'dayjs'
+import { DesignSystemEnvironment } from 'hmpps-design-system-frontend/hmpps/@types'
 import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
+import config from '../config'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -78,4 +80,19 @@ export const arraysContainSameItemsAsStrings = <T>(array1: T[], array2: T[]) => 
       .sort()
       .join(',')
   )
+}
+
+export const hmppsDesignSystemsEnvironmentName = (
+  envName: string = config.environmentName,
+): DesignSystemEnvironment => {
+  if (envName === 'LOCAL') {
+    return 'local'
+  }
+  if (envName === 'DEV') {
+    return 'dev'
+  }
+  if (envName === 'PRE-PRODUCTION') {
+    return 'pre'
+  }
+  return 'prod'
 }

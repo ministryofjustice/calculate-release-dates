@@ -3,7 +3,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import { personProfileName, personDateOfBirth, personStatus } from 'hmpps-design-system-frontend/hmpps/utils/utils'
-import { initialiseName } from './utils'
+import { hmppsDesignSystemsEnvironmentName, initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
@@ -30,15 +30,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.applicationName = 'Calculate release dates'
   app.locals.environmentName = applicationInfo.environmentName
   app.locals.environmentNameColour = applicationInfo.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
-  if (applicationInfo.environmentName === 'LOCAL') {
-    app.locals.environment = 'local'
-  } else if (applicationInfo.environmentName === 'DEV') {
-    app.locals.environment = 'dev'
-  } else if (applicationInfo.environmentName === 'PRE-PRODUCTION') {
-    app.locals.environment = 'pre'
-  } else {
-    app.locals.environment = 'prod'
-  }
+  app.locals.hmppsDesignSystemEnvironment = hmppsDesignSystemsEnvironmentName(applicationInfo.environmentName)
 
   // Cachebusting version string
   if (production) {

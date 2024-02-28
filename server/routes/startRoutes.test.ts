@@ -10,7 +10,12 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import UserPermissionsService from '../services/userPermissionsService'
-import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
+import {
+  expectMiniProfile,
+  expectNoMiniProfile,
+  expectServiceHeader,
+  expectServiceHeaderForPrisoner,
+} from './testutils/layoutExpectations'
 import config from '../config'
 
 jest.mock('../services/entryPointService')
@@ -60,6 +65,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   jest.resetAllMocks()
+  config.featureToggles.useCCARDLayout = false
 })
 
 describe('Start routes tests', () => {
@@ -73,6 +79,24 @@ describe('Start routes tests', () => {
         expect(res.text).toContain('href="/search/prisoners"')
         expect(res.text).not.toContain('A1234AA')
         expectNoMiniProfile(res.text)
+      })
+      .expect(() => {
+        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
+        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(0)
+      })
+  })
+  it('GET / should show service header with general link if CCARD layout is enabled', () => {
+    config.featureToggles.useCCARDLayout = true
+    return request(app)
+      .get('/')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Calculate release dates')
+        expect(res.text).toContain('href="/search/prisoners"')
+        expect(res.text).not.toContain('A1234AA')
+        expectNoMiniProfile(res.text)
+        expectServiceHeader(res.text)
       })
       .expect(() => {
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
@@ -104,6 +128,7 @@ describe('Start routes tests', () => {
         expect(prisonerService.getPrisonerDetail).toBeCalledTimes(1)
       })
   })
+
   it('GET ?prisonId=123 should return start page in CCARD journey if CCARD feature toggle is on', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     config.featureToggles.useCCARDLayout = true
@@ -123,6 +148,7 @@ describe('Start routes tests', () => {
           establishment: 'Foo Prison (HMP)',
           location: 'D-2-003',
         })
+        expectServiceHeaderForPrisoner(res.text, 'A1234AA')
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
