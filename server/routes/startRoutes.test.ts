@@ -118,7 +118,7 @@ describe('Start routes tests', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
         expect(res.text).toContain('Calculate release dates')
-        expect(res.text).toContain('href="/calculation/123/alternative-release-arrangements"')
+        expect(res.text).toContain('href="/calculation/123/reason')
         expect(res.text).toContain('A1234AA')
         expectMiniProfile(res.text, {
           name: 'Anon Nobody',
