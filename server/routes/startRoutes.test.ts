@@ -161,6 +161,13 @@ describe('Start routes tests', () => {
         expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
           '/calculation/A1234AA/reason',
         )
+        const links = $('.moj-sub-navigation__link')
+          .filter((index, element) => $(element).attr('href').length > 0) // filter hidden links
+          .map((i, element) => {
+            return $(element).text()
+          })
+          .get()
+        expect(links).toStrictEqual(['Overview', 'Court cases', 'Adjustments', 'Calculations and release dates'])
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)

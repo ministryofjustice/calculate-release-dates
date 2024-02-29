@@ -1,9 +1,17 @@
 {% extends "../partials/layout.njk" %}
 {% from "hmpps/components/legal-information/actions-card/macro.njk" import actionsCard %}
+{% from "hmpps/components/legal-information/sub-navigation/macro.njk" import subNavigation %}
 
 {% set pageTitle = applicationName + " - Home" %}
-{% set pageId = "index" %}
-
+{% set pageId = "ccard-index" %}
+{% set navigation = {
+    activeSubNav: 'release-dates',
+    documents: { enabled: false }
+} %}
+{% block beforeContent %}
+    {{super()}}
+    {{ subNavigation(commonElementConfig.environment, navigation, commonElementConfig.prisonNumber) }}
+{% endblock %}
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
