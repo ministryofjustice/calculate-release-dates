@@ -1,5 +1,5 @@
 {% extends "../partials/layout.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "hmpps/components/legal-information/actions-card/macro.njk" import actionsCard %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set pageId = "index" %}
@@ -9,5 +9,19 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Calculations and release dates</h1>
         </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h3 class="govuk-heading-m">Latest calculation & calculation history go here</h3>
+        </div>
+        {% set actions = [
+            {
+                href: '/calculation/' + prisonerDetail.offenderNo + '/reason',
+                title: 'Calculate release dates',
+                dataQa: 'calc-release-dates-for-prisoner-action-link'
+            }
+        ]
+        %}
+        {{ actionsCard(actions) }}
     </div>
 {% endblock %}
