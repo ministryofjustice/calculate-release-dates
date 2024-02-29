@@ -167,7 +167,7 @@ describe('Start routes tests', () => {
             return $(element).text()
           })
           .get()
-        expect(links).toStrictEqual(['Overview', 'Court cases', 'Adjustments', 'Calculations and release dates'])
+        expect(links).toStrictEqual(['Overview', 'Adjustments', 'Calculations and release dates'])
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
