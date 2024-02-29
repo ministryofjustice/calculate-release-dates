@@ -88,8 +88,10 @@
 
 {% block beforeContent %}
   <aside role="complementary">
-    {% include "../pages/partials/phaseBanner.njk" %}
-    {% block aside %}{% endblock %}
+    {% if not featureToggles.useCCARDLayout %}
+      {% include "../pages/partials/phaseBanner.njk" %}
+    {% endif %}
+    {% include "../pages/partials/prisonerIdentityBar.njk" %}
   </aside>
   <span class="govuk-visually-hidden" id="{{ pageId }}"></span>
 {% endblock %}

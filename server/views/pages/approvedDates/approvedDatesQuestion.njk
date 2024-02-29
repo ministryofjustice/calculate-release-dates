@@ -9,11 +9,6 @@
 {% set pageTitle = applicationName + " - approved dates" %}
 {% set pageId = "approved-dates-question" %}
 
-{% block aside %}
-    {% set prisonerDetail = prisonerDetail %}
-    {% include "../partials/prisonerIdentityBar.njk" %}
-{% endblock %}
-
 {% block beforeContent %}
     {{ super() }}
     <nav>

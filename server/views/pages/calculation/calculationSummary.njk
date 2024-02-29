@@ -7,11 +7,6 @@
 {% set pageTitle = applicationName + " - calculation summary" %}
 {% set pageId = "calculation-summary" %}
 
-{% block aside %}
-    {% set prisonerDetail = model.prisonerDetail %}
-    {% include "../partials/prisonerIdentityBar.njk" %}
-{% endblock %}
-
 {% block beforeContent %}
     {{ super() }}
     <nav>

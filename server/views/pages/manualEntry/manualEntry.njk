@@ -7,11 +7,6 @@
 {% set pageTitle = applicationName + " - manual entry" %}
 {% set pageId = "manual-entry-start" %}
 
-{% block aside %}
-    {% set prisonerDetail = prisonerDetail %}
-    {% include "../partials/prisonerIdentityBar.njk" %}
-{% endblock %}
-
 {% block beforeContent %}
     {{ super() }}
     <nav>

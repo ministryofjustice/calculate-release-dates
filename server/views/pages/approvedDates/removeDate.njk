@@ -8,11 +8,6 @@
 {% set pageTitle = applicationName + " - determinite manual entry" %}
 {% set pageId = "determinite selection" %}
 
-{% block aside %}
-    {% set prisonerDetail = prisonerDetail %}
-    {% include "../partials/prisonerIdentityBar.njk" %}
-{% endblock %}
-
 {% block beforeContent %}
     {{ super() }}
 {% endblock %}

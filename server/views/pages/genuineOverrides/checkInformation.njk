@@ -7,11 +7,6 @@
 {% set pageTitle = applicationName + " - check information" %}
 {% set pageId = "check-information" %}
 
-{% block aside %}
-    {% set prisonerDetail = model.prisonerDetail %}
-    {% include "../partials/prisonerIdentityBar.njk" %}
-{% endblock %}
-
 {% block beforeContent %}
     {{ super() }}
     {% if model.lastUserQuestion() %}

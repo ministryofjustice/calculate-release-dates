@@ -40,6 +40,7 @@ const stubbedPrisonerData = {
   imprisonmentStatusDescription: 'Serving Life Imprisonment',
   religion: 'Christian',
   agencyId: 'MDI',
+  status: 'ACTIVE IN',
   sentenceDetail: {
     sentenceStartDate: '12/12/2019',
     additionalDaysAwarded: 4,
@@ -75,10 +76,12 @@ describe('Start routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
         expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/search/prisoners"')
         expect(res.text).not.toContain('A1234AA')
         expectNoMiniProfile(res.text)
+        expect($('.govuk-phase-banner__content__tag').text()).toContain('beta')
       })
       .expect(() => {
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
@@ -92,11 +95,13 @@ describe('Start routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
         expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/search/prisoners"')
         expect(res.text).not.toContain('A1234AA')
         expectNoMiniProfile(res.text)
         expectServiceHeader(res.text)
+        expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
       })
       .expect(() => {
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
@@ -111,6 +116,7 @@ describe('Start routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
         expect(res.text).toContain('Calculate release dates')
         expect(res.text).toContain('href="/calculation/123/alternative-release-arrangements"')
         expect(res.text).toContain('A1234AA')
@@ -121,6 +127,7 @@ describe('Start routes tests', () => {
           establishment: 'Foo Prison (HMP)',
           location: 'D-2-003',
         })
+        expect($('.govuk-phase-banner__content__tag').text()).toContain('beta')
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
@@ -142,13 +149,15 @@ describe('Start routes tests', () => {
         const $ = cheerio.load(res.text)
         expect($('[data-qa=main-heading]').text()).toStrictEqual('Calculations and release dates')
         expectMiniProfile(res.text, {
-          name: 'Anon Nobody',
-          dob: '24 June 2000',
+          name: 'Nobody, Anon',
+          dob: '24/06/2000',
           prisonNumber: 'A1234AA',
           establishment: 'Foo Prison (HMP)',
           location: 'D-2-003',
+          status: 'Active in',
         })
         expectServiceHeaderForPrisoner(res.text, 'A1234AA')
+        expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
