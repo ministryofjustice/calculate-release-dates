@@ -78,7 +78,7 @@
     {% include "./header.njk" %}
   {% endif %}
 
-  {% if featureToggles.useCCARDLayout %}
+  {% if featureToggles.useCCARDLayout and showCCARDNav %}
       {{ serviceHeader(commonElementConfig.serviceHeader) }}
   {% endif %}
 
