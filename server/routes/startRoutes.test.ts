@@ -158,6 +158,16 @@ describe('Start routes tests', () => {
         })
         expectServiceHeaderForPrisoner(res.text, 'A1234AA')
         expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
+        expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
+          '/calculation/A1234AA/reason',
+        )
+        const links = $('.moj-sub-navigation__link')
+          .filter((index, element) => $(element).attr('href').length > 0) // filter hidden links
+          .map((i, element) => {
+            return $(element).text()
+          })
+          .get()
+        expect(links).toStrictEqual(['Overview', 'Adjustments', 'Calculations and release dates'])
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)

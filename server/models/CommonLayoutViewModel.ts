@@ -23,9 +23,12 @@ export default class CommonLayoutViewModel {
         imageUrl: `/prisoner/${prisonerDetail.offenderNo}/image`,
       }
     }
+    const env = hmppsDesignSystemsEnvironmentName()
     this.commonElementConfig = {
+      environment: env,
+      prisonNumber: prisonerDetail?.offenderNo,
       serviceHeader: {
-        environment: hmppsDesignSystemsEnvironmentName(),
+        environment: env,
         prisonNumber: prisonerDetail?.offenderNo,
       },
       miniProfile,

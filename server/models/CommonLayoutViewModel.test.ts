@@ -6,6 +6,8 @@ describe('CommonLayoutViewModel', () => {
   it('produces common view model config without prisoner details', () => {
     const model = new CommonLayoutViewModel()
     const expectedConfig: CommonElementConfig = {
+      environment: 'prod',
+      prisonNumber: undefined,
       serviceHeader: { environment: 'prod', prisonNumber: undefined },
       miniProfile: undefined,
     }
@@ -25,6 +27,8 @@ describe('CommonLayoutViewModel', () => {
     }
     const model = new CommonLayoutViewModel(prisonerDetail)
     const expectedConfig: CommonElementConfig = {
+      environment: 'prod',
+      prisonNumber: 'ABC123',
       serviceHeader: { environment: 'prod', prisonNumber: 'ABC123' },
       miniProfile: {
         person: {
@@ -52,6 +56,8 @@ describe('CommonLayoutViewModel', () => {
     }
     const model = new CommonLayoutViewModel(prisonerDetail)
     const expectedConfig: CommonElementConfig = {
+      environment: 'prod',
+      prisonNumber: 'ABC123',
       serviceHeader: { environment: 'prod', prisonNumber: 'ABC123' },
       miniProfile: {
         person: {
