@@ -11,7 +11,9 @@
 } %}
 {% block beforeContent %}
     {{super()}}
-    {{ subNavigation(commonElementConfig.environment, navigation, commonElementConfig.prisonNumber) }}
+    {% if showCCARDNav %}
+        {{ subNavigation(commonElementConfig.environment, navigation, commonElementConfig.prisonNumber) }}
+    {% endif %}
 {% endblock %}
 {% block content %}
     <div class="govuk-grid-row">

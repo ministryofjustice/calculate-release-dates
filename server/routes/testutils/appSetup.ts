@@ -9,6 +9,7 @@ import * as auth from '../../authentication/auth'
 import type { Services } from '../../services'
 import type { ApplicationInfo } from '../../applicationInfo'
 import SessionSetup from './sessionSetup'
+import setUpCCARDComponents from '../../middleware/setUpCCARDComponents'
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
@@ -56,6 +57,7 @@ function appSetup(
   })
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+  app.use(setUpCCARDComponents())
   app.use(routes(services))
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))

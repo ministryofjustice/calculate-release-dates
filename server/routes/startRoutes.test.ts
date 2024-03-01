@@ -1,7 +1,7 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes } from './testutils/appSetup'
+import { appWithAllRoutes, user } from './testutils/appSetup'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import {
@@ -17,6 +17,7 @@ import {
   expectServiceHeaderForPrisoner,
 } from './testutils/layoutExpectations'
 import config from '../config'
+import AuthorisedRoles from '../enumerations/authorisedRoles'
 
 jest.mock('../services/entryPointService')
 jest.mock('../services/prisonerService')
@@ -62,6 +63,9 @@ let app: Express
 beforeEach(() => {
   app = appWithAllRoutes({
     services: { entryPointService, prisonerService, userPermissionsService },
+    userSupplier: () => {
+      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'] }
+    },
   })
 })
 afterEach(() => {
@@ -136,7 +140,7 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('GET ?prisonId=123 should return start page in CCARD journey if CCARD feature toggle is on', () => {
+  it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD and adjustments then show all CCARD nav', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     config.featureToggles.useCCARDLayout = true
 
@@ -172,7 +176,46 @@ describe('Start routes tests', () => {
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
-        expect(prisonerService.getPrisonerDetail).toBeCalledTimes(1)
+      })
+  })
+
+  it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD only then hide service banner and sub nav', () => {
+    app = appWithAllRoutes({
+      services: { entryPointService, prisonerService, userPermissionsService },
+      userSupplier: () => {
+        return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
+      },
+    })
+
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    config.featureToggles.useCCARDLayout = true
+
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=main-heading]').text()).toStrictEqual('Calculations and release dates')
+        expectMiniProfile(res.text, {
+          name: 'Nobody, Anon',
+          dob: '24/06/2000',
+          prisonNumber: 'A1234AA',
+          establishment: 'Foo Prison (HMP)',
+          location: 'D-2-003',
+          status: 'Active in',
+        })
+        expect($('.service-header').length).toStrictEqual(0)
+        expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
+        expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
+          '/calculation/A1234AA/reason',
+        )
+        expect($('.moj-sub-navigation__link').length).toStrictEqual(0)
+      })
+      .expect(() => {
+        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
+        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
       })
   })
   it('GET /supported-sentences should return the supported sentence page', () => {
