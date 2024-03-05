@@ -11,6 +11,7 @@ import {
   CalculationUserInputs,
   CalculationUserQuestions,
   GenuineOverrideRequest,
+  HistoricCalculation,
   NonFridayReleaseDay,
   ReleaseDateCalculationBreakdown,
   SubmitCalculationRequest,
@@ -491,5 +492,9 @@ export default class CalculateReleaseDatesService {
       prisonerId,
     )
     return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
+  }
+
+  async getCalculationHistory(prisonerId: string, token: string): Promise<HistoricCalculation[]> {
+    return new CalculateReleaseDatesApiClient(token).getCalculationHistory(prisonerId)
   }
 }

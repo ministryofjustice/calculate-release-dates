@@ -18,11 +18,15 @@ import {
 } from './testutils/layoutExpectations'
 import config from '../config'
 import AuthorisedRoles from '../enumerations/authorisedRoles'
+import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
+jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/entryPointService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/userPermissionsService')
 
+const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
@@ -58,11 +62,24 @@ const stubbedPrisonerData = {
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 
+const calculationHistory = [
+  {
+    offenderNo: 'GU32342',
+    calculationDate: '2024-03-05',
+    calculationSource: 'CRDS',
+    commentText: 'a calculation',
+    calculationType: 'CALCULATED',
+    establishment: 'Kirkham (HMP)',
+    calculationRequestId: 90328,
+    calculationReason: 'New Sentence',
+  },
+] as HistoricCalculation[]
+
 let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { entryPointService, prisonerService, userPermissionsService },
+    services: { calculateReleaseDatesService, entryPointService, prisonerService, userPermissionsService },
     userSupplier: () => {
       return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'] }
     },
@@ -115,6 +132,7 @@ describe('Start routes tests', () => {
   it('GET ?prisonId=123 should return start page in DPS journey if CCARD feature toggle is off', () => {
     config.featureToggles.useCCARDLayout = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     return request(app)
       .get('?prisonId=123')
       .expect(200)
@@ -132,6 +150,7 @@ describe('Start routes tests', () => {
           location: 'D-2-003',
         })
         expect($('.govuk-phase-banner__content__tag').text()).toContain('beta')
+        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(0)
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
@@ -144,6 +163,7 @@ describe('Start routes tests', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     config.featureToggles.useCCARDLayout = true
 
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('?prisonId=123')
@@ -165,6 +185,8 @@ describe('Start routes tests', () => {
         expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
           '/calculation/A1234AA/reason',
         )
+        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
+        expect(res.text).toContain('href="/view/GU32342/sentences-and-offences/90328')
         const links = $('.moj-sub-navigation__link')
           .filter((index, element) => $(element).attr('href').length > 0) // filter hidden links
           .map((i, element) => {
@@ -179,9 +201,25 @@ describe('Start routes tests', () => {
       })
   })
 
+  it('GET ?prisonId=123 if CCARD feature toggle is on and offender has no calculation history', () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    config.featureToggles.useCCARDLayout = true
+
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue([])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(0)
+      })
+  })
+
   it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD only then hide service banner and sub nav', () => {
     app = appWithAllRoutes({
-      services: { entryPointService, prisonerService, userPermissionsService },
+      services: { calculateReleaseDatesService, entryPointService, prisonerService, userPermissionsService },
       userSupplier: () => {
         return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
       },
@@ -190,6 +228,7 @@ describe('Start routes tests', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     config.featureToggles.useCCARDLayout = true
 
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('?prisonId=123')

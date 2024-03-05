@@ -1,0 +1,41 @@
+{% macro addCalculationRow(calculation) %}
+    {% if calculation.calculationSource === 'NOMIS' %}
+        {% set source = "NOMIS" %}
+    {% else %}
+        {% set source = "Calculate release dates service" %}
+    {% endif %}
+
+    {% if calculation.establishment %}
+        {% set establishment = calculation.establishment %}
+    {% else %}
+        {% set establishment = "Not entered" %}
+    {% endif %}
+
+    <tr class="govuk-table__row">
+        {% if calculation.calculationSource === 'NOMIS' %}
+            <td class="govuk-table__cell">{{ calculation.calculationDate | date('DD MMMM YYYY') }}</td>
+        {% else %}
+            <td class="govuk-table__cell"><a class="govuk-link" href="/view/{{ calculation.offenderNo }}/sentences-and-offences/{{ calculation.calculationRequestId }}">{{ calculation.calculationDate | date('DD MMMM YYYY') }}</a></td>
+        {% endif %}
+        <td class="govuk-table__cell">{{ calculation.calculationReason }}</td>
+        <td class="govuk-table__cell">{{ establishment }}</td>
+        <td class="govuk-table__cell">{{ source }}</td>
+    </tr>
+{% endmacro %}
+
+<h3 class="govuk-heading-m">Calculation history</h3>
+<table class="govuk-table" data-qa="calculation-history-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Calculation date</th>
+            <th scope="col" class="govuk-table__header">Calculation reason</th>
+            <th scope="col" class="govuk-table__header">Establishment</th>
+            <th scope="col" class="govuk-table__header">Source</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        {% for calculation in calculationHistory %}
+            {{ addCalculationRow(calculation) }}
+        {% endfor %}
+    </tbody>
+</table>

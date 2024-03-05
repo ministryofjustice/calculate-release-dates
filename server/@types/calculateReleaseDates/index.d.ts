@@ -142,6 +142,13 @@ export interface paths {
      */
     get: operations['validateSupported']
   }
+  '/validation/{prisonerId}/manual-entry-validation': {
+    /**
+     * Validates that the sentences for the given prisoner in NOMIS are ok adequate to record a manual date against for unsupported types
+     * @description This endpoint will validate that the data for the given prisoner in NOMIS is of sufficient quality to allow a manual date to be recorded via CRD
+     */
+    get: operations['validateForManualEntry']
+  }
   '/specialist-support/genuine-override/calculation/{calculationReference}': {
     /**
      * Get a genuine override
@@ -427,11 +434,9 @@ export interface components {
       /** Format: date */
       fromDate?: string
       /** Format: int32 */
-      days?: number
+      days: number
       /** Format: int32 */
-      daysBetween?: number
-      /** Format: int32 */
-      effectiveDays?: number
+      effectiveDays: number
     }
     UnusedDeductionCalculationResponse: {
       /** Format: int32 */
@@ -765,8 +770,8 @@ export interface components {
       indicators: string[]
       isPcscSec250: boolean
       isPcscSds: boolean
-      isScheduleFifteenMaximumLife: boolean
       isPcscSdsPlus: boolean
+      isScheduleFifteenMaximumLife: boolean
     }
     SentenceTerms: {
       /** Format: int32 */
@@ -797,12 +802,13 @@ export interface components {
       calcId: number
     }
     HistoricCalculation: {
+      offenderNo: string
       /** Format: date-time */
       calculationDate: string
       /** @enum {string} */
       calculationSource: 'NOMIS' | 'CRDS'
       calculationViewConfiguration?: components['schemas']['CalculationViewConfiguration']
-      commentText: string
+      commentText?: string
       /** @enum {string} */
       calculationType?:
         | 'CALCULATED'
@@ -811,6 +817,10 @@ export interface components {
         | 'CALCULATED_WITH_APPROVED_DATES'
         | 'MANUAL_OVERRIDE'
         | 'CALCULATED_BY_SPECIALIST_SUPPORT'
+      establishment?: string
+      /** Format: int64 */
+      calculationRequestId?: number
+      calculationReason?: string
     }
     ComparisonSummary: {
       comparisonShortReference: string
@@ -1984,6 +1994,41 @@ export interface operations {
       path: {
         /**
          * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+    }
+    responses: {
+      /** @description Validation job has run successfully, the response indicates if there are any errors */
+      200: {
+        content: {
+          'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+    }
+  }
+  /**
+   * Validates that the sentences for the given prisoner in NOMIS are ok adequate to record a manual date against for unsupported types
+   * @description This endpoint will validate that the data for the given prisoner in NOMIS is of sufficient quality to allow a manual date to be recorded via CRD
+   */
+  validateForManualEntry: {
+    parameters: {
+      path: {
+        /**
+         * @description The prisoners ID (aka nomisId)
          * @example A1234AB
          */
         prisonerId: string
