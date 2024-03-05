@@ -1,4 +1,4 @@
-import { MiniProfileConfig } from 'hmpps-design-system-frontend/hmpps/@types'
+import { MiniProfileConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import CommonElementConfig from './CommonElementConfig'
 import { hmppsDesignSystemsEnvironmentName } from '../utils/utils'

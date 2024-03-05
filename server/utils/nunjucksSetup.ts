@@ -2,7 +2,11 @@
 import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
-import { personProfileName, personDateOfBirth, personStatus } from 'hmpps-design-system-frontend/hmpps/utils/utils'
+import {
+  personProfileName,
+  personDateOfBirth,
+  personStatus,
+} from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import { hmppsDesignSystemsEnvironmentName, initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -51,8 +55,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       'node_modules/govuk-frontend/dist/components/',
       'node_modules/@ministryofjustice/frontend/',
       'node_modules/@ministryofjustice/frontend/moj/components/',
-      'node_modules/hmpps-design-system-frontend/',
-      'node_modules/hmpps-design-system-frontend/hmpps/components/',
+      'node_modules/hmpps-court-cases-release-dates-design/',
+      'node_modules/hmpps-court-cases-release-dates-design/hmpps/components/',
     ],
     {
       autoescape: true,
