@@ -2,7 +2,7 @@ import {
   DesignSystemEnvironment,
   MiniProfileConfig,
   ServiceHeaderConfig,
-} from 'hmpps-design-system-frontend/hmpps/@types'
+} from 'hmpps-court-cases-release-dates-design/hmpps/@types'
 
 export default interface CommonElementConfig {
   environment: DesignSystemEnvironment

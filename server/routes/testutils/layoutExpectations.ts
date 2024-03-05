@@ -47,14 +47,14 @@ export function expectNoMiniProfile(html: string) {
 export function expectServiceHeaderForPrisoner(html: string, prisonNumber: string) {
   expect(getServiceHeader(html)).toStrictEqual({
     text: 'Court cases and release dates',
-    href: `https://custody-manager.hmpps.service.justice.gov.uk/prisoner/${prisonNumber}/overview`,
+    href: `https://court-cases-release-dates.hmpps.service.justice.gov.uk/prisoner/${prisonNumber}/overview`,
   })
 }
 
 export function expectServiceHeader(html: string) {
   expect(getServiceHeader(html)).toStrictEqual({
     text: 'Court cases and release dates',
-    href: 'https://custody-manager.hmpps.service.justice.gov.uk',
+    href: 'https://court-cases-release-dates.hmpps.service.justice.gov.uk',
   })
 }
 

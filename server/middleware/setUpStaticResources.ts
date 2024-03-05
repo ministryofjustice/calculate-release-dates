@@ -22,8 +22,8 @@ export default function setUpStaticResources(): Router {
     '/node_modules/@ministryofjustice/frontend/moj/assets',
     '/node_modules/@ministryofjustice/frontend',
     '/node_modules/accessible-autocomplete/dist',
-    '/node_modules/hmpps-design-system-frontend/hmpps/assets',
-    '/node_modules/hmpps-design-system-frontend',
+    '/node_modules/hmpps-court-cases-release-dates-design/hmpps/assets',
+    '/node_modules/hmpps-court-cases-release-dates-design',
   ).forEach(dir => {
     router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
   })
