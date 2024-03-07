@@ -14,6 +14,10 @@ import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calcula
 import CalculationCompleteViewModel from '../models/CalculationCompleteViewModel'
 import CalculationSummaryPageViewModel from '../models/CalculationSummaryPageViewModel'
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import {
+  ApprovedDateActionConfig,
+  approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
+} from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 
 export default class CalculationRoutes {
   constructor(
@@ -108,6 +112,10 @@ export default class CalculationRoutes {
       new CalculationSummaryPageViewModel(
         model,
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
+        approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, true, {
+          nomsId,
+          calculationRequestId,
+        } as ApprovedDateActionConfig),
       ),
     )
   }
@@ -183,6 +191,7 @@ export default class CalculationRoutes {
       new CalculationSummaryPageViewModel(
         model,
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
+        approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
       ),
     )
   }

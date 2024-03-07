@@ -1,0 +1,31 @@
+{% macro approvedDateLine(approvedDate, showActions, actionConfig) %}
+    <div class="govuk-summary-list__row">
+        <dt class="custom-summary-list__key release-dates-key govuk-!-font-size-24" style="max-width: 40%;">{{ approvedDate.shortName }}
+            <p class="govuk-hint">{{ approvedDate.fullName }}</p>
+        </dt>
+        <dd class="govuk-summary-list__value release-dates-value" data-qa="{{ approvedDate.shortName }}-date">{{ approvedDate.date }}
+            {% for hint in approvedDate.hints %}
+                {{ hint.html | safe }}
+            {% endfor %}</dd>
+        {% if showActions and actionConfig %}
+            <dd class="govuk-summary-list__action govuk-!-text-align-right">
+                <a class="govuk-link" data-qa="change-approved-{{ approvedDate.shortName }}-link"
+                   href="/calculation/{{ actionConfig.nomsId }}/{{ actionConfig.calculationRequestId }}/change?dateType={{ approvedDate.shortName }}">Change
+                    <span class="govuk-visually-hidden"> {{ approvedDate.shortName }}</span></a>
+                <a class="remove-link" data-qa="remove-approved-{{ approvedDate.shortName }}-link"
+                   href="/calculation/{{ actionConfig.nomsId }}/{{ actionConfig.calculationRequestId }}/remove?dateType={{ approvedDate.shortName }}">Remove
+                    <span class="govuk-visually-hidden"> {{ approvedDate.shortName }}</span></a>
+            </dd>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+<div class="custom-card">
+    <div class="custom-card-main">
+        <dl class="govuk-summary-list">
+            {%  for approvedDate in approvedSummaryDatesCardModel.approvedDates %}
+                {{ approvedDateLine(approvedDate, approvedSummaryDatesCardModel.showActions, approvedSummaryDatesCardModel.actionConfig) }}
+            {% endfor %}
+        </dl>
+    </div>
+</div>

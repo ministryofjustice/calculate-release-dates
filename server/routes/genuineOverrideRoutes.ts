@@ -33,6 +33,10 @@ import GenuineOverridesLoadReasonsViewModel from '../models/GenuineOverridesLoad
 import GenuineOverridesRemoveDateViewModel from '../models/GenuineOverridesRemoveDateViewModel'
 import GenuineOverridesRequestSupportViewModel from '../models/GenuineOverridesRequestSupportViewModel'
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import {
+  ApprovedDateActionConfig,
+  approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
+} from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 
 export default class GenuineOverrideRoutes {
   constructor(
@@ -280,6 +284,10 @@ export default class GenuineOverrideRoutes {
           formError,
           calculationReference,
           calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
+          approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, true, {
+            nomsId: calculation.prisonerId,
+            calculationRequestId,
+          } as ApprovedDateActionConfig),
         ),
       )
     }

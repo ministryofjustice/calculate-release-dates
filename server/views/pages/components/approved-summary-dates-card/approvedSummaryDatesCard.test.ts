@@ -1,31 +1,31 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import dateFilter from 'nunjucks-date-filter'
-import CalculationSummaryDatesCardModel from './CalculationSummaryDatesCardModel'
+import ApprovedSummaryDatesCardModel from './ApprovedSummaryDatesCardModel'
 
 const njkEnv = nunjucks.configure([__dirname])
 njkEnv.addFilter('date', dateFilter)
 
 describe('Tests for actions card component', () => {
   it('Should show lines in order', () => {
-    const calculationSummaryDatesCardModel: CalculationSummaryDatesCardModel = {
-      releaseDates: [
+    const approvedSummaryDatesCardModel: ApprovedSummaryDatesCardModel = {
+      approvedDates: [
         {
           shortName: 'SLED',
           fullName: 'Sentence and licence expiry date',
-          date: '2010-09-01',
+          date: 'Wednesday, 01 September 2010',
           hints: [],
         },
         {
           shortName: 'ABC',
           fullName: 'First in the alphabet but last in the list',
-          date: '1975-09-01',
+          date: 'Monday, 01 September 1975',
           hints: [],
         },
       ],
-      showNoDatesApply: false,
+      showActions: false,
     }
-    const content = nunjucks.render('test.njk', { calculationSummaryDatesCardModel })
+    const content = nunjucks.render('test.njk', { approvedSummaryDatesCardModel })
 
     const keys = getKeys(content)
     expect(keys.length).toStrictEqual(2)
@@ -38,33 +38,13 @@ describe('Tests for actions card component', () => {
     expect(values[1]).toStrictEqual(['Monday, 01 September 1975'])
   })
 
-  it('Should show no dates line if requested', () => {
-    const calculationSummaryDatesCardModel: CalculationSummaryDatesCardModel = {
-      releaseDates: [],
-      showNoDatesApply: true,
-    }
-    const content = nunjucks.render('test.njk', { calculationSummaryDatesCardModel })
-    const $ = cheerio.load(content)
-    expect($('[data-qa=None-date]').get()).toHaveLength(1)
-  })
-
-  it('Should not show no dates line if not requested, even if there are no dates', () => {
-    const calculationSummaryDatesCardModel: CalculationSummaryDatesCardModel = {
-      releaseDates: [],
-      showNoDatesApply: false,
-    }
-    const content = nunjucks.render('test.njk', { calculationSummaryDatesCardModel })
-    const $ = cheerio.load(content)
-    expect($('[data-qa=None-date]').get()).toHaveLength(0)
-  })
-
   it('should show all hints for a date', () => {
-    const calculationSummaryDatesCardModel: CalculationSummaryDatesCardModel = {
-      releaseDates: [
+    const approvedSummaryDatesCardModel: ApprovedSummaryDatesCardModel = {
+      approvedDates: [
         {
           shortName: 'SLED',
           fullName: 'Sentence and licence expiry date',
-          date: '2010-09-01',
+          date: 'Wednesday, 01 September 2010',
           hints: [
             {
               html: '<p data-qa="foo-hint">Some hint</p>',
@@ -75,20 +55,21 @@ describe('Tests for actions card component', () => {
           ],
         },
       ],
-      showNoDatesApply: false,
+      showActions: false,
     }
-    const content = nunjucks.render('test.njk', { calculationSummaryDatesCardModel })
+    const content = nunjucks.render('test.njk', { approvedSummaryDatesCardModel })
     const values = getValues(content)
     expect(values).toHaveLength(1)
     expect(values[0]).toStrictEqual(['Wednesday, 01 September 2010', 'Some hint', 'Some other hint'])
   })
+
   it('hints with links should work', () => {
-    const calculationSummaryDatesCardModel: CalculationSummaryDatesCardModel = {
-      releaseDates: [
+    const approvedSummaryDatesCardModel: ApprovedSummaryDatesCardModel = {
+      approvedDates: [
         {
           shortName: 'SLED',
           fullName: 'Sentence and licence expiry date',
-          date: '2010-09-01',
+          date: 'Wednesday, 01 September 2010',
           hints: [
             {
               html: '<p data-qa="foo-hint"><a data-qa="my-link" href="/my-link">Some hint</a></p>',
@@ -96,14 +77,52 @@ describe('Tests for actions card component', () => {
           ],
         },
       ],
-      showNoDatesApply: false,
+      showActions: false,
     }
-    const content = nunjucks.render('test.njk', { calculationSummaryDatesCardModel })
+    const content = nunjucks.render('test.njk', { approvedSummaryDatesCardModel })
     const values = getValues(content)
     expect(values).toHaveLength(1)
     expect(values[0]).toStrictEqual(['Wednesday, 01 September 2010', 'Some hint'])
     const $ = cheerio.load(content)
     expect($('[data-qa=my-link]').first().attr('href')).toStrictEqual('/my-link')
+  })
+
+  it('Should show actions for each approved date', () => {
+    const approvedSummaryDatesCardModel: ApprovedSummaryDatesCardModel = {
+      approvedDates: [
+        {
+          shortName: 'SLED',
+          fullName: 'Sentence and licence expiry date',
+          date: 'Wednesday, 01 September 2010',
+          hints: [],
+        },
+        {
+          shortName: 'ABC',
+          fullName: 'Alphabet soup',
+          date: 'Monday, 01 September 1975',
+          hints: [],
+        },
+      ],
+      showActions: true,
+      actionConfig: {
+        nomsId: 'NOM',
+        calculationRequestId: 123,
+      },
+    }
+    const content = nunjucks.render('test.njk', { approvedSummaryDatesCardModel })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=change-approved-SLED-link]').first().attr('href')).toStrictEqual(
+      '/calculation/NOM/123/change?dateType=SLED',
+    )
+    expect($('[data-qa=remove-approved-SLED-link]').first().attr('href')).toStrictEqual(
+      '/calculation/NOM/123/remove?dateType=SLED',
+    )
+    expect($('[data-qa=change-approved-ABC-link]').first().attr('href')).toStrictEqual(
+      '/calculation/NOM/123/change?dateType=ABC',
+    )
+    expect($('[data-qa=remove-approved-ABC-link]').first().attr('href')).toStrictEqual(
+      '/calculation/NOM/123/remove?dateType=ABC',
+    )
   })
   function getKeys(content: string) {
     return getTextLines(content, '.custom-summary-list__key')

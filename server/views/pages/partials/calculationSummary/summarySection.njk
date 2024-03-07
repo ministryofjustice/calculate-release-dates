@@ -4,6 +4,7 @@
     {% include "../../partials/hdcedNotificationBanner.njk" %}
     {% include "../../partials/ers2024NotificationBanner.njk" %}
     {% from "../../components/calculation-summary-dates-card/macro.njk" import calculationSummaryDatesCard %}
+    {% from "../../components/approved-summary-dates-card/macro.njk" import approvedSummaryDatesCard %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Review calculation</h1>
@@ -23,7 +24,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <h2 class="govuk-heading-l govuk-!-margin-top-4">Manual dates</h2>
-            {% include "../../partials/approvedSummaryDates.njk" %}
+            {{ approvedSummaryDatesCard(approvedSummaryDatesCardModel) }}
         </div>
     </div>
 {% endif %}
