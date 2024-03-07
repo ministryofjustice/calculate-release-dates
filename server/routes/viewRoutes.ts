@@ -15,6 +15,8 @@ import { longDateFormat } from '../utils/utils'
 import config from '../config'
 import ViewCalculateReleaseDatePageViewModel from '../models/ViewCalculateReleaseDatePageViewModel'
 import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageViewModel'
+import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 
 const overrideReasons = {
   terror: 'of terrorism or terror-related offences',
@@ -240,10 +242,20 @@ export default class ViewRoutes {
     const { nomsId } = req.params
     const { caseloads, token, username } = res.locals.user
     const calculationRequestId = Number(req.params.calculationRequestId)
+    const model = await this.calculateReleaseDatesViewModel(
+      calculationRequestId,
+      nomsId,
+      username,
+      token,
+      caseloads,
+      req,
+    )
     res.render(
       'pages/view/calculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
         await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads, req),
+        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, model.hasNone),
+        approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
       ),
     )
   }
@@ -252,10 +264,20 @@ export default class ViewRoutes {
     const { caseloads, token, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
+    const model = await this.calculateReleaseDatesViewModel(
+      calculationRequestId,
+      nomsId,
+      username,
+      token,
+      caseloads,
+      req,
+    )
     res.render(
       'pages/view/printCalculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
-        await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads, req),
+        model,
+        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, model.hasNone),
+        approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
       ),
     )
   }
