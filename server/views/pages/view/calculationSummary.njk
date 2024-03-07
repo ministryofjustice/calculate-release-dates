@@ -5,6 +5,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "../components/calculation-summary-dates-card/macro.njk" import calculationSummaryDatesCard %}
 
 
 {% set pageTitle = applicationName + " - calculation summary" %}
@@ -89,7 +90,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <h2 class="govuk-heading-l govuk-!-margin-top-9">Release dates</h2>
-            {% include "../partials/calculationSummaryDates.njk" %}
+            {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel) }}
         </div>
     </div>
 

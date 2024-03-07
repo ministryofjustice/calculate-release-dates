@@ -3,6 +3,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "../components/calculation-summary-dates-card/macro.njk" import calculationSummaryDatesCard %}
 
 {% set pageTitle = applicationName + " - calculation summary" %}
 {% set pageId = "view-print-calculation-summary" %}
@@ -24,7 +25,7 @@
             <h1 class="govuk-heading-xl">Dates {% if model.prisonerDetail %}for {{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title }}
                 {% endif %}
             </h1>
-            {% include "../partials/calculationSummaryDates.njk" %}
+            {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel) }}
         </div>
     </div>
 

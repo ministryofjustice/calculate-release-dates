@@ -1,0 +1,33 @@
+{% macro releaseDateLine(releaseDate) %}
+    <div class="govuk-summary-list__row">
+        <dt class="custom-summary-list__key release-dates-key govuk-!-font-size-24" style="max-width: 40%;">{{ releaseDate.shortName }}
+            <p class="govuk-hint">{{ releaseDate.fullName }}</p>
+        </dt>
+        <dd class="govuk-summary-list__value" style="max-width: 40%;" data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | date('dddd, DD MMMM YYYY') }}
+            <p style="margin-top: 10px;">
+            {% for hint in releaseDate.hints %}
+                {{ hint.html | safe}}
+            {% endfor %}
+            </p>
+        </dd>
+        <dd class="govuk-summary-list__actions"></dd>
+    </div>
+{% endmacro %}
+
+{% macro releaseNoDateLine(heading, dataQa) %}
+    <h3 class="govuk-heading-s">No dates apply</h3>
+    <p class="govuk-body" data-qa="None-date"></p>
+{% endmacro %}
+
+<div class="custom-card">
+    <div class="custom-card-main">
+        <dl class="govuk-summary-list">
+            {%  for releaseDate in calculationSummaryDatesCardModel.releaseDates %}
+                {{ releaseDateLine(releaseDate) }}
+            {% endfor %}
+            {% if calculationSummaryDatesCardModel.showNoDatesApply %}
+                {{ releaseNoDateLine() }}
+            {% endif %}
+        </dl>
+    </div>
+</div>

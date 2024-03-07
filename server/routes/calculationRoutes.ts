@@ -13,6 +13,7 @@ import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculationCompleteViewModel from '../models/CalculationCompleteViewModel'
 import CalculationSummaryPageViewModel from '../models/CalculationSummaryPageViewModel'
+import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 
 export default class CalculationRoutes {
   constructor(
@@ -102,8 +103,13 @@ export default class CalculationRoutes {
       false,
       approvedDates,
     )
-
-    res.render('pages/calculation/calculationSummary', new CalculationSummaryPageViewModel(model))
+    res.render(
+      'pages/calculation/calculationSummary',
+      new CalculationSummaryPageViewModel(
+        model,
+        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
+      ),
+    )
   }
 
   private indexBy(dates: ManualEntrySelectedDate[]) {
@@ -172,7 +178,13 @@ export default class CalculationRoutes {
       false,
       approvedDates,
     )
-    res.render('pages/calculation/printCalculationSummary', new CalculationSummaryPageViewModel(model))
+    res.render(
+      'pages/calculation/printCalculationSummary',
+      new CalculationSummaryPageViewModel(
+        model,
+        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
+      ),
+    )
   }
 
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
