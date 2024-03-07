@@ -482,5 +482,24 @@ describe('Calculate release dates service tests', () => {
         messageType: 'UNSUPPORTED_CALCULATION',
       })
     })
+
+    it('Gets calculation history', async () => {
+      const history = [
+        {
+          offenderNo: 'GU32342',
+          calculationDate: '2024-03-05',
+          calculationSource: 'NOMIS',
+          commentText: 'a calculation',
+          calculationType: 'CALCULATED',
+          establishment: 'Kirkham (HMP)',
+          calculationRequestId: 90328,
+          calculationReason: 'New Sentence',
+        },
+      ]
+      fakeApi.get(`/historicCalculations/${prisonerId}`).reply(200, history)
+
+      const result = await calculateReleaseDatesService.getCalculationHistory(prisonerId, null)
+      expect(result).toEqual(history)
+    })
   })
 })

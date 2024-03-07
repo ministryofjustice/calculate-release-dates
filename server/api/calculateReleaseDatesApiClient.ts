@@ -23,6 +23,7 @@ import {
   SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
+  HistoricCalculation,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
@@ -308,5 +309,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/validation/${prisonerId}/manual-entry-validation`,
     }) as Promise<ValidationMessage[]>
+  }
+
+  getCalculationHistory(prisonerId: string): Promise<HistoricCalculation[]> {
+    return this.restClient.get({
+      path: `/historicCalculations/${prisonerId}`,
+    }) as Promise<HistoricCalculation[]>
   }
 }

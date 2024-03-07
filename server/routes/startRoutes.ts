@@ -4,9 +4,11 @@ import PrisonerService from '../services/prisonerService'
 import UserPermissionsService from '../services/userPermissionsService'
 import config from '../config'
 import { indexViewModelForPrisoner, indexViewModelWithNoPrisoner } from '../models/IndexViewModel'
+import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 export default class StartRoutes {
   constructor(
+    private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly entryPointService: EntryPointService,
     private readonly prisonerService: PrisonerService,
     private readonly userPermissionsService: UserPermissionsService,
@@ -20,10 +22,16 @@ export default class StartRoutes {
       this.entryPointService.setDpsEntrypointCookie(res, prisonId)
       const { username, caseloads, token } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, prisonId, caseloads, token)
+      const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
       const template = config.featureToggles.useCCARDLayout ? 'pages/ccardIndex' : 'pages/index'
       return res.render(
         template,
-        indexViewModelForPrisoner(prisonerDetail, prisonId, config.featureToggles.calculationReasonToggle),
+        indexViewModelForPrisoner(
+          prisonerDetail,
+          calculationHistory,
+          prisonId,
+          config.featureToggles.calculationReasonToggle,
+        ),
       )
     }
     const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)

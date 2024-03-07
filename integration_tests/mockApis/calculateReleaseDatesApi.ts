@@ -736,4 +736,28 @@ export default {
       },
     })
   },
+  stubGetCalculationHistory: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/historicCalculations/A1234AB`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            offenderNo: 'A1234AB',
+            calculationDate: '2024-03-05',
+            calculationSource: 'NOMIS',
+            commentText: 'a calculation',
+            calculationType: 'CALCULATED',
+            establishment: 'Kirkham (HMP)',
+            calculationRequestId: 3245435,
+            calculationReason: 'Transfer',
+          },
+        ],
+      },
+    })
+  },
 }
