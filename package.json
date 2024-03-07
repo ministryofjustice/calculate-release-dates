@@ -114,7 +114,7 @@
     "express-session": "^1.18.0",
     "govuk-frontend": "^5.0.0",
     "helmet": "^7.1.0",
-    "hmpps-court-cases-release-dates-design": "^2.0.0",
+    "hmpps-court-cases-release-dates-design": "^2.1.0",
     "http-errors": "^2.0.0",
     "jwt-decode": "^4.0.0",
     "luxon": "^3.4.4",
