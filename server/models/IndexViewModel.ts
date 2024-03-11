@@ -19,8 +19,9 @@ export function indexViewModelForPrisoner(
   calculationHistory: HistoricCalculation[],
   prisonId: string,
   reason: boolean,
+  allowBulkUpload: boolean,
 ): IndexViewModel {
-  return new IndexViewModel(prisonerDetail, calculationHistory, prisonId, reason, undefined)
+  return new IndexViewModel(prisonerDetail, calculationHistory, prisonId, reason, allowBulkUpload)
 }
 
 export function indexViewModelWithNoPrisoner(allowBulkLoad: boolean, prisonId?: string): IndexViewModel {
