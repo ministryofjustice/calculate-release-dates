@@ -36,6 +36,17 @@
             }
         ]
         %}
+
+        {% if allowBulkLoad %}
+            {% set actions = (actions.push(
+                {
+                    href: '/compare',
+                    title: 'Perform bulk comparison',
+                    dataQa: 'bulk-comparison-action-link'
+                }), actions)
+            %}
+        {% endif %}
+
         {{ actionsCard(actions) }}
     </div>
 {% endblock %}

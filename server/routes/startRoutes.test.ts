@@ -250,6 +250,7 @@ describe('Start routes tests', () => {
         expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
           '/calculation/A1234AA/reason',
         )
+        expect($('[data-qa=bulk-comparison-action-link]').attr('href')).toStrictEqual('/compare')
         expect($('.moj-sub-navigation__link').length).toStrictEqual(0)
       })
       .expect(() => {
@@ -257,6 +258,34 @@ describe('Start routes tests', () => {
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
       })
   })
+
+  it('GET ?prisonId=123 if CCARD feature is on does not have bulk comparison action link if user does not have comparison role', () => {
+    app = appWithAllRoutes({
+      services: { calculateReleaseDatesService, entryPointService, prisonerService, userPermissionsService },
+      userSupplier: () => {
+        return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
+      },
+    })
+
+    userPermissionsService.allowBulkLoad.mockReturnValue(false)
+    config.featureToggles.useCCARDLayout = true
+
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
+          '/calculation/A1234AA/reason',
+        )
+        expect($('[data-qa=bulk-comparison-action-link]').length).toStrictEqual(0)
+        expect($('.moj-sub-navigation__link').length).toStrictEqual(0)
+      })
+  })
+
   it('GET /supported-sentences should return the supported sentence page', () => {
     entryPointService.isDpsEntryPoint.mockReturnValue(false)
     return request(app)

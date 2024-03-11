@@ -18,6 +18,7 @@ export default class StartRoutes {
 
   public startPage: RequestHandler = async (req, res): Promise<void> => {
     const { prisonId } = req.query as Record<string, string>
+    const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
     if (prisonId) {
       this.entryPointService.setDpsEntrypointCookie(res, prisonId)
       const { username, caseloads, token } = res.locals.user
@@ -31,10 +32,10 @@ export default class StartRoutes {
           calculationHistory,
           prisonId,
           config.featureToggles.calculationReasonToggle,
+          allowBulkLoad,
         ),
       )
     }
-    const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
     this.entryPointService.setStandaloneEntrypointCookie(res)
     return res.render('pages/index', indexViewModelWithNoPrisoner(allowBulkLoad, prisonId))
   }
