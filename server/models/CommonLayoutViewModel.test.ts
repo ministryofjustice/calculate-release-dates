@@ -20,6 +20,7 @@ describe('CommonLayoutViewModel', () => {
       lastName: 'Nobody',
       dateOfBirth: '2000-06-20',
       status: 'ACTIVE IN',
+      imprisonmentStatusDescription: 'Released',
       assignedLivingUnit: {
         agencyName: 'Foo Prison (HMP)',
         description: 'D-2-003',
@@ -36,7 +37,7 @@ describe('CommonLayoutViewModel', () => {
           firstName: 'Anon',
           lastName: 'Nobody',
           dateOfBirth: '2000-06-20',
-          status: 'ACTIVE IN',
+          status: 'Released',
           prisonName: 'Foo Prison (HMP)',
           cellLocation: 'D-2-003',
         },
@@ -53,6 +54,7 @@ describe('CommonLayoutViewModel', () => {
       lastName: 'Nobody',
       dateOfBirth: '2000-06-20',
       status: 'ACTIVE IN',
+      imprisonmentStatusDescription: 'Released',
     }
     const model = new CommonLayoutViewModel(prisonerDetail)
     const expectedConfig: CommonElementConfig = {
@@ -65,7 +67,7 @@ describe('CommonLayoutViewModel', () => {
           firstName: 'Anon',
           lastName: 'Nobody',
           dateOfBirth: '2000-06-20',
-          status: 'ACTIVE IN',
+          status: 'Released',
           prisonName: undefined,
           cellLocation: undefined,
         },

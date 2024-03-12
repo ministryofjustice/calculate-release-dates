@@ -15,7 +15,7 @@ export default class CommonLayoutViewModel {
           firstName: prisonerDetail.firstName,
           lastName: prisonerDetail.lastName,
           dateOfBirth: prisonerDetail.dateOfBirth,
-          status: prisonerDetail.status,
+          status: prisonerDetail.imprisonmentStatusDescription,
           prisonName: prisonerDetail.assignedLivingUnit?.agencyName,
           cellLocation: prisonerDetail.assignedLivingUnit?.description,
         },
