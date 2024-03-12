@@ -188,7 +188,7 @@ describe('Start routes tests', () => {
           prisonNumber: 'A1234AA',
           establishment: 'Foo Prison (HMP)',
           location: 'D-2-003',
-          status: 'Active in',
+          status: 'Serving Life Imprisonment',
         })
         expectServiceHeaderForPrisoner(res.text, 'A1234AA')
         expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
@@ -281,7 +281,7 @@ describe('Start routes tests', () => {
           prisonNumber: 'A1234AA',
           establishment: 'Foo Prison (HMP)',
           location: 'D-2-003',
-          status: 'Active in',
+          status: 'Serving Life Imprisonment',
         })
         expect($('.service-header').length).toStrictEqual(0)
         expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
