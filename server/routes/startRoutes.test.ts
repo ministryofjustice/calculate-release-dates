@@ -73,6 +73,16 @@ const calculationHistory = [
     calculationRequestId: 90328,
     calculationReason: 'New Sentence',
   },
+  {
+    offenderNo: 'MJ93022',
+    calculationDate: '2021-09-27',
+    calculationSource: 'CRDS',
+    commentText: 'calculation without reason',
+    calculationType: 'CALCULATED',
+    establishment: 'Five Wells (HMP)',
+    calculationRequestId: 849432,
+    calculationReason: null,
+  },
 ] as HistoricCalculation[]
 
 let app: Express
@@ -186,6 +196,34 @@ describe('Start routes tests', () => {
           '/calculation/A1234AA/reason',
         )
         expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
+        const calculationHistoryHeadings = $('[data-qa=calculation-history-table-headings] th')
+          .map((i, element) => $(element).text())
+          .get()
+        expect(calculationHistoryHeadings).toStrictEqual([
+          'Calculation date',
+          'Calculation reason',
+          'Establishment',
+          'Source',
+        ])
+        const calculationHistoryRow1 = $('[data-qa=calculation-history-table-data-1] td')
+          .map((i, element) => $(element).text())
+          .get()
+        expect(calculationHistoryRow1).toStrictEqual([
+          '05 March 2024',
+          'New Sentence',
+          'Kirkham (HMP)',
+          'Calculate release dates service',
+        ])
+        const calculationHistoryRow2 = $('[data-qa=calculation-history-table-data-2] td')
+          .map((i, element) => $(element).text())
+          .get()
+        expect(calculationHistoryRow2).toStrictEqual([
+          '27 September 2021',
+          'Not entered',
+          'Five Wells (HMP)',
+          'Calculate release dates service',
+        ])
+
         expect(res.text).toContain('href="/view/GU32342/sentences-and-offences/90328')
         const links = $('.moj-sub-navigation__link')
           .filter((index, element) => $(element).attr('href').length > 0) // filter hidden links
