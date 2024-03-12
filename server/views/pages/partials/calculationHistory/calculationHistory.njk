@@ -1,4 +1,4 @@
-{% macro addCalculationRow(calculation) %}
+{% macro addCalculationRow(calculation, rowNum) %}
     {% if calculation.calculationSource === 'NOMIS' %}
         {% set source = "NOMIS" %}
     {% else %}
@@ -11,13 +11,19 @@
         {% set establishment = "Not entered" %}
     {% endif %}
 
-    <tr class="govuk-table__row">
+    {% if calculation.calculationReason %}
+        {% set reason = calculation.calculationReason %}
+    {% else %}
+        {% set reason = 'Not entered' %}
+    {% endif %}
+
+    <tr class="govuk-table__row" data-qa="calculation-history-table-data-{{ rowNum }}">
         {% if calculation.calculationSource === 'NOMIS' %}
             <td class="govuk-table__cell">{{ calculation.calculationDate | date('DD MMMM YYYY') }}</td>
         {% else %}
             <td class="govuk-table__cell"><a class="govuk-link" href="/view/{{ calculation.offenderNo }}/sentences-and-offences/{{ calculation.calculationRequestId }}">{{ calculation.calculationDate | date('DD MMMM YYYY') }}</a></td>
         {% endif %}
-        <td class="govuk-table__cell">{{ calculation.calculationReason }}</td>
+        <td class="govuk-table__cell">{{ reason }}</td>
         <td class="govuk-table__cell">{{ establishment }}</td>
         <td class="govuk-table__cell">{{ source }}</td>
     </tr>
@@ -26,7 +32,7 @@
 <h3 class="govuk-heading-m">Calculation history</h3>
 <table class="govuk-table" data-qa="calculation-history-table">
     <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
+        <tr class="govuk-table__row" data-qa="calculation-history-table-headings">
             <th scope="col" class="govuk-table__header">Calculation date</th>
             <th scope="col" class="govuk-table__header">Calculation reason</th>
             <th scope="col" class="govuk-table__header">Establishment</th>
@@ -35,7 +41,7 @@
     </thead>
     <tbody class="govuk-table__body">
         {% for calculation in calculationHistory %}
-            {{ addCalculationRow(calculation) }}
+            {{ addCalculationRow(calculation, loop.index) }}
         {% endfor %}
     </tbody>
 </table>
