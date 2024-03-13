@@ -6,6 +6,7 @@ import calculateReleaseDatesApi from './integration_tests/mockApis/calculateRele
 import prisonApi from './integration_tests/mockApis/prisonApi'
 import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
 import manageUsersApi from './integration_tests/mockApis/manageUsersApi'
+import componentsApi from './integration_tests/mockApis/componentApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -16,7 +17,6 @@ export default defineConfig({
   reporterOptions: {
     configFile: 'reporter-config.json',
   },
-  videoUploadOnPasses: false,
   taskTimeout: 60000,
   e2e: {
     setupNodeEvents(on) {
@@ -28,6 +28,7 @@ export default defineConfig({
         ...prisonApi,
         ...prisonerSearchApi,
         ...manageUsersApi,
+        ...componentsApi,
       })
     },
     baseUrl: 'http://localhost:3007',

@@ -7,6 +7,7 @@ context('Prisoner search', () => {
     cy.task('stubManageUser')
     cy.task('stubPrisonerSearch')
     cy.task('stubGetUserCaseloads')
+    cy.task('stubComponents')
   })
 
   it('Visit prisoner search page', () => {

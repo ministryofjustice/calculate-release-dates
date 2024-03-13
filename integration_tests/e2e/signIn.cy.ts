@@ -9,6 +9,7 @@ context('Sign In', () => {
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubGetUserCaseloads')
+    cy.task('stubComponentsFail')
   })
 
   it('Unauthenticated user directed to auth', () => {
@@ -72,5 +73,19 @@ context('Sign In', () => {
     cy.signIn()
 
     indexPage.headerUserName().contains('B. Brown')
+  })
+
+  it('common components header is displayed', () => {
+    cy.task('stubComponents')
+    cy.signIn()
+    const indexPage = Page.verifyOnPage(IndexPage)
+    indexPage.commonComponentsHeader().should('exist')
+  })
+
+  it('design library footer is displayed', () => {
+    cy.task('stubComponents')
+    cy.signIn()
+    const indexPage = Page.verifyOnPage(IndexPage)
+    indexPage.designLibraryFooter().should('exist')
   })
 })

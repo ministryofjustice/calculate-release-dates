@@ -39,6 +39,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubGetGenuineOverride')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetCalculationHistory')
+    cy.task('stubComponents')
   })
 
   it('Standalone user journey', () => {

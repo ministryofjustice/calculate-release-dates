@@ -19,4 +19,8 @@ export default class IndexPage extends Page {
   startNowButton = (): PageElement => cy.get('[data-qa=start-now-button]')
 
   viewJourneyLink = (): PageElement => cy.get('[data-qa=view-journey-start]')
+
+  commonComponentsHeader = (): PageElement => cy.get('[data-qa=common-header]')
+
+  designLibraryFooter = (): PageElement => cy.get('[data-qa=ccrds-footer]')
 }
