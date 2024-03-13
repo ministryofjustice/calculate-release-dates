@@ -21,7 +21,8 @@
             {% if environmentName %}
                 {{ govukTag({
                     text: environmentName,
-                    classes: environmentNameColour
+                    classes: environmentNameColour,
+                    attributes: { "data-qa": "header-phase-banner" }
                 }) }}
             {% endif %}
         </div>
@@ -30,7 +31,10 @@
             <ul class="fallback-dps-header__navigation">
                 {% if user %}
                     <li class="fallback-dps-header__navigation__item">
-                        <span data-qa=header-user-name>{{ user.displayName | initialiseName }}</span>
+                        <a data-qa="manageDetails" class="hmpps-header__link" href="/account-details" data-test="manage-account-link" target="_blank" rel="noopener noreferrer">
+                            <span data-qa=header-user-name>{{ user.displayName | initialiseName }}</span>
+                            <span class="hmpps-header__link__sub-text">Manage your details</span>
+                        </a>
                     </li>
                 {% endif %}
 

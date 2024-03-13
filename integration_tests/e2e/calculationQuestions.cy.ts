@@ -13,6 +13,7 @@ context('Calculation questions page', () => {
     cy.task('stubGetUserCaseloads')
     cy.task('stubCalculationQuestions')
     cy.task('stubGetActiveCalculationReasons')
+    cy.task('stubComponents')
   })
 
   it('Visit alternative release intro page via the calculation reason page and test functionality', () => {

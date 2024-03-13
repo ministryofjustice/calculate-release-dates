@@ -2,6 +2,7 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "moj/components/header/macro.njk" import mojHeader %}
 {% from "hmpps/components/court-cases-release-dates/service-header/macro.njk" import serviceHeader %}
+{% from "hmpps/components/court-cases-release-dates/footer/macro.njk" import footer %}
 
 {% block head %}
   {% if appInsightsConnectionString %}
@@ -144,11 +145,14 @@
 
 {% block footer %}
   {% if featureToggles.dpsBannerEnabled %}
-    {% if feComponents.footer %}
-      {{ feComponents.footer | safe }}
-    {% else %}
-      {% include "./fallback_footer.njk" %}
-    {% endif %}
+    {{ 
+      footer({ 
+        environment: hmppsDesignSystemEnvironment, 
+        attributes: {
+          "data-qa": "ccrds-footer"
+        } 
+      }) 
+    }}
   {% else %}
     {% include "./footer.njk" %}
   {% endif %}
