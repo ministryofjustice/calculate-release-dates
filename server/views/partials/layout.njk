@@ -4,6 +4,39 @@
 {% from "hmpps/components/court-cases-release-dates/service-header/macro.njk" import serviceHeader %}
 
 {% block head %}
+  {% if appInsightsConnectionString %}
+    <script type="text/javascript" src="/assets/applicationinsights-web.min.js"  nonce="{{ cspNonce }}"></script>
+    <script type="text/javascript" src="/assets/applicationinsights-clickanalytics-js.min.js"  nonce="{{ cspNonce }}"></script>
+    <script type="text/javascript" nonce="{{ cspNonce }}">
+      var clickPluginInstance = new Microsoft.ApplicationInsights.ClickAnalyticsPlugin();
+      // Click Analytics configuration
+      var clickPluginConfig = {
+          autoCapture : true,
+          dataTags: {
+              useDefaultContentNameOrId: true
+          }
+      }
+      var snippet = {
+        config: {
+          connectionString: "{{ appInsightsConnectionString }}",
+          extensions: [
+                clickPluginInstance
+            ],
+          extensionConfig: {
+                [clickPluginInstance.identifier] : clickPluginConfig
+            },
+          autoTrackPageVisitTime: true
+        }
+      }
+      var init = new Microsoft.ApplicationInsights.ApplicationInsights(snippet)
+      var appInsights = init.loadAppInsights();
+      appInsights.addTelemetryInitializer(function (envelope) {
+          envelope.tags["ai.cloud.role"] = "{{ appInsightsApplicationName }}"
+          envelope.tags["ai.application.ver"] = "{{ buildNumber }}"
+        });
+      appInsights.trackPageView();
+    </script>
+  {% endif %}
 
   {% if tagManagerContainerId %}
     <!-- Tag manager dataLayer -->

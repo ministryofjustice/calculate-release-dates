@@ -140,4 +140,5 @@ export default {
     useCCARDLayout: get('USE_CCARD_LAYOUT', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
+  appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
 }

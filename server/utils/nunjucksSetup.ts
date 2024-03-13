@@ -35,6 +35,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.environmentName = applicationInfo.environmentName
   app.locals.environmentNameColour = applicationInfo.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
   app.locals.hmppsDesignSystemEnvironment = hmppsDesignSystemsEnvironmentName(applicationInfo.environmentName)
+  app.locals.appInsightsConnectionString = config.appInsightsConnectionString
+  app.locals.appInsightsApplicationName = applicationInfo.applicationName
+  app.locals.buildNumber = config.buildNumber
 
   // Cachebusting version string
   if (production) {
