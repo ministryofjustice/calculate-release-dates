@@ -34,3 +34,6 @@ export type ComparisonPersonDiscrepancyRequest = components['schemas']['CreateCo
 export type ComparisonPersonDiscrepancySummary = components['schemas']['ComparisonDiscrepancySummary']
 export type ComparisonPersonDiscrepancyCause = components['schemas']['DiscrepancyCause']
 export type HistoricCalculation = components['schemas']['HistoricCalculation']
+export type DetailedCalculationResults = components['schemas']['DetailedCalculationResults']
+export type DetailedDate = components['schemas']['DetailedDate']
+export type CalculationPrisonerDetails = components['schemas']['PrisonerDetails']

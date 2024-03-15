@@ -19,6 +19,7 @@ context('Calculation summary', () => {
     cy.task('stubConfirmCalculation_errorServerError')
     cy.task('stubSentencesAndOffences')
     cy.task('stubComponents')
+    cy.task('stubGetDetailedCalculationResults')
   })
 
   it('Visit Calculation summary page', () => {
@@ -27,12 +28,10 @@ context('Calculation summary', () => {
     calculationSummaryPage.submitToNomisButton().should('exist')
     calculationSummaryPage.sledDate().should('contain.text', 'Monday, 05 November 2018')
     calculationSummaryPage.crdDate().should('contain.text', dayjs().add(7, 'day').format('dddd, DD MMMM YYYY'))
-    calculationSummaryPage
-      .crdWeekendAdjustment()
-      .should('contain.text', 'Friday, 05 May 2017 when adjusted to a working day')
+    calculationSummaryPage.crdHints(0).should('contain.text', 'Friday, 05 May 2017 when adjusted to a working day')
     calculationSummaryPage.hdcedDate().should('contain.text', dayjs().add(3, 'day').format('dddd, DD MMMM YYYY'))
     calculationSummaryPage
-      .hdcedWeekendAdjustment()
+      .hdcedWeekendHint(0)
       .should('contain.text', 'Wednesday, 28 December 2016 when adjusted to a working day')
 
     calculationSummaryPage.concurrentSentenceTable().should('contain.text', 'Court case 2, count 2')

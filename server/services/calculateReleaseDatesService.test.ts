@@ -163,77 +163,24 @@ describe('Calculate release dates service tests', () => {
   })
 
   it('Test weekend adjustments', async () => {
-    const futureCalculation: BookingCalculation = {
-      dates: {
-        CRD: dayjs().add(7, 'day').format('YYYY-MM-DD'),
-        HDCED: dayjs().add(10, 'day').format('YYYY-MM-DD'),
-        PED: dayjs().add(15, 'day').format('YYYY-MM-DD'),
-        MTD: dayjs().add(1, 'day').format('YYYY-MM-DD'),
-      },
-      effectiveSentenceLength: null,
-      calculationReference: 'ABC123',
-      calculationRequestId,
-      prisonerId,
-      bookingId: 123,
-      calculationType: 'CALCULATED',
-      calculationStatus: 'CONFIRMED',
-    }
-    const adjustedCrd: WorkingDay = {
-      date: '2021-10-27',
-      adjustedForBankHoliday: false,
-      adjustedForWeekend: true,
-    }
+    const hdced = dayjs().add(10, 'day').format('YYYY-MM-DD')
+
     const adjustedHdced: WorkingDay = {
       date: '2021-10-29',
       adjustedForBankHoliday: false,
       adjustedForWeekend: true,
     }
-    const adjustedPed: WorkingDay = {
-      date: '2022-09-02',
-      adjustedForBankHoliday: false,
-      adjustedForWeekend: true,
-    }
-    const adjustedMtd: WorkingDay = {
-      date: '2023-08-25',
-      adjustedForBankHoliday: false,
-      adjustedForWeekend: true,
-    }
 
-    fakeApi.get(`/working-day/previous/${futureCalculation.dates.CRD}`).reply(200, adjustedCrd)
-    fakeApi.get(`/working-day/next/${futureCalculation.dates.HDCED}`).reply(200, adjustedHdced)
-    fakeApi.get(`/working-day/previous/${futureCalculation.dates.PED}`).reply(200, adjustedPed)
-    fakeApi.get(`/working-day/previous/${futureCalculation.dates.MTD}`).reply(200, adjustedMtd)
+    fakeApi.get(`/working-day/next/${hdced}`).reply(200, adjustedHdced)
 
-    const result = await calculateReleaseDatesService.getWeekendAdjustments('user', futureCalculation, token)
+    const result = await calculateReleaseDatesService.getNextWorkingDay(hdced, token)
 
-    expect(result).toEqual({
-      HDCED: adjustedHdced,
-      CRD: adjustedCrd,
-      PED: adjustedPed,
-      MTD: adjustedMtd,
-    })
+    expect(result).toEqual(adjustedHdced.date)
   })
 
   it('weekend adjustments in the past do not appear', async () => {
-    const calculationResultsWithDatesInPast: BookingCalculation = {
-      ...calculationResults,
-      dates: {
-        CRD: '2021-02-03',
-        SLED: '2021-10-28',
-        HDCED: '2021-10-10',
-        PED: '2022-09-04',
-        ETD: '2023-06-15',
-        MTD: '2023-04-25',
-        LTD: '2023-10-07',
-      },
-    }
-
-    const result = await calculateReleaseDatesService.getWeekendAdjustments(
-      'user',
-      calculationResultsWithDatesInPast,
-      token,
-    )
-    expect(result).toEqual({})
+    const result = await calculateReleaseDatesService.getNextWorkingDay('2021-10-10', token)
+    expect(result).toBeNull()
   })
 
   it('Test non Friday release dates turned on', async () => {

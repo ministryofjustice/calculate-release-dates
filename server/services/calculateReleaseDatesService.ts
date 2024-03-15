@@ -10,13 +10,13 @@ import {
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
+  DetailedCalculationResults,
   GenuineOverrideRequest,
   HistoricCalculation,
   NonFridayReleaseDay,
   ReleaseDateCalculationBreakdown,
   SubmitCalculationRequest,
   ValidationMessage,
-  WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import logger from '../../logger'
@@ -145,7 +145,7 @@ export default class CalculateReleaseDatesService {
     return sentencesAndOffences.filter((s: AnalyzedSentenceAndOffences) => s.sentenceStatus === 'A')
   }
 
-  private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
+  extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
     const releaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = []
     if (breakdown.breakdownByReleaseDateType.LED) {
       const ledDetails = breakdown.breakdownByReleaseDateType.LED
@@ -352,62 +352,15 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).confirmCalculation(calculationRequestId, body)
   }
 
-  async getWeekendAdjustments(
-    username: string,
-    calculation: BookingCalculation,
-    token: string,
-  ): Promise<{ [key: string]: WorkingDay }> {
+  async getNextWorkingDay(date: string, token: string): Promise<string> {
     const client = new CalculateReleaseDatesApiClient(token)
-    const adjustments: { [key: string]: WorkingDay } = {}
-    if (this.existsAndIsInFuture(calculation.dates.CRD)) {
-      const adjustment = await client.getPreviousWorkingDay(calculation.dates.CRD)
-      if (adjustment.date !== calculation.dates.CRD) {
-        adjustments.CRD = adjustment
+    if (this.existsAndIsInFuture(date)) {
+      const adjustment = await client.getNextWorkingDay(date)
+      if (adjustment.date !== date) {
+        return adjustment.date
       }
     }
-    if (this.existsAndIsInFuture(calculation.dates.ARD)) {
-      const adjustment = await client.getPreviousWorkingDay(calculation.dates.ARD)
-      if (adjustment.date !== calculation.dates.ARD) {
-        adjustments.ARD = adjustment
-      }
-    }
-    if (this.existsAndIsInFuture(calculation.dates.PRRD)) {
-      const adjustment = await client.getPreviousWorkingDay(calculation.dates.PRRD)
-      if (adjustment.date !== calculation.dates.PRRD) {
-        adjustments.PRRD = adjustment
-      }
-    }
-    if (this.existsAndIsInFuture(calculation.dates.HDCED)) {
-      const adjustment = await client.getNextWorkingDay(calculation.dates.HDCED)
-      if (adjustment.date !== calculation.dates.HDCED) {
-        adjustments.HDCED = adjustment
-      }
-    }
-    if (this.existsAndIsInFuture(calculation.dates.PED)) {
-      const adjustment = await client.getPreviousWorkingDay(calculation.dates.PED)
-      if (adjustment.date !== calculation.dates.PED) {
-        adjustments.PED = adjustment
-      }
-    }
-    if (this.existsAndIsInFuture(calculation.dates.ETD)) {
-      const adjustment = await client.getPreviousWorkingDay(calculation.dates.ETD)
-      if (adjustment.date !== calculation.dates.ETD) {
-        adjustments.ETD = adjustment
-      }
-    }
-    if (this.existsAndIsInFuture(calculation.dates.MTD)) {
-      const adjustment = await client.getPreviousWorkingDay(calculation.dates.MTD)
-      if (adjustment.date !== calculation.dates.MTD) {
-        adjustments.MTD = adjustment
-      }
-    }
-    if (this.existsAndIsInFuture(calculation.dates.LTD)) {
-      const adjustment = await client.getPreviousWorkingDay(calculation.dates.LTD)
-      if (adjustment.date !== calculation.dates.LTD) {
-        adjustments.LTD = adjustment
-      }
-    }
-    return adjustments
+    return null
   }
 
   private existsAndIsInFuture(date: string): boolean {
@@ -496,5 +449,13 @@ export default class CalculateReleaseDatesService {
 
   async getCalculationHistory(prisonerId: string, token: string): Promise<HistoricCalculation[]> {
     return new CalculateReleaseDatesApiClient(token).getCalculationHistory(prisonerId)
+  }
+
+  async getDetailedCalculationResults(
+    username: string,
+    calculationRequestId: number,
+    token: string,
+  ): Promise<DetailedCalculationResults> {
+    return new CalculateReleaseDatesApiClient(token).getDetailedCalculationResults(calculationRequestId)
   }
 }

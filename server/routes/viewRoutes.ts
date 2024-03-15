@@ -8,13 +8,14 @@ import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import EntryPointService from '../services/entryPointService'
 import SentenceTypes from '../models/SentenceTypes'
-import { GenuineOverrideRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { DetailedDate, GenuineOverrideRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewRouteSentenceAndOffenceViewModel from '../models/ViewRouteSentenceAndOffenceViewModel'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { longDateFormat } from '../utils/utils'
 import config from '../config'
 import ViewCalculateReleaseDatePageViewModel from '../models/ViewCalculateReleaseDatePageViewModel'
 import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageViewModel'
+// eslint-disable-next-line prettier/prettier
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 
@@ -104,10 +105,15 @@ export default class ViewRoutes {
     }
   }
 
-  private indexBy(dates: { [key: string]: string }) {
+  private indexBy(dates: { [key: string]: string } | { [key: string]: DetailedDate }) {
     const result = {}
     Object.keys(dates).forEach((dateType: string) => {
-      result[dateType] = DateTime.fromFormat(dates[dateType], 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+      const date = dates[dateType]
+      if (typeof date === 'string') {
+        result[dateType] = DateTime.fromFormat(date, 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+      } else {
+        result[dateType] = DateTime.fromFormat(date.date, 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+      }
     })
     return result
   }
@@ -120,100 +126,74 @@ export default class ViewRoutes {
     caseloads: string[],
     req: Request,
   ): Promise<CalculationSummaryViewModel> {
-    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
+    const detailedCalculationResults = await this.calculateReleaseDatesService.getDetailedCalculationResults(
       username,
       calculationRequestId,
       token,
     )
-    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
-      username,
-      releaseDates,
-      token,
-    )
-    const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
-      releaseDates,
-      token,
-    )
-
-    try {
-      const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
-        calculationRequestId,
-        caseloads,
-        token,
-      )
-      const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-      const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(
-        calculationRequestId,
-        token,
-      )
-      const bookingCalculation = await this.calculateReleaseDatesService.getCalculationResults(
-        username,
-        calculationRequestId,
-        token,
-      )
-
-      const override = await this.getOverride(releaseDates.calculationReference, token)
-      const hasNone = releaseDates.dates.None !== undefined
-      const approvedDates = releaseDates.approvedDates ? this.indexBy(releaseDates.approvedDates) : null
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const { calculationBreakdown, calculationOriginalData, breakdownMissingReason } = detailedCalculationResults
+    if (!calculationBreakdown && breakdownMissingReason && breakdownMissingReason === 'PRISON_API_DATA_MISSING') {
       return new CalculationSummaryViewModel(
-        releaseDates.dates,
-        weekendAdjustments,
         calculationRequestId,
         nomsId,
         prisonerDetail,
-        sentencesAndOffences,
-        hasNone,
-        true,
-        releaseDates.calculationReference,
-        nonFridayReleaseAdjustments,
-        config.featureToggles.calculationReasonToggle,
-        bookingCalculation.calculationReason,
-        bookingCalculation.otherReasonDescription,
-        bookingCalculation.calculationDate === undefined
-          ? undefined
-          : longDateFormat(bookingCalculation.calculationDate),
-        breakdown?.calculationBreakdown,
-        breakdown?.releaseDatesWithAdjustments,
         null,
         false,
+        true,
+        detailedCalculationResults.context.calculationReference,
+        config.featureToggles.calculationReasonToggle,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          messages: [
+            {
+              html: `To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/${nomsId}/check-information">calculate release dates again.</a>`,
+            },
+          ],
+          messageType: ErrorMessageType.MISSING_PRISON_API_DATA,
+        } as ErrorMessages,
+        true,
         this.entryPointService.isDpsEntryPoint(req),
-        approvedDates,
-        this.getOverrideReason(override),
+        undefined,
+        null,
+        detailedCalculationResults,
       )
-    } catch (error) {
-      if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
-        const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-        return new CalculationSummaryViewModel(
-          releaseDates.dates,
-          weekendAdjustments,
-          calculationRequestId,
-          nomsId,
-          prisonerDetail,
-          null,
-          false,
-          true,
-          releaseDates.calculationReference,
-          nonFridayReleaseAdjustments,
-          config.featureToggles.calculationReasonToggle,
-          null,
-          null,
-          null,
-          null,
-          null,
-          {
-            messages: [
-              {
-                html: `To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/${nomsId}/check-information">calculate release dates again.</a>`,
-              },
-            ],
-            messageType: ErrorMessageType.MISSING_PRISON_API_DATA,
-          } as ErrorMessages,
-          true,
-          this.entryPointService.isDpsEntryPoint(req),
-        )
-      }
-      throw error
     }
+    const breakdownReleaseDatesWithAdjustments =
+      this.calculateReleaseDatesService.extractReleaseDatesWithAdjustments(calculationBreakdown)
+
+    const override = await this.getOverride(detailedCalculationResults.context.calculationReference, token)
+    const hasNone = detailedCalculationResults.dates.None !== undefined
+    const approvedDates = detailedCalculationResults.approvedDates
+      ? this.indexBy(detailedCalculationResults.approvedDates)
+      : null
+    return new CalculationSummaryViewModel(
+      calculationRequestId,
+      nomsId,
+      prisonerDetail,
+      calculationOriginalData.sentencesAndOffences,
+      hasNone,
+      true,
+      detailedCalculationResults.context.calculationReference,
+      config.featureToggles.calculationReasonToggle,
+      detailedCalculationResults.context.calculationReason,
+      detailedCalculationResults.context.otherReasonDescription,
+      detailedCalculationResults.context.calculationDate === undefined
+        ? undefined
+        : longDateFormat(detailedCalculationResults.context.calculationDate),
+      calculationBreakdown,
+      breakdownReleaseDatesWithAdjustments,
+      null,
+      false,
+      this.entryPointService.isDpsEntryPoint(req),
+      approvedDates,
+      this.getOverrideReason(override),
+      detailedCalculationResults,
+    )
   }
 
   private getOverrideReason(override: GenuineOverrideRequest): string {
@@ -253,7 +233,7 @@ export default class ViewRoutes {
     res.render(
       'pages/view/calculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
-        await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, token, caseloads, req),
+        model,
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, model.hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
       ),

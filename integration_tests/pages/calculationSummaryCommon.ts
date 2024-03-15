@@ -5,11 +5,11 @@ export default class CalculationSummaryCommon extends Page {
 
   public crdDate = (): PageElement => cy.get('[data-qa=CRD-date]')
 
-  public crdWeekendAdjustment = (): PageElement => cy.get('[data-qa=CRD-weekend-adjustment]')
+  public crdHints = (index: number): PageElement => cy.get(`[data-qa=CRD-release-date-hint-${index}]`)
 
   public hdcedDate = (): PageElement => cy.get('[data-qa=HDCED-date]')
 
-  public hdcedWeekendAdjustment = (): PageElement => cy.get('[data-qa=HDCED-weekend-adjustment]')
+  public hdcedWeekendHint = (index: number): PageElement => cy.get(`[data-qa=HDCED-release-date-hint-${index}]`)
 
   public concurrentSentenceTable = (): PageElement => cy.get('[data-qa=concurrent-sentence-table]')
 

@@ -9,12 +9,12 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import {
   AnalyzedSentenceAndOffences,
   BookingCalculation,
+  CalculationBreakdown,
   CalculationSentenceUserInput,
   CalculationUserInputs,
+  DetailedCalculationResults,
   GenuineOverrideRequest,
   ManualEntrySelectedDate,
-  NonFridayReleaseDay,
-  WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
@@ -68,23 +68,6 @@ const stubbedCalculationResults = {
     ERSED: '2020-02-03',
   },
   calculationRequestId: 123456,
-  effectiveSentenceLength: {},
-  prisonerId: 'A1234AB',
-  calculationStatus: 'CONFIRMED',
-  calculationType: 'CALCULATED',
-  calculationReference: 'ABC123',
-  bookingId: 123,
-  approvedDates: {},
-} as BookingCalculation
-
-const stubbedAnotherCalculationResults = {
-  dates: {
-    CRD: '2021-03-03',
-    SED: '2021-03-03',
-    HDCED: '2021-11-03',
-    ERSED: '2020-03-03',
-  },
-  calculationRequestId: 654321,
   effectiveSentenceLength: {},
   prisonerId: 'A1234AB',
   calculationStatus: 'CONFIRMED',
@@ -167,19 +150,7 @@ const stubbedSentencesAndOffences = [
     offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
   } as AnalyzedSentenceAndOffences,
 ]
-const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
-  CRD: {
-    date: '2021-02-02',
-    adjustedForWeekend: true,
-    adjustedForBankHoliday: false,
-  },
-  HDCED: {
-    date: '2021-10-05',
-    adjustedForWeekend: true,
-    adjustedForBankHoliday: true,
-  },
-}
-const stubbedNoNonFridayReleaseAdjustments: { [key: string]: NonFridayReleaseDay } = {}
+
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
     {
@@ -241,6 +212,186 @@ const stubbedGenuineOverrideRequest = {
   originalCalculationRequest: '456',
   isOverridden: true,
 } as GenuineOverrideRequest
+const stubbedCalculationBreakdown: CalculationBreakdown = {
+  concurrentSentences: [
+    {
+      dates: {
+        CRD: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
+        },
+        SED: {
+          adjusted: '2021-02-03',
+          unadjusted: '2021-01-15',
+          adjustedByDays: 18,
+          daysFromSentenceStart: 100,
+        },
+      },
+      sentenceLength: '2 years',
+      sentenceLengthDays: 785,
+      sentencedAt: '2020-01-01',
+      lineSequence: 2,
+      caseSequence: 1,
+    },
+  ],
+  breakdownByReleaseDateType: {},
+  otherDates: {},
+}
+
+const stubbedDetailedCalculationResults: DetailedCalculationResults = {
+  context: {
+    calculationRequestId: stubbedCalculationResults.calculationRequestId,
+    prisonerId: stubbedCalculationResults.prisonerId,
+    bookingId: stubbedCalculationResults.bookingId,
+    calculationDate: stubbedCalculationResults.calculationDate,
+    calculationStatus: stubbedCalculationResults.calculationStatus,
+    calculationReference: stubbedCalculationResults.calculationReference,
+    calculationType: stubbedCalculationResults.calculationType,
+    calculationReason: stubbedCalculationResults.calculationReason,
+    otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+  },
+  dates: {
+    CRD: {
+      date: '2021-02-03',
+      type: 'CRD',
+      description: 'Conditional release date',
+      hints: [{ text: 'Tuesday, 02 February 2021 when adjusted to a working day' }],
+    },
+    SED: { date: '2021-02-03', type: 'SED', description: 'Sentence expiry date', hints: [] },
+    HDCED: {
+      date: '2021-10-03',
+      type: 'HDCED',
+      description: 'Home detention curfew eligibility date',
+      hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
+    },
+    ERSED: { date: '2020-02-03', type: 'ERSED', description: 'Early removal scheme eligibility date', hints: [] },
+  },
+  calculationBreakdown: stubbedCalculationBreakdown,
+  calculationOriginalData: {
+    prisonerDetails: {
+      firstName: stubbedPrisonerData.firstName,
+      lastName: stubbedPrisonerData.lastName,
+      bookingId: stubbedPrisonerData.bookingId,
+      agencyId: stubbedPrisonerData.agencyId,
+      offenderNo: stubbedPrisonerData.offenderNo,
+      dateOfBirth: stubbedPrisonerData.dateOfBirth,
+      assignedLivingUnit: {
+        agencyId: stubbedPrisonerData?.assignedLivingUnit?.agencyId,
+        agencyName: stubbedPrisonerData?.assignedLivingUnit?.agencyName,
+        description: stubbedPrisonerData?.assignedLivingUnit?.description,
+        locationId: stubbedPrisonerData?.assignedLivingUnit?.locationId,
+      },
+      alerts: [],
+    },
+    sentencesAndOffences: [
+      {
+        bookingId: 1,
+        sentenceStatus: '',
+        sentenceCategory: '',
+        sentenceDate: '2021-02-03',
+        terms: [
+          {
+            years: 3,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            code: 'IMP',
+          },
+        ],
+        sentenceCalculationType: 'ADIMP',
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        caseSequence: 1,
+        lineSequence: 1,
+        sentenceSequence: 1,
+        offences: [
+          {
+            offenderChargeId: 1,
+            offenceEndDate: '2021-02-03',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+          {
+            offenderChargeId: 2,
+            offenceStartDate: '2021-01-04',
+            offenceEndDate: '2021-01-05',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+          {
+            offenderChargeId: 3,
+            offenceStartDate: '2021-03-06',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+          {
+            offenderChargeId: 4,
+            offenceStartDate: '2021-01-07',
+            offenceEndDate: '2021-01-07',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+        ],
+      },
+      {
+        bookingId: 1,
+        sentenceStatus: '',
+        sentenceCategory: '',
+        sentenceDate: '2021-02-03',
+        terms: [
+          {
+            years: 2,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            code: 'IMP',
+          },
+        ],
+        caseSequence: 2,
+        lineSequence: 2,
+        sentenceSequence: 2,
+        consecutiveToSequence: 1,
+        sentenceCalculationType: 'ADIMP',
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        offences: [
+          {
+            offenderChargeId: 5,
+            offenceEndDate: '2021-02-03',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+        ],
+      },
+    ],
+  },
+  approvedDates: {},
+}
 
 beforeEach(() => {
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
@@ -478,11 +629,9 @@ describe('Genuine overrides routes tests', () => {
   it('GET /specialist-support/calculation/:calculationReference/summary/:calculationRequestId should return the calculation summary with mini profile', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedAnotherCalculationResults)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue([])
 
     return request(app)
       .get('/specialist-support/calculation/123/summary/654321')

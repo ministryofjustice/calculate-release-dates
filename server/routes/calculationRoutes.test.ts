@@ -12,32 +12,14 @@ import {
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
-  AnalyzedSentenceAndOffences,
   BookingCalculation,
   CalculationBreakdown,
-  NonFridayReleaseDay,
-  WorkingDay,
+  DetailedCalculationResults,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import EntryPointService from '../services/entryPointService'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import UserInputService from '../services/userInputService'
-import {
-  ersedAdjustedByArdBreakdown,
-  ersedAdjustedByArdReleaseDate,
-  ersedBeforeCrdBeforeMtd,
-  ersedBeforeMtdBeforeCrd,
-  hdcedAdjustedToArd,
-  hdcedAdjustedToArdReleaseDates,
-  mtdBeforeHdcedAndCrd,
-  mtdBeforePedAndCrd,
-  mtdLaterThanArd,
-  mtdLaterThanCrd,
-  mtdLaterThanHdcedWithArd,
-  mtdLaterThanHdcedWithCrd,
-  mtdLaterThanPed,
-  pedAdjustedByCrdAndBeforePrrdBreakdown,
-  pedAdjustedByCrdAndBeforePrrdReleaseDates,
-} from '../services/breakdownExamplesTestData'
+import { pedAdjustedByCrdAndBeforePrrdBreakdown } from '../services/breakdownExamplesTestData'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import config from '../config'
 import { expectMiniProfile } from './testutils/layoutExpectations'
@@ -113,25 +95,6 @@ const stubbedCalculationResults = {
   bookingId: 123,
   approvedDates: {},
 } as BookingCalculation
-const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
-  CRD: {
-    date: '2021-02-02',
-    adjustedForWeekend: true,
-    adjustedForBankHoliday: false,
-  },
-  HDCED: {
-    date: '2021-10-05',
-    adjustedForWeekend: true,
-    adjustedForBankHoliday: true,
-  },
-}
-const stubbedNoNonFridayReleaseAdjustments: { [key: string]: NonFridayReleaseDay } = {}
-const stubbedNonFridayReleaseAdjustments: { [key: string]: NonFridayReleaseDay } = {
-  CRD: {
-    date: '2021-02-04',
-    usePolicy: true,
-  },
-}
 
 const stubbedCalculationBreakdown: CalculationBreakdown = {
   concurrentSentences: [
@@ -161,36 +124,6 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
   otherDates: {},
 }
 
-const stubbedLicenceCalculationBreakdown: CalculationBreakdown = {
-  concurrentSentences: [
-    {
-      dates: {
-        CRD: {
-          adjusted: '2021-02-03',
-          unadjusted: '2021-01-15',
-          adjustedByDays: 18,
-          daysFromSentenceStart: 100,
-        },
-        SED: {
-          adjusted: '2021-02-03',
-          unadjusted: '2021-01-15',
-          adjustedByDays: 18,
-          daysFromSentenceStart: 100,
-        },
-      },
-      sentenceLength: '2 years',
-      sentenceLengthDays: 785,
-      sentencedAt: '2020-01-01',
-      lineSequence: 2,
-      caseSequence: 1,
-    },
-  ],
-  breakdownByReleaseDateType: {},
-  otherDates: {
-    PRRD: '2021-10-04',
-  },
-}
-
 const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
   {
     releaseDateType: 'CRD',
@@ -199,85 +132,14 @@ const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
   },
   {
     releaseDateType: 'HDCED',
-    releaseDate: '13 May 2029',
+    releaseDate: '2029-05-13',
     hintText: '14 May 2029 minus 1 day',
   },
 ]
 
-const stubbedSentencesAndOffences = [
-  {
-    terms: [
-      {
-        years: 3,
-      },
-    ],
-    sentenceCalculationType: 'ADIMP',
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    caseSequence: 1,
-    lineSequence: 1,
-    sentenceSequence: 1,
-    offences: [
-      { offenceEndDate: '2021-02-03' },
-      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-      { offenceStartDate: '2021-03-06' },
-      {},
-      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
-    ],
-  } as AnalyzedSentenceAndOffences,
-  {
-    terms: [
-      {
-        years: 2,
-      },
-    ],
-    caseSequence: 2,
-    lineSequence: 2,
-    sentenceSequence: 2,
-    consecutiveToSequence: 1,
-    sentenceCalculationType: 'ADIMP',
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
-  } as AnalyzedSentenceAndOffences,
-]
-
-const stubbedDtoAndNonDto = [
-  {
-    terms: [
-      {
-        months: 4,
-      },
-    ],
-    sentenceCalculationType: 'DTO',
-    sentenceTypeDescription: 'Detention And Training Order Sentence',
-    caseSequence: 1,
-    lineSequence: 1,
-    sentenceSequence: 1,
-    offences: [
-      { offenceEndDate: '2021-02-03' },
-      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-      { offenceStartDate: '2021-03-06' },
-      {},
-      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
-    ],
-  } as AnalyzedSentenceAndOffences,
-  {
-    terms: [
-      {
-        years: 2,
-      },
-    ],
-    caseSequence: 2,
-    lineSequence: 2,
-    sentenceSequence: 2,
-    consecutiveToSequence: 1,
-    sentenceCalculationType: 'ADIMP',
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
-  } as AnalyzedSentenceAndOffences,
-]
-
 const stubbedErsedIneligibleSentencesAndOffences = [
   {
+    bookingId: 1,
     sentenceSequence: 3,
     lineSequence: 3,
     caseSequence: 3,
@@ -293,6 +155,7 @@ const stubbedErsedIneligibleSentencesAndOffences = [
         months: 2,
         weeks: 0,
         days: 0,
+        code: 'IMP',
       },
     ],
     offences: [
@@ -301,10 +164,168 @@ const stubbedErsedIneligibleSentencesAndOffences = [
         offenceStartDate: '2020-01-01',
         offenceCode: 'RL05016',
         offenceDescription: 'Access / exit by unofficial route - railway bye-law',
+        indicators: [],
+        isPcscSds: false,
+        isPcscSdsPlus: false,
+        isPcscSec250: false,
+        isScheduleFifteenMaximumLife: false,
       },
     ],
   },
 ]
+const stubbedDetailedCalculationResults: DetailedCalculationResults = {
+  context: {
+    calculationRequestId: stubbedCalculationResults.calculationRequestId,
+    prisonerId: stubbedCalculationResults.prisonerId,
+    bookingId: stubbedCalculationResults.bookingId,
+    calculationDate: stubbedCalculationResults.calculationDate,
+    calculationStatus: stubbedCalculationResults.calculationStatus,
+    calculationReference: stubbedCalculationResults.calculationReference,
+    calculationType: stubbedCalculationResults.calculationType,
+    calculationReason: stubbedCalculationResults.calculationReason,
+    otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+  },
+  dates: {
+    CRD: {
+      date: '2021-02-03',
+      type: 'CRD',
+      description: 'Conditional release date',
+      hints: [{ text: 'Tuesday, 02 February 2021 when adjusted to a working day' }],
+    },
+    SED: { date: '2021-02-03', type: 'SED', description: 'Sentence expiry date', hints: [] },
+    HDCED: {
+      date: '2021-10-03',
+      type: 'HDCED',
+      description: 'Home detention curfew eligibility date',
+      hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
+    },
+    ERSED: { date: '2020-02-03', type: 'ERSED', description: 'Early removal scheme eligibility date', hints: [] },
+  },
+  calculationBreakdown: stubbedCalculationBreakdown,
+  calculationOriginalData: {
+    prisonerDetails: {
+      firstName: stubbedPrisonerData.firstName,
+      lastName: stubbedPrisonerData.lastName,
+      bookingId: stubbedPrisonerData.bookingId,
+      agencyId: stubbedPrisonerData.agencyId,
+      offenderNo: stubbedPrisonerData.offenderNo,
+      dateOfBirth: stubbedPrisonerData.dateOfBirth,
+      assignedLivingUnit: {
+        agencyId: stubbedPrisonerData?.assignedLivingUnit?.agencyId,
+        agencyName: stubbedPrisonerData?.assignedLivingUnit?.agencyName,
+        description: stubbedPrisonerData?.assignedLivingUnit?.description,
+        locationId: stubbedPrisonerData?.assignedLivingUnit?.locationId,
+      },
+      alerts: [],
+    },
+    sentencesAndOffences: [
+      {
+        bookingId: 1,
+        sentenceStatus: '',
+        sentenceCategory: '',
+        sentenceDate: '2021-02-03',
+        terms: [
+          {
+            years: 3,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            code: 'IMP',
+          },
+        ],
+        sentenceCalculationType: 'ADIMP',
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        caseSequence: 1,
+        lineSequence: 1,
+        sentenceSequence: 1,
+        offences: [
+          {
+            offenderChargeId: 1,
+            offenceEndDate: '2021-02-03',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+          {
+            offenderChargeId: 2,
+            offenceStartDate: '2021-01-04',
+            offenceEndDate: '2021-01-05',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+          {
+            offenderChargeId: 3,
+            offenceStartDate: '2021-03-06',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+          {
+            offenderChargeId: 4,
+            offenceStartDate: '2021-01-07',
+            offenceEndDate: '2021-01-07',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+        ],
+      },
+      {
+        bookingId: 1,
+        sentenceStatus: '',
+        sentenceCategory: '',
+        sentenceDate: '2021-02-03',
+        terms: [
+          {
+            years: 2,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            code: 'IMP',
+          },
+        ],
+        caseSequence: 2,
+        lineSequence: 2,
+        sentenceSequence: 2,
+        consecutiveToSequence: 1,
+        sentenceCalculationType: 'ADIMP',
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        offences: [
+          {
+            offenderChargeId: 5,
+            offenceEndDate: '2021-02-03',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+        ],
+      },
+    ],
+  },
+  approvedDates: {},
+}
+
 beforeEach(() => {
   app = appWithAllRoutes({
     services: {
@@ -325,14 +346,8 @@ afterEach(() => {
 describe('Calculation routes tests', () => {
   it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
       .expect(200)
@@ -369,14 +384,15 @@ describe('Calculation routes tests', () => {
 
   it('GET /calculation/:nomsId/summary/:calculationRequestId should show ERSED recall notification banner if recall only', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+      ...stubbedDetailedCalculationResults,
+      calculationOriginalData: {
+        ...stubbedDetailedCalculationResults,
+        sentencesAndOffences: stubbedErsedIneligibleSentencesAndOffences,
+      },
     })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedErsedIneligibleSentencesAndOffences)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
       .expect(200)
@@ -391,16 +407,28 @@ describe('Calculation routes tests', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the ped adjusted release dates', () => {
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should show hints generated by the API', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(pedAdjustedByCrdAndBeforePrrdReleaseDates())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+      ...stubbedDetailedCalculationResults,
+      context: { ...stubbedDetailedCalculationResults.context, prisonerId: 'A1234AA' },
       calculationBreakdown: pedAdjustedByCrdAndBeforePrrdBreakdown(),
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      dates: {
+        SLED: { date: '2029-09-14', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        CRD: { date: '2026-09-14', type: 'CRD', description: 'Conditional release date', hints: [] },
+        PED: {
+          date: '2024-10-12',
+          type: 'PED',
+          description: 'Parole eligibility date',
+          hints: [
+            { text: 'PED adjusted for the CRD of a concurrent sentence or default term' },
+            { text: 'The post recall release date (PRRD) of Tuesday, 18 March 2025 is later than the PED' },
+          ],
+        },
+        ESED: { date: '2029-09-14', type: 'ESED', description: 'Effective sentence end date', hints: [] },
+      },
     })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -417,228 +445,20 @@ describe('Calculation routes tests', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the hdced adjusted release dates', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(hdcedAdjustedToArdReleaseDates())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: hdcedAdjustedToArd(),
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('HDCED adjusted for the ARD of a concurrent sentence or default term')
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date being later than the CRD', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanCrd())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain(
-          'The Detention and training order (DTO) release date is later than the Conditional Release Date (CRD)',
-        )
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date being later than the ARD', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanArd())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain(
-          'The Detention and training order (DTO) release date is later than the Automatic Release Date (ARD)',
-        )
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date being later than the PED', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanPed())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain(
-          'The Detention and training order (DTO) release date is later than the Parole Eligibility Date (PED)',
-        )
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date being later than the HDCED', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanHdcedWithCrd())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain(
-          'The Detention and training order (DTO) release date is later than the Home detention curfew eligibility date (HDCED)',
-        )
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date falls between the HDCED & CRD', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanHdcedWithCrd())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain(
-          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Conditional release date)',
-        )
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date falls between the HDCED & ARD', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdLaterThanHdcedWithArd())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain(
-          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Automatic release date)',
-        )
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date falls before the HDCED & CRD/ARD', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdBeforeHdcedAndCrd())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain(
-          'Release from the Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Home Detention Curfew Eligibility Date)',
-        )
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the dto release date falls before the PED & CRD', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(mtdBeforePedAndCrd())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain(
-          'Release from Detention and training order (DTO) cannot happen until release from the sentence (earliest would be the Parole Eligibility Date)',
-        )
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the ersed being adjusted to the MTD', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedBeforeMtdBeforeCrd())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
-
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Adjusted to Mid term date (MTD) of the Detention and training order (DTO)')
-      })
-  })
-
   it('GET /calculation/:nomsId/summary/:calculationRequestId should display notification when ERSED cannot happen because of DTO', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedBeforeCrdBeforeMtd())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+      ...stubbedDetailedCalculationResults,
+      context: { ...stubbedDetailedCalculationResults.context, prisonerId: 'A1234AA' },
+      dates: {
+        SLED: { date: '2023-09-20', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        MTD: { date: '2024-12-20', type: 'MTD', description: 'Mid transfer date', hints: [] },
+        ERSED: { date: '2021-12-20', type: 'ERSED', description: 'Early removal scheme eligibility date', hints: [] },
+        CRD: { date: '2022-08-14', type: 'CRD', description: 'Conditional release date', hints: [] },
+        ESED: { date: '2023-09-20', type: 'ESED', description: 'Effective sentence end date', hints: [] },
+      },
     })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedDtoAndNonDto)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
 
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
@@ -653,14 +473,8 @@ describe('Calculation routes tests', () => {
   })
   it('GET /calculation/:nomsId/summary/:calculationRequestId should display upcoming HDCED changes notification', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
       .expect(200)
@@ -673,14 +487,8 @@ describe('Calculation routes tests', () => {
 
   it('GET /calculation/:nomsId/summary/:calculationRequestId should display HDCED changes notification', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
     MockDate.set('2023-06-06')
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
@@ -689,44 +497,6 @@ describe('Calculation routes tests', () => {
       .expect(res => {
         expect(res.text).not.toContain('This service has calculated the HDCED using the new policy rules.')
         expect(res.text).not.toContain('From 6 June, the policy for calculating HDCED has changed')
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the calculation requested with license recall', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedLicenceCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    return request(app)
-      .get('/calculation/A1234AB/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Release on HDC must not take place before the PRRD Monday, 04 October 2021')
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should return details ERSED breakdown with ERSED adjusted by ARD', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedAdjustedByArdReleaseDate())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: ersedAdjustedByArdBreakdown(),
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('ERSED adjusted for the ARD of a concurrent default term')
       })
   })
 
@@ -748,14 +518,11 @@ describe('Calculation routes tests', () => {
   it('GET /calculation/:nomsId/summary should return save to nomis button if approved dates off', () => {
     config.featureToggles.approvedDates = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedAdjustedByArdReleaseDate())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+      ...stubbedDetailedCalculationResults,
+      context: { ...stubbedDetailedCalculationResults.context, prisonerId: 'A1234AA' },
     })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -767,14 +534,11 @@ describe('Calculation routes tests', () => {
   it('GET /calculation/:nomsId/summary should return confirm and continue button if approved dates on', () => {
     config.featureToggles.approvedDates = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(ersedAdjustedByArdReleaseDate())
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+      ...stubbedDetailedCalculationResults,
+      context: { ...stubbedDetailedCalculationResults.context, prisonerId: 'A1234AA' },
     })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
     return request(app)
       .get('/calculation/A1234AA/summary/123456')
       .expect(200)
@@ -793,9 +557,8 @@ describe('Calculation routes tests', () => {
   })
   it('GET /calculation/:nomsId/summary/:calculationRequestId/print should return a printable page about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
     return request(app)
       .get('/calculation/A1234AB/summary/123456/print')
       .expect(200)
@@ -846,14 +609,8 @@ describe('Calculation routes tests', () => {
   it('GET /calculation/:nomsId/summary/:calculationRequestId with specialist support on should display help text', () => {
     config.featureToggles.specialistSupport = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNoNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(stubbedReleaseDatesWithAdjustments)
     return request(app)
       .get('/calculation/A1234AB/summary/123456')
       .expect(200)
@@ -862,27 +619,6 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('If you think the calculation is wrong')
         expect(res.text).toContain('contact the specialist')
         expect(res.text).toContain('support team')
-      })
-  })
-  it('GET /calculation/:nomsId/summary/:calculationRequestId with non Friday release returns should display hint text', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-    calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-    calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(stubbedNonFridayReleaseAdjustments)
-    calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-      calculationBreakdown: stubbedCalculationBreakdown,
-      releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-    })
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-    return request(app)
-      .get('/calculation/A1234AB/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).not.toContain('Tuesday, 02 February 2021 when adjusted to a working day')
-        expect(res.text).toContain(
-          'The Discretionary Friday/Pre-Bank Holiday Release Scheme Policy (opens in new tab)</a> applies to this release date.',
-        )
       })
   })
 })

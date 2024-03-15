@@ -40,5 +40,16 @@ describe('Calculate release dates API client tests', () => {
       expect(data).toEqual([])
       expect(nock.isDone()).toBe(true)
     })
+
+    it('Get detailed calculation results', async () => {
+      fakeApi.get(`/calculation/detailed-results/${calculationRequestId}`, '').reply(200, stubbedTestData)
+      const data = await calculateReleaseDatesService.getDetailedCalculationResults(
+        'XTEST1',
+        calculationRequestId,
+        token,
+      )
+      expect(data).toEqual(stubbedTestData)
+      expect(nock.isDone()).toBe(true)
+    })
   })
 })

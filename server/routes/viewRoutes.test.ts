@@ -1,6 +1,5 @@
 import request from 'supertest'
 import type { Express } from 'express'
-import { HttpError } from 'http-errors'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -19,9 +18,8 @@ import {
   CalculationBreakdown,
   CalculationSentenceUserInput,
   CalculationUserInputs,
+  DetailedCalculationResults,
   GenuineOverrideRequest,
-  NonFridayReleaseDay,
-  WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import config from '../config'
@@ -71,6 +69,7 @@ const stubbedPrisonerData = {
     description: 'D-2-003',
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
+
 const expectedMiniProfile = {
   name: 'Anon Nobody',
   dob: '24 June 2000',
@@ -115,59 +114,6 @@ const stubbedSentencesAndOffences = [
   } as PrisonApiOffenderSentenceAndOffences,
 ]
 
-const stubbedNotificationBannerSentencesAndOffences = [
-  {
-    terms: [
-      {
-        years: 3,
-      },
-    ],
-    sentenceCalculationType: 'LR_EDS18',
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    caseSequence: 1,
-    lineSequence: 1,
-    sentenceSequence: 1,
-    offences: [
-      { offenceEndDate: '2021-02-03' },
-      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-      { offenceStartDate: '2021-03-06' },
-      {},
-      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
-    ],
-  } as PrisonApiOffenderSentenceAndOffences,
-]
-
-const stubbedErsedAvailableSentenceAndOffence = [
-  {
-    terms: [
-      {
-        years: 2,
-      },
-    ],
-    caseSequence: 2,
-    lineSequence: 2,
-    sentenceSequence: 2,
-    consecutiveToSequence: 1,
-    sentenceCalculationType: 'LR_EDS18',
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
-  } as PrisonApiOffenderSentenceAndOffences,
-  {
-    terms: [
-      {
-        years: 2,
-      },
-    ],
-    caseSequence: 2,
-    lineSequence: 2,
-    sentenceSequence: 2,
-    consecutiveToSequence: 1,
-    sentenceCalculationType: 'EDS18',
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
-  } as PrisonApiOffenderSentenceAndOffences,
-]
-
 const stubbedAdjustments = {
   sentenceAdjustments: [
     {
@@ -205,19 +151,6 @@ const stubbedCalculationResults = {
   calculationType: 'CALCULATED',
   approvedDates: {},
 } as BookingCalculation
-const stubbedWeekendAdjustments: { [key: string]: WorkingDay } = {
-  CRD: {
-    date: '2021-02-02',
-    adjustedForWeekend: true,
-    adjustedForBankHoliday: false,
-  },
-  HDCED: {
-    date: '2021-10-05',
-    adjustedForWeekend: true,
-    adjustedForBankHoliday: true,
-  },
-}
-const stubbedNoNonFridayReleaseAdjustments: { [key: string]: NonFridayReleaseDay } = {}
 
 const stubbedCalculationBreakdown: CalculationBreakdown = {
   concurrentSentences: [
@@ -255,7 +188,7 @@ const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
   },
   {
     releaseDateType: 'HDCED',
-    releaseDate: '13 May 2029',
+    releaseDate: '2029-05-13',
     hintText: '14 May 2029 minus 1 day',
   },
 ]
@@ -270,6 +203,158 @@ const stubbedUserInput = {
     } as CalculationSentenceUserInput,
   ],
 } as CalculationUserInputs
+
+const stubbedDetailedCalculationResults: DetailedCalculationResults = {
+  context: {
+    calculationRequestId: stubbedCalculationResults.calculationRequestId,
+    prisonerId: stubbedCalculationResults.prisonerId,
+    bookingId: stubbedCalculationResults.bookingId,
+    calculationDate: stubbedCalculationResults.calculationDate,
+    calculationStatus: stubbedCalculationResults.calculationStatus,
+    calculationReference: stubbedCalculationResults.calculationReference,
+    calculationType: stubbedCalculationResults.calculationType,
+    calculationReason: stubbedCalculationResults.calculationReason,
+    otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+  },
+  dates: {
+    CRD: {
+      date: '2021-02-03',
+      type: 'CRD',
+      description: 'Conditional release date',
+      hints: [{ text: 'Tuesday, 02 February 2021 when adjusted to a working day' }],
+    },
+    SED: { date: '2021-02-03', type: 'SED', description: 'Sentence expiry date', hints: [] },
+    HDCED: {
+      date: '2021-10-03',
+      type: 'HDCED',
+      description: 'Home detention curfew eligibility date',
+      hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
+    },
+  },
+  calculationBreakdown: stubbedCalculationBreakdown,
+  calculationOriginalData: {
+    prisonerDetails: {
+      firstName: stubbedPrisonerData.firstName,
+      lastName: stubbedPrisonerData.lastName,
+      bookingId: stubbedPrisonerData.bookingId,
+      agencyId: stubbedPrisonerData.agencyId,
+      offenderNo: stubbedPrisonerData.offenderNo,
+      dateOfBirth: stubbedPrisonerData.dateOfBirth,
+      assignedLivingUnit: {
+        agencyId: stubbedPrisonerData?.assignedLivingUnit?.agencyId,
+        agencyName: stubbedPrisonerData?.assignedLivingUnit?.agencyName,
+        description: stubbedPrisonerData?.assignedLivingUnit?.description,
+        locationId: stubbedPrisonerData?.assignedLivingUnit?.locationId,
+      },
+      alerts: [],
+    },
+    sentencesAndOffences: [
+      {
+        bookingId: 1,
+        sentenceStatus: '',
+        sentenceCategory: '',
+        sentenceDate: '2021-02-03',
+        terms: [
+          {
+            years: 3,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            code: 'IMP',
+          },
+        ],
+        sentenceCalculationType: 'ADIMP',
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        caseSequence: 1,
+        lineSequence: 1,
+        sentenceSequence: 1,
+        offences: [
+          {
+            offenderChargeId: 1,
+            offenceEndDate: '2021-02-03',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+          {
+            offenderChargeId: 2,
+            offenceStartDate: '2021-01-04',
+            offenceEndDate: '2021-01-05',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+          {
+            offenderChargeId: 3,
+            offenceStartDate: '2021-03-06',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+          {
+            offenderChargeId: 4,
+            offenceStartDate: '2021-01-07',
+            offenceEndDate: '2021-01-07',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+        ],
+      },
+      {
+        bookingId: 1,
+        sentenceStatus: '',
+        sentenceCategory: '',
+        sentenceDate: '2021-02-03',
+        terms: [
+          {
+            years: 2,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            code: 'IMP',
+          },
+        ],
+        caseSequence: 2,
+        lineSequence: 2,
+        sentenceSequence: 2,
+        consecutiveToSequence: 1,
+        sentenceCalculationType: 'ADIMP',
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        offences: [
+          {
+            offenderChargeId: 5,
+            offenceEndDate: '2021-02-03',
+            offenceCode: '123',
+            offenceDescription: '',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+        ],
+      },
+    ],
+  },
+  approvedDates: {},
+}
 
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -355,54 +440,6 @@ describe('View journey routes tests', () => {
           )
         })
     })
-    it('GET /view/:calculationRequestId/calculation-summary should include recall only notification banner', () => {
-      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments,
-      )
-      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-        calculationBreakdown: stubbedCalculationBreakdown,
-        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-      })
-      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedNotificationBannerSentencesAndOffences)
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
-      return request(app)
-        .get('/view/A1234AA/calculation-summary/123456')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain('Important')
-          expect(res.text).toContain(
-            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.',
-          )
-        })
-    })
-    it('GET /view/:calculationRequestId/calculation-summary should not show the ERSED warning banner if no recall only', () => {
-      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments,
-      )
-      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-        calculationBreakdown: stubbedCalculationBreakdown,
-        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-      })
-      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedErsedAvailableSentenceAndOffence)
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
-      return request(app)
-        .get('/view/A1234AA/calculation-summary/123456')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).not.toContain('Important')
-          expect(res.text).not.toContain(
-            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.',
-          )
-        })
-    })
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences of the calculation if there is no user inputs', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
@@ -425,17 +462,11 @@ describe('View journey routes tests', () => {
 
   describe('View calculation tests', () => {
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should return detail about the the calculation', () => {
-      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments,
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
+        stubbedReleaseDatesWithAdjustments,
       )
-      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-        calculationBreakdown: stubbedCalculationBreakdown,
-        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-      })
-      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
@@ -469,17 +500,8 @@ describe('View journey routes tests', () => {
     })
 
     it('GET /view/:calculationRequestId/calculation-summary/print should return a printable page about the calculation requested', () => {
-      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments,
-      )
-      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-        calculationBreakdown: stubbedCalculationBreakdown,
-        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
-      })
-      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456/print')
         .expect(200)
@@ -493,22 +515,15 @@ describe('View journey routes tests', () => {
     })
 
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display results even if prison-api data is not available', () => {
-      const error = {
-        status: 404,
-        message: 'An error has occurred',
-        data: {
-          errorCode: 'PRISON_API_DATA_MISSING',
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+        ...stubbedDetailedCalculationResults,
+        calculationOriginalData: {
+          prisonerDetails: undefined,
+          sentencesAndOffences: undefined,
         },
-      } as HttpError & { data: unknown }
-
-      viewReleaseDatesService.getPrisonerDetail.mockImplementation(() => {
-        throw error
+        calculationBreakdown: undefined,
+        breakdownMissingReason: 'PRISON_API_DATA_MISSING',
       })
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments,
-      )
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
@@ -533,11 +548,9 @@ describe('View journey routes tests', () => {
     })
 
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId for a genuine override should display the other reason', () => {
-      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments,
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
+        stubbedReleaseDatesWithAdjustments,
       )
       calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
         reason: 'Other: reason',
@@ -555,12 +568,11 @@ describe('View journey routes tests', () => {
           )
         })
     })
+
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId for a genuine override should look up reason', () => {
-      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments,
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
+        stubbedReleaseDatesWithAdjustments,
       )
       calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
         reason: 'terror',
@@ -579,19 +591,17 @@ describe('View journey routes tests', () => {
         })
     })
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the reason if it exists and the toggle is enabled', () => {
-      stubbedCalculationResults.calculationReason = { id: 1, displayName: 'A calculation reason', isOther: false }
-      stubbedCalculationResults.calculationDate = '2024-01-13'
-      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments,
-      )
-      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-        calculationBreakdown: stubbedCalculationBreakdown,
-        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+        ...stubbedDetailedCalculationResults,
+        context: {
+          ...stubbedDetailedCalculationResults.context,
+          calculationDate: '2024-01-13',
+          calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false },
+        },
       })
-      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
+        stubbedReleaseDatesWithAdjustments,
+      )
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
 
       config.featureToggles.calculationReasonToggle = true
@@ -607,20 +617,18 @@ describe('View journey routes tests', () => {
         })
     })
     it('GET /view/:calculationRequestId/calculation-summary should display the other reason if it was selected', () => {
-      stubbedCalculationResults.calculationReason = { id: 2, displayName: 'Other', isOther: true }
-      stubbedCalculationResults.otherReasonDescription = 'Another reason for calculation'
-      stubbedCalculationResults.calculationDate = '2024-01-19'
-      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
-      calculateReleaseDatesService.getWeekendAdjustments.mockResolvedValue(stubbedWeekendAdjustments)
-      calculateReleaseDatesService.getNonFridayReleaseAdjustments.mockResolvedValue(
-        stubbedNoNonFridayReleaseAdjustments,
-      )
-      calculateReleaseDatesService.getBreakdown.mockResolvedValue({
-        calculationBreakdown: stubbedCalculationBreakdown,
-        releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+        ...stubbedDetailedCalculationResults,
+        context: {
+          ...stubbedDetailedCalculationResults.context,
+          calculationDate: '2024-01-19',
+          calculationReason: { id: 2, displayName: 'Other', isOther: true },
+          otherReasonDescription: 'Another reason for calculation',
+        },
       })
-      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
+        stubbedReleaseDatesWithAdjustments,
+      )
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
 
       config.featureToggles.calculationReasonToggle = true
@@ -633,6 +641,188 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('Reason')
           expect(res.text).toContain('Other (Another reason for calculation)')
           expect(res.text).toContain('19 January 2024')
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary should include recall only notification banner', () => {
+      const detailedCalResultWIthNotificationBannerSentencesAndOffences = {
+        ...stubbedDetailedCalculationResults,
+        calculationOriginalData: {
+          ...stubbedDetailedCalculationResults,
+          sentencesAndOffences: [
+            {
+              bookingId: 1,
+              sentenceStatus: '',
+              sentenceCategory: '',
+              sentenceDate: '2021-02-03',
+              terms: [
+                {
+                  years: 3,
+                  months: 0,
+                  weeks: 0,
+                  days: 0,
+                  code: 'IMP',
+                },
+              ],
+              sentenceCalculationType: 'LR_EDS18',
+              sentenceTypeDescription: 'SDS Standard Sentence',
+              caseSequence: 1,
+              lineSequence: 1,
+              sentenceSequence: 1,
+              offences: [
+                {
+                  offenderChargeId: 1,
+                  offenceEndDate: '2021-02-03',
+                  offenceCode: '123',
+                  offenceDescription: '',
+                  indicators: [],
+                  isPcscSds: false,
+                  isPcscSdsPlus: false,
+                  isPcscSec250: false,
+                  isScheduleFifteenMaximumLife: false,
+                },
+                {
+                  offenderChargeId: 2,
+                  offenceStartDate: '2021-01-04',
+                  offenceEndDate: '2021-01-05',
+                  offenceCode: '123',
+                  offenceDescription: '',
+                  indicators: [],
+                  isPcscSds: false,
+                  isPcscSdsPlus: false,
+                  isPcscSec250: false,
+                  isScheduleFifteenMaximumLife: false,
+                },
+                {
+                  offenderChargeId: 3,
+                  offenceStartDate: '2021-03-06',
+                  offenceCode: '123',
+                  offenceDescription: '',
+                  indicators: [],
+                  isPcscSds: false,
+                  isPcscSdsPlus: false,
+                  isPcscSec250: false,
+                  isScheduleFifteenMaximumLife: false,
+                },
+                {
+                  offenderChargeId: 3,
+                  offenceStartDate: '2021-01-07',
+                  offenceEndDate: '2021-01-07',
+                  offenceCode: '123',
+                  offenceDescription: '',
+                  indicators: [],
+                  isPcscSds: false,
+                  isPcscSdsPlus: false,
+                  isPcscSec250: false,
+                  isScheduleFifteenMaximumLife: false,
+                },
+              ],
+            },
+          ],
+        },
+      }
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(
+        detailedCalResultWIthNotificationBannerSentencesAndOffences,
+      )
+
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Important')
+          expect(res.text).toContain(
+            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.',
+          )
+        })
+    })
+    it('GET /view/:calculationRequestId/calculation-summary should not show the ERSED warning banner if no recall only', () => {
+      const detailedCalResultWIthNotificationBannerSentencesAndOffences = {
+        ...stubbedDetailedCalculationResults,
+        sentencesAndOffences: [
+          {
+            bookingId: 1,
+            sentenceStatus: '',
+            sentenceCategory: '',
+            sentenceDate: '2021-02-03',
+            terms: [
+              {
+                years: 2,
+                months: 0,
+                weeks: 0,
+                days: 0,
+                code: 'IMP',
+              },
+            ],
+            caseSequence: 2,
+            lineSequence: 2,
+            sentenceSequence: 2,
+            consecutiveToSequence: 1,
+            sentenceCalculationType: 'LR_EDS18',
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            offences: [
+              {
+                offenderChargeId: 1,
+                offenceEndDate: '2021-02-03',
+                offenceCode: '123',
+                offenceDescription: '',
+                indicators: [],
+                isPcscSds: false,
+                isPcscSdsPlus: false,
+                isPcscSec250: false,
+                isScheduleFifteenMaximumLife: false,
+              },
+            ],
+          },
+          {
+            bookingId: 1,
+            sentenceStatus: '',
+            sentenceCategory: '',
+            sentenceDate: '2021-02-03',
+            terms: [
+              {
+                years: 2,
+                months: 0,
+                weeks: 0,
+                days: 0,
+                code: 'IMP',
+              },
+            ],
+            caseSequence: 2,
+            lineSequence: 2,
+            sentenceSequence: 2,
+            consecutiveToSequence: 1,
+            sentenceCalculationType: 'EDS18',
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            offences: [
+              {
+                offenderChargeId: 2,
+                offenceEndDate: '2021-02-03',
+                offenceCode: '123',
+                offenceDescription: '',
+                indicators: [],
+                isPcscSds: false,
+                isPcscSdsPlus: false,
+                isPcscSec250: false,
+                isScheduleFifteenMaximumLife: false,
+              },
+            ],
+          },
+        ],
+      }
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(
+        detailedCalResultWIthNotificationBannerSentencesAndOffences,
+      )
+      entryPointService.isDpsEntryPoint.mockReturnValue(true)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).not.toContain('Important')
+          expect(res.text).not.toContain(
+            'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.',
+          )
         })
     })
   })

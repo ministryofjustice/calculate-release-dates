@@ -4,7 +4,7 @@
             <p class="govuk-hint">{{ releaseDate.fullName }}</p>
         </dt>
         <dd class="govuk-summary-list__value" style="max-width: 40%;" data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | date('dddd, DD MMMM YYYY') }}
-            <p style="margin-top: 10px;">
+            <p style="margin-top: 10px;" data-qa="{{ releaseDate.shortName }}-release-date-hints">
             {% for hint in releaseDate.hints %}
                 {{ hint.html | safe}}
             {% endfor %}
