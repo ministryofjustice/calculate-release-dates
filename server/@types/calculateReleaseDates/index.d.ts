@@ -4,15 +4,6 @@
  */
 
 export interface paths {
-  '/queue-admin/retry-dlq/{dlqName}': {
-    put: operations['retryDlq']
-  }
-  '/queue-admin/retry-all-dlqs': {
-    put: operations['retryAllDlqs']
-  }
-  '/queue-admin/purge-queue/{queueName}': {
-    put: operations['purgeQueue']
-  }
   '/validation/{prisonerId}/full-validation': {
     /**
      * Validates that the data for the given prisoner in NOMIS can be used to calculate a release date
@@ -163,8 +154,12 @@ export interface paths {
      */
     get: operations['getSentencesAndOffences']
   }
-  '/queue-admin/get-dlq-messages/{dlqName}': {
-    get: operations['getDlqMessages']
+  '/reference-data/date-type': {
+    /**
+     * Get the date type definitions
+     * @description Returns the date types and their definitions
+     */
+    get: operations['getDateTypeDefinitions']
   }
   '/non-friday-release/{date}': {
     /**
@@ -278,6 +273,13 @@ export interface paths {
      */
     get: operations['getPrisonerDetails']
   }
+  '/calculation/detailed-results/{calculationRequestId}': {
+    /**
+     * Get release dates for a calculationRequestId with additional details
+     * @description This endpoint will return the release dates based on a calculationRequestId along with hints and full descriptions.
+     */
+    get: operations['getDetailedResults']
+  }
   '/calculation/calculation-user-input/{calculationRequestId}': {
     /**
      * Get user input for a calculationRequestId
@@ -315,21 +317,6 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
-    DlqMessage: {
-      body: {
-        [key: string]: Record<string, never>
-      }
-      messageId: string
-    }
-    RetryDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      messages: components['schemas']['DlqMessage'][]
-    }
-    PurgeQueueResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
     /** @description List of sentences and the users input for each sentence */
     CalculationSentenceUserInput: {
       /** Format: int32 */
@@ -784,12 +771,9 @@ export interface components {
       days: number
       code: string
     }
-    GetDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      /** Format: int32 */
-      messagesReturnedCount: number
-      messages: components['schemas']['DlqMessage'][]
+    DateTypeDefinition: {
+      type: string
+      description: string
     }
     NonFridayReleaseDay: {
       /** Format: date */
@@ -984,7 +968,7 @@ export interface components {
       /**
        * @description Calculation rules used to determine this calculation.
        * @example [
-       *   "HDCED_GE_MIN_PERIOD_LT_MIDPOINT"
+       *   'HDCED_GE_MIN_PERIOD_LT_MIDPOINT'
        * ]
        */
       rules: (
@@ -1105,6 +1089,33 @@ export interface components {
         [key: string]: string
       }
     }
+    CalculationContext: {
+      /** Format: int64 */
+      calculationRequestId: number
+      /** Format: int64 */
+      bookingId: number
+      prisonerId: string
+      /** @enum {string} */
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST'
+      /** Format: uuid */
+      calculationReference: string
+      calculationReason?: components['schemas']['CalculationReason']
+      otherReasonDescription?: string
+      /** Format: date */
+      calculationDate?: string
+      /** @enum {string} */
+      calculationType:
+        | 'CALCULATED'
+        | 'MANUAL_DETERMINATE'
+        | 'MANUAL_INDETERMINATE'
+        | 'CALCULATED_WITH_APPROVED_DATES'
+        | 'MANUAL_OVERRIDE'
+        | 'CALCULATED_BY_SPECIALIST_SUPPORT'
+    }
+    CalculationOriginalData: {
+      prisonerDetails?: components['schemas']['PrisonerDetails']
+      sentencesAndOffences?: components['schemas']['SentenceAndOffences'][]
+    }
     ConcurrentSentenceBreakdown: {
       /** Format: date */
       sentencedAt: string
@@ -1154,6 +1165,58 @@ export interface components {
       daysFromSentenceStart: number
       /** Format: int64 */
       adjustedByDays: number
+    }
+    DetailedCalculationResults: {
+      context: components['schemas']['CalculationContext']
+      dates: {
+        [key: string]: components['schemas']['DetailedDate']
+      }
+      approvedDates?: {
+        [key: string]: components['schemas']['DetailedDate']
+      }
+      calculationOriginalData: components['schemas']['CalculationOriginalData']
+      calculationBreakdown?: components['schemas']['CalculationBreakdown']
+      /** @enum {string} */
+      breakdownMissingReason?:
+        | 'PRISON_API_DATA_MISSING'
+        | 'BREAKDOWN_CHANGED_SINCE_LAST_CALCULATION'
+        | 'UNSUPPORTED_CALCULATION_BREAKDOWN'
+    }
+    DetailedDate: {
+      /** @enum {string} */
+      type:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
+      description: string
+      /** Format: date */
+      date: string
+      hints: components['schemas']['ReleaseDateHint'][]
+    }
+    ReleaseDateHint: {
+      text: string
+      link?: string
     }
     BookingAdjustment: {
       active: boolean
@@ -1238,46 +1301,6 @@ export type $defs = Record<string, never>
 export type external = Record<string, never>
 
 export interface operations {
-  retryDlq: {
-    parameters: {
-      path: {
-        dlqName: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['RetryDlqResult']
-        }
-      }
-    }
-  }
-  retryAllDlqs: {
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['RetryDlqResult'][]
-        }
-      }
-    }
-  }
-  purgeQueue: {
-    parameters: {
-      path: {
-        queueName: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['PurgeQueueResult']
-        }
-      }
-    }
-  }
   /**
    * Validates that the data for the given prisoner in NOMIS can be used to calculate a release date
    * @description This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine
@@ -2123,20 +2146,22 @@ export interface operations {
       }
     }
   }
-  getDlqMessages: {
-    parameters: {
-      query?: {
-        maxMessages?: number
-      }
-      path: {
-        dlqName: string
-      }
-    }
+  /**
+   * Get the date type definitions
+   * @description Returns the date types and their definitions
+   */
+  getDateTypeDefinitions: {
     responses: {
-      /** @description OK */
+      /** @description Returns the date types and their definitions */
       200: {
         content: {
-          '*/*': components['schemas']['GetDlqResult']
+          'application/json': components['schemas']['DateTypeDefinition'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['DateTypeDefinition'][]
         }
       }
     }
@@ -2757,6 +2782,47 @@ export interface operations {
       404: {
         content: {
           'application/json': components['schemas']['PrisonerDetails']
+        }
+      }
+    }
+  }
+  /**
+   * Get release dates for a calculationRequestId with additional details
+   * @description This endpoint will return the release dates based on a calculationRequestId along with hints and full descriptions.
+   */
+  getDetailedResults: {
+    parameters: {
+      path: {
+        /**
+         * @description The calculationRequestId of the results
+         * @example 123456
+         */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** @description Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['DetailedCalculationResults']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['DetailedCalculationResults']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['DetailedCalculationResults']
+        }
+      }
+      /** @description No calculation exists for this calculationRequestId */
+      404: {
+        content: {
+          'application/json': components['schemas']['DetailedCalculationResults']
         }
       }
     }

@@ -216,32 +216,24 @@ export default class GenuineOverrideRoutes {
       const calculationRequestId = Number(req.params.calculationRequestId)
       const { calculationReference } = req.params
       const formError = <string>req.query.formError === 'true'
-      const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
+      const detailedCalculationResults = await this.calculateReleaseDatesService.getDetailedCalculationResults(
         username,
         calculationRequestId,
         token,
       )
+
       const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         username,
         calculationReference,
         token,
       )
-      if (releaseDates.prisonerId !== calculation.prisonerId) {
+      if (detailedCalculationResults.context.prisonerId !== calculation.prisonerId) {
         throw FullPageError.notFoundError()
       }
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         username,
-        releaseDates.prisonerId,
+        detailedCalculationResults.context.prisonerId,
         caseloads,
-        token,
-      )
-      const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
-        username,
-        releaseDates,
-        token,
-      )
-      const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
-        releaseDates,
         token,
       )
       const serverErrors = req.flash('serverErrors')
@@ -249,31 +241,29 @@ export default class GenuineOverrideRoutes {
       if (serverErrors && serverErrors[0]) {
         validationErrors = JSON.parse(serverErrors[0])
       }
-      const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-      const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(
-        calculationRequestId,
-        token,
+      const breakdownReleaseDatesWithAdjustments = this.calculateReleaseDatesService.extractReleaseDatesWithAdjustments(
+        detailedCalculationResults.calculationBreakdown,
       )
       const model = new CalculationSummaryViewModel(
-        releaseDates.dates,
-        weekendAdjustments,
         calculationRequestId,
         calculation.prisonerId,
         prisonerDetail,
-        sentencesAndOffences,
+        detailedCalculationResults.calculationOriginalData.sentencesAndOffences,
         false,
         false,
-        releaseDates.calculationReference,
-        nonFridayReleaseAdjustments,
+        detailedCalculationResults.context.calculationReference,
         false,
         null,
         null,
         null,
-        breakdown?.calculationBreakdown,
-        breakdown?.releaseDatesWithAdjustments,
+        detailedCalculationResults.calculationBreakdown,
+        breakdownReleaseDatesWithAdjustments,
         validationErrors,
         false,
         false,
+        undefined,
+        null,
+        detailedCalculationResults,
       )
 
       return res.render(

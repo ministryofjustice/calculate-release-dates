@@ -26,23 +26,21 @@ export function approvedSummaryDatesCardModelFromCalculationSummaryViewModel(
 ): ApprovedSummaryDatesCardModel {
   const approvedDates: ApprovedSummaryDatesCardLine[] = []
 
-  function pushLine(id: string, fullName: string, hintsHtml: string[]) {
+  function pushLine(id: string, fullName: string) {
     if (model.approvedDates && model.approvedDates[id]) {
       const line: ApprovedSummaryDatesCardLine = {
         shortName: id,
         fullName,
         date: model.approvedDates[id],
-        hints: hintsHtml.map(str => {
-          return { html: str }
-        }),
+        hints: [],
       }
       approvedDates.push(line)
     }
   }
 
-  pushLine('APD', 'Approved parole date', model.getHints('APD'))
-  pushLine('HDCAD', 'Home detention curfew approved date', model.getHints('HDCAD'))
-  pushLine('ROTL', 'Release on temporary licence', model.getHints('ROTL'))
+  pushLine('APD', 'Approved parole date')
+  pushLine('HDCAD', 'Home detention curfew approved date')
+  pushLine('ROTL', 'Release on temporary licence')
 
   return {
     approvedDates,

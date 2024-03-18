@@ -1,6 +1,7 @@
 import { SuperAgentRequest } from 'superagent'
 import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
+import { DetailedCalculationResults } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default {
   stubCalculatePreliminaryReleaseDates: (): SuperAgentRequest => {
@@ -757,6 +758,244 @@ export default {
             calculationReason: 'Transfer',
           },
         ],
+      },
+    })
+  },
+  stubGetDetailedCalculationResults: (): SuperAgentRequest => {
+    const breakdown = {
+      concurrentSentences: [
+        {
+          sentencedAt: '2020-07-17',
+          sentenceLength: '12 months',
+          sentenceLengthDays: 365,
+          dates: {
+            SLED: {
+              unadjusted: '2021-07-16',
+              adjusted: '2021-07-01',
+              daysFromSentenceStart: 365,
+              adjustedByDays: 15,
+            },
+            CRD: {
+              unadjusted: '2021-01-15',
+              adjusted: '2021-01-06',
+              daysFromSentenceStart: 183,
+              adjustedByDays: 9,
+            },
+          },
+          lineSequence: 2,
+          caseSequence: 2,
+          caseReference: 'ABC123',
+        },
+        {
+          sentencedAt: '2020-12-13',
+          sentenceLength: '2 months',
+          sentenceLengthDays: 62,
+          dates: {
+            SLED: {
+              unadjusted: '2021-02-12',
+              adjusted: '2021-01-28',
+              daysFromSentenceStart: 62,
+              adjustedByDays: 15,
+            },
+            CRD: {
+              unadjusted: '2021-01-12',
+              adjusted: '2021-01-03',
+              daysFromSentenceStart: 31,
+              adjustedByDays: 9,
+            },
+          },
+          lineSequence: 4,
+          caseSequence: 4,
+          caseReference: 'ABC234',
+        },
+      ],
+      consecutiveSentence: {
+        sentencedAt: '2020-03-20',
+        sentenceLength: '5 years 8 months',
+        sentenceLengthDays: 2071,
+        dates: {
+          SLED: {
+            unadjusted: '2018-11-20',
+            adjusted: '2018-11-05',
+            daysFromSentenceStart: 2071,
+            adjustedByDays: 15,
+          },
+          CRD: {
+            unadjusted: '2017-05-13',
+            adjusted: '2017-05-07',
+            daysFromSentenceStart: 1036,
+            adjustedByDays: 6,
+          },
+        },
+        sentenceParts: [
+          {
+            lineSequence: 1,
+            caseSequence: 1,
+            caseReference: 'ABC345',
+            sentenceLength: '2 years',
+            sentenceLengthDays: 730,
+            consecutiveToLineSequence: null,
+            consecutiveToCaseSequence: null,
+          },
+          {
+            lineSequence: 3,
+            caseSequence: 3,
+            caseReference: 'ABC567',
+            sentenceLength: '8 months',
+            sentenceLengthDays: 242,
+            consecutiveToLineSequence: 1,
+            consecutiveToCaseSequence: 1,
+          },
+          {
+            lineSequence: 5,
+            caseSequence: 5,
+            caseReference: 'ABC678',
+            sentenceLength: '3 years',
+            sentenceLengthDays: 1095,
+            consecutiveToLineSequence: 3,
+            consecutiveToCaseSequence: 3,
+          },
+        ],
+      },
+      breakdownByReleaseDateType: {
+        CRD: {
+          rules: [],
+          rulesWithExtraAdjustments: {},
+          adjustedDays: -15,
+          releaseDate: '2015-07-23',
+          unadjustedDate: '2018-11-20',
+        },
+        SED: {
+          rules: [],
+          rulesWithExtraAdjustments: {},
+          adjustedDays: -6,
+          releaseDate: '2015-12-21',
+          unadjustedDate: '2017-05-13',
+        },
+      },
+      otherDates: {},
+    }
+    const prisonerDetails = {
+      offenderNo: 'A1234AB',
+      bookingId: 1234,
+      firstName: 'Marvin',
+      lastName: 'Haggler',
+      dateOfBirth: '1965-02-03',
+      agencyId: 'MDI',
+      alerts: [],
+    }
+    const sentencesAndOffences = [
+      {
+        bookingId: 1,
+        sentenceCategory: '',
+        sentenceDate: '2021-02-03',
+        terms: [
+          {
+            years: 3,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            code: 'IMP',
+          },
+        ],
+        sentenceCalculationType: 'ADIMP',
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        caseSequence: 1,
+        lineSequence: 1,
+        caseReference: 'ABC123',
+        sentenceSequence: 1,
+        sentenceStatus: 'A',
+        offences: [
+          {
+            offenderChargeId: 1,
+            offenceEndDate: '2021-02-03',
+            offenceCode: '123',
+            offenceDescription: 'Doing a crime',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+        ],
+      },
+      {
+        bookingId: 1,
+        sentenceCategory: '',
+        sentenceDate: '2021-02-03',
+        terms: [
+          {
+            years: 2,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            code: 'IMP',
+          },
+        ],
+        sentenceCalculationType: 'ADIMP',
+        caseSequence: 2,
+        lineSequence: 2,
+        caseReference: 'ABC123',
+        sentenceSequence: 2,
+        consecutiveToSequence: 1,
+        sentenceStatus: 'A',
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        offences: [
+          {
+            offenderChargeId: 2,
+            offenceEndDate: '2021-02-05',
+            offenceDescription: 'Doing a crime',
+            offenceCode: '123',
+            indicators: [],
+            isPcscSds: false,
+            isPcscSdsPlus: false,
+            isPcscSec250: false,
+            isScheduleFifteenMaximumLife: false,
+          },
+        ],
+      },
+    ]
+    const detailedResults: DetailedCalculationResults = {
+      dates: {
+        SLED: { date: '2018-11-05', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        CRD: {
+          date: dayjs().add(7, 'day').format('YYYY-MM-DD'),
+          type: 'CRD',
+          description: 'Conditional release date',
+          hints: [{ text: 'Friday, 05 May 2017 when adjusted to a working day' }],
+        },
+        HDCED: {
+          date: dayjs().add(3, 'day').format('YYYY-MM-DD'),
+          type: 'HDCED',
+          description: 'Home detention curfew eligibility date',
+          hints: [{ text: 'Wednesday, 28 December 2016 when adjusted to a working day' }],
+        },
+      },
+      context: {
+        calculationRequestId: 123,
+        calculationReference: '123',
+        prisonerId: 'A1234AB',
+        bookingId: 1234,
+        calculationStatus: 'CONFIRMED',
+        calculationType: 'CALCULATED',
+      },
+      calculationOriginalData: {
+        prisonerDetails,
+        sentencesAndOffences,
+      },
+      calculationBreakdown: breakdown,
+      approvedDates: {},
+    }
+
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/detailed-results/([0-9]*)`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: detailedResults,
       },
     })
   },

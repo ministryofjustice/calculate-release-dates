@@ -10,7 +10,7 @@ import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import UserInputService from '../services/userInputService'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
-import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { DetailedDate, ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculationCompleteViewModel from '../models/CalculationCompleteViewModel'
 import CalculationSummaryPageViewModel from '../models/CalculationSummaryPageViewModel'
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
@@ -41,31 +41,23 @@ export default class CalculationRoutes {
     ) {
       req.session.selectedApprovedDates[nomsId] = []
     }
-    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
+    const detailedCalculationResults = await this.calculateReleaseDatesService.getDetailedCalculationResults(
       username,
       calculationRequestId,
       token,
     )
-    if (releaseDates.prisonerId !== nomsId) {
+    if (detailedCalculationResults.context.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
     }
+    const breakdownReleaseDatesWithAdjustments = this.calculateReleaseDatesService.extractReleaseDatesWithAdjustments(
+      detailedCalculationResults.calculationBreakdown,
+    )
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
-      username,
-      releaseDates,
-      token,
-    )
-    const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
-      releaseDates,
-      token,
-    )
     const serverErrors = req.flash('serverErrors')
     let validationErrors = null
     if (serverErrors && serverErrors[0]) {
       validationErrors = JSON.parse(serverErrors[0])
     }
-    const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-    const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token)
     let approvedDates
     if (
       req.session.selectedApprovedDates &&
@@ -80,32 +72,35 @@ export default class CalculationRoutes {
     if (!req.session.HDCED_WEEKEND_ADJUSTED) {
       req.session.HDCED_WEEKEND_ADJUSTED = {}
     }
-    if (releaseDates.dates.HDCED) {
-      req.session.HDCED[nomsId] = releaseDates.dates.HDCED
+    if (detailedCalculationResults.dates.HDCED) {
+      req.session.HDCED[nomsId] = detailedCalculationResults.dates.HDCED.date
+      const hcedWeekendAdjusted = await this.calculateReleaseDatesService.getNextWorkingDay(
+        detailedCalculationResults.dates.HDCED.date,
+        token,
+      )
       req.session.HDCED_WEEKEND_ADJUSTED[nomsId] =
-        weekendAdjustments.HDCED != null && weekendAdjustments.HDCED.date != null
+        detailedCalculationResults.dates.HDCED.date != null && hcedWeekendAdjusted != null
     }
     const model = new CalculationSummaryViewModel(
-      releaseDates.dates,
-      weekendAdjustments,
       calculationRequestId,
       nomsId,
       prisonerDetail,
-      sentencesAndOffences,
+      detailedCalculationResults.calculationOriginalData.sentencesAndOffences,
       false,
       false,
-      releaseDates.calculationReference,
-      nonFridayReleaseAdjustments,
+      detailedCalculationResults.context.calculationReference,
       false,
       null,
       null,
       null,
-      breakdown?.calculationBreakdown,
-      breakdown?.releaseDatesWithAdjustments,
+      detailedCalculationResults.calculationBreakdown,
+      breakdownReleaseDatesWithAdjustments,
       validationErrors,
       false,
       false,
       approvedDates,
+      null,
+      detailedCalculationResults,
     )
     res.render(
       'pages/calculation/calculationSummary',
@@ -129,10 +124,15 @@ export default class CalculationRoutes {
     return result
   }
 
-  private indexApprovedDates(dates: { [key: string]: string }) {
+  private indexApprovedDates(dates: { [key: string]: string } | { [key: string]: DetailedDate }) {
     const result = {}
     Object.keys(dates).forEach((dateType: string) => {
-      result[dateType] = DateTime.fromFormat(dates[dateType], 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+      const date = dates[dateType]
+      if (typeof date === 'string') {
+        result[dateType] = DateTime.fromFormat(date, 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+      } else {
+        result[dateType] = DateTime.fromFormat(date.date, 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+      }
     })
     return result
   }
@@ -142,39 +142,30 @@ export default class CalculationRoutes {
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const releaseDates = await this.calculateReleaseDatesService.getCalculationResults(
+    const detailedCalculationResults = await this.calculateReleaseDatesService.getDetailedCalculationResults(
       username,
       calculationRequestId,
       token,
     )
-    if (releaseDates.prisonerId !== nomsId) {
+
+    if (detailedCalculationResults.context.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
     }
-    const weekendAdjustments = await this.calculateReleaseDatesService.getWeekendAdjustments(
-      username,
-      releaseDates,
-      token,
-    )
-    const nonFridayReleaseAdjustments = await this.calculateReleaseDatesService.getNonFridayReleaseAdjustments(
-      releaseDates,
-      token,
-    )
 
     const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
     const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token)
-    const hasNone = 'None' in releaseDates.dates
-    const approvedDates = releaseDates.approvedDates ? this.indexApprovedDates(releaseDates.approvedDates) : null
+    const hasNone = 'None' in detailedCalculationResults.dates
+    const approvedDates = detailedCalculationResults.approvedDates
+      ? this.indexApprovedDates(detailedCalculationResults.approvedDates)
+      : null
     const model = new CalculationSummaryViewModel(
-      releaseDates.dates,
-      weekendAdjustments,
       calculationRequestId,
       nomsId,
       prisonerDetail,
       sentencesAndOffences,
       hasNone,
       true,
-      releaseDates.calculationReference,
-      nonFridayReleaseAdjustments,
+      detailedCalculationResults.context.calculationReference,
       false,
       null,
       null,
@@ -185,6 +176,8 @@ export default class CalculationRoutes {
       false,
       false,
       approvedDates,
+      null,
+      detailedCalculationResults,
     )
     res.render(
       'pages/calculation/printCalculationSummary',
