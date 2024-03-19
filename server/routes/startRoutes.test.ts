@@ -181,7 +181,7 @@ describe('Start routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('[data-qa=main-heading]').text()).toStrictEqual('Calculations and release dates')
+        expect($('[data-qa=main-heading]').text()).toStrictEqual('Release dates and calculations')
         expectMiniProfile(res.text, {
           name: 'Nobody, Anon',
           dob: '24/06/2000',
@@ -231,7 +231,7 @@ describe('Start routes tests', () => {
             return $(element).text()
           })
           .get()
-        expect(links).toStrictEqual(['Overview', 'Adjustments', 'Calculations and release dates'])
+        expect(links).toStrictEqual(['Overview', 'Adjustments', 'Release dates and calculations'])
       })
       .expect(() => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
@@ -274,7 +274,7 @@ describe('Start routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('[data-qa=main-heading]').text()).toStrictEqual('Calculations and release dates')
+        expect($('[data-qa=main-heading]').text()).toStrictEqual('Release dates and calculations')
         expectMiniProfile(res.text, {
           name: 'Nobody, Anon',
           dob: '24/06/2000',
