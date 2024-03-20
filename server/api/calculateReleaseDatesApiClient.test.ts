@@ -1,6 +1,7 @@
 import nock from 'nock'
 import config from '../config'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 
 jest.mock('../data/hmppsAuthClient')
 
@@ -16,6 +17,7 @@ const token = 'token'
 describe('Calculate release dates API client tests', () => {
   let fakeApi: nock.Scope
   const calculationRequestId = 123456
+  const prisonerId = 'ABC123'
 
   beforeEach(() => {
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
@@ -50,6 +52,20 @@ describe('Calculate release dates API client tests', () => {
       )
       expect(data).toEqual(stubbedTestData)
       expect(nock.isDone()).toBe(true)
+    })
+
+    describe('Get latest calculation for prisoner', () => {
+      it('Get latest calculation for prisoner successfully', async () => {
+        fakeApi.get(`/calculation/${prisonerId}/latest`, '').reply(200, stubbedTestData)
+        const data = await new CalculateReleaseDatesApiClient(token).getLatestCalculationForPrisoner(prisonerId)
+        expect(data).toEqual(stubbedTestData)
+        expect(nock.isDone()).toBe(true)
+      })
+      it('Get latest calculation for prisoner fails with 404 and throws Error', async () => {
+        fakeApi.get(`/calculation/${prisonerId}/latest`, '').reply(404)
+        const client = new CalculateReleaseDatesApiClient(token)
+        await expect(client.getLatestCalculationForPrisoner(prisonerId)).rejects.toThrow('Not Found')
+      })
     })
   })
 })

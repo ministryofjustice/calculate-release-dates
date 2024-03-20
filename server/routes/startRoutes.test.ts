@@ -1,6 +1,7 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
+import { Action, LatestCalculationCardConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
@@ -85,6 +86,26 @@ const calculationHistory = [
   },
 ] as HistoricCalculation[]
 
+const latestCalcCardForPrisoner: LatestCalculationCardConfig = {
+  reason: 'Initial check',
+  calculatedAt: '2025-02-01T10:30:00',
+  source: 'CRDS',
+  establishment: 'Kirkham (HMP)',
+  dates: [
+    { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
+    { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+  ],
+}
+const latestCalcCardActionForPrisoner: Action = {
+  title: 'View details',
+  href: '/foo',
+  dataQa: 'latest-calc-card-action',
+}
+const noLatestCalcCard = {
+  latestCalcCard: undefined,
+  latestCalcCardAction: undefined,
+}
+
 let app: Express
 
 beforeEach(() => {
@@ -143,6 +164,7 @@ describe('Start routes tests', () => {
     config.featureToggles.useCCARDLayout = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
     return request(app)
       .get('?prisonId=123')
       .expect(200)
@@ -174,6 +196,11 @@ describe('Start routes tests', () => {
     config.featureToggles.useCCARDLayout = true
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: latestCalcCardActionForPrisoner,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('?prisonId=123')
@@ -223,6 +250,10 @@ describe('Start routes tests', () => {
           'Five Wells (HMP)',
           'Calculate release dates service',
         ])
+        const latestValuationSLEDRow = $('[data-qa=latest-calculation-card-release-date-SLED]').first()
+        expect(latestValuationSLEDRow).toBeTruthy()
+        const latestValuationCRDRow = $('[data-qa=latest-calculation-card-release-date-CRD]').first()
+        expect(latestValuationCRDRow).toBeTruthy()
 
         expect(res.text).toContain('href="/view/GU32342/sentences-and-offences/90328')
         const links = $('.moj-sub-navigation__link')
@@ -238,12 +269,34 @@ describe('Start routes tests', () => {
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
       })
   })
+  it('GET ?prisonId=123 CCARD mode should not blow up if latest calc cannot be loaded', () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    config.featureToggles.useCCARDLayout = true
+
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+    const cardAndAction = { latestCalcCard: undefined, latestCalcCardAction: undefined }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.release-dates-list')).toHaveLength(0)
+      })
+      .expect(() => {
+        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
+        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
+      })
+  })
 
   it('GET ?prisonId=123 if CCARD feature toggle is on and offender has no calculation history', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     config.featureToggles.useCCARDLayout = true
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue([])
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('?prisonId=123')
@@ -267,6 +320,7 @@ describe('Start routes tests', () => {
     config.featureToggles.useCCARDLayout = true
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('?prisonId=123')
@@ -309,6 +363,7 @@ describe('Start routes tests', () => {
     config.featureToggles.useCCARDLayout = true
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('?prisonId=123')

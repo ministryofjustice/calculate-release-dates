@@ -1,5 +1,11 @@
 import dayjs from 'dayjs'
 import { Request } from 'express'
+import {
+  Action,
+  LatestCalculationCardConfig,
+  LatestCalculationCardDate,
+  LatestCalculationCardDateHint,
+} from 'hmpps-court-cases-release-dates-design/hmpps/@types'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
   AnalyzedSentenceAndOffences,
@@ -13,6 +19,7 @@ import {
   DetailedCalculationResults,
   GenuineOverrideRequest,
   HistoricCalculation,
+  LatestCalculation,
   NonFridayReleaseDay,
   ReleaseDateCalculationBreakdown,
   SubmitCalculationRequest,
@@ -457,5 +464,55 @@ export default class CalculateReleaseDatesService {
     token: string,
   ): Promise<DetailedCalculationResults> {
     return new CalculateReleaseDatesApiClient(token).getDetailedCalculationResults(calculationRequestId)
+  }
+
+  async getLatestCalculationCardForPrisoner(
+    prisonerId: string,
+    token: string,
+  ): Promise<{ latestCalcCard?: LatestCalculationCardConfig; latestCalcCardAction?: Action }> {
+    return new CalculateReleaseDatesApiClient(token)
+      .getLatestCalculationForPrisoner(prisonerId)
+      .then(latestCalc => {
+        let action: Action
+        if (latestCalc.calculationRequestId)
+          action = {
+            title: 'View details',
+            href: `/view/${prisonerId}/sentences-and-offences/${latestCalc.calculationRequestId}`,
+            dataQa: 'latest-calc-card-action',
+          }
+        return {
+          latestCalcCard: this.latestCalculationComponentConfig(latestCalc),
+          latestCalcCardAction: action,
+        }
+      })
+      .catch(error => {
+        logger.info(`Unable to load latest calc ${error}`)
+        return { latestCalcCard: undefined, latestCalcCardAction: undefined }
+      })
+  }
+
+  private latestCalculationComponentConfig(latestCalculation: LatestCalculation): LatestCalculationCardConfig {
+    const dates: LatestCalculationCardDate[] = Object.values(latestCalculation.dates).map(date => {
+      const cardDate: LatestCalculationCardDate = {
+        type: date.type,
+        description: date.description,
+        date: date.date,
+        hints: date.hints.map(hint => {
+          const cardHint: LatestCalculationCardDateHint = {
+            text: hint.text,
+            href: hint.link,
+          }
+          return cardHint
+        }),
+      }
+      return cardDate
+    })
+    return {
+      source: latestCalculation.source,
+      calculatedAt: latestCalculation.calculatedAt,
+      establishment: latestCalculation.establishment,
+      reason: latestCalculation.reason,
+      dates,
+    }
   }
 }

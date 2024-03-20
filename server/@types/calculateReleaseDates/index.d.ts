@@ -238,6 +238,13 @@ export interface paths {
      */
     get: operations['getCalculationUserQuestions']
   }
+  '/calculation/{prisonerId}/latest': {
+    /**
+     * Get latest release dates for a prisoner
+     * @description This endpoint will return the latest release dates for a prisoner. They may come from CRDS or NOMIS as identified by the source in the results.
+     */
+    get: operations['getLatestCalculation']
+  }
   '/calculation/sentence-and-offences/{calculationRequestId}': {
     /**
      * Get sentences and offences for a calculationRequestId
@@ -393,6 +400,7 @@ export interface components {
         | 'ZERO_IMPRISONMENT_TERM'
         | 'UNSUPPORTED_CALCULATION_DTO_WITH_RECALL'
         | 'PRE_PCSC_DTO_WITH_ADJUSTMENT'
+        | 'BOTUS_CONSECUTIVE_OR_CONCURRENT_TO_OTHER_SENTENCE'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1045,6 +1053,56 @@ export interface components {
     CalculationUserQuestions: {
       sentenceQuestions: components['schemas']['CalculationSentenceQuestion'][]
     }
+    DetailedDate: {
+      /** @enum {string} */
+      type:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
+      description: string
+      /** Format: date */
+      date: string
+      hints: components['schemas']['ReleaseDateHint'][]
+    }
+    LatestCalculation: {
+      prisonerId: string
+      /** Format: int64 */
+      bookingId: number
+      /** Format: date-time */
+      calculatedAt: string
+      /** Format: int64 */
+      calculationRequestId?: number
+      establishment?: string
+      reason: string
+      /** @enum {string} */
+      source: 'NOMIS' | 'CRDS'
+      dates: components['schemas']['DetailedDate'][]
+    }
+    ReleaseDateHint: {
+      text: string
+      link?: string
+    }
     ReturnToCustodyDate: {
       /** Format: int64 */
       bookingId: number
@@ -1181,42 +1239,6 @@ export interface components {
         | 'PRISON_API_DATA_MISSING'
         | 'BREAKDOWN_CHANGED_SINCE_LAST_CALCULATION'
         | 'UNSUPPORTED_CALCULATION_BREAKDOWN'
-    }
-    DetailedDate: {
-      /** @enum {string} */
-      type:
-        | 'CRD'
-        | 'LED'
-        | 'SED'
-        | 'NPD'
-        | 'ARD'
-        | 'TUSED'
-        | 'PED'
-        | 'SLED'
-        | 'HDCED'
-        | 'NCRD'
-        | 'ETD'
-        | 'MTD'
-        | 'LTD'
-        | 'DPRRD'
-        | 'PRRD'
-        | 'ESED'
-        | 'ERSED'
-        | 'TERSED'
-        | 'APD'
-        | 'HDCAD'
-        | 'None'
-        | 'Tariff'
-        | 'ROTL'
-        | 'HDCED4PLUS'
-      description: string
-      /** Format: date */
-      date: string
-      hints: components['schemas']['ReleaseDateHint'][]
-    }
-    ReleaseDateHint: {
-      text: string
-      link?: string
     }
     BookingAdjustment: {
       active: boolean
@@ -2572,6 +2594,47 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['CalculationUserQuestions']
+        }
+      }
+    }
+  }
+  /**
+   * Get latest release dates for a prisoner
+   * @description This endpoint will return the latest release dates for a prisoner. They may come from CRDS or NOMIS as identified by the source in the results.
+   */
+  getLatestCalculation: {
+    parameters: {
+      path: {
+        /**
+         * @description The id of the prisoner
+         * @example ABC123
+         */
+        prisonerId: string
+      }
+    }
+    responses: {
+      /** @description Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['LatestCalculation']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['LatestCalculation']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['LatestCalculation']
+        }
+      }
+      /** @description The prisoner could not be found or there are no calculations yet */
+      404: {
+        content: {
+          'application/json': components['schemas']['LatestCalculation']
         }
       }
     }

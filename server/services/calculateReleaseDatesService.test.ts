@@ -1,10 +1,12 @@
 import nock from 'nock'
 import dayjs from 'dayjs'
+import { Action, LatestCalculationCardConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import config from '../config'
 import {
   BookingCalculation,
   CalculationBreakdown,
+  LatestCalculation,
   NonFridayReleaseDay,
   ValidationMessage,
   WorkingDay,
@@ -447,6 +449,83 @@ describe('Calculate release dates service tests', () => {
 
       const result = await calculateReleaseDatesService.getCalculationHistory(prisonerId, null)
       expect(result).toEqual(history)
+    })
+  })
+
+  describe('Latest calc card', () => {
+    it('Should get latest calc and map to a card and action', async () => {
+      const latestCalc: LatestCalculation = {
+        prisonerId,
+        bookingId: 123456,
+        calculationRequestId: 654321,
+        reason: 'Initial check',
+        calculatedAt: '2025-02-01T10:30:00',
+        source: 'CRDS',
+        establishment: 'Kirkham (HMP)',
+        dates: [
+          { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
+          { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        ],
+      }
+      const latestCalcCard: LatestCalculationCardConfig = {
+        reason: 'Initial check',
+        calculatedAt: '2025-02-01T10:30:00',
+        source: 'CRDS',
+        establishment: 'Kirkham (HMP)',
+        dates: [
+          { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
+          { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        ],
+      }
+      const latestCalcCardAction: Action = {
+        title: 'View details',
+        href: '/view/A1234AB/sentences-and-offences/654321',
+        dataQa: 'latest-calc-card-action',
+      }
+      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(200, latestCalc)
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null)
+      expect(result).toStrictEqual({
+        latestCalcCard,
+        latestCalcCardAction,
+      })
+    })
+    it('Should get latest calc and map to a card but no action if calc reference missing', async () => {
+      const latestCalc: LatestCalculation = {
+        prisonerId,
+        bookingId: 123456,
+        reason: 'Initial check',
+        calculatedAt: '2025-02-01T10:30:00',
+        source: 'CRDS',
+        establishment: 'Kirkham (HMP)',
+        dates: [
+          { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
+          { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        ],
+      }
+      const latestCalcCard: LatestCalculationCardConfig = {
+        reason: 'Initial check',
+        calculatedAt: '2025-02-01T10:30:00',
+        source: 'CRDS',
+        establishment: 'Kirkham (HMP)',
+        dates: [
+          { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
+          { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        ],
+      }
+      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(200, latestCalc)
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null)
+      expect(result).toStrictEqual({
+        latestCalcCard,
+        latestCalcCardAction: undefined,
+      })
+    })
+    it('Should return undefined card and action if no prisoner or calc found', async () => {
+      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(404)
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null)
+      expect(result).toStrictEqual({
+        latestCalcCard: undefined,
+        latestCalcCardAction: undefined,
+      })
     })
   })
 })
