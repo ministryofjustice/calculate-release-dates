@@ -140,24 +140,29 @@ describe('Start routes tests', () => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(0)
       })
   })
-  it('GET / should show service header with general link if CCARD layout is enabled', () => {
+
+  it('GET / should render the search page if CCARD layout is enabled', async () => {
     config.featureToggles.useCCARDLayout = true
-    return request(app)
+    let redirect: string
+    await request(app)
       .get('/')
+      .expect(302)
+      .expect('Location', '/search/prisoners')
+      .expect(res => {
+        redirect = res.headers.location
+        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
+        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(0)
+      })
+
+    await request(app)
+      .get(redirect)
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect(res.text).toContain('Calculate release dates')
-        expect(res.text).toContain('href="/search/prisoners"')
-        expect(res.text).not.toContain('A1234AA')
         expectNoMiniProfile(res.text)
         expectServiceHeader(res.text)
         expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
-      })
-      .expect(() => {
-        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
-        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(0)
       })
   })
   it('GET ?prisonId=123 should return start page in DPS journey if CCARD feature toggle is off', () => {

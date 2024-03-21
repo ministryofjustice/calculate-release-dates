@@ -113,7 +113,11 @@
   {% endif %}
 
   {% if featureToggles.useCCARDLayout and showCCARDNav %}
-      {{ serviceHeader(commonElementConfig.serviceHeader) }}
+      {% if commonElementConfig.serviceHeader %}
+        {{ serviceHeader(commonElementConfig.serviceHeader) }}
+      {% else %}
+        {{ serviceHeader(defaultServiceHeaderConfig) }}
+      {% endif %}
   {% endif %}
 
 {% endblock %}
