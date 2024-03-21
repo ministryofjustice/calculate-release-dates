@@ -39,4 +39,3 @@ generic-service:
 generic-prometheus-alerts:
   businessHoursOnly: true
   alertSeverity: legacy-replacement-alerts-non-prod
-
