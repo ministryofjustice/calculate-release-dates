@@ -40,4 +40,4 @@ generic-service:
   allowlist: null
 
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service-dev
+  alertSeverity: legacy-replacement-alerts-non-prod
