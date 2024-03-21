@@ -7,12 +7,14 @@
 
 {% block beforeContent %}
   {{ super() }}
+  {% if not ccard %}
   <nav>
     {{ govukBackLink({
         text: "Back",
         href: '/'
     }) }}
   </nav>
+  {% endif %}
 {% endblock %}
 {% block content %}
   <div class="govuk-grid-row govuk-!-margin-bottom-4" data-qa="prisoner-search-section">
