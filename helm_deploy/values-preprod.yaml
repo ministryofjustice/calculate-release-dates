@@ -37,4 +37,5 @@ generic-service:
     ENVIRONMENT_NAME: PRE-PRODUCTION
 
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service-dev
+  businessHoursOnly: true
+  alertSeverity: legacy-replacement-alerts-non-prod

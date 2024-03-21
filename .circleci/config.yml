@@ -7,11 +7,11 @@ orbs:
 parameters:
   alerts-slack-channel:
     type: string
-    default: farsight-alerts
+    default: legacy-replacement-alerts-non-prod
 
   releases-slack-channel:
     type: string
-    default: dps-releases
+    default: legacy-replacement-releases
 
   node-version:
     type: string

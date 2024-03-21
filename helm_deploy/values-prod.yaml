@@ -29,4 +29,4 @@ generic-service:
     ERS2024_BANNER_ENABLED: "true"
     USE_CCARD_LAYOUT: "false"
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service-dev
+  alertSeverity: legacy-replacement-alerts
