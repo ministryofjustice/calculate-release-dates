@@ -31,12 +31,12 @@ export function expectMiniProfile(
 
 export function expectMiniProfileNoLocation(
   html: string,
-  prisoner: { name: string; dob: string; prisonNumber: string; establishment?: string; location?: string },
+  prisoner: { name: string; dob: string; prisonNumber: string },
 ) {
   const $ = cheerio.load(html)
-  expect($('[data-qa=mini-profile-name]').text()).toStrictEqual(prisoner.name)
+  expect($('[data-qa=mini-profile-person-profile-link]').text()).toStrictEqual(prisoner.name)
   expect($('[data-qa=mini-profile-dob]').text()).toStrictEqual(prisoner.dob)
-  expect($('[data-qa=mini-profile-offender-no]').text()).toStrictEqual(prisoner.prisonNumber)
+  expect($('[data-qa=mini-profile-prisoner-number]').text()).toStrictEqual(prisoner.prisonNumber)
 }
 
 export function expectNoMiniProfile(html: string) {

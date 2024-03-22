@@ -1,7 +1,10 @@
 import { SuperAgentRequest } from 'superagent'
 import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
-import { DetailedCalculationResults } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  DetailedCalculationResults,
+  LatestCalculation,
+} from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default {
   stubCalculatePreliminaryReleaseDates: (): SuperAgentRequest => {
@@ -996,6 +999,68 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: detailedResults,
+      },
+    })
+  },
+  stubGetLatestCalculation: (): SuperAgentRequest => {
+    const latestCalculation: LatestCalculation = {
+      prisonerId: 'A1234AB',
+      bookingId: 1234,
+      calculationRequestId: 123,
+      calculatedAt: '2024-03-05T10:30:00',
+      source: 'CRDS',
+      reason: 'Transfer',
+      establishment: 'Kirkham (HMP)',
+      dates: [
+        { date: '2018-11-05', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        {
+          date: dayjs().add(7, 'day').format('YYYY-MM-DD'),
+          type: 'CRD',
+          description: 'Conditional release date',
+          hints: [{ text: 'Friday, 05 May 2017 when adjusted to a working day' }],
+        },
+        {
+          date: dayjs().add(3, 'day').format('YYYY-MM-DD'),
+          type: 'HDCED',
+          description: 'Home detention curfew eligibility date',
+          hints: [{ text: 'Wednesday, 28 December 2016 when adjusted to a working day' }],
+        },
+      ],
+    }
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/calculation/A1234AB/latest',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: latestCalculation,
+      },
+    })
+  },
+  stubGetLatestCalculationNone: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/calculation/A1234AB/latest',
+      },
+      response: {
+        status: 404,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
+  stubGetCalculationHistoryNone: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/historicCalculations/A1234AB`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [],
       },
     })
   },

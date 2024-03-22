@@ -1,7 +1,6 @@
-import IndexPage from '../pages'
-import ErrorPage from '../pages/error'
 import Page from '../pages/page'
 import PrisonerSearchPage from '../pages/prisonerSearch'
+import CCARDLandingPage from '../pages/CCARDLandingPage'
 
 context('View journey tests', () => {
   beforeEach(() => {
@@ -13,17 +12,20 @@ context('View journey tests', () => {
     cy.task('stubGetPrisonerDetails')
     cy.task('stubCalculationUserInputs')
     cy.task('stubComponents')
+    cy.task('stubGetLatestCalculationNone')
+    cy.task('stubGetCalculationHistoryNone')
   })
 
   it('View journey search for prisoner without calculation submitted', () => {
     cy.signIn()
-    const indexPage = Page.verifyOnPage(IndexPage)
-    indexPage.viewJourneyLink().click()
 
     const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
-    const errorPage = Page.verifyOnPage(ErrorPage)
-    errorPage.heading().contains('No calculation submitted')
+
+    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
+    ccardLandingPage.hasMiniProfile()
+    ccardLandingPage.latestCalcViewDetailsAction().should('not.exist')
+    ccardLandingPage.calculateReleaseDatesAction().should('exist')
   })
 })

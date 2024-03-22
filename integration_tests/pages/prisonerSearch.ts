@@ -21,6 +21,14 @@ export default class PrisonerSearchPage extends Page {
       .find(`[data-qa=prisoner-${prisonerIdentifier}]`)
       .find('[data-qa=prisoner-link]')
 
+  headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
+
+  headerPhaseBanner = (): PageElement => cy.get('[data-qa=header-phase-banner]')
+
+  commonComponentsHeader = (): PageElement => cy.get('[data-qa=common-header]')
+
+  designLibraryFooter = (): PageElement => cy.get('[data-qa=ccrds-footer]')
+
   private prisonerFirstName = (): PageElement => cy.get('[data-qa=prisoner-first-name]')
 
   private prisonerLastName = (): PageElement => cy.get('[data-qa=prisoner-last-name]')

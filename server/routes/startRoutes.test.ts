@@ -118,11 +118,12 @@ beforeEach(() => {
 })
 afterEach(() => {
   jest.resetAllMocks()
-  config.featureToggles.useCCARDLayout = false
+  config.featureToggles.useCCARDLayout = true
 })
 
 describe('Start routes tests', () => {
   it('GET / should return start page in standalone journey', () => {
+    config.featureToggles.useCCARDLayout = false
     return request(app)
       .get('/')
       .expect(200)
