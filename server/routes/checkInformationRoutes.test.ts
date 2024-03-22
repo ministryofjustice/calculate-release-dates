@@ -89,11 +89,12 @@ const stubbedPrisonerData = {
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 const expectedMiniProfile = {
-  name: 'Anon Nobody',
-  dob: '24 June 2000',
+  name: 'Nobody, Anon',
+  dob: '24/06/2000',
   prisonNumber: 'A1234AA',
   establishment: 'Foo Prison (HMP)',
   location: 'D-2-003',
+  status: 'Serving Life Imprisonment',
 }
 
 const stubbedSentencesAndOffences = [
@@ -442,7 +443,7 @@ describe('Check information routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expectMiniProfileNoLocation(res.text, { name: 'Anon Nobody', dob: '24 June 2000', prisonNumber: 'A1234AA' })
+        expectMiniProfileNoLocation(res.text, { name: 'Nobody, Anon', dob: '24/06/2000', prisonNumber: 'A1234AA' })
       })
   })
 

@@ -18,6 +18,7 @@ export default {
           lastName: 'Haggler',
           dateOfBirth: '1965-02-03',
           agencyId: 'MDI',
+          imprisonmentStatusDescription: 'Some Status',
           assignedLivingUnit: {
             agencyName: 'Foo Prison (HMP)',
             description: 'D-2-003',

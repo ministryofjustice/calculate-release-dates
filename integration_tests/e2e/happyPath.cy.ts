@@ -1,4 +1,3 @@
-import IndexPage from '../pages'
 import AlternativeReleaseIntroPage from '../pages/alternativeReleaseIntro'
 import CalculationCompletePage from '../pages/calculationComplete'
 import CalculationSummaryPage from '../pages/calculationSummary'
@@ -10,6 +9,7 @@ import ViewCalculationSummary from '../pages/viewCalculationSummary'
 import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
 import CalculationReasonPage from '../pages/reasonForCalculation'
+import CCARDLandingPage from '../pages/CCARDLandingPage'
 
 context('End to end happy path of user journey', () => {
   beforeEach(() => {
@@ -41,16 +41,19 @@ context('End to end happy path of user journey', () => {
     cy.task('stubGetCalculationHistory')
     cy.task('stubGetDetailedCalculationResults')
     cy.task('stubComponents')
+    cy.task('stubGetLatestCalculation')
   })
 
   it('Standalone user journey', () => {
     cy.signIn()
-    const indexPage = Page.verifyOnPage(IndexPage)
-    indexPage.startNowButton().click()
 
     const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
+
+    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
+    ccardLandingPage.hasMiniProfile()
+    ccardLandingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByIndex(1).check()
@@ -88,8 +91,8 @@ context('End to end happy path of user journey', () => {
 
   it('DPS user journey', () => {
     cy.signIn()
-    const indexPage = IndexPage.goTo('A1234AB')
-    indexPage.startNowButton().click()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByIndex(1).check()
@@ -124,12 +127,13 @@ context('End to end happy path of user journey', () => {
 
   it('View journey', () => {
     cy.signIn()
-    const indexPage = Page.verifyOnPage(IndexPage)
-    indexPage.viewJourneyLink().click()
 
     const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
+
+    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
+    ccardLandingPage.latestCalcViewDetailsAction().click()
 
     const checkInformationPage = Page.verifyOnPage(ViewSentencesAndOffencesPage)
     checkInformationPage.offenceCountText().contains('This calculation will include 2 sentences from NOMIS.')

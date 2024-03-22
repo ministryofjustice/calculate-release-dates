@@ -14,16 +14,15 @@ export default abstract class Page {
   }
 
   hasMiniProfile(): void {
-    cy.get(`[data-qa=mini-profile-name]`).should('contain.text', 'Marvin Haggler')
-    cy.get(`[data-qa=mini-profile-dob]`).should('contain.text', '03 February 1965')
-    cy.get(`[data-qa=mini-profile-offender-no]`).should('contain.text', 'A1234AB')
-    cy.get(`[data-qa=mini-profile-establishment]`).should('contain.text', 'Foo Prison (HMP)')
-    cy.get(`[data-qa=mini-profile-location]`).should('contain.text', 'D-2-003')
+    cy.get('[data-qa=mini-profile-person-profile-link]').should('contain.text', 'Haggler, Marvin')
+    cy.get('[data-qa=mini-profile-dob]').should('contain.text', '03/02/1965')
+    cy.get('[data-qa=mini-profile-prisoner-number]').should('contain.text', 'A1234AB')
+    cy.get('[data-qa=mini-profile-prison-name]').should('contain.text', 'Foo Prison (HMP)')
+    cy.get('[data-qa=mini-profile-cell-location]').should('contain.text', 'D-2-003')
+    cy.get('[data-qa=mini-profile-status]').should('contain.text', 'Some Status')
   }
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   errorSummary = (): PageElement => cy.get('.govuk-error-summary')
-
-  manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 }

@@ -42,6 +42,9 @@ export default class StartRoutes {
       )
     }
     this.entryPointService.setStandaloneEntrypointCookie(res)
+    if (config.featureToggles.useCCARDLayout) {
+      return res.redirect('/search/prisoners')
+    }
     return res.render('pages/index', indexViewModelWithNoPrisoner(allowBulkLoad, prisonId))
   }
 

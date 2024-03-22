@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express'
 
+import { ServiceHeaderConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
 import setUpCCARDComponents from './setUpCCARDComponents'
 
 describe('setUpCCARDComponents', () => {
@@ -42,6 +43,13 @@ describe('setUpCCARDComponents', () => {
 
     setUpCCARDComponents()(req, res, next)
     expect(res.locals.showCCARDNav).toBeTruthy()
+    expect(next).toHaveBeenCalled()
+  })
+
+  it('should add default service header config with just env in so any page not specifying a model gets the correct service header link', () => {
+    const res = createResWithToken({ roles: [] })
+    setUpCCARDComponents()(req, res, next)
+    expect(res.locals.defaultServiceHeaderConfig).toStrictEqual({ environment: 'prod' } as ServiceHeaderConfig)
     expect(next).toHaveBeenCalled()
   })
 })

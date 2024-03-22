@@ -8,13 +8,23 @@ export default class SearchRoutes {
     // intentionally left blank
   }
 
-  public searchViewPrisoners: RequestHandler = this.searchPrisoners({ settings: { view: true, reason: false } })
-
-  public searchCalculatePrisoners: RequestHandler = this.searchPrisoners({
-    settings: { view: false, reason: config.featureToggles.calculationReasonToggle },
+  public searchViewPrisoners: RequestHandler = this.searchPrisoners({
+    settings: { view: true, reason: false, ccard: false },
   })
 
-  private searchPrisoners({ settings }: { settings: { view: boolean; reason: boolean } }): RequestHandler {
+  public searchCalculatePrisoners: RequestHandler = this.searchPrisoners({
+    settings: {
+      view: false,
+      reason: config.featureToggles.calculationReasonToggle,
+      ccard: config.featureToggles.useCCARDLayout,
+    },
+  })
+
+  private searchPrisoners({
+    settings,
+  }: {
+    settings: { view: boolean; reason: boolean; ccard: boolean }
+  }): RequestHandler {
     const handler: RequestHandler = async (req, res): Promise<void> => {
       const { firstName, lastName, prisonerIdentifier } = req.query as Record<string, string>
       const { username, caseloads } = res.locals.user
