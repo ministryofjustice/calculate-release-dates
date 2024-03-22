@@ -166,7 +166,7 @@ describe('Start routes tests', () => {
         expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
       })
   })
-  it('GET ?prisonId=123 should return start page in DPS journey if CCARD feature toggle is off', () => {
+  it('GET ?prisonId=123 should return start page in DPS journey if CCARD feature toggle is off and not call new latest calc api', () => {
     config.featureToggles.useCCARDLayout = false
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
@@ -194,6 +194,7 @@ describe('Start routes tests', () => {
         expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
         expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
         expect(prisonerService.getPrisonerDetail).toBeCalledTimes(1)
+        expect(calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mock.calls.length).toBe(0)
       })
   })
 

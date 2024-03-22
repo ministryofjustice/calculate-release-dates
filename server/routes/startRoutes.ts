@@ -24,8 +24,9 @@ export default class StartRoutes {
       const { username, caseloads, token } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, prisonId, caseloads, token)
       const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
-      const { latestCalcCard, latestCalcCardAction } =
-        await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonId, token)
+      const { latestCalcCard, latestCalcCardAction } = config.featureToggles.useCCARDLayout
+        ? await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonId, token)
+        : { latestCalcCard: undefined, latestCalcCardAction: undefined }
       const template = config.featureToggles.useCCARDLayout ? 'pages/ccardIndex' : 'pages/index'
 
       return res.render(
