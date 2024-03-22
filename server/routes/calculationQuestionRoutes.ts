@@ -213,7 +213,10 @@ export default class CalculationQuestionRoutes {
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
 
-    return res.render('pages/calculation/reason', new CalculationReasonViewModel(prisonerDetail, calculationReasons))
+    return res.render(
+      'pages/calculation/reason',
+      new CalculationReasonViewModel(prisonerDetail, calculationReasons, this.entryPointService.isDpsEntryPoint(req)),
+    )
   }
 
   public submitCalculationReason: RequestHandler = async (req, res): Promise<void> => {
@@ -226,19 +229,30 @@ export default class CalculationQuestionRoutes {
     if (req.body.calculationReasonId == null) {
       return res.render(
         'pages/calculation/reason',
-        new CalculationReasonViewModel(prisonerDetail, calculationReasons, {
-          text: 'You must select a reason for the calculation',
-        }),
+        new CalculationReasonViewModel(
+          prisonerDetail,
+          calculationReasons,
+          this.entryPointService.isDpsEntryPoint(req),
+          {
+            text: 'You must select a reason for the calculation',
+          },
+        ),
       )
     }
 
     if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length === 0) {
       return res.render(
         'pages/calculation/reason',
-        new CalculationReasonViewModel(prisonerDetail, calculationReasons, undefined, {
-          text: 'You must enter a reason for the calculation',
-          id: otherId,
-        }),
+        new CalculationReasonViewModel(
+          prisonerDetail,
+          calculationReasons,
+          this.entryPointService.isDpsEntryPoint(req),
+          undefined,
+          {
+            text: 'You must enter a reason for the calculation',
+            id: otherId,
+          },
+        ),
       )
     }
 

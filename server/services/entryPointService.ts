@@ -24,7 +24,9 @@ export default class EntryPointService {
   }
 
   public isDpsEntryPoint(req: Request): boolean {
-    return req.cookies[this.START_COOKIE_NAME] === this.DPS_START
+    // Default behaviour to DPS.
+    const cookieUnset = !req.cookies[this.START_COOKIE_NAME]
+    return cookieUnset || req.cookies[this.START_COOKIE_NAME] === this.DPS_START
   }
 
   public getDpsPrisonerId(req: Request): string {

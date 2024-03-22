@@ -516,4 +516,31 @@ describe('Calculation question routes tests', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
+  it('GET /calculation/:nomsId/reason should link to correct from search', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    entryPointService.isDpsEntryPoint.mockReturnValue(false)
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .get('/calculation/A1234AA/reason/')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('<a href="/search/prisoners" class="govuk-back-link">Back</a>')
+      })
+  })
+
+  it('GET /calculation/:nomsId/reason should link to correct entrypoint from DPS', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    entryPointService.isDpsEntryPoint.mockReturnValue(true)
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .get('/calculation/A1234AA/reason/')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('<a href="/?prisonId=A1234AA" class="govuk-back-link">Back</a>')
+      })
+  })
 })
