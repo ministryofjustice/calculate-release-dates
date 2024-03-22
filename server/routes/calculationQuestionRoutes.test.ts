@@ -1,5 +1,6 @@
 import request from 'supertest'
 import type { Express } from 'express'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -515,6 +516,19 @@ describe('Calculation question routes tests', () => {
       .expect(200)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+  it('GET /calculation/:nomsId/reason back should take you to CCARD landing page', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+    config.featureToggles.calculationReasonToggle = true
+
+    return request(app)
+      .get('/calculation/A1234AA/reason/')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.govuk-back-link').first().attr('href')).toStrictEqual('/?prisonId=A1234AA')
       })
   })
 })
