@@ -216,18 +216,12 @@ export default class GenuineOverrideRoutes {
       const calculationRequestId = Number(req.params.calculationRequestId)
       const { calculationReference } = req.params
       const formError = <string>req.query.formError === 'true'
-      const detailedCalculationResults = await this.calculateReleaseDatesService.getDetailedCalculationResults(
-        username,
+      const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
         calculationRequestId,
         token,
       )
 
-      const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
-        username,
-        calculationReference,
-        token,
-      )
-      if (detailedCalculationResults.context.prisonerId !== calculation.prisonerId) {
+      if (detailedCalculationResults.context.calculationReference !== calculationReference) {
         throw FullPageError.notFoundError()
       }
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
@@ -241,12 +235,10 @@ export default class GenuineOverrideRoutes {
       if (serverErrors && serverErrors[0]) {
         validationErrors = JSON.parse(serverErrors[0])
       }
-      const breakdownReleaseDatesWithAdjustments = this.calculateReleaseDatesService.extractReleaseDatesWithAdjustments(
-        detailedCalculationResults.calculationBreakdown,
-      )
+
       const model = new CalculationSummaryViewModel(
         calculationRequestId,
-        calculation.prisonerId,
+        detailedCalculationResults.context.prisonerId,
         prisonerDetail,
         detailedCalculationResults.calculationOriginalData.sentencesAndOffences,
         false,
@@ -257,7 +249,7 @@ export default class GenuineOverrideRoutes {
         null,
         null,
         detailedCalculationResults.calculationBreakdown,
-        breakdownReleaseDatesWithAdjustments,
+        detailedCalculationResults.releaseDatesWithAdjustments,
         validationErrors,
         false,
         false,
@@ -275,7 +267,7 @@ export default class GenuineOverrideRoutes {
           calculationReference,
           calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
           approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, true, {
-            nomsId: calculation.prisonerId,
+            nomsId: detailedCalculationResults.context.prisonerId,
             calculationRequestId,
           } as ApprovedDateActionConfig),
         ),

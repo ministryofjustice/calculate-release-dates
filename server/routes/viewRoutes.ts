@@ -126,13 +126,13 @@ export default class ViewRoutes {
     caseloads: string[],
     req: Request,
   ): Promise<CalculationSummaryViewModel> {
-    const detailedCalculationResults = await this.calculateReleaseDatesService.getDetailedCalculationResults(
-      username,
+    const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       token,
     )
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const { calculationBreakdown, calculationOriginalData, breakdownMissingReason } = detailedCalculationResults
+    const { calculationBreakdown, calculationOriginalData, breakdownMissingReason, releaseDatesWithAdjustments } =
+      detailedCalculationResults
     if (!calculationBreakdown && breakdownMissingReason && breakdownMissingReason === 'PRISON_API_DATA_MISSING') {
       return new CalculationSummaryViewModel(
         calculationRequestId,
@@ -163,9 +163,6 @@ export default class ViewRoutes {
         detailedCalculationResults,
       )
     }
-    const breakdownReleaseDatesWithAdjustments =
-      this.calculateReleaseDatesService.extractReleaseDatesWithAdjustments(calculationBreakdown)
-
     const override = await this.getOverride(detailedCalculationResults.context.calculationReference, token)
     const hasNone = detailedCalculationResults.dates.None !== undefined
     const approvedDates = detailedCalculationResults.approvedDates
@@ -186,7 +183,7 @@ export default class ViewRoutes {
         ? undefined
         : longDateFormat(detailedCalculationResults.context.calculationDate),
       calculationBreakdown,
-      breakdownReleaseDatesWithAdjustments,
+      releaseDatesWithAdjustments,
       null,
       false,
       this.entryPointService.isDpsEntryPoint(req),

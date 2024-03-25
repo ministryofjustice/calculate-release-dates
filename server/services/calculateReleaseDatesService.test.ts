@@ -6,6 +6,7 @@ import config from '../config'
 import {
   BookingCalculation,
   CalculationBreakdown,
+  DetailedCalculationResults,
   LatestCalculation,
   NonFridayReleaseDay,
   ValidationMessage,
@@ -525,6 +526,215 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard: undefined,
         latestCalcCardAction: undefined,
+      })
+    })
+  })
+  describe('get detailed calculation results with adjustments', () => {
+    const detailedCalcResultsWithNoBreakdown: DetailedCalculationResults = {
+      context: {
+        calculationRequestId,
+        prisonerId,
+        bookingId: 654321,
+        calculationDate: '2024-01-01',
+        calculationStatus: 'CONFIRMED',
+        calculationReference: 'UUID',
+        calculationType: 'CALCULATED',
+        calculationReason: { id: 1, isOther: true, displayName: 'Other' },
+        otherReasonDescription: 'Test',
+      },
+      dates: {
+        CRD: {
+          date: '2021-02-03',
+          type: 'CRD',
+          description: 'Conditional release date',
+          hints: [{ text: 'Tuesday, 02 February 2021 when adjusted to a working day' }],
+        },
+        SED: { date: '2021-02-03', type: 'SED', description: 'Sentence expiry date', hints: [] },
+        HDCED: {
+          date: '2021-10-03',
+          type: 'HDCED',
+          description: 'Home detention curfew eligibility date',
+          hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
+        },
+        ERSED: { date: '2020-02-03', type: 'ERSED', description: 'Early removal scheme eligibility date', hints: [] },
+      },
+      calculationOriginalData: {
+        prisonerDetails: {
+          firstName: 'Joe',
+          lastName: 'Bloggs',
+          bookingId: 654321,
+          agencyId: 'ABC',
+          offenderNo: prisonerId,
+          dateOfBirth: '2000-01-01',
+          assignedLivingUnit: {
+            agencyId: 'ABC',
+            agencyName: 'HMP ABC',
+            description: 'Some desc',
+            locationId: 999,
+          },
+          alerts: [],
+        },
+        sentencesAndOffences: [
+          {
+            bookingId: 1,
+            sentenceStatus: '',
+            sentenceCategory: '',
+            sentenceDate: '2021-02-03',
+            terms: [
+              {
+                years: 3,
+                months: 0,
+                weeks: 0,
+                days: 0,
+                code: 'IMP',
+              },
+            ],
+            sentenceCalculationType: 'ADIMP',
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            caseSequence: 1,
+            lineSequence: 1,
+            sentenceSequence: 1,
+            offences: [
+              {
+                offenderChargeId: 1,
+                offenceEndDate: '2021-02-03',
+                offenceCode: '123',
+                offenceDescription: '',
+                indicators: [],
+                isPcscSds: false,
+                isPcscSdsPlus: false,
+                isPcscSec250: false,
+                isScheduleFifteenMaximumLife: false,
+              },
+              {
+                offenderChargeId: 2,
+                offenceStartDate: '2021-01-04',
+                offenceEndDate: '2021-01-05',
+                offenceCode: '123',
+                offenceDescription: '',
+                indicators: [],
+                isPcscSds: false,
+                isPcscSdsPlus: false,
+                isPcscSec250: false,
+                isScheduleFifteenMaximumLife: false,
+              },
+              {
+                offenderChargeId: 3,
+                offenceStartDate: '2021-03-06',
+                offenceCode: '123',
+                offenceDescription: '',
+                indicators: [],
+                isPcscSds: false,
+                isPcscSdsPlus: false,
+                isPcscSec250: false,
+                isScheduleFifteenMaximumLife: false,
+              },
+              {
+                offenderChargeId: 4,
+                offenceStartDate: '2021-01-07',
+                offenceEndDate: '2021-01-07',
+                offenceCode: '123',
+                offenceDescription: '',
+                indicators: [],
+                isPcscSds: false,
+                isPcscSdsPlus: false,
+                isPcscSec250: false,
+                isScheduleFifteenMaximumLife: false,
+              },
+            ],
+          },
+          {
+            bookingId: 1,
+            sentenceStatus: '',
+            sentenceCategory: '',
+            sentenceDate: '2021-02-03',
+            terms: [
+              {
+                years: 2,
+                months: 0,
+                weeks: 0,
+                days: 0,
+                code: 'IMP',
+              },
+            ],
+            caseSequence: 2,
+            lineSequence: 2,
+            sentenceSequence: 2,
+            consecutiveToSequence: 1,
+            sentenceCalculationType: 'ADIMP',
+            sentenceTypeDescription: 'SDS Standard Sentence',
+            offences: [
+              {
+                offenderChargeId: 5,
+                offenceEndDate: '2021-02-03',
+                offenceCode: '123',
+                offenceDescription: '',
+                indicators: [],
+                isPcscSds: false,
+                isPcscSdsPlus: false,
+                isPcscSec250: false,
+                isScheduleFifteenMaximumLife: false,
+              },
+            ],
+          },
+        ],
+      },
+      approvedDates: {},
+      breakdownMissingReason: 'UNSUPPORTED_CALCULATION_BREAKDOWN',
+    }
+
+    it('can get with breakdown missing safely', async () => {
+      fakeApi
+        .get(`/calculation/detailed-results/${calculationRequestId}`)
+        .reply(200, detailedCalcResultsWithNoBreakdown)
+      const result = await calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
+        calculationRequestId,
+        null,
+      )
+      return expect(result).toStrictEqual({
+        ...detailedCalcResultsWithNoBreakdown,
+        releaseDatesWithAdjustments: undefined,
+      })
+    })
+    it('can get with breakdown and adjustments', async () => {
+      const detailedResultsWithABreakdown: DetailedCalculationResults = {
+        ...detailedCalcResultsWithNoBreakdown,
+        calculationBreakdown: psiExample25CalculationBreakdown(),
+      }
+      fakeApi.get(`/calculation/detailed-results/${calculationRequestId}`).reply(200, detailedResultsWithABreakdown)
+      const result = await calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
+        calculationRequestId,
+        null,
+      )
+      return expect(result).toStrictEqual({
+        ...detailedResultsWithABreakdown,
+        releaseDatesWithAdjustments: [
+          {
+            hintText: '14 July 2015 plus 44 days',
+            releaseDate: '2015-08-27',
+            releaseDateType: 'LED',
+          },
+          {
+            hintText: '21 December 2015 plus 0 days',
+            releaseDate: '2015-12-21',
+            releaseDateType: 'SED',
+          },
+          {
+            hintText: '23 July 2015 plus 0 days',
+            releaseDate: '2015-07-23',
+            releaseDateType: 'CRD',
+          },
+          {
+            hintText: '16 February 2015 plus 61 days minus 21 days',
+            releaseDate: '2015-03-28',
+            releaseDateType: 'HDCED',
+          },
+          {
+            hintText: '16 June 2015 plus 12 months minus 21 days',
+            releaseDate: '2016-05-26',
+            releaseDateType: 'TUSED',
+          },
+        ],
       })
     })
   })

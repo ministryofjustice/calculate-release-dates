@@ -16,7 +16,6 @@ import {
   CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
-  DetailedCalculationResults,
   GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
@@ -31,7 +30,10 @@ import CalculationRule from '../enumerations/calculationRule'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { arithmeticToWords, daysArithmeticToWords, longDateFormat } from '../utils/utils'
 import ReleaseDateType from '../enumerations/releaseDateType'
-import { RulesWithExtraAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
+import {
+  ResultsWithBreakdownAndAdjustments,
+  RulesWithExtraAdjustments,
+} from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ErrorMessage from '../types/ErrorMessage'
 import config from '../config'
 import { FullPageError } from '../types/FullPageError'
@@ -152,7 +154,7 @@ export default class CalculateReleaseDatesService {
     return sentencesAndOffences.filter((s: AnalyzedSentenceAndOffences) => s.sentenceStatus === 'A')
   }
 
-  extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
+  private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
     const releaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = []
     if (breakdown.breakdownByReleaseDateType.LED) {
       const ledDetails = breakdown.breakdownByReleaseDateType.LED
@@ -458,12 +460,27 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getCalculationHistory(prisonerId)
   }
 
-  async getDetailedCalculationResults(
-    username: string,
+  async getResultsWithBreakdownAndAdjustments(
     calculationRequestId: number,
     token: string,
-  ): Promise<DetailedCalculationResults> {
-    return new CalculateReleaseDatesApiClient(token).getDetailedCalculationResults(calculationRequestId)
+  ): Promise<ResultsWithBreakdownAndAdjustments> {
+    return new CalculateReleaseDatesApiClient(token)
+      .getDetailedCalculationResults(calculationRequestId)
+      .then(results => {
+        let withAdjustments: ResultsWithBreakdownAndAdjustments
+        if (results.calculationBreakdown) {
+          withAdjustments = {
+            ...results,
+            releaseDatesWithAdjustments: this.extractReleaseDatesWithAdjustments(results.calculationBreakdown),
+          }
+        } else {
+          withAdjustments = {
+            ...results,
+            releaseDatesWithAdjustments: undefined,
+          }
+        }
+        return withAdjustments
+      })
   }
 
   async getLatestCalculationCardForPrisoner(
