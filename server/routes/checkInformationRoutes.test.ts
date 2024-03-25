@@ -685,7 +685,6 @@ describe('Check information routes tests', () => {
 
   it('POST /calculation/:nomsId/check-information pass', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.validateBackend.mockResolvedValue({ messages: [] })
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
@@ -719,7 +718,6 @@ describe('Check information routes tests', () => {
           expect.anything(),
         )
         expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
-          expect.anything(),
           'A1234AA',
           {
             ...{
@@ -735,7 +733,6 @@ describe('Check information routes tests', () => {
 
   it('POST /calculation/:nomsId/check-information should redirect if validation fails', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockReturnValue({

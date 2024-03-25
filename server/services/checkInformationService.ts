@@ -25,7 +25,7 @@ export default class CheckInformationService {
     requireUserInputs: boolean,
     suppressSentenceTypeOrCalcErrors: boolean = false,
   ): Promise<SentenceAndOffenceViewModel> {
-    const { username, caseloads, token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { calculationReference } = req.params
     let { nomsId } = req.params
     if (config.featureToggles.approvedDates) {
@@ -36,19 +36,17 @@ export default class CheckInformationService {
     }
     let prisonerDetail
     if (nomsId) {
-      prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+      prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     } else {
       const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
-        username,
         calculationReference,
         token,
       )
-      prisonerDetail = await this.prisonerService.getPrisonerDetail(username, calculation.prisonerId, caseloads, token)
+      prisonerDetail = await this.prisonerService.getPrisonerDetail(calculation.prisonerId, caseloads, token)
       nomsId = calculation.prisonerId
     }
 
     const sentencesAndOffences = await this.calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences(
-      username,
       prisonerDetail.bookingId,
       token,
     )

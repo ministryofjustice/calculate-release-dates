@@ -21,8 +21,8 @@ export default class StartRoutes {
     const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
     if (prisonId) {
       this.entryPointService.setDpsEntrypointCookie(res, prisonId)
-      const { username, caseloads, token } = res.locals.user
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, prisonId, caseloads, token)
+      const { caseloads, token } = res.locals.user
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, caseloads, token)
       const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
       const { latestCalcCard, latestCalcCardAction } = config.featureToggles.useCCARDLayout
         ? await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonId, token)

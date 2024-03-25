@@ -3,7 +3,6 @@ import HmppsAuthClient from '../data/hmppsAuthClient'
 import config from '../config'
 import PrisonerService from './prisonerService'
 import {
-  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
   PrisonApiUserCaseloads,
@@ -43,56 +42,6 @@ const prisonerDetails = {
   } as PrisonApiSentenceDetail,
 } as PrisonApiPrisoner
 
-const activeSentences = [
-  {
-    terms: [
-      {
-        years: 3,
-      },
-    ],
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    caseSequence: 1,
-    lineSequence: 1,
-    sentenceSequence: 1,
-    sentenceStatus: 'A',
-    offences: [
-      { offenceEndDate: '2021-02-03' },
-      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-      { offenceStartDate: '2021-03-06' },
-      {},
-      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
-    ],
-  } as PrisonApiOffenderSentenceAndOffences,
-  {
-    terms: [
-      {
-        years: 2,
-      },
-    ],
-    caseSequence: 2,
-    lineSequence: 2,
-    sentenceSequence: 2,
-    consecutiveToSequence: 1,
-    sentenceStatus: 'A',
-    sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03' }],
-  } as PrisonApiOffenderSentenceAndOffences,
-]
-const inactiveSentence = {
-  terms: [
-    {
-      years: 10,
-    },
-  ],
-  caseSequence: 3,
-  lineSequence: 3,
-  sentenceSequence: 2,
-  consecutiveToSequence: 1,
-  sentenceStatus: 'I',
-  sentenceTypeDescription: 'SDS Standard Sentence',
-  offences: [{ offenceEndDate: '2021-02-03' }],
-} as PrisonApiOffenderSentenceAndOffences
-
 const token = 'token'
 
 describe('Prisoner service related tests', () => {
@@ -121,7 +70,7 @@ describe('Prisoner service related tests', () => {
       it('Test getting prisoner details', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, prisonerDetails)
 
-        const result = await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'], token)
+        const result = await prisonerService.getPrisonerDetail('A1234AB', ['MDI'], token)
 
         expect(result).toEqual(prisonerDetails)
       })
@@ -130,30 +79,10 @@ describe('Prisoner service related tests', () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'LEX' })
 
         try {
-          await prisonerService.getPrisonerDetail('user', 'A1234AB', ['MDI'], token)
+          await prisonerService.getPrisonerDetail('A1234AB', ['MDI'], token)
         } catch (error) {
           expect(error.errorKey).toBe(FullPageErrorType.NOT_IN_CASELOAD)
           expect(error.status).toBe(404)
-        }
-      })
-    })
-
-    describe('getSentencesAndOffences', () => {
-      it('Test getting sentences and offences details', async () => {
-        fakeApi
-          .get(`/api/offender-sentences/booking/123/sentences-and-offences`)
-          .reply(200, [...activeSentences, inactiveSentence])
-        const result = await prisonerService.getActiveSentencesAndOffences('user', 123, token)
-        expect(result).toStrictEqual(activeSentences)
-      })
-      it('Test getting sentences and offences with no offences', async () => {
-        fakeApi.get(`/api/offender-sentences/booking/123/sentences-and-offences`).reply(200, [])
-        try {
-          const result = await prisonerService.getActiveSentencesAndOffences('user', 123, token)
-          expect(result).toStrictEqual(activeSentences)
-        } catch (error) {
-          expect(error.errorKey).toBe(FullPageErrorType.NO_SENTENCES)
-          expect(error.status).toBe(400)
         }
       })
     })

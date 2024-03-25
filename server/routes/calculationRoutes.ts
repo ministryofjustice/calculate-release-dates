@@ -29,7 +29,7 @@ export default class CalculationRoutes {
   }
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     if (
@@ -46,7 +46,7 @@ export default class CalculationRoutes {
     if (detailedCalculationResults.context.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
     }
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const serverErrors = req.flash('serverErrors')
     let validationErrors = null
     if (serverErrors && serverErrors[0]) {
@@ -132,10 +132,10 @@ export default class CalculationRoutes {
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       token,
@@ -181,7 +181,7 @@ export default class CalculationRoutes {
   }
 
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { username, token } = res.locals.user
+    const { token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const breakdownHtml = await this.getBreakdownFragment(calculationRequestId, token)
@@ -191,7 +191,6 @@ export default class CalculationRoutes {
         : []
     try {
       const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
-        username,
         calculationRequestId,
         token,
         {
@@ -232,17 +231,13 @@ export default class CalculationRoutes {
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const noDates: string = <string>req.query.noDates
     this.entryPointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const calculation = await this.calculateReleaseDatesService.getCalculationResults(
-      username,
-      calculationRequestId,
-      token,
-    )
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const calculation = await this.calculateReleaseDatesService.getCalculationResults(calculationRequestId, token)
     if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
       throw FullPageError.notFoundError()
     }

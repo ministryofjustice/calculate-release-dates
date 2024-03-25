@@ -6,7 +6,6 @@ import {
   CalculationBreakdown,
   CalculationReason,
   CalculationRequestModel,
-  CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
   Comparison,
@@ -19,7 +18,6 @@ import {
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,
   ManualEntryRequest,
-  NonFridayReleaseDay,
   SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
@@ -63,16 +61,6 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<BookingCalculation>
   }
 
-  calculateTestReleaseDates(
-    prisonerId: string,
-    calculationRequestModel: CalculationRequestModel,
-  ): Promise<CalculationResults> {
-    return this.restClient.post({
-      path: `/calculation/${prisonerId}/test`,
-      data: calculationRequestModel,
-    }) as Promise<CalculationResults>
-  }
-
   getCalculationResults(calculationRequestId: number): Promise<BookingCalculation> {
     return this.restClient.get({
       path: `/calculation/results/${calculationRequestId}`,
@@ -107,10 +95,6 @@ export default class CalculateReleaseDatesApiClient {
 
   getNextWorkingDay(date: string): Promise<WorkingDay> {
     return this.restClient.get({ path: `/working-day/next/${date}` }) as Promise<WorkingDay>
-  }
-
-  getPreviousWorkingDay(date: string): Promise<WorkingDay> {
-    return this.restClient.get({ path: `/working-day/previous/${date}` }) as Promise<WorkingDay>
   }
 
   getCalculationReasons(): Promise<CalculationReason[]> {
@@ -201,10 +185,6 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/specialist-support/genuine-override/calculation/${calculationReference}`,
     }) as Promise<GenuineOverrideRequest>
-  }
-
-  getNonReleaseFridayDay(date: string): Promise<NonFridayReleaseDay> {
-    return this.restClient.get({ path: `/non-friday-release/${date}` }) as Promise<NonFridayReleaseDay>
   }
 
   createPrisonComparison(prison: string, comparisonType: ComparisonType): Promise<Comparison> {

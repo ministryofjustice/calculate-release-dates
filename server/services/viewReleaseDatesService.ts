@@ -39,8 +39,7 @@ export default class ViewReleaseDatesService {
   async getCalculationUserInputs(calculationId: number, token: string): Promise<CalculationUserInputs> {
     try {
       // await the result, so we can catch a 404 error.
-      const result = await new CalculateReleaseDatesApiClient(token).getCalculationUserInputs(calculationId)
-      return result
+      return await new CalculateReleaseDatesApiClient(token).getCalculationUserInputs(calculationId)
       // eslint-disable-next-line
     } catch (error: HTTPError | any) {
       // eslint doesn't like any, but unknown is a primitive

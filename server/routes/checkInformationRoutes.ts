@@ -66,7 +66,7 @@ export default class CheckInformationRoutes {
   }
 
   public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { username, token } = res.locals.user
+    const { token } = res.locals.user
     const { nomsId } = req.params
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
@@ -85,7 +85,6 @@ export default class CheckInformationRoutes {
     )
 
     const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
-      username,
       nomsId,
       calculationRequestModel,
       token,

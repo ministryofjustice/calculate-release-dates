@@ -13,13 +13,11 @@ import {
   CalculationBreakdown,
   CalculationReason,
   CalculationRequestModel,
-  CalculationResults,
   CalculationUserInputs,
   CalculationUserQuestions,
   GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
-  NonFridayReleaseDay,
   ReleaseDateCalculationBreakdown,
   SubmitCalculationRequest,
   ValidationMessage,
@@ -42,22 +40,12 @@ import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prison
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
-  async calculateReleaseDates(username: string, booking: any, token: string): Promise<BookingCalculation> {
+  async calculateReleaseDates(booking: any, token: string): Promise<BookingCalculation> {
     const bookingData = JSON.parse(booking)
     return new CalculateReleaseDatesApiClient(token).calculateReleaseDates(bookingData)
   }
 
-  async calculateTestReleaseDates(
-    username: string,
-    prisonerId: string,
-    calculationRequestModel: CalculationRequestModel,
-    token: string,
-  ): Promise<CalculationResults> {
-    return new CalculateReleaseDatesApiClient(token).calculateTestReleaseDates(prisonerId, calculationRequestModel)
-  }
-
   async calculatePreliminaryReleaseDates(
-    username: string,
     prisonerId: string,
     calculationRequestModel: CalculationRequestModel,
     token: string,
@@ -68,16 +56,11 @@ export default class CalculateReleaseDatesService {
     )
   }
 
-  async getCalculationResults(
-    username: string,
-    calculationRequestId: number,
-    token: string,
-  ): Promise<BookingCalculation> {
+  async getCalculationResults(calculationRequestId: number, token: string): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
   }
 
   async getCalculationResultsByReference(
-    username: string,
     calculationReference: string,
     token: string,
     checkForChanges = false,
@@ -141,7 +124,6 @@ export default class CalculateReleaseDatesService {
   }
 
   async getActiveAnalyzedSentencesAndOffences(
-    username: string,
     bookingId: number,
     token: string,
   ): Promise<AnalyzedSentenceAndOffences[]> {
@@ -353,7 +335,6 @@ export default class CalculateReleaseDatesService {
   }
 
   async confirmCalculation(
-    username: string,
     calculationRequestId: number,
     token: string,
     body: SubmitCalculationRequest,
@@ -375,57 +356,6 @@ export default class CalculateReleaseDatesService {
   private existsAndIsInFuture(date: string): boolean {
     const now = dayjs()
     return date && now.isBefore(dayjs(date))
-  }
-
-  async getNonFridayReleaseAdjustments(
-    calculation: BookingCalculation,
-    token: string,
-  ): Promise<{ [key: string]: NonFridayReleaseDay }> {
-    const client = new CalculateReleaseDatesApiClient(token)
-    const adjustments: { [key: string]: NonFridayReleaseDay } = {}
-    if (config.featureToggles.nonFridayRelease) {
-      if (this.isNonFridayReleaseEligible(calculation.dates.CRD)) {
-        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.CRD)
-        if (adjustment.date !== calculation.dates.CRD) {
-          adjustments.CRD = adjustment
-        }
-      }
-      if (this.isNonFridayReleaseEligible(calculation.dates.ARD)) {
-        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.ARD)
-        if (adjustment.date !== calculation.dates.ARD) {
-          adjustments.ARD = adjustment
-        }
-      }
-      if (this.isNonFridayReleaseEligible(calculation.dates.PRRD)) {
-        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.PRRD)
-        if (adjustment.date !== calculation.dates.PRRD) {
-          adjustments.PRRD = adjustment
-        }
-      }
-      if (this.isNonFridayReleaseEligible(calculation.dates.ETD)) {
-        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.ETD)
-        if (adjustment.date !== calculation.dates.ETD) {
-          adjustments.ETD = adjustment
-        }
-      }
-      if (this.isNonFridayReleaseEligible(calculation.dates.MTD)) {
-        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.MTD)
-        if (adjustment.date !== calculation.dates.MTD) {
-          adjustments.MTD = adjustment
-        }
-      }
-      if (this.isNonFridayReleaseEligible(calculation.dates.LTD)) {
-        const adjustment = await client.getNonReleaseFridayDay(calculation.dates.LTD)
-        if (adjustment.date !== calculation.dates.LTD) {
-          adjustments.LTD = adjustment
-        }
-      }
-    }
-    return adjustments
-  }
-
-  private isNonFridayReleaseEligible(date: string): boolean {
-    return this.existsAndIsInFuture(date) && config.featureToggles.nonFridayReleasePolicyStartDate.isBefore(dayjs(date))
   }
 
   async validateBackend(prisonId: string, userInput: CalculationUserInputs, token: string): Promise<ErrorMessages> {

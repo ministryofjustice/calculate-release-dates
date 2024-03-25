@@ -35,9 +35,9 @@ export default class ViewRoutes {
   }
 
   public startViewJourney: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     try {
       const latestCalculation = await this.viewReleaseDatesService.getLatestCalculation(
         nomsId,
@@ -121,7 +121,6 @@ export default class ViewRoutes {
   private async calculateReleaseDatesViewModel(
     calculationRequestId: number,
     nomsId: string,
-    username: string,
     token: string,
     caseloads: string[],
     req: Request,
@@ -130,7 +129,7 @@ export default class ViewRoutes {
       calculationRequestId,
       token,
     )
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const { calculationBreakdown, calculationOriginalData, breakdownMissingReason, releaseDatesWithAdjustments } =
       detailedCalculationResults
     if (!calculationBreakdown && breakdownMissingReason && breakdownMissingReason === 'PRISON_API_DATA_MISSING') {
@@ -217,16 +216,9 @@ export default class ViewRoutes {
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const { caseloads, token, username } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const model = await this.calculateReleaseDatesViewModel(
-      calculationRequestId,
-      nomsId,
-      username,
-      token,
-      caseloads,
-      req,
-    )
+    const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads, req)
     res.render(
       'pages/view/calculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
@@ -238,17 +230,10 @@ export default class ViewRoutes {
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, username } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const model = await this.calculateReleaseDatesViewModel(
-      calculationRequestId,
-      nomsId,
-      username,
-      token,
-      caseloads,
-      req,
-    )
+    const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads, req)
     res.render(
       'pages/view/printCalculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
