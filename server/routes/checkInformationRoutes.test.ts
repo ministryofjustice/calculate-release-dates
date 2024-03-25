@@ -11,7 +11,6 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import EntryPointService from '../services/entryPointService'
 import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import UserInputService from '../services/userInputService'
@@ -33,7 +32,6 @@ import { expectMiniProfile, expectMiniProfileNoLocation } from './testutils/layo
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
-jest.mock('../services/entryPointService')
 jest.mock('../services/userInputService')
 jest.mock('../services/checkInformationService')
 jest.mock('../services/questionsService')
@@ -41,7 +39,6 @@ jest.mock('../services/questionsService')
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
-const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 const questionsService = new QuestionsService(
   calculateReleaseDatesService,
@@ -50,7 +47,6 @@ const questionsService = new QuestionsService(
 const checkInformationService = new CheckInformationService(
   calculateReleaseDatesService,
   prisonerService,
-  entryPointService,
   userInputService,
 ) as jest.Mocked<CheckInformationService>
 
@@ -349,7 +345,6 @@ beforeEach(() => {
       userService,
       prisonerService,
       calculateReleaseDatesService,
-      entryPointService,
       userInputService,
       questionsService,
       checkInformationService,
@@ -366,11 +361,9 @@ describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner with the EDS card view', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
       stubbedUserInput,
-      true,
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
@@ -426,11 +419,9 @@ describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should display mini profilef', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    entryPointService.isDpsEntryPoint.mockResolvedValue(true as never)
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
       stubbedUserInput,
-      true,
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
@@ -451,11 +442,9 @@ describe('Check information routes tests', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })
-    entryPointService.isDpsEntryPoint.mockReturnValue(true)
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
       null,
-      true,
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
@@ -475,11 +464,9 @@ describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner without adjustments', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedQuestion)
-    entryPointService.isDpsEntryPoint.mockReturnValue(true)
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
       stubbedUserInput,
-      true,
       stubbedSentencesAndOffences,
       stubbedEmptyAdjustments,
       false,
@@ -506,7 +493,6 @@ describe('Check information routes tests', () => {
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
       stubbedUserInput,
-      true,
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
@@ -575,7 +561,6 @@ describe('Check information routes tests', () => {
       const model = new SentenceAndOffenceViewModel(
         stubbedPrisonerData,
         stubbedUserInput,
-        true,
         stubbedSentencesAndOffences,
         stubbedAdjustments,
         false,
@@ -610,7 +595,6 @@ describe('Check information routes tests', () => {
       const modelClearedErrors = new SentenceAndOffenceViewModel(
         stubbedPrisonerData,
         stubbedUserInput,
-        true,
         stubbedSentencesAndOffences,
         stubbedAdjustments,
         false,
@@ -638,7 +622,6 @@ describe('Check information routes tests', () => {
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
       stubbedUserInput,
-      true,
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
@@ -661,7 +644,6 @@ describe('Check information routes tests', () => {
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
       stubbedUserInput,
-      true,
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
@@ -685,7 +667,6 @@ describe('Check information routes tests', () => {
 
   it('POST /calculation/:nomsId/check-information pass', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     calculateReleaseDatesService.validateBackend.mockResolvedValue({ messages: [] })
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
@@ -719,7 +700,6 @@ describe('Check information routes tests', () => {
           expect.anything(),
         )
         expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
-          expect.anything(),
           'A1234AA',
           {
             ...{
@@ -735,7 +715,6 @@ describe('Check information routes tests', () => {
 
   it('POST /calculation/:nomsId/check-information should redirect if validation fails', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    prisonerService.getActiveSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
     calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
@@ -806,7 +785,6 @@ describe('Check information routes tests', () => {
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
       stubbedUserInput,
-      true,
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,

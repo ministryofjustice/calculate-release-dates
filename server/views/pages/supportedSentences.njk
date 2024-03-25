@@ -7,13 +7,7 @@
 {% block beforeContent %}
     {{super()}}
     <nav>
-        {% if nomsId %}
-            {% set backlink = "/calculation/" + nomsId + "/check-information?hasErrors=true" %}
-        {% elif prisonId %}
-            {% set backlink = "/?prisonId=" + prisonId %}
-        {% else %}
-            {% set backlink = "/" %}
-        {% endif %}
+        {% set backlink = "/calculation/" + nomsId + "/check-information?hasErrors=true" %}
         {{ govukBackLink({
         text: "Back",
         href: backlink

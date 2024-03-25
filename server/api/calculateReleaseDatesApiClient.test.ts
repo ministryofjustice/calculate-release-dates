@@ -31,14 +31,14 @@ describe('Calculate release dates API client tests', () => {
   describe('Tests for API calls', () => {
     it('Get calculation results data', async () => {
       fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(200, stubbedTestData)
-      const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', calculationRequestId, token)
+      const data = await calculateReleaseDatesService.getCalculationResults(calculationRequestId, token)
       expect(data).toEqual(stubbedTestData)
       expect(nock.isDone()).toBe(true)
     })
 
     it('Empty data', async () => {
       fakeApi.get(`/calculation/results/${calculationRequestId}`, '').reply(200, [])
-      const data = await calculateReleaseDatesService.getCalculationResults('XTEST1', 123456, token)
+      const data = await calculateReleaseDatesService.getCalculationResults(123456, token)
       expect(data).toEqual([])
       expect(nock.isDone()).toBe(true)
     })

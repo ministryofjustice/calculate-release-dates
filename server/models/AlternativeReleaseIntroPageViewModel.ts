@@ -6,7 +6,6 @@ export default class AlternativeReleaseIntroPageViewModel extends PrisonerContex
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     public model: AlternativeReleaseIntroViewModel,
-    public dpsEntryPoint: boolean,
   ) {
     super(prisonerDetail)
   }

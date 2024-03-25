@@ -27,7 +27,6 @@ export default class CalculationSummaryViewModel {
     public releaseDatesWithAdjustments?: ReleaseDateWithAdjustments[],
     public validationErrors?: ErrorMessages,
     public calculationSummaryUnavailable?: boolean,
-    public dpsEntryPoint?: boolean,
     public approvedDates?: { [key: string]: string },
     public overrideReason?: string,
     public detailedCalculationResults?: DetailedCalculationResults,

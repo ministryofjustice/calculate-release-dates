@@ -332,11 +332,11 @@ export default class CompareRoutes {
   }
 
   public manualCalculation: RequestHandler = async (req, res): Promise<void> => {
-    const { username, token } = res.locals.user
+    const { token } = res.locals.user
     const { bookingData } = req.query
     try {
       const releaseDates = bookingData
-        ? await this.calculateReleaseDatesService.calculateReleaseDates(username, bookingData, token)
+        ? await this.calculateReleaseDatesService.calculateReleaseDates(bookingData, token)
         : ''
 
       res.render('pages/compare/manual', {

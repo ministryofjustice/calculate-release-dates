@@ -8,7 +8,6 @@ import {
   CalculationBreakdown,
   DetailedCalculationResults,
   LatestCalculation,
-  NonFridayReleaseDay,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -133,12 +132,7 @@ describe('Calculate release dates service tests', () => {
     it('Test the running of a preliminary calculation of release dates', async () => {
       fakeApi.post(`/calculation/${prisonerId}`).reply(200, calculationResults)
 
-      const result = await calculateReleaseDatesService.calculatePreliminaryReleaseDates(
-        'user',
-        prisonerId,
-        null,
-        token,
-      )
+      const result = await calculateReleaseDatesService.calculatePreliminaryReleaseDates(prisonerId, null, token)
 
       expect(result).toEqual(calculationResults)
     })
@@ -147,7 +141,7 @@ describe('Calculate release dates service tests', () => {
   it('Test getting the results of a calculation by the calculationRequestId', async () => {
     fakeApi.get(`/calculation/results/${calculationRequestId}`).reply(200, calculationResults)
 
-    const result = await calculateReleaseDatesService.getCalculationResults('user', calculationRequestId, token)
+    const result = await calculateReleaseDatesService.getCalculationResults(calculationRequestId, token)
 
     expect(result).toEqual(calculationResults)
   })
@@ -155,7 +149,7 @@ describe('Calculate release dates service tests', () => {
   it('Test confirming the results of a calculation', async () => {
     fakeApi.post(`/calculation/confirm/${calculationRequestId}`).reply(200, calculationResults)
 
-    const result = await calculateReleaseDatesService.confirmCalculation('user', calculationRequestId, token, {
+    const result = await calculateReleaseDatesService.confirmCalculation(calculationRequestId, token, {
       calculationFragments: {
         breakdownHtml: '',
       },
@@ -184,89 +178,6 @@ describe('Calculate release dates service tests', () => {
   it('weekend adjustments in the past do not appear', async () => {
     const result = await calculateReleaseDatesService.getNextWorkingDay('2021-10-10', token)
     expect(result).toBeNull()
-  })
-
-  it('Test non Friday release dates turned on', async () => {
-    config.featureToggles.nonFridayRelease = true
-    const futureCalculation: BookingCalculation = {
-      dates: {
-        CRD: dayjs().add(7, 'day').format('YYYY-MM-DD'),
-      },
-      effectiveSentenceLength: null,
-      calculationReference: 'ABC123',
-      calculationRequestId,
-      prisonerId,
-      bookingId: 123,
-      calculationType: 'CALCULATED',
-      calculationStatus: 'CONFIRMED',
-    }
-    const adjustedCrd: NonFridayReleaseDay = {
-      date: '2021-10-27',
-      usePolicy: true,
-    }
-
-    fakeApi.get(`/non-friday-release/${futureCalculation.dates.CRD}`).reply(200, adjustedCrd)
-
-    const result = await calculateReleaseDatesService.getNonFridayReleaseAdjustments(futureCalculation, token)
-
-    expect(result).toEqual({
-      CRD: adjustedCrd,
-    })
-  })
-
-  it('Test non Friday release dates turned on with policy start date in the future', async () => {
-    config.featureToggles.nonFridayRelease = true
-    config.featureToggles.nonFridayReleasePolicyStartDate = dayjs().add(1, 'year')
-    const futureCalculation: BookingCalculation = {
-      dates: {
-        CRD: dayjs().add(7, 'day').format('YYYY-MM-DD'),
-      },
-      effectiveSentenceLength: null,
-      calculationReference: 'ABC123',
-      calculationRequestId,
-      prisonerId,
-      bookingId: 123,
-      calculationType: 'CALCULATED',
-      calculationStatus: 'CONFIRMED',
-    }
-    const adjustedCrd: NonFridayReleaseDay = {
-      date: '2021-10-27',
-      usePolicy: true,
-    }
-
-    fakeApi.get(`/non-friday-release/${futureCalculation.dates.CRD}`).reply(200, adjustedCrd)
-
-    const result = await calculateReleaseDatesService.getNonFridayReleaseAdjustments(futureCalculation, token)
-
-    expect(result).toEqual({})
-  })
-
-  it('Test non Friday release dates turned on date in the past', async () => {
-    config.featureToggles.nonFridayRelease = true
-    const adjustedCrd: NonFridayReleaseDay = {
-      date: '2021-10-27',
-      usePolicy: true,
-    }
-
-    fakeApi.get(`/non-friday-release/${calculationResults.dates.CRD}`).reply(200, adjustedCrd)
-
-    const result = await calculateReleaseDatesService.getNonFridayReleaseAdjustments(calculationResults, token)
-
-    expect(result).toEqual({})
-  })
-
-  it('Test non Friday release dates turned off', async () => {
-    config.featureToggles.nonFridayRelease = false
-    const adjustedCrd: NonFridayReleaseDay = {
-      date: '2021-10-27',
-      usePolicy: true,
-    }
-
-    fakeApi.get(`/non-friday-release/${calculationResults.dates.CRD}`).reply(200, adjustedCrd)
-
-    const result = await calculateReleaseDatesService.getNonFridayReleaseAdjustments(calculationResults, token)
-
-    expect(result).toEqual({})
   })
 
   describe('Test getting effective dates and breakdown', () => {

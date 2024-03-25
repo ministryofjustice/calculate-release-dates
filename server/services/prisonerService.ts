@@ -2,12 +2,8 @@ import { Readable } from 'stream'
 import type HmppsAuthClient from '../data/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
 import {
-  PrisonApiOffenderCalculatedKeyDates,
-  PrisonApiOffenderFinePayment,
-  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
-  PrisonApiSentenceDetail,
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
 import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
@@ -24,29 +20,11 @@ export default class PrisonerService {
     return new PrisonApiClient(token).getPrisonerImage(nomsId)
   }
 
-  async getPrisonerDetailIncludingReleased(
-    username: string,
-    nomsId: string,
-    userCaseloads: string[],
-    token: string,
-  ): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, true, false)
-  }
-
-  async getPrisonerDetail(
-    username: string,
-    nomsId: string,
-    userCaseloads: string[],
-    token: string,
-  ): Promise<PrisonApiPrisoner> {
+  async getPrisonerDetail(nomsId: string, userCaseloads: string[], token: string): Promise<PrisonApiPrisoner> {
     return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, false, false)
   }
 
-  async getPrisonerDetailForSpecialistSupport(
-    username: string,
-    nomsId: string,
-    token: string,
-  ): Promise<PrisonApiPrisoner> {
+  async getPrisonerDetailForSpecialistSupport(nomsId: string, token: string): Promise<PrisonApiPrisoner> {
     return this.getPrisonerDetailImpl(nomsId, [], token, false, true)
   }
 
@@ -80,53 +58,12 @@ export default class PrisonerService {
     return new PrisonerSearchApiClient(token).searchPrisoners(prisonerSearchCriteria)
   }
 
-  async searchPrisonerNumbers(username: string, prisonerNumbers: string[]): Promise<Prisoner[]> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    return new PrisonerSearchApiClient(token).searchPrisonerNumbers(prisonerNumbers)
-  }
-
-  async getActiveSentencesAndOffences(
-    username: string,
-    bookingId: number,
-    token: string,
-  ): Promise<PrisonApiOffenderSentenceAndOffences[]> {
-    const sentencesAndOffences = await new PrisonApiClient(token).getSentencesAndOffences(bookingId)
-    if (sentencesAndOffences.length === 0) {
-      throw FullPageError.noSentences()
-    }
-    return sentencesAndOffences.filter(s => s.sentenceStatus === 'A')
-  }
-
-  async getSentencesAndOffences(
-    username: string,
-    bookingId: number,
-    token: string,
-  ): Promise<PrisonApiOffenderSentenceAndOffences[]> {
-    const sentencesAndOffences = await new PrisonApiClient(token).getSentencesAndOffences(bookingId)
-    if (sentencesAndOffences.length === 0) {
-      throw FullPageError.noSentences()
-    }
-    return sentencesAndOffences
-  }
-
   async getUsersCaseloads(token: string): Promise<PrisonApiUserCaseloads[]> {
     return new PrisonApiClient(token).getUsersCaseloads()
-  }
-
-  async getSentenceDetail(username: string, bookingId: number, token: string): Promise<PrisonApiSentenceDetail> {
-    return new PrisonApiClient(token).getSentenceDetail(bookingId)
-  }
-
-  async getOffenderKeyDates(bookingId: number, token: string): Promise<PrisonApiOffenderCalculatedKeyDates> {
-    return new PrisonApiClient(token).getOffenderKeyDates(bookingId)
   }
 
   async getReturnToCustodyDate(bookingId: number, token: string): Promise<PrisonApiReturnToCustodyDate> {
     const { returnToCustodyDate } = await new PrisonApiClient(token).getFixedTermRecallDetails(bookingId)
     return { bookingId, returnToCustodyDate } as PrisonApiReturnToCustodyDate
-  }
-
-  async getOffenderFinePayments(bookingId: number, token: string): Promise<PrisonApiOffenderFinePayment[]> {
-    return new PrisonApiClient(token).getOffenderFinePayments(bookingId)
   }
 }

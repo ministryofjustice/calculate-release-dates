@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
-import EntryPointService from '../services/entryPointService'
 import UserInputService from '../services/userInputService'
 import config from '../config'
 import CheckInformationService from '../services/checkInformationService'
@@ -13,7 +12,6 @@ export default class CheckInformationRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService,
     private readonly checkInformationService: CheckInformationService,
     private readonly questionsService: QuestionsService,
@@ -66,7 +64,7 @@ export default class CheckInformationRoutes {
   }
 
   public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { username, token } = res.locals.user
+    const { token } = res.locals.user
     const { nomsId } = req.params
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
@@ -85,7 +83,6 @@ export default class CheckInformationRoutes {
     )
 
     const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
-      username,
       nomsId,
       calculationRequestModel,
       token,

@@ -8,7 +8,6 @@ import {
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import UserInputService from '../services/userInputService'
-import EntryPointService from '../services/entryPointService'
 import AlternativeReleaseIntroViewModel from '../models/AlternativeReleaseIntroViewModel'
 import CalculationQuestionTypes from '../models/CalculationQuestionTypes'
 import SelectOffencesViewModel from '../models/SelectOffencesViewModel'
@@ -23,7 +22,6 @@ export default class CalculationQuestionRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService,
   ) {
     // intentionally left blank
@@ -31,7 +29,7 @@ export default class CalculationQuestionRoutes {
 
   private handleListRequest = (type: CalculationQuestionTypes): RequestHandler => {
     return async (req, res): Promise<void> => {
-      const { username, caseloads, token } = res.locals.user
+      const { caseloads, token } = res.locals.user
       const { nomsId } = req.params
       const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
 
@@ -41,9 +39,8 @@ export default class CalculationQuestionRoutes {
       if (!calculationQuestions.sentenceQuestions.find(question => question.userInputType === type.apiType)) {
         return res.redirect(`/calculation/${nomsId}/alternative-release-arrangements`)
       }
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
       const sentencesAndOffences = await this.calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences(
-        username,
         prisonerDetail.bookingId,
         token,
       )
@@ -78,12 +75,11 @@ export default class CalculationQuestionRoutes {
 
   private handleSubmitOffences = (type: CalculationQuestionTypes): RequestHandler => {
     return async (req, res): Promise<void> => {
-      const { username, caseloads, token } = res.locals.user
+      const { caseloads, token } = res.locals.user
       const { nomsId } = req.params
       const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
       const sentencesAndOffences = await this.calculateReleaseDatesService.getActiveAnalyzedSentencesAndOffences(
-        username,
         prisonerDetail.bookingId,
         token,
       )
@@ -187,7 +183,7 @@ export default class CalculationQuestionRoutes {
   public submitOffencesInListD: RequestHandler = this.handleSubmitOffences(CalculationQuestionTypes.UPDATED)
 
   public alternativeReleaseIntro: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
 
@@ -199,28 +195,28 @@ export default class CalculationQuestionRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const model = new AlternativeReleaseIntroViewModel(calculationQuestions)
     return res.render(
       'pages/questions/alternativeReleaseIntro',
-      new AlternativeReleaseIntroPageViewModel(prisonerDetail, model, this.entryPointService.isDpsEntryPoint(req)),
+      new AlternativeReleaseIntroPageViewModel(prisonerDetail, model),
     )
   }
 
   public selectCalculationReason: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
     return res.render('pages/calculation/reason', new CalculationReasonViewModel(prisonerDetail, calculationReasons))
   }
 
   public submitCalculationReason: RequestHandler = async (req, res): Promise<void> => {
-    const { username, caseloads, token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const otherId = calculationReasons.find(calculation => calculation.isOther).id
 
     if (req.body.calculationReasonId == null) {

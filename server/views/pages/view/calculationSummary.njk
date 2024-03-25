@@ -15,8 +15,8 @@
     {{ super() }}
 
     {% if model.calculationSummaryUnavailable %}
-        {% if model.dpsEntryPoint %}
-            {% set backlink = "/?prisonId=" + model.prisonerDetail.offenderNo %}
+        {% if featureToggles.useCCARDLayout %}
+            {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
         {% else %}
             {% set backlink = "/view/search/prisoners" %}
         {% endif %}

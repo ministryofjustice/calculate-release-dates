@@ -11,8 +11,8 @@
     {{ super() }}
     {% if model.lastUserQuestion() %}
         {% set backlink = "/calculation/" + model.prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + model.lastUserQuestion().url %}
-        {% elif model.dpsEntryPoint %}
-        {% set backlink = "/?prisonId=" + model.prisonerDetail.offenderNo %}
+        {% elif featureToggles.useCCARDLayout %}
+        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     {% else %}
         {% set backlink = "/search/prisoners" %}
     {% endif %}

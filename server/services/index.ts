@@ -1,7 +1,6 @@
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import UserService from './userService'
 import PrisonerService from './prisonerService'
-import EntryPointService from './entryPointService'
 import ViewReleaseDatesService from './viewReleaseDatesService'
 import UserInputService from './userInputService'
 import { dataAccess } from '../data'
@@ -23,7 +22,6 @@ export const services = () => {
   const calculateReleaseDatesService = new CalculateReleaseDatesService()
   const prisonerService = new PrisonerService(hmppsAuthClient)
   const userService = new UserService(manageUsersApiClient, prisonerService)
-  const entryPointService = new EntryPointService()
   const viewReleaseDatesService = new ViewReleaseDatesService()
   const userInputService = new UserInputService()
   const manualCalculationService = new ManualCalculationService()
@@ -41,7 +39,6 @@ export const services = () => {
   const checkInformationService = new CheckInformationService(
     calculateReleaseDatesService,
     prisonerService,
-    entryPointService,
     userInputService,
   )
   const frontEndComponentService = new FrontEndComponentsService(new FrontendComponentsApiClient())
@@ -52,7 +49,6 @@ export const services = () => {
     userService,
     prisonerService,
     calculateReleaseDatesService,
-    entryPointService,
     viewReleaseDatesService,
     userInputService,
     manualCalculationService,
