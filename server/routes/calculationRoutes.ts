@@ -9,7 +9,6 @@ import { nunjucksEnv } from '../utils/nunjucksSetup'
 import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
 import UserInputService from '../services/userInputService'
-import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import { DetailedDate, ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculationCompleteViewModel from '../models/CalculationCompleteViewModel'
 import CalculationSummaryPageViewModel from '../models/CalculationSummaryPageViewModel'
@@ -25,7 +24,6 @@ export default class CalculationRoutes {
     private readonly prisonerService: PrisonerService,
     private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService,
-    private readonly viewReleaseDatesService: ViewReleaseDatesService,
   ) {
     // intentionally left blank
   }
@@ -41,17 +39,13 @@ export default class CalculationRoutes {
     ) {
       req.session.selectedApprovedDates[nomsId] = []
     }
-    const detailedCalculationResults = await this.calculateReleaseDatesService.getDetailedCalculationResults(
-      username,
+    const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       token,
     )
     if (detailedCalculationResults.context.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
     }
-    const breakdownReleaseDatesWithAdjustments = this.calculateReleaseDatesService.extractReleaseDatesWithAdjustments(
-      detailedCalculationResults.calculationBreakdown,
-    )
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
     const serverErrors = req.flash('serverErrors')
     let validationErrors = null
@@ -94,7 +88,7 @@ export default class CalculationRoutes {
       null,
       null,
       detailedCalculationResults.calculationBreakdown,
-      breakdownReleaseDatesWithAdjustments,
+      detailedCalculationResults.releaseDatesWithAdjustments,
       validationErrors,
       false,
       false,
@@ -142,8 +136,7 @@ export default class CalculationRoutes {
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(username, nomsId, caseloads, token)
-    const detailedCalculationResults = await this.calculateReleaseDatesService.getDetailedCalculationResults(
-      username,
+    const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       token,
     )
@@ -152,8 +145,6 @@ export default class CalculationRoutes {
       throw FullPageError.notFoundError()
     }
 
-    const breakdown = await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-    const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token)
     const hasNone = 'None' in detailedCalculationResults.dates
     const approvedDates = detailedCalculationResults.approvedDates
       ? this.indexApprovedDates(detailedCalculationResults.approvedDates)
@@ -162,7 +153,7 @@ export default class CalculationRoutes {
       calculationRequestId,
       nomsId,
       prisonerDetail,
-      sentencesAndOffences,
+      detailedCalculationResults?.calculationOriginalData.sentencesAndOffences,
       hasNone,
       true,
       detailedCalculationResults.context.calculationReference,
@@ -170,8 +161,8 @@ export default class CalculationRoutes {
       null,
       null,
       null,
-      breakdown?.calculationBreakdown,
-      breakdown?.releaseDatesWithAdjustments,
+      detailedCalculationResults.calculationBreakdown,
+      detailedCalculationResults.releaseDatesWithAdjustments,
       null,
       false,
       false,

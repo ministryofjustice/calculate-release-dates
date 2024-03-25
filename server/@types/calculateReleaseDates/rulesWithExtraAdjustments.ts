@@ -1,3 +1,6 @@
+import ReleaseDateWithAdjustments from './releaseDateWithAdjustments'
+import { DetailedCalculationResults } from './calculateReleaseDatesClientTypes'
+
 export type AdjustmentDuration = {
   adjustmentValue: number
   type: 'DAYS' | 'WEEKS' | 'MONTHS' | 'YEARS'
@@ -10,4 +13,8 @@ export type RulesWithExtraAdjustments = {
   TUSED_LICENCE_PERIOD_LT_1Y: AdjustmentDuration
   ERSED_ONE_YEAR: AdjustmentDuration
   ERSED_MAX_PERIOD: AdjustmentDuration
+}
+
+export interface ResultsWithBreakdownAndAdjustments extends DetailedCalculationResults {
+  releaseDatesWithAdjustments?: ReleaseDateWithAdjustments[]
 }

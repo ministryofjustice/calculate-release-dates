@@ -12,7 +12,6 @@ import {
   CalculationBreakdown,
   CalculationSentenceUserInput,
   CalculationUserInputs,
-  DetailedCalculationResults,
   GenuineOverrideRequest,
   ManualEntrySelectedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -32,6 +31,7 @@ import UserInputService from '../services/userInputService'
 import ManualEntryService from '../services/manualEntryService'
 import SessionSetup from './testutils/sessionSetup'
 import { StorageResponseModel } from '../services/dateValidationService'
+import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 
 let app: Express
 let fakeApi: nock.Scope
@@ -241,7 +241,7 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
   otherDates: {},
 }
 
-const stubbedDetailedCalculationResults: DetailedCalculationResults = {
+const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustments = {
   context: {
     calculationRequestId: stubbedCalculationResults.calculationRequestId,
     prisonerId: stubbedCalculationResults.prisonerId,
@@ -270,6 +270,7 @@ const stubbedDetailedCalculationResults: DetailedCalculationResults = {
     ERSED: { date: '2020-02-03', type: 'ERSED', description: 'Early removal scheme eligibility date', hints: [] },
   },
   calculationBreakdown: stubbedCalculationBreakdown,
+  releaseDatesWithAdjustments: [],
   calculationOriginalData: {
     prisonerDetails: {
       firstName: stubbedPrisonerData.firstName,
@@ -629,13 +630,15 @@ describe('Genuine overrides routes tests', () => {
 
   it('GET /specialist-support/calculation/:calculationReference/summary/:calculationRequestId should return the calculation summary with mini profile', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
-    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
-    calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue([])
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+      stubbedResultsWithBreakdownAndAdjustments,
+    )
 
     return request(app)
-      .get('/specialist-support/calculation/123/summary/654321')
+      .get(
+        `/specialist-support/calculation/${stubbedCalculationResults.calculationReference}/summary/${stubbedCalculationResults.calculationRequestId}`,
+      )
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {

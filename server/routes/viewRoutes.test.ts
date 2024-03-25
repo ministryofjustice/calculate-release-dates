@@ -18,12 +18,12 @@ import {
   CalculationBreakdown,
   CalculationSentenceUserInput,
   CalculationUserInputs,
-  DetailedCalculationResults,
   GenuineOverrideRequest,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import config from '../config'
 import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
+import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -205,7 +205,7 @@ const stubbedUserInput = {
   ],
 } as CalculationUserInputs
 
-const stubbedDetailedCalculationResults: DetailedCalculationResults = {
+const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustments = {
   context: {
     calculationRequestId: stubbedCalculationResults.calculationRequestId,
     prisonerId: stubbedCalculationResults.prisonerId,
@@ -233,6 +233,7 @@ const stubbedDetailedCalculationResults: DetailedCalculationResults = {
     },
   },
   calculationBreakdown: stubbedCalculationBreakdown,
+  releaseDatesWithAdjustments: stubbedReleaseDatesWithAdjustments,
   calculationOriginalData: {
     prisonerDetails: {
       firstName: stubbedPrisonerData.firstName,
@@ -463,9 +464,8 @@ describe('View journey routes tests', () => {
 
   describe('View calculation tests', () => {
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should return detail about the the calculation', () => {
-      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
-      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
-        stubbedReleaseDatesWithAdjustments,
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
       )
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
@@ -501,7 +501,9 @@ describe('View journey routes tests', () => {
     })
 
     it('GET /view/:calculationRequestId/calculation-summary/print should return a printable page about the calculation requested', () => {
-      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456/print')
@@ -516,8 +518,8 @@ describe('View journey routes tests', () => {
     })
 
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display results even if prison-api data is not available', () => {
-      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
-        ...stubbedDetailedCalculationResults,
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
         calculationOriginalData: {
           prisonerDetails: undefined,
           sentencesAndOffences: undefined,
@@ -549,9 +551,8 @@ describe('View journey routes tests', () => {
     })
 
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId for a genuine override should display the other reason', () => {
-      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
-      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
-        stubbedReleaseDatesWithAdjustments,
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
       )
       calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
         reason: 'Other: reason',
@@ -571,9 +572,8 @@ describe('View journey routes tests', () => {
     })
 
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId for a genuine override should look up reason', () => {
-      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
-      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
-        stubbedReleaseDatesWithAdjustments,
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
       )
       calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
         reason: 'terror',
@@ -592,17 +592,14 @@ describe('View journey routes tests', () => {
         })
     })
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the reason if it exists and the toggle is enabled', () => {
-      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
-        ...stubbedDetailedCalculationResults,
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
         context: {
-          ...stubbedDetailedCalculationResults.context,
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
           calculationDate: '2024-01-13',
           calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false },
         },
       })
-      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
-        stubbedReleaseDatesWithAdjustments,
-      )
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
 
       config.featureToggles.calculationReasonToggle = true
@@ -618,18 +615,15 @@ describe('View journey routes tests', () => {
         })
     })
     it('GET /view/:calculationRequestId/calculation-summary should display the other reason if it was selected', () => {
-      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
-        ...stubbedDetailedCalculationResults,
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
         context: {
-          ...stubbedDetailedCalculationResults.context,
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
           calculationDate: '2024-01-19',
           calculationReason: { id: 2, displayName: 'Other', isOther: true },
           otherReasonDescription: 'Another reason for calculation',
         },
       })
-      calculateReleaseDatesService.extractReleaseDatesWithAdjustments.mockReturnValue(
-        stubbedReleaseDatesWithAdjustments,
-      )
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
 
       config.featureToggles.calculationReasonToggle = true
@@ -646,9 +640,9 @@ describe('View journey routes tests', () => {
     })
     it('GET /view/:calculationRequestId/calculation-summary should include recall only notification banner', () => {
       const detailedCalResultWIthNotificationBannerSentencesAndOffences = {
-        ...stubbedDetailedCalculationResults,
+        ...stubbedResultsWithBreakdownAndAdjustments,
         calculationOriginalData: {
-          ...stubbedDetailedCalculationResults,
+          ...stubbedResultsWithBreakdownAndAdjustments,
           sentencesAndOffences: [
             {
               bookingId: 1,
@@ -721,7 +715,7 @@ describe('View journey routes tests', () => {
           ],
         },
       }
-      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
         detailedCalResultWIthNotificationBannerSentencesAndOffences,
       )
 
@@ -739,7 +733,7 @@ describe('View journey routes tests', () => {
     })
     it('GET /view/:calculationRequestId/calculation-summary should not show the ERSED warning banner if no recall only', () => {
       const detailedCalResultWIthNotificationBannerSentencesAndOffences = {
-        ...stubbedDetailedCalculationResults,
+        ...stubbedResultsWithBreakdownAndAdjustments,
         sentencesAndOffences: [
           {
             bookingId: 1,
@@ -811,7 +805,7 @@ describe('View journey routes tests', () => {
           },
         ],
       }
-      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
         detailedCalResultWIthNotificationBannerSentencesAndOffences,
       )
       entryPointService.isDpsEntryPoint.mockReturnValue(true)
