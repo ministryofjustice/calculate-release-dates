@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express'
 import UserPermissionsService from '../services/userPermissionsService'
-import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { FullPageError } from '../types/FullPageError'
@@ -41,7 +40,6 @@ import {
 export default class GenuineOverrideRoutes {
   constructor(
     private readonly userPermissionsService: UserPermissionsService,
-    private readonly entryPointService: EntryPointService,
     private readonly prisonerService: PrisonerService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly checkInformationService: CheckInformationService,
@@ -58,7 +56,6 @@ export default class GenuineOverrideRoutes {
     const { calculationReference } = req.query as Record<string, string>
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       if (calculationReference) {
-        this.entryPointService.setEmailEntryPoint(res, calculationReference)
         const { token } = res.locals.user
         const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
           calculationReference,
@@ -73,7 +70,6 @@ export default class GenuineOverrideRoutes {
           new GenuineOverridesIndexViewModel(calculationReference, prisonerDetail),
         )
       }
-      this.entryPointService.setStandaloneEntrypointCookie(res)
       return res.render('pages/genuineOverrides/index', new GenuineOverridesIndexViewModel(calculationReference))
     }
     throw FullPageError.notFoundError()
@@ -243,7 +239,6 @@ export default class GenuineOverrideRoutes {
         detailedCalculationResults.calculationBreakdown,
         detailedCalculationResults.releaseDatesWithAdjustments,
         validationErrors,
-        false,
         false,
         undefined,
         null,

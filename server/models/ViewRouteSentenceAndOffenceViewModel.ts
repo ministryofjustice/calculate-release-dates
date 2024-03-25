@@ -32,7 +32,6 @@ export default class ViewRouteSentenceAndOffenceViewModel {
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
-    public dpsEntryPoint: boolean,
     sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,

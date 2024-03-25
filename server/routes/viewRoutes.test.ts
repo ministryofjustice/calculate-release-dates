@@ -11,7 +11,6 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import EntryPointService from '../services/entryPointService'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import {
   BookingCalculation,
@@ -28,13 +27,11 @@ import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDa
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
-jest.mock('../services/entryPointService')
 jest.mock('../services/viewReleaseDatesService')
 
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
-const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
 
 let app: Express
@@ -364,7 +361,6 @@ beforeEach(() => {
       userService,
       prisonerService,
       calculateReleaseDatesService,
-      entryPointService,
       viewReleaseDatesService,
     },
   })
@@ -379,7 +375,6 @@ describe('View journey routes tests', () => {
     it('GET /view/:nomsId/latest should redirect to the latest ', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getLatestCalculation.mockResolvedValue(stubbedCalculationResults as never)
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/latest')
         .expect(302)
@@ -396,7 +391,6 @@ describe('View journey routes tests', () => {
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue(stubbedUserInput)
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')
         .expect(200)
@@ -430,7 +424,6 @@ describe('View journey routes tests', () => {
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({ ...stubbedUserInput, calculateErsed: false })
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')
         .expect(200)
@@ -451,7 +444,6 @@ describe('View journey routes tests', () => {
         useOffenceIndicators: false,
         sentenceCalculationUserInputs: [],
       })
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')
         .expect(200)
@@ -468,7 +460,6 @@ describe('View journey routes tests', () => {
         stubbedResultsWithBreakdownAndAdjustments,
       )
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
@@ -600,7 +591,6 @@ describe('View journey routes tests', () => {
           calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false },
         },
       })
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
 
       config.featureToggles.calculationReasonToggle = true
 
@@ -624,7 +614,6 @@ describe('View journey routes tests', () => {
           otherReasonDescription: 'Another reason for calculation',
         },
       })
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
 
       config.featureToggles.calculationReasonToggle = true
 
@@ -719,7 +708,6 @@ describe('View journey routes tests', () => {
         detailedCalResultWIthNotificationBannerSentencesAndOffences,
       )
 
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
@@ -808,7 +796,6 @@ describe('View journey routes tests', () => {
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
         detailedCalResultWIthNotificationBannerSentencesAndOffences,
       )
-      entryPointService.isDpsEntryPoint.mockReturnValue(true)
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)

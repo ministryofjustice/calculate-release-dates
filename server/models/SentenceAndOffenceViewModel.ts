@@ -32,7 +32,6 @@ export default class SentenceAndOffenceViewModel {
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
-    public dpsEntryPoint: boolean,
     sentencesAndOffences: AnalyzedSentenceAndOffences[],
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,

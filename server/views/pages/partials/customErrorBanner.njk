@@ -36,7 +36,7 @@
                     <li>
                         <p class="govuk-body">If these sentences are correct, you will need to complete this calculation manually in NOMIS.</p>
                         <p class="govuk-body govuk-!-margin-bottom-0">
-                            <a href="{{'/supported-sentences/' + model.prisonerDetail.offenderNo}}">Check supported sentence types</a>
+                            <a href="{{'/supported-sentences/' + prisonerDetail.offenderNo}}">Check supported sentence types</a>
                         </p>
                     </li>
                 {% elif validationErrors.messageType === 'UNSUPPORTED_CALCULATION' %}

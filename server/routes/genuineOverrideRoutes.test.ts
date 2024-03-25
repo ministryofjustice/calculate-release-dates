@@ -3,7 +3,6 @@ import { Express } from 'express'
 import nock from 'nock'
 import { appWithAllRoutes } from './testutils/appSetup'
 import UserPermissionsService from '../services/userPermissionsService'
-import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
@@ -38,7 +37,6 @@ let fakeApi: nock.Scope
 let sessionSetup: SessionSetup
 
 jest.mock('../services/userPermissionsService')
-jest.mock('../services/entryPointService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/viewReleaseDatesService')
@@ -47,7 +45,6 @@ jest.mock('../services/checkInformationService')
 jest.mock('../services/manualEntryService')
 
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
-const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
@@ -55,7 +52,6 @@ const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 const checkInformationService = new CheckInformationService(
   calculateReleaseDatesService,
   prisonerService,
-  entryPointService,
   userInputService,
 ) as jest.Mocked<CheckInformationService>
 const manualEntryService = new ManualEntryService(null, null, null) as jest.Mocked<ManualEntryService>
@@ -402,7 +398,6 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       userPermissionsService,
-      entryPointService,
       calculateReleaseDatesService,
       prisonerService,
       viewReleaseDatesService,
@@ -651,7 +646,6 @@ describe('Genuine overrides routes tests', () => {
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
       stubbedUserInput,
-      true,
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,

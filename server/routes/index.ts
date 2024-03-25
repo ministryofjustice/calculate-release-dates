@@ -17,7 +17,6 @@ import GenuineOverridesEmailTemplateService from '../services/genuineOverridesEm
 export default function Index({
   prisonerService,
   calculateReleaseDatesService,
-  entryPointService,
   viewReleaseDatesService,
   userInputService,
   manualCalculationService,
@@ -32,16 +31,10 @@ export default function Index({
 
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
-  const calculationAccessRoutes = new CalculationRoutes(
-    calculateReleaseDatesService,
-    prisonerService,
-    entryPointService,
-    userInputService,
-  )
+  const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService, userInputService)
   const checkInformationAccessRoutes = new CheckInformationRoutes(
     calculateReleaseDatesService,
     prisonerService,
-    entryPointService,
     userInputService,
     checkInformationService,
     questionsService,
@@ -56,23 +49,12 @@ export default function Index({
   )
 
   const otherAccessRoutes = new OtherRoutes(prisonerService)
-  const startRoutes = new StartRoutes(
-    calculateReleaseDatesService,
-    entryPointService,
-    prisonerService,
-    userPermissionsService,
-  )
-  const viewAccessRoutes = new ViewRoutes(
-    viewReleaseDatesService,
-    calculateReleaseDatesService,
-    prisonerService,
-    entryPointService,
-  )
+  const startRoutes = new StartRoutes(calculateReleaseDatesService, prisonerService, userPermissionsService)
+  const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
 
   const calculationQuestionRoutes = new CalculationQuestionRoutes(
     calculateReleaseDatesService,
     prisonerService,
-    entryPointService,
     userInputService,
   )
 
@@ -87,7 +69,6 @@ export default function Index({
   const genuineOverridesEmailTemplateService = new GenuineOverridesEmailTemplateService()
   const genuineOverrideAccessRoutes = new GenuineOverrideRoutes(
     userPermissionsService,
-    entryPointService,
     prisonerService,
     calculateReleaseDatesService,
     checkInformationService,

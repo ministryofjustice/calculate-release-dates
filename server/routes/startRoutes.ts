@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express'
-import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import UserPermissionsService from '../services/userPermissionsService'
 import config from '../config'
@@ -9,7 +8,6 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 export default class StartRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly entryPointService: EntryPointService,
     private readonly prisonerService: PrisonerService,
     private readonly userPermissionsService: UserPermissionsService,
   ) {
@@ -20,7 +18,6 @@ export default class StartRoutes {
     const { prisonId } = req.query as Record<string, string>
     const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
     if (prisonId) {
-      this.entryPointService.setDpsEntrypointCookie(res, prisonId)
       const { caseloads, token } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, caseloads, token)
       const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
@@ -42,7 +39,6 @@ export default class StartRoutes {
         ),
       )
     }
-    this.entryPointService.setStandaloneEntrypointCookie(res)
     if (config.featureToggles.useCCARDLayout) {
       return res.redirect('/search/prisoners')
     }
@@ -51,11 +47,7 @@ export default class StartRoutes {
 
   public supportedSentences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    let prisonId: string
-    if (this.entryPointService.isDpsEntryPoint(req)) {
-      prisonId = this.entryPointService.getDpsPrisonerId(req)
-    }
-    return res.render('pages/supportedSentences', { prisonId, nomsId })
+    return res.render('pages/supportedSentences', { nomsId })
   }
 
   public accessibility: RequestHandler = async (req, res): Promise<void> => {

@@ -3,7 +3,6 @@ import { DateTime } from 'luxon'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import logger from '../../logger'
-import EntryPointService from '../services/entryPointService'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
 import { FullPageError } from '../types/FullPageError'
@@ -22,7 +21,6 @@ export default class CalculationRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService,
   ) {
     // intentionally left blank
@@ -90,7 +88,6 @@ export default class CalculationRoutes {
       detailedCalculationResults.calculationBreakdown,
       detailedCalculationResults.releaseDatesWithAdjustments,
       validationErrors,
-      false,
       false,
       approvedDates,
       null,
@@ -165,7 +162,6 @@ export default class CalculationRoutes {
       detailedCalculationResults.releaseDatesWithAdjustments,
       null,
       false,
-      false,
       approvedDates,
       null,
       detailedCalculationResults,
@@ -234,7 +230,6 @@ export default class CalculationRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const noDates: string = <string>req.query.noDates
-    this.entryPointService.clearEntryPoint(res)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const calculation = await this.calculateReleaseDatesService.getCalculationResults(calculationRequestId, token)

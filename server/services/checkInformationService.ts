@@ -5,7 +5,6 @@ import SentenceTypes from '../models/SentenceTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import PrisonerService from './prisonerService'
-import EntryPointService from './entryPointService'
 import UserInputService from './userInputService'
 import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
@@ -13,7 +12,6 @@ export default class CheckInformationService {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService,
   ) {
     // intentionally blank
@@ -77,7 +75,6 @@ export default class CheckInformationService {
     return new SentenceAndOffenceViewModel(
       prisonerDetail,
       userInputs,
-      this.entryPointService.isDpsEntryPoint(req),
       sentencesAndOffences,
       adjustmentDetails,
       false,

@@ -3,7 +3,6 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import { Action, LatestCalculationCardConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
 import { appWithAllRoutes, user } from './testutils/appSetup'
-import EntryPointService from '../services/entryPointService'
 import PrisonerService from '../services/prisonerService'
 import {
   PrisonAPIAssignedLivingUnit,
@@ -23,12 +22,10 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../services/calculateReleaseDatesService')
-jest.mock('../services/entryPointService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/userPermissionsService')
 
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
-const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
 const stubbedPrisonerData = {
@@ -110,7 +107,7 @@ let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { calculateReleaseDatesService, entryPointService, prisonerService, userPermissionsService },
+    services: { calculateReleaseDatesService, prisonerService, userPermissionsService },
     userSupplier: () => {
       return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'] }
     },
@@ -136,10 +133,6 @@ describe('Start routes tests', () => {
         expectNoMiniProfile(res.text)
         expect($('.govuk-phase-banner__content__tag').text()).toContain('beta')
       })
-      .expect(() => {
-        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
-        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(0)
-      })
   })
 
   it('GET / should render the search page if CCARD layout is enabled', async () => {
@@ -151,8 +144,6 @@ describe('Start routes tests', () => {
       .expect('Location', '/search/prisoners')
       .expect(res => {
         redirect = res.headers.location
-        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(1)
-        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(0)
       })
 
     await request(app)
@@ -191,8 +182,6 @@ describe('Start routes tests', () => {
         expect($('[data-qa=calculation-history-table]').length).toStrictEqual(0)
       })
       .expect(() => {
-        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
-        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
         expect(prisonerService.getPrisonerDetail).toBeCalledTimes(1)
         expect(calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mock.calls.length).toBe(0)
       })
@@ -271,10 +260,6 @@ describe('Start routes tests', () => {
           .get()
         expect(links).toStrictEqual(['Overview', 'Adjustments', 'Release dates and calculations'])
       })
-      .expect(() => {
-        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
-        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
-      })
   })
   it('GET ?prisonId=123 CCARD mode should not blow up if latest calc cannot be loaded', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
@@ -291,10 +276,6 @@ describe('Start routes tests', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
         expect($('.release-dates-list')).toHaveLength(0)
-      })
-      .expect(() => {
-        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
-        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
       })
   })
 
@@ -317,7 +298,7 @@ describe('Start routes tests', () => {
 
   it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD only then hide service banner and sub nav', () => {
     app = appWithAllRoutes({
-      services: { calculateReleaseDatesService, entryPointService, prisonerService, userPermissionsService },
+      services: { calculateReleaseDatesService, prisonerService, userPermissionsService },
       userSupplier: () => {
         return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
       },
@@ -352,15 +333,11 @@ describe('Start routes tests', () => {
         expect($('[data-qa=bulk-comparison-action-link]').attr('href')).toStrictEqual('/compare')
         expect($('.moj-sub-navigation__link').length).toStrictEqual(0)
       })
-      .expect(() => {
-        expect(entryPointService.setDpsEntrypointCookie.mock.calls.length).toBe(1)
-        expect(entryPointService.setStandaloneEntrypointCookie.mock.calls.length).toBe(0)
-      })
   })
 
   it('GET ?prisonId=123 if CCARD feature is on does not have bulk comparison action link if user does not have comparison role', () => {
     app = appWithAllRoutes({
-      services: { calculateReleaseDatesService, entryPointService, prisonerService, userPermissionsService },
+      services: { calculateReleaseDatesService, prisonerService, userPermissionsService },
       userSupplier: () => {
         return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
       },
@@ -386,10 +363,9 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('GET /supported-sentences should return the supported sentence page', () => {
-    entryPointService.isDpsEntryPoint.mockReturnValue(false)
+  it('GET /supported-sentences/ASD123 should return the supported sentence page', () => {
     return request(app)
-      .get('/supported-sentences')
+      .get('/supported-sentences/ASD123')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -397,41 +373,7 @@ describe('Start routes tests', () => {
         expect(res.text).toContain(
           'The Calculate release dates service supports CJA (Criminal Justice Act) 2003 and 2020 sentences only. The sentences currently supported are:',
         )
-        expect(res.text).toContain('href="/"')
-      })
-      .expect(() => {
-        expect(entryPointService.isDpsEntryPoint.mock.calls.length).toBe(1)
-        expect(entryPointService.getDpsPrisonerId.mock.calls.length).toBe(0)
-      })
-  })
-  it('GET /supported-sentences should return the supported sentence page from DPS', () => {
-    entryPointService.isDpsEntryPoint.mockReturnValue(true)
-    entryPointService.getDpsPrisonerId.mockReturnValue('ASD123')
-    return request(app)
-      .get('/supported-sentences')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Supported sentences')
-        expect(res.text).toContain('href="/?prisonId=ASD123"')
-      })
-      .expect(() => {
-        expect(entryPointService.isDpsEntryPoint.mock.calls.length).toBe(1)
-        expect(entryPointService.getDpsPrisonerId.mock.calls.length).toBe(1)
-      })
-  })
-  it('GET /supported-sentences/nomsid should return the supported sentence page from unsupported error', () => {
-    entryPointService.isDpsEntryPoint.mockReturnValue(false)
-    return request(app)
-      .get('/supported-sentences/ASD123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Supported sentences')
         expect(res.text).toContain('href="/calculation/ASD123/check-information?hasErrors=true')
-      })
-      .expect(() => {
-        expect(entryPointService.isDpsEntryPoint.mock.calls.length).toBe(1)
       })
   })
 })

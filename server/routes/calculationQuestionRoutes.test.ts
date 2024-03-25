@@ -10,7 +10,6 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import EntryPointService from '../services/entryPointService'
 import UserInputService from '../services/userInputService'
 import {
   AnalyzedSentenceAndOffences,
@@ -27,13 +26,11 @@ import SessionSetup from './testutils/sessionSetup'
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
-jest.mock('../services/entryPointService')
 jest.mock('../services/userInputService')
 
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
-const entryPointService = new EntryPointService() as jest.Mocked<EntryPointService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 
 let app: Express
@@ -179,7 +176,7 @@ const stubbedCalculationReasons = [
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { userService, prisonerService, calculateReleaseDatesService, entryPointService, userInputService },
+    services: { userService, prisonerService, calculateReleaseDatesService, userInputService },
   })
 })
 
@@ -200,7 +197,6 @@ describe('Calculation question routes tests', () => {
   it('GET /calculation/:nomsId/alternative-release-arrangements should return detail the alternative release arrangements', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
-    entryPointService.isDpsEntryPoint.mockReturnValue(true)
 
     config.featureToggles.calculationReasonToggle = true
 
@@ -209,7 +205,7 @@ describe('Calculation question routes tests', () => {
       req.session.calculationReasonId = '12345'
     }
     const sessionDoctoredApp = appWithAllRoutes({
-      services: { userService, prisonerService, calculateReleaseDatesService, entryPointService, userInputService },
+      services: { userService, prisonerService, calculateReleaseDatesService, userInputService },
       sessionSetup: sessionSetUp,
     })
     return request(sessionDoctoredApp)
@@ -234,7 +230,7 @@ describe('Calculation question routes tests', () => {
       req.session.calculationReasonId = '12345'
     }
     const sessionDoctoredApp = appWithAllRoutes({
-      services: { userService, prisonerService, calculateReleaseDatesService, entryPointService, userInputService },
+      services: { userService, prisonerService, calculateReleaseDatesService, userInputService },
       sessionSetup: sessionSetUp,
     })
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue({ sentenceQuestions: [] })

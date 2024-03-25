@@ -11,7 +11,7 @@
 
 {% block beforeContent %}
     {{ super() }}
-    {% if model.dpsEntryPoint or featureToggles.useCCARDLayout %}
+    {% if featureToggles.useCCARDLayout %}
         {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     {% else %}
         {% set backlink = "/search/prisoners" %}

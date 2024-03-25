@@ -1,4 +1,4 @@
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import { DateTime } from 'luxon'
 import PrisonerService from '../services/prisonerService'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
@@ -6,7 +6,6 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
-import EntryPointService from '../services/entryPointService'
 import SentenceTypes from '../models/SentenceTypes'
 import { DetailedDate, GenuineOverrideRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewRouteSentenceAndOffenceViewModel from '../models/ViewRouteSentenceAndOffenceViewModel'
@@ -29,7 +28,6 @@ export default class ViewRoutes {
     private readonly viewReleaseDatesService: ViewReleaseDatesService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entryPointService: EntryPointService,
   ) {
     // intentionally left blank
   }
@@ -86,7 +84,6 @@ export default class ViewRoutes {
           new ViewRouteSentenceAndOffenceViewModel(
             prisonerDetail,
             calculationUserInputs,
-            this.entryPointService.isDpsEntryPoint(req),
             sentencesAndOffences,
             adjustmentDetails,
             true,
@@ -123,7 +120,6 @@ export default class ViewRoutes {
     nomsId: string,
     token: string,
     caseloads: string[],
-    req: Request,
   ): Promise<CalculationSummaryViewModel> {
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
@@ -156,7 +152,6 @@ export default class ViewRoutes {
           messageType: ErrorMessageType.MISSING_PRISON_API_DATA,
         } as ErrorMessages,
         true,
-        this.entryPointService.isDpsEntryPoint(req),
         undefined,
         null,
         detailedCalculationResults,
@@ -185,7 +180,6 @@ export default class ViewRoutes {
       releaseDatesWithAdjustments,
       null,
       false,
-      this.entryPointService.isDpsEntryPoint(req),
       approvedDates,
       this.getOverrideReason(override),
       detailedCalculationResults,
@@ -218,7 +212,7 @@ export default class ViewRoutes {
     const { nomsId } = req.params
     const { caseloads, token } = res.locals.user
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads, req)
+    const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads)
     res.render(
       'pages/view/calculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
@@ -233,7 +227,7 @@ export default class ViewRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads, req)
+    const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads)
     res.render(
       'pages/view/printCalculationSummary',
       new ViewCalculateReleaseDatePageViewModel(

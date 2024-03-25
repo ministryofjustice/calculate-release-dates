@@ -8,7 +8,6 @@ import {
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import UserInputService from '../services/userInputService'
-import EntryPointService from '../services/entryPointService'
 import AlternativeReleaseIntroViewModel from '../models/AlternativeReleaseIntroViewModel'
 import CalculationQuestionTypes from '../models/CalculationQuestionTypes'
 import SelectOffencesViewModel from '../models/SelectOffencesViewModel'
@@ -23,7 +22,6 @@ export default class CalculationQuestionRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly entryPointService: EntryPointService,
     private readonly userInputService: UserInputService,
   ) {
     // intentionally left blank
@@ -201,7 +199,7 @@ export default class CalculationQuestionRoutes {
     const model = new AlternativeReleaseIntroViewModel(calculationQuestions)
     return res.render(
       'pages/questions/alternativeReleaseIntro',
-      new AlternativeReleaseIntroPageViewModel(prisonerDetail, model, this.entryPointService.isDpsEntryPoint(req)),
+      new AlternativeReleaseIntroPageViewModel(prisonerDetail, model),
     )
   }
 
