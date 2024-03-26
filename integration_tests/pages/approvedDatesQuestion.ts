@@ -14,6 +14,10 @@ export default class ApprovedDatesQuestionPage extends Page {
     return cy.get('#approvedDatesQuestion-2')
   }
 
+  public yes(): PageElement {
+    return cy.get('#approvedDatesQuestion')
+  }
+
   public continue(): PageElement {
     return cy.get('[data-qa=approved-dates-question]')
   }

@@ -1,41 +1,7 @@
 import { Request } from 'express'
 import { DateSelectConfiguration } from './manualEntryService'
-import DateTypeConfigurationService, { FULL_STRING_LOOKUP } from './dateTypeConfigurationService'
+import DateTypeConfigurationService from './dateTypeConfigurationService'
 import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-
-const approvedDatesConfig = {
-  name: 'dateSelect',
-  fieldset: {
-    legend: {
-      text: 'Select the dates you need to enter',
-      isPageHeading: true,
-      classes: 'govuk-fieldset__legend--xl',
-    },
-  },
-  hint: {
-    text: 'Select all that apply.',
-  },
-  items: [
-    {
-      value: 'APD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.APD,
-    },
-    {
-      value: 'HDCAD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.HDCAD,
-    },
-    {
-      value: 'ROTL',
-      checked: false,
-      attributes: {},
-      text: FULL_STRING_LOOKUP.ROTL,
-    },
-  ],
-} as DateSelectConfiguration
 
 const selectDatesError = {
   errorMessage: {
@@ -47,8 +13,8 @@ export default class ApprovedDatesService {
     // intentionally left blank
   }
 
-  public getConfig(req: Request): DateSelectConfiguration {
-    const config = approvedDatesConfig
+  public async getConfig(token: string, req: Request): Promise<DateSelectConfiguration> {
+    const config = await this.getApprovedDatesConfig(token)
     this.enrichConfiguration(config, req, req.params.nomsId)
     return config
   }
@@ -71,13 +37,13 @@ export default class ApprovedDatesService {
     }
   }
 
-  public submitApprovedDateTypes(req: Request): SubmitApprovedDateTypesResponse {
+  public async submitApprovedDateTypes(token: string, req: Request): Promise<SubmitApprovedDateTypesResponse> {
     if (req.body.dateSelect === undefined || req.body.dateSelect.length === 0) {
-      const config = { ...approvedDatesConfig, ...selectDatesError }
-      const error = true
-      return { error, config }
+      const config = await this.getApprovedDatesConfig(token)
+      return { error: true, config: { ...config, ...selectDatesError } }
     }
-    const dates = this.dateTypeConfigurationService.configure(
+    const dates = await this.dateTypeConfigurationService.configureViaBackend(
+      token,
       req.body.dateSelect,
       req.session.selectedApprovedDates[req.params.nomsId],
     )
@@ -90,7 +56,8 @@ export default class ApprovedDatesService {
     return { error, config: null }
   }
 
-  public changeDate(req: Request, nomsId: string): ManualEntrySelectedDate {
+  public async changeDate(token: string, req: Request, nomsId: string): Promise<ManualEntrySelectedDate> {
+    const dateTypeToDescriptionMapping = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     const date = req.session.selectedApprovedDates[nomsId].find(
       (d: ManualEntrySelectedDate) => d.dateType === req.query.dateType,
     )
@@ -99,7 +66,7 @@ export default class ApprovedDatesService {
     )
     req.session.selectedApprovedDates[nomsId].push({
       dateType: req.query.dateType,
-      dateText: FULL_STRING_LOOKUP[<string>req.query.dateType],
+      dateText: dateTypeToDescriptionMapping[<string>req.query.dateType],
       date: undefined,
     } as ManualEntrySelectedDate)
     return date
@@ -118,8 +85,41 @@ export default class ApprovedDatesService {
     return req.session.selectedApprovedDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)
   }
 
-  public foo(): string {
-    return 'foo'
+  private async getApprovedDatesConfig(token: string): Promise<DateSelectConfiguration> {
+    const dateTypeToDescriptionMapping = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    return {
+      name: 'dateSelect',
+      fieldset: {
+        legend: {
+          text: 'Select the dates you need to enter',
+          isPageHeading: true,
+          classes: 'govuk-fieldset__legend--xl',
+        },
+      },
+      hint: {
+        text: 'Select all that apply.',
+      },
+      items: [
+        {
+          value: 'APD',
+          attributes: {},
+          checked: false,
+          text: dateTypeToDescriptionMapping.APD,
+        },
+        {
+          value: 'HDCAD',
+          attributes: {},
+          checked: false,
+          text: dateTypeToDescriptionMapping.HDCAD,
+        },
+        {
+          value: 'ROTL',
+          checked: false,
+          attributes: {},
+          text: dateTypeToDescriptionMapping.ROTL,
+        },
+      ],
+    } as DateSelectConfiguration
   }
 }
 

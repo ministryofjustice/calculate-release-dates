@@ -1,5 +1,6 @@
 import request from 'supertest'
 import { Express } from 'express'
+import nock from 'nock'
 import PrisonerService from '../services/prisonerService'
 import {
   PrisonAPIAssignedLivingUnit,
@@ -14,13 +15,15 @@ import ManualEntryService from '../services/manualEntryService'
 import SessionSetup from './testutils/sessionSetup'
 import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { StorageResponseModel } from '../services/dateValidationService'
+import config from '../config'
+import { testDateTypeDefinitions } from '../testutils/createUserToken'
 
 let app: Express
 let sessionSetup: SessionSetup
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const dateTypeConfigurationService = new DateTypeConfigurationService()
-const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService) as jest.Mocked<ApprovedDatesService>
-const manualEntryService = new ManualEntryService(null, null, null) as jest.Mocked<ManualEntryService>
+const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
+const manualEntryService = new ManualEntryService(null, dateTypeConfigurationService, null)
 
 jest.mock('../services/prisonerService')
 
@@ -63,9 +66,12 @@ const expectedMiniProfile = {
   location: 'D-2-003',
   status: 'Serving Life Imprisonment',
 }
-
+let fakeApi: nock.Scope
 beforeEach(() => {
   sessionSetup = new SessionSetup()
+  config.apis.calculateReleaseDates.url = 'http://localhost:8100'
+  fakeApi = nock(config.apis.calculateReleaseDates.url)
+  fakeApi.get('/reference-data/date-type', '').reply(200, testDateTypeDefinitions)
   app = appWithAllRoutes({
     services: { prisonerService, approvedDatesService, manualEntryService },
     sessionSetup,
@@ -74,6 +80,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+  nock.cleanAll()
 })
 
 describe('approvedDatesRoutes', () => {
@@ -165,10 +172,21 @@ describe('approvedDatesRoutes', () => {
   })
 
   it('GET /calculation/:nomsId/:calculationRequestId/remove loads remove date page if the date is found', () => {
+    const nomsId = 'A1234AA'
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    jest.spyOn(approvedDatesService, 'hasApprovedDateToRemove').mockReturnValue(true)
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedApprovedDates = {}
+      req.session.selectedApprovedDates[nomsId] = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+    }
+
     return request(app)
-      .get('/calculation/A1234AA/123456/remove?dateType=CRD')
+      .get(`/calculation/${nomsId}/123456/remove?dateType=CRD`)
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)')

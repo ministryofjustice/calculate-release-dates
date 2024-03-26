@@ -64,5 +64,17 @@ describe('Calculate release dates API client tests', () => {
         await expect(client.getLatestCalculationForPrisoner(prisonerId)).rejects.toThrow('Not Found')
       })
     })
+    describe('Get reference data', () => {
+      it('Get date types and descriptions', async () => {
+        const dates = [
+          { type: 'FOO', description: 'Foo date' },
+          { type: 'BAR', description: 'Bar date' },
+        ]
+        fakeApi.get('/reference-data/date-type', '').reply(200, dates)
+        const data = await new CalculateReleaseDatesApiClient(token).getDateTypeDefinitions()
+        expect(data).toEqual(dates)
+        expect(nock.isDone()).toBe(true)
+      })
+    })
   })
 })

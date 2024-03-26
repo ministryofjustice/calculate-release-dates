@@ -50,7 +50,7 @@ export default class ApprovedDatesRoutes {
     )
   }
 
-  public selectedApprovedDateTypes: RequestHandler = async (req, res): Promise<void> => {
+  public selectApprovedDateTypes: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
     if (!req.session.selectedApprovedDates) {
@@ -60,7 +60,7 @@ export default class ApprovedDatesRoutes {
       req.session.selectedApprovedDates[nomsId] = []
     }
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
-    const config = this.approvedDatesService.getConfig(req)
+    const config = await this.approvedDatesService.getConfig(token, req)
     return res.render(
       'pages/approvedDates/selectApprovedDates',
       new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config),
@@ -77,7 +77,7 @@ export default class ApprovedDatesRoutes {
       req.session.selectedApprovedDates[nomsId] = []
     }
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
-    const { error, config } = this.approvedDatesService.submitApprovedDateTypes(req)
+    const { error, config } = await this.approvedDatesService.submitApprovedDateTypes(token, req)
     if (error) {
       return res.render(
         'pages/approvedDates/selectApprovedDates',
@@ -156,8 +156,9 @@ export default class ApprovedDatesRoutes {
   }
 
   public loadChangeDate: RequestHandler = async (req, res): Promise<void> => {
+    const { token } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
-    const { date } = this.approvedDatesService.changeDate(req, nomsId)
+    const { date } = await this.approvedDatesService.changeDate(token, req, nomsId)
     return res.redirect(
       `/calculation/${nomsId}/${calculationRequestId}/submit-dates?year=${date.year}&month=${date.month}&day=${date.day}`,
     )
@@ -169,7 +170,7 @@ export default class ApprovedDatesRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const dateToRemove: string = <string>req.query.dateType
     if (this.approvedDatesService.hasApprovedDateToRemove(req, nomsId, dateToRemove)) {
-      const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+      const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
       return res.render(
         'pages/approvedDates/removeDate',
         new RemoveApprovedDateViewModel(prisonerDetail, dateToRemove, fullDateName),
@@ -183,7 +184,7 @@ export default class ApprovedDatesRoutes {
     const { nomsId, calculationRequestId } = req.params
     const dateToRemove: string = <string>req.query.dateType
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
-    const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+    const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
       return res.render(
         'pages/approvedDates/removeDate',

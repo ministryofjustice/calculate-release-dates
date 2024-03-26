@@ -24,6 +24,7 @@ import {
   HistoricCalculation,
   DetailedCalculationResults,
   LatestCalculation,
+  DateTypeDefinition,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
@@ -309,5 +310,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/calculation/${prisonerId}/latest`,
     }) as Promise<LatestCalculation>
+  }
+
+  async getDateTypeDefinitions() {
+    return this.restClient.get({
+      path: '/reference-data/date-type',
+    }) as Promise<DateTypeDefinition[]>
   }
 }

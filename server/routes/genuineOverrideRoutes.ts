@@ -419,7 +419,13 @@ export default class GenuineOverrideRoutes {
         token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
-      const { config } = this.manualEntryService.verifySelectedDateType(req, releaseDates.prisonerId, false, true)
+      const { config } = await this.manualEntryService.verifySelectedDateType(
+        token,
+        req,
+        releaseDates.prisonerId,
+        false,
+        true,
+      )
       return res.render(
         'pages/genuineOverrides/dateTypeSelection',
         new GenuineOverridesDateTypeSelectionViewModel(prisonerDetail, config, calculationReference),
@@ -442,7 +448,8 @@ export default class GenuineOverrideRoutes {
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
 
-      const { error, config } = this.manualEntryService.verifySelectedDateType(
+      const { error, config } = await this.manualEntryService.verifySelectedDateType(
+        token,
         req,
         releaseDates.prisonerId,
         false,
@@ -454,7 +461,7 @@ export default class GenuineOverrideRoutes {
           new GenuineOverridesDateTypeSelectionViewModel(prisonerDetail, config, calculationReference, true),
         )
       }
-      this.manualEntryService.addManuallyCalculatedDateTypes(req, releaseDates.prisonerId)
+      await this.manualEntryService.addManuallyCalculatedDateTypes(token, req, releaseDates.prisonerId)
 
       return res.redirect(`/specialist-support/calculation/${calculationReference}/enter-date`)
     }
@@ -540,7 +547,7 @@ export default class GenuineOverrideRoutes {
         token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
-      const rows = this.manualEntryService.getConfirmationConfiguration(req, releaseDates.prisonerId, true)
+      const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, releaseDates.prisonerId, true)
 
       return res.render(
         'pages/genuineOverrides/confirmOverride',
@@ -558,7 +565,7 @@ export default class GenuineOverrideRoutes {
         calculationReference,
         token,
       )
-      const { date } = this.manualEntryService.changeDate(req, releaseDates.prisonerId)
+      const { date } = await this.manualEntryService.changeDate(token, req, releaseDates.prisonerId)
       return res.redirect(
         `/specialist-support/calculation/${calculationReference}/enter-date?year=${date.year}&month=${date.month}&day=${date.day}`,
       )
@@ -581,7 +588,7 @@ export default class GenuineOverrideRoutes {
           (d: ManualEntrySelectedDate) => d.dateType === dateToRemove,
         )
       ) {
-        const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+        const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
         return res.render(
           'pages/genuineOverrides/removeDate',
           new GenuineOverridesRemoveDateViewModel(prisonerDetail, dateToRemove, fullDateName, calculationReference),
@@ -603,7 +610,7 @@ export default class GenuineOverrideRoutes {
         token,
       )
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
-      const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+      const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
       if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
         const error = true
         return res.render(

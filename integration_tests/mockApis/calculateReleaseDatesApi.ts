@@ -1064,4 +1064,42 @@ export default {
       },
     })
   },
+  stubGetReferenceDates: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/reference-data/date-type`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          { type: 'CRD', description: 'Conditional release date' },
+          { type: 'LED', description: 'Licence expiry date' },
+          { type: 'SED', description: 'Sentence expiry date' },
+          { type: 'NPD', description: 'Non-parole date' },
+          { type: 'ARD', description: 'Automatic release date' },
+          { type: 'TUSED', description: 'Top up supervision expiry date' },
+          { type: 'PED', description: 'Parole eligibility date' },
+          { type: 'SLED', description: 'Sentence and licence expiry date' },
+          { type: 'HDCED', description: 'Home detention curfew eligibility date' },
+          { type: 'NCRD', description: 'Notional conditional release date' },
+          { type: 'ETD', description: 'Early transfer date' },
+          { type: 'MTD', description: 'Mid transfer date' },
+          { type: 'LTD', description: 'Late transfer date' },
+          { type: 'DPRRD', description: 'Detention and training order post recall release date' },
+          { type: 'PRRD', description: 'Post recall release date' },
+          { type: 'ESED', description: 'Effective sentence end date' },
+          { type: 'ERSED', description: 'Early removal scheme eligibility date' },
+          { type: 'TERSED', description: 'Tariff-expired removal scheme eligibility date' },
+          { type: 'APD', description: 'Approved parole date' },
+          { type: 'HDCAD', description: 'Home detention curfew approved date' },
+          { type: 'None', description: 'None of the above dates apply' },
+          { type: 'Tariff', description: 'known as the Tariff expiry date' },
+          { type: 'ROTL', description: 'Release on temporary licence' },
+          { type: 'HDCED4PLUS', description: 'HDCED4+' },
+        ],
+      },
+    })
+  },
 }

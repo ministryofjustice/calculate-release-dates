@@ -38,3 +38,4 @@ export type DetailedCalculationResults = components['schemas']['DetailedCalculat
 export type DetailedDate = components['schemas']['DetailedDate']
 export type CalculationPrisonerDetails = components['schemas']['PrisonerDetails']
 export type LatestCalculation = components['schemas']['LatestCalculation']
+export type DateTypeDefinition = components['schemas']['DateTypeDefinition']

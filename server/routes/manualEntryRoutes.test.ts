@@ -1,5 +1,6 @@
 import request from 'supertest'
 import type { Express } from 'express'
+import nock from 'nock'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import {
@@ -19,6 +20,8 @@ import DateTypeConfigurationService from '../services/dateTypeConfigurationServi
 import DateValidationService, { StorageResponseModel } from '../services/dateValidationService'
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import SessionSetup from './testutils/sessionSetup'
+import config from '../config'
+import { testDateTypeDefinitions } from '../testutils/createUserToken'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -77,9 +80,12 @@ const expectedMiniProfile = {
   location: 'D-2-003',
   status: 'Serving Life Imprisonment',
 }
-
+let fakeApi: nock.Scope
 beforeEach(() => {
   sessionSetup = new SessionSetup()
+  config.apis.calculateReleaseDates.url = 'http://localhost:8100'
+  fakeApi = nock(config.apis.calculateReleaseDates.url)
+  fakeApi.get('/reference-data/date-type', '').reply(200, testDateTypeDefinitions).persist()
   app = appWithAllRoutes({
     services: {
       calculateReleaseDatesService,
@@ -93,6 +99,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+  nock.cleanAll()
 })
 
 describe('Tests for /calculation/:nomsId/manual-entry', () => {
@@ -306,7 +313,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         type: 'UNSUPPORTED_SENTENCE',
       } as ValidationMessage,
     ])
-    jest.spyOn(manualEntryService, 'verifySelectedDateType').mockReturnValue({
+    jest.spyOn(manualEntryService, 'verifySelectedDateType').mockResolvedValue({
       error: true,
       config: undefined,
     })
