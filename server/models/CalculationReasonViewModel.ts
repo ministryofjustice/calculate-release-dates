@@ -7,7 +7,7 @@ export default class CalculationReasonViewModel extends PrisonerContextViewModel
     prisonerDetail: PrisonApiPrisoner,
     public reasons: CalculationReason[],
     public errorMessage?: { text: string },
-    public otherErrorMessage?: { text: string; id: number },
+    public otherErrorMessage?: { text: string; id: number; otherText?: string },
   ) {
     super(prisonerDetail)
     this.reasons = reasons

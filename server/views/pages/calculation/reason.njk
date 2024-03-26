@@ -35,6 +35,7 @@
                 {% if otherErrorMessage|length %}
                     {% set otherErrorText = {text: otherErrorMessage.text  } %}
                     {% set otherValueId = otherErrorMessage.id %}
+                    {% set otherText = otherErrorMessage.otherText %}
                 {% endif %}
 
                 {% set otherReasonHtml %}
@@ -45,6 +46,7 @@
                         autocomplete: "string",
                         classes: "govuk-!-width-one-third",
                         errorMessage: otherErrorText,
+                        value: otherText,
                         label: {
                             text: "Enter the reason for the calculation"
                         }

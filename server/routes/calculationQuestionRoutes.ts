@@ -238,6 +238,17 @@ export default class CalculationQuestionRoutes {
       )
     }
 
+    if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length >= 40) {
+      return res.render(
+        'pages/calculation/reason',
+        new CalculationReasonViewModel(prisonerDetail, calculationReasons, undefined, {
+          text: 'You must enter less than 40 characters',
+          id: otherId,
+          otherText: req.body.otherReasonDescription,
+        }),
+      )
+    }
+
     if (config.featureToggles.calculationReasonToggle) {
       if (req.session.calculationReasonId == null) {
         req.session.calculationReasonId = {}
