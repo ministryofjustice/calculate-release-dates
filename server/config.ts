@@ -126,7 +126,6 @@ export default {
   featureToggles: {
     dpsBannerEnabled: get('DPS_BANNER_ENABLED', false) === 'true',
     specialistSupport: get('SPECIALIST_SUPPORT_ENABLED', false) === 'true',
-    changesSinceLastCalculation: get('CHANGES_SINCE_LAST_CALCULATION', false) === 'true',
     calculationReasonToggle: get('CALCULATION_REASON_TOGGLE', false) === 'true',
     hdc4ComparisonTabEnabled: get('HDC4_PLUS_COMPARISON_TAB_ENABLED', false) === 'true',
     ers2024BannerEnabled: get('ERS2024_BANNER_ENABLED', false) === 'true',
