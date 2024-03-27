@@ -15,7 +15,6 @@ generic-service:
     PRISON_API_URL: "https://api.prison.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search.prison.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital.prison.service.justice.gov.uk"
-    APPROVED_DATES_TOGGLE: "true"
     DPS_BANNER_ENABLED: "false"
     SPECIALIST_SUPPORT_ENABLED: "false"
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"

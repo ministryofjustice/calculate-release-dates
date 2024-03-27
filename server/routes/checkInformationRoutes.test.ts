@@ -23,7 +23,6 @@ import {
   ValidationMessage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import trimHtml from './testutils/testUtils'
-import config from '../config'
 import QuestionsService from '../services/questionsService'
 import CheckInformationService from '../services/checkInformationService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
@@ -350,7 +349,6 @@ beforeEach(() => {
       checkInformationService,
     },
   })
-  config.featureToggles.approvedDates = true
 })
 
 afterEach(() => {

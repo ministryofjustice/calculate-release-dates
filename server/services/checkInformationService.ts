@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
-import config from '../config'
 import SentenceTypes from '../models/SentenceTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
@@ -26,12 +25,10 @@ export default class CheckInformationService {
     const { caseloads, token } = res.locals.user
     const { calculationReference } = req.params
     let { nomsId } = req.params
-    if (config.featureToggles.approvedDates) {
-      if (!req.session.selectedApprovedDates) {
-        req.session.selectedApprovedDates = {}
-      }
-      req.session.selectedApprovedDates[nomsId] = []
+    if (!req.session.selectedApprovedDates) {
+      req.session.selectedApprovedDates = {}
     }
+    req.session.selectedApprovedDates[nomsId] = []
     let prisonerDetail
     if (nomsId) {
       prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
