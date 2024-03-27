@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-
 const production = process.env.NODE_ENV === 'production'
 
 function get<T>(name: string, fallback: T, options = { requireInProduction: false }): T | string {
@@ -128,8 +126,6 @@ export default {
   featureToggles: {
     dpsBannerEnabled: get('DPS_BANNER_ENABLED', false) === 'true',
     specialistSupport: get('SPECIALIST_SUPPORT_ENABLED', false) === 'true',
-    nonFridayRelease: get('NON_FRIDAY_RELEASE_TOGGLE', false) === 'true',
-    nonFridayReleasePolicyStartDate: dayjs(get('NON_FRIDAY_RELEASE_START_DATE', '2023-10-26')),
     changesSinceLastCalculation: get('CHANGES_SINCE_LAST_CALCULATION', false) === 'true',
     calculationReasonToggle: get('CALCULATION_REASON_TOGGLE', false) === 'true',
     hdc4ComparisonTabEnabled: get('HDC4_PLUS_COMPARISON_TAB_ENABLED', false) === 'true',
