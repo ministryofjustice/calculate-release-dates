@@ -14,6 +14,7 @@ context('Calculation questions page', () => {
     cy.task('stubCalculationQuestions')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubComponents')
+    cy.task('stubSupportedValidationNoMessages')
   })
 
   it('Visit alternative release intro page via the calculation reason page and test functionality', () => {

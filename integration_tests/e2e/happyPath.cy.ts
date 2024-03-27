@@ -35,7 +35,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubLatestCalculation')
     cy.task('stubCalculationQuestions')
     cy.task('stubCalculationUserInputs')
-    cy.task('stubSupportedValidation')
+    cy.task('stubSupportedValidationNoMessages')
     cy.task('stubGetGenuineOverride')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetCalculationHistory')

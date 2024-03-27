@@ -1,7 +1,7 @@
 import { stubFor } from './wiremock'
 
-const stubComponents = () =>
-  stubFor({
+const stubComponents = () => {
+  return stubFor({
     request: {
       method: 'GET',
       urlPattern: '/components/components\\?component=header',
@@ -14,12 +14,13 @@ const stubComponents = () =>
       jsonBody: {
         header: {
           html: '<header data-qa="common-header">Common Components Header</header>',
-          javascript: ['/common-components/header.js'],
-          css: ['/common-components/header.css'],
+          javascript: [],
+          css: [],
         },
       },
     },
   })
+}
 
 const stubComponentsFail = () =>
   stubFor({
