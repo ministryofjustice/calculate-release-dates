@@ -502,7 +502,7 @@ describe('Calculation question routes tests', () => {
       })
   })
 
-  it('POST /calculation/:nomsId/reason should return to the reason page and display the error message and the original text if the other reason is selected and more than 40 characters been entered', () => {
+  it('POST /calculation/:nomsId/reason should return to the reason page and display the error message and the original text if the other reason is selected and more than 120 characters been entered', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
     config.featureToggles.calculationReasonToggle = true
@@ -510,11 +510,17 @@ describe('Calculation question routes tests', () => {
     return request(app)
       .post('/calculation/A1234AA/reason/')
       .type('form')
-      .send({ calculationReasonId: ['11'], otherReasonDescription: 'A string which is at least 40 characters' })
+      .send({
+        calculationReasonId: ['11'],
+        otherReasonDescription:
+          'A string which is at least 120 characters requires quite a bit of padding to get it to the correct length so it can be tested',
+      })
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('You must enter less than 40 characters')
-        expect(res.text).toContain('A string which is at least 40 characters')
+        expect(res.text).toContain('Reason must be 120 characters or less')
+        expect(res.text).toContain(
+          'A string which is at least 120 characters requires quite a bit of padding to get it to the correct length so it can be tested',
+        )
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
