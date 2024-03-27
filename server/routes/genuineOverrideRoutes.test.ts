@@ -679,7 +679,7 @@ describe('Genuine overrides routes tests', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    manualEntryService.getConfirmationConfiguration.mockReturnValue([])
+    manualEntryService.getConfirmationConfiguration.mockResolvedValue([])
     return request(app)
       .get('/specialist-support/calculation/ABC/confirm-override')
       .expect(200)
@@ -754,7 +754,7 @@ describe('Genuine overrides routes tests', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    manualEntryService.verifySelectedDateType.mockReturnValue({
+    manualEntryService.verifySelectedDateType.mockResolvedValue({
       error: false,
       config: undefined,
     })
@@ -770,7 +770,7 @@ describe('Genuine overrides routes tests', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    manualEntryService.verifySelectedDateType.mockReturnValue({
+    manualEntryService.verifySelectedDateType.mockResolvedValue({
       error: true,
       config: undefined,
     })

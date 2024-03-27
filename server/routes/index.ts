@@ -123,7 +123,7 @@ export default function Index({
     get('/calculation/:nomsId/:calculationRequestId/store', calculationAccessRoutes.submitCalculationSummary)
     get(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
-      approvedDatesAccessRoutes.selectedApprovedDateTypes,
+      approvedDatesAccessRoutes.selectApprovedDateTypes,
     )
     post(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',

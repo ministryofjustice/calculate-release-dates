@@ -67,7 +67,8 @@ export default class ManualEntryRoutes {
       token,
     )
 
-    const { error, config } = this.manualEntryService.verifySelectedDateType(
+    const { error, config } = await this.manualEntryService.verifySelectedDateType(
+      token,
       req,
       nomsId,
       hasIndeterminateSentences,
@@ -80,7 +81,7 @@ export default class ManualEntryRoutes {
         new ManualEntrySelectDatesViewModel(prisonerDetail, config, insufficientDatesSelected),
       )
     }
-    this.manualEntryService.addManuallyCalculatedDateTypes(req, nomsId)
+    await this.manualEntryService.addManuallyCalculatedDateTypes(token, req, nomsId)
     return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
   }
 
@@ -101,7 +102,13 @@ export default class ManualEntryRoutes {
       token,
     )
     const firstLoad = !req.query.addExtra
-    const { config } = this.manualEntryService.verifySelectedDateType(req, nomsId, hasIndeterminateSentences, firstLoad)
+    const { config } = await this.manualEntryService.verifySelectedDateType(
+      token,
+      req,
+      nomsId,
+      hasIndeterminateSentences,
+      firstLoad,
+    )
     return res.render(
       'pages/manualEntry/dateTypeSelection',
       new ManualEntrySelectDatesViewModel(prisonerDetail, config),
@@ -176,7 +183,7 @@ export default class ManualEntryRoutes {
     if (unsupportedSentenceOrCalculationMessages.length === 0) {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
-    const rows = this.manualEntryService.getConfirmationConfiguration(req, nomsId)
+    const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, nomsId)
     return res.render('pages/manualEntry/confirmation', new ManualEntryConfirmationViewModel(prisonerDetail, rows))
   }
 
@@ -193,7 +200,7 @@ export default class ManualEntryRoutes {
     if (
       req.session.selectedManualEntryDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)
     ) {
-      const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+      const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
       return res.render(
         'pages/manualEntry/removeDate',
         new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName),
@@ -212,7 +219,7 @@ export default class ManualEntryRoutes {
     }
     const dateToRemove: string = <string>req.query.dateType
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
-    const fullDateName = this.manualEntryService.fullStringLookup(dateToRemove)
+    const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
       return res.render(
         'pages/manualEntry/removeDate',
@@ -235,7 +242,7 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
 
-    const { date } = this.manualEntryService.changeDate(req, nomsId)
+    const { date } = await this.manualEntryService.changeDate(token, req, nomsId)
     return res.redirect(
       `/calculation/${nomsId}/manual-entry/enter-date?year=${date.year}&month=${date.month}&day=${date.day}`,
     )

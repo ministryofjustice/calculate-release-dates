@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import { DateTime } from 'luxon'
 import ManualEntryValidationService from './manualEntryValidationService'
-import DateTypeConfigurationService, { FULL_STRING_LOOKUP } from './dateTypeConfigurationService'
+import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService, { DateInputItem, EnteredDate, StorageResponseModel } from './dateValidationService'
 import {
   ManualEntrySelectedDate,
@@ -31,172 +31,6 @@ const order = {
   None: 30,
 }
 
-const determinateConfig = {
-  name: 'dateSelect',
-  fieldset: {
-    legend: {
-      text: 'Select the dates you need to enter',
-      isPageHeading: true,
-      classes: 'govuk-fieldset__legend--xl',
-    },
-  },
-  hint: {
-    text: 'Select all that apply to the manual calculation.',
-  },
-  items: [
-    {
-      value: 'SED',
-      text: FULL_STRING_LOOKUP.SED,
-      checked: false,
-      attributes: {},
-    },
-    {
-      value: 'LED',
-      text: FULL_STRING_LOOKUP.LED,
-      checked: false,
-      attributes: {},
-    },
-    {
-      value: 'CRD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.CRD,
-    },
-    {
-      attributes: {},
-      checked: false,
-      value: 'HDCED',
-      text: FULL_STRING_LOOKUP.HDCED,
-    },
-    {
-      value: 'TUSED',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.TUSED,
-    },
-    {
-      value: 'PRRD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.PRRD,
-    },
-    {
-      value: 'PED',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.PED,
-    },
-    {
-      value: 'ROTL',
-      checked: false,
-      attributes: {},
-      text: FULL_STRING_LOOKUP.ROTL,
-    },
-    {
-      value: 'ERSED',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.ERSED,
-    },
-    {
-      value: 'ARD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.ARD,
-    },
-    {
-      value: 'HDCAD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.HDCAD,
-    },
-    {
-      value: 'MTD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.MTD,
-    },
-    {
-      value: 'ETD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.ETD,
-    },
-    {
-      value: 'LTD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.LTD,
-    },
-    {
-      value: 'APD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.APD,
-    },
-    {
-      value: 'NPD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.NPD,
-    },
-    {
-      value: 'DPRRD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.DPRRD,
-    },
-  ],
-}
-const indeterminateConfig = {
-  name: 'dateSelect',
-  fieldset: {
-    legend: {
-      text: 'Select the dates you need to enter',
-      isPageHeading: true,
-      classes: 'govuk-fieldset__legend--xl',
-    },
-  },
-  hint: {
-    text: 'Select all that apply to the manual calculation.',
-  },
-  items: [
-    {
-      value: 'Tariff',
-      checked: false,
-      attributes: {},
-      text: FULL_STRING_LOOKUP.Tariff,
-    },
-    {
-      value: 'TERSED',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.TERSED,
-    },
-    {
-      value: 'ROTL',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.ROTL,
-    },
-    {
-      value: 'APD',
-      attributes: {},
-      checked: false,
-      text: FULL_STRING_LOOKUP.APD,
-    },
-    {
-      divider: 'or',
-    },
-    {
-      value: 'None',
-      text: FULL_STRING_LOOKUP.None,
-      attributes: {},
-      checked: false,
-      behaviour: 'exclusive',
-    },
-  ],
-}
 const errorMessage = {
   errorMessage: {
     text: 'Select at least one release date.',
@@ -211,12 +45,13 @@ export default class ManualEntryService {
     // intentionally left blank
   }
 
-  public verifySelectedDateType(
+  public async verifySelectedDateType(
+    token: string,
     req: Request,
     nomsId: string,
     hasIndeterminateSentences: boolean,
     firstLoad: boolean,
-  ): { error: boolean; config: DateSelectConfiguration } {
+  ): Promise<{ error: boolean; config: DateSelectConfiguration }> {
     if (!req.session.selectedManualEntryDates) {
       req.session.selectedManualEntryDates = {}
     }
@@ -227,9 +62,12 @@ export default class ManualEntryService {
       !firstLoad &&
       req.session.selectedManualEntryDates[nomsId].length === 0 &&
       (req.body.dateSelect === undefined || req.body.dateSelect.length === 0)
-    const config: DateSelectConfiguration = hasIndeterminateSentences
-      ? (indeterminateConfig as DateSelectConfiguration)
-      : (determinateConfig as DateSelectConfiguration)
+    let config: DateSelectConfiguration
+    if (hasIndeterminateSentences) {
+      config = await this.indeterminateConfig(token)
+    } else {
+      config = await this.determinateConfig(token)
+    }
     if (insufficientDatesSelected) {
       const mergedConfig = { ...config, ...errorMessage }
       // eslint-disable-next-line no-restricted-syntax
@@ -267,8 +105,9 @@ export default class ManualEntryService {
     }
   }
 
-  public addManuallyCalculatedDateTypes(req: Request, nomsId: string): void {
-    const dates = this.dateTypeConfigurationService.configure(
+  public async addManuallyCalculatedDateTypes(token: string, req: Request, nomsId: string): Promise<void> {
+    const dates = await this.dateTypeConfigurationService.configureViaBackend(
+      token,
       req.body.dateSelect,
       req.session.selectedManualEntryDates[nomsId],
     )
@@ -338,11 +177,12 @@ export default class ManualEntryService {
     return DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
   }
 
-  public getConfirmationConfiguration(req: Request, nomsId: string, isSpecialistSupport = false) {
+  public async getConfirmationConfiguration(token: string, req: Request, nomsId: string, isSpecialistSupport = false) {
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     return req.session.selectedManualEntryDates[nomsId]
       .map((d: ManualEntrySelectedDate) => {
         const dateValue = this.dateString(d)
-        const text = FULL_STRING_LOOKUP[d.dateType]
+        const text = dateTypeDefinitions[d.dateType]
         const items = isSpecialistSupport
           ? this.getSpecialistSupportItems(req.params.calculationReference, d, text)
           : this.getItems(nomsId, d, text)
@@ -400,8 +240,9 @@ export default class ManualEntryService {
     ]
   }
 
-  public fullStringLookup(dateType: string): string {
-    return FULL_STRING_LOOKUP[dateType]
+  public async fullStringLookup(token: string, dateType: string): Promise<string> {
+    const def = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    return def[dateType]
   }
 
   public removeDate(req: Request, nomsId: string): number {
@@ -414,7 +255,8 @@ export default class ManualEntryService {
     return req.session.selectedManualEntryDates[nomsId].length
   }
 
-  public changeDate(req: Request, nomsId: string): ManualEntrySelectedDate {
+  public async changeDate(token: string, req: Request, nomsId: string): Promise<ManualEntrySelectedDate> {
+    const fullString = await this.fullStringLookup(token, <string>req.query.dateType)
     const date = req.session.selectedManualEntryDates[nomsId].find(
       (d: ManualEntrySelectedDate) => d.dateType === req.query.dateType,
     )
@@ -423,10 +265,184 @@ export default class ManualEntryService {
     )
     req.session.selectedManualEntryDates[nomsId].push({
       dateType: req.query.dateType,
-      dateText: FULL_STRING_LOOKUP[<string>req.query.dateType],
+      dateText: fullString,
       date: undefined,
     } as ManualEntrySelectedDate)
     return date
+  }
+
+  private async determinateConfig(token: string): Promise<DateSelectConfiguration> {
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    return {
+      name: 'dateSelect',
+      fieldset: {
+        legend: {
+          text: 'Select the dates you need to enter',
+          isPageHeading: true,
+          classes: 'govuk-fieldset__legend--xl',
+        },
+      },
+      hint: {
+        text: 'Select all that apply to the manual calculation.',
+      },
+      items: [
+        {
+          value: 'SED',
+          text: dateTypeDefinitions.SED,
+          checked: false,
+          attributes: {},
+        },
+        {
+          value: 'LED',
+          text: dateTypeDefinitions.LED,
+          checked: false,
+          attributes: {},
+        },
+        {
+          value: 'CRD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.CRD,
+        },
+        {
+          attributes: {},
+          checked: false,
+          value: 'HDCED',
+          text: dateTypeDefinitions.HDCED,
+        },
+        {
+          value: 'TUSED',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.TUSED,
+        },
+        {
+          value: 'PRRD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.PRRD,
+        },
+        {
+          value: 'PED',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.PED,
+        },
+        {
+          value: 'ROTL',
+          checked: false,
+          attributes: {},
+          text: dateTypeDefinitions.ROTL,
+        },
+        {
+          value: 'ERSED',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.ERSED,
+        },
+        {
+          value: 'ARD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.ARD,
+        },
+        {
+          value: 'HDCAD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.HDCAD,
+        },
+        {
+          value: 'MTD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.MTD,
+        },
+        {
+          value: 'ETD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.ETD,
+        },
+        {
+          value: 'LTD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.LTD,
+        },
+        {
+          value: 'APD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.APD,
+        },
+        {
+          value: 'NPD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.NPD,
+        },
+        {
+          value: 'DPRRD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.DPRRD,
+        },
+      ],
+    } as DateSelectConfiguration
+  }
+
+  private async indeterminateConfig(token: string): Promise<DateSelectConfiguration> {
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    return {
+      name: 'dateSelect',
+      fieldset: {
+        legend: {
+          text: 'Select the dates you need to enter',
+          isPageHeading: true,
+          classes: 'govuk-fieldset__legend--xl',
+        },
+      },
+      hint: {
+        text: 'Select all that apply to the manual calculation.',
+      },
+      items: [
+        {
+          value: 'Tariff',
+          checked: false,
+          attributes: {},
+          text: dateTypeDefinitions.Tariff,
+        },
+        {
+          value: 'TERSED',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.TERSED,
+        },
+        {
+          value: 'ROTL',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.ROTL,
+        },
+        {
+          value: 'APD',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.APD,
+        },
+        {
+          divider: 'or',
+        },
+        {
+          value: 'None',
+          text: dateTypeDefinitions.None,
+          attributes: {},
+          checked: false,
+          behaviour: 'exclusive',
+        },
+      ],
+    } as DateSelectConfiguration
   }
 }
 
