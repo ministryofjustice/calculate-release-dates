@@ -531,23 +531,7 @@ describe('Calculation routes tests', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
-  it('GET /calculation/:nomsId/summary should return save to nomis button if approved dates off', () => {
-    config.featureToggles.approvedDates = false
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
-      ...stubbedResultsWithBreakdownAndAdjustments,
-      context: { ...stubbedResultsWithBreakdownAndAdjustments.context, prisonerId: 'A1234AA' },
-    })
-    return request(app)
-      .get('/calculation/A1234AA/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Confirm and submit')
-      })
-  })
   it('GET /calculation/:nomsId/summary should return confirm and continue button if approved dates on', () => {
-    config.featureToggles.approvedDates = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
       ...stubbedResultsWithBreakdownAndAdjustments,

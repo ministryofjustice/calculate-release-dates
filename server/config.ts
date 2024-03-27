@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-
 const production = process.env.NODE_ENV === 'production'
 
 function get<T>(name: string, fallback: T, options = { requireInProduction: false }): T | string {
@@ -126,17 +124,10 @@ export default {
     tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),
   },
   featureToggles: {
-    edsSopcRecalls: get('EDS_SOPC_RECALLS', false) === 'true',
-    manualEntry: get('MANUAL_ENTRY_TOGGLE', false) === 'true',
-    approvedDates: get('APPROVED_DATES_TOGGLE', false) === 'true',
     dpsBannerEnabled: get('DPS_BANNER_ENABLED', false) === 'true',
     specialistSupport: get('SPECIALIST_SUPPORT_ENABLED', false) === 'true',
-    nonFridayRelease: get('NON_FRIDAY_RELEASE_TOGGLE', false) === 'true',
-    nonFridayReleasePolicyStartDate: dayjs(get('NON_FRIDAY_RELEASE_START_DATE', '2023-10-26')),
-    changesSinceLastCalculation: get('CHANGES_SINCE_LAST_CALCULATION', false) === 'true',
     calculationReasonToggle: get('CALCULATION_REASON_TOGGLE', false) === 'true',
     hdc4ComparisonTabEnabled: get('HDC4_PLUS_COMPARISON_TAB_ENABLED', false) === 'true',
-    ers2024BannerEnabled: get('ERS2024_BANNER_ENABLED', false) === 'true',
     useCCARDLayout: get('USE_CCARD_LAYOUT', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),

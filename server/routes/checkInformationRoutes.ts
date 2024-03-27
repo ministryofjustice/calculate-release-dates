@@ -2,7 +2,6 @@ import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import UserInputService from '../services/userInputService'
-import config from '../config'
 import CheckInformationService from '../services/checkInformationService'
 import QuestionsService from '../services/questionsService'
 import CheckInformationViewModel from '../models/CheckInformationViewModel'
@@ -22,13 +21,11 @@ export default class CheckInformationRoutes {
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
     const { token } = res.locals.user
     const { nomsId } = req.params
-    if (config.featureToggles.manualEntry) {
-      const unsupportedSentenceOrCalculationMessages =
-        await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+    const unsupportedSentenceOrCalculationMessages =
+      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
 
-      if (unsupportedSentenceOrCalculationMessages.length > 0) {
-        return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
-      }
+    if (unsupportedSentenceOrCalculationMessages.length > 0) {
+      return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
     }
 
     const checkQuestions = await this.questionsService.checkQuestions(req, res)

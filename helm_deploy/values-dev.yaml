@@ -22,18 +22,12 @@ generic-service:
     PRISON_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital-dev.prison.service.justice.gov.uk"
-    MANUAL_ENTRY_TOGGLE: "true"
-    APPROVED_DATES_TOGGLE: "true"
     DPS_BANNER_ENABLED: "true"
     SPECIALIST_SUPPORT_ENABLED: "true"
     COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
-    NON_FRIDAY_RELEASE_TOGGLE: "true"
-    NON_FRIDAY_RELEASE_START_DATE: "2023-10-26"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
-    CHANGES_SINCE_LAST_CALCULATION: "true"
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "true"
     CALCULATION_REASON_TOGGLE: "true"
-    ERS2024_BANNER_ENABLED: "true"
     USE_CCARD_LAYOUT: "true"
     ENVIRONMENT_NAME: DEV
   # Switches off the allow list in the DEV env only.
