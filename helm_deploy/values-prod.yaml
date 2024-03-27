@@ -21,7 +21,6 @@ generic-service:
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     CALCULATION_REASON_TOGGLE: "true"
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "false"
-    ERS2024_BANNER_ENABLED: "true"
     USE_CCARD_LAYOUT: "false"
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts
