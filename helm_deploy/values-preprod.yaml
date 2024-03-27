@@ -21,7 +21,6 @@ generic-service:
     PRISON_API_URL: "https://api-preprod.prison.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-preprod.prison.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital-preprod.prison.service.justice.gov.uk"
-    MANUAL_ENTRY_TOGGLE: "true"
     APPROVED_DATES_TOGGLE: "true"
     DPS_BANNER_ENABLED: "true"
     SPECIALIST_SUPPORT_ENABLED: "false"

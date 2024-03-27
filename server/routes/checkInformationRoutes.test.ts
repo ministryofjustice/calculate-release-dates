@@ -513,7 +513,6 @@ describe('Check information routes tests', () => {
       })
   })
   it('GET /calculation/:nomsId/check-information UNSUPPORTED_SENTENCE should redirect to the unsupported check information page', () => {
-    config.featureToggles.manualEntry = true
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -528,7 +527,6 @@ describe('Check information routes tests', () => {
       })
   })
   it('GET /calculation/:nomsId/check-information should display unsupported calculation errors when they exist', () => {
-    config.featureToggles.manualEntry = true
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_CALCULATION',
@@ -547,7 +545,6 @@ describe('Check information routes tests', () => {
     'Unsupported type with NOMIS offence dates missing redirected to with error,' +
       ' once resolved proceed to manual entry on submission',
     async () => {
-      config.featureToggles.manualEntry = true
       calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
         {
           type: 'UNSUPPORTED_SENTENCE',
