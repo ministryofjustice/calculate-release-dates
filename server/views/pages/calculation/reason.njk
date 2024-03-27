@@ -5,6 +5,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
 {% set pageTitle = applicationName + " - get caclulation reason" %}
 {% set pageId = "reason" %}
@@ -39,12 +40,14 @@
                 {% endif %}
 
                 {% set otherReasonHtml %}
-                    {{ govukInput({
+                    {{ govukCharacterCount({
                         id: "other-reason-description",
                         name: "otherReasonDescription",
                         type: "string",
                         autocomplete: "string",
-                        classes: "govuk-!-width-one-third",
+                        maxlength: 120,
+                        threshold: 50,
+                        classes: "govuk-!-width-two-thirds",
                         errorMessage: otherErrorText,
                         value: otherText,
                         label: {

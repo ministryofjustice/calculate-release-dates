@@ -238,11 +238,11 @@ export default class CalculationQuestionRoutes {
       )
     }
 
-    if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length >= 40) {
+    if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length >= 120) {
       return res.render(
         'pages/calculation/reason',
         new CalculationReasonViewModel(prisonerDetail, calculationReasons, undefined, {
-          text: 'You must enter less than 40 characters',
+          text: 'Reason must be 120 characters or less',
           id: otherId,
           otherText: req.body.otherReasonDescription,
         }),
