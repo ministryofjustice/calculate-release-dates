@@ -9,32 +9,30 @@
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" data-qa="error-heading">
+                <h1 class="govuk-heading-xl" data-qa="error-heading">
                     {% if status === 404 and not errorKey %}
                         Page not found
-                        {% elif errorKey === 'NO_CALCULATION_SUBMITTED' %}
+                    {% elif errorKey === 'NO_CALCULATION_SUBMITTED' %}
                         No calculation submitted
+                    {% elif errorKey === 'NOT_IN_CASELOAD' %}
+                        The details for this person cannot be found.
                     {% else %}
                         There is a problem
                     {% endif %}
                 </h1>
-
+            </div>
+        </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
                 {% if errorKey %}
                     {% if errorKey === 'NOT_IN_CASELOAD' %}
-                        <p class="govuk-body">The details for this person cannot be found.</p>
-                        <p class="govuk-body"> This could be because this person:</p>
+                        <p class="govuk-body">This could be because this person:</p>
                         <ul class="govuk-list govuk-list--bullet">
-                            <li>is not in your caseload</li>
+                            <li>is not in your case load</li>
                             <li>has no bookings assigned to them</li>
                             <li>has no active bookings</li>
-                            <li>offence dates</li>
-                            <li>sentences</li>
-                            <li>adjustments</li>
                         </ul>
-
-                        <p class="govuk-body govuk-!-margin-top-6">
-                            Check the details in NOMIS and then <a href="/">try again</a>.
-                        </p>
+                        <p class="gouk-body">Check the details in NOMIS and then <a class="govuk-link" href="{{ url }}">try again</a>.</p> 
                         {% elif errorKey === 'NO_SENTENCES' %}
                         <p>The calculation must include at least one sentence.</p>
 

@@ -3,6 +3,7 @@ import { HttpError } from 'http-errors'
 import type { HTTPError } from 'superagent'
 import logger from '../logger'
 import { FullPageError, FullPageErrorType } from './types/FullPageError'
+import CommonLayoutViewModel from './models/CommonLayoutViewModel'
 
 export default function createErrorHandler(production: boolean) {
   return (error: HTTPError | FullPageError | HttpError, req: Request, res: Response, next: NextFunction): void => {
@@ -11,6 +12,7 @@ export default function createErrorHandler(production: boolean) {
       res.locals.errorKey = FullPageErrorType[error.errorKey]
       res.locals.nomsId = error.nomsId
       res.locals.prisonerDetails = error.prisonerDetails
+      res.locals.commonElementConfig = new CommonLayoutViewModel(error.prisonerDetails).commonElementConfig
     } else {
       if (error.status === 401 || error.status === 403) {
         logger.info('Logging user out')

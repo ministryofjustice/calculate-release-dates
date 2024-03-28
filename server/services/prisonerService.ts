@@ -43,9 +43,9 @@ export default class PrisonerService {
       if (userCaseloads.includes(prisonerDetail.agencyId) || (includeReleased && prisonerDetail.agencyId === 'OUT')) {
         return prisonerDetail
       }
-      throw FullPageError.notInCaseLoadError()
+      throw FullPageError.notInCaseLoadError(prisonerDetail)
     } catch (error) {
-      if (error?.status === 404) {
+      if (error?.status === 404 && !(error instanceof FullPageError)) {
         throw FullPageError.notInCaseLoadError()
       } else {
         throw error

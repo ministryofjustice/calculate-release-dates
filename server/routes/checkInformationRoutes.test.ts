@@ -727,19 +727,16 @@ describe('Check information routes tests', () => {
 
   it('GET /calculation/:nomsId/check-information should display error page for case load errors.', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
-    prisonerService.getPrisonerDetail.mockImplementation(() => {
-      throw FullPageError.notInCaseLoadError()
-    })
     checkInformationService.checkInformation.mockImplementation(() => {
-      throw FullPageError.notInCaseLoadError()
+      throw FullPageError.notInCaseLoadError(stubbedPrisonerData)
     })
     return request(app)
       .get('/calculation/A1234AA/check-information')
       .expect(404)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('There is a problem')
         expect(res.text).toContain('The details for this person cannot be found.')
+        expect(res.text).toContain('This could be because this person:')
       })
   })
   it('GET /calculation/:nomsId/check-information should display error page for no sentences.', () => {
