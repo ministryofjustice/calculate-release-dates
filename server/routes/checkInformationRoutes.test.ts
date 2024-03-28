@@ -736,7 +736,7 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('The details for this person cannot be found.')
-        expect(res.text).toContain('This could be because this person:')
+        expect(res.text).toContain('is not in your case load')
       })
   })
   it('GET /calculation/:nomsId/check-information should display error page for no sentences.', () => {
