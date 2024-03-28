@@ -9,10 +9,11 @@ export class FullPageError extends Error {
 
   prisonerDetails?: PrisonApiPrisoner
 
-  static notInCaseLoadError(): FullPageError {
+  static notInCaseLoadError(prisonerDetails?: PrisonApiPrisoner): FullPageError {
     const error = new FullPageError('Prisoner is in caseload')
     error.errorKey = FullPageErrorType.NOT_IN_CASELOAD
     error.status = 404
+    error.prisonerDetails = prisonerDetails
     return error
   }
 
