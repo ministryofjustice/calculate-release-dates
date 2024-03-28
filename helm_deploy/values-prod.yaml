@@ -15,12 +15,12 @@ generic-service:
     PRISON_API_URL: "https://api.prison.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search.prison.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital.prison.service.justice.gov.uk"
-    DPS_BANNER_ENABLED: "false"
+    DPS_BANNER_ENABLED: "true"
     SPECIALIST_SUPPORT_ENABLED: "false"
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     CALCULATION_REASON_TOGGLE: "true"
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "false"
-    USE_CCARD_LAYOUT: "false"
+    USE_CCARD_LAYOUT: "true"
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts
