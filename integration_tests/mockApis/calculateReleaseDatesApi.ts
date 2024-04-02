@@ -4,6 +4,7 @@ import { stubFor } from './wiremock'
 import {
   DetailedCalculationResults,
   LatestCalculation,
+  ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default {
@@ -548,6 +549,23 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: [],
+      },
+    })
+  },
+  stubSupportedValidationUnsupportedSentence: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/validation/A1234AB/supported-validation',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            type: 'UNSUPPORTED_SENTENCE',
+          } as ValidationMessage,
+        ],
       },
     })
   },
@@ -1099,6 +1117,48 @@ export default {
           { type: 'ROTL', description: 'Release on temporary licence' },
           { type: 'HDCED4PLUS', description: 'HDCED4+' },
         ],
+      },
+    })
+  },
+  stubGetBookingManualEntryValidationNoMessages: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/validation/A1234AB/manual-entry-validation`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [],
+      },
+    })
+  },
+  stubHasNoIndeterminateSentences: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/manual-calculation/1234/has-indeterminate-sentences`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: false,
+      },
+    })
+  },
+  stubSaveManualEntry: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: '/calculate-release-dates/manual-calculation/A1234AB',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          calculationRequestId: 123,
+          enteredDates: { SED: '2026-06-01', CRD: '2027-09-03', MTD: '2028-03-09' },
+        },
       },
     })
   },
