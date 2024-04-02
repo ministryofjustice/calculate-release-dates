@@ -61,7 +61,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
     const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus && oldUserInputForSDSPlus.userChoice
-    return isUserIdentifiedSDSPlus || offence.indicators.includes('PCSC/SDS+')
+    return isUserIdentifiedSDSPlus || offence.indicators?.includes('PCSC/SDS+')
   }
 
   public isErsedChecked(): boolean {

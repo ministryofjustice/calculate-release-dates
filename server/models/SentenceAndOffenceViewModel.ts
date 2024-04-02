@@ -57,11 +57,11 @@ export default class SentenceAndOffenceViewModel {
   public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffences, offence: PrisonApiOffenderOffence): boolean {
     const oldUserInputForSDSPlus =
       this.userInputs &&
-      this.userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
+      this.userInputs.sentenceCalculationUserInputs?.find((it: CalculationSentenceUserInput) => {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
     const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus && oldUserInputForSDSPlus.userChoice
-    return isUserIdentifiedSDSPlus || offence.indicators.includes('PCSC/SDS+')
+    return isUserIdentifiedSDSPlus || offence.indicators?.includes('PCSC/SDS+')
   }
 
   public isErsedChecked(): boolean {
