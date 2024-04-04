@@ -18,7 +18,6 @@ export default class CalculationSummaryViewModel {
     public hasNone: boolean,
     public viewJourney: boolean,
     public calculationReference: string,
-    public calculationReasonVisible: boolean,
     public calculationReason?: CalculationReason,
     public otherReasonDescription?: string,
     public calculationDate?: string,

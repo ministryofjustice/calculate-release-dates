@@ -4,7 +4,6 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import { Prisoner } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
-import config from '../config'
 
 jest.mock('../services/prisonerService')
 
@@ -21,8 +20,6 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  config.featureToggles.useCCARDLayout = false
-  config.featureToggles.calculationReasonToggle = false
   jest.resetAllMocks()
 })
 
@@ -34,17 +31,6 @@ describe('GET Search routes for /search/prisoners', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Search for a prisoner')
-        expect(res.text).not.toContain('There are no matching results')
-      })
-  })
-
-  it('Should display default view search page if no search params entered', () => {
-    return request(app)
-      .get('/view/search/prisoners')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Look up a person to see their release dates')
         expect(res.text).not.toContain('There are no matching results')
       })
   })
@@ -101,32 +87,8 @@ describe('GET Search routes for /search/prisoners', () => {
       })
   })
 
-  it('Should link to the reason page if enabled', () => {
+  it('Should link to the ccard page', () => {
     prisonerService.searchPrisoners.mockResolvedValue([prisoner])
-
-    config.featureToggles.calculationReasonToggle = true
-    app = appWithAllRoutes({
-      services: { prisonerService },
-      userSupplier: () => {
-        return { ...user, caseloads: ['MDI'] }
-      },
-    })
-
-    return request(app)
-      .get('/search/prisoners?prisonerIdentifier=A123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('/calculation/A123456/reason')
-        const $ = cheerio.load(res.text)
-        expect($('.govuk-back-link').first().attr('href')).toStrictEqual('/')
-      })
-  })
-
-  it('Should link to the ccard page if enabled', () => {
-    prisonerService.searchPrisoners.mockResolvedValue([prisoner])
-    config.featureToggles.calculationReasonToggle = true // ccard takes precedence
-    config.featureToggles.useCCARDLayout = true
     app = appWithAllRoutes({
       services: { prisonerService },
       userSupplier: () => {

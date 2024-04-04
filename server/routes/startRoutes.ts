@@ -1,8 +1,7 @@
 import { RequestHandler } from 'express'
 import PrisonerService from '../services/prisonerService'
 import UserPermissionsService from '../services/userPermissionsService'
-import config from '../config'
-import { indexViewModelForPrisoner, indexViewModelWithNoPrisoner } from '../models/IndexViewModel'
+import { indexViewModelForPrisoner } from '../models/IndexViewModel'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 export default class StartRoutes {
@@ -21,28 +20,21 @@ export default class StartRoutes {
       const { caseloads, token } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, caseloads, token)
       const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
-      const { latestCalcCard, latestCalcCardAction } = config.featureToggles.useCCARDLayout
-        ? await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonId, token)
-        : { latestCalcCard: undefined, latestCalcCardAction: undefined }
-      const template = config.featureToggles.useCCARDLayout ? 'pages/ccardIndex' : 'pages/index'
-
+      const { latestCalcCard, latestCalcCardAction } =
+        await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonId, token)
       return res.render(
-        template,
+        'pages/ccardIndex',
         indexViewModelForPrisoner(
           prisonerDetail,
           calculationHistory,
           prisonId,
-          config.featureToggles.calculationReasonToggle,
           allowBulkLoad,
           latestCalcCard,
           latestCalcCardAction,
         ),
       )
     }
-    if (config.featureToggles.useCCARDLayout) {
-      return res.redirect('/search/prisoners')
-    }
-    return res.render('pages/index', indexViewModelWithNoPrisoner(allowBulkLoad, prisonId))
+    return res.redirect('/search/prisoners')
   }
 
   public supportedSentences: RequestHandler = async (req, res): Promise<void> => {

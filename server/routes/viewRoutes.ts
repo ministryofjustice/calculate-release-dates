@@ -11,7 +11,6 @@ import { DetailedDate, GenuineOverrideRequest } from '../@types/calculateRelease
 import ViewRouteSentenceAndOffenceViewModel from '../models/ViewRouteSentenceAndOffenceViewModel'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { longDateFormat } from '../utils/utils'
-import config from '../config'
 import ViewCalculateReleaseDatePageViewModel from '../models/ViewCalculateReleaseDatePageViewModel'
 import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageViewModel'
 // eslint-disable-next-line prettier/prettier
@@ -137,7 +136,6 @@ export default class ViewRoutes {
         false,
         true,
         detailedCalculationResults.context.calculationReference,
-        config.featureToggles.calculationReasonToggle,
         null,
         null,
         null,
@@ -170,7 +168,6 @@ export default class ViewRoutes {
       hasNone,
       true,
       detailedCalculationResults.context.calculationReference,
-      config.featureToggles.calculationReasonToggle,
       detailedCalculationResults.context.calculationReason,
       detailedCalculationResults.context.otherReasonDescription,
       detailedCalculationResults.context.calculationDate === undefined

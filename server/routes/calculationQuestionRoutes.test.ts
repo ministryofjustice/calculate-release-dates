@@ -19,7 +19,6 @@ import {
   CalculationUserQuestions,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import trimHtml from './testutils/testUtils'
-import config from '../config'
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import SessionSetup from './testutils/sessionSetup'
 
@@ -186,8 +185,6 @@ afterEach(() => {
 
 describe('Calculation question routes tests', () => {
   it('GET /calculation/:nomsId/alternative-release-arrangements when reason has not been selected should redirect back to /reason', () => {
-    config.featureToggles.calculationReasonToggle = true
-
     return request(app)
       .get('/calculation/A1234AA/alternative-release-arrangements')
       .expect(302)
@@ -197,8 +194,6 @@ describe('Calculation question routes tests', () => {
   it('GET /calculation/:nomsId/alternative-release-arrangements should return detail the alternative release arrangements', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationUserQuestions.mockResolvedValue(stubbedUserQuestions)
-
-    config.featureToggles.calculationReasonToggle = true
 
     const sessionSetUp = new SessionSetup()
     sessionSetUp.sessionDoctor = req => {
@@ -223,8 +218,6 @@ describe('Calculation question routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/alternative-release-arrangements should redirect to check-information if no questions', () => {
-    config.featureToggles.calculationReasonToggle = true
-
     const sessionSetUp = new SessionSetup()
     sessionSetUp.sessionDoctor = req => {
       req.session.calculationReasonId = '12345'
@@ -445,7 +438,6 @@ describe('Calculation question routes tests', () => {
 
   it('POST /calculation/:nomsId/reason should return to check-information once the calculation reason has been set', () => {
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-    config.featureToggles.calculationReasonToggle = true
 
     return request(app)
       .post('/calculation/A1234AA/reason/')
@@ -459,7 +451,6 @@ describe('Calculation question routes tests', () => {
 
   it('POST /calculation/:nomsId/reason should return to check-information routes if the other reason is selected and the text box has been filled', () => {
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-    config.featureToggles.calculationReasonToggle = true
 
     return request(app)
       .post('/calculation/A1234AA/reason/')
@@ -474,7 +465,6 @@ describe('Calculation question routes tests', () => {
   it('POST /calculation/:nomsId/reason should ask for the calculation reason if it has not been set', () => {
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    config.featureToggles.calculationReasonToggle = true
 
     return request(app)
       .post('/calculation/A1234AA/reason/')
@@ -489,7 +479,6 @@ describe('Calculation question routes tests', () => {
   it('POST /calculation/:nomsId/reason should return to the reason page and display the error message if the other reason is selected and no text has been entered', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-    config.featureToggles.calculationReasonToggle = true
 
     return request(app)
       .post('/calculation/A1234AA/reason/')
@@ -505,7 +494,6 @@ describe('Calculation question routes tests', () => {
   it('POST /calculation/:nomsId/reason should return to the reason page and display the error message and the original text if the other reason is selected and more than 120 characters been entered', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-    config.featureToggles.calculationReasonToggle = true
 
     return request(app)
       .post('/calculation/A1234AA/reason/')
@@ -528,7 +516,6 @@ describe('Calculation question routes tests', () => {
   it('GET /calculation/:nomsId/reason should include the mini profile', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-    config.featureToggles.calculationReasonToggle = true
 
     return request(app)
       .get('/calculation/A1234AA/reason/')
@@ -540,7 +527,6 @@ describe('Calculation question routes tests', () => {
   it('GET /calculation/:nomsId/reason back should take you to CCARD landing page', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-    config.featureToggles.calculationReasonToggle = true
 
     return request(app)
       .get('/calculation/A1234AA/reason/')
