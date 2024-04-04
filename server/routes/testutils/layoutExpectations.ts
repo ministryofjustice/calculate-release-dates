@@ -1,5 +1,4 @@
 import * as cheerio from 'cheerio'
-import config from '../../config'
 
 export function expectMiniProfile(
   html: string,
@@ -13,20 +12,12 @@ export function expectMiniProfile(
   },
 ) {
   const $ = cheerio.load(html)
-  if (config.featureToggles.useCCARDLayout) {
-    expect($('[data-qa=mini-profile-person-profile-link]').text()).toStrictEqual(prisoner.name)
-    expect($('[data-qa=mini-profile-dob]').text()).toStrictEqual(prisoner.dob)
-    expect($('[data-qa=mini-profile-prisoner-number]').text()).toStrictEqual(prisoner.prisonNumber)
-    expect($('[data-qa=mini-profile-prison-name]').text()).toStrictEqual(prisoner.establishment)
-    expect($('[data-qa=mini-profile-cell-location]').text()).toStrictEqual(prisoner.location)
-    expect($('[data-qa=mini-profile-status]').text()).toStrictEqual(prisoner.status)
-  } else {
-    expect($('[data-qa=mini-profile-name]').text()).toStrictEqual(prisoner.name)
-    expect($('[data-qa=mini-profile-dob]').text()).toStrictEqual(prisoner.dob)
-    expect($('[data-qa=mini-profile-offender-no]').text()).toStrictEqual(prisoner.prisonNumber)
-    expect($('[data-qa=mini-profile-establishment]').text()).toStrictEqual(prisoner.establishment)
-    expect($('[data-qa=mini-profile-location]').text()).toStrictEqual(prisoner.location)
-  }
+  expect($('[data-qa=mini-profile-person-profile-link]').text()).toStrictEqual(prisoner.name)
+  expect($('[data-qa=mini-profile-dob]').text()).toStrictEqual(prisoner.dob)
+  expect($('[data-qa=mini-profile-prisoner-number]').text()).toStrictEqual(prisoner.prisonNumber)
+  expect($('[data-qa=mini-profile-prison-name]').text()).toStrictEqual(prisoner.establishment)
+  expect($('[data-qa=mini-profile-cell-location]').text()).toStrictEqual(prisoner.location)
+  expect($('[data-qa=mini-profile-status]').text()).toStrictEqual(prisoner.status)
 }
 
 export function expectMiniProfileNoLocation(

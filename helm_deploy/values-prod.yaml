@@ -19,6 +19,5 @@ generic-service:
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "false"
-    USE_CCARD_LAYOUT: "true"
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts

@@ -33,7 +33,3 @@ export function indexViewModelForPrisoner(
     latestCalculationCardAction,
   )
 }
-
-export function indexViewModelWithNoPrisoner(allowBulkLoad: boolean, prisonId?: string): IndexViewModel {
-  return new IndexViewModel(undefined, undefined, prisonId, allowBulkLoad, undefined, undefined)
-}

@@ -106,7 +106,7 @@
     {% include "./fallback_header.njk" %}
   {% endif %}
 
-  {% if featureToggles.useCCARDLayout and showCCARDNav %}
+  {% if showCCARDNav %}
       {% if commonElementConfig.serviceHeader %}
         {{ serviceHeader(commonElementConfig.serviceHeader) }}
       {% else %}
@@ -120,9 +120,6 @@
 
 {% block beforeContent %}
   <aside role="complementary">
-    {% if not featureToggles.useCCARDLayout %}
-      {% include "../pages/partials/phaseBanner.njk" %}
-    {% endif %}
     {% include "../pages/partials/prisonerIdentityBar.njk" %}
   </aside>
   <span class="govuk-visually-hidden" id="{{ pageId }}"></span>

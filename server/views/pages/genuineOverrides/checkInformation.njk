@@ -11,10 +11,8 @@
     {{ super() }}
     {% if model.lastUserQuestion() %}
         {% set backlink = "/calculation/" + model.prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + model.lastUserQuestion().url %}
-    {% elif featureToggles.useCCARDLayout %}
-        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     {% else %}
-        {% set backlink = "/search/prisoners" %}
+        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     {% endif %}
     <nav>
         {{ govukBackLink({

@@ -126,7 +126,6 @@ export default {
   featureToggles: {
     specialistSupport: get('SPECIALIST_SUPPORT_ENABLED', false) === 'true',
     hdc4ComparisonTabEnabled: get('HDC4_PLUS_COMPARISON_TAB_ENABLED', false) === 'true',
-    useCCARDLayout: get('USE_CCARD_LAYOUT', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),

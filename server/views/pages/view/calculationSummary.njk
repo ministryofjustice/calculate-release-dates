@@ -15,11 +15,7 @@
     {{ super() }}
 
     {% if model.calculationSummaryUnavailable %}
-        {% if featureToggles.useCCARDLayout %}
-            {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
-        {% else %}
-            {% set backlink = "/view/search/prisoners" %}
-        {% endif %}
+        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
         <nav>
             {{ govukBackLink({
                 text: "Back",
@@ -72,7 +68,7 @@
                     calculation summary</a>
             </p>
             <p class="govuk-body">
-                <a class="govuk-link" href="/view/search/prisoners">View previous calculation for another person</a>
+                <a class="govuk-link" href="/search/prisoners">View previous calculation for another person</a>
             </p>
             <p class="govuk-body govuk-!-margin-bottom-0">
                 <a class="govuk-link" href={{ model.digitalPrisonServicesUrl }}>Back to Digital Prison Service (DPS)

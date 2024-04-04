@@ -169,7 +169,6 @@ export default function Index({
 
   const searchRoutes = () => {
     get('/search/prisoners', searchAccessRoutes.searchCalculatePrisoners)
-    get('/view/search/prisoners', searchAccessRoutes.searchViewPrisoners)
   }
 
   const viewRoutes = () => {
