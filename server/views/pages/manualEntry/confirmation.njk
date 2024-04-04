@@ -6,7 +6,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set pageTitle = applicationName + " - determinite manual entry" %}
-{% set pageId = "determinite selection" %}
+{% set pageId = "manual-dates-confirmation" %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -25,7 +25,7 @@
             }) }}
             <p class="govuk-body govuk-!-margin-bottom-8">
             <a href="/calculation/{{ prisonerDetail.offenderNo }}/manual-entry/select-dates?addExtra=true"
-               class="govuk-link govuk-link--no-visited-state">Add another release date</a>
+               class="govuk-link govuk-link--no-visited-state" data-qa="add-another-release-date-link">Add another release date</a>
             </p>
         </div>
     </div>
@@ -35,7 +35,8 @@
             correct. These dates will be saved in NOMIS as a manual calculation.</p>
         {{ govukButton({
             text: "Confirm and save to NOMIS",
-            href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/save"
+            href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/save",
+            attributes: { 'data-qa': 'submit-to-nomis' }
         }) }}
     </div>
 {% endblock %}

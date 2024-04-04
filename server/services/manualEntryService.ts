@@ -192,6 +192,7 @@ export default class ManualEntryService {
           },
           value: {
             text: dateValue,
+            classes: [`manual-entry-value-for-${d.dateType}`],
           },
           actions: {
             items,
@@ -212,11 +213,13 @@ export default class ManualEntryService {
         href: `/calculation/${nomsId}/manual-entry/change-date?dateType=${d.dateType}`,
         text: 'Change',
         visuallyHiddenText: `Change ${text}`,
+        attributes: { 'data-qa': `change-manual-date-${d.dateType}` },
       },
       {
         href: `/calculation/${nomsId}/manual-entry/remove-date?dateType=${d.dateType}`,
         text: 'Remove',
         visuallyHiddenText: `Remove ${text}`,
+        attributes: { 'data-qa': `remove-manual-date-${d.dateType}` },
       },
     ]
     if (d.dateType === 'None') {
