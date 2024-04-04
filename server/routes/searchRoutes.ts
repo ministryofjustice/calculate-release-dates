@@ -9,22 +9,17 @@ export default class SearchRoutes {
   }
 
   public searchViewPrisoners: RequestHandler = this.searchPrisoners({
-    settings: { view: true, reason: false, ccard: false },
+    settings: { view: true, ccard: false },
   })
 
   public searchCalculatePrisoners: RequestHandler = this.searchPrisoners({
     settings: {
       view: false,
-      reason: config.featureToggles.calculationReasonToggle,
       ccard: config.featureToggles.useCCARDLayout,
     },
   })
 
-  private searchPrisoners({
-    settings,
-  }: {
-    settings: { view: boolean; reason: boolean; ccard: boolean }
-  }): RequestHandler {
+  private searchPrisoners({ settings }: { settings: { view: boolean; ccard: boolean } }): RequestHandler {
     const handler: RequestHandler = async (req, res): Promise<void> => {
       const { firstName, lastName, prisonerIdentifier } = req.query as Record<string, string>
       const { username, caseloads } = res.locals.user

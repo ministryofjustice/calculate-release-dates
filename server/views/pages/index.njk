@@ -29,7 +29,7 @@
             {% endif %}
             <h2 class="govuk-heading-m">If you need to look up a calculation</h2>
             <p class="govuk-body">You can view previous calculations using the <a href="{{ viewlink }}" data-qa="view-journey-start">calculation look up service</a>.</p>
-            {% if prisonId and reason %}
+            {% if prisonId %}
                 {% set startlink = "/calculation/" + prisonId + "/reason" %}
             {% elseif prisonId %}
                 {% set startlink = "/calculation/" + prisonId + "/check-information" %}

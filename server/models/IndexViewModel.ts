@@ -8,7 +8,6 @@ export default class IndexViewModel extends OptionalPrisonerContextViewModel {
     prisonerDetail?: PrisonApiPrisoner,
     public calculationHistory?: HistoricCalculation[],
     public prisonId?: string,
-    public reason?: boolean,
     public allowBulkLoad?: boolean,
     public latestCalculationCardConfig?: LatestCalculationCardConfig,
     public latestCalculationCardAction?: Action,
@@ -21,7 +20,6 @@ export function indexViewModelForPrisoner(
   prisonerDetail: PrisonApiPrisoner,
   calculationHistory: HistoricCalculation[],
   prisonId: string,
-  reason: boolean,
   allowBulkUpload: boolean,
   latestCalculationCardConfig?: LatestCalculationCardConfig,
   latestCalculationCardAction?: Action,
@@ -30,7 +28,6 @@ export function indexViewModelForPrisoner(
     prisonerDetail,
     calculationHistory,
     prisonId,
-    reason,
     allowBulkUpload,
     latestCalculationCardConfig,
     latestCalculationCardAction,
@@ -38,5 +35,5 @@ export function indexViewModelForPrisoner(
 }
 
 export function indexViewModelWithNoPrisoner(allowBulkLoad: boolean, prisonId?: string): IndexViewModel {
-  return new IndexViewModel(undefined, undefined, prisonId, undefined, allowBulkLoad, undefined, undefined)
+  return new IndexViewModel(undefined, undefined, prisonId, allowBulkLoad, undefined, undefined)
 }

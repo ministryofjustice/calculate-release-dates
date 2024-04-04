@@ -20,8 +20,6 @@
                                 {% set prisonerLink = "/calculation/" + prisoner.prisonerNumber + "/alternative-release-arrangements" %}
                                 {% if ccard %}
                                     {% set prisonerLink = "/?prisonId=" + prisoner.prisonerNumber %}
-                                {% elseif reason %}
-                                    {% set prisonerLink = "/calculation/" + prisoner.prisonerNumber + "/reason" %}
                                 {% elseif view %}
                                     {% set prisonerLink = "/view/" + prisoner.prisonerNumber + "/latest" %}
                                 {% endif %}

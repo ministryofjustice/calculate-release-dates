@@ -22,7 +22,6 @@ beforeEach(() => {
 
 afterEach(() => {
   config.featureToggles.useCCARDLayout = false
-  config.featureToggles.calculationReasonToggle = false
   jest.resetAllMocks()
 })
 
@@ -101,31 +100,8 @@ describe('GET Search routes for /search/prisoners', () => {
       })
   })
 
-  it('Should link to the reason page if enabled', () => {
+  it('Should link to the ccard page', () => {
     prisonerService.searchPrisoners.mockResolvedValue([prisoner])
-
-    config.featureToggles.calculationReasonToggle = true
-    app = appWithAllRoutes({
-      services: { prisonerService },
-      userSupplier: () => {
-        return { ...user, caseloads: ['MDI'] }
-      },
-    })
-
-    return request(app)
-      .get('/search/prisoners?prisonerIdentifier=A123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('/calculation/A123456/reason')
-        const $ = cheerio.load(res.text)
-        expect($('.govuk-back-link').first().attr('href')).toStrictEqual('/')
-      })
-  })
-
-  it('Should link to the ccard page if enabled', () => {
-    prisonerService.searchPrisoners.mockResolvedValue([prisoner])
-    config.featureToggles.calculationReasonToggle = true // ccard takes precedence
     config.featureToggles.useCCARDLayout = true
     app = appWithAllRoutes({
       services: { prisonerService },

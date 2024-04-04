@@ -32,7 +32,6 @@ export default class StartRoutes {
           prisonerDetail,
           calculationHistory,
           prisonId,
-          config.featureToggles.calculationReasonToggle,
           allowBulkLoad,
           latestCalcCard,
           latestCalcCardAction,

@@ -33,7 +33,6 @@ import {
   RulesWithExtraAdjustments,
 } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ErrorMessage from '../types/ErrorMessage'
-import config from '../config'
 import { FullPageError } from '../types/FullPageError'
 import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 
@@ -116,10 +115,8 @@ export default class CalculateReleaseDatesService {
   ): Promise<CalculationRequestModel> {
     return {
       calculationUserInputs: userInputs,
-      calculationReasonId: config.featureToggles.calculationReasonToggle ? req.session.calculationReasonId[nomsId] : '',
-      otherReasonDescription: config.featureToggles.calculationReasonToggle
-        ? req.session.otherReasonDescription[nomsId]
-        : '',
+      calculationReasonId: req.session.calculationReasonId[nomsId],
+      otherReasonDescription: req.session.otherReasonDescription[nomsId],
     } as CalculationRequestModel
   }
 

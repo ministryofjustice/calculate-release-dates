@@ -45,7 +45,7 @@
                 {% set reason = model.calculationReason.displayName %}
             {% endif %}
 
-            {% if model.calculationReasonVisible and model.calculationReason|length %}
+            {% if model.calculationReason|length %}
                 <h2 class="govuk-heading-m">Calculation details</h2>
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",

@@ -26,7 +26,6 @@ generic-service:
     COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "true"
-    CALCULATION_REASON_TOGGLE: "true"
     USE_CCARD_LAYOUT: "true"
     ENVIRONMENT_NAME: DEV
   # Switches off the allow list in the DEV env only.
