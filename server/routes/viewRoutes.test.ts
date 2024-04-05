@@ -382,6 +382,18 @@ describe('View journey routes tests', () => {
           expect(res.redirect).toBeTruthy()
         })
     })
+
+    it('GET /view/:nomsId/latest should redirect to the error page if no calculation was found ', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getLatestCalculation.mockRejectedValue({ status: 404 })
+      return request(app)
+        .get('/view/A1234AA/latest')
+        .expect(404)
+        .expect(res => {
+          expect(res.text).toContain('have not been submitted using the Calculate release dates')
+          expect(res.text).toContain('/calculation/A1234AA/reason')
+        })
+    })
   })
 
   describe('View sentence and offences tests', () => {
@@ -534,7 +546,7 @@ describe('View journey routes tests', () => {
           expect(res.text).not.toContain('Calculation breakdown')
           expect(res.text).toContain('The calculation breakdown cannot be shown on this page.')
           expect(res.text).toContain(
-            'To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/A1234AA/check-information">calculate release dates again.',
+            'To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/A1234AA/reason">calculate release dates again.',
           )
           expectNoMiniProfile(res.text)
         })
