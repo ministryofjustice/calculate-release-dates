@@ -13,7 +13,6 @@ import CalculationQuestionTypes from '../models/CalculationQuestionTypes'
 import SelectOffencesViewModel from '../models/SelectOffencesViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
-import config from '../config'
 import CalculationReasonViewModel from '../models/CalculationReasonViewModel'
 import AlternativeReleaseIntroPageViewModel from '../models/AlternativeReleaseIntroPageViewModel'
 import SelectOffencesPageViewModel from '../models/SelectOffencesPageViewModel'
@@ -187,7 +186,7 @@ export default class CalculationQuestionRoutes {
     const { nomsId } = req.params
     const calculationQuestions = await this.calculateReleaseDatesService.getCalculationUserQuestions(nomsId, token)
 
-    if (config.featureToggles.calculationReasonToggle && req.session.calculationReasonId == null) {
+    if (req.session.calculationReasonId == null) {
       return res.redirect(`/calculation/${nomsId}/reason`)
     }
 
@@ -249,11 +248,9 @@ export default class CalculationQuestionRoutes {
       )
     }
 
-    if (config.featureToggles.calculationReasonToggle) {
-      if (req.session.calculationReasonId == null) {
-        req.session.calculationReasonId = {}
-        req.session.otherReasonDescription = {}
-      }
+    if (req.session.calculationReasonId == null) {
+      req.session.calculationReasonId = {}
+      req.session.otherReasonDescription = {}
     }
 
     req.session.calculationReasonId[nomsId] = req.body.calculationReasonId

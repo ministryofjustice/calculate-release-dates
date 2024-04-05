@@ -16,7 +16,6 @@ import {
   expectServiceHeader,
   expectServiceHeaderForPrisoner,
 } from './testutils/layoutExpectations'
-import config from '../config'
 import AuthorisedRoles from '../enumerations/authorisedRoles'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -115,28 +114,10 @@ beforeEach(() => {
 })
 afterEach(() => {
   jest.resetAllMocks()
-  config.featureToggles.useCCARDLayout = true
 })
 
 describe('Start routes tests', () => {
-  it('GET / should return start page in standalone journey', () => {
-    config.featureToggles.useCCARDLayout = false
-    return request(app)
-      .get('/')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect(res.text).toContain('Calculate release dates')
-        expect(res.text).toContain('href="/search/prisoners"')
-        expect(res.text).not.toContain('A1234AA')
-        expectNoMiniProfile(res.text)
-        expect($('.govuk-phase-banner__content__tag').text()).toContain('beta')
-      })
-  })
-
-  it('GET / should render the search page if CCARD layout is enabled', async () => {
-    config.featureToggles.useCCARDLayout = true
+  it('GET / should render the search page', async () => {
     let redirect: string
     await request(app)
       .get('/')
@@ -157,39 +138,8 @@ describe('Start routes tests', () => {
         expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
       })
   })
-  it('GET ?prisonId=123 should return start page in DPS journey if CCARD feature toggle is off and not call new latest calc api', () => {
-    config.featureToggles.useCCARDLayout = false
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
-    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
-    return request(app)
-      .get('?prisonId=123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect(res.text).toContain('Calculate release dates')
-        expect(res.text).toContain('href="/calculation/123/reason')
-        expect(res.text).toContain('A1234AA')
-        expectMiniProfile(res.text, {
-          name: 'Anon Nobody',
-          dob: '24 June 2000',
-          prisonNumber: 'A1234AA',
-          establishment: 'Foo Prison (HMP)',
-          location: 'D-2-003',
-        })
-        expect($('.govuk-phase-banner__content__tag').text()).toContain('beta')
-        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(0)
-      })
-      .expect(() => {
-        expect(prisonerService.getPrisonerDetail).toBeCalledTimes(1)
-        expect(calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mock.calls.length).toBe(0)
-      })
-  })
-
   it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD and adjustments then show all CCARD nav', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
-    config.featureToggles.useCCARDLayout = true
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     const cardAndAction = {
@@ -263,7 +213,6 @@ describe('Start routes tests', () => {
   })
   it('GET ?prisonId=123 CCARD mode should not blow up if latest calc cannot be loaded', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
-    config.featureToggles.useCCARDLayout = true
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     const cardAndAction = { latestCalcCard: undefined, latestCalcCardAction: undefined }
@@ -281,7 +230,6 @@ describe('Start routes tests', () => {
 
   it('GET ?prisonId=123 if CCARD feature toggle is on and offender has no calculation history', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
-    config.featureToggles.useCCARDLayout = true
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue([])
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
@@ -296,7 +244,7 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD only then hide service banner and sub nav', () => {
+  it('GET ?prisonId=123 if user has CRD only then hide service banner and sub nav', () => {
     app = appWithAllRoutes({
       services: { calculateReleaseDatesService, prisonerService, userPermissionsService },
       userSupplier: () => {
@@ -305,7 +253,6 @@ describe('Start routes tests', () => {
     })
 
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
-    config.featureToggles.useCCARDLayout = true
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
@@ -344,7 +291,6 @@ describe('Start routes tests', () => {
     })
 
     userPermissionsService.allowBulkLoad.mockReturnValue(false)
-    config.featureToggles.useCCARDLayout = true
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)

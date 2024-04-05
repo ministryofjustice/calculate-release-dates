@@ -20,7 +20,6 @@ import {
   GenuineOverrideRequest,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
-import config from '../config'
 import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
 import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 
@@ -592,8 +591,6 @@ describe('View journey routes tests', () => {
         },
       })
 
-      config.featureToggles.calculationReasonToggle = true
-
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')
         .expect(200)
@@ -614,8 +611,6 @@ describe('View journey routes tests', () => {
           otherReasonDescription: 'Another reason for calculation',
         },
       })
-
-      config.featureToggles.calculationReasonToggle = true
 
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456')

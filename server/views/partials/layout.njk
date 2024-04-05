@@ -84,11 +84,9 @@
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
 
   {% if feComponents.cssIncludes %}
-    {% if featureToggles.dpsBannerEnabled %}
-      {% for css in feComponents.cssIncludes %}
-        <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
-      {% endfor %}
-    {% endif %}
+    {% for css in feComponents.cssIncludes %}
+      <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
+    {% endfor %}
   {% endif %}
 
 
@@ -102,17 +100,13 @@
 {% endblock %}
 
 {% block header %}
-  {% if featureToggles.dpsBannerEnabled %}
-    {% if feComponents.header %}
-      {{ feComponents.header | safe }}
-    {% else %}
-      {% include "./fallback_header.njk" %}
-    {% endif %}
+  {% if feComponents.header %}
+    {{ feComponents.header | safe }}
   {% else %}
-    {% include "./header.njk" %}
+    {% include "./fallback_header.njk" %}
   {% endif %}
 
-  {% if featureToggles.useCCARDLayout and showCCARDNav %}
+  {% if showCCARDNav %}
       {% if commonElementConfig.serviceHeader %}
         {{ serviceHeader(commonElementConfig.serviceHeader) }}
       {% else %}
@@ -126,9 +120,6 @@
 
 {% block beforeContent %}
   <aside role="complementary">
-    {% if not featureToggles.useCCARDLayout %}
-      {% include "../pages/partials/phaseBanner.njk" %}
-    {% endif %}
     {% include "../pages/partials/prisonerIdentityBar.njk" %}
   </aside>
   <span class="govuk-visually-hidden" id="{{ pageId }}"></span>
@@ -140,16 +131,13 @@
   <script type="module" src="/assets/govukFrontendInit.js"></script>
   <script src="/assets/moj/all.js"></script>
   <script src="/assets/mojFrontendInit.js"></script>
-  {% if featureToggles.dpsBannerEnabled %}
     {% for js in feComponents.jsIncludes %}
       <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
     {% endfor %}
-  {% endif %}
 {% endblock %}
 
 {% block footer %}
-  {% if featureToggles.dpsBannerEnabled %}
-    {{ 
+    {{
       footer({ 
         environment: hmppsDesignSystemEnvironment, 
         attributes: {
@@ -157,7 +145,4 @@
         } 
       }) 
     }}
-  {% else %}
-    {% include "./footer.njk" %}
-  {% endif %}
 {% endblock %}

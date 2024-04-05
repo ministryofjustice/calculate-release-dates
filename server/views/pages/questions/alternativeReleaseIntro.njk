@@ -6,11 +6,7 @@
 
 {% block beforeContent %}
     {{ super() }}
-    {% if featureToggles.useCCARDLayout %}
-        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
-    {% else %}
-        {% set backlink = "/search/prisoners" %}
-    {% endif %}
+    {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     <nav>
         {{ govukBackLink({
         text: "Back",
