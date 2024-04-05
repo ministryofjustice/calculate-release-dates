@@ -144,7 +144,7 @@ export default class ViewRoutes {
         {
           messages: [
             {
-              html: `To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/${nomsId}/check-information">calculate release dates again.</a>`,
+              html: `To view the sentence and offence information and the calculation breakdown, you will need to <a href="/calculation/${nomsId}/reason">calculate release dates again.</a>`,
             },
           ],
           messageType: ErrorMessageType.MISSING_PRISON_API_DATA,
