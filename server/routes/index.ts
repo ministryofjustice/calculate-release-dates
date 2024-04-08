@@ -24,7 +24,6 @@ export default function Index({
   userPermissionsService,
   approvedDatesService,
   checkInformationService,
-  questionsService,
   comparisonService,
 }: Services): Router {
   const router = Router({ mergeParams: true })

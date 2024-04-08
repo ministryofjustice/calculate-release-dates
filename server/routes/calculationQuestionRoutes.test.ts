@@ -90,8 +90,8 @@ it('POST /calculation/:nomsId/reason should return to check-information once the
     })
 })
 
-  it('POST /calculation/:nomsId/reason should return to check-information routes if the other reason is selected and the text box has been filled', () => {
-    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+it('POST /calculation/:nomsId/reason should return to check-information routes if the other reason is selected and the text box has been filled', () => {
+  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
 
   return request(app)
     .post('/calculation/A1234AA/reason/')
@@ -103,9 +103,9 @@ it('POST /calculation/:nomsId/reason should return to check-information once the
     })
 })
 
-  it('POST /calculation/:nomsId/reason should ask for the calculation reason if it has not been set', () => {
-    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+it('POST /calculation/:nomsId/reason should ask for the calculation reason if it has not been set', () => {
+  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
 
   return request(app)
     .post('/calculation/A1234AA/reason/')
@@ -117,9 +117,9 @@ it('POST /calculation/:nomsId/reason should return to check-information once the
     })
 })
 
-  it('POST /calculation/:nomsId/reason should return to the reason page and display the error message if the other reason is selected and no text has been entered', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+it('POST /calculation/:nomsId/reason should return to the reason page and display the error message if the other reason is selected and no text has been entered', () => {
+  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
 
   return request(app)
     .post('/calculation/A1234AA/reason/')
@@ -132,48 +132,48 @@ it('POST /calculation/:nomsId/reason should return to check-information once the
     })
 })
 
-  it('POST /calculation/:nomsId/reason should return to the reason page and display the error message and the original text if the other reason is selected and more than 120 characters been entered', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+it('POST /calculation/:nomsId/reason should return to the reason page and display the error message and the original text if the other reason is selected and more than 120 characters been entered', () => {
+  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
 
-    return request(app)
-      .post('/calculation/A1234AA/reason/')
-      .type('form')
-      .send({
-        calculationReasonId: ['11'],
-        otherReasonDescription:
-          'A string which is at least 120 characters requires quite a bit of padding to get it to the correct length so it can be tested',
-      })
-      .expect(200)
-      .expect(res => {
-        expect(res.text).toContain('Reason must be 120 characters or less')
-        expect(res.text).toContain(
-          'A string which is at least 120 characters requires quite a bit of padding to get it to the correct length so it can be tested',
-        )
-        expectMiniProfile(res.text, expectedMiniProfile)
-      })
-  })
+  return request(app)
+    .post('/calculation/A1234AA/reason/')
+    .type('form')
+    .send({
+      calculationReasonId: ['11'],
+      otherReasonDescription:
+        'A string which is at least 120 characters requires quite a bit of padding to get it to the correct length so it can be tested',
+    })
+    .expect(200)
+    .expect(res => {
+      expect(res.text).toContain('Reason must be 120 characters or less')
+      expect(res.text).toContain(
+        'A string which is at least 120 characters requires quite a bit of padding to get it to the correct length so it can be tested',
+      )
+      expectMiniProfile(res.text, expectedMiniProfile)
+    })
+})
 
-  it('GET /calculation/:nomsId/reason should include the mini profile', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+it('GET /calculation/:nomsId/reason should include the mini profile', () => {
+  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
 
-    return request(app)
-      .get('/calculation/A1234AA/reason/')
-      .expect(200)
-      .expect(res => {
-        expectMiniProfile(res.text, expectedMiniProfile)
-      })
-  })
-  it('GET /calculation/:nomsId/reason back should take you to CCARD landing page', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+  return request(app)
+    .get('/calculation/A1234AA/reason/')
+    .expect(200)
+    .expect(res => {
+      expectMiniProfile(res.text, expectedMiniProfile)
+    })
+})
+it('GET /calculation/:nomsId/reason back should take you to CCARD landing page', () => {
+  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
 
-    return request(app)
-      .get('/calculation/A1234AA/reason/')
-      .expect(200)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('.govuk-back-link').first().attr('href')).toStrictEqual('/?prisonId=A1234AA')
-      })
-  })
+  return request(app)
+    .get('/calculation/A1234AA/reason/')
+    .expect(200)
+    .expect(res => {
+      const $ = cheerio.load(res.text)
+      expect($('.govuk-back-link').first().attr('href')).toStrictEqual('/?prisonId=A1234AA')
+    })
+})
