@@ -1,6 +1,7 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import nock from 'nock'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import {
@@ -227,6 +228,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.govuk-back-link').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/check-information-unsupported',
+        )
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
