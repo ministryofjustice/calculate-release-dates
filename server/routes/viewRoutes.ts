@@ -216,6 +216,7 @@ export default class ViewRoutes {
         model,
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, model.hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
+        nomsId,
       ),
     )
   }
@@ -231,6 +232,7 @@ export default class ViewRoutes {
         model,
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, model.hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
+        nomsId,
       ),
     )
   }
