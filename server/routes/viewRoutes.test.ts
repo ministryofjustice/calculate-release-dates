@@ -630,6 +630,23 @@ describe('View journey routes tests', () => {
           )
         })
     })
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display a back to DPS search link', () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
+
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const backToDpsLink = $('[data-qa=back-to-dps-search-link]').first()
+          expect(backToDpsLink.length).toStrictEqual(1)
+          expect(backToDpsLink.text()).toStrictEqual('Back to Digital Prison Service (DPS) search')
+          expect(backToDpsLink.attr('href')).toStrictEqual('http://localhost:3000/dps')
+        })
+    })
     it('GET /view/:calculationRequestId/calculation-summary should display the other reason if it was selected', () => {
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
         ...stubbedResultsWithBreakdownAndAdjustments,
