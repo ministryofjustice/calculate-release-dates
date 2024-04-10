@@ -2,6 +2,7 @@ import request from 'supertest'
 import type { Express } from 'express'
 import { HttpError } from 'http-errors'
 import MockDate from 'mockdate'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -525,8 +526,12 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        const backToDpsLink = $('[data-qa=back-to-dps-search-link]').first()
+        expect(backToDpsLink.length).toStrictEqual(1)
+        expect(backToDpsLink.text()).toStrictEqual('Back to Digital Prison Service (DPS) search')
+        expect(backToDpsLink.attr('href')).toStrictEqual('http://localhost:3000/dps')
         expect(res.text).toMatch(/Release dates saved to NOMIS for<br>\s*Anon Nobody/)
-        expect(res.text).toContain('Back to Digital Prison Service (DPS) search')
         expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
