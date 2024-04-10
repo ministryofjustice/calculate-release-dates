@@ -8,6 +8,7 @@ export default class ViewCalculateReleaseDatePageViewModel extends OptionalPriso
     public model: CalculationSummaryViewModel,
     public calculationSummaryDatesCardModel: CalculationSummaryDatesCardModel,
     public approvedSummaryDatesCardModel: ApprovedSummaryDatesCardModel,
+    public nomsId: string,
   ) {
     super(model.prisonerDetail)
   }
