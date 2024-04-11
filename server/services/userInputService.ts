@@ -1,5 +1,8 @@
 import { Request } from 'express'
-import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationUserInputs,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class UserInputService {
   public setCalculationUserInputForPrisoner(req: Request, nomsId: string, userInputs: CalculationUserInputs): void {
@@ -21,5 +24,16 @@ export default class UserInputService {
       (req.session.userInputs && req.session.userInputs[nomsId]) ||
       ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
     )
+  }
+
+  public setCalculationReasonFromBooking(req: Request, calculation: BookingCalculation) {
+    if (!req.session.calculationReasonId) {
+      req.session.calculationReasonId = {}
+    }
+    if (!req.session.otherReasonDescription) {
+      req.session.otherReasonDescription = {}
+    }
+    req.session.calculationReasonId[calculation.prisonerId] = calculation.calculationReason?.id
+    req.session.otherReasonDescription[calculation.prisonerId] = calculation.otherReasonDescription
   }
 }

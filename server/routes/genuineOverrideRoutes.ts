@@ -6,7 +6,6 @@ import { FullPageError } from '../types/FullPageError'
 import CheckInformationService from '../services/checkInformationService'
 import UserInputService from '../services/userInputService'
 import CalculationSummaryViewModel from '../models/CalculationSummaryViewModel'
-import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
@@ -44,7 +43,6 @@ export default class GenuineOverrideRoutes {
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly checkInformationService: CheckInformationService,
     private readonly userInputService: UserInputService,
-    private readonly viewReleaseDatesService: ViewReleaseDatesService,
     private readonly manualEntryService: ManualEntryService,
     private readonly manualCalculationService: ManualCalculationService,
     private readonly genuineOverridesEmailTemplateService: GenuineOverridesEmailTemplateService,
@@ -180,11 +178,11 @@ export default class GenuineOverrideRoutes {
       if (req.session.selectedManualEntryDates[calculation.prisonerId]) {
         req.session.selectedManualEntryDates[calculation.prisonerId] = []
       }
-
+      this.userInputService.setCalculationReasonFromBooking(req, calculation)
       const calculationRequestModel = {
         calculationUserInputs: userInputs,
-        calculationReasonId: req.session.calculationReasonId[calculation.prisonerId],
-        otherReasonDescription: req.session.otherReasonDescription[calculation.prisonerId],
+        calculationReasonId: calculation.calculationReason?.id,
+        otherReasonDescription: calculation.otherReasonDescription,
       } as CalculationRequestModel
 
       const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
@@ -193,7 +191,7 @@ export default class GenuineOverrideRoutes {
         token,
       )
       return res.redirect(
-        `/specialist-support/calculation/${calculationReference}/summary/${releaseDates.calculationRequestId}`,
+        `/specialist-support/calculation/${releaseDates.calculationReference}/summary/${releaseDates.calculationRequestId}`,
       )
     }
     throw FullPageError.notFoundError()
