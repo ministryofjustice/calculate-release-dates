@@ -17,7 +17,7 @@ generic-service:
     DIGITAL_PRISON_SERVICES_URL: "https://digital.prison.service.justice.gov.uk"
     SPECIALIST_SUPPORT_ENABLED: "false"
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
-    COURT_CASES_AND_RELEASE_DATES_URL: "https://custody-manager.hmpps.service.justice.gov.uk"
+    COURT_CASES_AND_RELEASE_DATES_URL: "https://court-cases-release-dates.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "false"
 generic-prometheus-alerts:
