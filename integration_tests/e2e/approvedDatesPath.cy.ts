@@ -103,10 +103,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('Can edit a date', () => {
@@ -162,10 +159,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationSummaryPageAfterEditApd.submitToNomisButton().click()
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('Can remove a date', () => {
@@ -227,9 +221,6 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationSummaryPageAfterRemoveApd.submitToNomisButton().click()
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 })

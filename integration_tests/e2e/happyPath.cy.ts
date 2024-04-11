@@ -83,10 +83,7 @@ context('End to end happy path of user journey', () => {
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('DPS user journey', () => {
@@ -119,10 +116,7 @@ context('End to end happy path of user journey', () => {
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('View journey', () => {

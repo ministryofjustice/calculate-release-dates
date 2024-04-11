@@ -77,6 +77,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('authUrl', config.apis.hmppsAuth.url)
   njkEnv.addGlobal('featureToggles', config.featureToggles)
   njkEnv.addGlobal('digitalPrisonServicesUrl', config.apis.digitalPrisonServices.ui_url)
+  njkEnv.addGlobal('courtCasesAndReleaseDatesUrl', config.apis.courtCasesAndReleaseDatesUi.url)
   njkEnv.addGlobal('ComparisonType', ComparisonType)
 
   njkEnv.addFilter('initialiseName', initialiseName)
