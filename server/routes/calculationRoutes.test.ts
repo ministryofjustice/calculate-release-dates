@@ -525,8 +525,13 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toMatch(/Release dates saved to NOMIS for<br>\s*Anon Nobody/)
-        expect(res.text).toContain('Back to Digital Prison Service (DPS) search')
+        expect(res.text).toContain('Calculation complete')
+        expect(res.text).toContain('The calculation has been saved in NOMIS.')
+        expect(res.text).toContain('You can also go back to the following pages for Anon Nobody')
+        expect(res.text).toContain('Help improve this service')
+        expect(res.text).toContain(
+          'This is a new service. Your feedback will help make it better. To give feedback you can:',
+        )
         expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
         expectMiniProfile(res.text, expectedMiniProfile)
       })

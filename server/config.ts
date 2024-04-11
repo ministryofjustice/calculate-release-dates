@@ -118,6 +118,9 @@ export default {
         deadline: Number(get('FRONTEND_COMPONENT_API_TIMEOUT', 500)),
       },
     },
+    courtCasesAndReleaseDatesUi: {
+      url: get('COURT_CASES_AND_RELEASE_DATES_URL', 'http://localhost:3100', requiredInProduction),
+    },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   analytics: {
