@@ -73,7 +73,6 @@ export default function Index({
     calculateReleaseDatesService,
     checkInformationService,
     userInputService,
-    viewReleaseDatesService,
     manualEntryService,
     manualCalculationService,
     genuineOverridesEmailTemplateService,
