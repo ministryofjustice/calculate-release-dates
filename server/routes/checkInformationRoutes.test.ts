@@ -1,5 +1,6 @@
 import request from 'supertest'
 import type { Express } from 'express'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -102,7 +103,12 @@ const stubbedSentencesAndOffences = [
       { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
       { offenceStartDate: '2021-03-06' },
       {},
-      { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
+      {
+        offenceDescription: 'Rape of a minor',
+        offenceStartDate: '2021-01-07',
+        offenceEndDate: '2021-01-07',
+        isPcscSdsPlus: true,
+      },
     ],
     sentenceAndOffenceAnalysis: 'NEW',
   } as AnalyzedSentenceAndOffences,
@@ -255,17 +261,11 @@ const stubbedSentencesAndOffences = [
         indicators: [],
       },
     ],
-    sentenceAndOffenceAnalysis: 'NEW',
+    sentenceAndOffenceAnalysis: 'SAME',
   } as AnalyzedSentenceAndOffences,
 ]
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
-    {
-      userInputType: 'ORIGINAL',
-      userChoice: true,
-      offenceCode: 'RL05016',
-      sentenceSequence: 3,
-    } as CalculationSentenceUserInput,
     {
       userInputType: 'ORIGINAL',
       userChoice: true,
@@ -392,6 +392,19 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
         expect(res.text).not.toContain('987654')
         expect(res.text).toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
+
+        const $ = cheerio.load(res.text)
+        // All but 1 sentences are flagged as 'NEW'
+        expect($('.govuk-tag.govuk-tag--moj-blue:contains("NEW")')).toHaveLength(10)
+        expect($('.new-sentence-card')).toHaveLength(10)
+        expect($('.sentence-card')).toHaveLength(1)
+        expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(3)
+        // SDS+ marker set using offence indicators
+        // expect($('.new-sentence-card:contains("Rape of a minor")').text()).toContain('SDS+')
+        // SDS+ marker plus set using old user inputs
+        expect(
+          $('.new-sentence-card:contains("Access / exit by unofficial route - railway bye-law")').text(),
+        ).toContain('SDS+')
       })
   })
 

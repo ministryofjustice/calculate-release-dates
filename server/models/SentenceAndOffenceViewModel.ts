@@ -2,10 +2,10 @@ import {
   AnalyzedSentenceAndOffences,
   CalculationSentenceUserInput,
   CalculationUserInputs,
+  OffenderOffence,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
-  PrisonApiOffenderOffence,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -54,14 +54,14 @@ export default class SentenceAndOffenceViewModel {
     this.sentencesAndOffences = sentencesAndOffences
   }
 
-  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffences, offence: PrisonApiOffenderOffence): boolean {
+  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffences, offence: OffenderOffence): boolean {
     const oldUserInputForSDSPlus =
       this.userInputs &&
       this.userInputs.sentenceCalculationUserInputs?.find((it: CalculationSentenceUserInput) => {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
     const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus && oldUserInputForSDSPlus.userChoice
-    return isUserIdentifiedSDSPlus || offence.indicators?.includes('PCSC/SDS+')
+    return isUserIdentifiedSDSPlus || offence.isPcscSdsPlus
   }
 
   public isErsedChecked(): boolean {

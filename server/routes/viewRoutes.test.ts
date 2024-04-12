@@ -6,7 +6,6 @@ import UserService from '../services/userService'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
   PrisonAPIAssignedLivingUnit,
-  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -18,6 +17,7 @@ import {
   CalculationSentenceUserInput,
   CalculationUserInputs,
   GenuineOverrideRequest,
+  SentencesAndOffences,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
@@ -94,7 +94,7 @@ const stubbedSentencesAndOffences = [
       {},
       { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
     ],
-  } as PrisonApiOffenderSentenceAndOffences,
+  } as SentencesAndOffences,
   {
     terms: [
       {
@@ -108,7 +108,7 @@ const stubbedSentencesAndOffences = [
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
-  } as PrisonApiOffenderSentenceAndOffences,
+  } as SentencesAndOffences,
 ]
 
 const stubbedAdjustments = {
