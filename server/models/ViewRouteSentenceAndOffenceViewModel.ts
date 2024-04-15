@@ -1,17 +1,17 @@
 import {
+  AnalyzedSentenceAndOffences,
   CalculationSentenceUserInput,
   CalculationUserInputs,
+  OffenderOffence,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
-  PrisonApiOffenderOffence,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import { groupBy, indexBy } from '../utils/utils'
-import CalculationQuestionTypes from './CalculationQuestionTypes'
 import SentenceTypes from './SentenceTypes'
 import ViewRouteAdjustmentsViewModel from './ViewRouteAdjustmentsViewModel'
 import ViewRouteCourtCaseTableViewModel from './ViewRouteCourtCaseTableViewModel'
@@ -55,21 +55,14 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     this.sentencesAndOffences = sentencesAndOffences
   }
 
-  public rowIsSdsPlus(sentence: PrisonApiOffenderSentenceAndOffences, offence: PrisonApiOffenderOffence): boolean {
-    const input =
+  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffences, offence: OffenderOffence): boolean {
+    const oldUserInputForSDSPlus =
       this.userInputs &&
       this.userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
-    return input && input.userChoice
-  }
-
-  public lastUserQuestion(): CalculationQuestionTypes {
-    if (this.userInputs) {
-      const userInputTypes = CalculationQuestionTypes.getOrderedQuestionTypesFromInputs(this.userInputs)
-      return userInputTypes[userInputTypes.length - 1]
-    }
-    return null
+    const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus && oldUserInputForSDSPlus.userChoice
+    return isUserIdentifiedSDSPlus || offence.isPcscSdsPlus
   }
 
   public isErsedChecked(): boolean {

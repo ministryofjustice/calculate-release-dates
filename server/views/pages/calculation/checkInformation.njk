@@ -9,11 +9,7 @@
 
 {% block beforeContent %}
     {{ super() }}
-    {% if model.lastUserQuestion() %}
-        {% set backlink = "/calculation/" + model.prisonerDetail.offenderNo + "/select-offences-that-appear-in-" + model.lastUserQuestion().url %}
-    {% else %}
-        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
-    {% endif %}
+    {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     <nav>
         {{ govukBackLink({
             text: "Back",

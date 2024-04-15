@@ -24,7 +24,6 @@ export default function Index({
   userPermissionsService,
   approvedDatesService,
   checkInformationService,
-  questionsService,
   comparisonService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -37,7 +36,6 @@ export default function Index({
     prisonerService,
     userInputService,
     checkInformationService,
-    questionsService,
   )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
 
@@ -52,11 +50,7 @@ export default function Index({
   const startRoutes = new StartRoutes(calculateReleaseDatesService, prisonerService, userPermissionsService)
   const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
 
-  const calculationQuestionRoutes = new CalculationQuestionRoutes(
-    calculateReleaseDatesService,
-    prisonerService,
-    userInputService,
-  )
+  const calculationQuestionRoutes = new CalculationQuestionRoutes(calculateReleaseDatesService, prisonerService)
 
   const manualEntryAccessRoutes = new ManualEntryRoutes(
     calculateReleaseDatesService,
@@ -141,24 +135,6 @@ export default function Index({
     post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
     get('/calculation/:nomsId/summary/:calculationRequestId/print', calculationAccessRoutes.printCalculationSummary)
     get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
-  }
-
-  const questionRoutes = () => {
-    get('/calculation/:nomsId/alternative-release-arrangements', calculationQuestionRoutes.alternativeReleaseIntro)
-    get('/calculation/:nomsId/select-offences-that-appear-in-list-a', calculationQuestionRoutes.selectOffencesInListA)
-    get('/calculation/:nomsId/select-offences-that-appear-in-list-b', calculationQuestionRoutes.selectOffencesInListB)
-    get('/calculation/:nomsId/select-offences-that-appear-in-list-c', calculationQuestionRoutes.selectOffencesInListC)
-    get('/calculation/:nomsId/select-offences-that-appear-in-list-d', calculationQuestionRoutes.selectOffencesInListD)
-
-    post('/calculation/:nomsId/select-offences-that-appear-in-list-a', calculationQuestionRoutes.submitOffencesInListA)
-    post('/calculation/:nomsId/select-offences-that-appear-in-list-b', calculationQuestionRoutes.submitOffencesInListB)
-    post('/calculation/:nomsId/select-offences-that-appear-in-list-c', calculationQuestionRoutes.submitOffencesInListC)
-    post('/calculation/:nomsId/select-offences-that-appear-in-list-d', calculationQuestionRoutes.submitOffencesInListD)
-
-    get('/schedule-15-list-a', calculationQuestionRoutes.offenceListA)
-    get('/schedule-15-list-b', calculationQuestionRoutes.offenceListB)
-    get('/schedule-15-list-c', calculationQuestionRoutes.offenceListC)
-    get('/schedule-15-list-d', calculationQuestionRoutes.offenceListD)
   }
 
   const reasonRoutes = () => {
@@ -263,7 +239,6 @@ export default function Index({
 
   indexRoutes()
   calculationRoutes()
-  questionRoutes()
   reasonRoutes()
   checkInformationRoutes()
   manualEntryRoutes()
