@@ -1085,6 +1085,14 @@ export interface components {
       date: string
       hints: components['schemas']['ReleaseDateHint'][]
     }
+    NomisCalculationSummary: {
+      source: 'NOMIS'
+      reason: string
+      /** Format: date-time */
+      calculatedAt: string
+      comment: string
+      releaseDates: components['schemas']['DetailedDate'][]
+    }
     LatestCalculation: {
       prisonerId: string
       /** Format: int64 */
