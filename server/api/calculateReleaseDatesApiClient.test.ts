@@ -53,6 +53,23 @@ describe('Calculate release dates API client tests', () => {
       expect(nock.isDone()).toBe(true)
     })
 
+    describe('Get nomis calculation summary for prisoner', () => {
+      it('Get nomis calculation summary for offenderSentCalcId fails with 404 and throws Error', async () => {
+        fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '').reply(404)
+        const client = new CalculateReleaseDatesApiClient(token)
+        await expect(client.getNomisCalculationSummary(offenderSentCalcId)).rejects.toThrow('Not Found')
+      })
+
+      it('Get nomis calculation summary for offenderSentCalcId successfully', async () => {
+        fakeApi
+          .get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '')
+          .reply(200, nomisCalculationSummary)
+        const data = await new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
+        expect(data).toEqual(nomisCalculationSummary)
+        expect(nock.isDone()).toBe(true)
+      })
+    })
+
     describe('Get latest calculation for prisoner', () => {
       it('Get latest calculation for prisoner successfully', async () => {
         fakeApi.get(`/calculation/${prisonerId}/latest`, '').reply(200, stubbedTestData)
@@ -64,19 +81,6 @@ describe('Calculate release dates API client tests', () => {
         fakeApi.get(`/calculation/${prisonerId}/latest`, '').reply(404)
         const client = new CalculateReleaseDatesApiClient(token)
         await expect(client.getLatestCalculationForPrisoner(prisonerId)).rejects.toThrow('Not Found')
-      })
-      it('Get nomis calculation summary for offenderSentCalcId fails with 404 and throws Error', async () => {
-        fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '').reply(404)
-        const client = new CalculateReleaseDatesApiClient(token)
-        await expect(client.getNomisCalculationSummary(offenderSentCalcId)).rejects.toThrow('Not Found')
-      })
-      it('Get nomis calculation summary for offenderSentCalcId successfully', async () => {
-        fakeApi
-          .get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '')
-          .reply(200, nomisCalculationSummary)
-        const data = await new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
-        expect(data).toEqual(nomisCalculationSummary)
-        expect(nock.isDone()).toBe(true)
       })
     })
     describe('Get reference data', () => {

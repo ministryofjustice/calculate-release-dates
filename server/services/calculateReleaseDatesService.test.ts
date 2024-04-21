@@ -24,6 +24,8 @@ jest.mock('../data/hmppsAuthClient')
 
 const prisonerId = 'A1234AB'
 const calculationRequestId = 123456
+const offenderSentCalcId = 123456
+const nomisCalculationSummary = { reason: 'Adjust Sentence', calculatedAt: '2024-04-18T10:47:39' }
 const calculationResults: BookingCalculation = {
   dates: {
     CRD: '2021-02-03',
@@ -126,6 +128,23 @@ describe('Calculate release dates service tests', () => {
   })
   afterEach(() => {
     nock.cleanAll()
+  })
+
+  describe('Test nomis calculation summary', () => {
+    it('asserting successful scenario', async () => {
+      fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`).reply(200, nomisCalculationSummary)
+
+      const result = await calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, token)
+
+      expect(result).toEqual(nomisCalculationSummary)
+    })
+    it('asserting fail scenario', async () => {
+      fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`).reply(404)
+
+      await expect(calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, token)).rejects.toThrow(
+        'Not Found',
+      )
+    })
   })
 
   describe('calculatePreliminaryReleaseDates', () => {

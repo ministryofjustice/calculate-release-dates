@@ -813,6 +813,7 @@ export interface components {
       /** Format: int64 */
       calculationRequestId?: number
       calculationReason?: string
+      offenderSentCalculationId: number
     }
     ComparisonSummary: {
       comparisonShortReference: string

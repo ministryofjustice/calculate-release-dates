@@ -18,6 +18,7 @@ import {
   GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
+  NomisCalculationSummary,
   ReleaseDateCalculationBreakdown,
   SubmitCalculationRequest,
   ValidationMessage,
@@ -35,6 +36,9 @@ import {
 import ErrorMessage from '../types/ErrorMessage'
 import { FullPageError } from '../types/FullPageError'
 import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
+import CalculationSummaryDatesCardModel, {
+  CalculationSummaryDatesCardLine,
+} from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
@@ -458,5 +462,9 @@ export default class CalculateReleaseDatesService {
       reason: latestCalculation.reason,
       dates,
     }
+  }
+
+  async getNomisCalculationSummary(offenderSentCalcId: number, token: string): Promise<NomisCalculationSummary> {
+    return new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
   }
 }
