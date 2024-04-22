@@ -19,7 +19,7 @@
 
     <tr class="govuk-table__row" data-qa="calculation-history-table-data-{{ rowNum }}">
         {% if calculation.calculationSource === 'NOMIS' %}
-            <td class="govuk-table__cell">{{ calculation.calculationDate | date('DD MMMM YYYY') }}</td>
+            <td class="govuk-table__cell"><a class="govuk-link" href="/view/{{ calculation.offenderNo }}/nomis-calculation-summary/{{calculation.offenderSentCalculationId}}">{{ calculation.calculationDate | date('DD MMMM YYYY') }}</a></td>
         {% else %}
             <td class="govuk-table__cell"><a class="govuk-link" href="/view/{{ calculation.offenderNo }}/sentences-and-offences/{{ calculation.calculationRequestId }}">{{ calculation.calculationDate | date('DD MMMM YYYY') }}</a></td>
         {% endif %}

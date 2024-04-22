@@ -35,6 +35,25 @@ const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<Vie
 
 let app: Express
 
+const pastNomisCalculation = {
+  calculatedAt: '2022-01-01T00:00:00Z',
+  reason: 'Some reason',
+  comment: null,
+  releaseDates: [
+    {
+      type: 'HDCED',
+      description: 'Home detention curfew eligibility date',
+      date: '2024-05-12',
+      hints: [
+        {
+          text: 'Friday, 10 May 2024 when adjusted to a working day',
+          link: null,
+        },
+      ],
+    },
+  ],
+}
+
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
   firstName: 'Anon',
@@ -370,6 +389,27 @@ afterEach(() => {
 })
 
 describe('View journey routes tests', () => {
+  describe('Get nomis calculation summary view tests', () => {
+    it('GET /view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId should have the correct details', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(pastNomisCalculation as never)
+      return request(app)
+        .get('/view/A1234AA/nomis-calculation-summary/-1')
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain('A1234AA')
+          expect(res.text).toContain('Anon Nobody')
+          expect(res.text).toContain('01 January 2022')
+          expect(res.text).toContain('Some reason')
+          expect(res.text).toContain('NOMIS')
+          expect(res.text).toContain('Release dates')
+          expect(res.text).toContain('HDCED')
+          expect(res.text).toContain('Sunday, 12 May 2024')
+          expect(res.text).toContain('Friday, 10 May 2024 when adjusted to a working day')
+        })
+    })
+  })
+
   describe('Get latest view tests', () => {
     it('GET /view/:nomsId/latest should redirect to the latest ', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)

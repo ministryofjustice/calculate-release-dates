@@ -59,6 +59,20 @@ const stubbedPrisonerData = {
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 
+const nomisCalculationHistory = [
+  {
+    offenderNo: 'GU32342',
+    calculationDate: '2024-03-05',
+    calculationSource: 'NOMIS',
+    commentText: 'a calculation',
+    calculationType: 'CALCULATED',
+    establishment: 'Kirkham (HMP)',
+    calculationRequestId: 90328,
+    calculationReason: 'New Sentence',
+    offenderSentCalculationId: 123456,
+  },
+] as HistoricCalculation[]
+
 const calculationHistory = [
   {
     offenderNo: 'GU32342',
@@ -138,6 +152,26 @@ describe('Start routes tests', () => {
         expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
       })
   })
+
+  it('should render correct link for nomis calculation summary', async () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    await request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.govuk-link').first().attr('href')).toStrictEqual('/view/GU32342/nomis-calculation-summary/123456')
+      })
+  })
+
   it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD and adjustments then show all CCARD nav', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
 
