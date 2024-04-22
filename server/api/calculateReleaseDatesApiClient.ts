@@ -26,10 +26,6 @@ import {
   SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
-  HistoricCalculation,
-  DetailedCalculationResults,
-  LatestCalculation,
-  DateTypeDefinition,
   NomisCalculationSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
