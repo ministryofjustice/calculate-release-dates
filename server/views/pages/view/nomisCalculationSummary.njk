@@ -1,0 +1,56 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "../components/calculation-summary-dates-card/macro.njk" import calculationSummaryDatesCard %}
+
+{% set pageTitle = applicationName + " - calculation summary" %}
+{% set pageId = "view-calculation-summary" %}
+
+{% block beforeContent %}
+    {{ super() }}
+
+    {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
+      <nav>
+         {{ govukBackLink({
+              text: "Back",
+              href: backlink
+            })
+         }}
+      </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+       <div class="govuk-grid-column-three-quarters">
+           <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" data-qa="prisoner-name">Release dates for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
+          <div class="moj-width-container">
+             <h3 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="calculation-details-title">Calculation details</h3>
+                 <div class="govuk-grid-row">
+                     <div class="govuk-grid-column-two-thirds ">
+                         <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-2">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key" data-qa="calculation-date-title">Date of calculation</dt>
+                                <dd class="govuk-summary-list__value"  data-qa="calculation-date">{{calculatedAt | date('DD MMMM YYYY')}}</dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key" data-qa="calculation-reason-title">Calculation reason</dt>
+                                <dd class="govuk-summary-list__value" data-qa="calculation-reason">{{reason}}</dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key" data-qa="calculation-source-title">Source</dt>
+                                <dd class="govuk-summary-list__value" data-qa="calculation-source">{{source}}</dd>
+                            </div>
+                         </dl>
+                     </div>
+                 </div>
+          </div>
+          <br>
+          <h2 class="govuk-heading-l govuk-!-margin-top-4" data-qa="release-dates-title">Release dates</h2>
+          {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel) }}
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
+            {% include "../partials/calculationSummary/howDatesCalculatedInset.njk" %}
+        </div>
+    </div>
+{% endblock %}

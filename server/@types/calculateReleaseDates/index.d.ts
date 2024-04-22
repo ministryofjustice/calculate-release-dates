@@ -813,6 +813,7 @@ export interface components {
       /** Format: int64 */
       calculationRequestId?: number
       calculationReason?: string
+      offenderSentCalculationId: number
     }
     ComparisonSummary: {
       comparisonShortReference: string
@@ -1084,6 +1085,14 @@ export interface components {
       /** Format: date */
       date: string
       hints: components['schemas']['ReleaseDateHint'][]
+    }
+    NomisCalculationSummary: {
+      source: 'NOMIS'
+      reason: string
+      /** Format: date-time */
+      calculatedAt: string
+      comment: string
+      releaseDates: components['schemas']['DetailedDate'][]
     }
     LatestCalculation: {
       prisonerId: string

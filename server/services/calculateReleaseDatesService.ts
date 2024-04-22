@@ -18,6 +18,7 @@ import {
   GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
+  NomisCalculationSummary,
   ReleaseDateCalculationBreakdown,
   SubmitCalculationRequest,
   ValidationMessage,
@@ -458,5 +459,9 @@ export default class CalculateReleaseDatesService {
       reason: latestCalculation.reason,
       dates,
     }
+  }
+
+  async getNomisCalculationSummary(offenderSentCalcId: number, token: string): Promise<NomisCalculationSummary> {
+    return new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
   }
 }

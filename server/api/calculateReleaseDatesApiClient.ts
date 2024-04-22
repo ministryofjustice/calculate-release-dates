@@ -26,6 +26,7 @@ import {
   SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
+  NomisCalculationSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
@@ -316,5 +317,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: '/reference-data/date-type',
     }) as Promise<DateTypeDefinition[]>
+  }
+
+  getNomisCalculationSummary(offenderSentCalcId: number): Promise<NomisCalculationSummary> {
+    return this.restClient.get({
+      path: `/calculation/nomis-calculation-summary/${offenderSentCalcId}`,
+    }) as Promise<NomisCalculationSummary>
   }
 }

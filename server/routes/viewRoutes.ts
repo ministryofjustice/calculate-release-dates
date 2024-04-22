@@ -16,6 +16,7 @@ import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageVie
 // eslint-disable-next-line prettier/prettier
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
+import ViewPastNomisCalculationPageViewModel from '../models/ViewPastNomisCalculationPageViewModel'
 
 const overrideReasons = {
   terror: 'of terrorism or terror-related offences',
@@ -233,6 +234,27 @@ export default class ViewRoutes {
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, model.hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
         nomsId,
+      ),
+    )
+  }
+
+  public nomisCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const { caseloads, token } = res.locals.user
+    const offenderSentCalculationId = Number(req.params.offenderSentCalculationId)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const pastNomisCalculation = await this.calculateReleaseDatesService.getNomisCalculationSummary(
+      offenderSentCalculationId,
+      token,
+    )
+    res.render(
+      'pages/view/nomisCalculationSummary',
+      new ViewPastNomisCalculationPageViewModel(
+        prisonerDetail,
+        pastNomisCalculation.calculatedAt,
+        pastNomisCalculation.reason,
+        'NOMIS',
+        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(pastNomisCalculation, false),
       ),
     )
   }

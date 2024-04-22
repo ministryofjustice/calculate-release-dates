@@ -1,5 +1,8 @@
 import CalculationSummaryViewModel from '../../../../models/CalculationSummaryViewModel'
-import { DetailedDate } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  DetailedDate,
+  NomisCalculationSummary,
+} from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default interface CalculationSummaryDatesCardModel {
   showNoDatesApply: boolean
@@ -15,14 +18,21 @@ export interface CalculationSummaryDatesCardLine {
 }
 
 export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
-  model: CalculationSummaryViewModel,
+  model: CalculationSummaryViewModel | NomisCalculationSummary,
   showNoDatesApply: boolean,
 ): CalculationSummaryDatesCardModel {
   const releaseDates: CalculationSummaryDatesCardLine[] = []
 
   function pushLine(id: string) {
-    if (model.detailedCalculationResults.dates[id]) {
-      const detailed: DetailedDate = model.detailedCalculationResults.dates[id]
+    let detailed: DetailedDate | undefined
+    if (model instanceof CalculationSummaryViewModel) {
+      detailed = model.detailedCalculationResults.dates[id]
+    } else {
+      // eslint-disable-next-line prefer-destructuring
+      detailed = model.releaseDates.filter(date => date.type === id)[0]
+    }
+
+    if (detailed) {
       const line: CalculationSummaryDatesCardLine = {
         shortName: detailed.type,
         fullName: detailed.description,

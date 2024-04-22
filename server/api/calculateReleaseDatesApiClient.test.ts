@@ -12,12 +12,14 @@ interface TestData {
 
 const calculateReleaseDatesService = new CalculateReleaseDatesService()
 const stubbedTestData: TestData[] = [{ key: 'X', value: 'Y' } as TestData]
+const nomisCalculationSummary = { reason: 'Adjust Sentence', calculatedAt: '2024-04-18T10:47:39' }
 const token = 'token'
 
 describe('Calculate release dates API client tests', () => {
   let fakeApi: nock.Scope
   const calculationRequestId = 123456
   const prisonerId = 'ABC123'
+  const offenderSentCalcId = 123456
 
   beforeEach(() => {
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
@@ -49,6 +51,23 @@ describe('Calculate release dates API client tests', () => {
       const data = await client.getDetailedCalculationResults(calculationRequestId)
       expect(data).toEqual(stubbedTestData)
       expect(nock.isDone()).toBe(true)
+    })
+
+    describe('Get nomis calculation summary for prisoner', () => {
+      it('Get nomis calculation summary for offenderSentCalcId fails with 404 and throws Error', async () => {
+        fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '').reply(404)
+        const client = new CalculateReleaseDatesApiClient(token)
+        await expect(client.getNomisCalculationSummary(offenderSentCalcId)).rejects.toThrow('Not Found')
+      })
+
+      it('Get nomis calculation summary for offenderSentCalcId successfully', async () => {
+        fakeApi
+          .get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '')
+          .reply(200, nomisCalculationSummary)
+        const data = await new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
+        expect(data).toEqual(nomisCalculationSummary)
+        expect(nock.isDone()).toBe(true)
+      })
     })
 
     describe('Get latest calculation for prisoner', () => {

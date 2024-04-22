@@ -149,6 +149,7 @@ export default function Index({
   const viewRoutes = () => {
     get('/view/:nomsId/latest', viewAccessRoutes.startViewJourney)
     get('/view/:nomsId/sentences-and-offences/:calculationRequestId', viewAccessRoutes.sentencesAndOffences)
+    get('/view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId', viewAccessRoutes.nomisCalculationSummary)
     get('/view/:nomsId/calculation-summary/:calculationRequestId', viewAccessRoutes.calculationSummary)
     get('/view/:nomsId/calculation-summary/:calculationRequestId/print', viewAccessRoutes.printCalculationSummary)
   }

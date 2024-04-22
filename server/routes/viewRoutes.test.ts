@@ -36,6 +36,25 @@ const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<Vie
 
 let app: Express
 
+const pastNomisCalculation = {
+  calculatedAt: '2022-01-01T00:00:00Z',
+  reason: 'Some reason',
+  comment: null,
+  releaseDates: [
+    {
+      type: 'HDCED',
+      description: 'Home detention curfew eligibility date',
+      date: '2024-05-12',
+      hints: [
+        {
+          text: 'Friday, 10 May 2024 when adjusted to a working day',
+          link: null,
+        },
+      ],
+    },
+  ],
+}
+
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
   firstName: 'Anon',
@@ -371,6 +390,35 @@ afterEach(() => {
 })
 
 describe('View journey routes tests', () => {
+  describe('Get nomis calculation summary view tests', () => {
+    it('GET /view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId should have the correct details', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(pastNomisCalculation as never)
+      return request(app)
+        .get('/view/A1234AA/nomis-calculation-summary/-1')
+        .expect(200)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=prisoner-name]').text()).toStrictEqual('Release dates for Anon Nobody')
+          expect($('[data-qa=calculation-date]').text()).toStrictEqual('01 January 2022')
+          expect($('[data-qa=calculation-reason]').text()).toStrictEqual('Some reason')
+          expect($('[data-qa=calculation-source]').text()).toStrictEqual('NOMIS')
+          expect($('[data-qa=release-dates-title]').text()).toStrictEqual('Release dates')
+          expect($('[data-qa=calculation-date-title]').text()).toStrictEqual('Date of calculation')
+          expect($('[data-qa=calculation-reason-title]').text()).toStrictEqual('Calculation reason')
+          expect($('[data-qa=calculation-source-title]').text()).toStrictEqual('Source')
+          expect($('[data-qa=calculation-details-title]').text()).toStrictEqual('Calculation details')
+          expect($('[data-qa=HDCED-date]').text().trim()).toContain('Sunday, 12 May 2024')
+          expect($('[data-qa=HDCED-short-name]').text().trim()).toContain('HDCED')
+          expect($('[data-qa=HDCED-full-name]').text().trim()).toStrictEqual('Home detention curfew eligibility date')
+          expect($('[data-qa=mini-profile-prisoner-number]').text().trim()).toStrictEqual('A1234AA')
+          expect($('[data-qa=HDCED-release-date-hint-0]').text()).toStrictEqual(
+            'Friday, 10 May 2024 when adjusted to a working day',
+          )
+        })
+    })
+  })
+
   describe('Get latest view tests', () => {
     it('GET /view/:nomsId/latest should redirect to the latest ', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
