@@ -1,12 +1,12 @@
 import request from 'supertest'
 import type { Express } from 'express'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
   PrisonAPIAssignedLivingUnit,
-  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -18,6 +18,7 @@ import {
   CalculationSentenceUserInput,
   CalculationUserInputs,
   GenuineOverrideRequest,
+  SentencesAndOffences,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
@@ -113,7 +114,7 @@ const stubbedSentencesAndOffences = [
       {},
       { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
     ],
-  } as PrisonApiOffenderSentenceAndOffences,
+  } as SentencesAndOffences,
   {
     terms: [
       {
@@ -127,7 +128,7 @@ const stubbedSentencesAndOffences = [
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
-  } as PrisonApiOffenderSentenceAndOffences,
+  } as SentencesAndOffences,
 ]
 
 const stubbedAdjustments = {
@@ -633,7 +634,7 @@ describe('View journey routes tests', () => {
           )
         })
     })
-    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the reason if it exists and the toggle is enabled', () => {
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the reason', () => {
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
         ...stubbedResultsWithBreakdownAndAdjustments,
         context: {
@@ -651,6 +652,39 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('Reason')
           expect(res.text).toContain('A calculation reason')
           expect(res.text).toContain('13 January 2024')
+        })
+    })
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display a back to view sentence and offences link', () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
+
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=previous-page-button]').first().attr('href')).toStrictEqual(
+            '/view/A1234AA/sentences-and-offences/123456',
+          )
+        })
+    })
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display a back to DPS search link', () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
+
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const backToDpsLink = $('[data-qa=back-to-dps-search-link]').first()
+          expect(backToDpsLink.length).toStrictEqual(1)
+          expect(backToDpsLink.text()).toStrictEqual('Back to Digital Prison Service (DPS) search')
+          expect(backToDpsLink.attr('href')).toStrictEqual('http://localhost:3000/dps')
         })
     })
     it('GET /view/:calculationRequestId/calculation-summary should display the other reason if it was selected', () => {

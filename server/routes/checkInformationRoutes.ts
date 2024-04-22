@@ -3,7 +3,6 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import PrisonerService from '../services/prisonerService'
 import UserInputService from '../services/userInputService'
 import CheckInformationService from '../services/checkInformationService'
-import QuestionsService from '../services/questionsService'
 import CheckInformationViewModel from '../models/CheckInformationViewModel'
 import ManualEntryCheckInformationUnsupportedViewModel from '../models/ManualEntryCheckInformationUnsupportedViewModel'
 
@@ -13,7 +12,6 @@ export default class CheckInformationRoutes {
     private readonly prisonerService: PrisonerService,
     private readonly userInputService: UserInputService,
     private readonly checkInformationService: CheckInformationService,
-    private readonly questionsService: QuestionsService,
   ) {
     // intentionally left blank
   }
@@ -28,10 +26,6 @@ export default class CheckInformationRoutes {
       return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
     }
 
-    const checkQuestions = await this.questionsService.checkQuestions(req, res)
-    if (checkQuestions) {
-      return res.redirect(`/calculation/${nomsId}/alternative-release-arrangements`)
-    }
     const model = await this.checkInformationService.checkInformation(req, res, true)
     return res.render('pages/calculation/checkInformation', new CheckInformationViewModel(model))
   }

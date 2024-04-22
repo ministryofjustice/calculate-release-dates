@@ -5,7 +5,7 @@ generic-service:
   replicaCount: 2
 
   ingress:
-    host: calculate-release-dates-dev.hmpps.service.justice.gov.uk
+    host: calculate-release-dates-alt-dev.hmpps.service.justice.gov.uk
     modsecurity_enabled: true
     modsecurity_snippet: |
       SecRuleEngine DetectionOnly
@@ -14,23 +14,24 @@ generic-service:
       SecAction "id:900000,phase:1,nolog,pass,t:none,setvar:tx.paranoia_level=2"
 
   env:
-    INGRESS_URL: "https://calculate-release-dates-dev.hmpps.service.justice.gov.uk"
+    INGRESS_URL: "https://calculate-release-dates-alt-dev.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
     MANAGE_USERS_API_URL: "https://manage-users-api-dev.hmpps.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
-    CALCULATE_RELEASE_DATES_API_URL: "https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk"
+    CALCULATE_RELEASE_DATES_API_URL: "https://calculate-release-dates-api-alt-dev.hmpps.service.justice.gov.uk"
     PRISON_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital-dev.prison.service.justice.gov.uk"
-    SPECIALIST_SUPPORT_ENABLED: "true"
     COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     COURT_CASES_AND_RELEASE_DATES_URL: "https://court-cases-release-dates-dev.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
-    HDC4_PLUS_COMPARISON_TAB_ENABLED: "true"
     ENVIRONMENT_NAME: DEV
+    SPECIALIST_SUPPORT_ENABLED: "true"
+    HDC4_PLUS_COMPARISON_TAB_ENABLED: "true"
   # Switches off the allow list in the DEV env only.
   allowlist: null
 
 generic-prometheus-alerts:
+  targetApplication: calculate-release-dates-alt-dev
   businessHoursOnly: true
   alertSeverity: legacy-replacement-alerts-non-prod

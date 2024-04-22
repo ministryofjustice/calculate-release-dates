@@ -100,14 +100,16 @@ export default class AdjustmentsViewModel {
       })
     return {
       aggregate: this.aggregateAdjustment(filteredAdjustments),
-      details: filteredAdjustments.map(a => {
-        return {
-          from: a.fromDate,
-          to: a.toDate,
-          days: a.numberOfDays,
-          sentence: 'sentenceSequence' in a ? a.sentenceSequence : null,
-        }
-      }),
+      details: filteredAdjustments
+        .map(a => {
+          return {
+            from: a.fromDate,
+            to: a.toDate,
+            days: a.numberOfDays,
+            sentence: 'sentenceSequence' in a ? a.sentenceSequence : null,
+          }
+        })
+        .sort((a, b) => new Date(a.from).valueOf() - new Date(b.from).valueOf()),
       aggregateNewDaysSinceLastCalculation: this.aggregateAdjustment([]),
     }
   }

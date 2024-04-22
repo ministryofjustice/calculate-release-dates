@@ -1,10 +1,8 @@
-import AlternativeReleaseIntroPage from '../pages/alternativeReleaseIntro'
 import CalculationCompletePage from '../pages/calculationComplete'
 import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
 import PrisonerSearchPage from '../pages/prisonerSearch'
-import SelectOffencesPage from '../pages/selectOffences'
 import ViewCalculationSummary from '../pages/viewCalculationSummary'
 import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
@@ -33,8 +31,6 @@ context('End to end happy path of user journey', () => {
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
     cy.task('stubLatestCalculation')
-    cy.task('stubCalculationQuestions')
-    cy.task('stubCalculationUserInputs')
     cy.task('stubSupportedValidationNoMessages')
     cy.task('stubGetGenuineOverride')
     cy.task('stubGetActiveCalculationReasons')
@@ -60,16 +56,6 @@ context('End to end happy path of user journey', () => {
     calculationReasonPage.hasMiniProfile()
     calculationReasonPage.submitReason().click()
 
-    const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
-    alternativeReleaseIntro.continueButton().click()
-
-    const listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
-    listAPage.checkboxByIndex(0).click()
-    listAPage.continueButton().click()
-    const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
-    listCPage.noneSelectedCheckbox().click()
-    listCPage.continueButton().click()
-
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
     checkInformationPage.hasMiniProfile()
@@ -83,10 +69,7 @@ context('End to end happy path of user journey', () => {
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('DPS user journey', () => {
@@ -98,15 +81,6 @@ context('End to end happy path of user journey', () => {
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
-    alternativeReleaseIntro.continueButton().click()
-
-    const listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
-    listAPage.checkboxByIndex(0).click()
-    listAPage.continueButton().click()
-    const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
-    listCPage.noneSelectedCheckbox().click()
-    listCPage.continueButton().click()
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
 
@@ -119,10 +93,7 @@ context('End to end happy path of user journey', () => {
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('View journey', () => {

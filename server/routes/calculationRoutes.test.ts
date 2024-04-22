@@ -2,6 +2,7 @@ import request from 'supertest'
 import type { Express } from 'express'
 import { HttpError } from 'http-errors'
 import MockDate from 'mockdate'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
@@ -525,8 +526,32 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toMatch(/Release dates saved to NOMIS for<br>\s*Anon Nobody/)
-        expect(res.text).toContain('Back to Digital Prison Service (DPS) search')
+        const $ = cheerio.load(res.text)
+        const backToDpsLink = $('[data-qa=back-to-dps-search-link]').first()
+        const courtCaseAndReleaseDatesLink = $('[data-qa=ccard-overview-link]').first()
+        const prisonerProfileLink = $('[data-qa=prisoner-profile-link]').first()
+
+        expect(backToDpsLink.length).toStrictEqual(1)
+        expect(backToDpsLink.text()).toStrictEqual('DPS homepage')
+        expect(backToDpsLink.attr('href')).toStrictEqual('http://localhost:3000/dps')
+
+        expect(courtCaseAndReleaseDatesLink.length).toStrictEqual(1)
+        expect(courtCaseAndReleaseDatesLink.text()).toStrictEqual('Court case and release dates information')
+        expect(courtCaseAndReleaseDatesLink.attr('href')).toStrictEqual(
+          'http://localhost:3100/prisoner/A1234AA/overview',
+        )
+
+        expect(prisonerProfileLink.length).toStrictEqual(1)
+        expect(prisonerProfileLink.text()).toStrictEqual('Prisoner profile')
+        expect(prisonerProfileLink.attr('href')).toStrictEqual('http://localhost:3000/dps/prisoner/A1234AA')
+
+        expect(res.text).toContain('Calculation complete')
+        expect(res.text).toContain('The calculation has been saved in NOMIS.')
+        expect(res.text).toContain('You can also go back to the following pages for Anon Nobody')
+        expect(res.text).toContain('Help improve this service')
+        expect(res.text).toContain(
+          'This is a new service. Your feedback will help make it better. To give feedback you can:',
+        )
         expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
         expectMiniProfile(res.text, expectedMiniProfile)
       })

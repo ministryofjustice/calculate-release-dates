@@ -143,7 +143,24 @@ workflows:
             - unit_test
             - integration_test
             - build_docker
-
+      - hmpps/deploy_env:
+          name: deploy_alt_dev
+          env: "alt-dev"
+          release_name: PROJECT_NAME_ENV_NAME
+          jira_update: true
+          jira_env_type: development
+          pipeline_id: <<pipeline.id>>
+          pipeline_number: <<pipeline.number>>
+          context: hmpps-common-vars
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - helm_lint
+            - unit_test
+            - integration_test
+            - build_docker
       - request-preprod-approval:
           type: approval
           requires:
@@ -151,6 +168,19 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
+          jira_update: true
+          jira_env_type: staging
+          pipeline_id: <<pipeline.id>>
+          pipeline_number: <<pipeline.number>>
+          context:
+            - hmpps-common-vars
+            - calculate-release-dates-preprod
+          requires:
+            - request-preprod-approval
+      - hmpps/deploy_env:
+          name: deploy_alt_preprod
+          env: "alt-preprod"
+          release_name: PROJECT_NAME_ENV_NAME
           jira_update: true
           jira_env_type: staging
           pipeline_id: <<pipeline.id>>

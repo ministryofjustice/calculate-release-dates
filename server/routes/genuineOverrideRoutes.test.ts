@@ -73,6 +73,50 @@ const stubbedCalculationResults = {
   approvedDates: {},
 } as BookingCalculation
 
+const stubbedCalculationResultsWithReason = {
+  dates: {
+    CRD: '2021-02-03',
+    SED: '2021-02-03',
+    HDCED: '2021-10-03',
+    ERSED: '2020-02-03',
+  },
+  calculationRequestId: 123456,
+  effectiveSentenceLength: {},
+  prisonerId: 'A1234AB',
+  calculationStatus: 'CONFIRMED',
+  calculationType: 'CALCULATED',
+  calculationReference: 'ABC123',
+  bookingId: 123,
+  approvedDates: {},
+  calculationReason: {
+    id: 1,
+    isOther: false,
+    displayName: 'Transfer',
+  },
+} as BookingCalculation
+
+const stubbedNewCalculationResults = {
+  dates: {
+    CRD: '2021-02-03',
+    SED: '2021-02-03',
+    HDCED: '2021-10-03',
+    ERSED: '2020-02-03',
+  },
+  calculationRequestId: 987654,
+  effectiveSentenceLength: {},
+  prisonerId: 'A1234AB',
+  calculationStatus: 'CONFIRMED',
+  calculationType: 'CALCULATED',
+  calculationReference: 'XYZ789',
+  bookingId: 123,
+  approvedDates: {},
+  calculationReason: {
+    id: 1,
+    isOther: false,
+    displayName: 'Transfer',
+  },
+} as BookingCalculation
+
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
   firstName: 'Anon',
@@ -660,6 +704,30 @@ describe('Genuine overrides routes tests', () => {
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
+  })
+  it('POST /specialist-support/calculation/:calculationReference/sentence-and-offence-information should validate and redirect to calc summary when no original calc reason', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
+    calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue(stubbedNewCalculationResults)
+
+    return request(app)
+      .post('/specialist-support/calculation/123/sentence-and-offence-information')
+      .expect(302)
+      .expect('Location', '/specialist-support/calculation/XYZ789/summary/987654')
+  })
+  it('POST /specialist-support/calculation/:calculationReference/sentence-and-offence-information should validate and redirect to calc summary using calc reason from original calc', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResultsWithReason)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
+    calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue(stubbedNewCalculationResults)
+
+    return request(app)
+      .post('/specialist-support/calculation/123/sentence-and-offence-information')
+      .expect(302)
+      .expect('Location', '/specialist-support/calculation/XYZ789/summary/987654')
   })
   it('GET /specialist-support/calculation/:calculationReference/complete shows check confirmation page with mini profile', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)

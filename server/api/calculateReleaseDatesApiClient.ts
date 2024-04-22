@@ -14,10 +14,15 @@ import {
   ComparisonPersonDiscrepancySummary,
   ComparisonPersonOverview,
   ComparisonSummary,
-  GenuineOverrideRequest,
+  DateTypeDefinition,
+  DetailedCalculationResults,
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,
+  GenuineOverrideRequest,
+  HistoricCalculation,
+  LatestCalculation,
   ManualEntryRequest,
+  SentencesAndOffences,
   SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
@@ -29,7 +34,6 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
-  PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -114,10 +118,10 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({ path: `/calculation/prisoner-details/${calculationId}` }) as Promise<PrisonApiPrisoner>
   }
 
-  getSentencesAndOffences(calculationId: number): Promise<PrisonApiOffenderSentenceAndOffences[]> {
+  getSentencesAndOffences(calculationId: number): Promise<SentencesAndOffences[]> {
     return this.restClient.get({
       path: `/calculation/sentence-and-offences/${calculationId}`,
-    }) as Promise<PrisonApiOffenderSentenceAndOffences[]>
+    }) as Promise<SentencesAndOffences[]>
   }
 
   getReturnToCustodyDate(calculationId: number): Promise<PrisonApiReturnToCustodyDate> {

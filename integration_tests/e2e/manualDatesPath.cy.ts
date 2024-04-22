@@ -95,10 +95,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('Can add extra dates after initial selection', () => {
@@ -167,10 +164,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('Can edit dates', () => {
@@ -223,10 +217,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
   it('Can remove dates', () => {
     cy.signIn()
@@ -274,9 +265,6 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 })

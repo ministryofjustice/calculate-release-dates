@@ -1,9 +1,7 @@
-import AlternativeReleaseIntroPage from '../pages/alternativeReleaseIntro'
 import CalculationCompletePage from '../pages/calculationComplete'
 import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
-import SelectOffencesPage from '../pages/selectOffences'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
 import CalculationReasonPage from '../pages/reasonForCalculation'
 import CCARDLandingPage from '../pages/CCARDLandingPage'
@@ -33,7 +31,6 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
     cy.task('stubLatestCalculation')
-    cy.task('stubCalculationQuestions')
     cy.task('stubCalculationUserInputs')
     cy.task('stubSupportedValidationNoMessages')
     cy.task('stubGetGenuineOverride')
@@ -54,15 +51,6 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
-    alternativeReleaseIntro.continueButton().click()
-
-    const listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
-    listAPage.checkboxByIndex(0).click()
-    listAPage.continueButton().click()
-    const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
-    listCPage.noneSelectedCheckbox().click()
-    listCPage.continueButton().click()
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
 
@@ -103,10 +91,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('Can edit a date', () => {
@@ -118,15 +103,6 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
-    alternativeReleaseIntro.continueButton().click()
-
-    const listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
-    listAPage.checkboxByIndex(0).click()
-    listAPage.continueButton().click()
-    const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
-    listCPage.noneSelectedCheckbox().click()
-    listCPage.continueButton().click()
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
 
@@ -162,10 +138,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationSummaryPageAfterEditApd.submitToNomisButton().click()
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
   it('Can remove a date', () => {
@@ -177,15 +150,6 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const alternativeReleaseIntro = AlternativeReleaseIntroPage.verifyOnPage(AlternativeReleaseIntroPage)
-    alternativeReleaseIntro.continueButton().click()
-
-    const listAPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-a')
-    listAPage.checkboxByIndex(0).click()
-    listAPage.continueButton().click()
-    const listCPage = SelectOffencesPage.verifyOnPage<SelectOffencesPage>(SelectOffencesPage, 'list-c')
-    listCPage.noneSelectedCheckbox().click()
-    listCPage.continueButton().click()
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
 
@@ -227,9 +191,6 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationSummaryPageAfterRemoveApd.submitToNomisButton().click()
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
-    calculationCompletePage
-      .title()
-      .should('contain.text', 'Release dates saved to NOMIS for')
-      .should('contain.text', 'Marvin Haggler')
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 })
