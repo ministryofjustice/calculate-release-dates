@@ -1,6 +1,7 @@
 import request from 'supertest'
 import { Express } from 'express'
 import nock from 'nock'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from './testutils/appSetup'
 import UserPermissionsService from '../services/userPermissionsService'
 import PrisonerService from '../services/prisonerService'
@@ -175,6 +176,7 @@ const stubbedSentencesAndOffences = [
       {},
       { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
     ],
+    isSDSPlus: false,
   } as AnalyzedSentenceAndOffences,
   {
     terms: [
@@ -189,6 +191,7 @@ const stubbedSentencesAndOffences = [
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+    isSDSPlus: true,
   } as AnalyzedSentenceAndOffences,
 ]
 
@@ -703,6 +706,73 @@ describe('Genuine overrides routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+  it('GET /specialist-support/calculation/:calculationReference/sentence-and-offence-information shows SDS+ badge and banner if SDS+ sentence', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/specialist-support/calculation/123/sentence-and-offence-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        // 5 offences in the only SDS+ sentence
+        expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(1)
+        expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(1)
+      })
+  })
+  it('GET /specialist-support/calculation/:calculationReference/sentence-and-offence-information shows no SDS+ badge or banner if not SDS+ sentence', () => {
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      [
+        {
+          terms: [
+            {
+              years: 3,
+            },
+          ],
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          caseSequence: 1,
+          lineSequence: 1,
+          sentenceSequence: 1,
+          offences: [
+            { offenceEndDate: '2021-02-03' },
+            { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+            { offenceStartDate: '2021-03-06' },
+            {},
+            { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
+          ],
+          isSDSPlus: false,
+        } as AnalyzedSentenceAndOffences,
+      ],
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/specialist-support/calculation/123/sentence-and-offence-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        // 5 offences in the only SDS+ sentence
+        expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(0)
+        expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(0)
       })
   })
   it('POST /specialist-support/calculation/:calculationReference/sentence-and-offence-information should validate and redirect to calc summary when no original calc reason', () => {

@@ -3,6 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "../components/sds-plus-notification-banner/macro.njk" import sdsPlusNotificationBanner %}
 
 {% set pageTitle = applicationName + " - check information" %}
 {% set pageId = "check-information-unsupported" %}
@@ -22,6 +23,7 @@
     {% set validationErrors = model.validationErrors %}
     {% include "../partials/customErrorBanner.njk" %}
     {% include "../partials/multipleOffencesBanner.njk" %}
+    {% if model.displaySDSPlusBanner %}{{ sdsPlusNotificationBanner() }}{% endif %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
 

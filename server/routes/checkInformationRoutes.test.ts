@@ -111,6 +111,7 @@ const stubbedSentencesAndOffences = [
       },
     ],
     sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: true,
   } as AnalyzedSentenceAndOffences,
   {
     terms: [
@@ -127,6 +128,7 @@ const stubbedSentencesAndOffences = [
     sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [{ offenceEndDate: '2021-02-03' }],
     sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: false,
   } as AnalyzedSentenceAndOffences,
   {
     sentenceSequence: 3,
@@ -161,6 +163,7 @@ const stubbedSentencesAndOffences = [
       },
     ],
     sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: false,
   } as AnalyzedSentenceAndOffences,
   {
     sentenceSequence: 4,
@@ -212,6 +215,7 @@ const stubbedSentencesAndOffences = [
       },
     ],
     sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: false,
   } as AnalyzedSentenceAndOffences,
   {
     bookingId: 1203025,
@@ -236,6 +240,7 @@ const stubbedSentencesAndOffences = [
     ],
     fineAmount: 3000,
     sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: false,
   } as AnalyzedSentenceAndOffences,
   {
     bookingId: 1203780,
@@ -262,6 +267,7 @@ const stubbedSentencesAndOffences = [
       },
     ],
     sentenceAndOffenceAnalysis: 'SAME',
+    isSDSPlus: false,
   } as AnalyzedSentenceAndOffences,
 ]
 const stubbedUserInput = {
@@ -398,13 +404,9 @@ describe('Check information routes tests', () => {
         expect($('.govuk-tag.govuk-tag--moj-blue:contains("NEW")')).toHaveLength(10)
         expect($('.new-sentence-card')).toHaveLength(10)
         expect($('.sentence-card')).toHaveLength(1)
-        expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(3)
-        // SDS+ marker set using offence indicators
-        // expect($('.new-sentence-card:contains("Rape of a minor")').text()).toContain('SDS+')
-        // SDS+ marker plus set using old user inputs
-        expect(
-          $('.new-sentence-card:contains("Access / exit by unofficial route - railway bye-law")').text(),
-        ).toContain('SDS+')
+        // 5 offences in the only SDS+ sentence
+        expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(5)
+        expect($('.new-sentence-card:contains("Rape of a minor")').text()).toContain('SDS+')
       })
   })
 
@@ -575,6 +577,10 @@ describe('Check information routes tests', () => {
         .expect(200)
         .expect(res => {
           expect(res.text).toContain('Court case 1 count 1 must include an offence date')
+          const $ = cheerio.load(res.text)
+          expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(5)
+          expect($('.new-sentence-card:contains("Rape of a minor")').text()).toContain('SDS+')
+          expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(1)
         })
 
       const modelClearedErrors = new SentenceAndOffenceViewModel(
@@ -600,6 +606,60 @@ describe('Check information routes tests', () => {
         })
     },
   )
+  it('Unsupported without SDS+ shows no SDS+ banner', async () => {
+    const sentenceAndOffencesWithNoSDSPlus = [
+      {
+        bookingId: 1203780,
+        sentenceSequence: 5,
+        lineSequence: 5,
+        caseSequence: 5,
+        courtDescription: 'Aldershot and Farnham County Court',
+        sentenceStatus: 'A',
+        sentenceCategory: '2003',
+        sentenceCalculationType: 'LR_LASPO_DR',
+        sentenceTypeDescription: 'LR - EDS LASPO Discretionary Release',
+        sentenceDate: '2018-06-15',
+        terms: [
+          { years: 0, months: 40, weeks: 0, days: 0, code: 'IMP' },
+          { years: 0, months: 32, weeks: 0, days: 0, code: 'LIC' },
+        ],
+        offences: [
+          {
+            offenderChargeId: 3933639,
+            offenceStartDate: '2018-04-01',
+            offenceCode: 'FA06003B',
+            offenceDescription: 'Aid and abet fraud by abuse of position',
+            indicators: [],
+          },
+        ],
+        sentenceAndOffenceAnalysis: 'SAME',
+        isSDSPlus: false,
+      } as AnalyzedSentenceAndOffences,
+    ]
+
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      sentenceAndOffencesWithNoSDSPlus,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      {
+        messages: [{ text: 'Court case 1 count 1 must include an offence date' }],
+        messageType: ErrorMessageType.VALIDATION,
+      } as never,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+
+    await request(app)
+      .get('/calculation/A1234AA/check-information-unsupported?hasErrors=true')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Court case 1 count 1 must include an offence date')
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(0)
+      })
+  })
 
   it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
@@ -647,6 +707,80 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain(
           'Court case 3 count 3 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.',
         )
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should display notification if any sentence is SDS+', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(1)
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should not display notification if no sentence is SDS+', () => {
+    const sentenceAndOffencesWithNoSDSPlus = [
+      {
+        bookingId: 1203780,
+        sentenceSequence: 5,
+        lineSequence: 5,
+        caseSequence: 5,
+        courtDescription: 'Aldershot and Farnham County Court',
+        sentenceStatus: 'A',
+        sentenceCategory: '2003',
+        sentenceCalculationType: 'LR_LASPO_DR',
+        sentenceTypeDescription: 'LR - EDS LASPO Discretionary Release',
+        sentenceDate: '2018-06-15',
+        terms: [
+          { years: 0, months: 40, weeks: 0, days: 0, code: 'IMP' },
+          { years: 0, months: 32, weeks: 0, days: 0, code: 'LIC' },
+        ],
+        offences: [
+          {
+            offenderChargeId: 3933639,
+            offenceStartDate: '2018-04-01',
+            offenceCode: 'FA06003B',
+            offenceDescription: 'Aid and abet fraud by abuse of position',
+            indicators: [],
+          },
+        ],
+        sentenceAndOffenceAnalysis: 'SAME',
+        isSDSPlus: false,
+      } as AnalyzedSentenceAndOffences,
+    ]
+
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      sentenceAndOffencesWithNoSDSPlus,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(0)
       })
   })
 

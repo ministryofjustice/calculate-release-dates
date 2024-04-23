@@ -1,8 +1,6 @@
 import {
   AnalyzedSentenceAndOffences,
-  CalculationSentenceUserInput,
   CalculationUserInputs,
-  OffenderOffence,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
@@ -28,6 +26,8 @@ export default class SentenceAndOffenceViewModel {
 
   public sentencesAndOffences: AnalyzedSentenceAndOffences[]
 
+  public displaySDSPlusBanner: boolean
+
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
@@ -52,16 +52,11 @@ export default class SentenceAndOffenceViewModel {
     this.offenceCount = sentencesAndOffences.reduce(reducer, 0)
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
     this.sentencesAndOffences = sentencesAndOffences
+    this.displaySDSPlusBanner = sentencesAndOffences.some(sentence => sentence.isSDSPlus === true)
   }
 
-  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffences, offence: OffenderOffence): boolean {
-    const oldUserInputForSDSPlus =
-      this.userInputs &&
-      this.userInputs.sentenceCalculationUserInputs?.find((it: CalculationSentenceUserInput) => {
-        return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
-      })
-    const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus && oldUserInputForSDSPlus.userChoice
-    return isUserIdentifiedSDSPlus || offence.isPcscSdsPlus
+  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffences): boolean {
+    return sentence.isSDSPlus === true
   }
 
   public isErsedChecked(): boolean {
