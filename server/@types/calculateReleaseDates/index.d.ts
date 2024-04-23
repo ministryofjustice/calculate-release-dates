@@ -752,6 +752,7 @@ export interface components {
       fineAmount?: number
       /** @enum {string} */
       sentenceAndOffenceAnalysis: 'NEW' | 'UPDATED' | 'SAME'
+      isSDSPlus: boolean
     }
     OffenderOffence: {
       /** Format: int64 */

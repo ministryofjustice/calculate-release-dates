@@ -1,0 +1,11 @@
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% set sdsPlusBannerHtml %}
+    <h2 class="govuk-heading-m">Important</h2>
+    <p class="govuk-body">This service has identified one or more sentences where the release date is calculated at two thirds (SDS+).</p>
+    <p class="govuk-body">Make sure a peach calculation sheet has been used to calculate the release dates.</p>
+{% endset %}
+{{ mojBanner({
+    type: ' ',
+    html: sdsPlusBannerHtml,
+    attributes: { 'data-qa': 'sds-plus-notification-banner' }
+}) }}
