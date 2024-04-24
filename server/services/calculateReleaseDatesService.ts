@@ -14,7 +14,6 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
-  CalculationUserQuestions,
   GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
@@ -69,10 +68,6 @@ export default class CalculateReleaseDatesService {
       calculationReference,
       checkForChanges,
     )
-  }
-
-  async getCalculationUserQuestions(prisonId: string, token: string): Promise<CalculationUserQuestions> {
-    return new CalculateReleaseDatesApiClient(token).getCalculationUserQuestions(prisonId)
   }
 
   async getUnsupportedSentenceOrCalculationMessages(prisonId: string, token: string): Promise<ValidationMessage[]> {

@@ -231,13 +231,6 @@ export interface paths {
      */
     get: operations['getCalculationResults_1']
   }
-  '/calculation/{prisonerId}/user-questions': {
-    /**
-     * Return which sentences and offences may be considered for different calculation rules
-     * @description This endpoint will return which sentences and offences may be considered for different calculation rules.We will have to ask the user for clarification if any of the rules apply beacuse we cannot trust input data from NOMIS
-     */
-    get: operations['getCalculationUserQuestions']
-  }
   '/calculation/{prisonerId}/latest': {
     /**
      * Get latest release dates for a prisoner
@@ -279,6 +272,13 @@ export interface paths {
      * @description This endpoint will return the prisoner details based on a calculationRequestId
      */
     get: operations['getPrisonerDetails']
+  }
+  '/calculation/nomis-calculation-summary/{offenderSentCalculationId}': {
+    /**
+     * Get Nomis calculation summary with release dates for a offenderSentCalculationId
+     * @description This endpoint will return the nomis calculation summary with release dates based on a offenderSentCalculationId
+     */
+    get: operations['getNomisCalculationSummary']
   }
   '/calculation/detailed-results/{calculationRequestId}': {
     /**
@@ -814,7 +814,8 @@ export interface components {
       /** Format: int64 */
       calculationRequestId?: number
       calculationReason?: string
-      offenderSentCalculationId: number
+      /** Format: int64 */
+      offenderSentCalculationId?: number
     }
     ComparisonSummary: {
       comparisonShortReference: string
@@ -995,10 +996,8 @@ export interface components {
         | 'PED_EQUAL_TO_LATEST_NON_PED_ACTUAL_RELEASE'
         | 'HDCED_ADJUSTED_TO_CONCURRENT_CONDITIONAL_RELEASE'
         | 'HDCED_ADJUSTED_TO_CONCURRENT_ACTUAL_RELEASE'
-        | 'ERSED_TWO_THIRDS'
-        | 'ERSED_HALFWAY'
         | 'ERSED_MAX_PERIOD'
-        | 'ERSED_MIXED_TERMS'
+        | 'ERSED_MIN_EFFECTIVE_DATE'
         | 'ERSED_ADJUSTED_TO_CONCURRENT_TERM'
         | 'ERSED_BEFORE_SENTENCE_DATE'
         | 'ERSED_ADJUSTED_TO_MTD'
@@ -1045,15 +1044,8 @@ export interface components {
       caseReference?: string
       courtDescription?: string
       fineAmount?: number
-    }
-    CalculationSentenceQuestion: {
-      /** Format: int32 */
-      sentenceSequence: number
-      /** @enum {string} */
-      userInputType: 'ORIGINAL' | 'FOUR_TO_UNDER_SEVEN' | 'SECTION_250' | 'UPDATED'
-    }
-    CalculationUserQuestions: {
-      sentenceQuestions: components['schemas']['CalculationSentenceQuestion'][]
+      isSdsPlus?: boolean
+      sdsPlus?: boolean
     }
     DetailedDate: {
       /** @enum {string} */
@@ -2574,41 +2566,6 @@ export interface operations {
     }
   }
   /**
-   * Return which sentences and offences may be considered for different calculation rules
-   * @description This endpoint will return which sentences and offences may be considered for different calculation rules.We will have to ask the user for clarification if any of the rules apply beacuse we cannot trust input data from NOMIS
-   */
-  getCalculationUserQuestions: {
-    parameters: {
-      path: {
-        /**
-         * @description The prisoners ID (aka nomsId)
-         * @example A1234AB
-         */
-        prisonerId: string
-      }
-    }
-    responses: {
-      /** @description Returns questions for a calculation */
-      200: {
-        content: {
-          'application/json': components['schemas']['CalculationUserQuestions']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['CalculationUserQuestions']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['CalculationUserQuestions']
-        }
-      }
-    }
-  }
-  /**
    * Get latest release dates for a prisoner
    * @description This endpoint will return the latest release dates for a prisoner. They may come from CRDS or NOMIS as identified by the source in the results.
    */
@@ -2855,6 +2812,47 @@ export interface operations {
       404: {
         content: {
           'application/json': components['schemas']['PrisonerDetails']
+        }
+      }
+    }
+  }
+  /**
+   * Get Nomis calculation summary with release dates for a offenderSentCalculationId
+   * @description This endpoint will return the nomis calculation summary with release dates based on a offenderSentCalculationId
+   */
+  getNomisCalculationSummary: {
+    parameters: {
+      path: {
+        /**
+         * @description The offenderSentCalculationId of the offender booking or a calculation
+         * @example 123456
+         */
+        offenderSentCalculationId: number
+      }
+    }
+    responses: {
+      /** @description Returns Nomis calculation summary with release dates based on a offenderSentCalculationId */
+      200: {
+        content: {
+          'application/json': components['schemas']['NomisCalculationSummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['NomisCalculationSummary']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['NomisCalculationSummary']
+        }
+      }
+      /** @description No nomis calculation summary - release dates exists for this offenderSentCalculationId */
+      404: {
+        content: {
+          'application/json': components['schemas']['NomisCalculationSummary']
         }
       }
     }
