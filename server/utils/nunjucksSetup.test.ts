@@ -1,6 +1,6 @@
 import express from 'express'
 import { ApplicationInfo } from '../applicationInfo'
-import nunjucksSetup from './nunjucksSetup'
+import nunjucksSetup, { pluraliseName } from './nunjucksSetup'
 
 describe('nunjucksSetup', () => {
   describe('design systems params', () => {
@@ -37,5 +37,14 @@ describe('nunjucksSetup', () => {
 
       expect(app.locals.hmppsDesignSystemEnvironment).toStrictEqual(expectedEnvironment)
     }
+  })
+  describe('pluralise name tests', () => {
+    it('Names with s on the end get pluralised with apostrophe', () => {
+      expect(pluraliseName('Bloggs')).toStrictEqual("Bloggs'")
+    })
+
+    it('Names without an s on the end get pluralised with apostrophe s', () => {
+      expect(pluraliseName('Smith')).toStrictEqual("Smith's")
+    })
   })
 })
