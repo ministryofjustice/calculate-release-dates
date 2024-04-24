@@ -90,6 +90,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
 
+  njkEnv.addFilter('pluraliseName', name => pluraliseName(name))
+
   njkEnv.addFilter('releaseDates', dates => {
     return dates[getReleaseDateType(dates)]
   })
@@ -183,4 +185,11 @@ const formatComparisonType = (comparisonType: ComparisonType) => {
     default:
       throw Error(`Comparison type ${comparisonType} not recognised`)
   }
+}
+
+export const pluraliseName = (name: string) => {
+  if (name.endsWith('s')) {
+    return `${name}'`
+  }
+  return `${name}'s`
 }

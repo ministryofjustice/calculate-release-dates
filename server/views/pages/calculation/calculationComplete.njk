@@ -23,7 +23,7 @@
         </p>
 
         <div class="govuk-body govuk-!-margin-top-6">
-          <span>You can also go back to the following pages for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}:</span>
+          <span>You can also go back to {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title | pluraliseName}}:</span>
           <ul class="govuk-list govuk-!-margin-top-2">
             <li><a id="ccard-overview-link-id" data-qa="ccard-overview-link" href="{{ courtCasesAndReleaseDatesUrl }}/prisoner/{{ prisonerDetail.offenderNo }}/overview">Court case and release dates information</a></li>
             <li><a id="prisoner-profile-link-id" data-qa="prisoner-profile-link" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ prisonerDetail.offenderNo }}">Prisoner profile</a></li>
