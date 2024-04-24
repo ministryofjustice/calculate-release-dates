@@ -90,6 +90,13 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
 
+  njkEnv.addFilter('pluraliseName', name => {
+    if (name.endsWith('s')) {
+      return `${name}'`
+    }
+    return `${name}'s`
+  })
+
   njkEnv.addFilter('releaseDates', dates => {
     return dates[getReleaseDateType(dates)]
   })

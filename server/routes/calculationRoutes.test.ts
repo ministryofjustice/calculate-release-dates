@@ -547,7 +547,7 @@ describe('Calculation routes tests', () => {
 
         expect(res.text).toContain('Calculation complete')
         expect(res.text).toContain('The calculation has been saved in NOMIS.')
-        expect(res.text).toContain('You can also go back to the following pages for Anon Nobody')
+        expect(res.text).toContain('You can also go back to Anon Nobody&#39;s')
         expect(res.text).toContain('Help improve this service')
         expect(res.text).toContain(
           'This is a new service. Your feedback will help make it better. To give feedback you can:',
@@ -556,6 +556,19 @@ describe('Calculation routes tests', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
+
+  it('GET /calculation/:nomsId/complete return pluralised version of prisoners name correctly when name ends with s', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue({ ...stubbedPrisonerData, lastName: 'Bloggs' })
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    return request(app)
+      .get('/calculation/A1234AB/complete/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('You can also go back to Anon Bloggs&#39;')
+      })
+  })
+
   it('GET /calculation/:nomsId/summary should return confirm and continue button if approved dates on', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
