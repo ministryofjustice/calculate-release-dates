@@ -1025,27 +1025,25 @@ export interface components {
     SentenceAndOffences: {
       /** Format: int64 */
       bookingId: number
+      sentenceCalculationType: string
+      sentenceStatus: string
       /** Format: int32 */
       sentenceSequence: number
-      /** Format: int32 */
-      lineSequence: number
-      /** Format: int32 */
-      caseSequence: number
-      /** Format: int32 */
-      consecutiveToSequence?: number
-      sentenceStatus: string
-      sentenceCategory: string
-      sentenceCalculationType: string
-      sentenceTypeDescription: string
+      offences: components['schemas']['OffenderOffence'][]
       /** Format: date */
       sentenceDate: string
       terms: components['schemas']['SentenceTerms'][]
-      offences: components['schemas']['OffenderOffence'][]
-      caseReference?: string
-      courtDescription?: string
+      /** Format: int32 */
+      consecutiveToSequence?: number
       fineAmount?: number
-      isSdsPlus?: boolean
-      sdsPlus?: boolean
+      /** Format: int32 */
+      caseSequence: number
+      /** Format: int32 */
+      lineSequence: number
+      sentenceCategory: string
+      sentenceTypeDescription: string
+      courtDescription?: string
+      caseReference?: string
     }
     DetailedDate: {
       /** @enum {string} */
@@ -1079,14 +1077,6 @@ export interface components {
       date: string
       hints: components['schemas']['ReleaseDateHint'][]
     }
-    NomisCalculationSummary: {
-      source: 'NOMIS'
-      reason: string
-      /** Format: date-time */
-      calculatedAt: string
-      comment: string
-      releaseDates: components['schemas']['DetailedDate'][]
-    }
     LatestCalculation: {
       prisonerId: string
       /** Format: int64 */
@@ -1104,6 +1094,30 @@ export interface components {
     ReleaseDateHint: {
       text: string
       link?: string
+    }
+    SentenceAndOffencesWithReleaseArrangements: {
+      /** Format: int64 */
+      bookingId: number
+      /** Format: int32 */
+      sentenceSequence: number
+      /** Format: int32 */
+      lineSequence: number
+      /** Format: int32 */
+      caseSequence: number
+      /** Format: int32 */
+      consecutiveToSequence?: number
+      sentenceStatus: string
+      sentenceCategory: string
+      sentenceCalculationType: string
+      sentenceTypeDescription: string
+      /** Format: date */
+      sentenceDate: string
+      terms: components['schemas']['SentenceTerms'][]
+      offences: components['schemas']['OffenderOffence'][]
+      caseReference?: string
+      courtDescription?: string
+      fineAmount?: number
+      isSDSPlus: boolean
     }
     ReturnToCustodyDate: {
       /** Format: int64 */
@@ -1136,6 +1150,13 @@ export interface components {
       alerts: components['schemas']['Alert'][]
       agencyId: string
       assignedLivingUnit?: components['schemas']['AssignedLivingUnit']
+    }
+    NomisCalculationSummary: {
+      reason: string
+      /** Format: date-time */
+      calculatedAt: string
+      comment?: string
+      releaseDates: components['schemas']['DetailedDate'][]
     }
     /** @description Calculation breakdown details */
     CalculationBreakdown: {
@@ -2624,25 +2645,25 @@ export interface operations {
       /** @description Returns sentences and offences */
       200: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffences'][]
+          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffences'][]
+          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffences'][]
+          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffences'][]
+          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
         }
       }
     }
