@@ -7,7 +7,6 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
-  CalculationUserQuestions,
   Comparison,
   ComparisonOverview,
   ComparisonPersonDiscrepancyRequest,
@@ -136,12 +135,6 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/calculation/results/${prisonerId}/${bookingId}`,
     }) as Promise<BookingCalculation>
-  }
-
-  getCalculationUserQuestions(prisonerId: string): Promise<CalculationUserQuestions> {
-    return this.restClient.get({
-      path: `/calculation/${prisonerId}/user-questions`,
-    }) as Promise<CalculationUserQuestions>
   }
 
   getCalculationUserInputs(calculationId: number): Promise<CalculationUserInputs> {

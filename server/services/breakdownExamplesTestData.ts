@@ -531,7 +531,7 @@ export function ersedHalfwayBreakdown(): CalculationBreakdown {
     consecutiveSentence: null,
     breakdownByReleaseDateType: {
       ERSED: {
-        rules: ['ERSED_HALFWAY'],
+        rules: ['ERSED_MIN_EFFECTIVE_DATE'],
         rulesWithExtraAdjustments: {},
         adjustedDays: 50,
         releaseDate: '2010-12-01',
@@ -547,7 +547,7 @@ export function ersedTwoThirdsBreakdown(): CalculationBreakdown {
     consecutiveSentence: null,
     breakdownByReleaseDateType: {
       ERSED: {
-        rules: ['ERSED_TWO_THIRDS'],
+        rules: ['ERSED_MIN_EFFECTIVE_DATE'],
         rulesWithExtraAdjustments: {},
         adjustedDays: 66,
         releaseDate: '2023-03-20',

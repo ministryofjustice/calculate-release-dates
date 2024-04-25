@@ -11,7 +11,6 @@ import ManualEntryValidationService from './manualEntryValidationService'
 import ApprovedDatesService from './approvedDatesService'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService from './dateValidationService'
-import QuestionsService from './questionsService'
 import CheckInformationService from './checkInformationService'
 import FrontEndComponentsService from './frontEndComponentsService'
 import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
@@ -35,7 +34,6 @@ export const services = () => {
   )
   const userPermissionsService = new UserPermissionsService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
-  const questionsService = new QuestionsService(calculateReleaseDatesService, userInputService)
   const checkInformationService = new CheckInformationService(
     calculateReleaseDatesService,
     prisonerService,
@@ -56,7 +54,6 @@ export const services = () => {
     userPermissionsService,
     approvedDatesService,
     checkInformationService,
-    questionsService,
     frontEndComponentService,
     comparisonService,
   }
