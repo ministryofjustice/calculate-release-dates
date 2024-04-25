@@ -18,7 +18,7 @@ import {
   CalculationSentenceUserInput,
   CalculationUserInputs,
   GenuineOverrideRequest,
-  SentencesAndOffences,
+  SentenceAndOffencesWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
@@ -114,7 +114,8 @@ const stubbedSentencesAndOffences = [
       {},
       { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
     ],
-  } as SentencesAndOffences,
+    isSDSPlus: false,
+  } as SentenceAndOffencesWithReleaseArrangements,
   {
     terms: [
       {
@@ -128,7 +129,8 @@ const stubbedSentencesAndOffences = [
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
     offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
-  } as SentencesAndOffences,
+    isSDSPlus: false,
+  } as SentenceAndOffencesWithReleaseArrangements,
 ]
 
 const stubbedAdjustments = {
@@ -477,6 +479,79 @@ describe('View journey routes tests', () => {
             'An Early removal scheme eligibility date (ERSED) was included in this calculation',
           )
           expectMiniProfile(res.text, expectedMiniProfile)
+        })
+    })
+    it('GET /view/:calculationRequestId/sentences-and-offences should return SDS+ badge if sentence is marked as SDS+', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
+        {
+          terms: [
+            {
+              years: 2,
+            },
+          ],
+          caseSequence: 2,
+          lineSequence: 2,
+          sentenceSequence: 2,
+          consecutiveToSequence: 1,
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+          isSDSPlus: true,
+        } as SentenceAndOffencesWithReleaseArrangements,
+      ])
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
+        calculateErsed: true,
+        sentenceCalculationUserInputs: [],
+      } as CalculationUserInputs)
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(1)
+        })
+    })
+    it('GET /view/:calculationRequestId/sentences-and-offences should return SDS+ badge if user marked sentence as SDS+', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
+        {
+          terms: [
+            {
+              years: 2,
+            },
+          ],
+          caseSequence: 2,
+          lineSequence: 2,
+          sentenceSequence: 2,
+          consecutiveToSequence: 1,
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+          isSDSPlus: false,
+        } as SentenceAndOffencesWithReleaseArrangements,
+      ])
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
+        calculateErsed: true,
+        sentenceCalculationUserInputs: [
+          {
+            userInputType: 'ORIGINAL',
+            userChoice: true,
+            offenceCode: '123',
+            sentenceSequence: 2,
+          } as CalculationSentenceUserInput,
+        ],
+      } as CalculationUserInputs)
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(1)
         })
     })
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences without ERSED', () => {

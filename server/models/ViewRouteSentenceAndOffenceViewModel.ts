@@ -3,6 +3,7 @@ import {
   CalculationSentenceUserInput,
   CalculationUserInputs,
   OffenderOffence,
+  SentenceAndOffencesWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
@@ -32,7 +33,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
-    sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
+    sentencesAndOffences: SentenceAndOffencesWithReleaseArrangements[],
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
@@ -62,7 +63,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
     const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus && oldUserInputForSDSPlus.userChoice
-    return isUserIdentifiedSDSPlus || offence.isPcscSdsPlus
+    return isUserIdentifiedSDSPlus || sentence.isSDSPlus
   }
 
   public isErsedChecked(): boolean {
