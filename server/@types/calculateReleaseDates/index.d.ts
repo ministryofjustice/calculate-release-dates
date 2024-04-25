@@ -1113,6 +1113,30 @@ export interface components {
       text: string
       link?: string
     }
+    SentenceAndOffencesWithReleaseArrangements: {
+      /** Format: int64 */
+      bookingId: number
+      /** Format: int32 */
+      sentenceSequence: number
+      /** Format: int32 */
+      lineSequence: number
+      /** Format: int32 */
+      caseSequence: number
+      /** Format: int32 */
+      consecutiveToSequence?: number
+      sentenceStatus: string
+      sentenceCategory: string
+      sentenceCalculationType: string
+      sentenceTypeDescription: string
+      /** Format: date */
+      sentenceDate: string
+      terms: components['schemas']['SentenceTerms'][]
+      offences: components['schemas']['OffenderOffence'][]
+      caseReference?: string
+      courtDescription?: string
+      fineAmount?: number
+      isSDSPlus: boolean
+    }
     ReturnToCustodyDate: {
       /** Format: int64 */
       bookingId: number
@@ -2667,25 +2691,25 @@ export interface operations {
       /** @description Returns sentences and offences */
       200: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffences'][]
+          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffences'][]
+          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffences'][]
+          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffences'][]
+          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
         }
       }
     }

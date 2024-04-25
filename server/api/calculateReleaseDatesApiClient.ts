@@ -22,11 +22,11 @@ import {
   HistoricCalculation,
   LatestCalculation,
   ManualEntryRequest,
-  SentencesAndOffences,
+  NomisCalculationSummary,
+  SentenceAndOffencesWithReleaseArrangements,
   SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
-  NomisCalculationSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
@@ -114,10 +114,10 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({ path: `/calculation/prisoner-details/${calculationId}` }) as Promise<PrisonApiPrisoner>
   }
 
-  getSentencesAndOffences(calculationId: number): Promise<SentencesAndOffences[]> {
+  getSentencesAndOffences(calculationId: number): Promise<SentenceAndOffencesWithReleaseArrangements[]> {
     return this.restClient.get({
       path: `/calculation/sentence-and-offences/${calculationId}`,
-    }) as Promise<SentencesAndOffences[]>
+    }) as Promise<SentenceAndOffencesWithReleaseArrangements[]>
   }
 
   getReturnToCustodyDate(calculationId: number): Promise<PrisonApiReturnToCustodyDate> {

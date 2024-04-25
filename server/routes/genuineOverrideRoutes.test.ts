@@ -726,7 +726,6 @@ describe('Genuine overrides routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        // 5 offences in the only SDS+ sentence
         expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(1)
         expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(1)
       })
