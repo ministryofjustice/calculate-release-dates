@@ -128,7 +128,7 @@ const stubbedSentencesAndOffences = [
     consecutiveToSequence: 1,
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' }],
     isSDSPlus: false,
   } as SentenceAndOffencesWithReleaseArrangements,
 ]
@@ -458,6 +458,8 @@ describe('View journey routes tests', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=123-title]').text()).toStrictEqual('123 - Doing a crime')
           expect(res.text).toContain('A1234AA')
           expect(res.text).toContain('Anon')
           expect(res.text).toContain('Nobody')
