@@ -158,7 +158,7 @@ const stubbedSentencesAndOffences = [
       {
         offenderChargeId: 2,
         offenceStartDate: '2020-01-01',
-        offenceCode: 'RL05016',
+        offenceCode: 'RL05017',
         offenceDescription: 'Access / exit by unofficial route - railway bye-law',
       },
     ],
@@ -431,7 +431,7 @@ describe('Check information routes tests', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/check-information back button should return to dps start page if no calc questions', () => {
+  it('GET /calculation/:nomsId/check-information correct offence title, back button should return to dps start page if no calc questions', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getReturnToCustodyDate.mockResolvedValue(stubbedReturnToCustodyDate)
     const model = new SentenceAndOffenceViewModel(
@@ -449,6 +449,10 @@ describe('Check information routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=RL05016-title]').text()).toStrictEqual(
+          'RL05016 - Access / exit by unofficial route - railway bye-law',
+        )
         expect(res.text).toContain('href="/?prisonId=A1234AA"')
       })
   })
@@ -880,7 +884,7 @@ describe('Check information routes tests', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/check-information-unsupported loads page and displays a mini profile', () => {
+  it('GET /calculation/:nomsId/check-information-unsupported loads page and displays a mini profile and correct offence title', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -900,6 +904,10 @@ describe('Check information routes tests', () => {
       .get('/calculation/A1234AA/check-information-unsupported')
       .expect(200)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=RL05016-title]').text()).toStrictEqual(
+          'RL05016 - Access / exit by unofficial route - railway bye-law',
+        )
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })

@@ -190,7 +190,7 @@ const stubbedSentencesAndOffences = [
     consecutiveToSequence: 1,
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123' }],
+    offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' }],
     isSDSPlus: true,
   } as AnalyzedSentenceAndOffences,
 ]
@@ -688,7 +688,7 @@ describe('Genuine overrides routes tests', () => {
       })
   })
 
-  it('GET /specialist-support/calculation/:calculationReference/sentence-and-offence-information shows check information page with mini profile', () => {
+  it('GET /specialist-support/calculation/:calculationReference/sentence-and-offence-information shows check information page with mini profile and correct offence title', () => {
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)
     const model = new SentenceAndOffenceViewModel(
       stubbedPrisonerData,
@@ -705,6 +705,8 @@ describe('Genuine overrides routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=123-title]').text()).toStrictEqual('123 - Doing a crime')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })

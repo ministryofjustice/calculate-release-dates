@@ -21,7 +21,7 @@
                             </h3>
                 {% endif %}
                         {#                        {% endif %} #}
-                        <h4 class="govuk-heading-s govuk-!-margin-bottom-1">{{ offence.offenceDescription }}</h4>
+                        <h4 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="{{offence.offenceCode }}-title">{{offence.offenceCode }} - {{ offence.offenceDescription }}</h4>
                         <p class="govuk-body-s">
                             {% if (offence.offenceEndDate and offence.offenceStartDate and offence.offenceEndDate !== offence.offenceStartDate) %}
                         Committed from {{ offence.offenceStartDate | date('DD MMMM YYYY') }} to {{ offence.offenceEndDate | date('DD MMMM YYYY') }}

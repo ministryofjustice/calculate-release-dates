@@ -17,6 +17,10 @@ export default class ViewSentencesAndOffencesCommon extends Page {
     return cy.get(`[data-qa=summary-tab-link]`)
   }
 
+  public offenceTitle(offenceCode: string): PageElement {
+    return cy.get(`[data-qa=${offenceCode}-title]`)
+  }
+
   public adjustmentSummary(): PageElement {
     return cy.get(`#summary`)
   }
