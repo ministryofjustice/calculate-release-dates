@@ -99,7 +99,7 @@
     "@microsoft/applicationinsights-clickanalytics-js": "^3.1.2",
     "@microsoft/applicationinsights-web": "^3.1.2",
     "@ministryofjustice/frontend": "^2.1.2",
-    "accessible-autocomplete": "^2.0.4",
+    "accessible-autocomplete": "^3.0.0",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.5",
     "body-parser": "^1.20.2",
