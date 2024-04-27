@@ -1,4 +1,5 @@
-import { DataTelemetry, EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
+import { TelemetryItem } from 'applicationinsights/out/src/declarations/generated'
+import { MonitorBase } from 'applicationinsights/out/src/declarations/generated/models'
 import { addUserDataToRequests, ContextObject } from './azureAppInsights'
 
 const user = {
@@ -10,8 +11,8 @@ const createEnvelope = (properties: Record<string, string | boolean>, baseType =
     data: {
       baseType,
       baseData: { properties },
-    } as DataTelemetry,
-  }) as EnvelopeTelemetry
+    } as MonitorBase,
+  }) as TelemetryItem
 
 const createContext = (username: string) =>
   ({
