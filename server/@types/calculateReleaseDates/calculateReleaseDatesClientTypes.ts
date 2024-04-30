@@ -26,7 +26,7 @@ export type ComparisonOverview = components['schemas']['ComparisonOverview']
 export type ComparisonMismatchSummary = components['schemas']['ComparisonMismatchSummary']
 export type HdcFourPlusComparisonMismatch = components['schemas']['HdcFourPlusComparisonMismatch']
 export type ComparisonPersonOverview = components['schemas']['ComparisonPersonOverview']
-export type AnalyzedSentenceAndOffences = components['schemas']['AnalyzedSentenceAndOffences']
+export type AnalyzedSentenceAndOffence = components['schemas']['AnalyzedSentenceAndOffence']
 export type CalculationReason = components['schemas']['CalculationReason']
 export type ComparisonPersonDiscrepancyRequest = components['schemas']['CreateComparisonDiscrepancyRequest']
 export type ComparisonPersonDiscrepancySummary = components['schemas']['ComparisonDiscrepancySummary']
@@ -38,7 +38,6 @@ export type CalculationPrisonerDetails = components['schemas']['PrisonerDetails'
 export type LatestCalculation = components['schemas']['LatestCalculation']
 export type DateTypeDefinition = components['schemas']['DateTypeDefinition']
 export type NomisCalculationSummary = components['schemas']['NomisCalculationSummary']
-export type SentencesAndOffences = components['schemas']['SentenceAndOffences']
-export type SentenceAndOffencesWithReleaseArrangements =
-  components['schemas']['SentenceAndOffencesWithReleaseArrangements']
+export type SentenceAndOffenceWithReleaseArrangements =
+  components['schemas']['SentenceAndOffenceWithReleaseArrangements']
 export type OffenderOffence = components['schemas']['OffenderOffence']

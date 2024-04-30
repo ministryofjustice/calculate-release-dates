@@ -1,7 +1,7 @@
 import config, { ApiConfig } from '../config'
 import RestClient from '../data/restClient'
 import {
-  AnalyzedSentenceAndOffences,
+  AnalyzedSentenceAndOffence,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
@@ -22,7 +22,7 @@ import {
   LatestCalculation,
   ManualEntryRequest,
   NomisCalculationSummary,
-  SentenceAndOffencesWithReleaseArrangements,
+  SentenceAndOffenceWithReleaseArrangements,
   SubmitCalculationRequest,
   ValidationMessage,
   WorkingDay,
@@ -113,10 +113,10 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({ path: `/calculation/prisoner-details/${calculationId}` }) as Promise<PrisonApiPrisoner>
   }
 
-  getSentencesAndOffences(calculationId: number): Promise<SentenceAndOffencesWithReleaseArrangements[]> {
+  getSentencesAndOffences(calculationId: number): Promise<SentenceAndOffenceWithReleaseArrangements[]> {
     return this.restClient.get({
       path: `/calculation/sentence-and-offences/${calculationId}`,
-    }) as Promise<SentenceAndOffencesWithReleaseArrangements[]>
+    }) as Promise<SentenceAndOffenceWithReleaseArrangements[]>
   }
 
   getReturnToCustodyDate(calculationId: number): Promise<PrisonApiReturnToCustodyDate> {
@@ -270,10 +270,10 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<ComparisonPersonOverview>
   }
 
-  getAnalyzedSentencesAndOffences(bookingId: number): Promise<AnalyzedSentenceAndOffences[]> {
+  getAnalyzedSentencesAndOffences(bookingId: number): Promise<AnalyzedSentenceAndOffence[]> {
     return this.restClient.get({
       path: `/sentence-and-offence-information/${bookingId}`,
-    }) as Promise<AnalyzedSentenceAndOffences[]>
+    }) as Promise<AnalyzedSentenceAndOffence[]>
   }
 
   getAnalyzedAdjustments(bookingId: number): Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments> {

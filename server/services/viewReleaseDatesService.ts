@@ -3,7 +3,7 @@ import { HTTPError } from 'superagent' // eslint thinks this is unused.
 import {
   BookingCalculation,
   CalculationUserInputs,
-  SentenceAndOffencesWithReleaseArrangements,
+  SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
@@ -27,7 +27,7 @@ export default class ViewReleaseDatesService {
   async getSentencesAndOffences(
     calculationId: number,
     token: string,
-  ): Promise<SentenceAndOffencesWithReleaseArrangements[]> {
+  ): Promise<SentenceAndOffenceWithReleaseArrangements[]> {
     return new CalculateReleaseDatesApiClient(token).getSentencesAndOffences(calculationId)
   }
 

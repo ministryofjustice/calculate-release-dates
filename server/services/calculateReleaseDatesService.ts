@@ -8,7 +8,7 @@ import {
 } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
-  AnalyzedSentenceAndOffences,
+  AnalyzedSentenceAndOffence,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
@@ -116,17 +116,14 @@ export default class CalculateReleaseDatesService {
     } as CalculationRequestModel
   }
 
-  async getActiveAnalyzedSentencesAndOffences(
-    bookingId: number,
-    token: string,
-  ): Promise<AnalyzedSentenceAndOffences[]> {
+  async getActiveAnalyzedSentencesAndOffences(bookingId: number, token: string): Promise<AnalyzedSentenceAndOffence[]> {
     const sentencesAndOffences = await new CalculateReleaseDatesApiClient(token).getAnalyzedSentencesAndOffences(
       bookingId,
     )
     if (sentencesAndOffences.length === 0) {
       throw FullPageError.noSentences()
     }
-    return sentencesAndOffences.filter((s: AnalyzedSentenceAndOffences) => s.sentenceStatus === 'A')
+    return sentencesAndOffences.filter((s: AnalyzedSentenceAndOffence) => s.sentenceStatus === 'A')
   }
 
   private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
