@@ -150,7 +150,6 @@ const stubbedSentencesAndOffences = [
       offenceDescription: 'Rape of a minor',
       offenceStartDate: '2021-01-07',
       offenceEndDate: '2021-01-07',
-      isPcscSdsPlus: true,
     },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: true,
