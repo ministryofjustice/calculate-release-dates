@@ -728,7 +728,7 @@ export interface components {
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
     }
-    AnalyzedSentenceAndOffences: {
+    AnalyzedSentenceAndOffence: {
       /** Format: int64 */
       bookingId: number
       /** Format: int32 */
@@ -746,7 +746,7 @@ export interface components {
       /** Format: date */
       sentenceDate: string
       terms: components['schemas']['SentenceTerms'][]
-      offences: components['schemas']['OffenderOffence'][]
+      offence: components['schemas']['OffenderOffence']
       caseReference?: string
       courtDescription?: string
       fineAmount?: number
@@ -764,8 +764,8 @@ export interface components {
       offenceCode: string
       offenceDescription: string
       indicators: string[]
-      isPcscSec250: boolean
       isPcscSds: boolean
+      isPcscSec250: boolean
       isPcscSdsPlus: boolean
       isScheduleFifteenMaximumLife: boolean
     }
@@ -972,7 +972,7 @@ export interface components {
       breakdownByReleaseDateType: {
         [key: string]: components['schemas']['ReleaseDateCalculationBreakdown']
       }
-      sdsSentencesIdentified: components['schemas']['SentenceAndOffences'][]
+      sdsSentencesIdentified: components['schemas']['SentenceAndOffence'][]
     }
     /** @description Calculation breakdown details for a release date type */
     ReleaseDateCalculationBreakdown: {
@@ -1022,28 +1022,28 @@ export interface components {
        */
       unadjustedDate: string
     }
-    SentenceAndOffences: {
-      /** Format: int64 */
-      bookingId: number
-      sentenceCalculationType: string
-      sentenceStatus: string
-      /** Format: int32 */
-      sentenceSequence: number
-      offences: components['schemas']['OffenderOffence'][]
+    SentenceAndOffence: {
+      caseReference?: string
+      courtDescription?: string
       /** Format: date */
       sentenceDate: string
-      terms: components['schemas']['SentenceTerms'][]
       /** Format: int32 */
-      consecutiveToSequence?: number
-      fineAmount?: number
+      sentenceSequence: number
+      sentenceStatus: string
       /** Format: int32 */
       caseSequence: number
       /** Format: int32 */
       lineSequence: number
       sentenceCategory: string
+      /** Format: int64 */
+      bookingId: number
+      fineAmount?: number
+      offence: components['schemas']['OffenderOffence']
+      terms: components['schemas']['SentenceTerms'][]
+      sentenceCalculationType: string
+      /** Format: int32 */
+      consecutiveToSequence?: number
       sentenceTypeDescription: string
-      courtDescription?: string
-      caseReference?: string
     }
     DetailedDate: {
       /** @enum {string} */
@@ -1095,7 +1095,7 @@ export interface components {
       text: string
       link?: string
     }
-    SentenceAndOffencesWithReleaseArrangements: {
+    SentenceAndOffenceWithReleaseArrangements: {
       /** Format: int64 */
       bookingId: number
       /** Format: int32 */
@@ -1113,7 +1113,7 @@ export interface components {
       /** Format: date */
       sentenceDate: string
       terms: components['schemas']['SentenceTerms'][]
-      offences: components['schemas']['OffenderOffence'][]
+      offence: components['schemas']['OffenderOffence']
       caseReference?: string
       courtDescription?: string
       fineAmount?: number
@@ -1195,7 +1195,7 @@ export interface components {
     }
     CalculationOriginalData: {
       prisonerDetails?: components['schemas']['PrisonerDetails']
-      sentencesAndOffences?: components['schemas']['SentenceAndOffences'][]
+      sentencesAndOffences?: components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
     }
     ConcurrentSentenceBreakdown: {
       /** Format: date */
@@ -2174,19 +2174,19 @@ export interface operations {
       /** @description Returns a List<AnalyzedSentenceAndOffences */
       200: {
         content: {
-          'application/json': components['schemas']['AnalyzedSentenceAndOffences'][]
+          'application/json': components['schemas']['AnalyzedSentenceAndOffence'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['AnalyzedSentenceAndOffences'][]
+          'application/json': components['schemas']['AnalyzedSentenceAndOffence'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['AnalyzedSentenceAndOffences'][]
+          'application/json': components['schemas']['AnalyzedSentenceAndOffence'][]
         }
       }
     }
@@ -2645,25 +2645,25 @@ export interface operations {
       /** @description Returns sentences and offences */
       200: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
+          'application/json': components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
+          'application/json': components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
+          'application/json': components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
         content: {
-          'application/json': components['schemas']['SentenceAndOffencesWithReleaseArrangements'][]
+          'application/json': components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
         }
       }
     }

@@ -16,7 +16,7 @@ import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import UserInputService from '../services/userInputService'
 import {
-  AnalyzedSentenceAndOffences,
+  AnalyzedSentenceAndOffence,
   CalculationSentenceUserInput,
   CalculationUserInputs,
   ValidationMessage,
@@ -98,21 +98,79 @@ const stubbedSentencesAndOffences = [
     caseReference: 'CASE001',
     courtDescription: 'Court 1',
     sentenceSequence: 1,
-    offences: [
-      { offenceEndDate: '2021-02-03' },
-      { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-      { offenceStartDate: '2021-03-06' },
-      {},
-      {
-        offenceDescription: 'Rape of a minor',
-        offenceStartDate: '2021-01-07',
-        offenceEndDate: '2021-01-07',
-        isPcscSdsPlus: true,
-      },
-    ],
+    offence: { offenceEndDate: '2021-02-03' },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: true,
-  } as AnalyzedSentenceAndOffences,
+  } as AnalyzedSentenceAndOffence,
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    caseReference: 'CASE001',
+    courtDescription: 'Court 1',
+    sentenceSequence: 1,
+    offence: { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+    sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: true,
+  } as AnalyzedSentenceAndOffence,
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    caseReference: 'CASE001',
+    courtDescription: 'Court 1',
+    sentenceSequence: 1,
+    offence: { offenceStartDate: '2021-03-06' },
+    sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: true,
+  } as AnalyzedSentenceAndOffence,
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    caseReference: 'CASE001',
+    courtDescription: 'Court 1',
+    sentenceSequence: 1,
+    offence: {
+      offenceDescription: 'Rape of a minor',
+      offenceStartDate: '2021-01-07',
+      offenceEndDate: '2021-01-07',
+      isPcscSdsPlus: true,
+    },
+    sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: true,
+  } as AnalyzedSentenceAndOffence,
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    caseReference: 'CASE001',
+    courtDescription: 'Court 1',
+    sentenceSequence: 1,
+    offence: {},
+    sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: true,
+  } as AnalyzedSentenceAndOffence,
   {
     terms: [
       {
@@ -126,10 +184,10 @@ const stubbedSentencesAndOffences = [
     sentenceSequence: 2,
     consecutiveToSequence: 1,
     sentenceTypeDescription: 'SDS Standard Sentence',
-    offences: [{ offenceEndDate: '2021-02-03' }],
+    offence: { offenceEndDate: '2021-02-03' },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffences,
+  } as AnalyzedSentenceAndOffence,
   {
     sentenceSequence: 3,
     lineSequence: 3,
@@ -148,23 +206,42 @@ const stubbedSentencesAndOffences = [
         days: 0,
       },
     ],
-    offences: [
-      {
-        offenderChargeId: 1,
-        offenceStartDate: '2020-01-01',
-        offenceCode: 'RL05016',
-        offenceDescription: 'Access / exit by unofficial route - railway bye-law',
-      },
-      {
-        offenderChargeId: 2,
-        offenceStartDate: '2020-01-01',
-        offenceCode: 'RL05017',
-        offenceDescription: 'Access / exit by unofficial route - railway bye-law',
-      },
-    ],
+    offence: {
+      offenderChargeId: 1,
+      offenceStartDate: '2020-01-01',
+      offenceCode: 'RL05016',
+      offenceDescription: 'Access / exit by unofficial route - railway bye-law',
+    },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffences,
+  } as AnalyzedSentenceAndOffence,
+  {
+    sentenceSequence: 3,
+    lineSequence: 3,
+    caseSequence: 3,
+    courtDescription: 'Preston Crown Court',
+    sentenceStatus: 'A',
+    sentenceCategory: '2020',
+    sentenceCalculationType: '14FTR_ORA',
+    sentenceTypeDescription: 'ORA 14 Day Fixed Term Recall',
+    sentenceDate: '2021-09-03',
+    terms: [
+      {
+        years: 0,
+        months: 2,
+        weeks: 0,
+        days: 0,
+      },
+    ],
+    offence: {
+      offenderChargeId: 2,
+      offenceStartDate: '2020-01-01',
+      offenceCode: 'RL05017',
+      offenceDescription: 'Access / exit by unofficial route - railway bye-law',
+    },
+    sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: false,
+  } as AnalyzedSentenceAndOffence,
   {
     sentenceSequence: 4,
     lineSequence: 4,
@@ -205,18 +282,16 @@ const stubbedSentencesAndOffences = [
         code: 'LIC',
       },
     ],
-    offences: [
-      {
-        offenderChargeId: 3933291,
-        offenceStartDate: '2022-08-07',
-        offenceCode: 'TH68013A',
-        offenceDescription: 'Attempt theft of motor vehicle',
-        indicators: ['D', '50', '51'],
-      },
-    ],
+    offence: {
+      offenderChargeId: 3933291,
+      offenceStartDate: '2022-08-07',
+      offenceCode: 'TH68013A',
+      offenceDescription: 'Attempt theft of motor vehicle',
+      indicators: ['D', '50', '51'],
+    },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffences,
+  } as AnalyzedSentenceAndOffence,
   {
     bookingId: 1203025,
     sentenceSequence: 4,
@@ -229,19 +304,17 @@ const stubbedSentencesAndOffences = [
     sentenceTypeDescription: 'Imprisonment in Default of Fine',
     sentenceDate: '2022-10-01',
     terms: [{ years: 0, months: 0, weeks: 0, days: 90, code: 'IMP' }],
-    offences: [
-      {
-        offenderChargeId: 3933385,
-        offenceStartDate: '2022-01-01',
-        offenceCode: 'WC81161',
-        offenceDescription: 'Keep / confine bird in small cage / receptacle',
-        indicators: ['99'],
-      },
-    ],
+    offence: {
+      offenderChargeId: 3933385,
+      offenceStartDate: '2022-01-01',
+      offenceCode: 'WC81161',
+      offenceDescription: 'Keep / confine bird in small cage / receptacle',
+      indicators: ['99'],
+    },
     fineAmount: 3000,
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffences,
+  } as AnalyzedSentenceAndOffence,
   {
     bookingId: 1203780,
     sentenceSequence: 5,
@@ -257,18 +330,16 @@ const stubbedSentencesAndOffences = [
       { years: 0, months: 40, weeks: 0, days: 0, code: 'IMP' },
       { years: 0, months: 32, weeks: 0, days: 0, code: 'LIC' },
     ],
-    offences: [
-      {
-        offenderChargeId: 3933639,
-        offenceStartDate: '2018-04-01',
-        offenceCode: 'FA06003B',
-        offenceDescription: 'Aid and abet fraud by abuse of position',
-        indicators: [],
-      },
-    ],
+    offence: {
+      offenderChargeId: 3933639,
+      offenceStartDate: '2018-04-01',
+      offenceCode: 'FA06003B',
+      offenceDescription: 'Aid and abet fraud by abuse of position',
+      indicators: [],
+    },
     sentenceAndOffenceAnalysis: 'SAME',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffences,
+  } as AnalyzedSentenceAndOffence,
 ]
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
@@ -627,18 +698,16 @@ describe('Check information routes tests', () => {
           { years: 0, months: 40, weeks: 0, days: 0, code: 'IMP' },
           { years: 0, months: 32, weeks: 0, days: 0, code: 'LIC' },
         ],
-        offences: [
-          {
-            offenderChargeId: 3933639,
-            offenceStartDate: '2018-04-01',
-            offenceCode: 'FA06003B',
-            offenceDescription: 'Aid and abet fraud by abuse of position',
-            indicators: [],
-          },
-        ],
+        offence: {
+          offenderChargeId: 3933639,
+          offenceStartDate: '2018-04-01',
+          offenceCode: 'FA06003B',
+          offenceDescription: 'Aid and abet fraud by abuse of position',
+          indicators: [],
+        },
         sentenceAndOffenceAnalysis: 'SAME',
         isSDSPlus: false,
-      } as AnalyzedSentenceAndOffences,
+      } as AnalyzedSentenceAndOffence,
     ]
 
     const model = new SentenceAndOffenceViewModel(
@@ -753,18 +822,16 @@ describe('Check information routes tests', () => {
           { years: 0, months: 40, weeks: 0, days: 0, code: 'IMP' },
           { years: 0, months: 32, weeks: 0, days: 0, code: 'LIC' },
         ],
-        offences: [
-          {
-            offenderChargeId: 3933639,
-            offenceStartDate: '2018-04-01',
-            offenceCode: 'FA06003B',
-            offenceDescription: 'Aid and abet fraud by abuse of position',
-            indicators: [],
-          },
-        ],
+        offence: {
+          offenderChargeId: 3933639,
+          offenceStartDate: '2018-04-01',
+          offenceCode: 'FA06003B',
+          offenceDescription: 'Aid and abet fraud by abuse of position',
+          indicators: [],
+        },
         sentenceAndOffenceAnalysis: 'SAME',
         isSDSPlus: false,
-      } as AnalyzedSentenceAndOffences,
+      } as AnalyzedSentenceAndOffence,
     ]
 
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)

@@ -1,5 +1,5 @@
 import SentenceRowViewModel from './SentenceRowViewModel'
-import { AnalyzedSentenceAndOffences } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { AnalyzedSentenceAndOffence } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class CourtCaseTableViewModel {
   public sentences: SentenceRowViewModel[]
@@ -10,7 +10,7 @@ export default class CourtCaseTableViewModel {
 
   public courtDescription: string
 
-  constructor(sentencesAndOffences: AnalyzedSentenceAndOffences[]) {
+  constructor(sentencesAndOffences: AnalyzedSentenceAndOffence[]) {
     this.caseSequence = sentencesAndOffences[0].caseSequence
     this.caseReference = sentencesAndOffences[0].caseReference
     this.courtDescription = sentencesAndOffences[0].courtDescription

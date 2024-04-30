@@ -458,7 +458,7 @@ export default {
             caseReference: 'ABC123',
             sentenceSequence: 1,
             sentenceStatus: 'A',
-            offences: [{ offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' }],
+            offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
           },
           {
             terms: [
@@ -474,7 +474,7 @@ export default {
             consecutiveToSequence: 1,
             sentenceStatus: 'A',
             sentenceTypeDescription: 'SDS Standard Sentence',
-            offences: [{ offenceEndDate: '2021-02-05', offenceDescription: 'Doing a crime' }],
+            offence: { offenceEndDate: '2021-02-05', offenceDescription: 'Doing a crime' },
           },
         ],
       },
@@ -643,14 +643,12 @@ export default {
             caseReference: 'ABC123',
             sentenceSequence: 1,
             sentenceStatus: 'A',
-            offences: [
-              {
-                offenceEndDate: '2021-02-03',
-                offenceCode: 'abc',
-                offenderChargeId: 111,
-                offenceDescription: 'Doing a crime',
-              },
-            ],
+            offence: {
+              offenceEndDate: '2021-02-03',
+              offenceCode: 'abc',
+              offenderChargeId: 111,
+              offenceDescription: 'Doing a crime',
+            },
           },
           {
             terms: [
@@ -666,14 +664,12 @@ export default {
             consecutiveToSequence: 1,
             sentenceStatus: 'A',
             sentenceTypeDescription: 'SDS Standard Sentence',
-            offences: [
-              {
-                offenceEndDate: '2021-02-05',
-                offenceCode: 'def',
-                offenderChargeId: 222,
-                offenceDescription: 'Doing another crime',
-              },
-            ],
+            offence: {
+              offenceEndDate: '2021-02-05',
+              offenceCode: 'def',
+              offenderChargeId: 222,
+              offenceDescription: 'Doing another crime',
+            },
           },
           {
             terms: [
@@ -689,7 +685,7 @@ export default {
             consecutiveToSequence: 1,
             sentenceStatus: 'I',
             sentenceTypeDescription: 'SDS Standard Sentence',
-            offences: [{ offenceEndDate: '2021-02-05', offenceDescription: 'Doing a crime' }],
+            offence: { offenceEndDate: '2021-02-05', offenceDescription: 'Doing a crime' },
           },
         ],
       },
@@ -887,19 +883,18 @@ export default {
         caseReference: 'ABC123',
         sentenceSequence: 1,
         sentenceStatus: 'A',
-        offences: [
-          {
-            offenderChargeId: 1,
-            offenceEndDate: '2021-02-03',
-            offenceCode: '123',
-            offenceDescription: 'Doing a crime',
-            indicators: [],
-            isPcscSds: false,
-            isPcscSdsPlus: false,
-            isPcscSec250: false,
-            isScheduleFifteenMaximumLife: false,
-          },
-        ],
+        offence: {
+          offenderChargeId: 1,
+          offenceEndDate: '2021-02-03',
+          offenceCode: '123',
+          offenceDescription: 'Doing a crime',
+          indicators: [],
+          isPcscSds: false,
+          isPcscSdsPlus: false,
+          isPcscSec250: false,
+          isScheduleFifteenMaximumLife: false,
+        },
+        isSDSPlus: false,
       },
       {
         bookingId: 1,
@@ -922,19 +917,18 @@ export default {
         consecutiveToSequence: 1,
         sentenceStatus: 'A',
         sentenceTypeDescription: 'SDS Standard Sentence',
-        offences: [
-          {
-            offenderChargeId: 2,
-            offenceEndDate: '2021-02-05',
-            offenceDescription: 'Doing a crime',
-            offenceCode: '123',
-            indicators: [],
-            isPcscSds: false,
-            isPcscSdsPlus: false,
-            isPcscSec250: false,
-            isScheduleFifteenMaximumLife: false,
-          },
-        ],
+        offence: {
+          offenderChargeId: 2,
+          offenceEndDate: '2021-02-05',
+          offenceDescription: 'Doing a crime',
+          offenceCode: '123',
+          indicators: [],
+          isPcscSds: false,
+          isPcscSdsPlus: false,
+          isPcscSec250: false,
+          isScheduleFifteenMaximumLife: false,
+        },
+        isSDSPlus: false,
       },
     ]
     const detailedResults: DetailedCalculationResults = {

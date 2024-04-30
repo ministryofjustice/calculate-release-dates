@@ -4,7 +4,7 @@
     <div data-qa="{{ params.case.caseSequence }}-sentence-cards">
         {% for sentenceModel in params.case.sentences %}
             {% set sentence = sentenceModel.sentencesAndOffence %}
-            {% for offence in sentence.offences %}
+            {% set offence = sentence.offence %}
 
                 <div class="govuk-!-margin-bottom-6 sentence-card flex">
                     <div class="govuk-grid-column-full govuk-!-margin-top-4">
@@ -93,7 +93,6 @@
                             {% endif %}
                         </div>
                     </div>
-                {% endfor %}
             {% endfor %}
         </div>
     {% endmacro %}

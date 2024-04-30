@@ -1,9 +1,9 @@
 import {
-  AnalyzedSentenceAndOffences,
+  AnalyzedSentenceAndOffence,
   CalculationSentenceUserInput,
   CalculationUserInputs,
   OffenderOffence,
-  SentenceAndOffencesWithReleaseArrangements,
+  SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
@@ -33,7 +33,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
-    sentencesAndOffences: SentenceAndOffencesWithReleaseArrangements[],
+    sentencesAndOffences: SentenceAndOffenceWithReleaseArrangements[],
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
@@ -49,14 +49,12 @@ export default class ViewRouteSentenceAndOffenceViewModel {
       sentencesAndOffences,
       (sent: PrisonApiOffenderSentenceAndOffences) => sent.sentenceSequence,
     )
-    const reducer = (previousValue: number, currentValue: PrisonApiOffenderSentenceAndOffences) =>
-      previousValue + currentValue.offences.length
-    this.offenceCount = sentencesAndOffences.reduce(reducer, 0)
+    this.offenceCount = sentencesAndOffences.length
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
     this.sentencesAndOffences = sentencesAndOffences
   }
 
-  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffences, offence: OffenderOffence): boolean {
+  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffence, offence: OffenderOffence): boolean {
     const oldUserInputForSDSPlus =
       this.userInputs &&
       this.userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
@@ -79,21 +77,24 @@ export default class ViewRouteSentenceAndOffenceViewModel {
   }
 
   public hasMultipleOffencesToASentence(): boolean {
-    return !this.sentencesAndOffences.every(sentence => sentence.offences.length === 1)
+    return this.getMultipleOffencesToASentence().length > 0
   }
 
-  public getMultipleOffencesToASentence(): object {
-    return Array.from(
-      groupBy(this.sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values(),
-    )
-      .filter((sentences: PrisonApiOffenderSentenceAndOffences[]) =>
-        sentences.some((sent: PrisonApiOffenderSentenceAndOffences) => sent.offences.length > 1),
-      )
-      .flatMap(sentences =>
-        sentences.map((sentence: PrisonApiOffenderSentenceAndOffences) => {
-          return sentence.offences.length > 1 ? [sentence.caseSequence, sentence.lineSequence] : undefined
-        }),
-      )
-      .filter((it: []) => it !== undefined)
+  public getMultipleOffencesToASentence(): number[][] {
+    const array = this.sentencesAndOffences.map(sentence => {
+      return { caseSequence: sentence.caseSequence, lineSequence: sentence.lineSequence }
+    })
+    const elementTracker = {}
+    const duplicates = {}
+
+    array.forEach(item => {
+      const key = `${item.caseSequence}-${item.lineSequence}`
+      if (elementTracker[key]) {
+        duplicates[key] = item
+      } else {
+        elementTracker[key] = true
+      }
+    })
+    return Object.keys(duplicates).map(key => [duplicates[key].caseSequence, duplicates[key].lineSequence])
   }
 }
