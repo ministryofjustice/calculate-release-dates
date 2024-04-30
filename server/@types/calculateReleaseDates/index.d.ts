@@ -764,10 +764,6 @@ export interface components {
       offenceCode: string
       offenceDescription: string
       indicators: string[]
-      isPcscSds: boolean
-      isPcscSec250: boolean
-      isPcscSdsPlus: boolean
-      isScheduleFifteenMaximumLife: boolean
     }
     SentenceTerms: {
       /** Format: int32 */
@@ -1023,27 +1019,27 @@ export interface components {
       unadjustedDate: string
     }
     SentenceAndOffence: {
-      caseReference?: string
-      courtDescription?: string
-      /** Format: date */
-      sentenceDate: string
       /** Format: int32 */
       sentenceSequence: number
-      sentenceStatus: string
-      /** Format: int32 */
-      caseSequence: number
-      /** Format: int32 */
-      lineSequence: number
-      sentenceCategory: string
       /** Format: int64 */
       bookingId: number
       fineAmount?: number
       offence: components['schemas']['OffenderOffence']
-      terms: components['schemas']['SentenceTerms'][]
       sentenceCalculationType: string
+      /** Format: date */
+      sentenceDate: string
+      sentenceStatus: string
+      terms: components['schemas']['SentenceTerms'][]
       /** Format: int32 */
       consecutiveToSequence?: number
+      /** Format: int32 */
+      lineSequence: number
+      /** Format: int32 */
+      caseSequence: number
+      sentenceCategory: string
       sentenceTypeDescription: string
+      courtDescription?: string
+      caseReference?: string
     }
     DetailedDate: {
       /** @enum {string} */
