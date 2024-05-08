@@ -414,6 +414,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain(`Monday, 03 February 2020`)
         expect(res.text).toContain(`ERSED`)
         expect(res.text).toContain('Early removal scheme eligibility date')
+        expect(res.text).not.toContain('From 16 January, the policy for calculating ERSED has changed')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })

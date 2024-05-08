@@ -73,11 +73,4 @@ export default class CalculationSummaryViewModel {
     )
     return ersedBeforeCrd && crdBeforeMtd
   }
-
-  public displayErs2024Banner() {
-    if (this.detailedCalculationResults.dates?.ERSED) {
-      return true
-    }
-    return false
-  }
 }
