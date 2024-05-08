@@ -1,13 +1,13 @@
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 {% if model.ersedNotApplicableDueToDtoLaterThanCrd() %}
-    {% set ersedNotApplicalableHtml %}
+    {% set ersedNotApplicableHtml %}
         <h2 class="govuk-heading-m">Important</h2>
         <p class="govuk-body">Early removal cannot happen as release from the Detention Training Order (DTO) is later than the Conditional Release Date (CRD).</p>
     {% endset %}
     {{ mojBanner({
         type: ' ',
-        html: ersedNotApplicalableHtml
+        html: ersedNotApplicableHtml
     }) }}
 
 {% endif %}
