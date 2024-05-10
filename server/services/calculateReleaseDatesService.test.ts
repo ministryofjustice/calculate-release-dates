@@ -708,5 +708,73 @@ describe('Calculate release dates service tests', () => {
         ],
       })
     })
+    it('can get with breakdown and adjustments when there are adjustments that we do not display', async () => {
+      const detailedResultsWithABreakdown: DetailedCalculationResults = {
+        ...detailedCalcResultsWithNoBreakdown,
+        calculationBreakdown: {
+          concurrentSentences: [],
+          consecutiveSentence: {
+            sentencedAt: '2015-02-22',
+            sentenceLength: '10 months',
+            sentenceLengthDays: 303,
+            dates: {
+              SED: { unadjusted: '2015-12-21', adjusted: '2015-12-21', daysFromSentenceStart: 303, adjustedByDays: 0 },
+              CRD: { unadjusted: '2015-07-23', adjusted: '2015-07-23', daysFromSentenceStart: 152, adjustedByDays: 0 },
+            },
+            sentenceParts: [
+              {
+                lineSequence: 1,
+                caseSequence: 1,
+                sentenceLength: '3 months',
+                sentenceLengthDays: 89,
+                consecutiveToLineSequence: null,
+                consecutiveToCaseSequence: null,
+              },
+              {
+                lineSequence: 2,
+                caseSequence: 1,
+                sentenceLength: '7 months',
+                sentenceLengthDays: 212,
+                consecutiveToLineSequence: 1,
+                consecutiveToCaseSequence: 1,
+              },
+            ],
+          },
+          breakdownByReleaseDateType: {
+            CRD: {
+              rules: [],
+              rulesWithExtraAdjustments: {},
+              adjustedDays: 0,
+              releaseDate: '2015-07-23',
+              unadjustedDate: '2015-07-23',
+            },
+            HDCED: {
+              // this rule isn't displayed so there should be no adjustment row for it
+              rules: ['HDCED_ADJUSTED_TO_CONCURRENT_CONDITIONAL_RELEASE'],
+              rulesWithExtraAdjustments: {},
+              adjustedDays: -13,
+              releaseDate: '2024-05-05',
+              unadjustedDate: '2024-04-22',
+            },
+          },
+          otherDates: {},
+        },
+      }
+      fakeApi.get(`/calculation/detailed-results/${calculationRequestId}`).reply(200, detailedResultsWithABreakdown)
+      const result = await calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
+        calculationRequestId,
+        null,
+      )
+      return expect(result).toStrictEqual({
+        ...detailedResultsWithABreakdown,
+        releaseDatesWithAdjustments: [
+          {
+            hintText: '23 July 2015 plus 0 days',
+            releaseDate: '2015-07-23',
+            releaseDateType: 'CRD',
+          },
+        ],
+      })
+    })
   })
 })
