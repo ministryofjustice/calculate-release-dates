@@ -191,7 +191,7 @@ export default class CalculateReleaseDatesService {
         )
       }
     }
-    return releaseDatesWithAdjustments
+    return releaseDatesWithAdjustments.filter(item => item)
   }
 
   private static standardAdjustmentRow(
