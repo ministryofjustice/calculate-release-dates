@@ -6,4 +6,120 @@
   .no-print {
     display: none;
   }
+
+  @page {
+
+    size: A4 portrait;
+    margin-left: 1cm;
+    margin-right: 1cm;
+    margin-bottom: 1.5cm;
+    margin-top: 1.5cm;
+
+
+    h1, h2, h3, h4, h5 {
+      page-break-after: avoid;
+    }
+
+    table, figure, dl {
+      page-break-inside: avoid;
+    }
+
+    .dont-break {
+      page-break-inside: avoid;
+    }
+
+  }
+
+  footer {
+    display: none;
+  }
+
+  .offender-title {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .establishment-title  {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .govuk-grid-row {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+
+  .govuk-grid-column-full {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+
+  .print-width-container {
+    max-width: 21cm;
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+  }
+  .print-button {
+    display: none;
+  }
+  .notification-slip {
+    width: 21cm;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-top-style: none;
+    border-right-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+    break-inside: avoid;
+  }
+
+  .govuk-body {
+    font-size: 14pt;
+    line-height: 1.3;
+  }
+
+  .govuk-table {
+    font-size: 14pt;
+    line-height: 1;
+  }
+
+  .govuk-summary-list {
+    font-size: 14pt;
+    line-height: 1;
+  }
+
+  .notification-slip .notification-slip-establishment {
+    text-align: right;
+    font-weight: normal;
+    margin-bottom: 0px;
+  }
+
+  .govuk-heading-xl {
+    margin-bottom: 30px;
+  }
+
+  .govuk-heading-l {
+    margin-bottom: 30px;
+  }
+
+  .notification-slip .govuk-summary-list__key {
+    width: 250px;
+  }
 }

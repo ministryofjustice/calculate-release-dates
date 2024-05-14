@@ -1,0 +1,39 @@
+{% from "./sentenceLength.njk" import sentenceLength %}
+{% macro sentenceTable(model) %}
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Sentences</h2>
+    <table class="govuk-table govuk-!-margin-bottom-4">
+      <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden" data-qa="sentence-title">Sentence details</caption>
+      <thead class="govuk-table__head ">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header" data-qa="sentence-col-title">Sentence</th>
+          <th scope="col" class="govuk-table__header" data-qa="sentence-col-date">Sentence start date</th>
+          <th scope="col" class="govuk-table__header" data-qa="sentence-col-length">Sentence length</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body ">
+          {% for case in model.cases %}
+              {% for sentenceModel in case.sentences %}
+              {% set sentence = sentenceModel.sentencesAndOffence %}
+              {% set offence = sentence.offence %}
+                  <tr class="govuk-table__row">
+                      <td class="govuk-table__cell" data-qa="sentence-{{ case.caseSequence }}-{{ sentence.lineSequence }}-title">Court case {{ case.caseSequence }}, Count {{ sentence.lineSequence }}</td>
+                      <td class="govuk-table__cell" data-qa="sentence-{{ case.caseSequence }}-{{ sentence.lineSequence }}-date">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
+                      <td class="govuk-table__cell" data-qa="sentence-{{ case.caseSequence }}-{{ sentence.lineSequence }}-length">
+                      {% if sentenceModel.hasCustodialAndLicenseTerms() %}
+                          {{ sentenceLength(sentenceModel.imprisonmentTerm, 'Custodial term') }}
+                          {{ sentenceLength(sentenceModel.licenceTerm, 'Licence period') }}
+                      {% else %}
+                          {{ sentenceLength(sentence.terms, 'Sentence length') }}
+                      {% endif %}
+                      {% if sentence.consecutiveToSequence %}
+                        {% set consecutiveToSequence = model.sentenceSequenceToSentence
+                            .get(sentence.consecutiveToSequence) %}
+                                consecutive to  court case {{ consecutiveToSequence.caseSequence }} count {{ consecutiveToSequence.lineSequence }}
+                      {% endif %}
+                      </td>
+                  </tr>
+              {% endfor %}
+          {% endfor %}
+      </tbody>
+    </table>
+{% endmacro %}
