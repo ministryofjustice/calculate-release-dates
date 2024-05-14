@@ -19,6 +19,7 @@ import {
   LatestCalculation,
   NomisCalculationSummary,
   ReleaseDateCalculationBreakdown,
+  ReleaseDatesAndCalculationContext,
   SubmitCalculationRequest,
   ValidationMessage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -411,14 +412,22 @@ export default class CalculateReleaseDatesService {
       .getLatestCalculationForPrisoner(prisonerId)
       .then(latestCalc => {
         let action: Action
-        if (latestCalc.calculationRequestId)
+        const latestCalcCard = this.latestCalculationComponentConfig(latestCalc)
+        if (latestCalc.calculationRequestId) {
           action = {
             title: 'View details',
             href: `/view/${prisonerId}/sentences-and-offences/${latestCalc.calculationRequestId}`,
             dataQa: 'latest-calc-card-action',
           }
+          if (latestCalc.source === 'CRDS') {
+            latestCalcCard.printNotificationSlip = {
+              href: `/view/${prisonerId}/calculation-summary/${latestCalc.calculationRequestId}/printNotificationSlip?fromPage=view`,
+              dataQa: 'release-notification-hook',
+            }
+          }
+        }
         return {
-          latestCalcCard: this.latestCalculationComponentConfig(latestCalc),
+          latestCalcCard,
           latestCalcCardAction: action,
         }
       })
@@ -455,5 +464,9 @@ export default class CalculateReleaseDatesService {
 
   async getNomisCalculationSummary(offenderSentCalcId: number, token: string): Promise<NomisCalculationSummary> {
     return new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
+  }
+
+  async getReleaseDatesForACalcReqId(calcRequestId: number, token: string): Promise<ReleaseDatesAndCalculationContext> {
+    return new CalculateReleaseDatesApiClient(token).getReleaseDatesForACalcReqId(calcRequestId)
   }
 }
