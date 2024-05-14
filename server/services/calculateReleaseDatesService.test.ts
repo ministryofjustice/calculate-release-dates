@@ -532,6 +532,7 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
           {
             bookingId: 1,
@@ -561,6 +562,7 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
           {
             bookingId: 1,
@@ -589,6 +591,7 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
           {
             bookingId: 1,
@@ -618,6 +621,7 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
           {
             bookingId: 1,
@@ -647,6 +651,7 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
         ],
       },

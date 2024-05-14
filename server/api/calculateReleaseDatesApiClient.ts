@@ -1,7 +1,7 @@
 import config, { ApiConfig } from '../config'
 import RestClient from '../data/restClient'
 import {
-  AnalyzedSentenceAndOffence,
+  AnalysedSentenceAndOffence,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
@@ -270,10 +270,10 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<ComparisonPersonOverview>
   }
 
-  getAnalyzedSentencesAndOffences(bookingId: number): Promise<AnalyzedSentenceAndOffence[]> {
+  getAnalyzedSentencesAndOffences(bookingId: number): Promise<AnalysedSentenceAndOffence[]> {
     return this.restClient.get({
       path: `/sentence-and-offence-information/${bookingId}`,
-    }) as Promise<AnalyzedSentenceAndOffence[]>
+    }) as Promise<AnalysedSentenceAndOffence[]>
   }
 
   getAnalyzedAdjustments(bookingId: number): Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments> {

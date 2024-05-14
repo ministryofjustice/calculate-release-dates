@@ -1,5 +1,5 @@
 import {
-  AnalyzedSentenceAndOffence,
+  AnalysedSentenceAndOffence,
   CalculationUserInputs,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
@@ -18,20 +18,20 @@ export default class SentenceAndOffenceViewModel {
 
   public cases: CourtCaseTableViewModel[]
 
-  public sentenceSequenceToSentence: Map<number, AnalyzedSentenceAndOffence>
+  public sentenceSequenceToSentence: Map<number, AnalysedSentenceAndOffence>
 
   public offenceCount: number
 
   public returnToCustodyDate?: string
 
-  public sentencesAndOffences: AnalyzedSentenceAndOffence[]
+  public sentencesAndOffences: AnalysedSentenceAndOffence[]
 
   public displaySDSPlusBanner: boolean
 
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
-    sentencesAndOffences: AnalyzedSentenceAndOffence[],
+    sentencesAndOffences: AnalysedSentenceAndOffence[],
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
@@ -39,13 +39,13 @@ export default class SentenceAndOffenceViewModel {
   ) {
     this.adjustments = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
-      groupBy(sentencesAndOffences, (sent: AnalyzedSentenceAndOffence) => sent.caseSequence).values(),
+      groupBy(sentencesAndOffences, (sent: AnalysedSentenceAndOffence) => sent.caseSequence).values(),
     )
       .map(sentences => new CourtCaseTableViewModel(sentences))
       .sort((a, b) => a.caseSequence - b.caseSequence)
     this.sentenceSequenceToSentence = indexBy(
       sentencesAndOffences,
-      (sent: AnalyzedSentenceAndOffence) => sent.sentenceSequence,
+      (sent: AnalysedSentenceAndOffence) => sent.sentenceSequence,
     )
     this.offenceCount = sentencesAndOffences.length
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
@@ -53,7 +53,7 @@ export default class SentenceAndOffenceViewModel {
     this.displaySDSPlusBanner = sentencesAndOffences.some(sentence => sentence.isSDSPlus === true)
   }
 
-  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffence): boolean {
+  public rowIsSdsPlus(sentence: AnalysedSentenceAndOffence): boolean {
     return sentence.isSDSPlus === true
   }
 
