@@ -18,6 +18,7 @@ import {
   CalculationSentenceUserInput,
   CalculationUserInputs,
   GenuineOverrideRequest,
+  ReleaseDatesAndCalculationContext,
   SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
@@ -102,6 +103,7 @@ const stubbedSentencesAndOffences = [
         years: 3,
       },
     ],
+    sentenceDate: '2004-02-03',
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
     caseSequence: 1,
@@ -187,7 +189,7 @@ const stubbedAdjustments = {
   sentenceAdjustments: [
     {
       sentenceSequence: 1,
-      type: 'UNUSED_REMAND',
+      type: 'REMAND',
       numberOfDays: 2,
       fromDate: '2021-02-01',
       toDate: '2021-02-02',
@@ -196,7 +198,7 @@ const stubbedAdjustments = {
   ],
   bookingAdjustments: [
     {
-      type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
+      type: 'UNLAWFULLY_AT_LARGE',
       numberOfDays: 2,
       fromDate: '2021-03-07',
       toDate: '2021-03-08',
@@ -211,6 +213,7 @@ const stubbedCalculationResults = {
     SED: '2021-02-03',
     HDCED: '2021-10-03',
   },
+  calculationDate: '2020-06-01',
   calculationRequestId: 123456,
   effectiveSentenceLength: {},
   prisonerId: 'A1234AA',
@@ -219,6 +222,7 @@ const stubbedCalculationResults = {
   calculationStatus: 'CONFIRMED',
   calculationType: 'CALCULATED',
   approvedDates: {},
+  calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false },
 } as BookingCalculation
 
 const stubbedCalculationBreakdown: CalculationBreakdown = {
@@ -272,6 +276,44 @@ const stubbedUserInput = {
     } as CalculationSentenceUserInput,
   ],
 } as CalculationUserInputs
+
+const stubbedReleaseDatesUsingCalcReqId: ReleaseDatesAndCalculationContext = {
+  calculation: {
+    calculationRequestId: 51245,
+    bookingId: 1201571,
+    prisonerId: 'A8031DY',
+    calculationStatus: 'CONFIRMED',
+    calculationReference: 'fe1909af-c780-4b61-9ca3-a82678de5dca',
+    calculationReason: {
+      id: 8,
+      isOther: false,
+      displayName: 'A calculation reason',
+    },
+    otherReasonDescription: '',
+    calculationDate: '2020-06-01',
+    calculationType: 'CALCULATED',
+  },
+  dates: [
+    {
+      type: 'SED',
+      description: 'Sentence expiry date',
+      date: '2021-02-03',
+      hints: [],
+    },
+    {
+      type: 'CRD',
+      description: 'Conditional release date',
+      date: '2021-02-03',
+      hints: [],
+    },
+    {
+      type: 'HDCED',
+      description: 'Home detention curfew eligibility date',
+      date: '2021-10-03',
+      hints: [],
+    },
+  ],
+}
 
 const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustments = {
   context: {
@@ -626,9 +668,9 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('HDCED with adjustments')
           expect(res.text).toContain('13 May 2029')
           expect(res.text).toContain('14 May 2029 minus 1 day')
-          expect(res.text).not.toContain('Reason')
-          expect(res.text).not.toContain('A calculation reason')
-          expect(res.text).not.toContain('13 January 2024')
+          expect(res.text).toContain('Reason')
+          expect(res.text).toContain('A calculation reason')
+          expect(res.text).toContain('01 June 2020')
           expectMiniProfile(res.text, expectedMiniProfile)
         })
     })
@@ -923,6 +965,254 @@ describe('View journey routes tests', () => {
           expect(res.text).not.toContain('Important')
           expect(res.text).not.toContain(
             'This service cannot calculate the ERSED if the person is serving a recall. If they are eligible for early removal, enter the ERSED in NOMIS.',
+          )
+        })
+    })
+  })
+  it('GET /view/:nomsId/calculation-summary/:calculationRequestId/print should return a printable page about the calculation requested', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+      stubbedResultsWithBreakdownAndAdjustments,
+    )
+    return request(app)
+      .get('/view/A1234AB/calculation-summary/123456/print')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Anon Nobody')
+        expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
+        expect(res.text).toMatch(/Dates for/)
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+  describe('Print Notification slip', () => {
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip?fromPage=view should generate page', () => {
+      const stubbedSentencesAndOffencesLocal = [
+        {
+          terms: [
+            {
+              years: 3,
+            },
+          ],
+          sentenceDate: '2004-02-03',
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          caseSequence: 1,
+          lineSequence: 1,
+          sentenceSequence: 1,
+          offence: { offenceEndDate: '2021-02-03' },
+          isSDSPlus: false,
+        } as SentenceAndOffenceWithReleaseArrangements,
+        {
+          terms: [
+            {
+              years: 2,
+            },
+          ],
+          sentenceDate: '2010-02-03',
+          caseSequence: 2,
+          lineSequence: 2,
+          sentenceSequence: 2,
+          consecutiveToSequence: 1,
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
+          isSDSPlus: false,
+        } as SentenceAndOffenceWithReleaseArrangements,
+      ]
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const backLink = $('[data-qa=back-link]').first()
+          const offenderSlipBtn = $('[data-qa=slip-offender-copy]').first()
+          const establishmentSlipBtn = $('[data-qa=slip-establishment-copy]').first()
+          const pageTitle = $('[data-qa=page-title]').first()
+          const prisonTitle = $('[data-qa=prison-name]').first()
+          const prisonerName = $('[data-qa=prisoner-name]').first()
+          const prisonerCell = $('[data-qa=prisoner-cell]').first()
+          const offenderNumber = $('[data-qa=offender-number]').first()
+          const calculationDate = $('[data-qa=calculation-date]').first()
+          const releaseDatesTitle = $('[data-qa=release-date-title]').first()
+          const crdTitle = $('[data-qa=CRD-title]').first()
+          const crdDate = $('[data-qa=CRD-date]').first()
+          const sedTitle = $('[data-qa=SED-title]').first()
+          const sedDate = $('[data-qa=SED-date]').first()
+          const hdcedTitle = $('[data-qa=HDCED-title]').first()
+          const hdcedDate = $('[data-qa=HDCED-date]').first()
+          const sentenceTitle = $('[data-qa=sentence-title]').first()
+          const sentenceColTitle = $('[data-qa=sentence-col-title]').first()
+          const sentenceColDate = $('[data-qa=sentence-col-date]').first()
+          const sentenceColLength = $('[data-qa=sentence-col-length]').first()
+          const sentence11Title = $('[data-qa=sentence-1-1-title]').first()
+          const sentence11Date = $('[data-qa=sentence-1-1-date]').first()
+          const sentence11Length = $('[data-qa=sentence-1-1-length]').first()
+          const sentence22Title = $('[data-qa=sentence-2-2-title]').first()
+          const sentence22Date = $('[data-qa=sentence-2-2-date]').first()
+          const sentence22Length = $('[data-qa=sentence-2-2-length]').first()
+          const adjustTitle = $('[data-qa=adjust-title]').first()
+          const adjustDesc = $('[data-qa=adjust-desc]').first()
+          const adjustColType = $('[data-qa=adjust-col-type]').first()
+          const adjustColFrom = $('[data-qa=adjust-col-from]').first()
+          const adjustColTo = $('[data-qa=adjust-col-to]').first()
+          const adjustColDays = $('[data-qa=adjust-col-days]').first()
+          const ulalName = $('[data-qa="Unlawfully at large-name"]').first()
+          const ulalFrom = $('[data-qa="Unlawfully at large-from"]').first()
+          const ulalTo = $('[data-qa="Unlawfully at large-to"]').first()
+          const ulalDays = $('[data-qa="Unlawfully at large-days"]').first()
+          const remandName = $('[data-qa=Remand-name]').first()
+          const remandFrom = $('[data-qa=Remand-from]').first()
+          const remandTo = $('[data-qa=Remand-to]').first()
+          const remandDays = $('[data-qa=Remand-days]').first()
+          const appealCustody = $('[data-qa=appeal-custody]').first()
+          const appealBail = $('[data-qa=appeal-bail]').first()
+          const offenderSlipLink = $('[data-qa="slip-offender-copy"]').first()
+          const establishmentSlipLink = $('[data-qa="slip-establishment-copy"]').first()
+
+          expect(offenderSlipLink.attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view&pageType=offender',
+          )
+          expect(establishmentSlipLink.attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view&pageType=establishment',
+          )
+          expect(backLink.attr('href')).toStrictEqual('/?prisonId=A1234AA')
+          expect(offenderSlipBtn.text()).toContain('Print notification slip')
+          expect(establishmentSlipBtn.text()).toContain('Print establishment copy')
+          expect(pageTitle.text()).toContain('Release date notification slip')
+          expect(prisonTitle.text()).toContain('Foo Prison (HMP)')
+          expect(prisonerName.text()).toContain('Anon Nobody')
+          expect(prisonerCell.text()).toContain('D-2-003')
+          expect(offenderNumber.text()).toContain('A1234AA')
+          expect(releaseDatesTitle.text()).toContain('Release dates')
+          expect(calculationDate.text()).toStrictEqual('These release dates were calculated on 01 June 2020')
+          expect(crdTitle.text()).toContain('Conditional release date')
+          expect(crdDate.text()).toContain('03 February 2021')
+          expect(sedTitle.text()).toContain('Sentence expiry date')
+          expect(sedDate.text()).toContain('03 February 2021')
+          expect(hdcedTitle.text()).toContain('Home detention curfew eligibility date')
+          expect(hdcedDate.text()).toContain('03 October 2021')
+          expect(sentenceTitle.text()).toContain('Sentence details')
+          expect(sentenceColTitle.text()).toContain('Sentence')
+          expect(sentenceColDate.text()).toContain('Sentence start date')
+          expect(sentenceColLength.text()).toContain('Sentence length')
+          expect(sentence11Title.text()).toContain('Court case 1, Count 1')
+          expect(sentence11Date.text()).toContain('03 February 2004')
+          expect(sentence22Title.text()).toContain('Court case 2, Count 2')
+          expect(sentence22Date.text()).toContain('03 February 2010')
+          // expect(sentence11Length.text()).toContain('3 years')
+          // expect(sentence22Length.text()).toContain('3 years')
+          expect(adjustTitle.text()).toContain('Adjustments')
+          expect(adjustDesc.text()).toContain('This calculation includes the following adjustments to sentences.')
+          expect(adjustColType.text()).toContain('Adjustment type')
+          expect(adjustColFrom.text()).toContain('Date from')
+          expect(adjustColTo.text()).toContain('Date to')
+          expect(adjustColDays.text()).toContain('Days')
+          expect(ulalName.text()).toContain('Unlawfully at large')
+          expect(ulalFrom.text()).toContain('07 March 2021')
+          expect(ulalTo.text()).toContain('08 March 2021')
+          expect(ulalDays.text()).toContain('2 days added')
+          expect(remandName.text()).toContain('Remand')
+          expect(remandFrom.text()).toContain('01 February 2021')
+          expect(remandTo.text()).toContain('02 February 2021')
+          expect(remandDays.text()).toContain('2 days deducted')
+          expect(appealCustody.text()).toContain(
+            'Days spent in custody pending appeal to count (must be completed manually):',
+          )
+          expect(appealBail.text()).toContain(
+            'Days spent on bail pending appeal not to count (must be completed manually):',
+          )
+
+          console.log(res.text)
+        })
+    })
+
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip?fromPage=view&pageType=offender should have correct content for pageType Offender', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view&pageType=offender')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const pageTitleCaption = $('[data-qa="page-title-caption"]').first()
+          const offenderDisagreeText = $('[data-qa="offender-disagree-text"]').first()
+          const calculatedBy = $('[data-qa="calculated-by"]')
+          const checkedBy = $('[data-qa="checked-by"]')
+          const calcReasonTitle = $('[data-qa="calculation-reason-title"]')
+          const calcReason = $('[data-qa="calculation-reason"]')
+          const printInvoker = $('[data-qa="print-invoker"]').first()
+
+          expect(printInvoker.attr('src')).toStrictEqual('/assets/print.js')
+          expect(calculatedBy.length).toStrictEqual(0)
+          expect(calcReasonTitle.length).toStrictEqual(0)
+          expect(calcReason.length).toStrictEqual(0)
+          expect(checkedBy.length).toStrictEqual(0)
+          expect(pageTitleCaption.text()).toStrictEqual('[Offender copy]')
+          expect(offenderDisagreeText.text()).toStrictEqual(
+            'If you disagree with the above dates, please write down what you think the dates should be and hand to your wing office.',
+          )
+        })
+    })
+
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip?fromPage=view&pageType=establishment should have correct content for pageType Establishment', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view&pageType=establishment')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const pageTitleCaption = $('[data-qa="page-title-caption"]').first()
+          const offenderDisagreeText = $('[data-qa="offender-disagree-text"]')
+          const calculatedBy = $('[data-qa="calculated-by"]').first()
+          const checkedBy = $('[data-qa="checked-by"]').first()
+          const calcReasonTitle = $('[data-qa="calculation-reason-title"]').first()
+          const calcReason = $('[data-qa="calculation-reason"]').first()
+          const printInvoker = $('[data-qa="print-invoker"]').first()
+
+          expect(printInvoker.attr('src')).toStrictEqual('/assets/print.js')
+          expect(calculatedBy.text()).toStrictEqual('Calculated by:')
+          expect(calcReasonTitle.text()).toContain('Calculation reason')
+          expect(calcReason.text()).toContain('A calculation reason')
+          expect(checkedBy.text()).toStrictEqual('Checked by:')
+          expect(pageTitleCaption.text()).toStrictEqual('[Establishment copy]')
+          expect(offenderDisagreeText.length).toStrictEqual(0)
+        })
+    })
+
+    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should generate page', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
+      return request(app)
+        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const backLink = $('[data-qa=back-link]').first()
+          const offenderSlipLink = $('[data-qa="slip-offender-copy"]').first()
+          const establishmentSlipLink = $('[data-qa="slip-establishment-copy"]').first()
+
+          expect(backLink.attr('href')).toStrictEqual('/calculation/A1234AA/complete/123456')
+          expect(offenderSlipLink.attr('href')).toStrictEqual(
+            '/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation&pageType=offender',
+          )
+          expect(establishmentSlipLink.attr('href')).toStrictEqual(
+            '/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation&pageType=establishment',
           )
         })
     })

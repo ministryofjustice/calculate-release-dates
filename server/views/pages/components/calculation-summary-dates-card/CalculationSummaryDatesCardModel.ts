@@ -17,6 +17,29 @@ export interface CalculationSummaryDatesCardLine {
   hints: { html: string }[]
 }
 
+export const filteredListOfDates = [
+  'SLED',
+  'LED',
+  'SED',
+  'NPD',
+  'ARD',
+  'CRD',
+  'PED',
+  'PRRD',
+  'HDCED',
+  'ETD',
+  'MTD',
+  'LTD',
+  'TUSED',
+  'ERSED',
+  'ROTL',
+  'HDCAD',
+  'DPRRD',
+  'Tariff',
+  'TERSED',
+  'APD',
+]
+
 export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
   model: CalculationSummaryViewModel | NomisCalculationSummary,
   showNoDatesApply: boolean,
@@ -52,26 +75,9 @@ export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
     }
   }
 
-  pushLine('SLED')
-  pushLine('LED')
-  pushLine('SED')
-  pushLine('NPD')
-  pushLine('ARD')
-  pushLine('CRD')
-  pushLine('PED')
-  pushLine('PRRD')
-  pushLine('HDCED')
-  pushLine('ETD')
-  pushLine('MTD')
-  pushLine('LTD')
-  pushLine('TUSED')
-  pushLine('ERSED')
-  pushLine('ROTL')
-  pushLine('HDCAD')
-  pushLine('DPRRD')
-  pushLine('Tariff')
-  pushLine('TERSED')
-  pushLine('APD')
+  filteredListOfDates.forEach(date => {
+    pushLine(date)
+  })
 
   return {
     showNoDatesApply,
