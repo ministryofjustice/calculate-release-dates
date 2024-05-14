@@ -3,7 +3,7 @@ import {
   AnalyzedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiSentenceAdjustmentValues,
 } from '../@types/prisonApi/prisonClientTypes'
-import { AnalyzedSentenceAndOffence } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { AnalysedSentenceAndOffence } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 type AdjustmentViewModel = {
   aggregate: number
@@ -46,7 +46,7 @@ export default class AdjustmentsViewModel {
 
   constructor(
     adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
-    sentencesAndOffences: AnalyzedSentenceAndOffence[],
+    sentencesAndOffences: AnalysedSentenceAndOffence[],
   ) {
     this.additionalDaysAwarded = this.adjustmentViewModel(
       adjustments.bookingAdjustments.filter(a => a.type === 'ADDITIONAL_DAYS_AWARDED'),
@@ -84,7 +84,7 @@ export default class AdjustmentsViewModel {
 
   private adjustmentViewModel(
     adjustments: (PrisonApiBookingAdjustment | PrisonApiSentenceAdjustmentValues)[],
-    sentencesAndOffences: AnalyzedSentenceAndOffence[],
+    sentencesAndOffences: AnalysedSentenceAndOffence[],
   ): AdjustmentViewModel {
     // Filter any sentence adjustments linked to a sentence thats not present on the booking (inactive).
     const filteredAdjustments = adjustments

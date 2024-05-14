@@ -1,4 +1,4 @@
-import { AnalyzedSentenceAndOffence } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { AnalysedSentenceAndOffence } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 import AdjustmentsViewModel from './AdjustmentsViewModel'
 
@@ -18,7 +18,7 @@ describe('AdjustmentsViewModel', () => {
       sentenceSequence: 1,
       offence: { offenceEndDate: '2021-02-03' },
       sentenceAndOffenceAnalysis: 'NEW',
-    } as AnalyzedSentenceAndOffence,
+    } as AnalysedSentenceAndOffence,
   ]
 
   it.each([

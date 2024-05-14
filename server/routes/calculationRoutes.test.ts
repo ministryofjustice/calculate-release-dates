@@ -136,37 +136,6 @@ const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
   },
 ]
 
-const stubbedErsedIneligibleSentencesAndOffences = [
-  {
-    bookingId: 1,
-    sentenceSequence: 3,
-    lineSequence: 3,
-    caseSequence: 3,
-    courtDescription: 'Preston Crown Court',
-    sentenceStatus: 'A',
-    sentenceCategory: '2020',
-    sentenceCalculationType: 'LR_EDS18',
-    sentenceTypeDescription: 'LR_EDS18',
-    sentenceDate: '2021-09-03',
-    terms: [
-      {
-        years: 0,
-        months: 2,
-        weeks: 0,
-        days: 0,
-        code: 'IMP',
-      },
-    ],
-    offence: {
-      offenderChargeId: 1,
-      offenceStartDate: '2020-01-01',
-      offenceCode: 'RL05016',
-      offenceDescription: 'Access / exit by unofficial route - railway bye-law',
-      indicators: [],
-    },
-    isSDSPlus: false,
-  },
-]
 const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustments = {
   context: {
     calculationRequestId: stubbedCalculationResults.calculationRequestId,
@@ -241,6 +210,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           indicators: [],
         },
         isSDSPlus: false,
+        hasAnSDSEarlyReleaseExclusion: 'NO',
       },
       {
         bookingId: 1,
@@ -270,6 +240,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           indicators: [],
         },
         isSDSPlus: false,
+        hasAnSDSEarlyReleaseExclusion: 'NO',
       },
       {
         bookingId: 1,
@@ -298,6 +269,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           indicators: [],
         },
         isSDSPlus: false,
+        hasAnSDSEarlyReleaseExclusion: 'NO',
       },
       {
         bookingId: 1,
@@ -327,6 +299,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           indicators: [],
         },
         isSDSPlus: false,
+        hasAnSDSEarlyReleaseExclusion: 'NO',
       },
       {
         bookingId: 1,
@@ -356,6 +329,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           indicators: [],
         },
         isSDSPlus: false,
+        hasAnSDSEarlyReleaseExclusion: 'NO',
       },
     ],
   },
@@ -425,7 +399,38 @@ describe('Calculation routes tests', () => {
       ...stubbedResultsWithBreakdownAndAdjustments,
       calculationOriginalData: {
         ...stubbedResultsWithBreakdownAndAdjustments,
-        sentencesAndOffences: stubbedErsedIneligibleSentencesAndOffences,
+        sentencesAndOffences: [
+          {
+            bookingId: 1,
+            sentenceSequence: 3,
+            lineSequence: 3,
+            caseSequence: 3,
+            courtDescription: 'Preston Crown Court',
+            sentenceStatus: 'A',
+            sentenceCategory: '2020',
+            sentenceCalculationType: 'LR_EDS18',
+            sentenceTypeDescription: 'LR_EDS18',
+            sentenceDate: '2021-09-03',
+            terms: [
+              {
+                years: 0,
+                months: 2,
+                weeks: 0,
+                days: 0,
+                code: 'IMP',
+              },
+            ],
+            offence: {
+              offenderChargeId: 1,
+              offenceStartDate: '2020-01-01',
+              offenceCode: 'RL05016',
+              offenceDescription: 'Access / exit by unofficial route - railway bye-law',
+              indicators: [],
+            },
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
+          },
+        ],
       },
     })
     return request(app)

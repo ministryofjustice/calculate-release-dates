@@ -129,6 +129,7 @@ export default {
   featureToggles: {
     specialistSupport: get('SPECIALIST_SUPPORT_ENABLED', false) === 'true',
     hdc4ComparisonTabEnabled: get('HDC4_PLUS_COMPARISON_TAB_ENABLED', false) === 'true',
+    sdsExclusionIndicatorsEnabled: get('SDS_EXCLUSION_INDICATORS_ENABLED', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),

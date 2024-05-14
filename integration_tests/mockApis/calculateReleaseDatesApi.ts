@@ -4,6 +4,7 @@ import { stubFor } from './wiremock'
 import {
   DetailedCalculationResults,
   LatestCalculation,
+  SentenceAndOffenceWithReleaseArrangements,
   ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
@@ -891,7 +892,8 @@ export default {
           indicators: [],
         },
         isSDSPlus: false,
-      },
+        hasAnSDSEarlyReleaseExclusion: 'NO',
+      } as SentenceAndOffenceWithReleaseArrangements,
       {
         bookingId: 1,
         sentenceCategory: '',
@@ -921,7 +923,8 @@ export default {
           indicators: [],
         },
         isSDSPlus: false,
-      },
+        hasAnSDSEarlyReleaseExclusion: 'NO',
+      } as SentenceAndOffenceWithReleaseArrangements,
     ]
     const detailedResults: DetailedCalculationResults = {
       dates: {

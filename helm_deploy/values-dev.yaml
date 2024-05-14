@@ -23,6 +23,7 @@ generic-service:
     PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital-dev.prison.service.justice.gov.uk"
     SPECIALIST_SUPPORT_ENABLED: "true"
+    SDS_EXCLUSION_INDICATORS_ENABLED: "false"
     COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     COURT_CASES_AND_RELEASE_DATES_URL: "https://court-cases-release-dates-dev.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500

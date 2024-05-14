@@ -1,5 +1,5 @@
 import {
-  AnalyzedSentenceAndOffence,
+  AnalysedSentenceAndOffence,
   CalculationUserInputs,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewRouteSentenceAndOffenceViewModel from './ViewRouteSentenceAndOffenceViewModel'
@@ -73,7 +73,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           offence: { offenceEndDate: '2021-02-03' },
           sentenceAndOffenceAnalysis: 'NEW',
           isSDSPlus: true,
-        } as AnalyzedSentenceAndOffence,
+        } as AnalysedSentenceAndOffence,
         {
           terms: [
             {
@@ -89,7 +89,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           offence: { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
           sentenceAndOffenceAnalysis: 'NEW',
           isSDSPlus: true,
-        } as AnalyzedSentenceAndOffence,
+        } as AnalysedSentenceAndOffence,
         {
           bookingId: 1203780,
           sentenceSequence: 5,
@@ -114,7 +114,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           },
           sentenceAndOffenceAnalysis: 'SAME',
           isSDSPlus: false,
-        } as AnalyzedSentenceAndOffence,
+        } as AnalysedSentenceAndOffence,
       ]
       const model = new ViewRouteSentenceAndOffenceViewModel(
         stubbedPrisonerData,
@@ -145,7 +145,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           offence: { offenceEndDate: '2021-02-03' },
           sentenceAndOffenceAnalysis: 'NEW',
           isSDSPlus: true,
-        } as AnalyzedSentenceAndOffence,
+        } as AnalysedSentenceAndOffence,
         {
           terms: [
             {
@@ -161,7 +161,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           offence: { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
           sentenceAndOffenceAnalysis: 'NEW',
           isSDSPlus: true,
-        } as AnalyzedSentenceAndOffence,
+        } as AnalysedSentenceAndOffence,
         {
           bookingId: 1203780,
           sentenceSequence: 5,
@@ -186,7 +186,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           },
           sentenceAndOffenceAnalysis: 'SAME',
           isSDSPlus: false,
-        } as AnalyzedSentenceAndOffence,
+        } as AnalysedSentenceAndOffence,
       ]
       const model = new ViewRouteSentenceAndOffenceViewModel(
         stubbedPrisonerData,

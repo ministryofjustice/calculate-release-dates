@@ -266,6 +266,13 @@ export interface paths {
      */
     get: operations['getCalculationResults_2']
   }
+  '/calculation/release-dates/{calculationRequestId}': {
+    /**
+     * Get release dates summary for a calculation request id
+     * @description This endpoint will return the list of release dates based on a calculation request id
+     */
+    get: operations['getKeyDatesForABooking']
+  }
   '/calculation/prisoner-details/{calculationRequestId}': {
     /**
      * Get prisoner details for a calculationRequestId
@@ -728,7 +735,7 @@ export interface components {
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
     }
-    AnalyzedSentenceAndOffence: {
+    AnalysedSentenceAndOffence: {
       /** Format: int64 */
       bookingId: number
       /** Format: int32 */
@@ -753,6 +760,8 @@ export interface components {
       /** @enum {string} */
       sentenceAndOffenceAnalysis: 'NEW' | 'UPDATED' | 'SAME'
       isSDSPlus: boolean
+      /** @enum {string} */
+      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'NO'
     }
     OffenderOffence: {
       /** Format: int64 */
@@ -968,7 +977,7 @@ export interface components {
       breakdownByReleaseDateType: {
         [key: string]: components['schemas']['ReleaseDateCalculationBreakdown']
       }
-      sdsSentencesIdentified: components['schemas']['SentenceAndOffence'][]
+      sdsSentencesIdentified: components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
     }
     /** @description Calculation breakdown details for a release date type */
     ReleaseDateCalculationBreakdown: {
@@ -1018,28 +1027,31 @@ export interface components {
        */
       unadjustedDate: string
     }
-    SentenceAndOffence: {
-      /** Format: int32 */
-      sentenceSequence: number
+    SentenceAndOffenceWithReleaseArrangements: {
       /** Format: int64 */
       bookingId: number
-      fineAmount?: number
-      offence: components['schemas']['OffenderOffence']
-      sentenceCalculationType: string
-      /** Format: date */
-      sentenceDate: string
-      sentenceStatus: string
-      terms: components['schemas']['SentenceTerms'][]
       /** Format: int32 */
-      consecutiveToSequence?: number
+      sentenceSequence: number
       /** Format: int32 */
       lineSequence: number
       /** Format: int32 */
       caseSequence: number
+      /** Format: int32 */
+      consecutiveToSequence?: number
+      sentenceStatus: string
       sentenceCategory: string
+      sentenceCalculationType: string
       sentenceTypeDescription: string
-      courtDescription?: string
+      /** Format: date */
+      sentenceDate: string
+      terms: components['schemas']['SentenceTerms'][]
+      offence: components['schemas']['OffenderOffence']
       caseReference?: string
+      courtDescription?: string
+      fineAmount?: number
+      isSDSPlus: boolean
+      /** @enum {string} */
+      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'NO'
     }
     DetailedDate: {
       /** @enum {string} */
@@ -1091,35 +1103,38 @@ export interface components {
       text: string
       link?: string
     }
-    SentenceAndOffenceWithReleaseArrangements: {
-      /** Format: int64 */
-      bookingId: number
-      /** Format: int32 */
-      sentenceSequence: number
-      /** Format: int32 */
-      lineSequence: number
-      /** Format: int32 */
-      caseSequence: number
-      /** Format: int32 */
-      consecutiveToSequence?: number
-      sentenceStatus: string
-      sentenceCategory: string
-      sentenceCalculationType: string
-      sentenceTypeDescription: string
-      /** Format: date */
-      sentenceDate: string
-      terms: components['schemas']['SentenceTerms'][]
-      offence: components['schemas']['OffenderOffence']
-      caseReference?: string
-      courtDescription?: string
-      fineAmount?: number
-      isSDSPlus: boolean
-    }
     ReturnToCustodyDate: {
       /** Format: int64 */
       bookingId: number
       /** Format: date */
       returnToCustodyDate: string
+    }
+    CalculationContext: {
+      /** Format: int64 */
+      calculationRequestId: number
+      /** Format: int64 */
+      bookingId: number
+      prisonerId: string
+      /** @enum {string} */
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST'
+      /** Format: uuid */
+      calculationReference: string
+      calculationReason?: components['schemas']['CalculationReason']
+      otherReasonDescription?: string
+      /** Format: date */
+      calculationDate?: string
+      /** @enum {string} */
+      calculationType:
+        | 'CALCULATED'
+        | 'MANUAL_DETERMINATE'
+        | 'MANUAL_INDETERMINATE'
+        | 'CALCULATED_WITH_APPROVED_DATES'
+        | 'MANUAL_OVERRIDE'
+        | 'CALCULATED_BY_SPECIALIST_SUPPORT'
+    }
+    ReleaseDatesAndCalculationContext: {
+      calculation: components['schemas']['CalculationContext']
+      dates: components['schemas']['DetailedDate'][]
     }
     Alert: {
       /** Format: date */
@@ -1165,29 +1180,6 @@ export interface components {
       otherDates: {
         [key: string]: string
       }
-    }
-    CalculationContext: {
-      /** Format: int64 */
-      calculationRequestId: number
-      /** Format: int64 */
-      bookingId: number
-      prisonerId: string
-      /** @enum {string} */
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST'
-      /** Format: uuid */
-      calculationReference: string
-      calculationReason?: components['schemas']['CalculationReason']
-      otherReasonDescription?: string
-      /** Format: date */
-      calculationDate?: string
-      /** @enum {string} */
-      calculationType:
-        | 'CALCULATED'
-        | 'MANUAL_DETERMINATE'
-        | 'MANUAL_INDETERMINATE'
-        | 'CALCULATED_WITH_APPROVED_DATES'
-        | 'MANUAL_OVERRIDE'
-        | 'CALCULATED_BY_SPECIALIST_SUPPORT'
     }
     CalculationOriginalData: {
       prisonerDetails?: components['schemas']['PrisonerDetails']
@@ -2167,22 +2159,22 @@ export interface operations {
       }
     }
     responses: {
-      /** @description Returns a List<AnalyzedSentenceAndOffences */
+      /** @description Returns a List<AnalysedSentenceAndOffences */
       200: {
         content: {
-          'application/json': components['schemas']['AnalyzedSentenceAndOffence'][]
+          'application/json': components['schemas']['AnalysedSentenceAndOffence'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['AnalyzedSentenceAndOffence'][]
+          'application/json': components['schemas']['AnalysedSentenceAndOffence'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['AnalyzedSentenceAndOffence'][]
+          'application/json': components['schemas']['AnalysedSentenceAndOffence'][]
         }
       }
     }
@@ -2793,6 +2785,47 @@ export interface operations {
     }
   }
   /**
+   * Get release dates summary for a calculation request id
+   * @description This endpoint will return the list of release dates based on a calculation request id
+   */
+  getKeyDatesForABooking: {
+    parameters: {
+      path: {
+        /**
+         * @description The calculation request id of the offender
+         * @example 123456
+         */
+        calculationRequestId: number
+      }
+    }
+    responses: {
+      /** @description Returns list of release dates based on a calculation request id */
+      200: {
+        content: {
+          'application/json': components['schemas']['ReleaseDatesAndCalculationContext']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ReleaseDatesAndCalculationContext']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ReleaseDatesAndCalculationContext']
+        }
+      }
+      /** @description No release dates exists for this calculation request id */
+      404: {
+        content: {
+          'application/json': components['schemas']['ReleaseDatesAndCalculationContext']
+        }
+      }
+    }
+  }
+  /**
    * Get prisoner details for a calculationRequestId
    * @description This endpoint will return the prisoner details based on a calculationRequestId
    */
@@ -3077,7 +3110,7 @@ export interface operations {
       }
     }
     responses: {
-      /** @description Returns a List<AnalyzedSentenceAndOffences */
+      /** @description Returns a List<AnalysedSentenceAndOffences */
       200: {
         content: {
           'application/json': components['schemas']['AnalyzedBookingAndSentenceAdjustments']

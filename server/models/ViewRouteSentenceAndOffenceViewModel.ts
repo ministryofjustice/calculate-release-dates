@@ -1,5 +1,5 @@
 import {
-  AnalyzedSentenceAndOffence,
+  AnalysedSentenceAndOffence,
   CalculationSentenceUserInput,
   CalculationUserInputs,
   OffenderOffence,
@@ -54,7 +54,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     this.sentencesAndOffences = sentencesAndOffences
   }
 
-  public rowIsSdsPlus(sentence: AnalyzedSentenceAndOffence, offence: OffenderOffence): boolean {
+  public rowIsSdsPlus(sentence: AnalysedSentenceAndOffence, offence: OffenderOffence): boolean {
     const oldUserInputForSDSPlus =
       this.userInputs &&
       this.userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {

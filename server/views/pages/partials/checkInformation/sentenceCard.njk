@@ -20,7 +20,6 @@
                             <h3 class="govuk-body-s govuk-!-margin-bottom-0">Count {{ sentence.lineSequence }}
                             </h3>
                 {% endif %}
-                        {#                        {% endif %} #}
                         <h4 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="{{offence.offenceCode }}-title">{{offence.offenceCode }} - {{ offence.offenceDescription }}</h4>
                         <p class="govuk-body-s">
                             {% if (offence.offenceEndDate and offence.offenceStartDate and offence.offenceEndDate !== offence.offenceStartDate) %}
@@ -86,6 +85,12 @@
                                             <tr class="govuk-table__row govuk-body-s">
                                                 <th scope="row" class="govuk-table__header sentence-table-header">Fine amount</th>
                                                 <td class="govuk-table__cell">{{ sentence.fineAmount | formatCurrency }}</td>
+                                            </tr>
+                                        {% endif %}
+                                        {% if featureToggles.sdsExclusionIndicatorsEnabled and sentence.hasAnSDSEarlyReleaseExclusion and sentence.hasAnSDSEarlyReleaseExclusion !== 'NO' %}
+                                            <tr class="govuk-table__row govuk-body-s" data-qa="sds-early-release-exclusion">
+                                                <th scope="row" class="govuk-table__header sentence-table-header">SDS Early Release Exclusion</th>
+                                                <td class="govuk-table__cell">{{ sentence.hasAnSDSEarlyReleaseExclusion | title }}</td>
                                             </tr>
                                         {% endif %}
                                     {% endif %}

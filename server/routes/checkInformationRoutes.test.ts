@@ -16,7 +16,7 @@ import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import UserInputService from '../services/userInputService'
 import {
-  AnalyzedSentenceAndOffence,
+  AnalysedSentenceAndOffence,
   CalculationSentenceUserInput,
   CalculationUserInputs,
   ValidationMessage,
@@ -25,6 +25,7 @@ import trimHtml from './testutils/testUtils'
 import CheckInformationService from '../services/checkInformationService'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import { expectMiniProfile, expectMiniProfileNoLocation } from './testutils/layoutExpectations'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -101,7 +102,8 @@ const stubbedSentencesAndOffences = [
     offence: { offenceEndDate: '2021-02-03' },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: true,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -117,7 +119,8 @@ const stubbedSentencesAndOffences = [
     offence: { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: true,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -133,7 +136,8 @@ const stubbedSentencesAndOffences = [
     offence: { offenceStartDate: '2021-03-06' },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: true,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -153,7 +157,8 @@ const stubbedSentencesAndOffences = [
     },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: true,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -169,7 +174,8 @@ const stubbedSentencesAndOffences = [
     offence: {},
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: true,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -186,7 +192,8 @@ const stubbedSentencesAndOffences = [
     offence: { offenceEndDate: '2021-02-03' },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     sentenceSequence: 3,
     lineSequence: 3,
@@ -213,7 +220,8 @@ const stubbedSentencesAndOffences = [
     },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     sentenceSequence: 3,
     lineSequence: 3,
@@ -240,7 +248,8 @@ const stubbedSentencesAndOffences = [
     },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     sentenceSequence: 4,
     lineSequence: 4,
@@ -290,7 +299,8 @@ const stubbedSentencesAndOffences = [
     },
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     bookingId: 1203025,
     sentenceSequence: 4,
@@ -313,7 +323,8 @@ const stubbedSentencesAndOffences = [
     fineAmount: 3000,
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
   {
     bookingId: 1203780,
     sentenceSequence: 5,
@@ -338,7 +349,8 @@ const stubbedSentencesAndOffences = [
     },
     sentenceAndOffenceAnalysis: 'SAME',
     isSDSPlus: false,
-  } as AnalyzedSentenceAndOffence,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
 ]
 const stubbedUserInput = {
   sentenceCalculationUserInputs: [
@@ -387,6 +399,63 @@ const stubbedAdjustments = {
     },
   ],
 } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+const sentencesAndOffencesWithExclusions = [
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 1,
+    caseReference: 'CASE001',
+    courtDescription: 'Court 1',
+    sentenceSequence: 1,
+    offence: { offenceEndDate: '2021-02-03', offenceDescription: 'SXOFFENCE' },
+    sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: true,
+    hasAnSDSEarlyReleaseExclusion: 'SEXUAL',
+  } as AnalysedSentenceAndOffence,
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 2,
+    caseReference: 'CASE001',
+    courtDescription: 'Court 1',
+    sentenceSequence: 1,
+    offence: {
+      offenceStartDate: '2021-01-04',
+      offenceEndDate: '2021-01-05',
+      offenceDescription: 'VIOOFFENCE',
+    },
+    sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: true,
+    hasAnSDSEarlyReleaseExclusion: 'VIOLENT',
+  } as AnalysedSentenceAndOffence,
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
+    lineSequence: 3,
+    caseReference: 'CASE001',
+    courtDescription: 'Court 1',
+    sentenceSequence: 1,
+    offence: { offenceStartDate: '2021-03-06', offenceDescription: 'No exclusion offence' },
+    sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: true,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+  } as AnalysedSentenceAndOffence,
+]
 
 const stubbedEmptyAdjustments = {
   sentenceAdjustments: [],
@@ -398,6 +467,7 @@ const stubbedReturnToCustodyDate = {
 } as PrisonApiReturnToCustodyDate
 
 beforeEach(() => {
+  config.featureToggles.sdsExclusionIndicatorsEnabled = false
   app = appWithAllRoutes({
     services: {
       userService,
@@ -477,6 +547,60 @@ describe('Check information routes tests', () => {
         // 5 offences in the only SDS+ sentence
         expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(5)
         expect($('.new-sentence-card:contains("Rape of a minor")').text()).toContain('SDS+')
+      })
+  })
+  it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle on', () => {
+    config.featureToggles.sdsExclusionIndicatorsEnabled = true
+
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      sentencesAndOffencesWithExclusions,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.new-sentence-card:contains("SXOFFENCE")').text()).toContain('Sexual')
+        expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
+        const noExclusionCard = $('.new-sentence-card:contains("No exclusion offence")')
+        expect(noExclusionCard.text()).not.toContain('Sexual')
+        expect(noExclusionCard.text()).not.toContain('Violent')
+      })
+  })
+  it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle off', () => {
+    config.featureToggles.sdsExclusionIndicatorsEnabled = false
+
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      sentencesAndOffencesWithExclusions,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.new-sentence-card:contains("SXOFFENCE")').text()).not.toContain('Sexual')
+        expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).not.toContain('Violent')
+        const noExclusionCard = $('.new-sentence-card:contains("No exclusion offence")')
+        expect(noExclusionCard.text()).not.toContain('Sexual')
+        expect(noExclusionCard.text()).not.toContain('Violent')
       })
   })
 
@@ -706,7 +830,8 @@ describe('Check information routes tests', () => {
         },
         sentenceAndOffenceAnalysis: 'SAME',
         isSDSPlus: false,
-      } as AnalyzedSentenceAndOffence,
+        hasAnSDSEarlyReleaseExclusion: 'NO',
+      } as AnalysedSentenceAndOffence,
     ]
 
     const model = new SentenceAndOffenceViewModel(
@@ -830,7 +955,8 @@ describe('Check information routes tests', () => {
         },
         sentenceAndOffenceAnalysis: 'SAME',
         isSDSPlus: false,
-      } as AnalyzedSentenceAndOffence,
+        hasAnSDSEarlyReleaseExclusion: 'NO',
+      } as AnalysedSentenceAndOffence,
     ]
 
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
