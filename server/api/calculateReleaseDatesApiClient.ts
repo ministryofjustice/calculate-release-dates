@@ -22,6 +22,7 @@ import {
   LatestCalculation,
   ManualEntryRequest,
   NomisCalculationSummary,
+  ReleaseDatesAndCalculationContext,
   SentenceAndOffenceWithReleaseArrangements,
   SubmitCalculationRequest,
   ValidationMessage,
@@ -316,5 +317,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/calculation/nomis-calculation-summary/${offenderSentCalcId}`,
     }) as Promise<NomisCalculationSummary>
+  }
+
+  getReleaseDatesForACalcReqId(calcReqId: number): Promise<ReleaseDatesAndCalculationContext> {
+    return this.restClient.get({
+      path: `/calculation/release-dates/${calcReqId}`,
+    }) as Promise<ReleaseDatesAndCalculationContext>
   }
 }

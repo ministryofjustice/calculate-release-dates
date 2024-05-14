@@ -1154,6 +1154,10 @@ export interface components {
       comment?: string
       releaseDates: components['schemas']['DetailedDate'][]
     }
+    ReleaseDatesAndCalculationContext: {
+      calculation: components['schemas']['CalculationContext']
+      dates: components['schemas']['DetailedDate'][]
+    }
     /** @description Calculation breakdown details */
     CalculationBreakdown: {
       concurrentSentences: components['schemas']['ConcurrentSentenceBreakdown'][]
