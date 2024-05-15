@@ -1105,8 +1105,11 @@ describe('View journey routes tests', () => {
           expect(sentence11Date.text()).toContain('03 February 2004')
           expect(sentence22Title.text()).toContain('Court case 2, Count 2')
           expect(sentence22Date.text()).toContain('03 February 2010')
-          // expect(sentence11Length.text()).toContain('3 years')
-          // expect(sentence22Length.text()).toContain('3 years')
+          expect(sentence11Length.text().trim()).toContain('3')
+          expect(sentence11Length.text().trim()).toContain('years')
+          expect(sentence22Length.text().trim()).toContain('2')
+          expect(sentence22Length.text().trim()).toContain('years')
+          expect(sentence22Length.text().trim()).toContain('consecutive to  court case 1 count 1')
           expect(adjustTitle.text()).toContain('Adjustments')
           expect(adjustDesc.text()).toContain('This calculation includes the following adjustments to sentences.')
           expect(adjustColType.text()).toContain('Adjustment type')
@@ -1127,8 +1130,6 @@ describe('View journey routes tests', () => {
           expect(appealBail.text()).toContain(
             'Days spent on bail pending appeal not to count (must be completed manually):',
           )
-
-          console.log(res.text)
         })
     })
 
