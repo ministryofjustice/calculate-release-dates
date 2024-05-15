@@ -1,7 +1,7 @@
-{% from "./sentenceTable.njk" import sentenceTable %}
-{% from "./adjustmentsTable.njk" import adjustmentsTable %}
-{% from "./keyDates.njk" import keyDates %}
-{% from "./prisonerDetails.njk" import prisonerDetails %}
+{% from "../partials/printNotification/sentenceTable.njk" import sentenceTable %}
+{% from "../partials/printNotification//adjustmentsTable.njk" import adjustmentsTable %}
+{% from "../partials/printNotification//keyDates.njk" import keyDates %}
+{% from "../partials/printNotification//prisonerDetails.njk" import prisonerDetails %}
 
 {% block header %}
   {% if pageType == 'establishment' or pageType == 'offender' %}
