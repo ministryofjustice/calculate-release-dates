@@ -992,6 +992,7 @@ describe('View journey routes tests', () => {
           terms: [
             {
               years: 3,
+              code: 'IMP',
             },
           ],
           sentenceDate: '2004-02-03',

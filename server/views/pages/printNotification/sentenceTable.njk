@@ -21,7 +21,6 @@
                       <td class="govuk-table__cell" data-qa="sentence-{{ case.caseSequence }}-{{ sentence.lineSequence }}-length">
                       {% if sentenceModel.hasCustodialAndLicenseTerms() %}
                           {{ sentenceLength(sentenceModel.imprisonmentTerm, 'Custodial term') }}
-                          {{ sentenceLength(sentenceModel.licenceTerm, 'Licence period') }}
                       {% else %}
                           {{ sentenceLength(sentence.terms, 'Sentence length') }}
                       {% endif %}
