@@ -1219,6 +1219,84 @@ describe('View journey routes tests', () => {
         })
     })
 
+    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should terms - singular', () => {
+      const stubbedSentencesAndOffencesLocal = [
+        {
+          terms: [
+            {
+              years: 1,
+              months: 1,
+              weeks: 1,
+              days: 1,
+              code: 'IMP',
+            },
+          ],
+          sentenceDate: '2004-02-03',
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          caseSequence: 1,
+          lineSequence: 1,
+          sentenceSequence: 1,
+          offence: { offenceEndDate: '2021-02-03' },
+          isSDSPlus: false,
+        } as SentenceAndOffenceWithReleaseArrangements,
+      ]
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
+      return request(app)
+        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          let sentence11Length = $('[data-qa=sentence-1-1-length]').first().text()
+          sentence11Length = sentence11Length.replace(/\s/g, '')
+
+          expect(sentence11Length).toStrictEqual('1year1month1week1day')
+        })
+    })
+
+    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should terms - plural', () => {
+      const stubbedSentencesAndOffencesLocal = [
+        {
+          terms: [
+            {
+              years: 2,
+              months: 2,
+              weeks: 2,
+              days: 2,
+              code: 'IMP',
+            },
+          ],
+          sentenceDate: '2004-02-03',
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          caseSequence: 1,
+          lineSequence: 1,
+          sentenceSequence: 1,
+          offence: { offenceEndDate: '2021-02-03' },
+          isSDSPlus: false,
+        } as SentenceAndOffenceWithReleaseArrangements,
+      ]
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
+      return request(app)
+        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          let sentence11Length = $('[data-qa=sentence-1-1-length]').first().text()
+          sentence11Length = sentence11Length.replace(/\s/g, '')
+
+          expect(sentence11Length).toStrictEqual('2years2months2weeks2days')
+        })
+    })
+
     it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should generate correct content for missing Agency Name, keyDates and Adjustments', () => {
       const stubbedNoReleaseDates: ReleaseDatesAndCalculationContext = {
         calculation: {
