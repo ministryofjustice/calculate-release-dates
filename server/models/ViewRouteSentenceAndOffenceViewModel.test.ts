@@ -249,7 +249,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
       stubbedReturnToCustodyDate,
       null,
     )
-    const adjustmentsArray = model.generateAdjustmentsArray()
+    const adjustmentsArray = model.generateAdjustmentsRows()
     expect(adjustmentsArray).toStrictEqual([
       {
         adjustmentName: 'Recall remand',

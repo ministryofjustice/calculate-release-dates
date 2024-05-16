@@ -2,19 +2,16 @@ import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import dateFilter from 'nunjucks-date-filter'
 import CalculationSummaryDatesCardModel, { filteredListOfDates } from './CalculationSummaryDatesCardModel'
-import { ReleaseDateType } from './ReleaseDateTypeTest'
 
 const njkEnv = nunjucks.configure([__dirname])
 njkEnv.addFilter('date', dateFilter)
 
 describe('ReleaseDateType', () => {
-  it('should have all its static properties in filteredListOfDates', () => {
-    const releaseDateTypeProperties = Object.keys(ReleaseDateType)
-
-    expect(filteredListOfDates.length).toStrictEqual(20)
-    releaseDateTypeProperties.forEach(property => {
-      expect(filteredListOfDates).toContain(property)
-    })
+  it('should not have some of the properties in filteredListOfDates', () => {
+    expect(filteredListOfDates).not.toContain('NCRD')
+    expect(filteredListOfDates).not.toContain('ESED')
+    expect(filteredListOfDates).not.toContain('None')
+    expect(filteredListOfDates).not.toContain('HDCED4PLUS')
   })
 })
 

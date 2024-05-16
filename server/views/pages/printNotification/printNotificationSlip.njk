@@ -93,7 +93,7 @@
                 {% if keyDatesArray and keyDatesArray.length > 0 %}
                   {{ keyDates(keyDatesArray) }}
                 {% else %}
-                  <p>No key dates available.</p>
+                  <p data-qa="no-key-dates-test">No key dates available.</p>
                 {% endif %}
 
                 {{ sentenceTable(model) }}

@@ -1218,5 +1218,54 @@ describe('View journey routes tests', () => {
           )
         })
     })
+
+    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should generate correct content for missing Agency Name, keyDates and Adjustments', () => {
+      const stubbedNoReleaseDates: ReleaseDatesAndCalculationContext = {
+        calculation: {
+          calculationRequestId: 51245,
+          bookingId: 1201571,
+          prisonerId: 'A8031DY',
+          calculationStatus: 'CONFIRMED',
+          calculationReference: 'fe1909af-c780-4b61-9ca3-a82678de5dca',
+          calculationReason: {
+            id: 8,
+            isOther: false,
+            displayName: 'A calculation reason',
+          },
+          otherReasonDescription: '',
+          calculationDate: '2020-06-01',
+          calculationType: 'CALCULATED',
+        },
+        dates: [],
+      }
+      const stubbedNoAdjustments = {
+        sentenceAdjustments: [],
+        bookingAdjustments: [],
+      } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+      const stubbedNoPrisonPrisonerData = {
+        sentenceDetail: {} as PrisonApiSentenceDetail,
+        assignedLivingUnit: {} as PrisonAPIAssignedLivingUnit,
+      } as PrisonApiPrisoner
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedNoPrisonPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedNoAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedNoReleaseDates)
+      return request(app)
+        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const noKeyDates = $('[data-qa=no-key-dates-test]').first()
+          const noAdjustments = $('[data-qa=adjust-desc-no]').first()
+          const prisonTitle = $('[data-qa=prison-name]').first()
+          const prisonerCell = $('[data-qa=prisoner-cell]').first()
+
+          expect(noKeyDates.text()).toStrictEqual('No key dates available.')
+          expect(noAdjustments.text()).toStrictEqual('There are no adjustments.')
+          expect(prisonTitle.text()).toContain('No agency name available')
+          expect(prisonerCell.text()).toContain('No Cell Number available')
+        })
+    })
   })
 })

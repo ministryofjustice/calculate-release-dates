@@ -1,5 +1,5 @@
 {% macro adjustmentsTable(model) %}
-    {% set adjustmentsArray = model.generateAdjustmentsArray() %}
+    {% set adjustmentsArray = model.generateAdjustmentsRows() %}
     {% if adjustmentsArray.length == 0 %}
         <p class="govuk-body govuk-!-margin-bottom-2" data-qa="adjust-desc-no">There are no adjustments.</p>
     {% else %}

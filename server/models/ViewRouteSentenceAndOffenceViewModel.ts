@@ -98,13 +98,13 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     return Object.keys(duplicates).map(key => [duplicates[key].caseSequence, duplicates[key].lineSequence])
   }
 
-  generateAdjustmentsArray() {
-    const adjustmentsArray = []
+  generateAdjustmentsRows() {
+    const adjustmentsRows = []
 
     const pushAdjustmentDetails = (adjustmentType, adjustmentName, addOrDeduct) => {
       if (this.adjustments[adjustmentType].aggregate !== 0) {
         this.adjustments[adjustmentType].details.forEach(adjustment => {
-          adjustmentsArray.push({
+          adjustmentsRows.push({
             adjustmentName,
             adjustmentType: addOrDeduct,
             adjustmentFrom: adjustment.from,
@@ -124,8 +124,8 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     pushAdjustmentDetails('additionalDaysAwarded', 'Additional days awarded (ADA)', 'added')
     pushAdjustmentDetails('unlawfullyAtLarge', 'Unlawfully at large', 'added')
 
-    adjustmentsArray.sort((a, b) => new Date(b.adjustmentFrom).getTime() - new Date(a.adjustmentFrom).getTime())
+    adjustmentsRows.sort((a, b) => new Date(b.adjustmentFrom).getTime() - new Date(a.adjustmentFrom).getTime())
 
-    return adjustmentsArray
+    return adjustmentsRows
   }
 }
