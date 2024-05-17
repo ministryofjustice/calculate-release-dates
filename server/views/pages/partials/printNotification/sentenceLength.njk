@@ -1,0 +1,20 @@
+{% macro sentenceLength(terms, label) %}
+    {% for term in terms %}
+        {% if term.years > 0 %}
+                {{ term.years }}
+                {{ 'year' | pluralise(term.years) }}
+        {% endif %}
+        {% if term.months > 0 %}
+                {{ term.months }}
+                {{ 'month' | pluralise(term.months) }}
+        {% endif %}
+        {% if term.weeks > 0 %}
+                {{ term.weeks }}
+                {{ 'week' | pluralise(term.weeks) }}
+        {% endif %}
+        {% if term.days > 0 %}
+                {{ term.days }}
+                {{ 'day' | pluralise(term.days) }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}

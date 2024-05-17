@@ -38,6 +38,7 @@ export type CalculationPrisonerDetails = components['schemas']['PrisonerDetails'
 export type LatestCalculation = components['schemas']['LatestCalculation']
 export type DateTypeDefinition = components['schemas']['DateTypeDefinition']
 export type NomisCalculationSummary = components['schemas']['NomisCalculationSummary']
+export type ReleaseDatesAndCalculationContext = components['schemas']['ReleaseDatesAndCalculationContext']
 export type SentenceAndOffenceWithReleaseArrangements =
   components['schemas']['SentenceAndOffenceWithReleaseArrangements']
 export type OffenderOffence = components['schemas']['OffenderOffence']

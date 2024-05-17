@@ -97,4 +97,35 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     })
     return Object.keys(duplicates).map(key => [duplicates[key].caseSequence, duplicates[key].lineSequence])
   }
+
+  generateAdjustmentsRows() {
+    const adjustmentsRows = []
+
+    const pushAdjustmentDetails = (adjustmentType, adjustmentName, addOrDeduct) => {
+      if (this.adjustments[adjustmentType].aggregate !== 0) {
+        this.adjustments[adjustmentType].details.forEach(adjustment => {
+          adjustmentsRows.push({
+            adjustmentName,
+            adjustmentType: addOrDeduct,
+            adjustmentFrom: adjustment.from,
+            adjustmentTo: adjustment.to,
+            adjustmentDays: adjustment.days,
+          })
+        })
+      }
+    }
+
+    pushAdjustmentDetails('recallSentenceRemand', 'Recall remand', 'deducted')
+    pushAdjustmentDetails('remand', 'Remand', 'deducted')
+    pushAdjustmentDetails('recallSentenceTaggedBail', 'Recall tagged bail', 'deducted')
+    pushAdjustmentDetails('taggedBail', 'Tagged bail', 'deducted')
+    pushAdjustmentDetails('restoredAdditionalDaysAwarded', 'Restored additional days awarded (RADA)', 'deducted')
+    pushAdjustmentDetails('unusedRemand', 'Unused remand', 'deducted')
+    pushAdjustmentDetails('additionalDaysAwarded', 'Additional days awarded (ADA)', 'added')
+    pushAdjustmentDetails('unlawfullyAtLarge', 'Unlawfully at large', 'added')
+
+    adjustmentsRows.sort((a, b) => new Date(b.adjustmentFrom).getTime() - new Date(a.adjustmentFrom).getTime())
+
+    return adjustmentsRows
+  }
 }

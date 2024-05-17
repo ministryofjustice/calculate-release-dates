@@ -133,7 +133,10 @@ export default function Index({
   const calculationRoutes = () => {
     get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
     post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
-    get('/calculation/:nomsId/summary/:calculationRequestId/print', calculationAccessRoutes.printCalculationSummary)
+    get(
+      '/calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip',
+      viewAccessRoutes.printNotificationSlip,
+    )
     get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
   }
 
@@ -152,6 +155,10 @@ export default function Index({
     get('/view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId', viewAccessRoutes.nomisCalculationSummary)
     get('/view/:nomsId/calculation-summary/:calculationRequestId', viewAccessRoutes.calculationSummary)
     get('/view/:nomsId/calculation-summary/:calculationRequestId/print', viewAccessRoutes.printCalculationSummary)
+    get(
+      '/view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip',
+      viewAccessRoutes.printNotificationSlip,
+    )
   }
 
   const otherRoutes = () => {

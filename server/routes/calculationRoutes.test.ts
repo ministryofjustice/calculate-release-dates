@@ -572,6 +572,7 @@ describe('Calculation routes tests', () => {
         const backToDpsLink = $('[data-qa=back-to-dps-search-link]').first()
         const courtCaseAndReleaseDatesLink = $('[data-qa=ccard-overview-link]').first()
         const prisonerProfileLink = $('[data-qa=prisoner-profile-link]').first()
+        const prisonerNotificationSlipLink = $('[data-qa=prisoner-notification-slip-link]').first()
 
         expect(backToDpsLink.length).toStrictEqual(1)
         expect(backToDpsLink.text()).toStrictEqual('DPS homepage')
@@ -581,6 +582,10 @@ describe('Calculation routes tests', () => {
         expect(courtCaseAndReleaseDatesLink.text()).toStrictEqual('Court case and release dates information')
         expect(courtCaseAndReleaseDatesLink.attr('href')).toStrictEqual(
           'http://localhost:3100/prisoner/A1234AA/overview',
+        )
+
+        expect(prisonerNotificationSlipLink.attr('href')).toStrictEqual(
+          '/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation',
         )
 
         expect(prisonerProfileLink.length).toStrictEqual(1)
@@ -632,22 +637,6 @@ describe('Calculation routes tests', () => {
       calculationStatus: 'PRELIMINARY',
     })
     return request(app).get('/calculation/A1234AB/complete/123456').expect(404).expect('Content-Type', /html/)
-  })
-  it('GET /calculation/:nomsId/summary/:calculationRequestId/print should return a printable page about the calculation requested', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-      stubbedResultsWithBreakdownAndAdjustments,
-    )
-    return request(app)
-      .get('/calculation/A1234AB/summary/123456/print')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Anon Nobody')
-        expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
-        expect(res.text).toMatch(/Dates for/)
-        expectMiniProfile(res.text, expectedMiniProfile)
-      })
   })
 
   it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect if an error is thrown', () => {

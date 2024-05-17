@@ -14,9 +14,13 @@ import { longDateFormat } from '../utils/utils'
 import ViewCalculateReleaseDatePageViewModel from '../models/ViewCalculateReleaseDatePageViewModel'
 import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageViewModel'
 // eslint-disable-next-line prettier/prettier
-import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import {
+  calculationSummaryDatesCardModelFromCalculationSummaryViewModel,
+  filteredListOfDates,
+} from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import ViewPastNomisCalculationPageViewModel from '../models/ViewPastNomisCalculationPageViewModel'
+import PrintNotificationSlipViewModel from '../models/PrintNotificationSlipViewModel'
 
 const overrideReasons = {
   terror: 'of terrorism or terror-related offences',
@@ -234,6 +238,45 @@ export default class ViewRoutes {
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, model.hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
         nomsId,
+      ),
+    )
+  }
+
+  public printNotificationSlip: RequestHandler = async (req, res): Promise<void> => {
+    const { caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const calculationRequestId = Number(req.params.calculationRequestId)
+    const { fromPage, pageType } = req.query as Record<string, string>
+
+    const [prisonerDetail, sentencesAndOffences, adjustmentDetails, releaseDateAndCalcContext] = await Promise.all([
+      this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, caseloads, token),
+      this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token),
+      this.viewReleaseDatesService.getBookingAndSentenceAdjustments(calculationRequestId, token),
+      this.calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, token),
+    ])
+
+    const datesArray = Object.values(releaseDateAndCalcContext.dates)
+      .filter(dateObject => dateObject && dateObject.date && filteredListOfDates.includes(dateObject.type))
+      .map(dateObject => ({ code: dateObject.type, description: dateObject.description, date: dateObject.date }))
+
+    res.render(
+      'pages/printNotification/printNotificationSlip',
+      new PrintNotificationSlipViewModel(
+        new ViewRouteSentenceAndOffenceViewModel(
+          prisonerDetail,
+          null,
+          sentencesAndOffences,
+          adjustmentDetails,
+          true,
+          null,
+        ),
+        calculationRequestId,
+        nomsId,
+        releaseDateAndCalcContext.calculation.calculationDate,
+        datesArray,
+        fromPage,
+        pageType,
+        releaseDateAndCalcContext.calculation.calculationReason.displayName,
       ),
     )
   }

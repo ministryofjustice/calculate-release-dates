@@ -1,0 +1,128 @@
+{% from "../partials/printNotification/sentenceTable.njk" import sentenceTable %}
+{% from "../partials/printNotification/adjustmentsTable.njk" import adjustmentsTable %}
+{% from "../partials/printNotification/keyDates.njk" import keyDates %}
+{% from "../partials/printNotification/prisonerDetails.njk" import prisonerDetails %}
+
+{% block header %}
+  {% if pageType == 'establishment' or pageType == 'offender' %}
+     <script data-qa="print-invoker" src="/assets/print.js"></script>
+  {% endif %}
+
+  <head>
+    <link href="/assets/stylesheets/application.css" media="all" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body class="govuk-template__body  js-enabled" data-new-gr-c-s-check-loaded="14.1110.0" data-gr-ext-installed="">
+
+    <div class="print-width-container">
+      <div class="moj-width-container govuk-!-margin-bottom-4 govuk-!-display-none-print">
+        {% if fromPage == 'calculation' %}
+          <a data-qa="back-link" href="/calculation/{{ model.prisonerDetail.offenderNo }}/complete/{{ calculationRequestId }}">Back</a>
+        {% elif fromPage == 'view' %}
+          <a data-qa="back-link" href="/?prisonId={{ model.prisonerDetail.offenderNo }}">Back</a>
+        {% endif %}
+      </div>
+
+      <div class="moj-width-container govuk-!-margin-bottom-4">
+          <div class="govuk-grid-row print-button">
+            <div class="govuk-grid-column-full">
+              <h1 class="govuk-heading-l govuk-visually-hidden" >Print notification slip</h1>
+
+              <div class="govuk-button-group govuk-!-display-none-print">
+                {% if fromPage == 'calculation' %}
+                  {% set printLinks = '/calculation/' ~ model.prisonerDetail.offenderNo ~ '/summary/' ~ calculationRequestId ~ '/printNotificationSlip?fromPage=' ~ fromPage %}
+                {% elif fromPage == 'view' %}
+                  {% set printLinks = '/view/' ~ model.prisonerDetail.offenderNo ~ '/calculation-summary/' ~ calculationRequestId ~ '/printNotificationSlip?fromPage=' ~ fromPage %}
+                {% endif %}
+
+                  <a data-qa="slip-offender-copy" data-prevent-double-click="true" class="govuk-button no-js-hidden" data-module="govuk-button"
+                     href="{{ printLinks }}&pageType=offender">
+                     Print notification slip
+                  </a>
+
+                  <a data-qa="slip-establishment-copy" data-prevent-double-click="true" class="govuk-button govuk-button--secondary no-js-hidden" data-module="govuk-button"
+                     href="{{ printLinks }}&pageType=establishment">
+                     Print establishment copy
+                  </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="notification-slip">
+
+           {% if pageType == 'offender' %}
+              <div data-qa="page-title-caption" class="offender-title">[Offender copy]</div>
+            {% elif pageType == 'establishment' %}
+              <div data-qa="page-title-caption" class="establishment-title">[Establishment copy]</div>
+            {% endif %}
+
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-full">
+                <span class="govuk-caption-m" data-qa="prison-name">
+                  {% if model.prisonerDetail.assignedLivingUnit.agencyName %}
+                    {{ model.prisonerDetail.assignedLivingUnit.agencyName }}
+                  {% else %}
+                    No agency name available
+                  {% endif %}
+                </span>
+                <h1 class="govuk-heading-l" data-qa="page-title">Release date notification slip</h1>
+              </div>
+            </div>
+
+            {{ prisonerDetails(model) }}
+
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-full">
+                <p class="govuk-body" data-qa="calculation-date">These release dates were calculated on {{ calculationDate | date('DD MMMM YYYY') }}</p>
+
+                {% if pageType == 'establishment' %}
+                    <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-4">
+                        <div class="govuk-summary-list__row">
+                            <dt data-qa="calculation-reason-title" class="govuk-summary-list__key govuk-!-font-weight-regular" style="padding: 5px 0px 6px 0px">
+                                Calculation reason
+                            </dt>
+                            <dd data-qa="calculation-reason" class="govuk-summary-list__value " style="padding: 5px 0px 6px 0px">
+                                {{ calculationReason }}
+                            </dd>
+                        </div>
+                    </dl>
+                {% endif %}
+
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="release-date-title">Release dates</h2>
+
+                {% if keyDatesArray and keyDatesArray.length > 0 %}
+                  {{ keyDates(keyDatesArray) }}
+                {% else %}
+                  <p data-qa="no-key-dates-test">No key dates available.</p>
+                {% endif %}
+
+                {{ sentenceTable(model) }}
+
+              </div>
+            </div>
+
+            <br/>
+
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-full">
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="adjust-title">Adjustments</h2>
+
+                {{ adjustmentsTable(model) }}
+
+                <br/>
+                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="appeal-custody">Days spent in custody pending appeal to count <b>(must be completed manually)</b>:</p>
+                <p class="govuk-body govuk-!-margin-bottom-4" data-qa="appeal-bail">Days spent on bail pending appeal not to count <b>(must be completed manually)</b>:</p>
+                {% if pageType == 'offender' %}
+                    <p data-qa="offender-disagree-text" class="govuk-body">If you disagree with the above dates, please write down what you think the dates should be and hand to your wing office.</p>
+                {% endif %}
+                {% if pageType == 'establishment' %}
+                    <p data-qa="calculated-by" class="govuk-body govuk-!-margin-bottom-2">Calculated by:</p>
+                    <p data-qa="checked-by" class="govuk-body govuk-!-margin-bottom-4">Checked by:</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </body>
+{% endblock %}

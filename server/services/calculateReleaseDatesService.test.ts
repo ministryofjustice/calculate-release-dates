@@ -26,6 +26,31 @@ const prisonerId = 'A1234AB'
 const calculationRequestId = 123456
 const offenderSentCalcId = 123456
 const nomisCalculationSummary = { reason: 'Adjust Sentence', calculatedAt: '2024-04-18T10:47:39' }
+const releaseDatesAndCalcContext = {
+  calculation: {
+    calculationRequestId: 51124,
+    bookingId: 1201571,
+    prisonerId: 'A8031DY',
+    calculationStatus: 'CONFIRMED',
+    calculationReference: '1a22bffd-b224-49af-b7b0-338cf3b42664',
+    calculationReason: {
+      id: 8,
+      isOther: false,
+      displayName: '14 day check',
+    },
+    otherReasonDescription: '',
+    calculationDate: '2024-05-09',
+    calculationType: 'CALCULATED',
+  },
+  dates: [
+    {
+      type: 'SLED',
+      description: 'Sentence and licence expiry date',
+      date: '2027-11-01',
+      hints: [],
+    },
+  ],
+}
 const calculationResults: BookingCalculation = {
   dates: {
     CRD: '2021-02-03',
@@ -128,6 +153,23 @@ describe('Calculate release dates service tests', () => {
   })
   afterEach(() => {
     nock.cleanAll()
+  })
+
+  describe('Test GET releases date using a calculation request id', () => {
+    it('asserting successful scenario', async () => {
+      fakeApi.get(`/calculation/release-dates/${calculationRequestId}`).reply(200, releaseDatesAndCalcContext)
+
+      const result = await calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, token)
+
+      expect(result).toEqual(releaseDatesAndCalcContext)
+    })
+    it('asserting fail scenario', async () => {
+      fakeApi.get(`/calculation/release-dates/${calculationRequestId}`).reply(404)
+
+      await expect(
+        calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, token),
+      ).rejects.toThrow('Not Found')
+    })
   })
 
   describe('Test nomis calculation summary', () => {
@@ -407,6 +449,10 @@ describe('Calculate release dates service tests', () => {
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
         ],
+        printNotificationSlip: {
+          dataQa: 'release-notification-hook',
+          href: `/view/${prisonerId}/calculation-summary/654321/printNotificationSlip?fromPage=view`,
+        },
       }
       const latestCalcCardAction: Action = {
         title: 'View details',
