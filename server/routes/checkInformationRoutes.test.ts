@@ -1,7 +1,7 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes } from './testutils/appSetup'
+import { appWithAllRoutes, user } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
@@ -538,6 +538,8 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
         expect(res.text).not.toContain('987654')
         expect(res.text).toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
+        expect(res.text).toContain('Unused remand')
+        expect(res.text).not.toContain('Unused deductions')
 
         const $ = cheerio.load(res.text)
         // All but 1 sentences are flagged as 'NEW'
@@ -670,6 +672,41 @@ describe('Check information routes tests', () => {
       .expect(res => {
         expect(res.text).toContain('Detailed')
         expect(res.text).toContain('There are no detailed adjustments for Anon')
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should return detail about the prisoner user has access to adjustments', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      stubbedSentencesAndOffences,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+
+    app = appWithAllRoutes({
+      services: {
+        userService,
+        prisonerService,
+        calculateReleaseDatesService,
+        userInputService,
+        checkInformationService,
+      },
+      userSupplier: () => {
+        return { ...user, hasAdjustmentsAccess: true }
+      },
+    })
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Unused deductions')
+        expect(res.text).not.toContain('Unused remand')
       })
   })
   it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
