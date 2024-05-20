@@ -10,6 +10,7 @@ export interface UserDetails extends User {
   caseloads: string[]
   caseloadDescriptions: string[]
   caseloadMap: Map<string, string>
+  hasAdjustmentsAccess: boolean
 }
 
 export default class UserService {
@@ -21,18 +22,24 @@ export default class UserService {
   async getUser(token: string): Promise<UserDetails> {
     const user = await this.manageUsersApiClient.getUser(token)
     const userCaseloads = await this.prisonerService.getUsersCaseloads(token)
+    const roles = this.getUserRoles(token)
     return {
       ...user,
-      roles: this.getUserRoles(token),
+      roles,
       ...(user.name && { displayName: convertToTitleCase(user.name) }),
       caseloads: userCaseloads.map(uc => uc.caseLoadId),
       caseloadDescriptions: userCaseloads.map(uc => uc.description),
       caseloadMap: new Map(userCaseloads.map(uc => [uc.caseLoadId, uc.description])),
+      hasAdjustmentsAccess: this.hasAdjustmentsAccess(roles),
     }
   }
 
   getUserRoles(token: string): string[] {
     const { authorities: roles = [] } = jwtDecode(token) as { authorities?: string[] }
     return roles.map(role => role.substring(role.indexOf('_') + 1))
+  }
+
+  hasAdjustmentsAccess(roles: string[]): boolean {
+    return roles.includes('ADJUSTMENTS_MAINTAINER')
   }
 }

@@ -182,7 +182,7 @@
                 </table>
             {% endif %}
             {% if adjustments.unusedRemand.aggregate != 0 %}
-                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Unused remand</h4>
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Unused {% if user and user.hasAdjustmentsAccess %}deductions{% else %}remand{% endif %}</h4>
                 <table class="govuk-table govuk-!-margin-bottom-8">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
@@ -194,7 +194,10 @@
                         {% for adjustment in adjustments.unusedRemand.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
+                                <td class="govuk-table__cell">
+                                    {% if adjustment.from or adjustment.to %}
+                                        From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
+                                    {% endif %}
                                     {% if adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}</td>
