@@ -565,6 +565,33 @@ describe('Calculation routes tests', () => {
         )
       })
   })
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should not error and also not display ERSED Not applicable banner when calculationBreakdown is null', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+      ...stubbedResultsWithBreakdownAndAdjustments,
+      context: { ...stubbedResultsWithBreakdownAndAdjustments.context, prisonerId: 'A1234AA' },
+      dates: {
+        SLED: { date: '2023-09-20', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        MTD: { date: '2024-12-20', type: 'MTD', description: 'Mid transfer date', hints: [] },
+        ERSED: { date: '2021-12-20', type: 'ERSED', description: 'Early removal scheme eligibility date', hints: [] },
+        CRD: { date: '2022-08-14', type: 'CRD', description: 'Conditional release date', hints: [] },
+        ESED: { date: '2023-09-20', type: 'ESED', description: 'Effective sentence end date', hints: [] },
+      },
+      calculationBreakdown: null,
+    })
+
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const ersedNABanner = $('[data-qa=ersed-na-banner]').first()
+        const impTitle = $('[data-qa=important-title]').first()
+        expect(impTitle.length).toBe(0)
+        expect(ersedNABanner.length).toBe(0)
+      })
+  })
   it('GET /calculation/:nomsId/summary/:calculationRequestId should display upcoming HDCED changes notification', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
