@@ -92,6 +92,7 @@ const calculationBreakdown: CalculationBreakdown = {
   ],
   breakdownByReleaseDateType: {},
   otherDates: {},
+  ersedNotApplicableDueToDtoLaterThanCrd: false,
 }
 
 const validResult: ValidationMessage[] = []
@@ -809,6 +810,7 @@ describe('Calculate release dates service tests', () => {
             },
           },
           otherDates: {},
+          ersedNotApplicableDueToDtoLaterThanCrd: false,
         },
       }
       fakeApi.get(`/calculation/detailed-results/${calculationRequestId}`).reply(200, detailedResultsWithABreakdown)

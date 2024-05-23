@@ -1184,6 +1184,7 @@ export interface components {
       otherDates: {
         [key: string]: string
       }
+      ersedNotApplicableDueToDtoLaterThanCrd: boolean
     }
     CalculationOriginalData: {
       prisonerDetails?: components['schemas']['PrisonerDetails']

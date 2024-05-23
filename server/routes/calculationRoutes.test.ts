@@ -121,6 +121,7 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
   ],
   breakdownByReleaseDateType: {},
   otherDates: {},
+  ersedNotApplicableDueToDtoLaterThanCrd: false,
 }
 
 const stubbedReleaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = [
@@ -390,6 +391,9 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('Early removal scheme eligibility date')
         expect(res.text).not.toContain('From 16 January, the policy for calculating ERSED has changed')
         expectMiniProfile(res.text, expectedMiniProfile)
+        expect(res.text).not.toContain(
+          'Early removal cannot happen as release from the Detention Training Order (DTO) is later than the Conditional Release Date (CRD).',
+        )
       })
   })
 
@@ -505,6 +509,34 @@ describe('Calculation routes tests', () => {
   })
 
   it('GET /calculation/:nomsId/summary/:calculationRequestId should display notification when ERSED cannot happen because of DTO', () => {
+    const stubbedCalculationBreakdownWithErsedBanner: CalculationBreakdown = {
+      concurrentSentences: [
+        {
+          dates: {
+            CRD: {
+              adjusted: '2021-02-03',
+              unadjusted: '2021-01-15',
+              adjustedByDays: 18,
+              daysFromSentenceStart: 100,
+            },
+            SED: {
+              adjusted: '2021-02-03',
+              unadjusted: '2021-01-15',
+              adjustedByDays: 18,
+              daysFromSentenceStart: 100,
+            },
+          },
+          sentenceLength: '2 years',
+          sentenceLengthDays: 785,
+          sentencedAt: '2020-01-01',
+          lineSequence: 2,
+          caseSequence: 1,
+        },
+      ],
+      breakdownByReleaseDateType: {},
+      otherDates: {},
+      ersedNotApplicableDueToDtoLaterThanCrd: true,
+    }
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
       ...stubbedResultsWithBreakdownAndAdjustments,
@@ -516,6 +548,7 @@ describe('Calculation routes tests', () => {
         CRD: { date: '2022-08-14', type: 'CRD', description: 'Conditional release date', hints: [] },
         ESED: { date: '2023-09-20', type: 'ESED', description: 'Effective sentence end date', hints: [] },
       },
+      calculationBreakdown: stubbedCalculationBreakdownWithErsedBanner,
     })
 
     return request(app)
@@ -523,10 +556,13 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain(
+        const $ = cheerio.load(res.text)
+        const ersedNABanner = $('[data-qa=ersed-na-banner]').first()
+        const impTitle = $('[data-qa=important-title]').first()
+        expect(impTitle.text()).toStrictEqual('Important')
+        expect(ersedNABanner.text()).toStrictEqual(
           'Early removal cannot happen as release from the Detention Training Order (DTO) is later than the Conditional Release Date (CRD).',
         )
-        expect(res.text).toContain('Important')
       })
   })
   it('GET /calculation/:nomsId/summary/:calculationRequestId should display upcoming HDCED changes notification', () => {
