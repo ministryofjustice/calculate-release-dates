@@ -333,6 +333,7 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
   ],
   breakdownByReleaseDateType: {},
   otherDates: {},
+  ersedNotApplicableDueToDtoLaterThanCrd: false,
 }
 
 const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustments = {

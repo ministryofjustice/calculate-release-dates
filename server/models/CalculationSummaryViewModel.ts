@@ -61,16 +61,4 @@ export default class CalculationSummaryViewModel {
     }
     return false
   }
-
-  public ersedNotApplicableDueToDtoLaterThanCrd(): boolean {
-    const ersedBeforeCrd = this.dateBeforeAnother(
-      this.detailedCalculationResults.dates?.ERSED?.date,
-      this.detailedCalculationResults.dates?.CRD?.date,
-    )
-    const crdBeforeMtd = this.dateBeforeAnother(
-      this.detailedCalculationResults.dates?.CRD?.date,
-      this.detailedCalculationResults.dates?.MTD?.date,
-    )
-    return ersedBeforeCrd && crdBeforeMtd
-  }
 }

@@ -68,6 +68,7 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
       },
     },
     otherDates: {},
+    ersedNotApplicableDueToDtoLaterThanCrd: false,
   }
 }
 
@@ -139,6 +140,7 @@ export function psiExample25CalculationBreakdown(): CalculationBreakdown {
       },
     },
     otherDates: {},
+    ersedNotApplicableDueToDtoLaterThanCrd: false,
   }
 }
 
@@ -226,6 +228,7 @@ export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
       },
     },
     otherDates: { PRRD: '2025-03-18' },
+    ersedNotApplicableDueToDtoLaterThanCrd: false,
   }
 }
 
@@ -302,6 +305,7 @@ export function hdcedAdjustedToArd(): CalculationBreakdown {
       },
     },
     otherDates: {},
+    ersedNotApplicableDueToDtoLaterThanCrd: false,
   }
 }
 
@@ -539,6 +543,7 @@ export function ersedHalfwayBreakdown(): CalculationBreakdown {
       },
     },
     otherDates: {},
+    ersedNotApplicableDueToDtoLaterThanCrd: false,
   }
 }
 export function ersedTwoThirdsBreakdown(): CalculationBreakdown {
@@ -555,6 +560,7 @@ export function ersedTwoThirdsBreakdown(): CalculationBreakdown {
       },
     },
     otherDates: {},
+    ersedNotApplicableDueToDtoLaterThanCrd: false,
   }
 }
 export function ersedAdjustedByArdBreakdown(): CalculationBreakdown {
@@ -571,6 +577,7 @@ export function ersedAdjustedByArdBreakdown(): CalculationBreakdown {
       },
     },
     otherDates: {},
+    ersedNotApplicableDueToDtoLaterThanCrd: false,
   }
 }
 export function ersedBeforeSentenceBreakdown(): CalculationBreakdown {
@@ -587,5 +594,6 @@ export function ersedBeforeSentenceBreakdown(): CalculationBreakdown {
       },
     },
     otherDates: {},
+    ersedNotApplicableDueToDtoLaterThanCrd: false,
   }
 }

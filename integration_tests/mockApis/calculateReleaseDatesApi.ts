@@ -853,6 +853,7 @@ export default {
         },
       },
       otherDates: {},
+      ersedNotApplicableDueToDtoLaterThanCrd: false,
     }
     const prisonerDetails = {
       offenderNo: 'A1234AB',
