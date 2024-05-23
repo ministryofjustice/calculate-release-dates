@@ -36,4 +36,8 @@ export default class UserInputService {
     req.session.calculationReasonId[calculation.prisonerId] = calculation.calculationReason?.id
     req.session.otherReasonDescription[calculation.prisonerId] = calculation.otherReasonDescription
   }
+
+  public isCalculationReasonSet(req: Request, nomsId: string): boolean {
+    return req.session.calculationReasonId && req.session.calculationReasonId[nomsId]
+  }
 }
