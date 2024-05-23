@@ -30,7 +30,12 @@ export default function Index({
 
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
-  const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService, userInputService)
+  const calculationAccessRoutes = new CalculationRoutes(
+    calculateReleaseDatesService,
+    prisonerService,
+    userInputService,
+    userPermissionsService,
+  )
   const checkInformationAccessRoutes = new CheckInformationRoutes(
     calculateReleaseDatesService,
     prisonerService,

@@ -23,18 +23,21 @@ import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import config from '../config'
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
+import UserPermissionsService from '../services/userPermissionsService'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/userInputService')
 jest.mock('../services/viewReleaseDatesService')
+jest.mock('../services/userPermissionsService')
 
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
+const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
 
 let app: Express
 
@@ -345,6 +348,7 @@ beforeEach(() => {
       calculateReleaseDatesService,
       userInputService,
       viewReleaseDatesService,
+      userPermissionsService,
     },
   })
 })
@@ -738,7 +742,7 @@ describe('Calculation routes tests', () => {
       })
   })
   it('GET /calculation/:nomsId/summary/:calculationRequestId with specialist support on should display help text', () => {
-    config.featureToggles.specialistSupport = true
+    userPermissionsService.allowSpecialistSupportFeatureAccess.mockReturnValue(true)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
       stubbedResultsWithBreakdownAndAdjustments,
