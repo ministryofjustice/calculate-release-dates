@@ -408,18 +408,20 @@ export default class CalculateReleaseDatesService {
     prisonerId: string,
     token: string,
   ): Promise<{ latestCalcCard?: LatestCalculationCardConfig; latestCalcCardAction?: Action }> {
-    return new CalculateReleaseDatesApiClient(token)
+    const crdAPIClient = new CalculateReleaseDatesApiClient(token)
+    return crdAPIClient
       .getLatestCalculationForPrisoner(prisonerId)
-      .then(latestCalc => {
+      .then(async latestCalc => {
         let action: Action
         const latestCalcCard = this.latestCalculationComponentConfig(latestCalc)
+        const hasIndeterminateSentence = await this.hasIndeterminateSentences(latestCalc.bookingId, token)
         if (latestCalc.calculationRequestId) {
           action = {
             title: 'View details',
             href: `/view/${prisonerId}/sentences-and-offences/${latestCalc.calculationRequestId}`,
             dataQa: 'latest-calc-card-action',
           }
-          if (latestCalc.source === 'CRDS') {
+          if (latestCalc.source === 'CRDS' && !hasIndeterminateSentence) {
             latestCalcCard.printNotificationSlip = {
               href: `/view/${prisonerId}/calculation-summary/${latestCalc.calculationRequestId}/printNotificationSlip?fromPage=view`,
               dataQa: 'release-notification-hook',
@@ -468,5 +470,9 @@ export default class CalculateReleaseDatesService {
 
   async getReleaseDatesForACalcReqId(calcRequestId: number, token: string): Promise<ReleaseDatesAndCalculationContext> {
     return new CalculateReleaseDatesApiClient(token).getReleaseDatesForACalcReqId(calcRequestId)
+  }
+
+  async hasIndeterminateSentences(bookingId: number, token: string): Promise<boolean> {
+    return new CalculateReleaseDatesApiClient(token).hasIndeterminateSentences(bookingId)
   }
 }

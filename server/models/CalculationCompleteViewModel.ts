@@ -6,6 +6,7 @@ export default class CalculationCompleteViewModel extends PrisonerContextViewMod
     prisonerDetail: PrisonApiPrisoner,
     public calculationRequestId: number,
     public noDates: string,
+    public hasIndeterminateSentence: boolean,
   ) {
     super(prisonerDetail)
   }

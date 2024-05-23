@@ -18,12 +18,14 @@
 
       <div class="govuk-!-margin-top-6">
         <h2 class="govuk-heading-l">What you can do next</h2>
-        <p class="govuk-body">
-          <a data-qa=prisoner-notification-slip-link href="{{ "/calculation/" + prisonerDetail.offenderNo + "/summary/" + calculationRequestId + "/printNotificationSlip?fromPage=calculation" }}">Print the release dates notification slip</a>
-        </p>
+        {% if not hasIndeterminateSentence %}
+            <p class="govuk-body">
+              <a data-qa=prisoner-notification-slip-link href="{{ "/calculation/" + prisonerDetail.offenderNo + "/summary/" + calculationRequestId + "/printNotificationSlip?fromPage=calculation" }}">Print the release dates notification slip</a>
+            </p>
+        {% endif %}
 
         <div class="govuk-body govuk-!-margin-top-6">
-          <span>You can also go back to {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title | pluraliseName}}:</span>
+          <span data-qa="also-go-back">You can{% if not hasIndeterminateSentence %} also{% endif %} go back to {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title | pluraliseName}}:</span>
           <ul class="govuk-list govuk-!-margin-top-2">
             <li><a id="ccard-overview-link-id" data-qa="ccard-overview-link" href="{{ courtCasesAndReleaseDatesUrl }}/prisoner/{{ prisonerDetail.offenderNo }}/overview">Court case and release dates information</a></li>
             <li><a id="prisoner-profile-link-id" data-qa="prisoner-profile-link" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ prisonerDetail.offenderNo }}">Prisoner profile</a></li>
