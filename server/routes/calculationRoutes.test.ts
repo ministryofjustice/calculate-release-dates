@@ -629,6 +629,7 @@ describe('Calculation routes tests', () => {
   it('GET /calculation/:nomsId/complete should return details about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
     return request(app)
       .get('/calculation/A1234AB/complete/123456')
       .expect(200)
@@ -669,16 +670,34 @@ describe('Calculation routes tests', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
-
-  it('GET /calculation/:nomsId/complete return pluralised version of prisoners name correctly when name ends with s', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue({ ...stubbedPrisonerData, lastName: 'Bloggs' })
+  it('GET /calculation/:nomsId/complete should not render print notification slip link', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(true)
     return request(app)
       .get('/calculation/A1234AB/complete/123456')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('You can also go back to Anon Bloggs&#39;')
+        const $ = cheerio.load(res.text)
+        const prisonerNotificationSlipLink = $('[data-qa=prisoner-notification-slip-link]').first()
+        const alsoGoBackSpan = $('[data-qa=also-go-back]').first()
+
+        expect(alsoGoBackSpan.text()).toStrictEqual("You can go back to Anon Nobody's:")
+        expect(prisonerNotificationSlipLink.length).toBe(0)
+      })
+  })
+
+  it('GET /calculation/:nomsId/complete return pluralised version of prisoners name correctly when name ends with s', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue({ ...stubbedPrisonerData, lastName: 'Bloggs' })
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
+    return request(app)
+      .get('/calculation/A1234AB/complete/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('You can also go back to Anon Bloggs')
       })
   })
 

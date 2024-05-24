@@ -9,6 +9,7 @@ context('Calculation complete', () => {
     cy.task('stubGetUserCaseloads')
     cy.task('stubGetCalculationResults')
     cy.task('stubComponents')
+    cy.task('stubHasNoIndeterminateSentences')
   })
 
   it('Visit Calculation complete page', () => {

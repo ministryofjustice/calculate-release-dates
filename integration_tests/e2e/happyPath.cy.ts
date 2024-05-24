@@ -38,6 +38,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubGetDetailedCalculationResults')
     cy.task('stubComponents')
     cy.task('stubGetLatestCalculation')
+    cy.task('stubHasNoIndeterminateSentences')
   })
 
   it('Standalone user journey', () => {

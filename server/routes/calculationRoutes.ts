@@ -234,13 +234,17 @@ export default class CalculationRoutes {
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const calculation = await this.calculateReleaseDatesService.getCalculationResults(calculationRequestId, token)
+    const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
+      prisonerDetail.bookingId,
+      token,
+    )
     if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
       throw FullPageError.notFoundError()
     }
     this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
     res.render(
       'pages/calculation/calculationComplete',
-      new CalculationCompleteViewModel(prisonerDetail, calculationRequestId, noDates),
+      new CalculationCompleteViewModel(prisonerDetail, calculationRequestId, noDates, hasIndeterminateSentence),
     )
   }
 
