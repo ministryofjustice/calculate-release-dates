@@ -30,7 +30,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             {% if not model.approvedDates %}
-                {% if featureToggles.specialistSupport %}
+                {% if model.hasSpecialistSupportEnabled %}
                     <div class="govuk-inset-text">
                         If you think the calculation is wrong <a
                                 href={{ "/calculation/" + model.calculationReference + "/request-support"}}>contact the specialist

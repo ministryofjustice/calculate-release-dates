@@ -650,19 +650,21 @@ export default class GenuineOverrideRoutes {
   }
 
   public loadGenuineOverrideRequestPage: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
-    const { calculationReference } = req.params
-
-    const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
-      calculationReference,
-      token,
-    )
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
-    const { calculationRequestId } = releaseDates
-    return res.render(
-      'pages/genuineOverrides/requestSupport',
-      new GenuineOverridesRequestSupportViewModel(prisonerDetail, calculationReference, calculationRequestId),
-    )
+    if (this.userPermissionsService.allowSpecialistSupportFeatureAccess(res.locals.user.userRoles)) {
+      const { caseloads, token } = res.locals.user
+      const { calculationReference } = req.params
+      const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
+        calculationReference,
+        token,
+      )
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+      const { calculationRequestId } = releaseDates
+      return res.render(
+        'pages/genuineOverrides/requestSupport',
+        new GenuineOverridesRequestSupportViewModel(prisonerDetail, calculationReference, calculationRequestId),
+      )
+    }
+    throw FullPageError.notFoundError()
   }
 
   private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {

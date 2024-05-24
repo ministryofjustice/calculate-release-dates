@@ -28,6 +28,7 @@ export default class CalculationSummaryViewModel {
     public approvedDates?: { [key: string]: string },
     public overrideReason?: string,
     public detailedCalculationResults?: DetailedCalculationResults,
+    public hasSpecialistSupportEnabled?: boolean,
   ) {
     // intentionally left blank
   }

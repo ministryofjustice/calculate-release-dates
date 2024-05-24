@@ -16,12 +16,14 @@ import {
   ApprovedDateActionConfig,
   approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
 } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
+import UserPermissionsService from '../services/userPermissionsService'
 
 export default class CalculationRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly userInputService: UserInputService,
+    private readonly userPermissionsService: UserPermissionsService,
   ) {
     // intentionally left blank
   }
@@ -91,6 +93,7 @@ export default class CalculationRoutes {
       approvedDates,
       null,
       detailedCalculationResults,
+      this.userPermissionsService.allowSpecialistSupportFeatureAccess(res.locals.user.userRoles),
     )
     res.render(
       'pages/calculation/calculationSummary',

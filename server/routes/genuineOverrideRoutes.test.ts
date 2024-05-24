@@ -1005,6 +1005,7 @@ describe('Genuine overrides routes tests', () => {
   })
 
   it('GET /calculation/:calculationReference/request-support loads the request support page with mini profile', () => {
+    userPermissionsService.allowSpecialistSupportFeatureAccess.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
 
@@ -1015,5 +1016,13 @@ describe('Genuine overrides routes tests', () => {
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
+  })
+
+  it('GET /calculation/:calculationReference/request-support without feature access gets 404', () => {
+    userPermissionsService.allowSpecialistSupportFeatureAccess.mockReturnValue(false)
+    calculateReleaseDatesService.getCalculationResultsByReference.mockResolvedValue(stubbedCalculationResults)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+
+    return request(app).get('/calculation/ABC/request-support').expect(404).expect('Content-Type', /html/)
   })
 })
