@@ -19,6 +19,9 @@ export default class CheckInformationRoutes {
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
     const { token } = res.locals.user
     const { nomsId } = req.params
+    if (!this.userInputService.isCalculationReasonSet(req, nomsId)) {
+      return res.redirect(`/calculation/${nomsId}/reason`)
+    }
     const unsupportedSentenceOrCalculationMessages =
       await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
 

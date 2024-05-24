@@ -1,4 +1,5 @@
 import CheckInformationPage from '../pages/checkInformation'
+import CalculationReasonPage from '../pages/reasonForCalculation'
 
 context('Check nomis information', () => {
   beforeEach(() => {
@@ -7,6 +8,7 @@ context('Check nomis information', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetSentencesAndOffences')
+    cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetAnalyzedSentencesAndOffences')
     cy.task('stubGetAnalyzedSentenceAdjustments')
     cy.task('stubGetUserCaseloads')
@@ -16,7 +18,14 @@ context('Check nomis information', () => {
 
   it('Visit check nomis information page', () => {
     cy.signIn()
-    const checkInformationPage = CheckInformationPage.goTo('A1234AB')
+
+    CalculationReasonPage.goTo('A1234AB')
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.hasMiniProfile()
+    calculationReasonPage.submitReason().click()
+
+    const checkInformationPage = CheckInformationPage.verifyOnPage(CheckInformationPage)
     checkInformationPage.offenceCountText().contains('This calculation will include 2 sentences from NOMIS.') // contain.text didn't like the whitespace
 
     checkInformationPage.sentenceCards(1).should('contain.text', 'Committed on 03 February 2021')
@@ -37,7 +46,13 @@ context('Check nomis information', () => {
 
   it('Check nomis information page is accessible', () => {
     cy.signIn()
-    CheckInformationPage.goTo('A1234AB')
+    CalculationReasonPage.goTo('A1234AB')
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.hasMiniProfile()
+    calculationReasonPage.submitReason().click()
+
+    CheckInformationPage.verifyOnPage(CheckInformationPage)
     cy.injectAxe()
     cy.checkA11y()
   })
