@@ -20,7 +20,6 @@ import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseD
 import UserInputService from '../services/userInputService'
 import { pedAdjustedByCrdAndBeforePrrdBreakdown } from '../services/breakdownExamplesTestData'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
-import config from '../config'
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import UserPermissionsService from '../services/userPermissionsService'
