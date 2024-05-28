@@ -17,6 +17,7 @@ import {
   approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
 } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import UserPermissionsService from '../services/userPermissionsService'
+import config from '../config'
 
 export default class CalculationRoutes {
   constructor(
@@ -244,7 +245,13 @@ export default class CalculationRoutes {
     this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
     res.render(
       'pages/calculation/calculationComplete',
-      new CalculationCompleteViewModel(prisonerDetail, calculationRequestId, noDates, hasIndeterminateSentence),
+      new CalculationCompleteViewModel(
+        prisonerDetail,
+        calculationRequestId,
+        noDates,
+        hasIndeterminateSentence,
+        config.featureToggles.printNotificationSlipEnabled,
+      ),
     )
   }
 

@@ -18,10 +18,16 @@
 
       <div class="govuk-!-margin-top-6">
         <h2 class="govuk-heading-l">What you can do next</h2>
-        {% if not hasIndeterminateSentence %}
-            <p class="govuk-body">
-              <a data-qa=prisoner-notification-slip-link href="{{ "/calculation/" + prisonerDetail.offenderNo + "/summary/" + calculationRequestId + "/printNotificationSlip?fromPage=calculation" }}">Print the release dates notification slip</a>
-            </p>
+        {% if printSlipFeatureToggle %}
+          {% if not hasIndeterminateSentence %}
+              <p class="govuk-body">
+                <a data-qa=prisoner-notification-slip-link href="{{ "/calculation/" + prisonerDetail.offenderNo + "/summary/" + calculationRequestId + "/printNotificationSlip?fromPage=calculation" }}">Print the release dates notification slip</a>
+              </p>
+          {% endif %}
+        {% else %}
+          <p class="govuk-body">
+            <a href="{{ "/calculation/" + prisonerDetail.offenderNo + "/summary/" + calculationRequestId + "/print" }}">Print the calculation summary</a>
+          </p>
         {% endif %}
 
         <div class="govuk-body govuk-!-margin-top-6">
