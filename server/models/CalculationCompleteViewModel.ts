@@ -7,6 +7,7 @@ export default class CalculationCompleteViewModel extends PrisonerContextViewMod
     public calculationRequestId: number,
     public noDates: string,
     public hasIndeterminateSentence: boolean,
+    public printSlipFeatureToggle: boolean,
   ) {
     super(prisonerDetail)
   }

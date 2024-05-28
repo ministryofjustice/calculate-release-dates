@@ -36,6 +36,7 @@ import {
 import ErrorMessage from '../types/ErrorMessage'
 import { FullPageError } from '../types/FullPageError'
 import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
+import config from '../config'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
@@ -421,7 +422,11 @@ export default class CalculateReleaseDatesService {
             href: `/view/${prisonerId}/sentences-and-offences/${latestCalc.calculationRequestId}`,
             dataQa: 'latest-calc-card-action',
           }
-          if (latestCalc.source === 'CRDS' && !hasIndeterminateSentence) {
+          if (
+            config.featureToggles.printNotificationSlipEnabled &&
+            latestCalc.source === 'CRDS' &&
+            !hasIndeterminateSentence
+          ) {
             latestCalcCard.printNotificationSlip = {
               href: `/view/${prisonerId}/calculation-summary/${latestCalc.calculationRequestId}/printNotificationSlip?fromPage=view`,
               dataQa: 'release-notification-hook',

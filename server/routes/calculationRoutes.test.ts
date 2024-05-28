@@ -23,6 +23,7 @@ import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import UserPermissionsService from '../services/userPermissionsService'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -630,6 +631,7 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
+    config.featureToggles.printNotificationSlipEnabled = true
     return request(app)
       .get('/calculation/A1234AB/complete/123456')
       .expect(200)
@@ -668,6 +670,42 @@ describe('Calculation routes tests', () => {
         )
         expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
         expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /calculation/:nomsId/complete should not have print slip link when feature is toggled off', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
+    config.featureToggles.printNotificationSlipEnabled = false
+    return request(app)
+      .get('/calculation/A1234AB/complete/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const prisonerNotificationSlipLink = $('[data-qa=prisoner-notification-slip-link]').first()
+
+        expect(prisonerNotificationSlipLink).toHaveLength(0)
+        expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
+      })
+  })
+
+  it('GET /calculation/:nomsId/complete should not render print notification slip link', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(true)
+    return request(app)
+      .get('/calculation/A1234AB/complete/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const prisonerNotificationSlipLink = $('[data-qa=prisoner-notification-slip-link]').first()
+        const alsoGoBackSpan = $('[data-qa=also-go-back]').first()
+
+        expect(alsoGoBackSpan.text()).toStrictEqual("You can go back to Anon Nobody's:")
+        expect(prisonerNotificationSlipLink.length).toBe(0)
       })
   })
   it('GET /calculation/:nomsId/complete should not render print notification slip link', () => {
