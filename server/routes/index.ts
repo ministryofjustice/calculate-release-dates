@@ -142,6 +142,7 @@ export default function Index({
       '/calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip',
       viewAccessRoutes.printNotificationSlip,
     )
+    get('/calculation/:nomsId/summary/:calculationRequestId/print', calculationAccessRoutes.printCalculationSummary)
     get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
   }
 

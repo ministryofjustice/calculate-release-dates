@@ -813,4 +813,20 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('support team')
       })
   })
+  it('GET /calculation/:nomsId/summary/:calculationRequestId/print should return a printable page about the calculation requested', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+      stubbedResultsWithBreakdownAndAdjustments,
+    )
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456/print')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Anon Nobody')
+        expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
+        expect(res.text).toMatch(/Dates for/)
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
 })
