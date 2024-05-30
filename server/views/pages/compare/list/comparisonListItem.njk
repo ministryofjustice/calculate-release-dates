@@ -2,7 +2,7 @@
             <li class="gem-c-document-list__item">
                 <a class="gem-c-document-list__item-title govuk-link" href="/compare{{ '/manual' if comparison.comparisonType == ComparisonType.MANUAL }}/result/{{ comparison.comparisonShortReference }}">{% if includePrison %}{% if comparison.prisonName === 'all' %}All Prisons {% else %}{{ comparison.prisonName }}{% endif %} - {% endif %}{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
                 <p class="gem-c-document-list__item-description ">
-                     {{ comparison.numberOfMismatches }} mismatches from {{ comparison.numberOfPeopleCompared }} results - {{ (comparison.comparisonType | formatComparisonType).toLowerCase() }} comparison
+                     {{ comparison.numberOfMismatches }} mismatches{% if comparison.numberOfPeopleComparisonFailedFor and comparison.numberOfPeopleComparisonFailedFor > 0 %} with {{ comparison.numberOfPeopleComparisonFailedFor }} failures{% endif %} from {{ comparison.numberOfPeopleCompared }} results - {{ (comparison.comparisonType | formatComparisonType).toLowerCase() }} comparison
                 </p>
                 <p class="govuk-body-s"><time datetime="{{ comparison.calculatedAt | date('YYYY-MM-DD') }}">{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</time> by {{ comparison.calculatedBy }} </p>
             </li>

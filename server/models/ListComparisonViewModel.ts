@@ -14,6 +14,8 @@ export default class ListComparisonViewModel {
 
   numberOfMismatches: number
 
+  numberOfPeopleComparisonFailedFor: number
+
   numberOfPeopleCompared: number
 
   constructor(comparison: ComparisonSummary, prisons: Map<string, string>) {
@@ -24,5 +26,6 @@ export default class ListComparisonViewModel {
     this.calculatedBy = comparison.calculatedByUsername
     this.numberOfMismatches = comparison.numberOfMismatches
     this.numberOfPeopleCompared = comparison.numberOfPeopleCompared
+    this.numberOfPeopleComparisonFailedFor = comparison.numberOfPeopleComparisonFailedFor
   }
 }

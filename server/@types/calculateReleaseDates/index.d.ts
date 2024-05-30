@@ -541,6 +541,8 @@ export interface components {
       /** Format: int64 */
       numberOfPeopleCompared: number
       /** Format: int64 */
+      numberOfPeopleComparisonFailedFor: number
+      /** Format: int64 */
       numberOfMismatches: number
     }
     ComparisonStatus: {
@@ -834,6 +836,8 @@ export interface components {
       numberOfMismatches: number
       /** Format: int64 */
       numberOfPeopleCompared: number
+      /** Format: int64 */
+      numberOfPeopleComparisonFailedFor: number
     }
     ComparisonMismatchSummary: {
       personId: string
@@ -850,8 +854,10 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
         | 'VALIDATION_ERROR_HDC4_PLUS'
+        | 'FATAL_EXCEPTION'
       sdsSentencesIdentified: components['schemas']['JsonNode']
       establishment?: string
+      fatalException?: string
     }
     ComparisonOverview: {
       comparisonShortReference: string
@@ -865,6 +871,8 @@ export interface components {
       numberOfMismatches: number
       /** Format: int64 */
       numberOfPeopleCompared: number
+      /** Format: int64 */
+      numberOfPeopleComparisonFailedFor: number
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
       status: string
       hdc4PlusCalculated: components['schemas']['HdcFourPlusComparisonMismatch'][]
@@ -880,10 +888,12 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
         | 'VALIDATION_ERROR_HDC4_PLUS'
+        | 'FATAL_EXCEPTION'
       /** Format: date */
       hdcedFourPlusDate: string
       establishment?: string
       releaseDate?: components['schemas']['ReleaseDate']
+      fatalException?: string
     }
     ReleaseDate: {
       /** Format: date */
@@ -958,6 +968,7 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
         | 'VALIDATION_ERROR_HDC4_PLUS'
+        | 'FATAL_EXCEPTION'
       isActiveSexOffender?: boolean
       validationMessages: components['schemas']['ValidationMessage'][]
       shortReference: string
@@ -978,6 +989,7 @@ export interface components {
         [key: string]: components['schemas']['ReleaseDateCalculationBreakdown']
       }
       sdsSentencesIdentified: components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
+      fatalException?: string
     }
     /** @description Calculation breakdown details for a release date type */
     ReleaseDateCalculationBreakdown: {
@@ -1006,6 +1018,7 @@ export interface components {
         | 'ERSED_ADJUSTED_TO_CONCURRENT_TERM'
         | 'ERSED_BEFORE_SENTENCE_DATE'
         | 'ERSED_ADJUSTED_TO_MTD'
+        | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_COMMENCEMENT'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
@@ -2164,7 +2177,7 @@ export interface operations {
       }
     }
     responses: {
-      /** @description Returns a List<AnalysedSentenceAndOffences */
+      /** @description Returns a List<AnalyzedSentenceAndOffences */
       200: {
         content: {
           'application/json': components['schemas']['AnalysedSentenceAndOffence'][]
@@ -3115,7 +3128,7 @@ export interface operations {
       }
     }
     responses: {
-      /** @description Returns a List<AnalysedSentenceAndOffences */
+      /** @description Returns a List<AnalyzedSentenceAndOffences */
       200: {
         content: {
           'application/json': components['schemas']['AnalyzedBookingAndSentenceAdjustments']
