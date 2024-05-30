@@ -101,7 +101,17 @@
                     }
                 }
             ] %}
-
+            {%  if comparison.numberOfPeopleComparisonFailedFor and comparison.numberOfPeopleComparisonFailedFor > 0 %}
+                {% set rows = (rows.push(
+                    {
+                        key: {
+                            text: "Failed comparison count"
+                        },
+                        value: {
+                            text: comparison.numberOfPeopleComparisonFailedFor
+                        }
+                    }), rows) %}
+            {% endif %}
             {% if featureToggles.hdc4ComparisonTabEnabled %}
                 {% set rows = (rows.push(
                     {

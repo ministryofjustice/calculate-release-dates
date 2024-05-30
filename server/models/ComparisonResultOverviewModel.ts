@@ -19,6 +19,8 @@ export default class ComparisonResultOverviewModel {
 
   numberOfPeopleCompared: number
 
+  numberOfPeopleComparisonFailedFor: number
+
   releaseDateMismatchesTable: ReleaseDatesMismatchResultTable
 
   unsupportedSentenceMismatchesTable: MismatchResultTable
@@ -40,6 +42,7 @@ export default class ComparisonResultOverviewModel {
     this.calculatedBy = comparison.calculatedByUsername
     this.numberOfMismatches = comparison.numberOfMismatches
     this.numberOfPeopleCompared = comparison.numberOfPeopleCompared
+    this.numberOfPeopleComparisonFailedFor = comparison.numberOfPeopleComparisonFailedFor
 
     this.releaseDateMismatchesTable = new ReleaseDatesMismatchResultTable(comparison)
 

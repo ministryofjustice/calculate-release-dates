@@ -1,9 +1,13 @@
 import request from 'supertest'
 import { Express } from 'express'
-import { appWithAllRoutes } from './testutils/appSetup'
+import { appWithAllRoutes, user } from './testutils/appSetup'
 import UserPermissionsService from '../services/userPermissionsService'
 import ComparisonService from '../services/comparisonService'
-import { Comparison, ComparisonOverview } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  Comparison,
+  ComparisonOverview,
+  ComparisonSummary,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonType from '../enumerations/comparisonType'
 
 let app: Express
@@ -14,7 +18,12 @@ const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserP
 const comparisonService = new ComparisonService() as jest.Mocked<ComparisonService>
 
 beforeEach(() => {
-  app = appWithAllRoutes({ services: { userPermissionsService, comparisonService } })
+  app = appWithAllRoutes({
+    services: { userPermissionsService, comparisonService },
+    userSupplier: () => {
+      return { ...user, caseloadMap: new Map([['HMP', 'HMP Prison']]) }
+    },
+  })
   userPermissionsService.allowBulkComparison.mockReturnValue(true)
   userPermissionsService.allowManualComparison.mockReturnValue(true)
 })
@@ -40,6 +49,28 @@ const comparisonOverview = {
   mismatches: [],
   hdc4PlusCalculated: [],
 } as ComparisonOverview
+
+const comparisonSummaryWithFailures = {
+  comparisonShortReference: 'foo',
+  prison: 'HMP',
+  comparisonType: 'ESTABLISHMENT_FULL',
+  calculatedAt: '2020-01-01 10:53:46',
+  calculatedByUsername: 'me',
+  numberOfMismatches: 10,
+  numberOfPeopleCompared: 15,
+  numberOfPeopleComparisonFailedFor: 5,
+} as ComparisonSummary
+
+const comparisonSummaryNoFailures = {
+  comparisonShortReference: 'bar',
+  prison: 'HMP',
+  comparisonType: 'ESTABLISHMENT_FULL',
+  calculatedAt: '2020-01-01 10:53:46',
+  calculatedByUsername: 'me',
+  numberOfMismatches: 15,
+  numberOfPeopleCompared: 15,
+  numberOfPeopleComparisonFailedFor: 0,
+} as ComparisonSummary
 
 describe('Compare routes tests', () => {
   it('GET /compare should return the Bulk Comparison index page', () => {
@@ -78,6 +109,94 @@ describe('Compare routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Bulk comparison results')
+      })
+  })
+  it('GET /compare/list should return the Bulk Comparison previous list page', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.getPrisonComparisons.mockResolvedValue([
+      comparisonSummaryWithFailures,
+      comparisonSummaryNoFailures,
+    ])
+    return request(app)
+      .get('/compare/list')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('15 mismatches from 15 results - full comparison')
+        expect(res.text).toContain('10 mismatches with 5 failures from 15 results - full comparison')
+      })
+  })
+  it('GET /compare/manual/list should return the Bulk Comparison previous list page', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.getManualComparisons.mockResolvedValue([
+      comparisonSummaryWithFailures,
+      comparisonSummaryNoFailures,
+    ])
+    return request(app)
+      .get('/compare/manual/list')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('15 mismatches from 15 results - full comparison')
+        expect(res.text).toContain('10 mismatches with 5 failures from 15 results - full comparison')
+      })
+  })
+  it('GET /compare/result/ref should return the Bulk Comparison overview page', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.getPrisonComparison.mockResolvedValue({
+      ...comparisonOverview,
+      numberOfPeopleComparisonFailedFor: 978654321,
+    })
+    return request(app)
+      .get('/compare/result/foo')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Failed comparison count')
+        expect(res.text).toContain('978654321')
+      })
+  })
+  it('GET /compare/manual/result/ref should return the Bulk Comparison overview page', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.getManualComparison.mockResolvedValue({
+      ...comparisonOverview,
+      numberOfPeopleComparisonFailedFor: 123456789,
+    })
+    return request(app)
+      .get('/compare/manual/result/foo')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Failed comparison count')
+        expect(res.text).toContain('123456789')
+      })
+  })
+  it('GET /compare/result/ref should return the Bulk Comparison overview page and hide failure count if none', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.getPrisonComparison.mockResolvedValue({
+      ...comparisonOverview,
+      numberOfPeopleComparisonFailedFor: 0,
+    })
+    return request(app)
+      .get('/compare/result/foo')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).not.toContain('Failed comparison count')
+      })
+  })
+  it('GET /compare/manual/result/ref should return the Bulk Comparison overview page and hide failure count if none', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.getManualComparison.mockResolvedValue({
+      ...comparisonOverview,
+      numberOfPeopleComparisonFailedFor: 0,
+    })
+    return request(app)
+      .get('/compare/manual/result/foo')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).not.toContain('Failed comparison count')
       })
   })
 })
