@@ -54,6 +54,45 @@ const stubbedUserInput = {
   sentenceCalculationUserInputs: [],
 } as CalculationUserInputs
 
+const stubbedAdjustments = {
+  bookingAdjustments: [
+    {
+      active: true,
+      fromDate: '2022-01-01',
+      toDate: '2022-01-08',
+      numberOfDays: 8,
+      type: 'ADDITIONAL_DAYS_AWARDED',
+    },
+    { active: true, fromDate: '2022-02-01', toDate: '2022-01-08', numberOfDays: 8, type: 'UNLAWFULLY_AT_LARGE' },
+    {
+      active: true,
+      fromDate: '2022-03-01',
+      toDate: '2022-01-08',
+      numberOfDays: 8,
+      type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
+    },
+  ],
+  sentenceAdjustments: [
+    { active: true, fromDate: '2022-05-01', toDate: '2024-03-03', numberOfDays: 3, type: 'REMAND' },
+    { active: true, fromDate: '2022-06-01', toDate: '2024-03-19', numberOfDays: 15, type: 'TAGGED_BAIL' },
+    { active: true, fromDate: '2022-07-01', toDate: '2024-03-19', numberOfDays: 15, type: 'UNUSED_REMAND' },
+    {
+      active: true,
+      fromDate: '2022-08-01',
+      toDate: '2024-03-19',
+      numberOfDays: 15,
+      type: 'RECALL_SENTENCE_TAGGED_BAIL',
+    },
+    {
+      active: true,
+      fromDate: '2022-09-01',
+      toDate: '2024-03-19',
+      numberOfDays: 15,
+      type: 'RECALL_SENTENCE_REMAND',
+    },
+  ],
+}
+
 describe('ViewRouteSentenceAndOffenceViewModel', () => {
   describe('handles multiple offences to a sentence banner', () => {
     it('shows multiple offences to a sentence banner', () => {
@@ -201,45 +240,20 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
       expect(model.getMultipleOffencesToASentence()).toStrictEqual([])
     })
   })
+  it('should return correct days for tagged bail or unused remand', () => {
+    const model = new ViewRouteSentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      [],
+      stubbedAdjustments as AnalyzedPrisonApiBookingAndSentenceAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    const numberOfDaysDeducted = model.daysInUnsedRemandOrTaggedBail()
+    expect(numberOfDaysDeducted).toStrictEqual(30)
+  })
   it('should generate adjustments array correctly', () => {
-    const stubbedAdjustments = {
-      bookingAdjustments: [
-        {
-          active: true,
-          fromDate: '2022-01-01',
-          toDate: '2022-01-08',
-          numberOfDays: 8,
-          type: 'ADDITIONAL_DAYS_AWARDED',
-        },
-        { active: true, fromDate: '2022-02-01', toDate: '2022-01-08', numberOfDays: 8, type: 'UNLAWFULLY_AT_LARGE' },
-        {
-          active: true,
-          fromDate: '2022-03-01',
-          toDate: '2022-01-08',
-          numberOfDays: 8,
-          type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
-        },
-      ],
-      sentenceAdjustments: [
-        { active: true, fromDate: '2022-05-01', toDate: '2024-03-03', numberOfDays: 3, type: 'REMAND' },
-        { active: true, fromDate: '2022-06-01', toDate: '2024-03-19', numberOfDays: 15, type: 'TAGGED_BAIL' },
-        { active: true, fromDate: '2022-07-01', toDate: '2024-03-19', numberOfDays: 15, type: 'UNUSED_REMAND' },
-        {
-          active: true,
-          fromDate: '2022-08-01',
-          toDate: '2024-03-19',
-          numberOfDays: 15,
-          type: 'RECALL_SENTENCE_TAGGED_BAIL',
-        },
-        {
-          active: true,
-          fromDate: '2022-09-01',
-          toDate: '2024-03-19',
-          numberOfDays: 15,
-          type: 'RECALL_SENTENCE_REMAND',
-        },
-      ],
-    }
     const model = new ViewRouteSentenceAndOffenceViewModel(
       stubbedPrisonerData,
       stubbedUserInput,
