@@ -1220,6 +1220,7 @@ describe('View journey routes tests', () => {
           const appealBail = $('[data-qa=appeal-bail]').first()
           const offenderSlipLink = $('[data-qa="slip-offender-copy"]').first()
           const establishmentSlipLink = $('[data-qa="slip-establishment-copy"]').first()
+          const daysInUnusedRemandOrTaggedBail = $('[data-qa=days-in-unusedRemand-taggedBail]').first()
 
           expect(offenderSlipLink.attr('href')).toStrictEqual(
             '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view&pageType=offender',
@@ -1259,8 +1260,8 @@ describe('View journey routes tests', () => {
           expect(adjustTitle.text()).toContain('Adjustments')
           expect(adjustDesc.text()).toContain('This calculation includes the following adjustments to sentences.')
           expect(adjustColType.text()).toContain('Adjustment type')
-          expect(adjustColFrom.text()).toContain('Date from')
-          expect(adjustColTo.text()).toContain('Date to')
+          expect(adjustColFrom.text()).toStrictEqual('Date from (if applicable)')
+          expect(adjustColTo.text()).toStrictEqual('Date to (if applicable)')
           expect(adjustColDays.text()).toContain('Days')
           expect(ulalName.text()).toContain('Unlawfully at large')
           expect(ulalFrom.text()).toContain('07 March 2021')
@@ -1270,6 +1271,7 @@ describe('View journey routes tests', () => {
           expect(remandFrom.text()).toContain('01 February 2021')
           expect(remandTo.text()).toContain('02 February 2021')
           expect(remandDays.text()).toContain('2 days deducted')
+          expect(daysInUnusedRemandOrTaggedBail.length).toStrictEqual(0)
           expect(appealCustody.text()).toContain(
             'Days spent in custody pending appeal to count (must be completed manually):',
           )
@@ -1361,6 +1363,48 @@ describe('View journey routes tests', () => {
           expect(establishmentSlipLink.attr('href')).toStrictEqual(
             '/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation&pageType=establishment',
           )
+        })
+    })
+
+    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should generate correct unused remand', () => {
+      const stubbedAdjustmentsTB = {
+        sentenceAdjustments: [
+          {
+            sentenceSequence: 1,
+            type: 'TAGGED_BAIL',
+            numberOfDays: 2,
+            active: true,
+          },
+          {
+            sentenceSequence: 2,
+            type: 'UNUSED_REMAND',
+            numberOfDays: 2,
+            active: true,
+          },
+        ],
+        bookingAdjustments: [],
+      } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustmentsTB)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
+      return request(app)
+        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const daysInUnusedRemandOrTaggedBail = $('[data-qa=days-in-unusedRemand-taggedBail]').first()
+          const taggedBailFrom = $('[data-qa="Tagged bail-from"]').first()
+          const taggedBailTo = $('[data-qa="Tagged bail-from"]').first()
+          const unusedRemandFrom = $('[data-qa="Unused remand-from"]').first()
+          const unusedTo = $('[data-qa="Unused remand-to"]').first()
+
+          expect(daysInUnusedRemandOrTaggedBail.text()).toStrictEqual('There are 4 days of unused deductions.')
+          expect(taggedBailFrom.text()).toStrictEqual('')
+          expect(unusedRemandFrom.text()).toStrictEqual('')
+          expect(taggedBailTo.text()).toStrictEqual('')
+          expect(unusedTo.text()).toStrictEqual('')
         })
     })
 

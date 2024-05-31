@@ -98,6 +98,14 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     return Object.keys(duplicates).map(key => [duplicates[key].caseSequence, duplicates[key].lineSequence])
   }
 
+  hasUnusedRemandOrTaggedBail(): boolean {
+    return this.adjustments.unusedRemand.aggregate > 0 || this.adjustments.taggedBail.aggregate > 0
+  }
+
+  daysInUnsedRemandOrTaggedBail(): number {
+    return this.adjustments.unusedRemand.aggregate + this.adjustments.taggedBail.aggregate
+  }
+
   generateAdjustmentsRows() {
     const adjustmentsRows = []
 
