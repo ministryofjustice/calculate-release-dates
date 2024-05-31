@@ -17,9 +17,9 @@
     <div class="print-width-container">
       <div class="moj-width-container govuk-!-margin-bottom-4 govuk-!-display-none-print">
         {% if fromPage == 'calculation' %}
-          <a data-qa="back-link" href="/calculation/{{ model.prisonerDetail.offenderNo }}/complete/{{ calculationRequestId }}">Back</a>
+          <a data-qa="back-link" class="govuk-back-link" href="/calculation/{{ model.prisonerDetail.offenderNo }}/complete/{{ calculationRequestId }}">Back</a>
         {% elif fromPage == 'view' %}
-          <a data-qa="back-link" href="/?prisonId={{ model.prisonerDetail.offenderNo }}">Back</a>
+          <a data-qa="back-link" class="govuk-back-link" href="/?prisonId={{ model.prisonerDetail.offenderNo }}">Back</a>
         {% endif %}
       </div>
 
@@ -114,6 +114,9 @@
                 <p class="govuk-body govuk-!-margin-bottom-4" data-qa="appeal-bail">Days spent on bail pending appeal not to count <b>(must be completed manually)</b>:</p>
                 {% if pageType == 'offender' %}
                     <p data-qa="offender-disagree-text" class="govuk-body">If you disagree with the above dates, please write down what you think the dates should be and hand to your wing office.</p>
+                    {% if hasHDCED %}
+                        <p data-qa="offender-hdced-text" class="govuk-body">Release on HDC (Home Detention Curfew) is subject to an assessment.</p>
+                    {% endif %}
                 {% endif %}
                 {% if pageType == 'establishment' %}
                     <p data-qa="calculated-by" class="govuk-body govuk-!-margin-bottom-2">Calculated by:</p>
