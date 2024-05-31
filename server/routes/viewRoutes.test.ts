@@ -1221,6 +1221,7 @@ describe('View journey routes tests', () => {
           const offenderSlipLink = $('[data-qa="slip-offender-copy"]').first()
           const establishmentSlipLink = $('[data-qa="slip-establishment-copy"]').first()
           const daysInUnusedRemandOrTaggedBail = $('[data-qa=days-in-unusedRemand-taggedBail]').first()
+          const offenderHDCED = $('[data-qa="offender-hdced-text"]').first()
 
           expect(offenderSlipLink.attr('href')).toStrictEqual(
             '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view&pageType=offender',
@@ -1272,6 +1273,7 @@ describe('View journey routes tests', () => {
           expect(remandTo.text()).toContain('02 February 2021')
           expect(remandDays.text()).toContain('2 days deducted')
           expect(daysInUnusedRemandOrTaggedBail.length).toStrictEqual(0)
+          expect(offenderHDCED.length).toStrictEqual(0)
           expect(appealCustody.text()).toContain(
             'Days spent in custody pending appeal to count (must be completed manually):',
           )
@@ -1299,6 +1301,7 @@ describe('View journey routes tests', () => {
           const calcReasonTitle = $('[data-qa="calculation-reason-title"]')
           const calcReason = $('[data-qa="calculation-reason"]')
           const printInvoker = $('[data-qa="print-invoker"]').first()
+          const offenderHDCED = $('[data-qa="offender-hdced-text"]').first()
 
           expect(printInvoker.attr('src')).toStrictEqual('/assets/print.js')
           expect(calculatedBy.length).toStrictEqual(0)
@@ -1306,6 +1309,9 @@ describe('View journey routes tests', () => {
           expect(calcReason.length).toStrictEqual(0)
           expect(checkedBy.length).toStrictEqual(0)
           expect(pageTitleCaption.text()).toStrictEqual('[Offender copy]')
+          expect(offenderHDCED.text()).toStrictEqual(
+            'Release on HDC (Home Detention Curfew) is subject to an assessment.',
+          )
           expect(offenderDisagreeText.text()).toStrictEqual(
             'If you disagree with the above dates, please write down what you think the dates should be and hand to your wing office.',
           )
@@ -1330,6 +1336,7 @@ describe('View journey routes tests', () => {
           const calcReasonTitle = $('[data-qa="calculation-reason-title"]').first()
           const calcReason = $('[data-qa="calculation-reason"]').first()
           const printInvoker = $('[data-qa="print-invoker"]').first()
+          const offenderHDCED = $('[data-qa="offender-hdced-text"]').first()
 
           expect(printInvoker.attr('src')).toStrictEqual('/assets/print.js')
           expect(calculatedBy.text()).toStrictEqual('Calculated by:')
@@ -1338,6 +1345,7 @@ describe('View journey routes tests', () => {
           expect(checkedBy.text()).toStrictEqual('Checked by:')
           expect(pageTitleCaption.text()).toStrictEqual('[Establishment copy]')
           expect(offenderDisagreeText.length).toStrictEqual(0)
+          expect(offenderHDCED.length).toStrictEqual(0)
         })
     })
 
@@ -1363,6 +1371,54 @@ describe('View journey routes tests', () => {
           expect(establishmentSlipLink.attr('href')).toStrictEqual(
             '/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation&pageType=establishment',
           )
+        })
+    })
+
+    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=view&pageType=offender should generate page without HDCED text', () => {
+      const stubbedReleaseDatesWithoutHDCED: ReleaseDatesAndCalculationContext = {
+        calculation: {
+          calculationRequestId: 51245,
+          bookingId: 1201571,
+          prisonerId: 'A8031DY',
+          calculationStatus: 'CONFIRMED',
+          calculationReference: 'fe1909af-c780-4b61-9ca3-a82678de5dca',
+          calculationReason: {
+            id: 8,
+            isOther: false,
+            displayName: 'A calculation reason',
+          },
+          otherReasonDescription: '',
+          calculationDate: '2020-06-01',
+          calculationType: 'CALCULATED',
+        },
+        dates: [
+          {
+            type: 'SED',
+            description: 'Sentence expiry date',
+            date: '2021-02-03',
+            hints: [],
+          },
+          {
+            type: 'CRD',
+            description: 'Conditional release date',
+            date: '2021-02-03',
+            hints: [],
+          },
+        ],
+      }
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesWithoutHDCED)
+      return request(app)
+        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=view&pageType=offender')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const offenderHDCED = $('[data-qa="offender-hdced-text"]').first()
+
+          expect(offenderHDCED.length).toStrictEqual(0)
         })
     })
 
