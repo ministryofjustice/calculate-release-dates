@@ -8,6 +8,7 @@ import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseD
 import { PrisonApiOffenderSentenceAndOffences, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import SentenceTypes from './SentenceTypes'
+import config from '../config'
 
 export default class CalculationSummaryViewModel {
   constructor(
@@ -35,6 +36,7 @@ export default class CalculationSummaryViewModel {
 
   public showBreakdown(): boolean {
     return (
+      config.featureToggles.showBreakdown &&
       !!this.calculationBreakdown &&
       !this.detailedCalculationResults.dates?.PRRD &&
       !this.calculationBreakdown?.otherDates?.PRRD &&
