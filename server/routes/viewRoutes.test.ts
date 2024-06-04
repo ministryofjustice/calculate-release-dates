@@ -1239,11 +1239,11 @@ describe('View journey routes tests', () => {
           expect(offenderNumber.text()).toContain('A1234AA')
           expect(releaseDatesTitle.text()).toContain('Release dates')
           expect(calculationDate.text()).toStrictEqual('These release dates were calculated on 01 June 2020')
-          expect(crdTitle.text()).toContain('Conditional release date')
+          expect(crdTitle.text()).toContain('CRD (Conditional release date)')
           expect(crdDate.text()).toContain('03 February 2021')
-          expect(sedTitle.text()).toContain('Sentence expiry date')
+          expect(sedTitle.text()).toContain('SED (Sentence expiry date)')
           expect(sedDate.text()).toContain('03 February 2021')
-          expect(hdcedTitle.text()).toContain('Home detention curfew eligibility date')
+          expect(hdcedTitle.text()).toContain('HDCED (Home detention curfew eligibility date)')
           expect(hdcedDate.text()).toContain('03 October 2021')
           expect(sentenceTitle.text()).toContain('Sentence details')
           expect(sentenceColTitle.text()).toContain('Sentence')
@@ -1583,11 +1583,139 @@ describe('View journey routes tests', () => {
           const noAdjustments = $('[data-qa=adjust-desc-no]').first()
           const prisonTitle = $('[data-qa=prison-name]').first()
           const prisonerCell = $('[data-qa=prisoner-cell]').first()
+          const dtoTitle = $('[data-qa=dto-title]').first()
+          const dtoText = $('[data-qa=dto-text]').first()
 
           expect(noKeyDates.text()).toStrictEqual('No key dates available.')
           expect(noAdjustments.text()).toStrictEqual('There are no adjustments.')
           expect(prisonTitle.text()).toContain('No agency name available')
           expect(prisonerCell.text()).toContain('No Cell Number available')
+          expect(dtoTitle.length).toStrictEqual(0)
+          expect(dtoText.length).toStrictEqual(0)
+        })
+    })
+
+    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should generate correct content for a DTO only sentence', () => {
+      const stubbedSentencesAndOffencesLocal = [
+        {
+          terms: [
+            {
+              years: 2,
+              months: 2,
+              weeks: 2,
+              days: 2,
+              code: 'IMP',
+            },
+          ],
+          sentenceDate: '2004-02-03',
+          sentenceCalculationType: 'DTO',
+          sentenceTypeDescription: 'Detention and Training Order',
+          caseSequence: 1,
+          lineSequence: 1,
+          sentenceSequence: 1,
+          offence: { offenceEndDate: '2021-02-03' },
+          isSDSPlus: false,
+        } as SentenceAndOffenceWithReleaseArrangements,
+        {
+          terms: [
+            {
+              years: 2,
+              months: 2,
+              weeks: 2,
+              days: 2,
+              code: 'IMP',
+            },
+          ],
+          sentenceDate: '2004-02-03',
+          sentenceCalculationType: 'DTO_ORA',
+          sentenceTypeDescription: 'Detention and Training Order',
+          caseSequence: 1,
+          lineSequence: 1,
+          sentenceSequence: 1,
+          offence: { offenceEndDate: '2021-02-03' },
+          isSDSPlus: false,
+        } as SentenceAndOffenceWithReleaseArrangements,
+      ]
+      const stubbedNoAdjustments = {
+        sentenceAdjustments: [],
+        bookingAdjustments: [],
+      } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+      const stubbedNoPrisonPrisonerData = {
+        sentenceDetail: {} as PrisonApiSentenceDetail,
+        assignedLivingUnit: {} as PrisonAPIAssignedLivingUnit,
+      } as PrisonApiPrisoner
+      const stubbedReleaseDatesUsingCalcReqIdLocal: ReleaseDatesAndCalculationContext = {
+        calculation: {
+          calculationRequestId: 51245,
+          bookingId: 1201571,
+          prisonerId: 'A8031DY',
+          calculationStatus: 'CONFIRMED',
+          calculationReference: 'fe1909af-c780-4b61-9ca3-a82678de5dca',
+          calculationReason: {
+            id: 8,
+            isOther: false,
+            displayName: 'A calculation reason',
+          },
+          otherReasonDescription: '',
+          calculationDate: '2020-06-01',
+          calculationType: 'CALCULATED',
+        },
+        dates: [
+          {
+            type: 'LTD',
+            description: 'Late transfer date',
+            date: '2022-02-03',
+            hints: [],
+          },
+          {
+            type: 'ETD',
+            description: 'Early transfer date',
+            date: '2021-02-03',
+            hints: [],
+          },
+          {
+            type: 'MTD',
+            description: 'Mid transfer date',
+            date: '2021-10-03',
+            hints: [],
+          },
+        ],
+      }
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedNoPrisonPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedNoAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(
+        stubbedReleaseDatesUsingCalcReqIdLocal,
+      )
+      return request(app)
+        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const dtoTitle = $('[data-qa=dto-title]').first()
+          const noKeyDates = $('[data-qa=no-key-dates-test]').first()
+          const dtoText = $('[data-qa=dto-text]').first()
+          const releaseDatesTitle = $('[data-qa=release-date-title]').first()
+          const ltdTitle = $('[data-qa=LTD-title]').first()
+          const ltdDate = $('[data-qa=LTD-date]').first()
+          const etdTitle = $('[data-qa=ETD-title]').first()
+          const etdDate = $('[data-qa=ETD-date]').first()
+          const mtdTitle = $('[data-qa=MTD-title]').first()
+          const mtdDate = $('[data-qa=MTD-date]').first()
+
+          expect(ltdTitle.text()).toContain('LTD (Late transfer date)')
+          expect(ltdDate.text()).toContain('03 February 2022')
+          expect(etdTitle.text()).toContain('ETD (Early transfer date)')
+          expect(etdDate.text()).toContain('03 February 2021')
+          expect(mtdTitle.text()).toContain('MTD (Mid transfer date)')
+          expect(mtdDate.text()).toContain('03 October 2021')
+          expect(releaseDatesTitle.length).toStrictEqual(0)
+          expect(noKeyDates.length).toStrictEqual(0)
+          expect(dtoTitle.text()).toStrictEqual('DTO (Detention training order) dates')
+          expect(dtoText.text()).toStrictEqual(
+            'Your DTO sentence dates with all adjustments including any days spent unlawfully at large (UAL) and/or time served pending appeal (TSPA) are as follows:',
+          )
         })
     })
   })

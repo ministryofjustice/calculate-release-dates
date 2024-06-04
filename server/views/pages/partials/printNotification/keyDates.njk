@@ -3,7 +3,7 @@
       {% for keyDate in keyDatesObj %}
         <div class="govuk-summary-list__row">
           <dt data-qa="{{keyDate.code}}-title" class="govuk-summary-list__key govuk-!-font-weight-regular" style="padding: 5px 0px 6px 0px">
-            {{ keyDate.description }}
+            {{keyDate.code}} ({{ keyDate.description }})
           </dt>
           <dd data-qa="{{keyDate.code}}-date" class="govuk-summary-list__value " style="padding: 5px 0px 6px 0px">
             {{ keyDate.date | date('DD MMMM YYYY')  }}

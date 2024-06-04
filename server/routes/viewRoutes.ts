@@ -255,6 +255,9 @@ export default class ViewRoutes {
       this.calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, token),
     ])
 
+    const hasDTOSentence = sentencesAndOffences.some(sentence => SentenceTypes.isSentenceDto(sentence))
+    const hasOnlyDTOSentences = sentencesAndOffences.every(sentence => SentenceTypes.isSentenceDto(sentence))
+
     const datesArray = Object.values(releaseDateAndCalcContext.dates)
       .filter(dateObject => dateObject && dateObject.date && filteredListOfDates.includes(dateObject.type))
       .map(dateObject => ({ code: dateObject.type, description: dateObject.description, date: dateObject.date }))
@@ -277,6 +280,8 @@ export default class ViewRoutes {
         fromPage,
         pageType,
         releaseDateAndCalcContext.calculation.calculationReason.displayName,
+        hasDTOSentence,
+        hasOnlyDTOSentences,
       ),
     )
   }
