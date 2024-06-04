@@ -1,4 +1,4 @@
-export default class KeyDates {
+export default class KeyDate {
   code: string
 
   date: string

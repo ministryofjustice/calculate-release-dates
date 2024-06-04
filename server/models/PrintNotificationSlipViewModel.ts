@@ -1,20 +1,20 @@
 import PrisonerContextViewModel from './PrisonerContextViewModel'
 import ViewRouteSentenceAndOffenceViewModel from './ViewRouteSentenceAndOffenceViewModel'
-import KeyDates from './KeyDates'
+import KeyDate from './KeyDate'
 
 export default class PrintNotificationSlipViewModel extends PrisonerContextViewModel {
   public hasHDCED: boolean
 
-  public nonDtoKeyDates: KeyDates[]
+  public nonDtoKeyDates: KeyDate[]
 
-  public dtoKeyDates: KeyDates[]
+  public dtoKeyDates: KeyDate[]
 
   constructor(
     public model: ViewRouteSentenceAndOffenceViewModel,
     public calculationRequestId: number,
     public nomsId: string,
     public calculationDate: string,
-    public keyDatesArray: KeyDates[],
+    public keyDatesArray: KeyDate[],
     public fromPage: string,
     public pageType: string,
     public calculationReason: string,
@@ -33,7 +33,7 @@ export default class PrintNotificationSlipViewModel extends PrisonerContextViewM
 
   getNonDTOKeyDatesInOrder(): { code: string; date: string; description: string }[] {
     const codes = ['SED', 'LED', 'SLED', 'HDCED', 'HDCAD', 'PED', 'ERSED', 'TUSED', 'ROTL']
-    const keyDates: KeyDates[] = codes
+    const keyDates: KeyDate[] = codes
       .map(code => this.keyDatesArray.find(keyDate => keyDate.code === code))
       .filter(Boolean)
     const getSubsetDate = this.getNonDTOSubsetOfDaysInOrder()
@@ -48,15 +48,15 @@ export default class PrintNotificationSlipViewModel extends PrisonerContextViewM
     return keyDates
   }
 
-  getNonDTOSubsetOfDaysInOrder(): KeyDates {
+  getNonDTOSubsetOfDaysInOrder(): KeyDate {
     const codes = ['ARD', 'CRD', 'NPD', 'PRRD']
-    function getLatestDate(sortedKeyDates: KeyDates[]): string {
-      const latestDate: KeyDates = sortedKeyDates.reduce((latest, current) => {
+    function getLatestDate(sortedKeyDates: KeyDate[]): string {
+      const latestDate: KeyDate = sortedKeyDates.reduce((latest, current) => {
         return new Date(latest.date) > new Date(current.date) ? latest : current
       })
       return latestDate.date
     }
-    const sortedKeyDates: KeyDates[] = codes
+    const sortedKeyDates: KeyDate[] = codes
       .map(code => this.keyDatesArray.find(keyDate => keyDate.code === code))
       .filter(Boolean)
 
@@ -71,7 +71,7 @@ export default class PrintNotificationSlipViewModel extends PrisonerContextViewM
 
   getDTOKeyDatesInOrder() {
     const codes = ['SED', 'ETD', 'MTD', 'LTD', 'TUSED']
-    const keyDates: KeyDates[] = codes
+    const keyDates: KeyDate[] = codes
       .map(code => this.keyDatesArray.find(keyDate => keyDate.code === code))
       .filter(Boolean)
 

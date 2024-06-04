@@ -1,7 +1,7 @@
 import PrintNotificationSlipViewModel from './PrintNotificationSlipViewModel'
 import ViewRouteSentenceAndOffenceViewModel from './ViewRouteSentenceAndOffenceViewModel'
 import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
-import KeyDates from './KeyDates'
+import KeyDate from './KeyDate'
 
 describe('Print Release Dates Notification Slip', () => {
   describe('dates in correct order for subset of Non DTO dates', () => {
@@ -160,7 +160,7 @@ describe('Print Release Dates Notification Slip', () => {
     )
 
     it('for all dates present in DTO', () => {
-      const keyDates: KeyDates[] = [
+      const keyDates: KeyDate[] = [
         { code: 'LTD', date: '2025-06-15', description: 'Late transfer date' },
         { code: 'SED', date: '2022-06-15', description: 'Sentence expiry date' },
         { code: 'MTD', date: '2024-06-15', description: 'Mid transfer date' },
@@ -190,7 +190,7 @@ describe('Print Release Dates Notification Slip', () => {
     })
 
     it('for some dates present in DTO', () => {
-      const keyDates: KeyDates[] = [
+      const keyDates: KeyDate[] = [
         { code: 'LTD', date: '2025-06-15', description: 'Late transfer date' },
         { code: 'MTD', date: '2024-06-15', description: 'Mid transfer date' },
         { code: 'ETD', date: '2023-06-15', description: 'Early transfer date' },
@@ -215,7 +215,7 @@ describe('Print Release Dates Notification Slip', () => {
     })
 
     it('for all dates present in Non-DTO', () => {
-      const keyDates: KeyDates[] = [
+      const keyDates: KeyDate[] = [
         { code: 'LED', date: '2023-06-15', description: 'Licence expiry date' },
         { code: 'SED', date: '2022-06-15', description: 'Sentence expiry date' },
         { code: 'SLED', date: '2024-06-15', description: 'Sentence and licence expiry date' },
@@ -254,7 +254,7 @@ describe('Print Release Dates Notification Slip', () => {
     })
 
     it('for some dates present in Non-DTO without SED', () => {
-      const keyDates: KeyDates[] = [
+      const keyDates: KeyDate[] = [
         { code: 'LED', date: '2023-06-15', description: 'Licence expiry date' },
         { code: 'PRRD', date: '2023-06-15', description: 'Post recall release date' },
         { code: 'HDCED', date: '2025-06-15', description: 'HDC eligibility date' },
@@ -289,7 +289,7 @@ describe('Print Release Dates Notification Slip', () => {
     })
 
     it('for some dates present in Non-DTO without SED and LED', () => {
-      const keyDates: KeyDates[] = [
+      const keyDates: KeyDate[] = [
         { code: 'PRRD', date: '2023-06-15', description: 'Post recall release date' },
         { code: 'HDCED', date: '2025-06-15', description: 'HDC eligibility date' },
         { code: 'HDCAD', date: '2026-06-15', description: 'HDC release date' },
@@ -322,7 +322,7 @@ describe('Print Release Dates Notification Slip', () => {
     })
 
     it('for some dates present in Non-DTO without SED, LED and SLED', () => {
-      const keyDates: KeyDates[] = [
+      const keyDates: KeyDate[] = [
         { code: 'PRRD', date: '2023-06-15', description: 'Post recall release date' },
         { code: 'HDCED', date: '2025-06-15', description: 'HDC eligibility date' },
         { code: 'HDCAD', date: '2026-06-15', description: 'HDC release date' },
