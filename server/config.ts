@@ -131,6 +131,7 @@ export default {
     sdsExclusionIndicatorsEnabled: get('SDS_EXCLUSION_INDICATORS_ENABLED', false) === 'true',
     printNotificationSlipEnabled: get('PRINT_NOTIFICATION_SLIP_ENABLED', false) === 'true',
     showBreakdown: get('SHOW_BREAKDOWN', false) === 'true',
+    hdc4BannerEnabled: get('HDC4_BANNER_ENABLED', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),

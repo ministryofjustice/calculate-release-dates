@@ -1,0 +1,14 @@
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+
+{% if model.displayHdc4PlusNotificationBanner() %}
+    {% set hdc4Notification %}
+        <h2 class="govuk-heading-m">The rules for calculating HDCED have changed.</h2>
+        <p class="govuk-body">This service now calculates HDCED for sentences of four years or more.</p>
+    {% endset %}
+    {{ mojBanner({
+        type: ' ',
+        html: hdc4Notification,
+        attributes: { 'data-qa': 'hdc4-plus-notification-banner' }
+    }) }}
+
+{% endif %}

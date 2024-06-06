@@ -64,4 +64,8 @@ export default class CalculationSummaryViewModel {
     }
     return false
   }
+
+  public displayHdc4PlusNotificationBanner(): boolean {
+    return config.featureToggles.hdc4BannerEnabled && this.detailedCalculationResults.dates?.HDCED != null
+  }
 }
