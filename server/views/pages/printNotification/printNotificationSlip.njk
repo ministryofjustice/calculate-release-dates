@@ -15,7 +15,7 @@
   <body class="govuk-template__body  js-enabled" data-new-gr-c-s-check-loaded="14.1110.0" data-gr-ext-installed="">
 
     <div class="print-width-container">
-      <div class="moj-width-container govuk-!-margin-bottom-4 govuk-!-display-none-print">
+      <div class="moj-width-container govuk-!-margin-bottom-4 govuk-!-display-none-print" style="padding-top: 30px;">
         {% if fromPage == 'calculation' %}
           <a data-qa="back-link" class="govuk-back-link" href="/calculation/{{ model.prisonerDetail.offenderNo }}/complete/{{ calculationRequestId }}">Back</a>
         {% elif fromPage == 'view' %}
@@ -51,7 +51,7 @@
           <div class="notification-slip">
 
            {% if pageType == 'offender' %}
-              <div data-qa="page-title-caption" class="offender-title">[Offender copy]</div>
+              <div data-qa="page-title-caption" class="offender-title">[{{ model.prisonerDetail.firstName | title + ' ' + model.prisonerDetail.lastName | title | pluraliseName}} copy]</div>
             {% elif pageType == 'establishment' %}
               <div data-qa="page-title-caption" class="establishment-title">[Establishment copy]</div>
             {% endif %}
@@ -73,7 +73,7 @@
 
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-full">
-                <p class="govuk-body" data-qa="calculation-date">These release dates were calculated on {{ calculationDate | date('DD MMMM YYYY') }}</p>
+                <p class="govuk-body" data-qa="calculation-date">These release dates were calculated on {{ calculationDate | date('DD MMMM YYYY') }}.</p>
 
                 {% if pageType == 'establishment' %}
                     <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-4">

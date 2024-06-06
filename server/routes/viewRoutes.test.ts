@@ -1238,7 +1238,7 @@ describe('View journey routes tests', () => {
           expect(prisonerCell.text()).toContain('D-2-003')
           expect(offenderNumber.text()).toContain('A1234AA')
           expect(releaseDatesTitle.text()).toContain('Release dates')
-          expect(calculationDate.text()).toStrictEqual('These release dates were calculated on 01 June 2020')
+          expect(calculationDate.text()).toStrictEqual('These release dates were calculated on 01 June 2020.')
           expect(crdTitle.text()).toContain('CRD (Conditional release date)')
           expect(crdDate.text()).toContain('03 February 2021')
           expect(sedTitle.text()).toContain('SED (Sentence expiry date)')
@@ -1308,7 +1308,7 @@ describe('View journey routes tests', () => {
           expect(calcReasonTitle.length).toStrictEqual(0)
           expect(calcReason.length).toStrictEqual(0)
           expect(checkedBy.length).toStrictEqual(0)
-          expect(pageTitleCaption.text()).toStrictEqual('[Offender copy]')
+          expect(pageTitleCaption.text()).toStrictEqual("[Anon Nobody's copy]")
           expect(offenderHDCED.text()).toStrictEqual(
             'Release on HDC (Home Detention Curfew) is subject to an assessment.',
           )
@@ -1542,7 +1542,7 @@ describe('View journey routes tests', () => {
         })
     })
 
-    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should generate correct content for missing Agency Name, keyDates and Adjustments', () => {
+    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation&pageType=offender should generate correct content for Offender Name, Agency Name, keyDates and Adjustments', () => {
       const stubbedNoReleaseDates: ReleaseDatesAndCalculationContext = {
         calculation: {
           calculationRequestId: 51245,
@@ -1566,6 +1566,9 @@ describe('View journey routes tests', () => {
         bookingAdjustments: [],
       } as AnalyzedPrisonApiBookingAndSentenceAdjustments
       const stubbedNoPrisonPrisonerData = {
+        offenderNo: 'A1234AA',
+        firstName: 'Anon',
+        lastName: 'Bloggs',
         sentenceDetail: {} as PrisonApiSentenceDetail,
         assignedLivingUnit: {} as PrisonAPIAssignedLivingUnit,
       } as PrisonApiPrisoner
@@ -1574,7 +1577,7 @@ describe('View journey routes tests', () => {
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedNoAdjustments)
       calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedNoReleaseDates)
       return request(app)
-        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation')
+        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation&pageType=offender')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -1585,7 +1588,9 @@ describe('View journey routes tests', () => {
           const prisonerCell = $('[data-qa=prisoner-cell]').first()
           const dtoTitle = $('[data-qa=dto-title]').first()
           const dtoText = $('[data-qa=dto-text]').first()
+          const pageTitleCaption = $('[data-qa="page-title-caption"]').first()
 
+          expect(pageTitleCaption.text()).toStrictEqual("[Anon Bloggs' copy]")
           expect(noKeyDates.text()).toStrictEqual('No key dates available.')
           expect(noAdjustments.text()).toStrictEqual('There are no adjustments.')
           expect(prisonTitle.text()).toContain('No agency name available')
