@@ -126,9 +126,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     pushAdjustmentDetails('recallSentenceRemand', 'Recall remand', 'deducted')
     pushAdjustmentDetails('remand', 'Remand', 'deducted')
     pushAdjustmentDetails('recallSentenceTaggedBail', 'Recall tagged bail', 'deducted')
-    pushAdjustmentDetails('taggedBail', 'Tagged bail', 'deducted')
     pushAdjustmentDetails('restoredAdditionalDaysAwarded', 'Restored additional days awarded (RADA)', 'deducted')
-    pushAdjustmentDetails('unusedRemand', 'Unused remand', 'deducted')
     pushAdjustmentDetails('additionalDaysAwarded', 'Additional days awarded (ADA)', 'added')
     pushAdjustmentDetails('unlawfullyAtLarge', 'Unlawfully at large', 'added')
 

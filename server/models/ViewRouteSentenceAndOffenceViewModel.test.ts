@@ -280,20 +280,6 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
         adjustmentDays: 15,
       },
       {
-        adjustmentName: 'Unused remand',
-        adjustmentType: 'deducted',
-        adjustmentFrom: '2022-07-01',
-        adjustmentTo: '2024-03-19',
-        adjustmentDays: 15,
-      },
-      {
-        adjustmentName: 'Tagged bail',
-        adjustmentType: 'deducted',
-        adjustmentFrom: '2022-06-01',
-        adjustmentTo: '2024-03-19',
-        adjustmentDays: 15,
-      },
-      {
         adjustmentName: 'Remand',
         adjustmentType: 'deducted',
         adjustmentFrom: '2022-05-01',
