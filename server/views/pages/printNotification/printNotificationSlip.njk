@@ -88,12 +88,22 @@
                     </dl>
                 {% endif %}
 
-                <h2 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="release-date-title">Release dates</h2>
+                {% if hasOnlyDTOSentences == false %}
+                    <h2 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="release-date-title">Release dates</h2>
 
-                {% if keyDatesArray and keyDatesArray.length > 0 %}
-                  {{ keyDates(keyDatesArray) }}
-                {% else %}
-                  <p data-qa="no-key-dates-test">No key dates available.</p>
+                    {% if nonDtoKeyDates and nonDtoKeyDates.length > 0 %}
+                      {{ keyDates(nonDtoKeyDates) }}
+                    {% else %}
+                      <p data-qa="no-key-dates-test">No key dates available.</p>
+                    {% endif %}
+                {% endif %}
+
+                {% if hasDTOSentence %}
+                    <h2 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="dto-title">DTO (Detention training order) dates</h2>
+                    <p data-qa="dto-text">Your DTO sentence dates with all adjustments including any days spent unlawfully at large (UAL) and/or time served pending appeal (TSPA) are as follows:</p>
+                    {% if dtoKeyDates and dtoKeyDates.length > 0 %}
+                      {{ keyDates(dtoKeyDates) }}
+                    {% endif %}
                 {% endif %}
 
                 {{ sentenceTable(model) }}
