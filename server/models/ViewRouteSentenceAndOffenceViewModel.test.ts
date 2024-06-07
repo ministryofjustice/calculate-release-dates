@@ -250,8 +250,8 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
       stubbedReturnToCustodyDate,
       null,
     )
-    const numberOfDaysDeducted = model.daysInUnsedRemandOrTaggedBail()
-    expect(numberOfDaysDeducted).toStrictEqual(30)
+    const numberOfDaysDeducted = model.daysInUnsedRemand()
+    expect(numberOfDaysDeducted).toStrictEqual(15)
   })
   it('should generate adjustments array correctly', () => {
     const model = new ViewRouteSentenceAndOffenceViewModel(
@@ -276,6 +276,13 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
         adjustmentName: 'Recall tagged bail',
         adjustmentType: 'deducted',
         adjustmentFrom: '2022-08-01',
+        adjustmentTo: '2024-03-19',
+        adjustmentDays: 15,
+      },
+      {
+        adjustmentName: 'Tagged bail',
+        adjustmentType: 'deducted',
+        adjustmentFrom: '2022-06-01',
         adjustmentTo: '2024-03-19',
         adjustmentDays: 15,
       },
