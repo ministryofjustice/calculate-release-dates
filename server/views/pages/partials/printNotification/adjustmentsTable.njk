@@ -25,7 +25,7 @@
               </tbody>
             </table>
     {% endif %}
-    {% if model.hasUnusedRemandOrTaggedBail() %}
-      <p class="govuk-body govuk-!-margin-bottom-2" data-qa="days-in-unusedRemand-taggedBail">There are {{ model.daysInUnsedRemandOrTaggedBail() }} days of unused deductions.</p>
+    {% if model.hasUnusedRemand() %}
+      <p class="govuk-body govuk-!-margin-bottom-2" data-qa="days-in-unusedRemand">There are {{ model.daysInUnsedRemand() }} days of unused deductions.</p>
     {% endif %}
 {% endmacro %}

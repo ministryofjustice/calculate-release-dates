@@ -98,12 +98,12 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     return Object.keys(duplicates).map(key => [duplicates[key].caseSequence, duplicates[key].lineSequence])
   }
 
-  hasUnusedRemandOrTaggedBail(): boolean {
-    return this.adjustments.unusedRemand.aggregate > 0 || this.adjustments.taggedBail.aggregate > 0
+  hasUnusedRemand(): boolean {
+    return this.adjustments.unusedRemand.aggregate > 0
   }
 
-  daysInUnsedRemandOrTaggedBail(): number {
-    return this.adjustments.unusedRemand.aggregate + this.adjustments.taggedBail.aggregate
+  daysInUnsedRemand(): number {
+    return this.adjustments.unusedRemand.aggregate
   }
 
   generateAdjustmentsRows() {
@@ -126,6 +126,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     pushAdjustmentDetails('recallSentenceRemand', 'Recall remand', 'deducted')
     pushAdjustmentDetails('remand', 'Remand', 'deducted')
     pushAdjustmentDetails('recallSentenceTaggedBail', 'Recall tagged bail', 'deducted')
+    pushAdjustmentDetails('taggedBail', 'Tagged bail', 'deducted')
     pushAdjustmentDetails('restoredAdditionalDaysAwarded', 'Restored additional days awarded (RADA)', 'deducted')
     pushAdjustmentDetails('additionalDaysAwarded', 'Additional days awarded (ADA)', 'added')
     pushAdjustmentDetails('unlawfullyAtLarge', 'Unlawfully at large', 'added')

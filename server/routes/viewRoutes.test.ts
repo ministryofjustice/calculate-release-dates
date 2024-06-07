@@ -1220,7 +1220,7 @@ describe('View journey routes tests', () => {
           const appealBail = $('[data-qa=appeal-bail]').first()
           const offenderSlipLink = $('[data-qa="slip-offender-copy"]').first()
           const establishmentSlipLink = $('[data-qa="slip-establishment-copy"]').first()
-          const daysInUnusedRemandOrTaggedBail = $('[data-qa=days-in-unusedRemand-taggedBail]').first()
+          const daysInUnusedRemand = $('[data-qa=days-in-unusedRemand]').first()
           const offenderHDCED = $('[data-qa="offender-hdced-text"]').first()
 
           expect(offenderSlipLink.attr('href')).toStrictEqual(
@@ -1272,7 +1272,7 @@ describe('View journey routes tests', () => {
           expect(remandFrom.text()).toContain('01 February 2021')
           expect(remandTo.text()).toContain('02 February 2021')
           expect(remandDays.text()).toContain('2 days deducted')
-          expect(daysInUnusedRemandOrTaggedBail.length).toStrictEqual(0)
+          expect(daysInUnusedRemand.length).toStrictEqual(0)
           expect(offenderHDCED.length).toStrictEqual(0)
           expect(appealCustody.text()).toContain(
             'Days spent in custody pending appeal to count (must be completed manually):',
@@ -1450,13 +1450,13 @@ describe('View journey routes tests', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
-          const daysInUnusedRemandOrTaggedBail = $('[data-qa=days-in-unusedRemand-taggedBail]').first()
+          const daysInUnusedRemand = $('[data-qa=days-in-unusedRemand]').first()
           const taggedBailFrom = $('[data-qa="Tagged bail-from"]').first()
           const taggedBailTo = $('[data-qa="Tagged bail-from"]').first()
           const unusedRemandFrom = $('[data-qa="Unused remand-from"]').first()
           const unusedTo = $('[data-qa="Unused remand-to"]').first()
 
-          expect(daysInUnusedRemandOrTaggedBail.text()).toStrictEqual('There are 4 days of unused deductions.')
+          expect(daysInUnusedRemand.text()).toStrictEqual('There are 2 days of unused deductions.')
           expect(taggedBailFrom.text()).toStrictEqual('')
           expect(unusedRemandFrom.text()).toStrictEqual('')
           expect(taggedBailTo.text()).toStrictEqual('')
