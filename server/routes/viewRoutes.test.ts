@@ -1222,6 +1222,8 @@ describe('View journey routes tests', () => {
           const establishmentSlipLink = $('[data-qa="slip-establishment-copy"]').first()
           const daysInUnusedRemand = $('[data-qa=days-in-unusedRemand]').first()
           const offenderHDCED = $('[data-qa="offender-hdced-text"]').first()
+          const calcReasonTitle = $('[data-qa="calculation-reason-title"]')
+          const calcReason = $('[data-qa="calculation-reason"]')
 
           expect(offenderSlipLink.attr('href')).toStrictEqual(
             '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view&pageType=offender',
@@ -1232,7 +1234,7 @@ describe('View journey routes tests', () => {
           expect(backLink.attr('href')).toStrictEqual('/?prisonId=A1234AA')
           expect(offenderSlipBtn.text()).toContain('Print notification slip')
           expect(establishmentSlipBtn.text()).toContain('Print establishment copy')
-          expect(pageTitle.text()).toContain('Release date notification slip')
+          expect(pageTitle.text()).toContain('Release dates notification slip')
           expect(prisonTitle.text()).toContain('Foo Prison (HMP)')
           expect(prisonerName.text()).toContain('Anon Nobody')
           expect(prisonerCell.text()).toContain('D-2-003')
@@ -1280,6 +1282,8 @@ describe('View journey routes tests', () => {
           expect(appealBail.text()).toContain(
             'Days spent on bail pending appeal not to count (must be completed manually):',
           )
+          expect(calcReasonTitle.text()).toContain('Calculation reason')
+          expect(calcReason.text()).toContain('A calculation reason')
         })
     })
 
@@ -1305,8 +1309,8 @@ describe('View journey routes tests', () => {
 
           expect(printInvoker.attr('src')).toStrictEqual('/assets/print.js')
           expect(calculatedBy.length).toStrictEqual(0)
-          expect(calcReasonTitle.length).toStrictEqual(0)
-          expect(calcReason.length).toStrictEqual(0)
+          expect(calcReasonTitle.text()).toContain('Calculation reason')
+          expect(calcReason.text()).toContain('A calculation reason')
           expect(checkedBy.length).toStrictEqual(0)
           expect(pageTitleCaption.text()).toStrictEqual("[Anon Nobody's copy]")
           expect(offenderHDCED.text()).toStrictEqual(

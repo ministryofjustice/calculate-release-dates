@@ -65,7 +65,7 @@
                     No agency name available
                   {% endif %}
                 </span>
-                <h1 class="govuk-heading-l" data-qa="page-title">Release date notification slip</h1>
+                <h1 class="govuk-heading-l" data-qa="page-title">Release dates notification slip</h1>
               </div>
             </div>
 
@@ -75,18 +75,16 @@
               <div class="govuk-grid-column-full">
                 <p class="govuk-body" data-qa="calculation-date">These release dates were calculated on {{ calculationDate | date('DD MMMM YYYY') }}.</p>
 
-                {% if pageType == 'establishment' %}
-                    <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-4">
-                        <div class="govuk-summary-list__row">
-                            <dt data-qa="calculation-reason-title" class="govuk-summary-list__key govuk-!-font-weight-regular" style="padding: 5px 0px 6px 0px">
-                                Calculation reason
-                            </dt>
-                            <dd data-qa="calculation-reason" class="govuk-summary-list__value " style="padding: 5px 0px 6px 0px">
-                                {{ calculationReason }}
-                            </dd>
-                        </div>
-                    </dl>
-                {% endif %}
+                <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-4">
+                    <div class="govuk-summary-list__row">
+                        <dt data-qa="calculation-reason-title" class="govuk-summary-list__key govuk-!-font-weight-regular" style="padding: 5px 0px 6px 0px">
+                            Calculation reason
+                        </dt>
+                        <dd data-qa="calculation-reason" class="govuk-summary-list__value " style="padding: 5px 0px 6px 0px">
+                            {{ calculationReason }}
+                        </dd>
+                    </div>
+                </dl>
 
                 {% if hasOnlyDTOSentences == false %}
                     <h2 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="release-date-title">Release dates</h2>
