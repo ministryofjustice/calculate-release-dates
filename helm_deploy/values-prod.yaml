@@ -23,5 +23,6 @@ generic-service:
     CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE: 60000
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "false"
     HDC4_BANNER_ENABLED: "false"
+    PRINT_NOTIFICATION_SLIP_ENABLED: "true"
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts
