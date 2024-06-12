@@ -511,6 +511,7 @@ describe('View journey routes tests', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           expect($('[data-qa=123-title]').text()).toStrictEqual('123 - Doing a crime')
+          expect($('[data-qa=sentAndOff-title]').text()).toStrictEqual('Sentence and offence information')
           expect(res.text).toContain('A1234AA')
           expect(res.text).toContain('Anon')
           expect(res.text).toContain('Nobody')

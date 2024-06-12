@@ -372,6 +372,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)?')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })

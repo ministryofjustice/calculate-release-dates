@@ -509,7 +509,6 @@ describe('Check information routes tests', () => {
         trimHtml(res)
         expect(res.text).toContain('sentence-card')
         expect(res.text).toContain('A1234AA')
-        expect(res.text).toContain('Anon Nobody')
         expect(res.text).toContain('This calculation will include 11')
         expect(res.text).toContain('sentences from NOMIS.')
         expect(res.text).toContain('Court case 1')
@@ -615,7 +614,7 @@ describe('Check information routes tests', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/check-information should display mini profile', () => {
+  it('GET /calculation/:nomsId/check-information should display mini profile and correct title', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     userInputService.isCalculationReasonSet.mockReturnValue(true)
 
@@ -634,6 +633,8 @@ describe('Check information routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=now-crd-title]').text()).toStrictEqual('Now calculate release dates')
         expectMiniProfileNoLocation(res.text, { name: 'Nobody, Anon', dob: '24/06/2000', prisonNumber: 'A1234AA' })
       })
   })
@@ -705,8 +706,9 @@ describe('Check information routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=no-detail-adjust-text]').text()).toStrictEqual('There are no detailed adjustments.')
         expect(res.text).toContain('Detailed')
-        expect(res.text).toContain('There are no detailed adjustments for Anon')
       })
   })
 
@@ -1193,6 +1195,7 @@ describe('Check information routes tests', () => {
           'RL05016 - Access / exit by unofficial route - railway bye-law',
         )
         expectMiniProfile(res.text, expectedMiniProfile)
+        expect($('[data-qa=ciu-title]').text()).toStrictEqual('Check sentence and offence information')
       })
   })
 })
