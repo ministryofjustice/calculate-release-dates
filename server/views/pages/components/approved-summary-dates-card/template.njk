@@ -20,12 +20,9 @@
     </div>
 {% endmacro %}
 
-<div class="custom-card">
-    <div class="custom-card-main">
-        <dl class="govuk-summary-list">
-            {%  for approvedDate in approvedSummaryDatesCardModel.approvedDates %}
-                {{ approvedDateLine(approvedDate, approvedSummaryDatesCardModel.showActions, approvedSummaryDatesCardModel.actionConfig) }}
-            {% endfor %}
-        </dl>
-    </div>
-</div>
+
+<dl class="govuk-summary-list">
+    {%  for approvedDate in approvedSummaryDatesCardModel.approvedDates %}
+        {{ approvedDateLine(approvedDate, approvedSummaryDatesCardModel.showActions, approvedSummaryDatesCardModel.actionConfig) }}
+    {% endfor %}
+</dl>

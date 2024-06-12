@@ -28,15 +28,16 @@
                class="govuk-link govuk-link--no-visited-state" data-qa="add-another-release-date-link">Add another release date</a>
             </p>
         </div>
-    </div>
-    <div>
-        <h2 class="govuk-heading-m">Confirm and save to NOMIS</h2>
-        <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is
-            correct. These dates will be saved in NOMIS as a manual calculation.</p>
-        {{ govukButton({
-            text: "Confirm and save to NOMIS",
-            href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/save",
-            attributes: { 'data-qa': 'submit-to-nomis' }
-        }) }}
+
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">Confirm and save to NOMIS</h2>
+            <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is
+                correct. These dates will be saved in NOMIS as a manual calculation.</p>
+            {{ govukButton({
+                text: "Confirm and save to NOMIS",
+                href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/save",
+                attributes: { 'data-qa': 'submit-to-nomis' }
+            }) }}
+        </div>
     </div>
 {% endblock %}

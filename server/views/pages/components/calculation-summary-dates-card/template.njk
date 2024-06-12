@@ -19,15 +19,11 @@
     <p class="govuk-body" data-qa="None-date"></p>
 {% endmacro %}
 
-<div class="custom-card">
-    <div class="custom-card-main">
-        <dl class="govuk-summary-list">
-            {%  for releaseDate in calculationSummaryDatesCardModel.releaseDates %}
-                {{ releaseDateLine(releaseDate) }}
-            {% endfor %}
-            {% if calculationSummaryDatesCardModel.showNoDatesApply %}
-                {{ releaseNoDateLine() }}
-            {% endif %}
-        </dl>
-    </div>
-</div>
+<dl class="govuk-summary-list">
+    {%  for releaseDate in calculationSummaryDatesCardModel.releaseDates %}
+        {{ releaseDateLine(releaseDate) }}
+    {% endfor %}
+    {% if calculationSummaryDatesCardModel.showNoDatesApply %}
+        {{ releaseNoDateLine() }}
+    {% endif %}
+</dl>
