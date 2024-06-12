@@ -21,9 +21,8 @@
 {% block content %}
     <div class="govuk-grid-row">
        <div class="govuk-grid-column-three-quarters">
-           <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" data-qa="prisoner-name">Release dates for {{ prisonerDetail.firstName | title + ' ' + prisonerDetail.lastName | title }}</h1>
+           <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" data-qa="calculation-title">Calculation details</h1>
           <div class="moj-width-container">
-             <h3 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="calculation-details-title">Calculation details</h3>
                  <div class="govuk-grid-row">
                      <div class="govuk-grid-column-two-thirds ">
                          <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-2">
@@ -44,8 +43,16 @@
                  </div>
           </div>
           <br>
-          <h2 class="govuk-heading-l govuk-!-margin-top-4" data-qa="release-dates-title">Release dates</h2>
-          {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel) }}
+          <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                  <h2 class="govuk-summary-card__title" data-qa="release-dates-title">
+                    Release dates
+                  </h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                  {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel) }}
+                </div>
+          </div>
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
