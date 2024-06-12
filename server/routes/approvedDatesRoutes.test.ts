@@ -91,7 +91,7 @@ describe('approvedDatesRoutes', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Do you need to enter APD, HDCAD or ROTL dates for Anon Nobody?')
+        expect(res.text).toContain('Do you need to enter APD, HDCAD or ROTL dates?')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
@@ -189,7 +189,7 @@ describe('approvedDatesRoutes', () => {
       .get(`/calculation/${nomsId}/123456/remove?dateType=CRD`)
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)')
+        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)?')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
@@ -202,7 +202,7 @@ describe('approvedDatesRoutes', () => {
       .send({ 'remove-date': '' })
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)')
+        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)?')
         expect(res.text).toContain('You must select either &#39;Yes&#39; or &#39;No&#39;')
         expectMiniProfile(res.text, expectedMiniProfile)
       })

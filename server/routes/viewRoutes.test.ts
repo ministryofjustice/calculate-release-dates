@@ -453,7 +453,7 @@ describe('View journey routes tests', () => {
         .expect(200)
         .expect(res => {
           const $ = cheerio.load(res.text)
-          expect($('[data-qa=prisoner-name]').text()).toStrictEqual('Release dates for Anon Nobody')
+          expect($('[data-qa=prisoner-name]').text()).toStrictEqual('Release dates')
           expect($('[data-qa=calculation-date]').text()).toStrictEqual('01 January 2022')
           expect($('[data-qa=calculation-reason]').text()).toStrictEqual('Some reason')
           expect($('[data-qa=calculation-source]').text()).toStrictEqual('NOMIS')
@@ -512,6 +512,7 @@ describe('View journey routes tests', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           expect($('[data-qa=123-title]').text()).toStrictEqual('123 - Doing a crime')
+          expect($('[data-qa=sentAndOff-title]').text()).toStrictEqual('Sentence and offence information')
           expect(res.text).toContain('A1234AA')
           expect(res.text).toContain('Anon')
           expect(res.text).toContain('Nobody')
