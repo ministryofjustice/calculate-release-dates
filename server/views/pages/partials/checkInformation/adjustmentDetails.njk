@@ -182,38 +182,51 @@
             {% endif %}
             {% if adjustments.unusedRemand.aggregate != 0 %}
                 <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Unused {% if user and user.hasAdjustmentsAccess %}deductions{% else %}remand{% endif %}</h4>
-                <table class="govuk-table govuk-!-margin-bottom-8">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="col">Dates</th>
-                            <th class="govuk-table__header" scope="col">Days</th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        {% for adjustment in adjustments.unusedRemand.details %}
+                {% if user and user.hasAdjustmentsAccess and adjustments.unusedRemand.details.length == 1 %}
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key column-width-eighty-percent govuk-!-text-align-right">
+                            Total days
+                            </dt>
+                            <dd data-qa="unused-deductions-total-days" class="govuk-summary-list__value">
+                            {{adjustments.unusedRemand.aggregate}}
+                            </dd>
+                        </div>
+                    </dl>
+                {% else %}
+                    <table class="govuk-table govuk-!-margin-bottom-8">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" scope="col">Dates</th>
+                                <th class="govuk-table__header" scope="col">Days</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            {% for adjustment in adjustments.unusedRemand.details %}
+                                <tr class="govuk-table__row">
+                                    <!-- Dates -->
+                                    <td class="govuk-table__cell">
+                                        {% if adjustment.from or adjustment.to %}
+                                            From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
+                                        {% endif %}
+                                        {% if adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
+                                            ({{ adjustment.analysisResult.toLowerCase() }})
+                                        {% endif %}</td>
+                                    <!-- Days -->
+                                    <td class="govuk-table__cell">{{adjustment.days}}</td>
+                                </tr>
+                            {% endfor %}
+                            <!-- Total -->
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">
-                                    {% if adjustment.from or adjustment.to %}
-                                        From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
-                                    {% endif %}
-                                    {% if adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
-                                        ({{ adjustment.analysisResult.toLowerCase() }})
-                                    {% endif %}</td>
+                                <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
                                 <!-- Days -->
-                                <td class="govuk-table__cell">{{adjustment.days}}</td>
+                                <td class="govuk-table__cell">{{adjustments.unusedRemand.aggregate}}
+                                </td>
                             </tr>
-                        {% endfor %}
-                        <!-- Total -->
-                        <tr class="govuk-table__row">
-                            <!-- Dates -->
-                            <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-text-align-right">Total days</td>
-                            <!-- Days -->
-                            <td class="govuk-table__cell">{{adjustments.unusedRemand.aggregate}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                {% endif %}
             {% endif %}
         {% endif %}
         {% if adjustments.hasAnyAdditionAdjustments() %}

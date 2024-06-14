@@ -744,6 +744,8 @@ describe('Check information routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=unused-deductions-total-days]').text()).toContain('2')
         expect(res.text).toContain('Unused deductions')
         expect(res.text).not.toContain('Unused remand')
       })
