@@ -89,9 +89,9 @@
                 {% if hasOnlyDTOSentences == false %}
                     {% if nonDtoKeyDates and nonDtoKeyDates.length > 0 %}
                       {{ keyDates(nonDtoKeyDates) }}
-                    {% else %}
-                      <p class="govuk-body" data-qa="no-key-dates-test">No key dates available.</p>
                     {% endif %}
+                {% else %}
+                    <p class="govuk-!-margin-bottom-3"></p>
                 {% endif %}
 
                 {% if hasDTOSentence %}
