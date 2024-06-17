@@ -31,6 +31,7 @@ generic-service:
     PRINT_NOTIFICATION_SLIP_ENABLED: "true"
     HDC4_BANNER_ENABLED: "true"
     ENVIRONMENT_NAME: PRE-PRODUCTION
+    SHOW_BREAKDOWN: "true"
 
 generic-prometheus-alerts:
   targetApplication: calculate-release-dates-alt-preprod
