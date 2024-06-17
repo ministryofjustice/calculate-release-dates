@@ -5,21 +5,22 @@
     {% else %}
         <p class="govuk-body govuk-!-margin-bottom-2"  data-qa="adjust-desc">This calculation includes the following adjustments to sentences.</p>
         <table class="govuk-table ">
-              <thead class="govuk-table__head ">
+              <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                   <th scope="col" class="govuk-table__header" data-qa="adjust-col-type">Adjustment type</th>
+                  <th scope="col" class="govuk-table__header" data-qa="adjust-col-days">Days</th>
                   <th scope="col" class="govuk-table__header" data-qa="adjust-col-from">Date from (if applicable)</th>
                   <th scope="col" class="govuk-table__header" data-qa="adjust-col-to">Date to (if applicable)</th>
-                  <th scope="col" class="govuk-table__header" data-qa="adjust-col-days">Days</th>
+
                 </tr>
               </thead>
-              <tbody class="govuk-table__body ">
+              <tbody class="govuk-table__body">
                 {% for adjustment in adjustmentsArray %}
                     <tr class="govuk-table__row">
                       <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-name">{{ adjustment.adjustmentName }}</td>
+                      <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-days">{{ adjustment.adjustmentDays}} days {{ adjustment.adjustmentType }}</td>
                       <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-from">{% if adjustment.adjustmentFrom %} {{ adjustment.adjustmentFrom | date('DD MMMM YYYY') }} {% endif %}</td>
                       <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-to">{% if adjustment.adjustmentTo %} {{ adjustment.adjustmentTo | date('DD MMMM YYYY') }} {% endif %}</td>
-                      <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-days">{{ adjustment.adjustmentDays}} days {{ adjustment.adjustmentType }}</td>
                     </tr>
                 {% endfor %}
               </tbody>

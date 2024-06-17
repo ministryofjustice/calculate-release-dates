@@ -1719,7 +1719,7 @@ describe('View journey routes tests', () => {
           expect(etdDate.text()).toContain('03 February 2021')
           expect(mtdTitle.text()).toContain('MTD (Mid transfer date)')
           expect(mtdDate.text()).toContain('03 October 2021')
-          expect(releaseDatesTitle.length).toStrictEqual(0)
+          expect(releaseDatesTitle.text()).toStrictEqual('Release dates')
           expect(noKeyDates.length).toStrictEqual(0)
           expect(dtoTitle.text()).toStrictEqual('DTO (Detention training order) dates')
           expect(dtoText.text()).toStrictEqual(
