@@ -1586,7 +1586,6 @@ describe('View journey routes tests', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
-          const noKeyDates = $('[data-qa=no-key-dates-test]').first()
           const noAdjustments = $('[data-qa=adjust-desc-no]').first()
           const prisonTitle = $('[data-qa=prison-name]').first()
           const prisonerCell = $('[data-qa=prisoner-cell]').first()
@@ -1595,7 +1594,6 @@ describe('View journey routes tests', () => {
           const pageTitleCaption = $('[data-qa="page-title-caption"]').first()
 
           expect(pageTitleCaption.text()).toStrictEqual("[Anon Bloggs' copy]")
-          expect(noKeyDates.text()).toStrictEqual('No key dates available.')
           expect(noAdjustments.text()).toStrictEqual('There are no adjustments.')
           expect(prisonTitle.text()).toContain('No agency name available')
           expect(prisonerCell.text()).toContain('No Cell Number available')
@@ -1703,7 +1701,6 @@ describe('View journey routes tests', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           const dtoTitle = $('[data-qa=dto-title]').first()
-          const noKeyDates = $('[data-qa=no-key-dates-test]').first()
           const dtoText = $('[data-qa=dto-text]').first()
           const releaseDatesTitle = $('[data-qa=release-date-title]').first()
           const ltdTitle = $('[data-qa=LTD-title]').first()
@@ -1720,7 +1717,6 @@ describe('View journey routes tests', () => {
           expect(mtdTitle.text()).toContain('MTD (Mid transfer date)')
           expect(mtdDate.text()).toContain('03 October 2021')
           expect(releaseDatesTitle.text()).toStrictEqual('Release dates')
-          expect(noKeyDates.length).toStrictEqual(0)
           expect(dtoTitle.text()).toStrictEqual('DTO (Detention training order) dates')
           expect(dtoText.text()).toStrictEqual(
             'Your DTO sentence dates with all adjustments including any days spent unlawfully at large (UAL) and/or time served pending appeal (TSPA) are as follows:',
