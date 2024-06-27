@@ -211,7 +211,7 @@ export default class ManualEntryService {
     const items = [
       {
         href: `/calculation/${nomsId}/manual-entry/change-date?dateType=${d.dateType}`,
-        text: 'Change',
+        text: 'Edit',
         visuallyHiddenText: `Change ${text}`,
         attributes: { 'data-qa': `change-manual-date-${d.dateType}` },
       },
