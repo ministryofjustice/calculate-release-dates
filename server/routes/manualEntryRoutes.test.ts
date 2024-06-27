@@ -236,7 +236,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/manual-entry/enter-date shows enter date page with mini profile', () => {
+  it('GET /calculation/:nomsId/manual-entry/enter-date shows enter date page with mini profile and correct heading', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
@@ -264,6 +264,44 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        const questionTitle = $('.govuk-fieldset__heading').first()
+        expect(questionTitle.text().trim()).toStrictEqual('Enter the CRD')
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /calculation/:nomsId/manual-entry/enter-date with query param shows correct heading for date edit', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+      req.session.selectedManualEntryDates.A1234AA = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+    }
+    jest.spyOn(manualEntryService, 'getNextDateToEnter').mockReturnValue({
+      dateType: 'CRD',
+      dateText: 'CRD (Conditional release date)',
+      date: { day: 3, month: 3, year: 2017 },
+    } as ManualEntrySelectedDate)
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/enter-date?year=2026&month=09&day=22')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const questionTitle = $('.govuk-fieldset__heading').first()
+        expect(questionTitle.text().trim()).toStrictEqual('Enter the CRD')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })

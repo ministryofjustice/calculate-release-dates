@@ -71,17 +71,17 @@ context('End to end user journeys entering and modifying approved dates', () => 
     selectDatesPage.continue().click()
 
     const enterSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterSedPage.checkIsFor('SED (Sentence expiry date)')
+    enterSedPage.checkIsFor('SED')
     enterSedPage.enterDate('SED', '01', '06', '2026')
     enterSedPage.continue().click()
 
     const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterCRDPage.checkIsFor('CRD (Conditional release date)')
+    enterCRDPage.checkIsFor('CRD')
     enterCRDPage.enterDate('CRD', '03', '09', '2027')
     enterCRDPage.continue().click()
 
     const enterMTDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterMTDPage.checkIsFor('MTD (Mid transfer date)')
+    enterMTDPage.checkIsFor('MTD')
     enterMTDPage.enterDate('MTD', '09', '03', '2028')
     enterMTDPage.continue().click()
 
@@ -137,7 +137,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     selectDatesPage.continue().click()
 
     const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterCRDPage.checkIsFor('CRD (Conditional release date)')
+    enterCRDPage.checkIsFor('CRD')
     enterCRDPage.enterDate('CRD', '03', '09', '2027')
     enterCRDPage.continue().click()
 
@@ -152,7 +152,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     selectMoreDatesPage.continue().click()
 
     const enterSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterSedPage.checkIsFor('SED (Sentence expiry date)')
+    enterSedPage.checkIsFor('SED')
     enterSedPage.enterDate('SED', '01', '06', '2026')
     enterSedPage.continue().click()
 
@@ -188,12 +188,12 @@ context('End to end user journeys entering and modifying approved dates', () => 
     selectDatesPage.continue().click()
 
     const enterSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterSedPage.checkIsFor('SED (Sentence expiry date)')
+    enterSedPage.checkIsFor('SED')
     enterSedPage.enterDate('SED', '01', '06', '2026')
     enterSedPage.continue().click()
 
     const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterCRDPage.checkIsFor('CRD (Conditional release date)')
+    enterCRDPage.checkIsFor('CRD')
     enterCRDPage.enterDate('CRD', '03', '09', '2027')
     enterCRDPage.continue().click()
 
@@ -204,7 +204,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     manualDatesConfirmationPage.editReleaseDateLink('SED').click()
 
     const editSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    editSedPage.checkIsFor('SED (Sentence expiry date)')
+    editSedPage.checkIsFor('SED')
     editSedPage.clearDate('SED')
     editSedPage.enterDate('SED', '02', '07', '2029')
     editSedPage.continue().click()
@@ -240,12 +240,12 @@ context('End to end user journeys entering and modifying approved dates', () => 
     selectDatesPage.continue().click()
 
     const enterSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterSedPage.checkIsFor('SED (Sentence expiry date)')
+    enterSedPage.checkIsFor('SED')
     enterSedPage.enterDate('SED', '01', '06', '2026')
     enterSedPage.continue().click()
 
     const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterCRDPage.checkIsFor('CRD (Conditional release date)')
+    enterCRDPage.checkIsFor('CRD')
     enterCRDPage.enterDate('CRD', '03', '09', '2027')
     enterCRDPage.continue().click()
 
