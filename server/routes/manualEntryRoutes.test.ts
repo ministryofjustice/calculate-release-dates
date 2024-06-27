@@ -135,6 +135,31 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       })
   })
 
+  it('GET if there are indeterminate sentences then should have correct content on landing page', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const manualEntryTitle = $('[data-qa=manual-entry-title]').first()
+        const manualEntryHint = $('[data-qa=manual-entry-hint]').first()
+        const manualEntryConfirmation = $('[data-qa=entry-crds-nomis]').first()
+        expect(manualEntryTitle.text().trim()).toStrictEqual('Enter the release dates manually')
+        expect(manualEntryConfirmation.text().trim()).toStrictEqual('This will be recorded in NOMIS and the CRDS.')
+        expect(manualEntryHint.text().trim()).toStrictEqual(
+          "This calculation includes indeterminate sentences. You'll need to enter the tariff dates that have been supplied by PPCS.",
+        )
+      })
+  })
+
   it('GET if there are indeterminate sentences then should have correct content', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
