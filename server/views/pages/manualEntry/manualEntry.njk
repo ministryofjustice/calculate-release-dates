@@ -21,14 +21,14 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             {% if hasIndeterminateSentences %}
-                <h1 class="govuk-heading-xl">
-                    Manual date entry required
+                <h1 class="govuk-heading-xl" data-qa="manual-entry-title">
+                    Enter the release dates manually
                 </h1>
-                <p class="govuk-body">This calculation includes indeterminate sentences.</p>
+                <p class="govuk-body" data-qa="manual-entry-hint">This calculation includes indeterminate sentences. You'll need to enter the tariff dates that have been supplied by PPCS.</p>
                 <h2 class="govuk-heading-m">What you need to do</h2>
                 <p>Continue in this service to enter the release dates or eligibility dates you need to record.</p>
                 <p>If you do not want to record any of these dates, select 'none of these dates apply'.</p>
-                <p class="govuk-body">This will be recorded in NOMIS.</p>
+                <p class="govuk-body" data-qa="entry-crds-nomis">This will be recorded in NOMIS and the CRDS.</p>
             {% else %}
                 <h1 class="govuk-heading-xl">
                     Manual calculation required
