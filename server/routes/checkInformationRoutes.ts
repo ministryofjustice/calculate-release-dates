@@ -30,7 +30,7 @@ export default class CheckInformationRoutes {
     }
 
     const model = await this.checkInformationService.checkInformation(req, res, true)
-    return res.render('pages/calculation/checkInformation', new CheckInformationViewModel(model))
+    return res.render('pages/calculation/checkInformation', new CheckInformationViewModel(model, true))
   }
 
   public unsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
