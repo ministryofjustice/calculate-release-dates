@@ -70,17 +70,17 @@ context('End to end user journeys entering and modifying approved dates', () => 
     selectApprovedDatesTypesPage.continue().click()
 
     const enterApdPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterApdPage.checkIsFor('APD (Approved parole date)')
+    enterApdPage.checkIsFor('APD')
     enterApdPage.enterDate('APD', '01', '06', '2026')
     enterApdPage.continue().click()
 
     const enterHdcadPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterHdcadPage.checkIsFor('HDCAD (Home detention curfew approved date)')
+    enterHdcadPage.checkIsFor('HDCAD')
     enterHdcadPage.enterDate('HDCAD', '20', '11', '2027')
     enterHdcadPage.continue().click()
 
     const enterRotlPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterRotlPage.checkIsFor('ROTL (Release on temporary licence)')
+    enterRotlPage.checkIsFor('ROTL')
     enterRotlPage.enterDate('ROTL', '30', '12', '2028')
     enterRotlPage.continue().click()
 
@@ -120,7 +120,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     selectApprovedDatesTypesPage.continue().click()
 
     const enterApdPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterApdPage.checkIsFor('APD (Approved parole date)')
+    enterApdPage.checkIsFor('APD')
     enterApdPage.enterDate('APD', '01', '06', '2026')
     enterApdPage.continue().click()
 
@@ -129,7 +129,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationSummaryPageAfterApprovedDates.changeDateLink('APD').click()
 
     const editApdPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    editApdPage.checkIsFor('APD (Approved parole date)')
+    editApdPage.checkIsFor('APD')
     editApdPage.clearDate('APD')
     editApdPage.enterDate('APD', '01', '06', '2027')
     editApdPage.continue().click()
@@ -168,12 +168,12 @@ context('End to end user journeys entering and modifying approved dates', () => 
     selectApprovedDatesTypesPage.continue().click()
 
     const enterApdPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterApdPage.checkIsFor('APD (Approved parole date)')
+    enterApdPage.checkIsFor('APD')
     enterApdPage.enterDate('APD', '01', '06', '2026')
     enterApdPage.continue().click()
 
     const enterHdcadPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterHdcadPage.checkIsFor('HDCAD (Home detention curfew approved date)')
+    enterHdcadPage.checkIsFor('HDCAD')
     enterHdcadPage.enterDate('HDCAD', '20', '11', '2027')
     enterHdcadPage.continue().click()
 

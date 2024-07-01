@@ -1,6 +1,7 @@
 import request from 'supertest'
 import { Express } from 'express'
 import nock from 'nock'
+import * as cheerio from 'cheerio'
 import PrisonerService from '../services/prisonerService'
 import {
   PrisonAPIAssignedLivingUnit,
@@ -189,7 +190,7 @@ describe('approvedDatesRoutes', () => {
       .get(`/calculation/${nomsId}/123456/remove?dateType=CRD`)
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)?')
+        expect(res.text).toContain('Are you sure you want to remove the CRD?')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
@@ -202,7 +203,9 @@ describe('approvedDatesRoutes', () => {
       .send({ 'remove-date': '' })
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)?')
+        const $ = cheerio.load(res.text)
+        const questionTitle = $('.govuk-fieldset__legend--xl').first()
+        expect(questionTitle.text().trim()).toStrictEqual('Are you sure you want to remove the CRD?')
         expect(res.text).toContain('You must select either &#39;Yes&#39; or &#39;No&#39;')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
@@ -234,6 +237,42 @@ describe('approvedDatesRoutes', () => {
       .get('/calculation/A1234AA/123456/submit-dates')
       .expect(200)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        const questionTitle = $('.govuk-fieldset__legend--xl').first()
+        expect(questionTitle.text().trim()).toStrictEqual('Enter the CRD')
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
+  it('GET /calculation/:nomsId/:calculationRequestId/submit-dates with query params loads the correct content', () => {
+    const nomsId = 'A1234AA'
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedApprovedDates = {}
+      req.session.selectedApprovedDates[nomsId] = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+      req.session.HDCED = {}
+      req.session.HDCED[nomsId] = '2020-01-01'
+      req.session.HDCED_WEEKEND_ADJUSTED = {}
+      req.session.HDCED_WEEKEND_ADJUSTED[nomsId] = false
+    }
+    jest.spyOn(manualEntryService, 'getNextDateToEnter').mockReturnValue({
+      dateType: 'CRD',
+      dateText: 'CRD (Conditional release date)',
+      date: { day: 3, month: 3, year: 2017 },
+    } as ManualEntrySelectedDate)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/calculation/A1234AA/123456/submit-dates?year=2029&month=09&day=23')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const questionTitle = $('.govuk-fieldset__legend--xl').first()
+        expect(questionTitle.text().trim()).toStrictEqual('Enter the CRD')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
