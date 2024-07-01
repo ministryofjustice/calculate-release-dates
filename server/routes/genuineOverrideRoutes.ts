@@ -151,7 +151,7 @@ export default class GenuineOverrideRoutes {
   public loadCheckSentenceAndInformationPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const model = await this.checkInformationService.checkInformation(req, res, false)
-      return res.render('pages/genuineOverrides/checkInformation', new CheckInformationViewModel(model))
+      return res.render('pages/genuineOverrides/checkInformation', new CheckInformationViewModel(model, true))
     }
     throw FullPageError.notFoundError()
   }

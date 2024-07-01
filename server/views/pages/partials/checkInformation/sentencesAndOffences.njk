@@ -1,10 +1,12 @@
 {% from "./courtCaseDetails.njk" import courtCaseDetails %}
 {% from "./sentenceCard.njk" import sentenceCard %}
 
+{% if displayNoOfOffenceCount %}
 <p class="govuk-body govuk-!-margin-top-2" id="offence-count-text">
                 This calculation will include {{ model.offenceCount }}
         {{ 'sentence' | pluralise(model.offenceCount) }} from NOMIS.
             </p>
+{% endif %}
 
 
 <div id="sentences" class="govuk-!-margin-top-8">

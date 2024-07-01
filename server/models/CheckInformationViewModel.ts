@@ -2,7 +2,10 @@ import PrisonerContextViewModel from './PrisonerContextViewModel'
 import SentenceAndOffenceViewModel from './SentenceAndOffenceViewModel'
 
 export default class CheckInformationViewModel extends PrisonerContextViewModel {
-  constructor(public model: SentenceAndOffenceViewModel) {
+  constructor(
+    public model: SentenceAndOffenceViewModel,
+    public displayNoOfOffenceCount: boolean,
+  ) {
     super(model.prisonerDetail)
   }
 }
