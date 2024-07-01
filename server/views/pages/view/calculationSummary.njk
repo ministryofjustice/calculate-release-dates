@@ -32,7 +32,6 @@
     {% include "../partials/ersedCannotHappenNotificationBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-xl">Look up a calculation</span>
             <h1 class="govuk-heading-xl">Calculation summary</h1>
 
             {% if model.calculationReason.isOther %}
@@ -63,18 +62,11 @@
                         }]
                 }) }}
             {% endif %}
-            <p class="govuk-body govuk-!-margin-top-8">
+            <p class="govuk-body govuk-!-margin-top-2">
                 <a href={{ "/view/" + model.nomsId + "/calculation-summary/" + model.calculationRequestId + "/print" }}>Print
                     calculation summary</a>
             </p>
-            <p class="govuk-body">
-                <a class="govuk-link" href="/search/prisoners">View previous calculation for another person</a>
-            </p>
-            <p class="govuk-body govuk-!-margin-bottom-0">
-                <a class="govuk-link" data-qa="back-to-dps-search-link" href={{ digitalPrisonServicesUrl }}>Back to Digital Prison Service (DPS) search</a>
-            </p>
 
-            <h2 class="govuk-heading-l govuk-!-margin-top-9">Final release dates with adjustments</h2>
             {% if model.overrideReason %}
                 {{ govukInsetText({
                     text: "These dates have been manually entered by the Specialist support team because " + model.overrideReason
