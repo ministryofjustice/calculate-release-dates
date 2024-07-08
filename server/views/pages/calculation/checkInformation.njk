@@ -34,12 +34,8 @@
         <div class="govuk-grid-column-full">
             <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-                {% if model.isErsedElligible() %}
-                    {% if model.viewJourney %}
-                        {% if model.isErsedChecked() %}
-                            <p class="govuk-body">An Early removal scheme eligibility date (ERSED) was included in this calculation</p>
-                        {% endif %}
-                    {% endif %}
+                {% if model.isErsedEligible() and model.viewJourney == false and model.isErsedChecked() %}
+                    <p class="govuk-body">An Early removal scheme eligibility date (ERSED) was included in this calculation</p>
                 {% endif %}
                 {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
 
