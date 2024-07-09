@@ -68,8 +68,8 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     return this.userInputs?.calculateErsed === true
   }
 
-  public isErsedElligible(): boolean {
-    return this.sentencesAndOffences.some(sentence => SentenceTypes.isSentenceErsedElligible(sentence))
+  public isErsedEligible(): boolean {
+    return this.sentencesAndOffences.some(sentence => SentenceTypes.isSentenceErsedEligible(sentence))
   }
 
   public isRecallOnly(): boolean {

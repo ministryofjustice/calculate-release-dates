@@ -48,8 +48,8 @@ export default class CalculationSummaryViewModel {
     return !this.sentencesAndOffences.find(sentence => !SentenceTypes.isSentenceSds(sentence))
   }
 
-  public isErsedElligible(): boolean {
-    return this.sentencesAndOffences?.some(sentence => SentenceTypes.isSentenceErsedElligible(sentence))
+  public isErsedEligible(): boolean {
+    return this.sentencesAndOffences?.some(sentence => SentenceTypes.isSentenceErsedEligible(sentence))
   }
 
   public isRecallOnly(): boolean {

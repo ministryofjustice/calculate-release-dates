@@ -1,0 +1,13 @@
+{% macro includeErsedCheckbox(model) %}
+    {% if model.isErsedEligible() and model.viewJourney == false %}
+        <div class="govuk-checkboxes govuk-checkboxes--small govuk-!-margin-bottom-6" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item float-none">
+                <input aria-describedby="additional-info" class="govuk-checkboxes__input" id="ersed" name="ersed" type="checkbox" value="true" {{ "checked" if model.isErsedChecked() }}/>
+                <label class="govuk-label govuk-checkboxes__label" for="ersed">Include an Early removal scheme eligibility date (ERSED) in this calculation</label>
+                <div id="additional-info" class="govuk-hint govuk-checkboxes__hint">Not applicable for terror or terror-related offences</div>
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}
+
+{{ includeErsedCheckbox(model) }}

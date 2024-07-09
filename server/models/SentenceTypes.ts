@@ -91,7 +91,7 @@ export default class SentenceTypes {
     return this.dtoSentenceTypes.includes(sentence.sentenceCalculationType)
   }
 
-  public static isSentenceErsedElligible(
+  public static isSentenceErsedEligible(
     sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
     return !(this.isRecall(sentence) || this.isSentenceAfine(sentence) || this.isSentenceDto(sentence))
