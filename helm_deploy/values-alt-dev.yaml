@@ -26,7 +26,7 @@ generic-service:
     COURT_CASES_AND_RELEASE_DATES_URL: "https://court-cases-release-dates-dev.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     ENVIRONMENT_NAME: DEV
-    SDS_EXCLUSION_INDICATORS_ENABLED: "true"
+    SDS_EXCLUSION_INDICATORS_ENABLED: "false"
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "true"
     PRINT_NOTIFICATION_SLIP_ENABLED: "false"
     HDC4_BANNER_ENABLED: "true"
