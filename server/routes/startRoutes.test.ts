@@ -19,6 +19,7 @@ import {
 import AuthorisedRoles from '../enumerations/authorisedRoles'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import config from '../config'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
@@ -154,8 +155,6 @@ describe('Start routes tests', () => {
   })
 
   it('should render correct link for nomis calculation summary', async () => {
-    userPermissionsService.allowBulkLoad.mockReturnValue(true)
-
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
     const cardAndAction = {
       latestCalcCard: latestCalcCardForPrisoner,
@@ -172,9 +171,33 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD and adjustments then show all CCARD nav', () => {
+  it('should render the SDS40 notification banner when toggle is enabled', async () => {
+    config.featureToggles.sds40PolicyBannerEnabled = true
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
 
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    await request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const bannerText = $('.govuk-notification-banner').first().text()
+        expect(bannerText).toContain('We are working on updating this service to reflect the new SDS40 policy')
+        expect(bannerText).toContain('This service currently calculates SDS sentences at 50%.')
+        expect(bannerText).toContain(
+          'All SDS40 calculations should be recorded using the SharePoint tracker, as outlined in the SDS operational guidance.',
+        )
+      })
+  })
+
+  it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD and adjustments then show all CCARD nav', () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     const cardAndAction = {
       latestCalcCard: latestCalcCardForPrisoner,

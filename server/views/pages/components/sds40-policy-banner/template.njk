@@ -1,0 +1,15 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% set html %}
+    <p class="govuk-notification-banner__heading">
+        We are working on updating this service to reflect the new SDS40 policy.
+        <br/><br/>
+        This service currently calculates SDS sentences at 50%.
+        <br/><br/>
+        All SDS40 calculations should be recorded using the SharePoint tracker, as outlined in the SDS operational guidance.
+    </p>
+{% endset %}
+
+{{ govukNotificationBanner({
+    html: html
+}) }}
