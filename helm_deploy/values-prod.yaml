@@ -24,5 +24,6 @@ generic-service:
     HDC4_PLUS_COMPARISON_TAB_ENABLED: "false"
     HDC4_BANNER_ENABLED: "true"
     PRINT_NOTIFICATION_SLIP_ENABLED: "true"
+    SDS40_POLICY_BANNER_ENABLED: "true"
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts
