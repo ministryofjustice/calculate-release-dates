@@ -188,10 +188,10 @@ describe('Start routes tests', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
         const bannerText = $('.govuk-notification-banner').first().text()
-        expect(bannerText).toContain('We are working on updating this service to reflect the new SDS40 policy')
-        expect(bannerText).toContain('This service currently calculates SDS sentences at 50%.')
+        expect(bannerText).toContain('This service is being updated to reflect the new SDS40 policy')
+        expect(bannerText).toContain('The Calculate release dates service currently calculates SDS sentences at 50%.')
         expect(bannerText).toContain(
-          'All SDS40 calculations should be recorded using the SharePoint tracker, as outlined in the SDS operational guidance.',
+          'All SDS40 calculations must be recorded using the SharePoint tracker, as outlined in the SDS operational guidance.',
         )
       })
   })
