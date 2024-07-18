@@ -1197,6 +1197,7 @@ describe('Check information routes tests', () => {
           'RL05016 - Access / exit by unofficial route - railway bye-law',
         )
         expectMiniProfile(res.text, expectedMiniProfile)
+        expect(res.text).toContain('/calculation/A1234AA/reason')
         expect($('[data-qa=ciu-title]').text()).toStrictEqual('Check sentence and offence information')
       })
   })

@@ -10,12 +10,6 @@
 
 {% block beforeContent %}
     {{ super() }}
-    <nav>
-        {{ govukBackLink({
-            text: "Check sentence and offence information",
-            href: "/calculation/" + prisonerDetail.offenderNo + "/check-information-unsupported"
-        }) }}
-    </nav>
 {% endblock %}
 {% block content %}
     <div class="govuk-grid-row">
@@ -27,7 +21,7 @@
                         name: "no-date-selection",
                         fieldset: {
                             legend: {
-                                text: "Are you sure you do not want to record any dates for " + prisonerDetail.firstName + " " + prisonerDetail.lastName +"?",
+                                text: "Are you sure you do not want to record any dates?",
                                 isPageHeading: true,
                                 classes: "govuk-fieldset__legend--xl"
                             }
