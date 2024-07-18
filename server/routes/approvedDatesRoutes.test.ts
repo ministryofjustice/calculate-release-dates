@@ -93,6 +93,7 @@ describe('approvedDatesRoutes', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Do you need to enter APD, HDCAD or ROTL dates?')
+        expect(res.text).toContain('/calculation/A1234AA/summary/123456')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
@@ -143,6 +144,7 @@ describe('approvedDatesRoutes', () => {
         expect(res.text).toContain('APD')
         expect(res.text).toContain('HDCAD')
         expect(res.text).toContain('ROTL')
+        expect(res.text).toContain('/calculation/A1234AA/123456/approved-dates-question')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })

@@ -14,15 +14,13 @@
 {% block beforeContent %}
     {{ super() }}
 
-    {% if model.calculationSummaryUnavailable %}
-        {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
-        <nav>
-            {{ govukBackLink({
-                text: "Back",
-                href: backlink
-            }) }}
-        </nav>
-    {% endif %}
+    {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backlink
+        }) }}
+    </nav>
 {% endblock %}
 
 {% block content %}

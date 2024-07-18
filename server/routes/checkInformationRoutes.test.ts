@@ -520,7 +520,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('SDS Standard Sentence')
         expect(res.text).toContain('Court case 2')
         expect(res.text).toContain('Consecutive to court case 1 count 1')
-        expect(res.text).toContain('href="/?prisonId=A1234AA')
+        expect(res.text).toContain('href="/calculation/A1234AA/reason"')
         expect(res.text).toContain('Restore additional days awarded (RADA)')
         expect(res.text).toContain('2')
         expect(res.text).toContain('Detailed')
@@ -683,7 +683,7 @@ describe('Check information routes tests', () => {
         expect($('[data-qa=RL05016-title]').text()).toStrictEqual(
           'RL05016 - Access / exit by unofficial route - railway bye-law',
         )
-        expect(res.text).toContain('href="/?prisonId=A1234AA"')
+        expect(res.text).toContain('/calculation/A1234AA/reason')
       })
   })
 
