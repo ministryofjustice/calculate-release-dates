@@ -254,7 +254,6 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        const $ = cheerio.load(res.text)
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
