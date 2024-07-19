@@ -338,6 +338,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
     ],
   },
   approvedDates: {},
+  tranche: 'TRANCHE_1',
 }
 
 beforeEach(() => {
@@ -843,6 +844,21 @@ describe('Calculation routes tests', () => {
         expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
         expect(res.text).toMatch(/Dates for/)
         expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should display the SDS40 Tranche', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+      stubbedResultsWithBreakdownAndAdjustments,
+    )
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const trancheSelector = $('[data-qa=sds-early-release-tranche]').first()
+        expect(trancheSelector.text()).toStrictEqual('SDS40 Tranche 1')
       })
   })
 })
