@@ -39,6 +39,7 @@ describe('CalculationSummaryViewModel', () => {
           calculationOriginalData: {},
           calculationBreakdown: undefined,
           approvedDates: {},
+          tranche: 'TRANCHE_1',
         },
       )
     }
@@ -73,6 +74,16 @@ describe('CalculationSummaryViewModel', () => {
       config.featureToggles.hdc4BannerEnabled = true
       const modelWithoutDates = createModel({})
       expect(modelWithoutDates.displayHdc4PlusNotificationBanner()).toBe(false)
+    })
+
+    it.each([
+      ['TRANCHE_0', 'No applicable SDS40 Tranche'],
+      ['TRANCHE_1', 'SDS40 Tranche 1'],
+      ['TRANCHE_2', 'SDS40 Tranche 2'],
+    ])('The SDS40 tranche text is set correctly', (tranche, expectedResult) => {
+      const modelWithoutDates = createModel({})
+      modelWithoutDates.detailedCalculationResults.tranche = tranche as 'TRANCHE_1' | 'TRANCHE_2' | 'TRANCHE_0'
+      expect(modelWithoutDates.getSDSEarlyReleaseTranche()).toBe(expectedResult)
     })
   })
 })

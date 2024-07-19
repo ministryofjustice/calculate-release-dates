@@ -408,6 +408,7 @@ export interface components {
         | 'UNSUPPORTED_CALCULATION_DTO_WITH_RECALL'
         | 'PRE_PCSC_DTO_WITH_ADJUSTMENT'
         | 'BOTUS_CONSECUTIVE_OR_CONCURRENT_TO_OTHER_SENTENCE'
+        | 'SDS_EARLY_RELEASE_UNSUPPORTED'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -677,6 +678,10 @@ export interface components {
       otherReasonDescription?: string
       /** Format: date */
       calculationDate?: string
+      /** @enum {string} */
+      historicalTusedSource?: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
+      /** @enum {string} */
+      sdsEarlyReleaseTranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
     }
     CalculationFragments: {
       breakdownHtml: string
@@ -763,7 +768,7 @@ export interface components {
       sentenceAndOffenceAnalysis: 'NEW' | 'UPDATED' | 'SAME'
       isSDSPlus: boolean
       /** @enum {string} */
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'NO'
+      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'NO'
     }
     OffenderOffence: {
       /** Format: int64 */
@@ -1013,6 +1018,7 @@ export interface components {
         | 'PED_EQUAL_TO_LATEST_NON_PED_ACTUAL_RELEASE'
         | 'HDCED_ADJUSTED_TO_CONCURRENT_CONDITIONAL_RELEASE'
         | 'HDCED_ADJUSTED_TO_CONCURRENT_ACTUAL_RELEASE'
+        | 'HDCED_ADJUSTED_TO_CONCURRENT_PRRD'
         | 'ERSED_MAX_PERIOD'
         | 'ERSED_MIN_EFFECTIVE_DATE'
         | 'ERSED_ADJUSTED_TO_CONCURRENT_TERM'
@@ -1064,7 +1070,7 @@ export interface components {
       fineAmount?: number
       isSDSPlus: boolean
       /** @enum {string} */
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'NO'
+      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'NO'
     }
     DetailedDate: {
       /** @enum {string} */
@@ -1182,10 +1188,6 @@ export interface components {
       comment?: string
       releaseDates: components['schemas']['DetailedDate'][]
     }
-    ReleaseDatesAndCalculationContext: {
-      calculation: components['schemas']['CalculationContext']
-      dates: components['schemas']['DetailedDate'][]
-    }
     /** @description Calculation breakdown details */
     CalculationBreakdown: {
       concurrentSentences: components['schemas']['ConcurrentSentenceBreakdown'][]
@@ -1268,6 +1270,8 @@ export interface components {
         | 'PRISON_API_DATA_MISSING'
         | 'BREAKDOWN_CHANGED_SINCE_LAST_CALCULATION'
         | 'UNSUPPORTED_CALCULATION_BREAKDOWN'
+      /** @enum {string} */
+      tranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
     }
     BookingAdjustment: {
       active: boolean

@@ -44,6 +44,29 @@ export default class CalculationSummaryViewModel {
     )
   }
 
+  public getSDSEarlyReleaseTranche(): string {
+    const tranche = this.detailedCalculationResults?.tranche
+    const prefix = 'SDS40 Tranche '
+    let result = ''
+
+    if (tranche) {
+      switch (tranche) {
+        case 'TRANCHE_0':
+          result = 'No applicable SDS40 Tranche'
+          break
+        case 'TRANCHE_1':
+          result = `${prefix}1`
+          break
+        case 'TRANCHE_2':
+          result = `${prefix}2`
+          break
+        default:
+          result = ''
+      }
+    }
+    return result
+  }
+
   private allSentencesSupported(): boolean {
     return !this.sentencesAndOffences.find(sentence => !SentenceTypes.isSentenceSds(sentence))
   }
