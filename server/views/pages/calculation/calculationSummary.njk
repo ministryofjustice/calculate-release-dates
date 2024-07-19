@@ -15,11 +15,6 @@
                 text: "Back",
                 href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
             }) }}
-        {% else %}
-            {{ govukBackLink({
-                text: "Check sentence and offence information",
-                href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
-            }) }}
         {% endif %}
     </nav>
 {% endblock %}

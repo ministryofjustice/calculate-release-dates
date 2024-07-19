@@ -174,6 +174,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Tariff')
+        expect(res.text).toContain('/calculation/A1234AA/manual-entry')
       })
   })
 
@@ -253,10 +254,6 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('.govuk-back-link').first().attr('href')).toStrictEqual(
-          '/calculation/A1234AA/check-information-unsupported',
-        )
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })

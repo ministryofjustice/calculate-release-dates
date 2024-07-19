@@ -815,6 +815,7 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('Reason')
           expect(res.text).toContain('A calculation reason')
           expect(res.text).toContain('01 June 2020')
+          expect(res.text).toContain('/?prisonId=A1234AA')
           expectMiniProfile(res.text, expectedMiniProfile)
         })
     })
