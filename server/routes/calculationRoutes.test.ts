@@ -659,7 +659,6 @@ describe('Calculation routes tests', () => {
         const courtCaseAndReleaseDatesLink = $('[data-qa=ccard-overview-link]').first()
         const prisonerProfileLink = $('[data-qa=prisoner-profile-link]').first()
         const prisonerNotificationSlipLink = $('[data-qa=prisoner-notification-slip-link]').first()
-        const trancheSelector = $('[data-qa=sds-early-release-tranche]').first()
 
         expect(backToDpsLink.length).toStrictEqual(1)
         expect(backToDpsLink.text()).toStrictEqual('DPS homepage')
