@@ -168,6 +168,9 @@ describe('Start routes tests', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
         expect($('.govuk-link').first().attr('href')).toStrictEqual('/view/GU32342/nomis-calculation-summary/123456')
+        expect($('[data-qa=calc-release-dates-for-adding-dates-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/reason?isAddDatesFlow=true',
+        )
       })
   })
 
