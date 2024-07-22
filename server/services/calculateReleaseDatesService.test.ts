@@ -458,10 +458,7 @@ describe('Calculate release dates service tests', () => {
       }
       config.featureToggles.printNotificationSlipEnabled = true
       fakeApi.get(`/calculation/${prisonerId}/latest`).reply(200, latestCalc)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      fakeApi.get(`/manual-calculation/${latestCalc.bookingId}/has-indeterminate-sentences`).reply(200, true)
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null)
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, true)
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction,
@@ -501,10 +498,7 @@ describe('Calculate release dates service tests', () => {
         dataQa: 'latest-calc-card-action',
       }
       fakeApi.get(`/calculation/${prisonerId}/latest`).reply(200, latestCalc)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      fakeApi.get(`/manual-calculation/${latestCalc.bookingId}/has-indeterminate-sentences`).reply(200, false)
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null)
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction,
@@ -541,10 +535,7 @@ describe('Calculate release dates service tests', () => {
         dataQa: 'latest-calc-card-action',
       }
       fakeApi.get(`/calculation/${prisonerId}/latest`).reply(200, latestCalc)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      fakeApi.get(`/manual-calculation/${latestCalc.bookingId}/has-indeterminate-sentences`).reply(200, false)
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null)
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction,
@@ -574,10 +565,7 @@ describe('Calculate release dates service tests', () => {
         ],
       }
       fakeApi.get(`/calculation/${prisonerId}/latest`).reply(200, latestCalc)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      fakeApi.get(`/manual-calculation/${latestCalc.bookingId}/has-indeterminate-sentences`).reply(200, false)
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null)
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction: undefined,
@@ -585,7 +573,7 @@ describe('Calculate release dates service tests', () => {
     })
     it('Should return undefined card and action if no prisoner or calc found', async () => {
       fakeApi.get(`/calculation/${prisonerId}/latest`).reply(404)
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null)
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
       expect(result).toStrictEqual({
         latestCalcCard: undefined,
         latestCalcCardAction: undefined,

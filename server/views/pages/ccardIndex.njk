@@ -42,14 +42,17 @@
                 href: '/calculation/' + prisonerDetail.offenderNo + '/reason',
                 title: 'Calculate release dates',
                 dataQa: 'calc-release-dates-for-prisoner-action-link'
-            },
-            {
-                href: '/calculation/' + prisonerDetail.offenderNo + '/reason?isAddDatesFlow=true',
-                title: 'Add APD, HDCAD or ROTL dates',
-                dataQa: 'calc-release-dates-for-adding-dates-link'
             }
         ]
         %}
+
+        {% if hasNoIndeterminateSentence %}
+            {% set _ = actions.push({
+                href: '/calculation/' + prisonerDetail.offenderNo + '/reason?isAddDatesFlow=true',
+                title: 'Add APD, HDCAD or ROTL dates',
+                dataQa: 'calc-release-dates-for-adding-dates-link'
+            }) %}
+        {% endif %}
 
         {% if allowBulkLoad %}
             {% set actions = (actions.push(

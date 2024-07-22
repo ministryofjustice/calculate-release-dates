@@ -408,6 +408,7 @@ export default class CalculateReleaseDatesService {
   async getLatestCalculationCardForPrisoner(
     prisonerId: string,
     token: string,
+    hasIndeterminateSentence: boolean,
   ): Promise<{ latestCalcCard?: LatestCalculationCardConfig; latestCalcCardAction?: Action }> {
     const crdAPIClient = new CalculateReleaseDatesApiClient(token)
     return crdAPIClient
@@ -415,7 +416,6 @@ export default class CalculateReleaseDatesService {
       .then(async latestCalc => {
         let action: Action
         const latestCalcCard = this.latestCalculationComponentConfig(latestCalc)
-        const hasIndeterminateSentence = await this.hasIndeterminateSentences(latestCalc.bookingId, token)
         if (latestCalc.calculationRequestId) {
           action = {
             title: 'View details',
