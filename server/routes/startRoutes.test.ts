@@ -167,10 +167,10 @@ describe('Start routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
+        const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
         expect($('.govuk-link').first().attr('href')).toStrictEqual('/view/GU32342/nomis-calculation-summary/123456')
-        expect($('[data-qa=calc-release-dates-for-adding-dates-link]').first().attr('href')).toStrictEqual(
-          '/calculation/A1234AA/reason?isAddDatesFlow=true',
-        )
+        expect(addDatesFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/reason?isAddDatesFlow=true')
+        expect(addDatesFlowLink.text()).toStrictEqual('Add APD, HDCAD or ROTL dates')
       })
   })
 
