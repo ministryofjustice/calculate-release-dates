@@ -34,11 +34,18 @@
                 {% endif %}
                 <h3 class="govuk-heading-m govuk-!-margin-top-4">Confirm the dates are correct</h3>
                 <p class="govuk-body">By continuing you are confirming that, to the best of your knowledge, the calculation is correct.</p>
+
+                {% set buttonHref = "/calculation/" + model.prisonerDetail.offenderNo + "/" + model.calculationRequestId + "/approved-dates-question" %}
+
+                {% if isAddDatesFlow %}
+                    {% set buttonHref = "/calculation/" + model.prisonerDetail.offenderNo + "/" + model.calculationRequestId + "/select-approved-dates" %}
+                {% endif %}
+
                 {{ govukButton({
                     text: "Confirm and continue",
                     value: 'approved-dates-question',
                     preventDoubleClick: true,
-                    href: "/calculation/" + model.prisonerDetail.offenderNo + "/" + model.calculationRequestId + "/approved-dates-question",
+                    href: buttonHref,
                     attributes: { 'data-qa': 'submit-to-nomis' }
                 }) }}
             {% else %}
