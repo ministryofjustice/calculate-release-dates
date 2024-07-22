@@ -105,7 +105,6 @@ export default class CalculationRoutes {
           nomsId,
           calculationRequestId,
         } as ApprovedDateActionConfig),
-        req.session.isAddDatesFlow,
       ),
     )
   }
@@ -175,7 +174,6 @@ export default class CalculationRoutes {
         model,
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
-        req.session.isAddDatesFlow,
       ),
     )
   }

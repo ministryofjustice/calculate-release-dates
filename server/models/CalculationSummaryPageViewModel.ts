@@ -8,7 +8,6 @@ export default class CalculationSummaryPageViewModel extends PrisonerContextView
     public model: CalculationSummaryViewModel,
     public calculationSummaryDatesCardModel: CalculationSummaryDatesCardModel,
     public approvedSummaryDatesCardModel: ApprovedSummaryDatesCardModel,
-    public isAddDatesFlow: boolean,
   ) {
     super(model.prisonerDetail)
   }
