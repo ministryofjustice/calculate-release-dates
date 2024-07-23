@@ -63,7 +63,7 @@ export default class ApprovedDatesRoutes {
     const config = await this.approvedDatesService.getConfig(token, req)
     return res.render(
       'pages/approvedDates/selectApprovedDates',
-      new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config),
+      new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config, req.session.isAddDatesFlow),
     )
   }
 

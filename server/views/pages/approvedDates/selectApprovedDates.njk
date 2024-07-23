@@ -10,9 +10,15 @@
 {% block beforeContent %}
     {{ super() }}
     <nav>
+        {% set backHref = "/calculation/" + prisonerDetail.offenderNo + "/" + calculationRequestId + "/approved-dates-question" %}
+
+        {% if isAddDatesFlow %}
+            {% set backHref = "/calculation/" + prisonerDetail.offenderNo + "/summary/" + calculationRequestId %}
+        {% endif %}
+
         {{ govukBackLink({
             text: "Back",
-            href: "/calculation/" + prisonerDetail.offenderNo + "/" + calculationRequestId + "/approved-dates-question"
+            href: backHref
         }) }}
     </nav>
 {% endblock %}
