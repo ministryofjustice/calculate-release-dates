@@ -77,13 +77,13 @@ describe('CalculationSummaryViewModel', () => {
     })
 
     it.each([
-      ['TRANCHE_0', 'No applicable SDS40 Tranche'],
+      ['TRANCHE_0', 'No SDS40 Tranche'],
       ['TRANCHE_1', 'SDS40 Tranche 1'],
       ['TRANCHE_2', 'SDS40 Tranche 2'],
     ])('The SDS40 tranche text is set correctly', (tranche, expectedResult) => {
       const modelWithoutDates = createModel({})
       modelWithoutDates.detailedCalculationResults.tranche = tranche as 'TRANCHE_1' | 'TRANCHE_2' | 'TRANCHE_0'
-      expect(modelWithoutDates.getSDSEarlyReleaseTranche()).toBe(expectedResult)
+      expect(modelWithoutDates.getSDS40ReleaseTranche()).toBe(expectedResult)
     })
   })
 })

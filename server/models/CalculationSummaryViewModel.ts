@@ -44,21 +44,21 @@ export default class CalculationSummaryViewModel {
     )
   }
 
-  public getSDSEarlyReleaseTranche(): string {
+  public getSDS40ReleaseTranche(): string {
     const tranche = this.detailedCalculationResults?.tranche
-    const prefix = 'SDS40 Tranche '
+    const prefix = 'SDS40 Tranche'
     let result = ''
 
     if (tranche) {
       switch (tranche) {
         case 'TRANCHE_0':
-          result = 'No applicable SDS40 Tranche'
+          result = 'No SDS40 Tranche'
           break
         case 'TRANCHE_1':
-          result = `${prefix}1`
+          result = `${prefix} 1`
           break
         case 'TRANCHE_2':
-          result = `${prefix}2`
+          result = `${prefix} 2`
           break
         default:
           result = ''
