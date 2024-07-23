@@ -20,6 +20,7 @@ declare module 'express-session' {
     calculationReasonId?: { string?: number }
     otherReasonDescription?: { string?: string }
     manualEntryValidationErrors?: ErrorMessages
+    isAddDatesFlow?: boolean
   }
 }
 

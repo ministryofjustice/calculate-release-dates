@@ -154,20 +154,45 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('should render correct link for nomis calculation summary', async () => {
+  it('should render correct links for prisoner with no Indeterminate sentences', async () => {
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
     const cardAndAction = {
       latestCalcCard: latestCalcCardForPrisoner,
     }
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
     await request(app)
       .get('?prisonId=123')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
+        const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
         expect($('.govuk-link').first().attr('href')).toStrictEqual('/view/GU32342/nomis-calculation-summary/123456')
+        expect(addDatesFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/reason?isAddDatesFlow=true')
+        expect(addDatesFlowLink.text()).toStrictEqual('Add APD, HDCAD or ROTL dates')
+      })
+  })
+
+  it('should render correct links for prisoner with Indeterminate sentences', async () => {
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(true)
+    await request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const calculateDatesFlowLink = $('[data-qa=calc-release-dates-for-prisoner-action-link]').first()
+        expect(calculateDatesFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/reason')
+        const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
+        expect(addDatesFlowLink.length).toStrictEqual(0)
       })
   })
 

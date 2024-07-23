@@ -11,6 +11,7 @@ export default class IndexViewModel extends OptionalPrisonerContextViewModel {
     public allowBulkLoad?: boolean,
     public latestCalculationCardConfig?: LatestCalculationCardConfig,
     public latestCalculationCardAction?: Action,
+    public hasNoIndeterminateSentence?: boolean,
   ) {
     super(prisonerDetail)
   }
@@ -23,6 +24,7 @@ export function indexViewModelForPrisoner(
   allowBulkUpload: boolean,
   latestCalculationCardConfig?: LatestCalculationCardConfig,
   latestCalculationCardAction?: Action,
+  hasNoIndeterminateSentence?: boolean,
 ): IndexViewModel {
   return new IndexViewModel(
     prisonerDetail,
@@ -31,5 +33,6 @@ export function indexViewModelForPrisoner(
     allowBulkUpload,
     latestCalculationCardConfig,
     latestCalculationCardAction,
+    hasNoIndeterminateSentence,
   )
 }

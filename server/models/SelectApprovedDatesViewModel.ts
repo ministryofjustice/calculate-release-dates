@@ -7,6 +7,7 @@ export default class SelectApprovedDatesViewModel extends PrisonerContextViewMod
     prisonerDetail: PrisonApiPrisoner,
     public calculationRequestId: string,
     public config: DateSelectConfiguration,
+    public isAddDatesFlow: boolean,
     public error?: boolean,
   ) {
     super(prisonerDetail)

@@ -20,8 +20,16 @@ export default class StartRoutes {
       const { caseloads, token } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, caseloads, token)
       const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
+      const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
+        prisonerDetail.bookingId,
+        token,
+      )
       const { latestCalcCard, latestCalcCardAction } =
-        await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonId, token)
+        await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(
+          prisonId,
+          token,
+          hasIndeterminateSentence,
+        )
       return res.render(
         'pages/ccardIndex',
         indexViewModelForPrisoner(
@@ -31,6 +39,7 @@ export default class StartRoutes {
           allowBulkLoad,
           latestCalcCard,
           latestCalcCardAction,
+          !hasIndeterminateSentence,
         ),
       )
     }

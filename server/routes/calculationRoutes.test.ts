@@ -401,6 +401,9 @@ describe('Calculation routes tests', () => {
           'Early removal cannot happen as release from the Detention Training Order (DTO) is later than the Conditional Release Date (CRD).',
         )
         expect(res.text).toContain('Calculation breakdown')
+        const $ = cheerio.load(res.text)
+        const submitToNomis = $('[data-qa=submit-to-nomis]').first()
+        expect(submitToNomis.attr('href')).toStrictEqual('/calculation/A1234AA/123456/approved-dates-question')
       })
   })
 
