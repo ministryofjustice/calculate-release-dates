@@ -768,7 +768,7 @@ export interface components {
       sentenceAndOffenceAnalysis: 'NEW' | 'UPDATED' | 'SAME'
       isSDSPlus: boolean
       /** @enum {string} */
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'NO'
+      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'TERRORISM' | 'NO'
     }
     OffenderOffence: {
       /** Format: int64 */
@@ -1070,7 +1070,7 @@ export interface components {
       fineAmount?: number
       isSDSPlus: boolean
       /** @enum {string} */
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'NO'
+      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'TERRORISM' | 'NO'
     }
     DetailedDate: {
       /** @enum {string} */

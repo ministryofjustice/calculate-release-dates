@@ -639,6 +639,75 @@ describe('View journey routes tests', () => {
           expect(noExclusionCard.text()).not.toContain('Violent')
         })
     })
+    it('GET /view/:calculationRequestId/sentences-and-offences should show correctly formatted exclusion for Terrorism, Domestic Abuse and National Security', () => {
+      config.featureToggles.sdsExclusionIndicatorsEnabled = true
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
+        {
+          terms: [
+            {
+              years: 2,
+            },
+          ],
+          caseSequence: 2,
+          lineSequence: 2,
+          sentenceSequence: 2,
+          consecutiveToSequence: 1,
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'DOMESTIC_ABUSE_OFFENCE' },
+          isSDSPlus: true,
+          hasAnSDSEarlyReleaseExclusion: 'DOMESTIC_ABUSE',
+        } as SentenceAndOffenceWithReleaseArrangements,
+        {
+          terms: [
+            {
+              years: 2,
+            },
+          ],
+          caseSequence: 2,
+          lineSequence: 2,
+          sentenceSequence: 2,
+          consecutiveToSequence: 1,
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'TERROR_OFFENCE' },
+          isSDSPlus: true,
+          hasAnSDSEarlyReleaseExclusion: 'TERRORISM',
+        } as SentenceAndOffenceWithReleaseArrangements,
+        {
+          terms: [
+            {
+              years: 2,
+            },
+          ],
+          caseSequence: 2,
+          lineSequence: 2,
+          sentenceSequence: 2,
+          consecutiveToSequence: 1,
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'NSOFFENCE' },
+          isSDSPlus: true,
+          hasAnSDSEarlyReleaseExclusion: 'NATIONAL_SECURITY',
+        } as SentenceAndOffenceWithReleaseArrangements,
+      ])
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
+        calculateErsed: true,
+        sentenceCalculationUserInputs: [],
+      } as CalculationUserInputs)
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.sentence-card:contains("DOMESTIC_ABUSE_OFFENCE")').text()).toContain('Domestic Abuse')
+          expect($('.sentence-card:contains("TERROR_OFFENCE")').text()).toContain('Terrorism')
+          expect($('.sentence-card:contains("NSOFFENCE")').text()).toContain('National Security')
+        })
+    })
     it('GET /view/:calculationRequestId/sentences-and-offences should not show exclusions if feature toggle is off', () => {
       config.featureToggles.sdsExclusionIndicatorsEnabled = false
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
