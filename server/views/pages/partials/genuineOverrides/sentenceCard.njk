@@ -79,7 +79,7 @@
                                         {% if featureToggles.sdsExclusionIndicatorsEnabled and sentence.hasAnSDSEarlyReleaseExclusion and sentence.hasAnSDSEarlyReleaseExclusion !== 'NO' %}
                                             <tr class="govuk-table__row govuk-body-s" data-qa="sds-early-release-exclusion">
                                                 <th scope="row" class="govuk-table__header sentence-table-header">SDS Early Release Exclusion</th>
-                                                <td class="govuk-table__cell">{{ sentence.hasAnSDSEarlyReleaseExclusion | title }}</td>
+                                                <td class="govuk-table__cell">{{ sentence.hasAnSDSEarlyReleaseExclusion | replace ("_", " ") | title }}</td>
                                             </tr>
                                         {% endif %}
                                     {% endif %}

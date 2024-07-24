@@ -235,6 +235,27 @@ const sentencesAndOffencesWithExclusions = [
     ],
     sentenceTypeDescription: 'SDS Standard Sentence',
     caseSequence: 1,
+    lineSequence: 2,
+    caseReference: 'CASE001',
+    courtDescription: 'Court 1',
+    sentenceSequence: 1,
+    offence: {
+      offenceStartDate: '2021-01-04',
+      offenceEndDate: '2021-01-05',
+      offenceDescription: 'DAOFFENCE',
+    },
+    sentenceAndOffenceAnalysis: 'NEW',
+    isSDSPlus: true,
+    hasAnSDSEarlyReleaseExclusion: 'DOMESTIC_ABUSE',
+  } as AnalysedSentenceAndOffence,
+  {
+    terms: [
+      {
+        years: 3,
+      },
+    ],
+    sentenceTypeDescription: 'SDS Standard Sentence',
+    caseSequence: 1,
     lineSequence: 3,
     caseReference: 'CASE001',
     courtDescription: 'Court 1',
@@ -742,6 +763,7 @@ describe('Genuine overrides routes tests', () => {
         const $ = cheerio.load(res.text)
         expect($('.sentence-card:contains("SXOFFENCE")').text()).toContain('Sexual')
         expect($('.sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
+        expect($('.sentence-card:contains("DAOFFENCE")').text()).toContain('Domestic Abuse')
         const noExclusionCard = $('.sentence-card:contains("No exclusion offence")')
         expect(noExclusionCard.text()).not.toContain('Sexual')
         expect(noExclusionCard.text()).not.toContain('Violent')
