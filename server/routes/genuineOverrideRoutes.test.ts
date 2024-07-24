@@ -769,6 +769,51 @@ describe('Genuine overrides routes tests', () => {
         expect(noExclusionCard.text()).not.toContain('Violent')
       })
   })
+  it('GET /specialist-support/calculation/:calculationReference/sentence-and-offence-information should show exclusions with feature toggle on for single sentence', () => {
+    config.featureToggles.sdsExclusionIndicatorsEnabled = true
+    userPermissionsService.allowSpecialSupport.mockReturnValue(true)
+    const singleSentencesAndOffencesWithExclusions = [
+      {
+        terms: [
+          {
+            years: 3,
+          },
+        ],
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        caseSequence: 1,
+        lineSequence: 2,
+        caseReference: 'CASE001',
+        courtDescription: 'Court 1',
+        sentenceSequence: 1,
+        offence: {
+          offenceStartDate: '2021-01-04',
+          offenceEndDate: '2021-01-05',
+          offenceDescription: 'VIOOFFENCE',
+        },
+        sentenceAndOffenceAnalysis: 'NEW',
+        isSDSPlus: true,
+        hasAnSDSEarlyReleaseExclusion: 'VIOLENT',
+      } as AnalysedSentenceAndOffence,
+    ]
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      singleSentencesAndOffencesWithExclusions,
+      stubbedAdjustments,
+      false,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/specialist-support/calculation/123/sentence-and-offence-information')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
+      })
+  })
   it('GET /specialist-support/calculation/:calculationReference/sentence-and-offence-information does not show exclusions if feature toggle is off', () => {
     config.featureToggles.sdsExclusionIndicatorsEnabled = false
     userPermissionsService.allowSpecialSupport.mockReturnValue(true)

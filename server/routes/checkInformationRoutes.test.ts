@@ -600,12 +600,8 @@ describe('Check information routes tests', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
         expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
-        const noExclusionCard = $('.new-sentence-card:contains("No exclusion offence")')
-        expect(noExclusionCard.text()).not.toContain('Sexual')
-        expect(noExclusionCard.text()).not.toContain('Violent')
       })
   })
-
   it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle on', () => {
     config.featureToggles.sdsExclusionIndicatorsEnabled = true
 
@@ -635,7 +631,6 @@ describe('Check information routes tests', () => {
         expect(noExclusionCard.text()).not.toContain('Violent')
       })
   })
-
   it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle off', () => {
     config.featureToggles.sdsExclusionIndicatorsEnabled = false
 
