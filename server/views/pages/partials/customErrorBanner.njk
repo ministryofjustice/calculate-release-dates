@@ -3,6 +3,8 @@
         <h2 class="govuk-error-summary__title" id="error-summary-title">
             {% if validationErrors.messageType === 'MISSING_PRISON_API_DATA' %}
             The calculation breakdown cannot be shown on this page.
+            {% elif validationErrors.messageType === 'UNSUPPORTED_OFFENCE' %}
+            One or more offence codes needs updating in NOMIS.
             {% else %}
             There is a problem
             {% endif %}
@@ -26,7 +28,7 @@
                             {% elif error.id %}
                                 <a href="#{{ error.id }}">{{ error.html | safe if error.html else error.text }}</a>
                             {% else %}
-                                {{ error.html | safe if error.html else error.text }}
+                                {{ error.html | safe if error.html else error.text | replace('\n', '<br>') | safe }}
                             {% endif %}
                         </p>
                     </li>
