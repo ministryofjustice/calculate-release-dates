@@ -864,4 +864,20 @@ describe('Calculation routes tests', () => {
         expect(trancheSelector.text()).toStrictEqual('SDS40 Tranche 1')
       })
   })
+
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should not display tranche label when tranche is 0', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    const dataWithTranche0 = { ...stubbedResultsWithBreakdownAndAdjustments }
+    dataWithTranche0.tranche = 'TRANCHE_0'
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(dataWithTranche0)
+    return request(app)
+      .get('/calculation/A1234AB/summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const trancheSelector = $('[data-qa=sds-early-release-tranche]').first()
+        expect(trancheSelector.length).toBe(0)
+      })
+  })
 })

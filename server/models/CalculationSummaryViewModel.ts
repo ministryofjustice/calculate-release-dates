@@ -44,6 +44,10 @@ export default class CalculationSummaryViewModel {
     )
   }
 
+  public showSDS40TrancheLabel(): boolean {
+    return this.detailedCalculationResults?.tranche !== 'TRANCHE_0'
+  }
+
   public getSDS40ReleaseTranche(): string {
     const tranche = this.detailedCalculationResults?.tranche
     const prefix = 'SDS40 Tranche'
