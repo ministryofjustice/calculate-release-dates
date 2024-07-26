@@ -20,10 +20,10 @@
             <h2 class="govuk-summary-card__title">
               <span class="govuk-!-font-size-24" data-qa="release-dates-title">Release dates</span>
             </h2>
-              {% if model.detailedCalculationResults.tranche %}
-                  <div>
-                      <span class="moj-badge moj-badge--black moj-badge--large" data-qa="sds-early-release-tranche">{{ model.getSDS40ReleaseTranche()}}</span>
-                  </div>
+              {% if model.showSDS40TrancheLabel() %}
+                      <div>
+                          <span class="moj-badge moj-badge--black moj-badge--large" data-qa="sds-early-release-tranche">{{ model.getSDS40ReleaseTranche()}}</span>
+                      </div>
               {% endif %}
           </div>
           <div class="govuk-summary-card__content">
