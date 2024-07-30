@@ -1097,6 +1097,19 @@ export default {
       },
     })
   },
+  stubHasNoRecallSentences: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/manual-calculation/1234/has-recall-sentences`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: false,
+      },
+    })
+  },
   stubSaveManualEntry: (): SuperAgentRequest => {
     return stubFor({
       request: {

@@ -28,6 +28,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubHasNoIndeterminateSentences')
     cy.task('stubSaveManualEntry')
     cy.task('stubGetCalculationResults')
+    cy.task('stubHasNoRecallSentences')
   })
 
   it('Can add some manual dates', () => {
