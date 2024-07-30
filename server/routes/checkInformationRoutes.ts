@@ -5,7 +5,6 @@ import UserInputService from '../services/userInputService'
 import CheckInformationService from '../services/checkInformationService'
 import CheckInformationViewModel from '../models/CheckInformationViewModel'
 import ManualEntryCheckInformationUnsupportedViewModel from '../models/ManualEntryCheckInformationUnsupportedViewModel'
-import { ErrorMessageType } from '../types/ErrorMessages'
 
 export default class CheckInformationRoutes {
   constructor(
