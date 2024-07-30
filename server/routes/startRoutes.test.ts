@@ -213,7 +213,7 @@ describe('Start routes tests', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
         const bannerText = $('.govuk-notification-banner').first().text()
-        expect(bannerText).toContain('This service now supports SDS calculations.')
+        expect(bannerText).toContain('This service now supports SDS40 calculations.')
       })
   })
 
