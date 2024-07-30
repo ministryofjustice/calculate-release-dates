@@ -32,7 +32,7 @@ generic-service:
     HDC4_BANNER_ENABLED: "true"
     ENVIRONMENT_NAME: PRE-PRODUCTION
     SHOW_BREAKDOWN: "true"
-    SDS40_POLICY_ENABLED: "false"
+    SDS40_POLICY_SUPPORTED: "OFF"
 
 generic-prometheus-alerts:
   targetApplication: calculate-release-dates-alt-preprod

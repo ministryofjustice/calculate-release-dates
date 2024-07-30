@@ -196,8 +196,8 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('should render the correct SDS40 notification banner when toggle is enabled', async () => {
-    config.featureToggles.sds40PolicyEnabled = true
+  it('should render the correct SDS40 notification banner when sds40 calculation is supported', async () => {
+    config.featureToggles.sds40PolicySupported = 'CALCULATED'
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
@@ -217,8 +217,8 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('should render the correct SDS40 notification banner when toggle is disabled', async () => {
-    config.featureToggles.sds40PolicyEnabled = false
+  it('should render the correct SDS40 notification banner when sds40 calculation needs to go through manual entry', async () => {
+    config.featureToggles.sds40PolicySupported = 'MANUAL'
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
@@ -238,6 +238,55 @@ describe('Start routes tests', () => {
           'SDS40 calculations must be recorded manually, by following normal the Calculate release dates process.',
         )
         expect(bannerText).toContain('You can still use this service to calculate all other release dates.')
+      })
+  })
+
+  it('should render the correct SDS40 notification banner when sds40 calculation is not supported - switched off', async () => {
+    config.featureToggles.sds40PolicySupported = 'OFF'
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    await request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const bannerText = $('.govuk-notification-banner').first().text()
+        expect(bannerText).toContain('This service is being updated to reflect the new SDS40 policy')
+        expect(bannerText).toContain('The Calculate release dates service currently calculates SDS sentences at 50%.')
+        expect(bannerText).toContain(
+          'All SDS40 calculations must be recorded using the SharePoint tracker, as outlined in the SDS operational guidance.',
+        )
+      })
+  })
+
+  it('should render the correct SDS40 notification banner when sds40 calculation is not supported no property', async () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    await request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const bannerText = $('.govuk-notification-banner').first().text()
+        expect(bannerText).toContain('This service is being updated to reflect the new SDS40 policy')
+        expect(bannerText).toContain('The Calculate release dates service currently calculates SDS sentences at 50%.')
+        expect(bannerText).toContain(
+          'All SDS40 calculations must be recorded using the SharePoint tracker, as outlined in the SDS operational guidance.',
+        )
       })
   })
 
