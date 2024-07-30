@@ -132,7 +132,7 @@ export default {
     printNotificationSlipEnabled: get('PRINT_NOTIFICATION_SLIP_ENABLED', false) === 'true',
     showBreakdown: get('SHOW_BREAKDOWN', false) === 'true',
     hdc4BannerEnabled: get('HDC4_BANNER_ENABLED', false) === 'true',
-    sds40PolicyBannerEnabled: get('SDS40_POLICY_BANNER_ENABLED', false) === 'true',
+    sds40PolicySupported: get('SDS40_POLICY_SUPPORTED', 'OFF'),
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
