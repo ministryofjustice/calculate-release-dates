@@ -11,6 +11,7 @@ export default class ManualCalculationService {
   async hasIndeterminateSentences(bookingId: number, token: string): Promise<boolean> {
     return new CalculateReleaseDatesApiClient(token).hasIndeterminateSentences(bookingId)
   }
+
   async hasRecallSentences(bookingId: number, token: string): Promise<boolean> {
     return new CalculateReleaseDatesApiClient(token).hasRecallSentences(bookingId)
   }

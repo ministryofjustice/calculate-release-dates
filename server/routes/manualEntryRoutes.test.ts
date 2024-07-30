@@ -105,6 +105,7 @@ afterEach(() => {
 
 describe('Tests for /calculation/:nomsId/manual-entry', () => {
   it('GET if there are no unsupported sentences the page re-directs', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
 
@@ -116,7 +117,24 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       })
   })
 
+  it('GET if there is a recall the page display correctly', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(true)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Manual calculation required')
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+
   it('GET if there are unsupported sentences the page display correctly', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -136,6 +154,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('GET if there are indeterminate sentences then should have correct content on landing page', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -161,6 +180,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('GET if there are indeterminate sentences then should have correct content', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -179,6 +199,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('GET if there are determinate sentences then should have correct data', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -196,6 +217,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('POST if a date type has been selected should redirect', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -214,6 +236,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('POST if a date type has not been selected should display error', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -233,6 +256,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
 
   it('GET /calculation/:nomsId/manual-entry/confirmation shows confirmation page with mini profile', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
         type: 'UNSUPPORTED_SENTENCE',
@@ -259,6 +283,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('GET /calculation/:nomsId/manual-entry/enter-date shows enter date page with mini profile and correct heading', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
@@ -294,6 +319,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('GET /calculation/:nomsId/manual-entry/enter-date with query param shows correct heading for date edit', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
@@ -329,6 +355,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('POST /calculation/:nomsId/manual-entry/enter-date shows enter date page with mini profile', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
@@ -355,6 +382,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('GET /calculation/:nomsId/manual-entry/select-dates shows select dates page with mini profile', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
@@ -372,6 +400,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('POST /calculation/:nomsId/manual-entry/select-dates shows select dates page with mini profile if there is an error', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
@@ -392,6 +421,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('POST /calculation/:nomsId/manual-entry/no-dates-confirmation shows no dates confirmation page with mini profile', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
@@ -411,6 +441,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('GET /calculation/:nomsId/manual-entry/remove-date should show the remove date page with mini profile', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {
@@ -438,6 +469,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('POST /calculation/:nomsId/manual-entry/remove-date should show the remove date page with mini profile if no confirmation option selected', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
       {

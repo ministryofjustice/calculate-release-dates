@@ -325,9 +325,9 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<ReleaseDatesAndCalculationContext>
   }
 
-    hasRecallSentences(bookingId: number): Promise<boolean> {
-      return this.restClient.get({
-        path: `/manual-calculation/${bookingId}/has-recall-sentences`,
-      }) as Promise<boolean>
-    }
+  hasRecallSentences(bookingId: number): Promise<boolean> {
+    return this.restClient.get({
+      path: `/manual-calculation/${bookingId}/has-recall-sentences`,
+    }) as Promise<boolean>
+  }
 }
