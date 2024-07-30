@@ -5,6 +5,7 @@ import UserInputService from '../services/userInputService'
 import CheckInformationService from '../services/checkInformationService'
 import CheckInformationViewModel from '../models/CheckInformationViewModel'
 import ManualEntryCheckInformationUnsupportedViewModel from '../models/ManualEntryCheckInformationUnsupportedViewModel'
+import { ErrorMessageType } from '../types/ErrorMessages'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -67,6 +68,9 @@ export default class CheckInformationRoutes {
 
     const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
     if (errors.messages.length > 0) {
+      if (errors.messageType === ErrorMessageType.UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE) {
+        return res.redirect(`/calculation/${nomsId}/manual-entry`)
+      }
       return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
     }
 
