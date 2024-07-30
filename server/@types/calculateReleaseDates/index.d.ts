@@ -409,10 +409,17 @@ export interface components {
         | 'PRE_PCSC_DTO_WITH_ADJUSTMENT'
         | 'BOTUS_CONSECUTIVE_OR_CONCURRENT_TO_OTHER_SENTENCE'
         | 'SDS_EARLY_RELEASE_UNSUPPORTED'
+        | 'UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE'
+        | 'UNSUPPORTED_OFFENCE_ENCOURAGING_OR_ASSISTING'
       arguments: string[]
       message: string
       /** @enum {string} */
-      type: 'UNSUPPORTED_SENTENCE' | 'UNSUPPORTED_CALCULATION' | 'VALIDATION'
+      type:
+        | 'UNSUPPORTED_SENTENCE'
+        | 'UNSUPPORTED_CALCULATION'
+        | 'VALIDATION'
+        | 'UNSUPPORTED_OFFENCE'
+        | 'UNSUPPORTED_SDS40_SENTENCE'
     }
     AdjustmentServiceAdjustment: {
       /** Format: uuid */
