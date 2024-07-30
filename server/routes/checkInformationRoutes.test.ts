@@ -1190,7 +1190,7 @@ describe('Check information routes tests', () => {
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockReturnValue({
       messages: [{ text: 'SDS40 Unsupported recall type' }],
-      messageType: ErrorMessageType.UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE,
+      messageType: ErrorMessageType.UNSUPPORTED_SDS40_SENTENCE,
     } as never)
 
     return request(app)
