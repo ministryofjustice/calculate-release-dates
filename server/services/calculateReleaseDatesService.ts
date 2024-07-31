@@ -73,7 +73,16 @@ export default class CalculateReleaseDatesService {
   }
 
   async getUnsupportedSentenceOrCalculationMessages(prisonId: string, token: string): Promise<ValidationMessage[]> {
-    return new CalculateReleaseDatesApiClient(token).getUnsupportedValidation(prisonId)
+    const messages = await new CalculateReleaseDatesApiClient(token).getUnsupportedValidation(prisonId)
+    if (messages.length) {
+      return messages
+    }
+    const errors = await new CalculateReleaseDatesApiClient(token).validate(prisonId, {
+      calculateErsed: false,
+      sentenceCalculationUserInputs: [],
+      useOffenceIndicators: false,
+    })
+    return errors.filter(it => it.type === ErrorMessageType.UNSUPPORTED_SDS40_SENTENCE)
   }
 
   async getBookingAndSentenceAdjustments(

@@ -1184,24 +1184,6 @@ describe('Check information routes tests', () => {
       })
   })
 
-  it('POST /calculation/:nomsId/check-information should redirect in SDS40 recall unsupported error', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
-    calculateReleaseDatesService.validateBackend.mockReturnValue({
-      messages: [{ text: 'SDS40 Unsupported recall type' }],
-      messageType: ErrorMessageType.UNSUPPORTED_SDS40_SENTENCE,
-    } as never)
-
-    return request(app)
-      .post('/calculation/A1234AA/check-information')
-      .expect(302)
-      .expect('Location', '/calculation/A1234AA/manual-entry')
-      .expect(res => {
-        expect(res.redirect).toBeTruthy()
-      })
-  })
-
   it('GET /calculation/:nomsId/check-information should display error page for case load errors.', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     userInputService.isCalculationReasonSet.mockReturnValue(true)
