@@ -32,6 +32,7 @@ generic-service:
     HDC4_BANNER_ENABLED: "true"
     SDS40_POLICY_SUPPORTED: "CALCULATED"
     ENVIRONMENT_NAME: PRE-PRODUCTION
+    SHOW_SDS40_TRANCHE_LABEL: "true"
 
 generic-prometheus-alerts:
   businessHoursOnly: true

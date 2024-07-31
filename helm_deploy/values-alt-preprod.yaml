@@ -21,7 +21,7 @@ generic-service:
     PRISON_API_URL: "https://prison-api-preprod.prison.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-preprod.prison.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital-preprod.prison.service.justice.gov.uk"
-    SDS_EXCLUSION_INDICATORS_ENABLED: "false"
+    SDS_EXCLUSION_INDICATORS_ENABLED: "true"
     COMPONENT_API_URL: "https://frontend-components-preprod.hmpps.service.justice.gov.uk"
     COURT_CASES_AND_RELEASE_DATES_URL: "https://court-cases-release-dates-preprod.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
@@ -32,7 +32,8 @@ generic-service:
     HDC4_BANNER_ENABLED: "true"
     ENVIRONMENT_NAME: PRE-PRODUCTION
     SHOW_BREAKDOWN: "true"
-    SDS40_POLICY_SUPPORTED: "OFF"
+    SDS40_POLICY_SUPPORTED: "CALCULATED"
+    SHOW_SDS40_TRANCHE_LABEL: "true"
 
 generic-prometheus-alerts:
   targetApplication: calculate-release-dates-alt-preprod
