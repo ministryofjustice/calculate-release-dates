@@ -133,6 +133,7 @@ export default {
     showBreakdown: get('SHOW_BREAKDOWN', false) === 'true',
     hdc4BannerEnabled: get('HDC4_BANNER_ENABLED', false) === 'true',
     sds40PolicySupported: get('SDS40_POLICY_SUPPORTED', 'OFF'),
+    showSDS40TrancheLabel: get('SHOW_SDS40_TRANCHE_LABEL', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),

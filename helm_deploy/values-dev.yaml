@@ -31,6 +31,7 @@ generic-service:
     PRINT_NOTIFICATION_SLIP_ENABLED: "true"
     HDC4_BANNER_ENABLED: "true"
     SDS40_POLICY_SUPPORTED: "CALCULATED"
+    SHOW_SDS40_TRANCHE_LABEL: "true"
   # Switches off the allow list in the DEV env only.
   allowlist: null
 
