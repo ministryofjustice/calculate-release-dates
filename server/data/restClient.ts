@@ -56,13 +56,15 @@ export default class RestClient {
   }: Request): Promise<Response> {
     logger.info(`${this.name} GET: ${path}`)
     try {
+      const url = this.apiUrl() + path
       const result = await superagent
-        .get(`${this.apiUrl()}${path}`)
+        .get(url)
         .query(query)
         .agent(this.agent)
         .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
-          if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
+          if (err)
+            logger.info(`Retry handler found ${this.name} for url ${url} and error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
         })
         .auth(this.token, { type: 'bearer' })
