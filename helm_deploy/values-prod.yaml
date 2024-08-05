@@ -25,6 +25,6 @@ generic-service:
     HDC4_BANNER_ENABLED: "true"
     PRINT_NOTIFICATION_SLIP_ENABLED: "true"
     SDS40_POLICY_SUPPORTED: "CALCULATED"
-    SHOW_SDS40_TRANCHE_LABEL: "false"
+    SHOW_SDS40_TRANCHE_LABEL: "true"
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts
