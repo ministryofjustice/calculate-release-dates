@@ -34,6 +34,23 @@
       appInsights.addTelemetryInitializer(function (envelope) {
           envelope.tags["ai.cloud.role"] = "{{ appInsightsApplicationName }}"
           envelope.tags["ai.application.ver"] = "{{ buildNumber }}"
+          // Check if the telemetry item is a ClickEvent
+          if (envelope.data.baseTypeSource === "ClickEvent") {
+              // Parse the content property, which is also a JSON string
+              let contentArray = JSON.parse(envelope.data.content);
+              // Iterate over the content array
+              for (let content of contentArray) {
+                  // Check if the contentName property exists and qa equals 'prisoner-link'
+                  if (content.contentName && content.qa === "prisoner-link") {
+                      // Redact the contentName property
+                      let redactedStr = "REDACTED";
+                      content.contentName = redactedStr;
+                      envelope.baseData.name= redactedStr;
+                  }
+              }
+              // Replace the original content property with the redacted version
+              envelope.data.content = JSON.stringify(contentArray);
+          }
         });
       appInsights.trackPageView();
     </script>
