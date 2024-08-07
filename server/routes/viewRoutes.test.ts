@@ -517,6 +517,9 @@ describe('View journey routes tests', () => {
           expect($('[data-qa=sub-nav-calc-summary]').first().attr('href')).toStrictEqual(
             '/view/A1234AA/calculation-summary/123456',
           )
+          expect($('[data-qa=sub-nav-sent-and-off]').first().attr('href')).toStrictEqual(
+            '/view/A1234AA/sentences-and-offences/123456',
+          )
           expect($('[data-qa=sentAndOff-title]').text()).toStrictEqual('Sentence and offence information')
           expect(res.text).toContain('A1234AA')
           expect(res.text).toContain('Anon')
@@ -1041,6 +1044,9 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('/?prisonId=A1234AA')
           expect($('[data-qa="sub-nav-sent-and-off"]').first().attr('href')).toStrictEqual(
             '/view/A1234AA/sentences-and-offences/123456',
+          )
+          expect($('[data-qa=sub-nav-calc-summary]').first().attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-summary/123456',
           )
         })
     })

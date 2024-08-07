@@ -12,6 +12,6 @@ export default class ViewSentencesAndOffencesPage extends ViewSentencesAndOffenc
   }
 
   public nextPage(): PageElement {
-    return cy.get('[data-qa=next-page-button]')
+    return cy.get('[data-qa=sub-nav-calc-summary]')
   }
 }
