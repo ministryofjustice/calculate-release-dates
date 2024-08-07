@@ -2,6 +2,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set pageTitle = applicationName + " - check information" %}
 {% set pageId = "view-sentences-and-offences" %}
@@ -21,8 +22,48 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
             <h1 class="govuk-heading-xl" id="check-nomis-heading" data-qa="sentAndOff-title">Sentence and offence information</h1>
+            {% if model.calculationReason.isOther %}
+                {% set reason = "Other (" + model.otherReasonDescription + ")" %}
+            {% else %}
+                {% set reason = model.calculationReason.displayName %}
+            {% endif %}
+
+            {% if model.calculationReason|length %}
+                <h2 class="govuk-heading-m">Calculation details</h2>
+                {{ govukSummaryList({
+                    classes: "govuk-summary-list--no-border",
+                    rows: [
+                        {
+                            key: {
+                            text: "Date"
+                        },
+                            value: {
+                            text: model.calculationDate
+                        }
+                        },{
+                            key: {
+                                text: "Reason"
+                            },
+                            value: {
+                                text: reason
+                            }
+                        }]
+                }) }}
+            {% endif %}
         </div>
     </div>
+
+    <nav class="moj-sub-navigation govuk-!-margin-bottom-0" aria-label="Sub navigation">
+      <ul class="moj-sub-navigation__list">
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link" aria-current="page" href={{"/view/" + nomsId + "/sentences-and-offences/" + calculationRequestId}}>Sentence and offence information</a>
+        </li>
+        <li class="moj-sub-navigation__item">
+          <a class="moj-sub-navigation__link" data-qa="sub-nav-calc-summary" href={{"/view/" + nomsId + "/calculation-summary/" + calculationRequestId}}>Calculation Summary</a>
+        </li>
+      </ul>
+    </nav>
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             {% if model.isErsedEligible() %}
@@ -42,23 +83,5 @@
             {% endif %}
             {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
         </div>
-    </div>
-    <div class="govuk-grid-row">
-        <nav class="pagination" role="navigation" aria-label="Pagination">
-            <ul class="pagination__list">
-                <li class="pagination__item pagination__item--next">
-                    <a href={{"/view/" + nomsId + "/calculation-summary/" + calculationRequestId}} class="govuk-link pagination__link" data-qa="next-page-button">
-                        <span class="pagination__link-title">
-                            <svg class="pagination__link-icon" xmlns="http://www.w3.org/2000/svg" height="13" width="17" viewBox="0 0 17 13">
-                                <path d="m10.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
-                            </svg>
-                            <span class="pagination__link-text">Next page</span>
-                        </span>
-                        <span class="pagination__link-divider visually-hidden">:</span>
-                        <span class="pagination__link-label">Release dates</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
     </div>
 {% endblock %}

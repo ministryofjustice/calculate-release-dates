@@ -504,6 +504,9 @@ describe('View journey routes tests', () => {
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue(stubbedUserInput)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')
         .expect(200)
@@ -511,6 +514,9 @@ describe('View journey routes tests', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           expect($('[data-qa=123-title]').text()).toStrictEqual('123 - Doing a crime')
+          expect($('[data-qa=sub-nav-calc-summary]').first().attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-summary/123456',
+          )
           expect($('[data-qa=sentAndOff-title]').text()).toStrictEqual('Sentence and offence information')
           expect(res.text).toContain('A1234AA')
           expect(res.text).toContain('Anon')
@@ -537,6 +543,9 @@ describe('View journey routes tests', () => {
     })
     it('GET /view/:calculationRequestId/sentences-and-offences should return SDS+ badge if sentence is marked as SDS+', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
         {
           terms: [
@@ -571,6 +580,9 @@ describe('View journey routes tests', () => {
     it('GET /view/:calculationRequestId/sentences-and-offences should show exclusions if feature toggle is enabled', () => {
       config.featureToggles.sdsExclusionIndicatorsEnabled = true
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
         {
           terms: [
@@ -642,6 +654,9 @@ describe('View journey routes tests', () => {
     it('GET /view/:calculationRequestId/sentences-and-offences should show correctly formatted exclusion for Terrorism, Domestic Abuse and National Security', () => {
       config.featureToggles.sdsExclusionIndicatorsEnabled = true
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
         {
           terms: [
@@ -711,6 +726,9 @@ describe('View journey routes tests', () => {
     it('GET /view/:calculationRequestId/sentences-and-offences should not show exclusions if feature toggle is off', () => {
       config.featureToggles.sdsExclusionIndicatorsEnabled = false
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
         {
           terms: [
@@ -778,6 +796,9 @@ describe('View journey routes tests', () => {
     })
     it('GET /view/:calculationRequestId/sentences-and-offences should return SDS+ badge if user marked sentence as SDS+', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
         {
           terms: [
@@ -819,6 +840,9 @@ describe('View journey routes tests', () => {
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences without ERSED', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({ ...stubbedUserInput, calculateErsed: false })
       return request(app)
@@ -835,6 +859,9 @@ describe('View journey routes tests', () => {
     it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences of the calculation if there is no user inputs', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
         calculateErsed: false,
@@ -1011,7 +1038,8 @@ describe('View journey routes tests', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
-          expect($('[data-qa=previous-page-button]').first().attr('href')).toStrictEqual(
+          expect(res.text).toContain('/?prisonId=A1234AA')
+          expect($('[data-qa="sub-nav-sent-and-off"]').first().attr('href')).toStrictEqual(
             '/view/A1234AA/sentences-and-offences/123456',
           )
         })
