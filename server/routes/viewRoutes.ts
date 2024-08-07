@@ -76,6 +76,10 @@ export default class ViewRoutes {
         calculationRequestId,
         token,
       )
+      const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
+        calculationRequestId,
+        token,
+      )
       const returnToCustody = sentencesAndOffences.filter((s: PrisonApiOffenderSentenceAndOffences) =>
         SentenceTypes.isSentenceFixedTermRecall(s),
       ).length
@@ -92,6 +96,11 @@ export default class ViewRoutes {
             adjustmentDetails,
             true,
             returnToCustody,
+            null,
+            detailedCalculationResults.context.calculationReason,
+            detailedCalculationResults.context.calculationDate === undefined
+              ? undefined
+              : longDateFormat(detailedCalculationResults.context.calculationDate),
           ),
           calculationRequestId,
           nomsId,

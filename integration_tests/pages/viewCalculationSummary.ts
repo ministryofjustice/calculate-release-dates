@@ -11,7 +11,7 @@ export default class ViewCalculationSummary extends CalculationSummaryCommon {
     return new ViewCalculationSummary()
   }
 
-  public previousPage(): PageElement {
-    return cy.get('[data-qa=previous-page-button]')
+  public loadSentenceAndOffences(): PageElement {
+    return cy.get('[data-qa=sub-nav-sent-and-off]')
   }
 }

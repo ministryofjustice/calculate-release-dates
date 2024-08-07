@@ -1,5 +1,6 @@
 import {
   AnalysedSentenceAndOffence,
+  CalculationReason,
   CalculationSentenceUserInput,
   CalculationUserInputs,
   OffenderOffence,
@@ -38,6 +39,8 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
+    public calculationReason?: CalculationReason,
+    public calculationDate?: string,
   ) {
     this.adjustments = new ViewRouteAdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
