@@ -5,6 +5,8 @@
             The calculation breakdown cannot be shown on this page.
             {% elif validationErrors.messageType === 'UNSUPPORTED_OFFENCE' %}
             One or more offence codes needs updating in NOMIS.
+            {% elif validationErrors.messageType === 'SUSPENDED_OFFENCE' %}
+            ‘Original offence suspended sentence activated’ is an invalid offence.
             {% else %}
             There is a problem
             {% endif %}
