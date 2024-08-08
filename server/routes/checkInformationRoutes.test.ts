@@ -547,12 +547,10 @@ describe('Check information routes tests', () => {
 
         const $ = cheerio.load(res.text)
         // All but 1 sentences are flagged as 'NEW'
-        expect($('.govuk-tag.govuk-tag--moj-blue:contains("NEW")')).toHaveLength(10)
-        expect($('.new-sentence-card')).toHaveLength(10)
-        expect($('.sentence-card')).toHaveLength(1)
+        expect($('.sentence-card')).toHaveLength(11)
         // 5 offences in the only SDS+ sentence
         expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(5)
-        expect($('.new-sentence-card:contains("Rape of a minor")').text()).toContain('SDS+')
+        expect($('.sentence-card:contains("Rape of a minor")').text()).toContain('SDS+')
       })
   })
   it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle on for single sentence', () => {
@@ -599,7 +597,7 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
+        expect($('.sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
       })
   })
   it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle on', () => {
@@ -624,9 +622,9 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('.new-sentence-card:contains("SXOFFENCE")').text()).toContain('Sexual')
-        expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
-        const noExclusionCard = $('.new-sentence-card:contains("No exclusion offence")')
+        expect($('.sentence-card:contains("SXOFFENCE")').text()).toContain('Sexual')
+        expect($('.sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
+        const noExclusionCard = $('.sentence-card:contains("No exclusion offence")')
         expect(noExclusionCard.text()).not.toContain('Sexual')
         expect(noExclusionCard.text()).not.toContain('Violent')
       })
@@ -653,9 +651,9 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('.new-sentence-card:contains("SXOFFENCE")').text()).not.toContain('Sexual')
-        expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).not.toContain('Violent')
-        const noExclusionCard = $('.new-sentence-card:contains("No exclusion offence")')
+        expect($('.sentence-card:contains("SXOFFENCE")').text()).not.toContain('Sexual')
+        expect($('.sentence-card:contains("VIOOFFENCE")').text()).not.toContain('Violent')
+        const noExclusionCard = $('.sentence-card:contains("No exclusion offence")')
         expect(noExclusionCard.text()).not.toContain('Sexual')
         expect(noExclusionCard.text()).not.toContain('Violent')
       })
@@ -908,7 +906,7 @@ describe('Check information routes tests', () => {
           expect(res.text).toContain('Court case 1 count 1 must include an offence date')
           const $ = cheerio.load(res.text)
           expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(5)
-          expect($('.new-sentence-card:contains("Rape of a minor")').text()).toContain('SDS+')
+          expect($('.sentence-card:contains("Rape of a minor")').text()).toContain('SDS+')
           expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(1)
         })
 
