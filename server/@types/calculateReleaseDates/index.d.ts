@@ -420,6 +420,7 @@ export interface components {
         | 'VALIDATION'
         | 'UNSUPPORTED_OFFENCE'
         | 'UNSUPPORTED_SDS40_SENTENCE'
+        | 'SUSPENDED_OFFENCE'
     }
     AdjustmentServiceAdjustment: {
       /** Format: uuid */
