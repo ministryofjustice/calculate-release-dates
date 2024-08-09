@@ -30,7 +30,9 @@
                             {% elif error.id %}
                                 <a href="#{{ error.id }}">{{ error.html | safe if error.html else error.text }}</a>
                             {% else %}
-                                {{ error.html | safe if error.html else error.text | replace('\n', '<br>') | safe }}
+                                {{ error.html | safe if error.html else error.text
+                                | replace('\n', '<br>')
+                                | replace ('reload this page', '<a href="">reload this page</a>') | safe }}
                             {% endif %}
                         </p>
                     </li>
