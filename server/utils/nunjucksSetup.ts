@@ -8,6 +8,7 @@ import {
   personStatus,
   hmppsFormatDate,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
+import dateFilter from 'nunjucks-date-filter'
 import { hmppsDesignSystemsEnvironmentName, initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -17,8 +18,6 @@ import { FieldValidationError } from '../types/FieldValidationError'
 // TODO the use of nunjucks-date-filter is raising a deprecation warning, some dates are in this format 12/12/2030 ->
 // Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable
 // across all browsers and versions. Non RFC2822/ISO date formats are discouraged.
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const dateFilter = require('nunjucks-date-filter')
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -40,7 +39,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.appInsightsApplicationName = applicationInfo.applicationName
   app.locals.buildNumber = config.buildNumber
 
-  // Cachebusting version string
+  // Cache-busting version string
   if (production) {
     // Version only changes with new commits
     app.locals.version = applicationInfo.gitShortHash

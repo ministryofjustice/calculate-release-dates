@@ -99,6 +99,7 @@ export default class GenuineOverrideRoutes {
         }
         return res.redirect(`/specialist-support/calculation/${calculationReference}`)
       } catch (error) {
+        logger.error('Error submitting search:', error)
         const calculationReferenceNotFound = true
         return res.render('pages/genuineOverrides/search', { calculationReferenceNotFound })
       }
