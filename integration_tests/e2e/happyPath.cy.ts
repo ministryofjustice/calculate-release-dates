@@ -6,6 +6,7 @@ import PrisonerSearchPage from '../pages/prisonerSearch'
 import ViewCalculationSummary from '../pages/viewCalculationSummary'
 import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
+import CancelQuestionPage from '../pages/cancelQuestion'
 import CalculationReasonPage from '../pages/reasonForCalculation'
 import CCARDLandingPage from '../pages/CCARDLandingPage'
 
@@ -73,7 +74,7 @@ context('End to end happy path of user journey', () => {
     calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
-  it('DPS user journey', () => {
+  it('DPS user journey with selecting no in cancel question', () => {
     cy.signIn()
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
@@ -90,11 +91,46 @@ context('End to end happy path of user journey', () => {
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.no().click()
+    approvedDatesQuestionPage.cancel().click()
+
+    const cancelQuestionPage = Page.verifyOnPage(CancelQuestionPage)
+    cancelQuestionPage.noOption().check()
+    cancelQuestionPage.confirm().click()
+
+    const approvedDatesQuestionPage1 = Page.verifyOnPage(ApprovedDatesQuestionPage)
+    approvedDatesQuestionPage1.no().click()
     approvedDatesQuestionPage.continue().click()
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
     calculationCompletePage.title().should('contain.text', 'Calculation complete')
+  })
+
+  it('DPS user journey with selecting yes in cancel question', () => {
+    cy.signIn()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.calculateReleaseDatesAction().click()
+
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.submitReason().click()
+
+    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
+    checkInformationPage.calculateButton().click()
+
+    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
+    calculationSummaryPage.submitToNomisButton().click()
+
+    const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
+    approvedDatesQuestionPage.no().click()
+    approvedDatesQuestionPage.cancel().click()
+
+    const cancelQuestionPage = Page.verifyOnPage(CancelQuestionPage)
+    cancelQuestionPage.yesOption().check()
+    cancelQuestionPage.confirm().click()
+
+    const landingPage1 = Page.verifyOnPage(CCARDLandingPage)
+    landingPage1.latestCalcViewDetailsAction().click()
   })
 
   it('View journey', () => {
