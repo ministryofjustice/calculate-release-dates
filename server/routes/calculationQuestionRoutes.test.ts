@@ -112,6 +112,10 @@ it('POST /calculation/:nomsId/reason should ask for the calculation reason if it
     .type('form')
     .expect(200)
     .expect(res => {
+      const $ = cheerio.load(res.text)
+      expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+        '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/reason/',
+      )
       expect(res.text).toContain('You must select a reason for the calculation')
       expectMiniProfile(res.text, expectedMiniProfile)
     })
@@ -127,6 +131,10 @@ it('POST /calculation/:nomsId/reason should return to the reason page and displa
     .send({ calculationReasonId: ['11'], otherReasonDescription: '' })
     .expect(200)
     .expect(res => {
+      const $ = cheerio.load(res.text)
+      expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+        '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/reason/',
+      )
       expect(res.text).toContain('You must enter a reason for the calculation')
       expectMiniProfile(res.text, expectedMiniProfile)
     })
@@ -146,6 +154,10 @@ it('POST /calculation/:nomsId/reason should return to the reason page and displa
     })
     .expect(200)
     .expect(res => {
+      const $ = cheerio.load(res.text)
+      expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+        '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/reason/',
+      )
       expect(res.text).toContain('Reason must be 120 characters or less')
       expect(res.text).toContain(
         'A string which is at least 120 characters requires quite a bit of padding to get it to the correct length so it can be tested',
@@ -162,6 +174,10 @@ it('GET /calculation/:nomsId/reason should include the mini profile', () => {
     .get('/calculation/A1234AA/reason/')
     .expect(200)
     .expect(res => {
+      const $ = cheerio.load(res.text)
+      expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+        '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/reason/',
+      )
       expectMiniProfile(res.text, expectedMiniProfile)
     })
 })

@@ -1,0 +1,79 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - cancel" %}
+{% set pageId = "cancel-question" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                <input type="hidden" name="redirectUrl" value="{{ redirectUrl }}"/>
+                {% if error %}
+                <p>
+                    {{ govukRadios({
+                        name: "cancelQuestion",
+                        fieldset: {
+                            legend: {
+                                text: "Are you sure you want to cancel calculating release dates?",
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--l"
+                            }
+                        },
+                        errorMessage: {
+                            text: "Please select either 'Yes' or 'No'" | safe
+                        },
+                        items: [
+                            {
+                                value: "yes",
+                                text: "Yes, cancel the calculation"
+                            },
+                            {
+                                value: "no",
+                                text: "No, go back to the calculation"
+                            }
+                        ]
+                    }) }}
+                    {% else %}
+                    {{ govukRadios({
+                        name: "cancelQuestion",
+                        fieldset: {
+                            legend: {
+                                text: "Are you sure you want to cancel calculating release dates?",
+                                isPageHeading: true,
+                                classes: "govuk-fieldset__legend--l"
+                            }
+                        },
+                        items: [
+                            {
+                                value: "yes",
+                                text: "Yes, cancel the calculation"
+                            },
+                            {
+                                value: "no",
+                                text: "No, go back to the calculation"
+                            }
+                        ]
+                    }) }}
+                {% endif %}
+                </p>
+                <p>
+                    {{ govukButton({
+                        text: "Confirm",
+                        type: submit,
+                        id: "confirm-button",
+                        value: 'confirm',
+                        preventDoubleClick: true,
+                        attributes: {  'data-qa': 'confirm' }
+                    }) }}
+                </p>
+            </form>
+        </div>
+    </div>
+{% endblock %}

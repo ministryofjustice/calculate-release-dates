@@ -546,6 +546,9 @@ describe('Check information routes tests', () => {
         expect(res.text).not.toContain('Unused deductions')
 
         const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/check-information',
+        )
         // All but 1 sentences are flagged as 'NEW'
         expect($('.govuk-tag.govuk-tag--moj-blue:contains("NEW")')).toHaveLength(10)
         expect($('.new-sentence-card')).toHaveLength(10)

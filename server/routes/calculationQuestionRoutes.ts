@@ -20,7 +20,10 @@ export default class CalculationQuestionRoutes {
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    return res.render('pages/calculation/reason', new CalculationReasonViewModel(prisonerDetail, calculationReasons))
+    return res.render(
+      'pages/calculation/reason',
+      new CalculationReasonViewModel(prisonerDetail, calculationReasons, null, null, req.originalUrl),
+    )
   }
 
   public submitCalculationReason: RequestHandler = async (req, res): Promise<void> => {
@@ -33,30 +36,48 @@ export default class CalculationQuestionRoutes {
     if (req.body.calculationReasonId == null) {
       return res.render(
         'pages/calculation/reason',
-        new CalculationReasonViewModel(prisonerDetail, calculationReasons, {
-          text: 'You must select a reason for the calculation',
-        }),
+        new CalculationReasonViewModel(
+          prisonerDetail,
+          calculationReasons,
+          {
+            text: 'You must select a reason for the calculation',
+          },
+          null,
+          req.originalUrl,
+        ),
       )
     }
 
     if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length === 0) {
       return res.render(
         'pages/calculation/reason',
-        new CalculationReasonViewModel(prisonerDetail, calculationReasons, undefined, {
-          text: 'You must enter a reason for the calculation',
-          id: otherId,
-        }),
+        new CalculationReasonViewModel(
+          prisonerDetail,
+          calculationReasons,
+          undefined,
+          {
+            text: 'You must enter a reason for the calculation',
+            id: otherId,
+          },
+          req.originalUrl,
+        ),
       )
     }
 
     if (+req.body.calculationReasonId === otherId && req.body.otherReasonDescription.length >= 120) {
       return res.render(
         'pages/calculation/reason',
-        new CalculationReasonViewModel(prisonerDetail, calculationReasons, undefined, {
-          text: 'Reason must be 120 characters or less',
-          id: otherId,
-          otherText: req.body.otherReasonDescription,
-        }),
+        new CalculationReasonViewModel(
+          prisonerDetail,
+          calculationReasons,
+          undefined,
+          {
+            text: 'Reason must be 120 characters or less',
+            id: otherId,
+            otherText: req.body.otherReasonDescription,
+          },
+          req.originalUrl,
+        ),
       )
     }
 

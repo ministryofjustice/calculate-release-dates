@@ -360,6 +360,24 @@ afterEach(() => {
 })
 
 describe('Calculation routes tests', () => {
+  it('GET /calculation/A1234AB/123456/confirmation should return details about the calculation requested', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+      stubbedResultsWithBreakdownAndAdjustments,
+    )
+    return request(app)
+      .get('/calculation/A1234AB/123456/confirmation')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AB/123456/confirmation',
+        )
+        const submitToNomis = $('[data-qa=submit-to-nomis]').first()
+        expect(submitToNomis.length).toStrictEqual(1)
+      })
+  })
   it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
@@ -402,6 +420,9 @@ describe('Calculation routes tests', () => {
         )
         expect(res.text).toContain('Calculation breakdown')
         const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AB/summary/123456',
+        )
         const submitToNomis = $('[data-qa=submit-to-nomis]').first()
         expect(submitToNomis.attr('href')).toStrictEqual('/calculation/A1234AA/123456/approved-dates-question')
       })
