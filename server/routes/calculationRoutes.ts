@@ -254,7 +254,7 @@ export default class CalculationRoutes {
     }
     return res.render(
       'pages/calculation/cancel',
-      new CancelQuestionViewModel(prisonerDetail, '/calculation/A6143EA/reason', !cancelQuestion),
+      new CancelQuestionViewModel(prisonerDetail, redirectUrl, !cancelQuestion),
     )
   }
 
