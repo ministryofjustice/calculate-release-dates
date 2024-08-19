@@ -1261,6 +1261,9 @@ describe('Check information routes tests', () => {
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/check-information-unsupported',
+        )
         expect($('[data-qa=RL05016-title]').text()).toStrictEqual(
           'RL05016 - Access / exit by unofficial route - railway bye-law',
         )

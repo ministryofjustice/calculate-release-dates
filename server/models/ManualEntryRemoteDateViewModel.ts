@@ -6,6 +6,7 @@ export default class ManualEntryRemoteDateViewModel extends PrisonerContextViewM
     prisonerDetail: PrisonApiPrisoner,
     public dateToRemove: string,
     public fullDateName: string,
+    public redirectUrl?: string,
     public error?: boolean,
   ) {
     super(prisonerDetail)

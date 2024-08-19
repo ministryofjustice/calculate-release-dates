@@ -47,7 +47,7 @@ export default class ManualEntryRoutes {
     )
     return res.render(
       'pages/manualEntry/manualEntry',
-      new ManualEntryLandingPageViewModel(prisonerDetail, hasIndeterminateSentences),
+      new ManualEntryLandingPageViewModel(prisonerDetail, hasIndeterminateSentences, req.originalUrl),
     )
   }
 
@@ -92,7 +92,7 @@ export default class ManualEntryRoutes {
       const insufficientDatesSelected = true
       return res.render(
         'pages/manualEntry/dateTypeSelection',
-        new ManualEntrySelectDatesViewModel(prisonerDetail, config, insufficientDatesSelected),
+        new ManualEntrySelectDatesViewModel(prisonerDetail, config, req.originalUrl, insufficientDatesSelected),
       )
     }
     await this.manualEntryService.addManuallyCalculatedDateTypes(token, req, nomsId)
@@ -126,7 +126,7 @@ export default class ManualEntryRoutes {
     )
     return res.render(
       'pages/manualEntry/dateTypeSelection',
-      new ManualEntrySelectDatesViewModel(prisonerDetail, config),
+      new ManualEntrySelectDatesViewModel(prisonerDetail, config, req.originalUrl),
     )
   }
 
@@ -152,7 +152,7 @@ export default class ManualEntryRoutes {
     if (date && date.dateType !== 'None') {
       return res.render(
         'pages/manualEntry/dateEntry',
-        new ManualEntryDateEntryViewModel(prisonerDetail, date, previousDate),
+        new ManualEntryDateEntryViewModel(prisonerDetail, date, previousDate, req.originalUrl),
       )
     }
     if (date && date.dateType === 'None') {
@@ -176,7 +176,7 @@ export default class ManualEntryRoutes {
       const { date, message, enteredDate } = storeDateResponse
       return res.render(
         'pages/manualEntry/dateEntry',
-        new ManualEntryDateEntryViewModel(prisonerDetail, date, undefined, message, enteredDate),
+        new ManualEntryDateEntryViewModel(prisonerDetail, date, undefined, req.originalUrl, message, enteredDate),
       )
     }
     if (storeDateResponse.success && !storeDateResponse.message) {
@@ -202,7 +202,10 @@ export default class ManualEntryRoutes {
     }
 
     const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, nomsId)
-    return res.render('pages/manualEntry/confirmation', new ManualEntryConfirmationViewModel(prisonerDetail, rows))
+    return res.render(
+      'pages/manualEntry/confirmation',
+      new ManualEntryConfirmationViewModel(prisonerDetail, rows, req.originalUrl),
+    )
   }
 
   public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
@@ -222,7 +225,7 @@ export default class ManualEntryRoutes {
       const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
       return res.render(
         'pages/manualEntry/removeDate',
-        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName),
+        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName, req.originalUrl),
       )
     }
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
@@ -243,7 +246,7 @@ export default class ManualEntryRoutes {
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
       return res.render(
         'pages/manualEntry/removeDate',
-        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName, true),
+        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName, req.originalUrl, true),
       )
     }
     const remainingDates = this.manualEntryService.removeDate(req, nomsId)
@@ -327,7 +330,7 @@ export default class ManualEntryRoutes {
 
     return res.render(
       'pages/manualEntry/noDatesConfirmation',
-      new ManualEntryNoDatesConfirmationViewModel(prisonerDetail),
+      new ManualEntryNoDatesConfirmationViewModel(prisonerDetail, req.originalUrl),
     )
   }
 
@@ -355,7 +358,7 @@ export default class ManualEntryRoutes {
     const error = true
     return res.render(
       'pages/manualEntry/noDatesConfirmation',
-      new ManualEntryNoDatesConfirmationViewModel(prisonerDetail, error),
+      new ManualEntryNoDatesConfirmationViewModel(prisonerDetail, req.originalUrl, error),
     )
   }
 }

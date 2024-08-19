@@ -11,6 +11,7 @@ export default class ManualEntryDateEntryViewModel extends PrisonerContextViewMo
     prisonerDetail: PrisonApiPrisoner,
     public date: ManualEntrySelectedDate,
     public previousDate?: SubmittedDate,
+    public redirectUrl?: string,
     public error?: string,
     public enteredDate?: EnteredDate,
   ) {

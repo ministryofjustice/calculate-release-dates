@@ -39,7 +39,7 @@ export default class CheckInformationRoutes {
 
     return res.render(
       'pages/manualEntry/checkInformationUnsupported',
-      new ManualEntryCheckInformationUnsupportedViewModel(model),
+      new ManualEntryCheckInformationUnsupportedViewModel(model, req.originalUrl),
     )
   }
 
