@@ -237,7 +237,19 @@ export default class CalculationRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
-    const redirectUrl = typeof req.query.redirectUrl === 'string' ? req.query.redirectUrl : ''
+    let redirectUrl = typeof req.query.redirectUrl === 'string' ? req.query.redirectUrl : ''
+    if (typeof req.query === 'object') {
+      const params = new URLSearchParams()
+      Object.keys(req.query).forEach(key => {
+        if (key !== 'redirectUrl') {
+          params.append(key, <string>req.query[key])
+        }
+      })
+      const paramString = params.toString()
+      if (paramString) {
+        redirectUrl += `&${paramString}`
+      }
+    }
     return res.render('pages/calculation/cancel', new CancelQuestionViewModel(prisonerDetail, redirectUrl, false))
   }
 
