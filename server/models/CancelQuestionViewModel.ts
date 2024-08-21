@@ -1,12 +1,10 @@
 import PrisonerContextViewModel from './PrisonerContextViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 
-export default class RemoveApprovedDateViewModel extends PrisonerContextViewModel {
+export default class CancelQuestionViewModel extends PrisonerContextViewModel {
   constructor(
     prisonerDetail: PrisonApiPrisoner,
-    public dateToRemove: string,
-    public fullDateName: string,
-    public pageCancelRedirectUrl?: string,
+    public redirectUrl: string,
     public error?: boolean,
   ) {
     super(prisonerDetail)

@@ -28,7 +28,7 @@ export default class ApprovedDatesRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     return res.render(
       'pages/approvedDates/approvedDatesQuestion',
-      new ApprovedDatesQuestionViewModel(prisonerDetail, calculationRequestId),
+      new ApprovedDatesQuestionViewModel(prisonerDetail, calculationRequestId, req.originalUrl),
     )
   }
 
@@ -46,7 +46,7 @@ export default class ApprovedDatesRoutes {
     const error = !hasApprovedDates
     return res.render(
       'pages/approvedDates/approvedDatesQuestion',
-      new ApprovedDatesQuestionViewModel(prisonerDetail, calculationRequestId, error),
+      new ApprovedDatesQuestionViewModel(prisonerDetail, calculationRequestId, req.originalUrl, error),
     )
   }
 
@@ -63,7 +63,13 @@ export default class ApprovedDatesRoutes {
     const config = await this.approvedDatesService.getConfig(token, req)
     return res.render(
       'pages/approvedDates/selectApprovedDates',
-      new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config, req.session.isAddDatesFlow),
+      new SelectApprovedDatesViewModel(
+        prisonerDetail,
+        calculationRequestId,
+        config,
+        req.session.isAddDatesFlow,
+        req.originalUrl,
+      ),
     )
   }
 
@@ -81,7 +87,7 @@ export default class ApprovedDatesRoutes {
     if (error) {
       return res.render(
         'pages/approvedDates/selectApprovedDates',
-        new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config, error),
+        new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config, false, req.originalUrl, error),
       )
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/submit-dates`)
@@ -118,6 +124,7 @@ export default class ApprovedDatesRoutes {
           calculationRequestId,
           hdced,
           hdcedWeekendAdjusted,
+          req.originalUrl,
         ),
       )
     }
@@ -141,6 +148,7 @@ export default class ApprovedDatesRoutes {
           undefined,
           undefined,
           undefined,
+          req.originalUrl,
           message,
           enteredDate,
         ),
@@ -173,7 +181,7 @@ export default class ApprovedDatesRoutes {
       const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
       return res.render(
         'pages/approvedDates/removeDate',
-        new RemoveApprovedDateViewModel(prisonerDetail, dateToRemove, fullDateName),
+        new RemoveApprovedDateViewModel(prisonerDetail, dateToRemove, fullDateName, req.originalUrl),
       )
     }
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
@@ -188,7 +196,7 @@ export default class ApprovedDatesRoutes {
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
       return res.render(
         'pages/approvedDates/removeDate',
-        new RemoveApprovedDateViewModel(prisonerDetail, dateToRemove, fullDateName, true),
+        new RemoveApprovedDateViewModel(prisonerDetail, dateToRemove, fullDateName, req.originalUrl, true),
       )
     }
     this.approvedDatesService.removeDate(req, nomsId)

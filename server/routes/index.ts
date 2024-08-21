@@ -144,6 +144,8 @@ export default function Index({
     )
     get('/calculation/:nomsId/summary/:calculationRequestId/print', calculationAccessRoutes.printCalculationSummary)
     get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
+    get('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.askCancelQuestion)
+    post('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.submitCancelQuestion)
   }
 
   const reasonRoutes = () => {

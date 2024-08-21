@@ -130,6 +130,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(res => {
         expect(res.text).toContain('Manual calculation required')
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry',
+        )
       })
   })
 
@@ -150,6 +154,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(res => {
         expect(res.text).toContain('Manual calculation required')
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry',
+        )
       })
   })
 
@@ -168,6 +176,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry',
+        )
         const manualEntryTitle = $('[data-qa=manual-entry-title]').first()
         const manualEntryHint = $('[data-qa=manual-entry-hint]').first()
         const manualEntryConfirmation = $('[data-qa=entry-crds-nomis]').first()
@@ -195,6 +206,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(res => {
         expect(res.text).toContain('Tariff')
         expect(res.text).toContain('/calculation/A1234AA/manual-entry')
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/select-dates',
+        )
       })
   })
 
@@ -213,6 +228,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('SED (Sentence expiry date)')
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/select-dates',
+        )
       })
   })
 
@@ -251,6 +270,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('Select at least one release date.')
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/select-dates',
+        )
       })
   })
 
@@ -279,6 +302,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/confirmation',
+        )
       })
   })
 
@@ -312,6 +339,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/enter-date',
+        )
         const questionTitle = $('.govuk-fieldset__heading').first()
         expect(questionTitle.text().trim()).toStrictEqual('Enter the CRD')
         expectMiniProfile(res.text, expectedMiniProfile)
@@ -348,6 +378,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/enter-date?year=2026&month=09&day=22',
+        )
         const questionTitle = $('.govuk-fieldset__heading').first()
         expect(questionTitle.text().trim()).toStrictEqual('Enter the CRD')
         expectMiniProfile(res.text, expectedMiniProfile)
@@ -378,6 +411,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/enter-date',
+        )
       })
   })
 
@@ -396,6 +433,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/select-dates',
+        )
       })
   })
 
@@ -417,6 +458,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/select-dates',
+        )
       })
   })
 
@@ -437,6 +482,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/no-dates-confirmation',
+        )
       })
   })
 
@@ -463,6 +512,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/remove-date?dateType=CRD',
+        )
         expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)?')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
@@ -482,6 +535,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/remove-date?dateType=CRD',
+        )
       })
   })
 })

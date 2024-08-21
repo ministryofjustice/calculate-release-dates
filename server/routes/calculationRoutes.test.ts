@@ -360,6 +360,79 @@ afterEach(() => {
 })
 
 describe('Calculation routes tests', () => {
+  it('GET /calculation/A1234AB/cancelCalculation should render the page', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/calculation/A1234AB/cancelCalculation?redirectUrl=/calculation/A1234AB/123456/confirmation')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const confirmButton = $('[data-qa=confirm]').first()
+        expect(confirmButton.length).toStrictEqual(1)
+        expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+  it('POST /calculation/A1234AB/cancelCalculation should redirect to the redirect URL when "No" is selected', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .post('/calculation/A1234AB/cancelCalculation')
+      .send({
+        _csrf: 'csrfToken',
+        redirectUrl: '/calculation/A1234AB/123456/confirmation',
+        cancelQuestion: 'no',
+      })
+      .expect(302)
+      .expect('Location', '/calculation/A1234AB/123456/confirmation')
+  })
+  it('POST /calculation/A1234AB/cancelCalculation should redirect to the landing page when "Yes" is selected', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .post('/calculation/A1234AB/cancelCalculation')
+      .send({
+        _csrf: 'csrfToken',
+        redirectUrl: '/calculation/A1234AB/123456/confirmation',
+        cancelQuestion: 'yes',
+      })
+      .expect(302)
+      .expect('Location', '/?prisonId=A1234AB')
+  })
+  it('POST /calculation/A1234AB/cancelCalculation should render error page when no option is selected', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .post('/calculation/A1234AB/cancelCalculation')
+      .send({
+        _csrf: 'csrfToken',
+        redirectUrl: '/calculation/A1234AB/123456/confirmation',
+      })
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const confirmButton = $('[data-qa=confirm]').first()
+        expect(confirmButton.length).toStrictEqual(1)
+        expectMiniProfile(res.text, expectedMiniProfile)
+        expect(res.text).toContain("Please select either 'Yes' or 'No'")
+      })
+  })
+  it('GET /calculation/A1234AB/123456/confirmation should return details about the calculation requested', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+      stubbedResultsWithBreakdownAndAdjustments,
+    )
+    return request(app)
+      .get('/calculation/A1234AB/123456/confirmation')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AB/123456/confirmation',
+        )
+        const submitToNomis = $('[data-qa=submit-to-nomis]').first()
+        expect(submitToNomis.length).toStrictEqual(1)
+      })
+  })
   it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
@@ -402,6 +475,9 @@ describe('Calculation routes tests', () => {
         )
         expect(res.text).toContain('Calculation breakdown')
         const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AB/summary/123456',
+        )
         const submitToNomis = $('[data-qa=submit-to-nomis]').first()
         expect(submitToNomis.attr('href')).toStrictEqual('/calculation/A1234AA/123456/approved-dates-question')
       })

@@ -95,6 +95,10 @@ describe('approvedDatesRoutes', () => {
         expect(res.text).toContain('Do you need to enter APD, HDCAD or ROTL dates?')
         expect(res.text).toContain('/calculation/A1234AA/summary/123456')
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/approved-dates-question',
+        )
       })
   })
   it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question without selecting shows error', () => {
@@ -108,6 +112,10 @@ describe('approvedDatesRoutes', () => {
       .expect(res => {
         expect(res.text).toContain("Please select either 'Yes' or 'No, save the calculation to NOMIS'")
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/approved-dates-question',
+        )
       })
   })
   it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question selecting no redirects you to confirm', () => {
@@ -146,6 +154,10 @@ describe('approvedDatesRoutes', () => {
         expect(res.text).toContain('ROTL')
         expect(res.text).toContain('/calculation/A1234AA/123456/approved-dates-question')
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/select-approved-dates',
+        )
       })
   })
   it('POST /calculation/:nomsId/:calculationRequestId/select-approved-dates adds date to session', () => {
@@ -171,6 +183,10 @@ describe('approvedDatesRoutes', () => {
         expect(res.text).toContain('HDCAD')
         expect(res.text).toContain('ROTL')
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/select-approved-dates',
+        )
       })
   })
 
@@ -194,6 +210,10 @@ describe('approvedDatesRoutes', () => {
       .expect(res => {
         expect(res.text).toContain('Are you sure you want to remove the CRD?')
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/remove?dateType=CRD',
+        )
       })
   })
 
@@ -206,6 +226,9 @@ describe('approvedDatesRoutes', () => {
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/remove?dateType=CRD',
+        )
         const questionTitle = $('.govuk-fieldset__legend--xl').first()
         expect(questionTitle.text().trim()).toStrictEqual('Are you sure you want to remove the CRD?')
         expect(res.text).toContain('You must select either &#39;Yes&#39; or &#39;No&#39;')
@@ -243,6 +266,9 @@ describe('approvedDatesRoutes', () => {
         const questionTitle = $('.govuk-fieldset__legend--xl').first()
         expect(questionTitle.text().trim()).toStrictEqual('Enter the CRD')
         expectMiniProfile(res.text, expectedMiniProfile)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/submit-dates',
+        )
       })
   })
 
@@ -276,6 +302,9 @@ describe('approvedDatesRoutes', () => {
         const questionTitle = $('.govuk-fieldset__legend--xl').first()
         expect(questionTitle.text().trim()).toStrictEqual('Enter the CRD')
         expectMiniProfile(res.text, expectedMiniProfile)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/submit-dates?year=2029&month=09&day=23',
+        )
       })
   })
 
@@ -303,6 +332,10 @@ describe('approvedDatesRoutes', () => {
       .expect(200)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/submit-dates',
+        )
       })
   })
 })

@@ -40,7 +40,13 @@
                 {% include "../partials/checkInformation/sentencesAndOffences.njk" %}
 
                 {% include "../partials/checkInformation/calculateDates.njk" %}
-
+                 {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+                    <a data-qa="cancel-link"
+                        data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                        data-module="govuk-button"
+                        href="{{ cancelUrl }}">
+                        Cancel
+                 </a>
             </form>
         </div>
     </div>

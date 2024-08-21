@@ -21,4 +21,8 @@ export default class ApprovedDatesQuestionPage extends Page {
   public continue(): PageElement {
     return cy.get('[data-qa=approved-dates-question]')
   }
+
+  public cancel(): PageElement {
+    return cy.get('[data-qa=cancel-link]')
+  }
 }

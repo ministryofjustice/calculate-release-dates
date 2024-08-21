@@ -18,6 +18,7 @@ import {
 } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import UserPermissionsService from '../services/userPermissionsService'
 import config from '../config'
+import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
 
 export default class CalculationRoutes {
   constructor(
@@ -106,6 +107,7 @@ export default class CalculationRoutes {
           calculationRequestId,
         } as ApprovedDateActionConfig),
         req.session.isAddDatesFlow,
+        req.originalUrl,
       ),
     )
   }
@@ -176,6 +178,7 @@ export default class CalculationRoutes {
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
         req.session.isAddDatesFlow,
+        req.originalUrl,
       ),
     )
   }
@@ -228,6 +231,43 @@ export default class CalculationRoutes {
       }
       res.redirect(`/calculation/${nomsId}/summary/${calculationRequestId}`)
     }
+  }
+
+  public askCancelQuestion: RequestHandler = async (req, res): Promise<void> => {
+    const { caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    let redirectUrl = typeof req.query.redirectUrl === 'string' ? req.query.redirectUrl : ''
+    if (typeof req.query === 'object') {
+      const params = new URLSearchParams()
+      Object.keys(req.query).forEach(key => {
+        if (key !== 'redirectUrl') {
+          params.append(key, <string>req.query[key])
+        }
+      })
+      const paramString = params.toString()
+      if (paramString) {
+        redirectUrl += `&${paramString}`
+      }
+    }
+    return res.render('pages/calculation/cancel', new CancelQuestionViewModel(prisonerDetail, redirectUrl, false))
+  }
+
+  public submitCancelQuestion: RequestHandler = async (req, res): Promise<void> => {
+    const { caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const { redirectUrl, cancelQuestion } = req.body
+    if (cancelQuestion === 'no') {
+      return res.redirect(redirectUrl)
+    }
+    if (cancelQuestion === 'yes') {
+      return res.redirect(`/?prisonId=${nomsId}`)
+    }
+    return res.render(
+      'pages/calculation/cancel',
+      new CancelQuestionViewModel(prisonerDetail, redirectUrl, !cancelQuestion),
+    )
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {

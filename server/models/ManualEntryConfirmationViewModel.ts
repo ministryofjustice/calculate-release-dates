@@ -5,6 +5,7 @@ export default class ManualEntryConfirmationViewModel extends PrisonerContextVie
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     public rows: unknown,
+    public pageCancelRedirectUrl?: string,
   ) {
     super(prisonerDetail)
   }
