@@ -49,7 +49,7 @@
                     href: buttonHref,
                     attributes: { 'data-qa': 'submit-to-nomis' }
                 }) }}
-                {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + redirectUrl %}
+                {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
                     <a data-qa="cancel-link"
                         data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
                         data-module="govuk-button"
@@ -70,7 +70,7 @@
                         type: submit,
                         attributes: { 'data-qa': 'submit-to-nomis' }
                     }) }}
-                    {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + redirectUrl %}
+                    {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
                         <a data-qa="cancel-link"
                             data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
                             data-module="govuk-button"

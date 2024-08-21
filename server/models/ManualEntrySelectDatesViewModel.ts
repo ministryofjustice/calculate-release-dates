@@ -6,7 +6,7 @@ export default class ManualEntrySelectDatesViewModel extends PrisonerContextView
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     public config: DateSelectConfiguration,
-    public redirectUrl?: string,
+    public pageCancelRedirectUrl?: string,
     public insufficientDatesSelected?: boolean,
   ) {
     super(prisonerDetail)

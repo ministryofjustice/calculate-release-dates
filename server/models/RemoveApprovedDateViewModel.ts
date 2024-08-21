@@ -6,7 +6,7 @@ export default class RemoveApprovedDateViewModel extends PrisonerContextViewMode
     prisonerDetail: PrisonApiPrisoner,
     public dateToRemove: string,
     public fullDateName: string,
-    public redirectUrl?: string,
+    public pageCancelRedirectUrl?: string,
     public error?: boolean,
   ) {
     super(prisonerDetail)

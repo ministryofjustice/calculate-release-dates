@@ -5,7 +5,7 @@ export default class ManualEntryLandingPageViewModel extends PrisonerContextView
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     public hasIndeterminateSentences: boolean,
-    public redirectUrl?: string,
+    public pageCancelRedirectUrl?: string,
   ) {
     super(prisonerDetail)
   }

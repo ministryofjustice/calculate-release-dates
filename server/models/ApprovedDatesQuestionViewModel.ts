@@ -5,7 +5,7 @@ export default class ApprovedDatesQuestionViewModel extends PrisonerContextViewM
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     public calculationRequestId: string,
-    public redirectUrl?: string,
+    public pageCancelRedirectUrl?: string,
     public error?: boolean,
   ) {
     super(prisonerDetail)

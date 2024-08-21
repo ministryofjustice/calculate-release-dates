@@ -14,7 +14,7 @@ export default class ApprovedDatesSubmitDateViewModel extends PrisonerContextVie
     public calculationRequestId?: string,
     public hdced?: string,
     public hdcedWeekendAdjusted?: boolean,
-    public redirectUrl?: string,
+    public pageCancelRedirectUrl?: string,
     public error?: string,
     public enteredDate?: EnteredDate,
   ) {
