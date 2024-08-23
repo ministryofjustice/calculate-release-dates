@@ -61,9 +61,11 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: unit tests with coverage
-          command: npm run coverage
+          command: npm run coverage:ci
       - store_artifacts:
           path: coverage/lcov.info
+      - store_artifacts:
+          path: coverage/lcov-report
 
   integration_test:
     executor:
