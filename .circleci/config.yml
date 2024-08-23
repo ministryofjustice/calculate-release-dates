@@ -62,7 +62,7 @@ jobs:
       - run:
           name: unit tests with coverage
           command: npm run coverage:ci
-      - store_coverage:
+      - store_test_results:
           path: coverage
       - store_artifacts:
           path: coverage/index.html
