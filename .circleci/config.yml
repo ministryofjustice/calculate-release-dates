@@ -65,10 +65,8 @@ jobs:
       - run:
           name: "Run Unit test and Collect Coverage Reports"
           command: npm run coverage:ci
-      - store_test_results:
-          path: coverage
       - store_artifacts:
-          path: coverage/index.html
+          path: coverage
 
   integration_test:
     executor:
