@@ -60,9 +60,6 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: unit tests
-          command: npm run test:ci
-      - run:
           name: "Run Unit test and Collect Coverage Reports"
           command: npm run coverage:ci
       - store_artifacts:
