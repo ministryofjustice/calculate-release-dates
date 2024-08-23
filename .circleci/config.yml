@@ -57,7 +57,6 @@ jobs:
       tag: << pipeline.parameters.node-version >>
     steps:
       - checkout
-      - browser-tools/install-browser-tools
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
