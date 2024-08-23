@@ -62,10 +62,8 @@ jobs:
       - run:
           name: unit tests with coverage
           command: npm run coverage
-      - store_test_results:
-          path: test_results
       - store_artifacts:
-          path: test_results/unit-test-reports.html
+          path: coverage
 
   integration_test:
     executor:
