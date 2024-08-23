@@ -63,7 +63,7 @@ jobs:
           name: unit tests with coverage
           command: npm run coverage
       - store_artifacts:
-          path: coverage
+          path: coverage/lcov.info
 
   integration_test:
     executor:
