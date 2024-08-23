@@ -443,7 +443,7 @@ describe('Calculation routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('CR')
+        expect(res.text).toContain('DCR')
         expect(res.text).toContain('Conditional release date')
         expect(res.text).toContain('Wednesday, 03 February 2021')
         expect(res.text).toContain('Tuesday, 02 February 2021 when adjusted to a working day')
