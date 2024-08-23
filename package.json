@@ -40,7 +40,6 @@
       "json",
       "lcov",
       "text",
-      "clover",
       "html"
     ],
     "transform": {
