@@ -131,7 +131,6 @@ export default {
     sdsExclusionIndicatorsEnabled: get('SDS_EXCLUSION_INDICATORS_ENABLED', false) === 'true',
     printNotificationSlipEnabled: get('PRINT_NOTIFICATION_SLIP_ENABLED', false) === 'true',
     showBreakdown: get('SHOW_BREAKDOWN', false) === 'true',
-    hdc4BannerEnabled: get('HDC4_BANNER_ENABLED', false) === 'true',
     sds40PolicySupported: get('SDS40_POLICY_SUPPORTED', 'OFF'),
     showSDS40TrancheLabel: get('SHOW_SDS40_TRANCHE_LABEL', false) === 'true',
   },
