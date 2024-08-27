@@ -1,6 +1,4 @@
-import dayjs from 'dayjs'
 import CalculationSummaryViewModel from './CalculationSummaryViewModel'
-import config from '../config'
 
 describe('CalculationSummaryViewModel', () => {
   describe('SDS40 release tranche label', () => {
