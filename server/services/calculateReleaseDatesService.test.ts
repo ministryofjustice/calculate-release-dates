@@ -456,7 +456,6 @@ describe('Calculate release dates service tests', () => {
         href: '/view/A1234AB/sentences-and-offences/654321',
         dataQa: 'latest-calc-card-action',
       }
-      config.featureToggles.printNotificationSlipEnabled = true
       fakeApi.get(`/calculation/${prisonerId}/latest`).reply(200, latestCalc)
       const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, true)
       expect(result).toStrictEqual({
@@ -505,7 +504,6 @@ describe('Calculate release dates service tests', () => {
       })
     })
     it('Should omit print notification slip if feature toggle is off', async () => {
-      config.featureToggles.printNotificationSlipEnabled = false
       const latestCalc: LatestCalculation = {
         prisonerId,
         bookingId: 123456,
@@ -528,6 +526,10 @@ describe('Calculate release dates service tests', () => {
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
         ],
+        printNotificationSlip: {
+          dataQa: 'release-notification-hook',
+          href: `/view/${prisonerId}/calculation-summary/${latestCalc.calculationRequestId}/printNotificationSlip?fromPage=view`,
+        },
       }
       const latestCalcCardAction: Action = {
         title: 'View details',

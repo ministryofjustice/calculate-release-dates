@@ -287,13 +287,7 @@ export default class CalculationRoutes {
     this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
     res.render(
       'pages/calculation/calculationComplete',
-      new CalculationCompleteViewModel(
-        prisonerDetail,
-        calculationRequestId,
-        noDates,
-        hasIndeterminateSentence,
-        config.featureToggles.printNotificationSlipEnabled,
-      ),
+      new CalculationCompleteViewModel(prisonerDetail, calculationRequestId, noDates, hasIndeterminateSentence),
     )
   }
 
