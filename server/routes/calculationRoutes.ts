@@ -17,7 +17,6 @@ import {
   approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
 } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import UserPermissionsService from '../services/userPermissionsService'
-import config from '../config'
 import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
 
 export default class CalculationRoutes {

@@ -36,7 +36,6 @@ import {
 import ErrorMessage from '../types/ErrorMessage'
 import { FullPageError } from '../types/FullPageError'
 import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
-import config from '../config'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
