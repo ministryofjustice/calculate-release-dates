@@ -768,7 +768,7 @@ describe('Calculation routes tests', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/complete should not have print slip link when feature is toggled off', () => {
+  it('GET /calculation/:nomsId/complete should have print slip link', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)

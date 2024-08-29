@@ -503,7 +503,7 @@ describe('Calculate release dates service tests', () => {
         latestCalcCardAction,
       })
     })
-    it('Should omit print notification slip if feature toggle is off', async () => {
+    it('Should have print notification slip link', async () => {
       const latestCalc: LatestCalculation = {
         prisonerId,
         bookingId: 123456,
