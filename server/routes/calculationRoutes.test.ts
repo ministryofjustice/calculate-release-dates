@@ -727,7 +727,6 @@ describe('Calculation routes tests', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
-    config.featureToggles.printNotificationSlipEnabled = true
     return request(app)
       .get('/calculation/A1234AB/complete/123456')
       .expect(200)
@@ -769,11 +768,10 @@ describe('Calculation routes tests', () => {
       })
   })
 
-  it('GET /calculation/:nomsId/complete should not have print slip link when feature is toggled off', () => {
+  it('GET /calculation/:nomsId/complete should have print slip link', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
     calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
-    config.featureToggles.printNotificationSlipEnabled = false
     return request(app)
       .get('/calculation/A1234AB/complete/123456')
       .expect(200)
@@ -782,7 +780,7 @@ describe('Calculation routes tests', () => {
         const $ = cheerio.load(res.text)
         const prisonerNotificationSlipLink = $('[data-qa=prisoner-notification-slip-link]').first()
 
-        expect(prisonerNotificationSlipLink).toHaveLength(0)
+        expect(prisonerNotificationSlipLink).toHaveLength(1)
         expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
       })
   })
