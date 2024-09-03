@@ -16,7 +16,7 @@ import {
   ManualEntrySelectedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
-  AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
@@ -318,7 +318,7 @@ const stubbedAdjustments = {
       active: false,
     },
   ],
-} as AnalyzedPrisonApiBookingAndSentenceAdjustments
+} as AnalysedPrisonApiBookingAndSentenceAdjustments
 const stubbedReturnToCustodyDate = {
   returnToCustodyDate: '2022-04-12',
 } as PrisonApiReturnToCustodyDate

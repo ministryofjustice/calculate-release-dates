@@ -5,7 +5,7 @@ import { appWithAllRoutes, user } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
-  AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
@@ -399,7 +399,7 @@ const stubbedAdjustments = {
       active: false,
     },
   ],
-} as AnalyzedPrisonApiBookingAndSentenceAdjustments
+} as AnalysedPrisonApiBookingAndSentenceAdjustments
 const sentencesAndOffencesWithExclusions = [
   {
     terms: [
@@ -461,7 +461,7 @@ const sentencesAndOffencesWithExclusions = [
 const stubbedEmptyAdjustments = {
   sentenceAdjustments: [],
   bookingAdjustments: [],
-} as AnalyzedPrisonApiBookingAndSentenceAdjustments
+} as AnalysedPrisonApiBookingAndSentenceAdjustments
 
 const stubbedReturnToCustodyDate = {
   returnToCustodyDate: '2022-04-12',
@@ -1228,7 +1228,7 @@ describe('Check information routes tests', () => {
     userInputService.isCalculationReasonSet.mockReturnValue(true)
 
     checkInformationService.checkInformation.mockImplementation(() => {
-      throw FullPageError.noSentences()
+      throw FullPageError.noSentences(stubbedPrisonerData.bookingId)
     })
     return request(app)
       .get('/calculation/A1234AA/check-information')

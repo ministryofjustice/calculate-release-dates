@@ -29,7 +29,7 @@ import {
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
-  AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -126,10 +126,10 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<PrisonApiReturnToCustodyDate>
   }
 
-  getBookingAndSentenceAdjustments(calculationId: number): Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments> {
+  getBookingAndSentenceAdjustments(calculationId: number): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
     return this.restClient.get({
       path: `/calculation/adjustments/${calculationId}`,
-    }) as Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments>
+    }) as Promise<AnalysedPrisonApiBookingAndSentenceAdjustments>
   }
 
   getLatestCalculation(prisonerId: string, bookingId: number): Promise<BookingCalculation> {
@@ -271,16 +271,16 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<ComparisonPersonOverview>
   }
 
-  getAnalyzedSentencesAndOffences(bookingId: number): Promise<AnalysedSentenceAndOffence[]> {
+  getAnalysedSentencesAndOffences(bookingId: number): Promise<AnalysedSentenceAndOffence[]> {
     return this.restClient.get({
       path: `/sentence-and-offence-information/${bookingId}`,
     }) as Promise<AnalysedSentenceAndOffence[]>
   }
 
-  getAnalyzedAdjustments(bookingId: number): Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments> {
+  getAnalysedAdjustments(bookingId: number): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
     return this.restClient.get({
       path: `/booking-and-sentence-adjustments/${bookingId}`,
-    }) as Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments>
+    }) as Promise<AnalysedPrisonApiBookingAndSentenceAdjustments>
   }
 
   getBookingManualEntryValidation(prisonerId: string) {

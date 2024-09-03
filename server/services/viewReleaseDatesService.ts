@@ -6,7 +6,7 @@ import {
   SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
-  AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -20,7 +20,7 @@ export default class ViewReleaseDatesService {
   async getBookingAndSentenceAdjustments(
     calculationId: number,
     token: string,
-  ): Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments> {
+  ): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
     return new CalculateReleaseDatesApiClient(token).getBookingAndSentenceAdjustments(calculationId)
   }
 

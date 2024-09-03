@@ -11,8 +11,10 @@ import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSear
 import { FullPageError } from '../types/FullPageError'
 
 export default class PrisonerService {
+  private readonly includeReleased: boolean
+
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {
-    // intentionally left blank
+    this.includeReleased = true
   }
 
   async getPrisonerImage(username: string, nomsId: string): Promise<Readable> {
@@ -21,11 +23,11 @@ export default class PrisonerService {
   }
 
   async getPrisonerDetail(nomsId: string, userCaseloads: string[], token: string): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, false, false)
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, this.includeReleased, false)
   }
 
   async getPrisonerDetailForSpecialistSupport(nomsId: string, token: string): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, [], token, false, true)
+    return this.getPrisonerDetailImpl(nomsId, [], token, this.includeReleased, true)
   }
 
   private async getPrisonerDetailImpl(

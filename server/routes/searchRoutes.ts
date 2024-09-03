@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import PrisonerService from '../services/prisonerService'
 import { PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
+import authorisedRoles from '../enumerations/authorisedRoles'
 
 export default class SearchRoutes {
   constructor(private readonly prisonerService: PrisonerService) {
@@ -18,6 +19,11 @@ export default class SearchRoutes {
       if (!(prisonerIdentifier || firstName || lastName)) {
         return res.render('pages/search/searchPrisoners', {})
       }
+
+      if (authorisedRoles.ROLE_INACTIVE_BOOKINGS) {
+        caseloads.push('OUT')
+      }
+
       const prisoners =
         caseloads.length > 0
           ? await this.prisonerService.searchPrisoners(username, {

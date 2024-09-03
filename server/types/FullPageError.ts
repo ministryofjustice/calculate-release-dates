@@ -17,8 +17,9 @@ export class FullPageError extends Error {
     return error
   }
 
-  static noSentences(): FullPageError {
-    const error = new FullPageError('Prisoner has no sentences')
+  static noSentences(bookingId: number): FullPageError {
+    const errorMessage = `Prisoner with booking ID ${bookingId} has no sentences`
+    const error = new FullPageError(errorMessage)
     error.errorKey = FullPageErrorType.NO_SENTENCES
     error.status = 400
     return error
