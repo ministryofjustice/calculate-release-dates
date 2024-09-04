@@ -16,26 +16,47 @@ export default class SearchRoutes {
       const { username, caseloads } = res.locals.user
       const searchValues = { firstName, lastName, prisonerIdentifier }
 
-      if (!(prisonerIdentifier || firstName || lastName)) {
+      if (this.isSearchCriteriaEmpty(searchValues)) {
         return res.render('pages/search/searchPrisoners', {})
       }
 
-      if (authorisedRoles.ROLE_INACTIVE_BOOKINGS) {
-        caseloads.push('OUT')
-      }
+      this.addInactiveBookingCaseloads(caseloads)
 
-      const prisoners =
-        caseloads.length > 0
-          ? await this.prisonerService.searchPrisoners(username, {
-              firstName,
-              lastName,
-              prisonerIdentifier: prisonerIdentifier?.toUpperCase() || null,
-              prisonIds: caseloads,
-              includeAliases: false,
-            } as PrisonerSearchCriteria)
-          : []
+      const prisoners = await this.getPrisoners(searchValues, username, caseloads)
 
       return res.render('pages/search/searchPrisoners', { prisoners, searchValues })
     }
+  }
+
+  private isSearchCriteriaEmpty(searchValues: {
+    firstName: string
+    lastName: string
+    prisonerIdentifier: string | null
+  }) {
+    const { firstName, lastName, prisonerIdentifier } = searchValues
+    return !prisonerIdentifier && !firstName && !lastName
+  }
+
+  private addInactiveBookingCaseloads(caseloads: string[]): void {
+    if (authorisedRoles.ROLE_INACTIVE_BOOKINGS) {
+      caseloads.push('OUT', 'TRN')
+    }
+  }
+
+  private async getPrisoners(
+    searchValues: { firstName: string; lastName: string; prisonerIdentifier: string | null },
+    username: string,
+    caseloads: string[],
+  ) {
+    if (caseloads.length === 0) return []
+
+    const searchCriteria: PrisonerSearchCriteria = {
+      ...searchValues,
+      prisonIds: caseloads,
+      includeAliases: false,
+      includeRestrictivePatients: true,
+    }
+
+    return this.prisonerService.searchPrisoners(username, searchCriteria)
   }
 }

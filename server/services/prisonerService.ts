@@ -39,12 +39,11 @@ export default class PrisonerService {
   ): Promise<PrisonApiPrisoner> {
     try {
       const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
-      if (isSpecialistSupport) {
+
+      if (isSpecialistSupport || this.isAccessiblePrisoner(prisonerDetail.agencyId, userCaseloads, includeReleased)) {
         return prisonerDetail
       }
-      if (userCaseloads.includes(prisonerDetail.agencyId) || (includeReleased && prisonerDetail.agencyId === 'OUT')) {
-        return prisonerDetail
-      }
+
       throw FullPageError.notInCaseLoadError(prisonerDetail)
     } catch (error) {
       if (error?.status === 404 && !(error instanceof FullPageError)) {
@@ -53,6 +52,14 @@ export default class PrisonerService {
         throw error
       }
     }
+  }
+
+  private isAccessiblePrisoner(agencyId: string, caseload: string[], includeReleased: boolean): boolean {
+    return caseload.includes(agencyId) || this.isReleased(agencyId, includeReleased)
+  }
+
+  private isReleased(agencyId: string, includeReleased: boolean): boolean {
+    return includeReleased && ['OUT', 'TRN'].includes(agencyId)
   }
 
   async searchPrisoners(username: string, prisonerSearchCriteria: PrisonerSearchCriteria): Promise<Prisoner[]> {
