@@ -55,11 +55,11 @@ export default class PrisonerService {
   }
 
   private isAccessiblePrisoner(agencyId: string, caseload: string[], includeReleased: boolean): boolean {
-    return caseload.includes(agencyId) || this.isReleased(agencyId, includeReleased)
+    return caseload.includes(agencyId) || ['TRN'].includes(agencyId) || this.isReleased(agencyId, includeReleased)
   }
 
   private isReleased(agencyId: string, includeReleased: boolean): boolean {
-    return includeReleased && ['OUT', 'TRN'].includes(agencyId)
+    return includeReleased && ['OUT'].includes(agencyId)
   }
 
   async searchPrisoners(username: string, prisonerSearchCriteria: PrisonerSearchCriteria): Promise<Prisoner[]> {

@@ -38,8 +38,9 @@ export default class SearchRoutes {
   }
 
   private addInactiveBookingCaseloads(caseloads: string[]): void {
+    caseloads.push('TRN')
     if (authorisedRoles.ROLE_INACTIVE_BOOKINGS) {
-      caseloads.push('OUT', 'TRN')
+      caseloads.push('OUT')
     }
   }
 
