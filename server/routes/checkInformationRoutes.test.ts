@@ -1236,7 +1236,7 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('There is a problem')
-        expect(res.text).toContain('The calculation must include at least one sentence.')
+        expect(res.text).toContain('The calculation must include at least one active sentence.')
       })
   })
 
