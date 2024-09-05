@@ -2,24 +2,9 @@
 
 {% macro sds40Banner(sds40Supported) %}
     {% set html %}
-        {% if sds40Supported === "CALCULATED" %}
-            <p class="govuk-body">
-                This service now supports SDS40 calculations.
-            </p>
-        {% elif sds40Supported === "MANUAL"  %}
-            <p class="govuk-body">
-                SDS40 calculations must be recorded manually, by following normal the Calculate release dates process.
-                You can still use this service to calculate all other release dates.
-            </p>
-        {% else %}
-            <p class="govuk-notification-banner__heading">
-                This service is being updated to reflect the new SDS40 policy
-            </p>
-                <br/>
-            <p class="govuk-body">
-                The Calculate release dates service currently calculates SDS sentences at 50%. All SDS40 calculations must be recorded using the SharePoint tracker, as outlined in the SDS operational guidance.
-            </p>
-        {% endif %}
+       <p class="govuk-body">
+          This service now supports SDS40 calculations.
+        </p>
     {% endset %}
     {{ govukNotificationBanner({
         html: html
