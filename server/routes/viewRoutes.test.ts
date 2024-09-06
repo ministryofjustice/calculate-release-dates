@@ -5,7 +5,7 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
-  AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
@@ -206,7 +206,7 @@ const stubbedAdjustments = {
       active: true,
     },
   ],
-} as AnalyzedPrisonApiBookingAndSentenceAdjustments
+} as AnalysedPrisonApiBookingAndSentenceAdjustments
 
 const stubbedCalculationResults = {
   dates: {
@@ -1560,7 +1560,7 @@ describe('View journey routes tests', () => {
           },
         ],
         bookingAdjustments: [],
-      } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+      } as AnalysedPrisonApiBookingAndSentenceAdjustments
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustmentsTB)
@@ -1573,7 +1573,7 @@ describe('View journey routes tests', () => {
           const $ = cheerio.load(res.text)
           const daysInUnusedRemand = $('[data-qa=days-in-unusedRemand]').first()
           const taggedBailFrom = $('[data-qa="Tagged bail-from"]').first()
-          const taggedBailTo = $('[data-qa="Tagged bail-from"]').first()
+          const taggedBailTo = $('[data-qa="Tagged bail-to"]').first()
           const unusedRemandFrom = $('[data-qa="Unused remand-from"]').first()
           const unusedTo = $('[data-qa="Unused remand-to"]').first()
 
@@ -1685,7 +1685,7 @@ describe('View journey routes tests', () => {
       const stubbedNoAdjustments = {
         sentenceAdjustments: [],
         bookingAdjustments: [],
-      } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+      } as AnalysedPrisonApiBookingAndSentenceAdjustments
       const stubbedNoPrisonPrisonerData = {
         offenderNo: 'A1234AA',
         firstName: 'Anon',
@@ -1763,7 +1763,7 @@ describe('View journey routes tests', () => {
       const stubbedNoAdjustments = {
         sentenceAdjustments: [],
         bookingAdjustments: [],
-      } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+      } as AnalysedPrisonApiBookingAndSentenceAdjustments
       const stubbedNoPrisonPrisonerData = {
         sentenceDetail: {} as PrisonApiSentenceDetail,
         assignedLivingUnit: {} as PrisonAPIAssignedLivingUnit,

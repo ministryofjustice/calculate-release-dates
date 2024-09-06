@@ -7,7 +7,7 @@ import {
   SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
-  AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
@@ -35,7 +35,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
     sentencesAndOffences: SentenceAndOffenceWithReleaseArrangements[],
-    adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
+    adjustments: AnalysedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,

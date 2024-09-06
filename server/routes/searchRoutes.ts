@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import PrisonerService from '../services/prisonerService'
 import { PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
+import authorisedRoles from '../enumerations/authorisedRoles'
 
 export default class SearchRoutes {
   constructor(private readonly prisonerService: PrisonerService) {
@@ -15,21 +16,48 @@ export default class SearchRoutes {
       const { username, caseloads } = res.locals.user
       const searchValues = { firstName, lastName, prisonerIdentifier }
 
-      if (!(prisonerIdentifier || firstName || lastName)) {
+      if (this.isSearchCriteriaEmpty(searchValues)) {
         return res.render('pages/search/searchPrisoners', {})
       }
-      const prisoners =
-        caseloads.length > 0
-          ? await this.prisonerService.searchPrisoners(username, {
-              firstName,
-              lastName,
-              prisonerIdentifier: prisonerIdentifier?.toUpperCase() || null,
-              prisonIds: caseloads,
-              includeAliases: false,
-            } as PrisonerSearchCriteria)
-          : []
+
+      this.addInactiveBookingCaseloads(caseloads)
+
+      const prisoners = await this.getPrisoners(searchValues, username, caseloads)
 
       return res.render('pages/search/searchPrisoners', { prisoners, searchValues })
     }
+  }
+
+  private isSearchCriteriaEmpty(searchValues: {
+    firstName: string
+    lastName: string
+    prisonerIdentifier: string | null
+  }) {
+    const { firstName, lastName, prisonerIdentifier } = searchValues
+    return !prisonerIdentifier && !firstName && !lastName
+  }
+
+  private addInactiveBookingCaseloads(caseloads: string[]): void {
+    caseloads.push('TRN')
+    if (authorisedRoles.ROLE_INACTIVE_BOOKINGS) {
+      caseloads.push('OUT')
+    }
+  }
+
+  private async getPrisoners(
+    searchValues: { firstName: string; lastName: string; prisonerIdentifier: string | null },
+    username: string,
+    caseloads: string[],
+  ) {
+    if (caseloads.length === 0) return []
+
+    const searchCriteria: PrisonerSearchCriteria = {
+      ...searchValues,
+      prisonIds: caseloads,
+      includeAliases: false,
+      includeRestrictivePatients: true,
+    }
+
+    return this.prisonerService.searchPrisoners(username, searchCriteria)
   }
 }

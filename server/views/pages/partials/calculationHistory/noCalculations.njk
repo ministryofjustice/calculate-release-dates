@@ -1,0 +1,23 @@
+{%- from "moj/components/ticket-panel/macro.njk" import mojTicketPanel -%}
+
+{{ mojTicketPanel({
+    attributes: {
+        'aria-label': 'No Calculations Performed'
+    },
+    items: [{
+        html: [
+            "<h2 class='govuk-heading-m govuk-!-margin-bottom-2'>Perform a calculation</h2>",
+            "<p class='govuk-body'>No calculations have yet been performed.</p>",
+            "<a href='",
+            calculate_release_dates.href,
+            "' data-qa='",
+            calculate_release_dates.dataQa,
+            "' class='govuk-button govuk-!-margin-bottom-1' data-module='govuk-button'>",
+            calculate_release_dates.title,
+            "</a>"] | join,
+        attributes: {
+            'aria-label': 'No Calculations Performed Message'
+        },
+        classes: 'moj-ticket-panel__content--blue'
+    }]
+}) }}

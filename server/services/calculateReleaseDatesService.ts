@@ -35,7 +35,7 @@ import {
 } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ErrorMessage from '../types/ErrorMessage'
 import { FullPageError } from '../types/FullPageError'
-import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
+import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
@@ -78,8 +78,8 @@ export default class CalculateReleaseDatesService {
   async getBookingAndSentenceAdjustments(
     bookingId: number,
     token: string,
-  ): Promise<AnalyzedPrisonApiBookingAndSentenceAdjustments> {
-    return new CalculateReleaseDatesApiClient(token).getAnalyzedAdjustments(bookingId)
+  ): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
+    return new CalculateReleaseDatesApiClient(token).getAnalysedAdjustments(bookingId)
   }
 
   async getBreakdown(
@@ -117,12 +117,12 @@ export default class CalculateReleaseDatesService {
     } as CalculationRequestModel
   }
 
-  async getActiveAnalyzedSentencesAndOffences(bookingId: number, token: string): Promise<AnalysedSentenceAndOffence[]> {
-    const sentencesAndOffences = await new CalculateReleaseDatesApiClient(token).getAnalyzedSentencesAndOffences(
+  async getActiveAnalysedSentencesAndOffences(bookingId: number, token: string): Promise<AnalysedSentenceAndOffence[]> {
+    const sentencesAndOffences = await new CalculateReleaseDatesApiClient(token).getAnalysedSentencesAndOffences(
       bookingId,
     )
     if (sentencesAndOffences.length === 0) {
-      throw FullPageError.noSentences()
+      throw FullPageError.noSentences(bookingId)
     }
     return sentencesAndOffences.filter((s: AnalysedSentenceAndOffence) => s.sentenceStatus === 'A')
   }

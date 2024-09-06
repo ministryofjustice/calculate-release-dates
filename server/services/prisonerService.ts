@@ -11,8 +11,10 @@ import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSear
 import { FullPageError } from '../types/FullPageError'
 
 export default class PrisonerService {
+  private readonly includeReleased: boolean
+
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {
-    // intentionally left blank
+    this.includeReleased = true
   }
 
   async getPrisonerImage(username: string, nomsId: string): Promise<Readable> {
@@ -21,11 +23,11 @@ export default class PrisonerService {
   }
 
   async getPrisonerDetail(nomsId: string, userCaseloads: string[], token: string): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, false, false)
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, this.includeReleased, false)
   }
 
   async getPrisonerDetailForSpecialistSupport(nomsId: string, token: string): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, [], token, false, true)
+    return this.getPrisonerDetailImpl(nomsId, [], token, this.includeReleased, true)
   }
 
   private async getPrisonerDetailImpl(
@@ -37,12 +39,11 @@ export default class PrisonerService {
   ): Promise<PrisonApiPrisoner> {
     try {
       const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
-      if (isSpecialistSupport) {
+
+      if (isSpecialistSupport || this.isAccessiblePrisoner(prisonerDetail.agencyId, userCaseloads, includeReleased)) {
         return prisonerDetail
       }
-      if (userCaseloads.includes(prisonerDetail.agencyId) || (includeReleased && prisonerDetail.agencyId === 'OUT')) {
-        return prisonerDetail
-      }
+
       throw FullPageError.notInCaseLoadError(prisonerDetail)
     } catch (error) {
       if (error?.status === 404 && !(error instanceof FullPageError)) {
@@ -51,6 +52,14 @@ export default class PrisonerService {
         throw error
       }
     }
+  }
+
+  private isAccessiblePrisoner(agencyId: string, caseload: string[], includeReleased: boolean): boolean {
+    return caseload.includes(agencyId) || ['TRN'].includes(agencyId) || this.isReleased(agencyId, includeReleased)
+  }
+
+  private isReleased(agencyId: string, includeReleased: boolean): boolean {
+    return includeReleased && ['OUT'].includes(agencyId)
   }
 
   async searchPrisoners(username: string, prisonerSearchCriteria: PrisonerSearchCriteria): Promise<Prisoner[]> {

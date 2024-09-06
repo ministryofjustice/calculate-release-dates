@@ -1,6 +1,6 @@
 import {
   PrisonApiBookingAdjustment,
-  AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiSentenceAdjustmentValues,
 } from '../@types/prisonApi/prisonClientTypes'
 import { AnalysedSentenceAndOffence } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -45,7 +45,7 @@ export default class AdjustmentsViewModel {
   public unusedRemand: AdjustmentViewModel
 
   constructor(
-    adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
+    adjustments: AnalysedPrisonApiBookingAndSentenceAdjustments,
     sentencesAndOffences: AnalysedSentenceAndOffence[],
   ) {
     this.additionalDaysAwarded = this.adjustmentViewModel(

@@ -1,5 +1,5 @@
 import { AnalysedSentenceAndOffence } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
+import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 import AdjustmentsViewModel from './AdjustmentsViewModel'
 
 describe('AdjustmentsViewModel', () => {
@@ -50,7 +50,7 @@ describe('AdjustmentsViewModel', () => {
           },
         ],
         bookingAdjustments: [],
-      } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+      } as AnalysedPrisonApiBookingAndSentenceAdjustments
 
       const model = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
       expect(model[accessor].details).toHaveLength(1)
@@ -83,7 +83,7 @@ describe('AdjustmentsViewModel', () => {
         },
       ],
       bookingAdjustments: [],
-    } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+    } as AnalysedPrisonApiBookingAndSentenceAdjustments
 
     const model = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     expect(model[accessor].details).toHaveLength(1)
@@ -124,7 +124,7 @@ describe('AdjustmentsViewModel', () => {
         },
       ],
       bookingAdjustments: [],
-    } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+    } as AnalysedPrisonApiBookingAndSentenceAdjustments
 
     const model = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     expect(model[accessor].details).toHaveLength(2)
@@ -166,7 +166,7 @@ describe('AdjustmentsViewModel', () => {
           active: true,
         },
       ],
-    } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+    } as AnalysedPrisonApiBookingAndSentenceAdjustments
 
     const model = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     expect(model[accessor].details).toHaveLength(2)
@@ -208,7 +208,7 @@ describe('AdjustmentsViewModel', () => {
           active: false,
         },
       ],
-    } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+    } as AnalysedPrisonApiBookingAndSentenceAdjustments
 
     const model = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     expect(model[accessor].details).toHaveLength(1)

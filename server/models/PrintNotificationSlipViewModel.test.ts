@@ -1,6 +1,6 @@
 import PrintNotificationSlipViewModel from './PrintNotificationSlipViewModel'
 import ViewRouteSentenceAndOffenceViewModel from './ViewRouteSentenceAndOffenceViewModel'
-import { AnalyzedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
+import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 import KeyDate from './KeyDate'
 
 describe('Print Release Dates Notification Slip', () => {
@@ -9,7 +9,7 @@ describe('Print Release Dates Notification Slip', () => {
     const adjustments = {
       sentenceAdjustments: [],
       bookingAdjustments: [],
-    } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+    } as AnalysedPrisonApiBookingAndSentenceAdjustments
     const viewRouteSentenceAndOffenceViewModel = new ViewRouteSentenceAndOffenceViewModel(
       prisonerDetail,
       null,
@@ -148,7 +148,7 @@ describe('Print Release Dates Notification Slip', () => {
     const adjustments = {
       sentenceAdjustments: [],
       bookingAdjustments: [],
-    } as AnalyzedPrisonApiBookingAndSentenceAdjustments
+    } as AnalysedPrisonApiBookingAndSentenceAdjustments
     const viewRouteSentenceAndOffenceViewModel = new ViewRouteSentenceAndOffenceViewModel(
       prisonerDetail,
       null,

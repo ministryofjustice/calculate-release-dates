@@ -3,7 +3,7 @@ import {
   CalculationUserInputs,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
-  AnalyzedPrisonApiBookingAndSentenceAdjustments,
+  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
@@ -32,7 +32,7 @@ export default class SentenceAndOffenceViewModel {
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
     sentencesAndOffences: AnalysedSentenceAndOffence[],
-    adjustments: AnalyzedPrisonApiBookingAndSentenceAdjustments,
+    adjustments: AnalysedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
