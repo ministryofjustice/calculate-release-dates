@@ -10,6 +10,7 @@ describe('CommonLayoutViewModel', () => {
       prisonNumber: undefined,
       serviceHeader: { environment: 'prod', prisonNumber: undefined },
       miniProfile: undefined,
+      establishmentCode: undefined,
     }
     expect(model.commonElementConfig).toStrictEqual(expectedConfig)
   })
@@ -25,6 +26,7 @@ describe('CommonLayoutViewModel', () => {
         agencyName: 'Foo Prison (HMP)',
         description: 'D-2-003',
       } as PrisonAPIAssignedLivingUnit,
+      agencyId: 'ABC',
     }
     const model = new CommonLayoutViewModel(prisonerDetail)
     const expectedConfig: CommonElementConfig = {
@@ -44,6 +46,7 @@ describe('CommonLayoutViewModel', () => {
         profileUrl: '/prisoner/ABC123',
         imageUrl: '/prisoner/ABC123/image',
       },
+      establishmentCode: 'ABC',
     }
     expect(model.commonElementConfig).toStrictEqual(expectedConfig)
   })
@@ -74,6 +77,7 @@ describe('CommonLayoutViewModel', () => {
         profileUrl: '/prisoner/ABC123',
         imageUrl: '/prisoner/ABC123/image',
       },
+      establishmentCode: undefined,
     }
     expect(model.commonElementConfig).toStrictEqual(expectedConfig)
   })

@@ -444,6 +444,35 @@ afterEach(() => {
 })
 
 describe('View journey routes tests', () => {
+  describe('Profile banner tests - relating to persons that are OUT or not', () => {
+    it('GET /view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId should show personOutsideBanner when prisoner is OUT', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue({ ...stubbedPrisonerData, agencyId: 'OUT' })
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(pastNomisCalculation as never)
+
+      return request(app)
+        .get('/view/A1234AA/nomis-calculation-summary/-1')
+        .expect(200)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const text = $('[data-qa=personOutsideBanner]').text().replace(/\s\s+/g, ' ').trim() // Remove space
+          expect(text).toBe('This person has been released Some information may be hidden')
+        })
+    })
+
+    it('GET /view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId should not show personOutsideBanner when prisoner is OUT', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(pastNomisCalculation as never)
+
+      return request(app)
+        .get('/view/A1234AA/nomis-calculation-summary/-1')
+        .expect(200)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=personOutsideBanner]').length).toBe(0)
+        })
+    })
+  })
+
   describe('Get nomis calculation summary view tests', () => {
     it('GET /view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId should have the correct details', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)

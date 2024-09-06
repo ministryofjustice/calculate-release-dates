@@ -1,5 +1,14 @@
 {%- from "moj/components/identity-bar/macro.njk" import mojIdentityBar -%}
 {%- from "hmpps/components/mini-profile/macro.njk" import miniProfile -%}
+{% from "hmpps/components/court-cases-release-dates/profile-banner/macro.njk" import profileBanner %}
+{% if commonElementConfig.establishmentCode == 'OUT' %}
+   {% set profileBannerParams = {
+      dataQa: "personOutsideBanner",
+      heading: "This person has been released",
+      paragraphText: "Some information may be hidden"
+   } %}
+   {{ profileBanner(profileBannerParams) }}
+{% endif %}
 {% if commonElementConfig.miniProfile %}
    {{ miniProfile(commonElementConfig.miniProfile.person, commonElementConfig.miniProfile.imageUrl, digitalPrisonServicesUrl + commonElementConfig.miniProfile.profileUrl) }}
 {% endif %}
