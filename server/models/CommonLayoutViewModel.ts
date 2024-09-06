@@ -32,6 +32,7 @@ export default class CommonLayoutViewModel {
         prisonNumber: prisonerDetail?.offenderNo,
       },
       miniProfile,
+      establishmentCode: prisonerDetail?.agencyId,
     }
   }
 }
