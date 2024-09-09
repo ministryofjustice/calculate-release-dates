@@ -18,6 +18,7 @@ import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calcula
 import { StorageResponseModel } from '../services/dateValidationService'
 import config from '../config'
 import { testDateTypeDefinitions } from '../testutils/createUserToken'
+import { FullPageError } from '../types/FullPageError'
 
 let app: Express
 let sessionSetup: SessionSetup
@@ -84,6 +85,41 @@ afterEach(() => {
   nock.cleanAll()
 })
 
+describe('Check access tests', () => {
+  const runTest = async routes => {
+    await Promise.all(
+      routes.map(route =>
+        request(app)
+          [route.method.toLowerCase()](route.url)
+          .expect(404)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('The details for this person cannot be found')
+          }),
+      ),
+    )
+  }
+
+  it('Check urls no access when not in caseload', async () => {
+    prisonerService.getPrisonerDetail.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+    prisonerService.checkPrisonerAccess.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+
+    const routes = [
+      { method: 'GET', url: '/calculation/A1234AA/123456/approved-dates-question' },
+      { method: 'GET', url: '/calculation/A1234AA/123456/select-approved-dates' },
+      { method: 'GET', url: '/calculation/A1234AA/123456/remove?dateType=CRD' },
+      { method: 'GET', url: '/calculation/A1234AA/123456/submit-dates' },
+      { method: 'POST', url: '/calculation/A1234AA/123456/submit-dates' },
+    ]
+
+    await runTest(routes)
+  })
+})
+
 describe('approvedDatesRoutes', () => {
   it('GET /calculation/:nomsId/:calculationRequestId/approved-dates-question asks the question', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -101,6 +137,7 @@ describe('approvedDatesRoutes', () => {
         )
       })
   })
+
   it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question without selecting shows error', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)

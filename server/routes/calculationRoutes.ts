@@ -32,6 +32,7 @@ export default class CalculationRoutes {
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
     const calculationRequestId = Number(req.params.calculationRequestId)
     if (
       req.session.selectedApprovedDates &&

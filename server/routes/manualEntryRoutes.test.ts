@@ -23,6 +23,7 @@ import { expectMiniProfile } from './testutils/layoutExpectations'
 import SessionSetup from './testutils/sessionSetup'
 import config from '../config'
 import { testDateTypeDefinitions } from '../testutils/createUserToken'
+import { FullPageError } from '../types/FullPageError'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -101,6 +102,41 @@ beforeEach(() => {
 afterEach(() => {
   jest.resetAllMocks()
   nock.cleanAll()
+})
+
+describe('Check access tests', () => {
+  const runTest = async routes => {
+    await Promise.all(
+      routes.map(route =>
+        request(app)
+          [route.method.toLowerCase()](route.url)
+          .expect(404)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('The details for this person cannot be found')
+          }),
+      ),
+    )
+  }
+
+  it('Check urls no access when not in caseload', async () => {
+    prisonerService.getPrisonerDetail.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+    prisonerService.checkPrisonerAccess.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+
+    const routes = [
+      { method: 'GET', url: '/calculation/A1234AA/manual-entry' },
+      { method: 'GET', url: '/calculation/A1234AA/manual-entry/select-dates' },
+      { method: 'GET', url: '/calculation/A1234AA/manual-entry/confirmation' },
+      { method: 'POST', url: '/calculation/A1234AA/manual-entry/remove-date?dateType=CRD' },
+      { method: 'POST', url: '/calculation/A1234AA/manual-entry/no-dates-confirmation' },
+    ]
+
+    await runTest(routes)
+  })
 })
 
 describe('Tests for /calculation/:nomsId/manual-entry', () => {

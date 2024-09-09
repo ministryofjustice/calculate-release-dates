@@ -25,6 +25,7 @@ import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseD
 import { expectMiniProfile, expectNoMiniProfile } from './testutils/layoutExpectations'
 import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import config from '../config'
+import { FullPageError } from '../types/FullPageError'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -441,6 +442,59 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+})
+
+describe('Check access tests', () => {
+  const runTest = async routes => {
+    await Promise.all(
+      routes.map(route =>
+        request(app)
+          [route.method.toLowerCase()](route.url)
+          .expect(404)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('The details for this person cannot be found')
+          }),
+      ),
+    )
+  }
+
+  it('Check urls no access when not in caseload', async () => {
+    prisonerService.getPrisonerDetail.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+    prisonerService.checkPrisonerAccess.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+
+    const routes = [
+      { method: 'GET', url: '/view/A1234AA/nomis-calculation-summary/-1' },
+      { method: 'GET', url: '/view/A1234AA/latest' },
+      { method: 'GET', url: '/view/A1234AA/sentences-and-offences/123456' },
+      { method: 'GET', url: '/view/A1234AA/calculation-summary/123456' },
+      { method: 'GET', url: '/view/A1234AA/calculation-summary/123456/print' },
+      { method: 'GET', url: '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view' },
+      {
+        method: 'GET',
+        url: '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view&pageType=offender',
+      },
+      {
+        method: 'GET',
+        url: '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view&pageType=establishment',
+      },
+      { method: 'GET', url: '/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation' },
+      {
+        method: 'GET',
+        url: '/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation&pageType=offender',
+      },
+      {
+        method: 'GET',
+        url: '/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation&pageType=establishment',
+      },
+    ]
+
+    await runTest(routes)
+  })
 })
 
 describe('View journey routes tests', () => {

@@ -24,6 +24,7 @@ import { expectMiniProfile } from './testutils/layoutExpectations'
 import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import UserPermissionsService from '../services/userPermissionsService'
 import config from '../config'
+import { FullPageError } from '../types/FullPageError'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -357,6 +358,40 @@ beforeEach(() => {
 afterEach(() => {
   jest.resetAllMocks()
   config.featureToggles.showBreakdown = true
+})
+
+describe('Check access tests', () => {
+  const runTest = async routes => {
+    await Promise.all(
+      routes.map(route =>
+        request(app)
+          [route.method.toLowerCase()](route.url)
+          .expect(404)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('The details for this person cannot be found')
+          }),
+      ),
+    )
+  }
+
+  it('Check urls no access when not in caseload', async () => {
+    prisonerService.getPrisonerDetail.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+    prisonerService.checkPrisonerAccess.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+
+    const routes = [
+      { method: 'GET', url: '/calculation/A1234AB/cancelCalculation' },
+      { method: 'GET', url: '/calculation/A1234AB/123456/confirmation' },
+      { method: 'GET', url: '/calculation/A1234AB/complete/123456' },
+      { method: 'POST', url: '/calculation/A1234AB/cancelCalculation' },
+    ]
+
+    await runTest(routes)
+  })
 })
 
 describe('Calculation routes tests', () => {

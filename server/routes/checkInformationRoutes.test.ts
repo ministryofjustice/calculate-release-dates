@@ -486,6 +486,40 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
+describe('Check access tests', () => {
+  const runTest = async routes => {
+    await Promise.all(
+      routes.map(route =>
+        request(app)
+          [route.method.toLowerCase()](route.url)
+          .expect(404)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('The details for this person cannot be found')
+          }),
+      ),
+    )
+  }
+
+  it('Check urls no access when not in caseload', async () => {
+    prisonerService.getPrisonerDetail.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+    prisonerService.checkPrisonerAccess.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+
+    const routes = [
+      { method: 'GET', url: '/calculation/A1234AA/check-information' },
+      { method: 'GET', url: '/calculation/A1234AA/check-information-unsupported' },
+      { method: 'POST', url: '/calculation/A1234AA/check-information' },
+      { method: 'POST', url: '/calculation/A1234AA/check-information-unsupported' },
+    ]
+
+    await runTest(routes)
+  })
+})
+
 describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner with the EDS card view', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)

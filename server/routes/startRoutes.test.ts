@@ -20,6 +20,7 @@ import AuthorisedRoles from '../enumerations/authorisedRoles'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../config'
+import { FullPageError } from '../types/FullPageError'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
@@ -129,6 +130,35 @@ beforeEach(() => {
 })
 afterEach(() => {
   jest.resetAllMocks()
+})
+
+describe('Check access tests', () => {
+  const runTest = async routes => {
+    await Promise.all(
+      routes.map(route =>
+        request(app)
+          [route.method.toLowerCase()](route.url)
+          .expect(404)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('The details for this person cannot be found')
+          }),
+      ),
+    )
+  }
+
+  it('Check urls no access when not in caseload', async () => {
+    prisonerService.getPrisonerDetail.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+    prisonerService.checkPrisonerAccess.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+
+    const routes = [{ method: 'GET', url: '?prisonId=123' }]
+
+    await runTest(routes)
+  })
 })
 
 describe('Start routes tests', () => {
