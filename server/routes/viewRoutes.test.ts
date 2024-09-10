@@ -513,6 +513,20 @@ describe('View journey routes tests', () => {
         })
     })
 
+    it('GET /view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId should show personOutsideBanner when prisoner is TRN', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue({ ...stubbedPrisonerData, agencyId: 'TRN' })
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(pastNomisCalculation as never)
+
+      return request(app)
+        .get('/view/A1234AA/nomis-calculation-summary/-1')
+        .expect(200)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const text = $('[data-qa=personTransferredBanner]').text().replace(/\s\s+/g, ' ').trim() // Remove space
+          expect(text).toBe('This person has been transferred Some information may be hidden')
+        })
+    })
+
     it('GET /view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId should not show personOutsideBanner when prisoner is OUT', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(pastNomisCalculation as never)
