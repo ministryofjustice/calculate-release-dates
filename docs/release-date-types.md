@@ -4,10 +4,9 @@ This document intends to inform you about the type of release dates in prison, a
 
 ## Types of Release Date Produced by the Service
 
-
 ### Release on Home Detention Curfew / Tagging
 
-#### Home Detention Curfew Expiry Date (HDCED)
+#### Home Detention Curfew Eligibility Date (HDCED)
 
 The date from which a person with an eligible determinate sentence could be released on Home Detention and Curfew. This is also known as release on a `Tag` or `Electronic Monitoring`. 
 
@@ -62,7 +61,7 @@ A potential release point:
 #### Late-Transfer Date (LTD)
 
 A potential release point:
-* One months after the Mid-Transfer Date (MTD) for Detention and Training Order (DTO) / single terms of 8 months but less than 18 months 
+* One month after the Mid-Transfer Date (MTD) for Detention and Training Order (DTO) / single terms of 8 months but less than 18 months 
 * Two months after the Mid-Transfer Date (MTD) for Detention and Training Order (DTO) / single terms of 18 months to 2 years
 
 ## Approved Release Dates
@@ -80,7 +79,7 @@ The date from which a person leave the prison on Home Detention and Curfew. This
 
 ### Actual Release Date (ARD)
 
-The Actual Release Date is an attempt to determine the date a person is likely to leave prison (other than on temporary licence (ROTL). It uses 
+The Actual Release Date is an attempt to determine the date a person is likely to leave prison  - other than on temporary licence (ROTL). It uses 
 
 The algorithm is defined roughly as follows:
 
