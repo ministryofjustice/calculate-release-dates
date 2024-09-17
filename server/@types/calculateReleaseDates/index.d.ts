@@ -411,6 +411,7 @@ export interface components {
         | 'SDS_EARLY_RELEASE_UNSUPPORTED'
         | 'UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE'
         | 'UNSUPPORTED_OFFENCE_ENCOURAGING_OR_ASSISTING'
+        | 'UNSUPPORTED_BREACH_97'
       arguments: string[]
       message: string
       /** @enum {string} */
