@@ -22,6 +22,10 @@ export default class PrisonerService {
     return new PrisonApiClient(token).getPrisonerImage(nomsId)
   }
 
+  async checkPrisonerAccess(nomsId: string, userCaseloads: string[], token: string) {
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, this.includeReleased, false)
+  }
+
   async getPrisonerDetail(nomsId: string, userCaseloads: string[], token: string): Promise<PrisonApiPrisoner> {
     return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, this.includeReleased, false)
   }

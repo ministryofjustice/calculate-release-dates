@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import path from 'path'
 import PrisonerService from '../services/prisonerService'
+import logger from '../../logger'
 
 export default class OtherRoutes {
   constructor(private readonly prisonerService: PrisonerService) {
@@ -16,7 +17,8 @@ export default class OtherRoutes {
         res.type('image/jpeg')
         data.pipe(res)
       })
-      .catch(() => {
+      .catch(error => {
+        logger.warn(`Failed to retrieve image for ${nomsId} using default (message: ${error.message})`)
         const placeHolder = path.join(process.cwd(), '/assets/images/image-missing.png')
         res.sendFile(placeHolder)
       })

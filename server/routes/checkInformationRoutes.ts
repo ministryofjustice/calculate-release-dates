@@ -18,8 +18,11 @@ export default class CheckInformationRoutes {
   }
 
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
+
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+
     if (!this.userInputService.isCalculationReasonSet(req, nomsId)) {
       return res.redirect(`/calculation/${nomsId}/reason`)
     }
@@ -35,6 +38,11 @@ export default class CheckInformationRoutes {
   }
 
   public unsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
+    const { caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+
     const model = await this.checkInformationService.checkInformation(req, res, true, true)
 
     return res.render(
@@ -44,8 +52,10 @@ export default class CheckInformationRoutes {
   }
 
   public submitUnsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    const { token } = res.locals.user
+
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
 
     const manualEntryValidationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(
       nomsId,
@@ -59,8 +69,10 @@ export default class CheckInformationRoutes {
   }
 
   public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { token } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
+
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     userInputs.calculateErsed = req.body.ersed === 'true'

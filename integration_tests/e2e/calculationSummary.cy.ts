@@ -93,7 +93,7 @@ context('Calculation summary', () => {
     cy.signIn()
     CalculationSummaryPage.visit('NOT_MATCHING', '97', false)
     const errorPage = Page.verifyOnPage(ErrorPage)
-    errorPage.heading().contains('There is a problem')
+    errorPage.heading().contains('The details for this person cannot be found')
   })
 
   it('Calculation summary page is accessible', () => {

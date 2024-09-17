@@ -58,6 +58,7 @@ export default class ViewRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
     try {
       const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
         calculationRequestId,
@@ -223,6 +224,7 @@ export default class ViewRoutes {
     const { nomsId } = req.params
     const { caseloads, token } = res.locals.user
     const calculationRequestId = Number(req.params.calculationRequestId)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
     const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads)
     res.render(
       'pages/view/calculationSummary',
@@ -239,6 +241,7 @@ export default class ViewRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
     const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads)
     res.render(
       'pages/view/printCalculationSummary',
@@ -256,6 +259,8 @@ export default class ViewRoutes {
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const { fromPage, pageType } = req.query as Record<string, string>
+
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
 
     const [prisonerDetail, sentencesAndOffences, adjustmentDetails, releaseDateAndCalcContext] = await Promise.all([
       this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, caseloads, token),

@@ -11,6 +11,7 @@ import {
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { expectMiniProfile } from './testutils/layoutExpectations'
+import { FullPageError } from '../types/FullPageError'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -76,6 +77,38 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+})
+
+describe('Check access tests', () => {
+  const runTest = async routes => {
+    await Promise.all(
+      routes.map(route =>
+        request(app)
+          [route.method.toLowerCase()](route.url)
+          .expect(404)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('The details for this person cannot be found')
+          }),
+      ),
+    )
+  }
+
+  it('Check urls no access when not in caseload', async () => {
+    prisonerService.getPrisonerDetail.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+    prisonerService.checkPrisonerAccess.mockImplementation(() => {
+      throw FullPageError.notInCaseLoadError()
+    })
+
+    const routes = [
+      { method: 'GET', url: '/calculation/A1234AA/reason' },
+      { method: 'POST', url: '/calculation/A1234AA/reason' },
+    ]
+
+    await runTest(routes)
+  })
 })
 
 it('POST /calculation/:nomsId/reason should return to check-information once the calculation reason has been set', () => {
