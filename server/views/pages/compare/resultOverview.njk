@@ -153,40 +153,9 @@
                 }) }}
             {% endset -%}
 
-            {% set hdc4PlusHtml %}
-                {{ govukTable({
-                    firstCellIsHeader: true,
-                    head: comparison.hdced4PlusMismatchesTable.headings,
-                    rows: comparison.hdced4PlusMismatchesTable.rows
-                }) }}
-            {% endset %}
-
             {% set tabs = [] %}
-            {% if comparison.hdced4PlusMismatchesTable.rows.length %}
-                {% set tabs = (tabs.push({
-                    label: "HDC4+" + " ("+comparison.hdced4PlusMismatchesTable.rows.length + ")",
-                    id: "hdc4-plus",
-                    panel: {
-                        html: hdc4PlusHtml
-                    }
-                }), tabs) %}
-            {% endif %}
 
-            {% if comparison.releaseDateMismatchesTable.rows.length and comparison.comparisonType !== 'ESTABLISHMENT_HDCED4PLUS' %}
-                {% set tabs = (tabs.push({
-                    label: "Release date mismatches" + " ("+comparison.releaseDateMismatchesTable.rows.length + ")",
-                    id: "release-date-mismatch",
-                    panel: {
-                        html: releaseDateMismatchHtml
-                    }
-                }), tabs) %}
-            {% endif %}
-
-            {% if comparison.comparisonType === 'ESTABLISHMENT_HDCED4PLUS' %}
-                {% set unsupportedSentenceLabel = "Unsupported sentence types for HDC4+" %}
-            {% else %}
-                {% set unsupportedSentenceLabel = "Unsupported sentence type" %}
-            {% endif %}
+            {% set unsupportedSentenceLabel = "Unsupported sentence type" %}
 
             {% if comparison.unsupportedSentenceMismatchesTable.rows.length %}
                 {% set tabs = (tabs.push({
@@ -198,11 +167,7 @@
                 }), tabs) %}
             {% endif %}
 
-            {% if comparison.comparisonType === 'ESTABLISHMENT_HDCED4PLUS' %}
-                {% set validationErrorLabel = "Potential HDC4+" %}
-            {% else %}
-                {% set validationErrorLabel = "Validation error" %}
-            {% endif %}
+            {% set validationErrorLabel = "Validation error" %}
 
             {% if comparison.validationErrorMismatchesTable.rows.length %}
                 {% set tabs = (tabs.push({

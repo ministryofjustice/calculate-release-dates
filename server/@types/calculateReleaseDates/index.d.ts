@@ -503,7 +503,6 @@ export interface components {
         | 'None'
         | 'Tariff'
         | 'ROTL'
-        | 'HDCED4PLUS'
       dateText: string
       date?: components['schemas']['SubmittedDate']
     }
@@ -534,7 +533,7 @@ export interface components {
        * @description The type of comparison that was run
        * @enum {string}
        */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
     }
     /** @description Criteria used in the comparison */
     JsonNode: Record<string, never>
@@ -543,7 +542,7 @@ export interface components {
       criteria: components['schemas']['JsonNode']
       prison?: string
       /** @enum {string} */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
@@ -842,7 +841,7 @@ export interface components {
       comparisonShortReference: string
       prison?: string
       /** @enum {string} */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
@@ -877,7 +876,7 @@ export interface components {
       comparisonShortReference: string
       prison?: string
       /** @enum {string} */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
@@ -937,7 +936,6 @@ export interface components {
         | 'None'
         | 'Tariff'
         | 'ROTL'
-        | 'HDCED4PLUS'
     }
     /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
@@ -1107,7 +1105,6 @@ export interface components {
         | 'None'
         | 'Tariff'
         | 'ROTL'
-        | 'HDCED4PLUS'
       description: string
       /** Format: date */
       date: string

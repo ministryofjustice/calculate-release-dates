@@ -11,7 +11,6 @@ describe('ReleaseDateType', () => {
     expect(filteredListOfDates).not.toContain('NCRD')
     expect(filteredListOfDates).not.toContain('ESED')
     expect(filteredListOfDates).not.toContain('None')
-    expect(filteredListOfDates).not.toContain('HDCED4PLUS')
   })
 })
 

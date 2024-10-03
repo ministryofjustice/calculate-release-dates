@@ -49,19 +49,7 @@
                     items: caseloadItems
                 }) }}
 
-                {{ govukRadios({
-                    name: "comparisonType",
-                    fieldset: {
-                        legend: {
-                            text: "What type of comparison would you like to run?",
-                            classes: "govuk-fieldset__legend--m"
-                        }
-                    },
-                    items: [
-                        { text: ComparisonType.ESTABLISHMENT_FULL | formatComparisonType, value: ComparisonType.ESTABLISHMENT_FULL, checked: true },
-                        { text: ComparisonType.ESTABLISHMENT_HDCED4PLUS | formatComparisonType, value: ComparisonType.ESTABLISHMENT_HDCED4PLUS }
-                    ]
-                }) }}
+                <input type="hidden" name="comparisonType" value="ComparisonType.ESTABLISHMENT_FULL"/>
 
                 {{ govukButton({
                     text: "Continue",

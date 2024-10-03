@@ -10,22 +10,20 @@ export default class MismatchResultTable {
   rows: { text?: string; html?: string }[][]
 
   constructor(comparison: ComparisonOverview, mismatchTypes: string[]) {
-    this.headings = this.getHeadings(comparison, comparison.prison)
+    this.headings = this.getHeadings(comparison.prison)
     this.rows = this.filterAndSortRows(comparison.mismatches, mismatchTypes).map(mismatch =>
       this.createRow(comparison, mismatch),
     )
   }
 
-  private getHeadings(comparison: ComparisonOverview, prison: string) {
+  private getHeadings(prison: string) {
     const row = [
       { text: 'Prison number', classes: 'comparison-table-nowrap' },
       { text: 'Surname' },
       this.isAllPrisons(prison) ? { text: 'Establishment' } : undefined,
       { text: 'Validation messages' },
     ]
-    if (comparison.comparisonType !== ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
-      row.push({ text: 'Details' })
-    }
+    row.push({ text: 'Details' })
     return row.filter(e => e)
   }
 
@@ -44,7 +42,7 @@ export default class MismatchResultTable {
     let detailsHref: string
     if (comparison.comparisonType === ComparisonType.MANUAL) {
       detailsHref = `/compare/manual/result/${comparison.comparisonShortReference}/detail/${mismatch.shortReference}`
-    } else if (comparison.comparisonType !== ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
+    } else {
       detailsHref = `/compare/result/${comparison.comparisonShortReference}/detail/${mismatch.shortReference}`
     }
 

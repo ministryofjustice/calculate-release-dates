@@ -1066,7 +1066,6 @@ export default {
           { type: 'None', description: 'None of the above dates apply' },
           { type: 'Tariff', description: 'known as the Tariff expiry date' },
           { type: 'ROTL', description: 'Release on temporary licence' },
-          { type: 'HDCED4PLUS', description: 'HDCED4+' },
         ],
       },
     })
