@@ -144,6 +144,16 @@
 
             {% set tabs = [] %}
 
+            {% if comparison.releaseDateMismatchesTable.rows.length %}
+                {% set tabs = (tabs.push({
+                    label: "Release date mismatches" + " ("+comparison.releaseDateMismatchesTable.rows.length + ")",
+                    id: "release-date-mismatch",
+                    panel: {
+                        html: releaseDateMismatchHtml
+                    }
+                }), tabs) %}
+            {% endif %}
+
             {% set unsupportedSentenceLabel = "Unsupported sentence type" %}
 
             {% if comparison.unsupportedSentenceMismatchesTable.rows.length %}
