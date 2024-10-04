@@ -503,7 +503,6 @@ export interface components {
         | 'None'
         | 'Tariff'
         | 'ROTL'
-        | 'HDCED4PLUS'
       dateText: string
       date?: components['schemas']['SubmittedDate']
     }
@@ -534,7 +533,7 @@ export interface components {
        * @description The type of comparison that was run
        * @enum {string}
        */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
     }
     /** @description Criteria used in the comparison */
     JsonNode: Record<string, never>
@@ -543,7 +542,7 @@ export interface components {
       criteria: components['schemas']['JsonNode']
       prison?: string
       /** @enum {string} */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
@@ -842,7 +841,7 @@ export interface components {
       comparisonShortReference: string
       prison?: string
       /** @enum {string} */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
@@ -866,8 +865,6 @@ export interface components {
         | 'RELEASE_DATES_MISMATCH'
         | 'VALIDATION_ERROR'
         | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
-        | 'VALIDATION_ERROR_HDC4_PLUS'
         | 'FATAL_EXCEPTION'
       sdsSentencesIdentified: components['schemas']['JsonNode']
       establishment?: string
@@ -877,7 +874,7 @@ export interface components {
       comparisonShortReference: string
       prison?: string
       /** @enum {string} */
-      comparisonType: 'ESTABLISHMENT_FULL' | 'ESTABLISHMENT_HDCED4PLUS' | 'MANUAL'
+      comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
@@ -889,7 +886,6 @@ export interface components {
       numberOfPeopleComparisonFailedFor: number
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
       status: string
-      hdc4PlusCalculated: components['schemas']['HdcFourPlusComparisonMismatch'][]
     }
     HdcFourPlusComparisonMismatch: {
       personId: string
@@ -900,8 +896,6 @@ export interface components {
         | 'RELEASE_DATES_MISMATCH'
         | 'VALIDATION_ERROR'
         | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
-        | 'VALIDATION_ERROR_HDC4_PLUS'
         | 'FATAL_EXCEPTION'
       /** Format: date */
       hdcedFourPlusDate: string
@@ -937,7 +931,6 @@ export interface components {
         | 'None'
         | 'Tariff'
         | 'ROTL'
-        | 'HDCED4PLUS'
     }
     /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
@@ -980,8 +973,6 @@ export interface components {
         | 'RELEASE_DATES_MISMATCH'
         | 'VALIDATION_ERROR'
         | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
-        | 'VALIDATION_ERROR_HDC4_PLUS'
         | 'FATAL_EXCEPTION'
       isActiveSexOffender?: boolean
       validationMessages: components['schemas']['ValidationMessage'][]
@@ -1107,7 +1098,6 @@ export interface components {
         | 'None'
         | 'Tariff'
         | 'ROTL'
-        | 'HDCED4PLUS'
       description: string
       /** Format: date */
       date: string

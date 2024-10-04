@@ -27,7 +27,6 @@ generic-service:
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     ENVIRONMENT_NAME: DEV
     SDS_EXCLUSION_INDICATORS_ENABLED: "true"
-    HDC4_PLUS_COMPARISON_TAB_ENABLED: "true"
     SHOW_BREAKDOWN: "true"
 
   # Switches off the allow list in the DEV env only.

@@ -177,8 +177,6 @@ const formatComparisonType = (comparisonType: ComparisonType) => {
   switch (comparisonType) {
     case ComparisonType.ESTABLISHMENT_FULL:
       return 'Full'
-    case ComparisonType.ESTABLISHMENT_HDCED4PLUS:
-      return 'HDCED4+'
     case ComparisonType.MANUAL:
       return 'Manual'
     default:

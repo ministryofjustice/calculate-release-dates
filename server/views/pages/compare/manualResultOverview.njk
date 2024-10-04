@@ -104,17 +104,6 @@
                         }
                     }), rows) %}
             {% endif %}
-            {% if featureToggles.hdc4ComparisonTabEnabled %}
-                {% set rows = (rows.push(
-                    {
-                        key: {
-                            text: "Potential HDC4+ count"
-                        },
-                        value: {
-                            text: comparison.validationHdc4PlusMismatches.length
-                        }
-                    }), rows) %}
-            {% endif %}
 
             {{ govukSummaryList({
                 rows: rows
@@ -145,24 +134,7 @@
                 }) }}
             {% endset -%}
 
-            {% set hdc4PlusHtml %}
-                {{ govukTable({
-                    firstCellIsHeader: true,
-                    head: comparison.hdced4PlusMismatchesTable.headings,
-                    rows: comparison.hdced4PlusMismatchesTable.rows
-                }) }}
-            {% endset %}
-
             {% set tabs = [] %}
-            {% if comparison.hdced4PlusMismatchesTable.rows.length %}
-                {% set tabs = (tabs.push({
-                    label: "Potential HDC4+",
-                    id: "validation-error-hdc4-plus",
-                    panel: {
-                        html: validationErrorHdc4PlusHtml
-                    }
-                }), tabs) %}
-            {% endif %}
 
             {% if comparison.releaseDateMismatchesTable.rows.length %}
                 {% set tabs = (tabs.push({

@@ -61,7 +61,6 @@ describe('Should contain table headings and rows for release date mismatches', (
       numberOfPeopleCompared: 5,
       mismatches,
       status: 'COMPLETED',
-      hdc4PlusCalculated: [],
     } as ComparisonOverview
 
     it('has all headings except establishment', () => {
@@ -131,7 +130,6 @@ describe('Should contain table headings and rows for release date mismatches', (
       numberOfPeopleCompared: 5,
       mismatches,
       status: 'COMPLETED',
-      hdc4PlusCalculated: [],
     } as ComparisonOverview
 
     it('has all headings including establishment', () => {

@@ -127,7 +127,6 @@ export default {
     tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),
   },
   featureToggles: {
-    hdc4ComparisonTabEnabled: get('HDC4_PLUS_COMPARISON_TAB_ENABLED', false) === 'true',
     sdsExclusionIndicatorsEnabled: get('SDS_EXCLUSION_INDICATORS_ENABLED', false) === 'true',
     showBreakdown: get('SHOW_BREAKDOWN', false) === 'true',
   },

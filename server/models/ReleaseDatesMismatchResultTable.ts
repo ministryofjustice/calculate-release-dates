@@ -33,7 +33,7 @@ export default class ReleaseDatesMismatchResultTable {
     let detailsHref: string
     if (comparison.comparisonType === ComparisonType.MANUAL) {
       detailsHref = `/compare/manual/result/${comparison.comparisonShortReference}/detail/${mismatch.shortReference}`
-    } else if (comparison.comparisonType !== ComparisonType.ESTABLISHMENT_HDCED4PLUS) {
+    } else {
       detailsHref = `/compare/result/${comparison.comparisonShortReference}/detail/${mismatch.shortReference}`
     }
 
