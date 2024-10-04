@@ -121,7 +121,7 @@
     "express-prom-bundle": "^7.0.0",
     "express-session": "^1.18.0",
     "govuk-frontend": "^5.6.0",
-    "helmet": "^7.2.0",
+    "helmet": "^8.0.0",
     "hmpps-court-cases-release-dates-design": "^2.8.5",
     "http-errors": "^2.0.0",
     "jwt-decode": "^4.0.0",
