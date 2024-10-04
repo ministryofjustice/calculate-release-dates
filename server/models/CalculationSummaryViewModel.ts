@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import {
   CalculationBreakdown,
   CalculationReason,
@@ -44,10 +43,6 @@ export default class CalculationSummaryViewModel {
     )
   }
 
-  public showSDS40TrancheLabel(): boolean {
-    return config.featureToggles.showSDS40TrancheLabel && this.detailedCalculationResults?.tranche !== 'TRANCHE_0'
-  }
-
   public getSDS40ReleaseTranche(): string {
     const tranche = this.detailedCalculationResults?.tranche
     const prefix = 'SDS40 Tranche'
@@ -81,14 +76,5 @@ export default class CalculationSummaryViewModel {
 
   public isRecallOnly(): boolean {
     return this.sentencesAndOffences?.every(sentence => SentenceTypes.isRecall(sentence))
-  }
-
-  private dateBeforeAnother(dateA: string, dateB: string): boolean {
-    if (dateA && dateB) {
-      const dayjsDateA = dayjs(dateA)
-      const dayjsDateB = dayjs(dateB)
-      return dayjsDateA < dayjsDateB
-    }
-    return false
   }
 }

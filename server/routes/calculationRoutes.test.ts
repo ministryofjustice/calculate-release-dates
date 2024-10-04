@@ -958,41 +958,8 @@ describe('Calculation routes tests', () => {
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should display the SDS40 Tranche', () => {
-    config.featureToggles.showSDS40TrancheLabel = true
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-      stubbedResultsWithBreakdownAndAdjustments,
-    )
-    return request(app)
-      .get('/calculation/A1234AB/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const trancheSelector = $('[data-qa=sds-early-release-tranche]').first()
-        expect(trancheSelector.text()).toStrictEqual('SDS40 Tranche 1')
-      })
-  })
 
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should not display tranche label when tranche is 0', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    const dataWithTranche0 = { ...stubbedResultsWithBreakdownAndAdjustments }
-    dataWithTranche0.tranche = 'TRANCHE_0'
-    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(dataWithTranche0)
-    return request(app)
-      .get('/calculation/A1234AB/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const trancheSelector = $('[data-qa=sds-early-release-tranche]').first()
-        expect(trancheSelector.length).toBe(0)
-      })
-  })
-
-  it('GET /calculation/:nomsId/summary/:calculationRequestId should not display tranche label when feature toggle is off', () => {
-    config.featureToggles.showSDS40TrancheLabel = false
+  it('GET /calculation/:nomsId/summary/:calculationRequestId should not display tranche label', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     const dataWithTranche1 = { ...stubbedResultsWithBreakdownAndAdjustments }
     dataWithTranche1.tranche = 'TRANCHE_1'

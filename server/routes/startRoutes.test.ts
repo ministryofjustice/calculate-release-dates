@@ -19,7 +19,6 @@ import {
 import AuthorisedRoles from '../enumerations/authorisedRoles'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import config from '../config'
 import { FullPageError } from '../types/FullPageError'
 
 jest.mock('../services/calculateReleaseDatesService')
@@ -223,68 +222,6 @@ describe('Start routes tests', () => {
         expect(calculateDatesFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/reason')
         const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
         expect(addDatesFlowLink.length).toStrictEqual(0)
-      })
-  })
-
-  it('should render the correct SDS40 notification banner when sds40 calculation is supported', async () => {
-    config.featureToggles.sds40PolicySupported = 'CALCULATED'
-    userPermissionsService.allowBulkLoad.mockReturnValue(true)
-
-    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
-    const cardAndAction = {
-      latestCalcCard: latestCalcCardForPrisoner,
-    }
-    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    await request(app)
-      .get('?prisonId=123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const bannerText = $('.govuk-notification-banner').first().text()
-        expect(bannerText).toContain('This service now supports SDS40 calculations.')
-      })
-  })
-
-  it('should render the correct SDS40 notification banner when sds40 calculation is not supported - switched off', async () => {
-    config.featureToggles.sds40PolicySupported = 'OFF'
-    userPermissionsService.allowBulkLoad.mockReturnValue(true)
-
-    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
-    const cardAndAction = {
-      latestCalcCard: latestCalcCardForPrisoner,
-    }
-    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    await request(app)
-      .get('?prisonId=123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const bannerText = $('.govuk-notification-banner').first().text()
-        expect(bannerText).toContain('This service now supports SDS40 calculations')
-      })
-  })
-
-  it('should render the correct SDS40 notification banner when sds40 calculation is not supported no property', async () => {
-    userPermissionsService.allowBulkLoad.mockReturnValue(true)
-
-    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
-    const cardAndAction = {
-      latestCalcCard: latestCalcCardForPrisoner,
-    }
-    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    await request(app)
-      .get('?prisonId=123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const bannerText = $('.govuk-notification-banner').first().text()
-        expect(bannerText).toContain('This service now supports SDS40 calculations')
       })
   })
 

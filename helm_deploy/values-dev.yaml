@@ -27,8 +27,6 @@ generic-service:
     COURT_CASES_AND_RELEASE_DATES_URL: "https://court-cases-release-dates-dev.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     ENVIRONMENT_NAME: DEV
-    SDS40_POLICY_SUPPORTED: "CALCULATED"
-    SHOW_SDS40_TRANCHE_LABEL: "true"
   # Switches off the allow list in the DEV env only.
   allowlist: null
 

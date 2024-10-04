@@ -2,7 +2,6 @@
 {% from "hmpps/components/court-cases-release-dates/actions-card/macro.njk" import actionsCard %}
 {% from "hmpps/components/court-cases-release-dates/sub-navigation/macro.njk" import subNavigation %}
 {% from "hmpps/components/court-cases-release-dates/latest-calculation-card/macro.njk" import latestCalculationCard %}
-{% from "../pages/components/sds40-policy-banner/macro.njk" import sds40PolicyNotificationBanner %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set pageId = "ccard-index" %}
@@ -30,7 +29,6 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Release dates and calculations</h1>
-            {{ sds40PolicyNotificationBanner(featureToggles.sds40PolicySupported) }}
         </div>
 
     </div>

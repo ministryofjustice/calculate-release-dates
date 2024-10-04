@@ -29,8 +29,6 @@ generic-service:
     CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE: 60000
     ENVIRONMENT_NAME: PRE-PRODUCTION
     SHOW_BREAKDOWN: "true"
-    SDS40_POLICY_SUPPORTED: "CALCULATED"
-    SHOW_SDS40_TRANCHE_LABEL: "false"
 
 generic-prometheus-alerts:
   targetApplication: calculate-release-dates-alt-preprod

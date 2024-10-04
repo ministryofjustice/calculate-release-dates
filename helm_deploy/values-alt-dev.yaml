@@ -28,8 +28,6 @@ generic-service:
     ENVIRONMENT_NAME: DEV
     SDS_EXCLUSION_INDICATORS_ENABLED: "true"
     SHOW_BREAKDOWN: "true"
-    SDS40_POLICY_SUPPORTED: "CALCULATED"
-    SHOW_SDS40_TRANCHE_LABEL: "false"
 
   # Switches off the allow list in the DEV env only.
   allowlist: null
