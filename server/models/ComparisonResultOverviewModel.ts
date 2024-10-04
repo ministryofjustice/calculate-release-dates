@@ -43,11 +43,11 @@ export default class ComparisonResultOverviewModel {
 
     this.releaseDateMismatchesTable = new ReleaseDatesMismatchResultTable(comparison)
 
-    const unsupportedSentenceMismatchTypes = ['UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS']
+    const unsupportedSentenceMismatchTypes = []
 
     this.unsupportedSentenceMismatchesTable = new MismatchResultTable(comparison, unsupportedSentenceMismatchTypes)
 
-    const validationErrorMismatchTypes = ['VALIDATION_ERROR_HDC4_PLUS']
+    const validationErrorMismatchTypes = []
     this.validationErrorMismatchesTable = new MismatchResultTable(comparison, validationErrorMismatchTypes)
 
     this.status = comparison.status

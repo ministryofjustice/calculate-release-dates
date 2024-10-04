@@ -865,8 +865,6 @@ export interface components {
         | 'RELEASE_DATES_MISMATCH'
         | 'VALIDATION_ERROR'
         | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
-        | 'VALIDATION_ERROR_HDC4_PLUS'
         | 'FATAL_EXCEPTION'
       sdsSentencesIdentified: components['schemas']['JsonNode']
       establishment?: string
@@ -888,7 +886,6 @@ export interface components {
       numberOfPeopleComparisonFailedFor: number
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
       status: string
-      hdc4PlusCalculated: components['schemas']['HdcFourPlusComparisonMismatch'][]
     }
     HdcFourPlusComparisonMismatch: {
       personId: string
@@ -899,8 +896,6 @@ export interface components {
         | 'RELEASE_DATES_MISMATCH'
         | 'VALIDATION_ERROR'
         | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
-        | 'VALIDATION_ERROR_HDC4_PLUS'
         | 'FATAL_EXCEPTION'
       /** Format: date */
       hdcedFourPlusDate: string
@@ -978,8 +973,6 @@ export interface components {
         | 'RELEASE_DATES_MISMATCH'
         | 'VALIDATION_ERROR'
         | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'UNSUPPORTED_SENTENCE_TYPE_FOR_HDC4_PLUS'
-        | 'VALIDATION_ERROR_HDC4_PLUS'
         | 'FATAL_EXCEPTION'
       isActiveSexOffender?: boolean
       validationMessages: components['schemas']['ValidationMessage'][]

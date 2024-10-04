@@ -112,17 +112,6 @@
                         }
                     }), rows) %}
             {% endif %}
-            {% if featureToggles.hdc4ComparisonTabEnabled %}
-                {% set rows = (rows.push(
-                    {
-                        key: {
-                            text: "Potential HDC4+ count"
-                        },
-                        value: {
-                            text: comparison.validationHdc4PlusMismatches.length
-                        }
-                    }), rows) %}
-            {% endif %}
 
             {{ govukSummaryList({
                 rows: rows

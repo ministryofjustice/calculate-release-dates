@@ -47,7 +47,6 @@ const comparisonOverview = {
   numberOfPeopleCompared: 10,
   numberOfMismatches: 0,
   mismatches: [],
-  hdc4PlusCalculated: [],
 } as ComparisonOverview
 
 const comparisonSummaryWithFailures = {
