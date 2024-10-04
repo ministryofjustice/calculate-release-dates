@@ -124,9 +124,10 @@ export default class CompareRoutes {
     const { token, userRoles, caseloadMap } = res.locals.user
     const comparison = await this.comparisonService.getPrisonComparison(bulkComparisonResultId, token)
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
+    const overviewModel = new ComparisonResultOverviewModel(comparison, caseloadMap)
     return res.render('pages/compare/resultOverview', {
       allowBulkComparison,
-      comparison: new ComparisonResultOverviewModel(comparison, caseloadMap),
+      comparison: overviewModel,
       bulkComparisonResultId,
     })
   }
