@@ -120,9 +120,9 @@
     "express": "^4.21.0",
     "express-prom-bundle": "^7.0.0",
     "express-session": "^1.18.0",
-    "govuk-frontend": "^5.6.0",
+    "govuk-frontend": "^5.7.0",
     "helmet": "^7.2.0",
-    "hmpps-court-cases-release-dates-design": "^2.8.5",
+    "hmpps-court-cases-release-dates-design": "^2.9.0",
     "http-errors": "^2.0.0",
     "jwt-decode": "^4.0.0",
     "luxon": "^3.5.0",
@@ -157,8 +157,8 @@
     "@types/superagent": "^8.1.9",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.7.0",
-    "@typescript-eslint/parser": "^8.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
     "audit-ci": "^7.1.0",
     "axe-core": "^4.10.0",
     "cheerio": "^1.0.0",
@@ -173,7 +173,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-cypress": "^3.5.0",
-    "eslint-plugin-import": "^2.30.0",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.6",
@@ -192,6 +192,6 @@
     "sass": "^1.79.4",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   }
 }
