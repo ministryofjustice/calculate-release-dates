@@ -3,6 +3,9 @@
  * Do not make direct changes to the file.
  */
 
+/** WithRequired type helpers */
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
+
 export interface paths {
   '/validation/{prisonerId}/full-validation': {
     /**
@@ -105,6 +108,13 @@ export interface paths {
      */
     post: operations['relevantRemandCalculation']
   }
+  '/calculation/record-a-recall/{prisonerId}': {
+    /**
+     * Calculate release dates for a prisoner - used explicitly by the record-a-recall service, this does not publish to NOMIS
+     * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a transitory calculation that will not be published to NOMIS
+     */
+    post: operations['calculateForRecall']
+  }
   '/calculation/confirm/{calculationRequestId}': {
     /**
      * Calculate release dates and persist the results for a prisoners latest booking
@@ -167,6 +177,13 @@ export interface paths {
      * @description Finds the non friday release day, adjusting for weekends and bank holidays
      */
     get: operations['nonFridayReleaseDay']
+  }
+  '/manual-calculation/{bookingId}/has-recall-sentences': {
+    /**
+     * Determine if a booking has any recall sentences
+     * @description This endpoint will return true if a booking has any recall sentences
+     */
+    get: operations['hasRecallSentences']
   }
   '/manual-calculation/{bookingId}/has-indeterminate-sentences': {
     /**
@@ -410,8 +427,10 @@ export interface components {
         | 'BOTUS_CONSECUTIVE_OR_CONCURRENT_TO_OTHER_SENTENCE'
         | 'SDS_EARLY_RELEASE_UNSUPPORTED'
         | 'UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE'
+        | 'UNSUPPORTED_SDS40_CONSECUTIVE_SDS_BETWEEN_TRANCHE_COMMENCEMENTS'
         | 'UNSUPPORTED_OFFENCE_ENCOURAGING_OR_ASSISTING'
         | 'UNSUPPORTED_BREACH_97'
+        | 'UNSUPPORTED_SUSPENDED_OFFENCE'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -420,8 +439,9 @@ export interface components {
         | 'UNSUPPORTED_CALCULATION'
         | 'VALIDATION'
         | 'UNSUPPORTED_OFFENCE'
-        | 'UNSUPPORTED_SDS40_SENTENCE'
         | 'SUSPENDED_OFFENCE'
+        | 'UNSUPPORTED_SDS40_SENTENCE'
+        | 'UNSUPPORTED_SDS40_CONSECUTIVE_SDS'
     }
     AdjustmentServiceAdjustment: {
       /** Format: uuid */
@@ -503,6 +523,7 @@ export interface components {
         | 'None'
         | 'Tariff'
         | 'ROTL'
+        | 'HDCED4PLUS'
       dateText: string
       date?: components['schemas']['SubmittedDate']
     }
@@ -628,6 +649,77 @@ export interface components {
       calculationReasonId: number
       otherReasonDescription?: string
     }
+    AFineSentence: WithRequired<
+      {
+        type: 'AFineSentence'
+      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
+          duration?: components['schemas']['Duration']
+          fineAmount?: number
+        },
+      'consecutiveSentenceUUIDs' | 'duration' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
+    >
+    AbstractSentence: {
+      offence: components['schemas']['Offence']
+      /** Format: date */
+      sentencedAt: string
+      /** Format: uuid */
+      identifier: string
+      consecutiveSentenceUUIDs: string[]
+      /** Format: int32 */
+      caseSequence?: number
+      /** Format: int32 */
+      lineSequence?: number
+      caseReference?: string
+      /** @enum {string} */
+      recallType?: 'STANDARD_RECALL' | 'FIXED_TERM_RECALL_14' | 'FIXED_TERM_RECALL_28'
+      isSDSPlus: boolean
+      type: string
+    }
+    Adjustment: {
+      /** Format: date */
+      appliesToSentencesFrom: string
+      /** Format: int32 */
+      numberOfDays: number
+      /** Format: date */
+      fromDate?: string
+      /** Format: date */
+      toDate?: string
+    }
+    Adjustments: {
+      adjustments?: {
+        [key: string]: components['schemas']['Adjustment'][]
+      }
+    }
+    Booking: {
+      offender: components['schemas']['Offender']
+      sentences: (
+        | components['schemas']['AFineSentence']
+        | components['schemas']['BotusSentence']
+        | components['schemas']['DetentionAndTrainingOrderSentence']
+        | components['schemas']['ExtendedDeterminateSentence']
+        | components['schemas']['SopcSentence']
+        | components['schemas']['StandardDeterminateSentence']
+      )[]
+      adjustments: components['schemas']['Adjustments']
+      /** Format: date */
+      returnToCustodyDate?: string
+      fixedTermRecallDetails?: components['schemas']['FixedTermRecallDetails']
+      /** Format: int64 */
+      bookingId: number
+      historicalTusedData?: components['schemas']['HistoricalTusedData']
+    }
+    BotusSentence: WithRequired<
+      {
+        type: 'BotusSentence'
+      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
+          duration?: components['schemas']['Duration']
+          /** Format: date */
+          latestTusedDate?: string
+          /** @enum {string} */
+          latestTusedSource?: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
+        },
+      'consecutiveSentenceUUIDs' | 'duration' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
+    >
     CalculatedReleaseDates: {
       dates: {
         [key: string]: string
@@ -638,7 +730,7 @@ export interface components {
       bookingId: number
       prisonerId: string
       /** @enum {string} */
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST'
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL'
       calculationFragments?: components['schemas']['CalculationFragments']
       effectiveSentenceLength?: {
         /** Format: int32 */
@@ -689,7 +781,10 @@ export interface components {
       /** @enum {string} */
       historicalTusedSource?: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
       /** @enum {string} */
+      sdsEarlyReleaseAllocatedTranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
+      /** @enum {string} */
       sdsEarlyReleaseTranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
+      calculatedBooking?: components['schemas']['Booking']
     }
     CalculationFragments: {
       breakdownHtml: string
@@ -700,6 +795,100 @@ export interface components {
       isOther: boolean
       displayName: string
     }
+    DetentionAndTrainingOrderSentence: WithRequired<
+      {
+        type: 'DetentionAndTrainingOrderSentence'
+      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
+          duration?: components['schemas']['Duration']
+        },
+      'consecutiveSentenceUUIDs' | 'duration' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
+    >
+    Duration: {
+      durationElements: {
+        [key: string]: number
+      }
+    }
+    ExtendedDeterminateSentence: WithRequired<
+      {
+        type: 'ExtendedDeterminateSentence'
+      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
+          custodialDuration?: components['schemas']['Duration']
+          extensionDuration?: components['schemas']['Duration']
+          automaticRelease?: boolean
+        },
+      | 'automaticRelease'
+      | 'consecutiveSentenceUUIDs'
+      | 'custodialDuration'
+      | 'extensionDuration'
+      | 'identifier'
+      | 'isSDSPlus'
+      | 'offence'
+      | 'sentencedAt'
+    >
+    FixedTermRecallDetails: {
+      /** Format: int64 */
+      bookingId: number
+      /** Format: date */
+      returnToCustodyDate: string
+      /** Format: int32 */
+      recallLength: number
+    }
+    HistoricalTusedData: {
+      /** Format: date */
+      tused?: string
+      /** @enum {string} */
+      historicalTusedSource: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
+    }
+    Offence: {
+      /** Format: date */
+      committedAt: string
+      offenceCode?: string
+    }
+    Offender: {
+      reference: string
+      /** Format: date */
+      dateOfBirth: string
+      isActiveSexOffender: boolean
+    }
+    SopcSentence: WithRequired<
+      {
+        type: 'SopcSentence'
+      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
+          custodialDuration?: components['schemas']['Duration']
+          extensionDuration?: components['schemas']['Duration']
+          sdopcu18?: boolean
+        },
+      | 'consecutiveSentenceUUIDs'
+      | 'custodialDuration'
+      | 'extensionDuration'
+      | 'identifier'
+      | 'isSDSPlus'
+      | 'offence'
+      | 'sdopcu18'
+      | 'sentencedAt'
+    >
+    StandardDeterminateSentence: WithRequired<
+      {
+        type: 'StandardDeterminateSentence'
+      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
+          duration?: components['schemas']['Duration']
+          /** @enum {string} */
+          hasAnSDSEarlyReleaseExclusion?:
+            | 'SEXUAL'
+            | 'VIOLENT'
+            | 'DOMESTIC_ABUSE'
+            | 'NATIONAL_SECURITY'
+            | 'TERRORISM'
+            | 'NO'
+        },
+      | 'consecutiveSentenceUUIDs'
+      | 'duration'
+      | 'hasAnSDSEarlyReleaseExclusion'
+      | 'identifier'
+      | 'isSDSPlus'
+      | 'offence'
+      | 'sentencedAt'
+    >
     CalculationResults: {
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
       validationMessages: components['schemas']['ValidationMessage'][]
@@ -887,55 +1076,10 @@ export interface components {
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
       status: string
     }
-    HdcFourPlusComparisonMismatch: {
-      personId: string
-      lastName?: string
-      /** @enum {string} */
-      misMatchType:
-        | 'NONE'
-        | 'RELEASE_DATES_MISMATCH'
-        | 'VALIDATION_ERROR'
-        | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'FATAL_EXCEPTION'
-      /** Format: date */
-      hdcedFourPlusDate: string
-      establishment?: string
-      releaseDate?: components['schemas']['ReleaseDate']
-      fatalException?: string
-    }
-    ReleaseDate: {
-      /** Format: date */
-      date: string
-      /** @enum {string} */
-      type:
-        | 'CRD'
-        | 'LED'
-        | 'SED'
-        | 'NPD'
-        | 'ARD'
-        | 'TUSED'
-        | 'PED'
-        | 'SLED'
-        | 'HDCED'
-        | 'NCRD'
-        | 'ETD'
-        | 'MTD'
-        | 'LTD'
-        | 'DPRRD'
-        | 'PRRD'
-        | 'ESED'
-        | 'ERSED'
-        | 'TERSED'
-        | 'APD'
-        | 'HDCAD'
-        | 'None'
-        | 'Tariff'
-        | 'ROTL'
-    }
     /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
       /**
-       * Format: int32
+       * Format: int64
        * @description Amount of adjustment
        */
       adjustmentValue: number
@@ -1024,14 +1168,17 @@ export interface components {
         | 'ERSED_ADJUSTED_TO_CONCURRENT_TERM'
         | 'ERSED_BEFORE_SENTENCE_DATE'
         | 'ERSED_ADJUSTED_TO_MTD'
-        | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_COMMENCEMENT'
+        | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_1_COMMENCEMENT'
+        | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_2_COMMENCEMENT'
+        | 'SDS_STANDARD_RELEASE_APPLIES'
+        | 'SDS_EARLY_RELEASE_APPLIES'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
         [key: string]: components['schemas']['AdjustmentDuration']
       }
       /**
-       * Format: int32
+       * Format: int64
        * @description Amount of adjustment in days
        */
       adjustedDays: number
@@ -1098,6 +1245,7 @@ export interface components {
         | 'None'
         | 'Tariff'
         | 'ROTL'
+        | 'HDCED4PLUS'
       description: string
       /** Format: date */
       date: string
@@ -1134,7 +1282,7 @@ export interface components {
       bookingId: number
       prisonerId: string
       /** @enum {string} */
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST'
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL'
       /** Format: uuid */
       calculationReference: string
       calculationReason?: components['schemas']['CalculationReason']
@@ -1945,6 +2093,41 @@ export interface operations {
     }
   }
   /**
+   * Calculate release dates for a prisoner - used explicitly by the record-a-recall service, this does not publish to NOMIS
+   * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a transitory calculation that will not be published to NOMIS
+   */
+  calculateForRecall: {
+    parameters: {
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+    }
+    responses: {
+      /** @description Returns calculated dates */
+      200: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+    }
+  }
+  /**
    * Calculate release dates and persist the results for a prisoners latest booking
    * @description This endpoint will calculate release dates based on a prisoners latest booking
    */
@@ -2251,6 +2434,41 @@ export interface operations {
       401: {
         content: {
           'application/json': components['schemas']['NonFridayReleaseDay']
+        }
+      }
+    }
+  }
+  /**
+   * Determine if a booking has any recall sentences
+   * @description This endpoint will return true if a booking has any recall sentences
+   */
+  hasRecallSentences: {
+    parameters: {
+      path: {
+        /**
+         * @description The booking ID to check against
+         * @example 100001
+         */
+        bookingId: number
+      }
+    }
+    responses: {
+      /** @description Returns a boolean value */
+      200: {
+        content: {
+          'application/json': boolean
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': boolean
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': boolean
         }
       }
     }
