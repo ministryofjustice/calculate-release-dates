@@ -21,6 +21,7 @@ declare module 'express-session' {
     otherReasonDescription?: { string?: string }
     manualEntryValidationErrors?: ErrorMessages
     isAddDatesFlow?: boolean
+    manualEntryRoutingForBookings?: [string]
   }
 }
 
