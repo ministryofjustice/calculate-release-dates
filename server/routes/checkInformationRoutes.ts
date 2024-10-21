@@ -80,10 +80,12 @@ export default class CheckInformationRoutes {
 
     const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
     if (errors.messages.length > 0) {
-      if (
-        errors.messageType === ErrorMessageType.UNSUPPORTED_SDS40_SENTENCE ||
-        errors.messageType === ErrorMessageType.UNSUPPORTED_SDS40_CONSECUTIVE_SDS
-      ) {
+      if (errors.messageType === ErrorMessageType.MANUAL_ENTRY_JOURNEY_REQUIRED) {
+        if (req.session.manualEntryRoutingForBookings === undefined) {
+          req.session.manualEntryRoutingForBookings = [nomsId]
+        } else {
+          req.session.manualEntryRoutingForBookings.push(nomsId)
+        }
         return res.redirect(`/calculation/${nomsId}/manual-entry`)
       }
       return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)

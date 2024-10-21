@@ -85,6 +85,9 @@ const expectedMiniProfile = {
 let fakeApi: nock.Scope
 beforeEach(() => {
   sessionSetup = new SessionSetup()
+  sessionSetup.sessionDoctor = req => {
+    req.session.manualEntryRoutingForBookings = []
+  }
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
   fakeApi.get('/reference-data/date-type', '').reply(200, testDateTypeDefinitions).persist()
@@ -170,6 +173,49 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry',
         )
+      })
+  })
+
+  it('GET if postCalculationValidationRedirect is set', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
+
+    sessionSetup.sessionDoctor = req => {
+      req.session.manualEntryRoutingForBookings = ['A1234AA']
+    }
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Manual calculation required')
+        expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry',
+        )
+      })
+  })
+
+  it('GET if nomisId is not in the manual redirect list redirect to check information', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
+
+    sessionSetup.sessionDoctor = req => {
+      req.session.manualEntryRoutingForBookings = ['A9999999']
+    }
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry')
+      .expect(302)
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+        expect(res.headers.location).toBe('/calculation/A1234AA/check-information')
       })
   })
 
@@ -330,6 +376,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
           date: { day: 3, month: 3, year: 2017 },
         } as ManualEntrySelectedDate,
       ]
+      req.session.manualEntryRoutingForBookings = []
     }
 
     return request(app)
@@ -362,6 +409,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
           date: { day: 3, month: 3, year: 2017 },
         } as ManualEntrySelectedDate,
       ]
+      req.session.manualEntryRoutingForBookings = []
     }
     jest.spyOn(manualEntryService, 'getNextDateToEnter').mockReturnValue({
       dateType: 'CRD',
@@ -401,6 +449,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
           date: { day: 3, month: 3, year: 2017 },
         } as ManualEntrySelectedDate,
       ]
+      req.session.manualEntryRoutingForBookings = []
     }
     jest.spyOn(manualEntryService, 'getNextDateToEnter').mockReturnValue({
       dateType: 'CRD',
@@ -433,6 +482,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
+      req.session.manualEntryRoutingForBookings = []
     }
 
     jest.spyOn(manualEntryService, 'storeDate').mockReturnValue({
@@ -511,6 +561,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
+      req.session.manualEntryRoutingForBookings = []
     }
     return request(app)
       .post('/calculation/A1234AA/manual-entry/no-dates-confirmation')
@@ -542,6 +593,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
           date: { day: 3, month: 3, year: 2017 },
         } as ManualEntrySelectedDate,
       ]
+      req.session.manualEntryRoutingForBookings = []
     }
     return request(app)
       .get('/calculation/A1234AA/manual-entry/remove-date?dateType=CRD')

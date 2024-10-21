@@ -1230,7 +1230,7 @@ describe('Check information routes tests', () => {
       userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
       calculateReleaseDatesService.validateBackend.mockReturnValue({
         messages: [{ text: 'SDS40 Unsupported recall type' }],
-        messageType: ErrorMessageType.UNSUPPORTED_SDS40_SENTENCE,
+        messageType: ErrorMessageType.MANUAL_ENTRY_JOURNEY_REQUIRED,
       } as never)
 
       return request(app)
@@ -1252,7 +1252,7 @@ describe('Check information routes tests', () => {
       userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
       calculateReleaseDatesService.validateBackend.mockReturnValue({
         messages: [{ text: 'SDS40 Unsupported Consecutive Sentence After Tranche Commencement' }],
-        messageType: ErrorMessageType.UNSUPPORTED_SDS40_CONSECUTIVE_SDS,
+        messageType: ErrorMessageType.MANUAL_ENTRY_JOURNEY_REQUIRED,
       } as never)
 
       return request(app)
