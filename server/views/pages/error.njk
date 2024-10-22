@@ -76,8 +76,14 @@
 
                     <p class="govuk-body">If you pasted the web address, check you copied it correctly.</p>
 
-          <p class="govuk-body">Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>
-              if you need support.</p>
+                    <p class="govuk-body">Email
+                        {{ createSupportLink({
+                            emailAddress: 'calculatereleasedates@digital.justice.gov.uk',
+                            linkText: 'calculatereleasedates@digital.justice.gov.uk',
+                            emailSubjectText: 'Calculate release dates - Page not found'
+                        }) | safe }}
+                        if you need support.
+                    </p>
         {% else %}
           <h1>{{ message }}</h1>
           <h2>{{ status }}</h2>

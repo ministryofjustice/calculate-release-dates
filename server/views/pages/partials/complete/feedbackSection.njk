@@ -5,7 +5,12 @@
     <span>This is a new service. Your feedback will help make it better. To give feedback you can:</span>
     <ul class="govuk-list govuk-!-margin-top-2">
       <li><a target="_blank" title="Provide feedback, opens in a new tab" href="https://eu.surveymonkey.com/r/Calculatereleasedatesfeedback">Complete a short survey</a></li>
-      <li><a title="Email your report of a specific problem" href="mailto:calculatereleasedates@digital.justice.gov.uk">Report a specific problem by email</a></li>
+      <li>
+        {{ createSupportLink({
+          linkText: 'Report a specific problem by email',
+          emailSubjectText: 'Calculate release dates - Improve this service - Specific issue'
+        }) | safe }}
+      </li>
     </ul>
   </div>
 </div>

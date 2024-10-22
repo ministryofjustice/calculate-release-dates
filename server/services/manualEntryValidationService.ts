@@ -1,3 +1,5 @@
+import { createSupportLink } from '../utils/utils'
+
 const illegalPairs: Pair[] = [
   {
     left: 'CRD',
@@ -37,8 +39,13 @@ const illegalPairs: Pair[] = [
   } as Pair,
 ]
 const errorStart = 'The following release dates cannot be selected together:'
-const errorEnd =
-  'Reselect your dates or <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate%20release%20dates%20-%20Support">contact the Calculate release dates team</a> for support.'
+const errorEnd = createSupportLink({
+  prefixText: 'You must reselect the dates, or if you need help, ',
+  linkText: 'contact the Specialist support team',
+  suffixText: ' for support.',
+  emailSubjectText: 'Calculate release dates - Manual Entry - Incompatible Dates',
+})
+
 export default class ManualEntryValidationService {
   public validatePairs(dates: string[]): string {
     if (dates === null || dates === undefined) {
