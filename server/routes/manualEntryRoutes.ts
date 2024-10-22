@@ -62,16 +62,16 @@ export default class ManualEntryRoutes {
     bookingId: number,
     req: Request,
   ) {
-    if (req.session.manualEntryRoutingForBookings !== undefined) {
-      if (req.session.manualEntryRoutingForBookings.includes(nomsId) === false) {
-        const unsupportedSentenceOrCalculationMessages =
-          await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+    if (
+      req.session.manualEntryRoutingForBookings === undefined ||
+      req.session.manualEntryRoutingForBookings.includes(nomsId) === false
+    ) {
+      const unsupportedSentenceOrCalculationMessages =
+        await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+      const hasRecallSentences = await this.manualCalculationService.hasRecallSentences(bookingId, token)
 
-        const hasRecallSentences = await this.manualCalculationService.hasRecallSentences(bookingId, token)
-
-        if (unsupportedSentenceOrCalculationMessages.length === 0 && !hasRecallSentences) {
-          return `/calculation/${nomsId}/check-information`
-        }
+      if (unsupportedSentenceOrCalculationMessages.length === 0 && !hasRecallSentences) {
+        return `/calculation/${nomsId}/check-information`
       }
     }
     return null
