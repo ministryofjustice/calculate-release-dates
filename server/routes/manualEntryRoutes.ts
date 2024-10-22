@@ -62,14 +62,16 @@ export default class ManualEntryRoutes {
     bookingId: number,
     req: Request,
   ) {
-    if (!req.session.manualEntryRoutingForBookings.includes(nomsId)) {
-      const unsupportedSentenceOrCalculationMessages =
-        await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+    if (req.session.manualEntryRoutingForBookings !== undefined) {
+      if (req.session.manualEntryRoutingForBookings.includes(nomsId) === false) {
+        const unsupportedSentenceOrCalculationMessages =
+          await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
 
-      const hasRecallSentences = await this.manualCalculationService.hasRecallSentences(bookingId, token)
+        const hasRecallSentences = await this.manualCalculationService.hasRecallSentences(bookingId, token)
 
-      if (unsupportedSentenceOrCalculationMessages.length === 0 && !hasRecallSentences) {
-        return `/calculation/${nomsId}/check-information`
+        if (unsupportedSentenceOrCalculationMessages.length === 0 && !hasRecallSentences) {
+          return `/calculation/${nomsId}/check-information`
+        }
       }
     }
     return null
@@ -372,10 +374,12 @@ export default class ManualEntryRoutes {
         )
       }
       // Once the journey is completed clear down the session var that prevents the revalidation
-      req.session.manualEntryRoutingForBookings.splice(
-        req.session.manualEntryRoutingForBookings.findIndex(i => i === nomsId),
-        1,
-      )
+      if (req.session.manualEntryRoutingForBookings) {
+        req.session.manualEntryRoutingForBookings.splice(
+          req.session.manualEntryRoutingForBookings.findIndex(i => i === nomsId),
+          1,
+        )
+      }
       return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
     }
   }
