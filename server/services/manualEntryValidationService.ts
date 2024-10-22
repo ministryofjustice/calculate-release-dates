@@ -40,7 +40,7 @@ const illegalPairs: Pair[] = [
 ]
 const errorStart = 'The following release dates cannot be selected together:'
 const errorEnd = createSupportLink({
-  prefixText: 'You must re-select the dates, or if you need help, ',
+  prefixText: 'You must reselect the dates, or if you need help, ',
   linkText: 'contact the Specialist support team',
   suffixText: ' for support.',
   emailSubjectText: 'Calculate release dates - Manual Entry - Incompatible Dates',
