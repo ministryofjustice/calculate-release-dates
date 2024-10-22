@@ -1,6 +1,7 @@
 {% extends "../partials/layout.njk" %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
+
 {% set pageTitle = applicationName + " - Accessibility Statement" %}
 {% set pageId = "accessibility" %}
 
@@ -40,13 +41,23 @@
             <p class="govuk-body">The Calculate release dates service has been independently audited and is fully
                 compliant against WCAG 2.1 Level AA.</p>
             <h2 class="govuk-heading-m">Feedback and contact information</h2>
-            <p class="govuk-body">If you need information on this website in a different format, email <a
-                        href="mailto:calculatereleasedates@digital.justice.gov.uk">calculatereleasedates@digital.justice.gov.uk</a>.
-                We’ll review your request and get back to you within one working day.</p>
+            <p class="govuk-body">If you need information on this website in a different format, email
+                {{ createSupportLink({
+                    emailAddress: 'calculatereleasedates@digital.justice.gov.uk',
+                    linkText: 'calculatereleasedates@digital.justice.gov.uk',
+                    emailSubjectText: 'Request for accessible format'
+                }) | safe }}.
+                We’ll review your request and get back to you within one working day.
+            </p>
             <h2 class="govuk-heading-m">Reporting accessibility problems with this website</h2>
             <p class="govuk-body">We’re always looking to improve the accessibility of this website. If you find any
                 problems not listed on this page or think we’re not meeting accessibility requirements, contact the
-                Calculate release dates team by emailing: <a href="mailto:calculatereleasedates@digital.justice.gov.uk">calculatereleasedates@digital.justice.gov.uk</a>.
+                Calculate release dates team by emailing:
+                {{ createSupportLink({
+                    emailAddress: 'calculatereleasedates@digital.justice.gov.uk',
+                    linkText: 'calculatereleasedates@digital.justice.gov.uk',
+                    emailSubjectText: 'Accessibility issue'
+                }) | safe }}.
             </p>
             <h2 class="govuk-heading-m">Enforcement procedure</h2>
             <p class="govuk-body">The Equality and Human Rights Commission (EHRC) is responsible for enforcing the

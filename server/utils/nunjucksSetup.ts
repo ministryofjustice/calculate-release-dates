@@ -9,7 +9,7 @@ import {
   hmppsFormatDate,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import dateFilter from 'nunjucks-date-filter'
-import { hmppsDesignSystemsEnvironmentName, initialiseName } from './utils'
+import { hmppsDesignSystemsEnvironmentName, initialiseName, createSupportLink } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
@@ -78,6 +78,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('digitalPrisonServicesUrl', config.apis.digitalPrisonServices.ui_url)
   njkEnv.addGlobal('courtCasesAndReleaseDatesUrl', config.apis.courtCasesAndReleaseDatesUi.url)
   njkEnv.addGlobal('ComparisonType', ComparisonType)
+  njkEnv.addGlobal('createSupportLink', createSupportLink)
 
   njkEnv.addFilter('initialiseName', initialiseName)
 

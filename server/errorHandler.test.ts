@@ -26,7 +26,7 @@ describe('GET 404', () => {
       .expect(res => {
         expect(res.text).toContain('<pre>')
         expect(res.text).toContain(
-          'Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>',
+          'mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate%20release%20dates%20-%20Page%20not%20found',
         )
       })
   })
@@ -39,7 +39,7 @@ describe('GET 404', () => {
       .expect(res => {
         expect(res.text).not.toContain('<pre>')
         expect(res.text).toContain(
-          'Email <a href="mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate release dates - Page not found">calculatereleasedates@digital.justice.gov.uk</a>',
+          'mailto:calculatereleasedates@digital.justice.gov.uk?subject=Calculate%20release%20dates%20-%20Page%20not%20found',
         )
       })
   })

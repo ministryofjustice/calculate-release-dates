@@ -3,7 +3,12 @@
     <h2 class="govuk-heading-m">Important</h2>
     <p class="govuk-body">This service has identified one or more sentences where the release date is calculated at two thirds (SDS+).</p>
     <p class="govuk-body">Make sure a peach calculation sheet has been used to calculate the release dates.</p>
-    <p class="govuk-body">If a sentence has been incorrectly identified as SDS+, email <a href="mailto:calculatereleasedates@digital.justice.gov.uk">calculatereleasedates@digital.justice.gov.uk</a>.</p>
+    <p class="govuk-body">If a sentence has been incorrectly identified as SDS+, or if you need help,
+        {{ createSupportLink({
+            linkText: 'contact the Specialist support team',
+            emailSubjectText: 'Manage offences - SDS+ offence identification'
+        }) | safe }}.
+    </p>
 {% endset %}
 {{ mojBanner({
     type: ' ',
