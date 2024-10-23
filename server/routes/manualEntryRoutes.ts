@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express'
+import { Request, RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import ManualCalculationService from '../services/manualCalculationService'
@@ -31,7 +31,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -51,14 +56,23 @@ export default class ManualEntryRoutes {
     )
   }
 
-  private async validateUseOfManualCalculationJourneyOrRedirect(nomsId: string, token: string, bookingId: number) {
-    const unsupportedSentenceOrCalculationMessages =
-      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+  private async validateUseOfManualCalculationJourneyOrRedirect(
+    nomsId: string,
+    token: string,
+    bookingId: number,
+    req: Request,
+  ) {
+    if (
+      req.session.manualEntryRoutingForBookings === undefined ||
+      req.session.manualEntryRoutingForBookings.includes(nomsId) === false
+    ) {
+      const unsupportedSentenceOrCalculationMessages =
+        await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+      const hasRecallSentences = await this.manualCalculationService.hasRecallSentences(bookingId, token)
 
-    const hasRecallSentences = await this.manualCalculationService.hasRecallSentences(bookingId, token)
-
-    if (unsupportedSentenceOrCalculationMessages.length === 0 && !hasRecallSentences) {
-      return `/calculation/${nomsId}/check-information`
+      if (unsupportedSentenceOrCalculationMessages.length === 0 && !hasRecallSentences) {
+        return `/calculation/${nomsId}/check-information`
+      }
     }
     return null
   }
@@ -68,7 +82,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -104,7 +123,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -136,7 +160,12 @@ export default class ManualEntryRoutes {
     const { year, month, day } = req.query
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -166,7 +195,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -196,7 +230,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -213,7 +252,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -236,7 +280,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -261,7 +310,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -277,7 +331,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -314,6 +373,13 @@ export default class ManualEntryRoutes {
           } as ErrorMessages),
         )
       }
+      // Once the journey is completed clear down the session var that prevents the revalidation
+      if (req.session.manualEntryRoutingForBookings) {
+        req.session.manualEntryRoutingForBookings.splice(
+          req.session.manualEntryRoutingForBookings.findIndex(i => i === nomsId),
+          1,
+        )
+      }
       return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
     }
   }
@@ -323,7 +389,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }
@@ -339,7 +410,12 @@ export default class ManualEntryRoutes {
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(nomsId, token, prisonerDetail.bookingId)
+    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
+      nomsId,
+      token,
+      prisonerDetail.bookingId,
+      req,
+    )
     if (redirect) {
       return res.redirect(redirect)
     }

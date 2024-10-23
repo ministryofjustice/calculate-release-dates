@@ -3,349 +3,938 @@
  * Do not make direct changes to the file.
  */
 
-/** WithRequired type helpers */
-type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
-
 export interface paths {
   '/validation/{prisonerId}/full-validation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Validates that the data for the given prisoner in NOMIS can be used to calculate a release date
      * @description This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine
      */
     post: operations['validate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/unused-deductions/{prisonerId}/calculation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Calculate unused deductions. */
     post: operations['calculate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/specialist-support/genuine-override': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Store a genuine override
      * @description This endpoint will return a response model which indicates the success of storing a genuine override
      */
     post: operations['storeGenuineOverride']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/specialist-support/genuine-override/calculation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Store a genuine override
      * @description This endpoint will return a response model which indicates the success of storing a genuine override
      */
     post: operations['storeGenuineOverrideDates']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/manual-calculation/{prisonerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Store a manual calculation
      * @description This endpoint will return a response model which indicates the success of storing a manual calculation
      */
     post: operations['storeManualCalculation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List all Comparisons performed using presets
      * @description This endpoint will return all the comparisons for your caseload
      */
     get: operations['getComparisons']
+    put?: never
     /**
      * Create a record of a new calculation
      * @description This endpoint will create a new calculation and return the new calculation object
      */
     post: operations['createComparison']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison/{comparisonReference}/mismatch/{mismatchReference}/discrepancy': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns the latest discrepancy record for a comparison person
      * @description This endpoint returns the mismatch discrepancy for a particular mismatch
      */
     get: operations['getComparisonPersonDiscrepancy']
+    put?: never
     /**
      * Create a comparison person discrepancy record
      * @description This endpoint will create a new comparison person discrepancy and return a summary of it
      */
     post: operations['createComparisonPersonDiscrepancy']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison/manual': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List all comparisons which were performed manually
      * @description This endpoint will return all of the manually performed calculations recorded in the service. This is not limited by caseload, but requires the MANUAL_COMPARER role.
      */
     get: operations['getManualComparisons']
+    put?: never
     /**
      * Create a record of a new manual calculation
      * @description This endpoint will create a new manual comparison and return the new manual comparison object
      */
     post: operations['createComparison_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison/manual/{comparisonReference}/mismatch/{mismatchReference}/discrepancy': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns the latest discrepancy record for a comparison person
      * @description This endpoint returns the mismatch discrepancy for a particular mismatch
      */
     get: operations['getComparisonPersonDiscrepancy_1']
+    put?: never
     /**
      * Create a comparison person discrepancy record
      * @description This endpoint will create a new comparison person discrepancy and return a summary of it
      */
     post: operations['createComparisonPersonDiscrepancy_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/{prisonerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Calculate release dates for a prisoner - preliminary calculation, this does not publish to NOMIS
      * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS
      */
     post: operations['calculate_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/{prisonerId}/test': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Calculate release dates for a prisoner - test calculation, this does not publish to NOMIS
      * @description This endpoint will calculate release dates based on a prisoners latest booking, this can includeinactive bookings of historic prisoners. Endpoint is used to test calculations against NOMIS.
      */
     post: operations['testCalculation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/relevant-remand/{prisonerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Calculate a release date at a point in time for the relevant remand tool.
      * @description This endpoint calculates the release date of an intersecting sentence, this is needed by therelevant remand tool in order to work out remand periods.
      */
     post: operations['relevantRemandCalculation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/record-a-recall/{prisonerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Calculate release dates for a prisoner - used explicitly by the record-a-recall service, this does not publish to NOMIS
      * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a transitory calculation that will not be published to NOMIS
      */
     post: operations['calculateForRecall']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/confirm/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Calculate release dates and persist the results for a prisoners latest booking
      * @description This endpoint will calculate release dates based on a prisoners latest booking
      */
     post: operations['confirmCalculation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/working-day/previous/{date}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Find the previous working day from a given date
      * @description Finds the previous working day, adjusting for weekends and bank holidays
      */
     get: operations['previousWorkingDay']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/working-day/next/{date}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Find the next working day from a given date
      * @description Finds the next working day, adjusting for weekends and bank holidays
      */
     get: operations['nextWorkingDay']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/validation/{prisonerId}/supported-validation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Validates that the sentences for the given prisoner in NOMIS can be used to calculate a release date
      * @description This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine
      */
     get: operations['validateSupported']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/validation/{prisonerId}/manual-entry-validation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Validates that the sentences for the given prisoner in NOMIS are ok adequate to record a manual date against for unsupported types
      * @description This endpoint will validate that the data for the given prisoner in NOMIS is of sufficient quality to allow a manual date to be recorded via CRD
      */
     get: operations['validateForManualEntry']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/specialist-support/genuine-override/calculation/{calculationReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get a genuine override
      * @description This endpoint will return a response model which returns a genuine override
      */
     get: operations['getGenuineOverride']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/sentence-and-offence-information/{bookingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get sentence and offence information
      * @description This endpoint will return a response model which lists sentence and offence information. It will notify if there have been any changed since last calculation
      */
     get: operations['getSentencesAndOffences']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/reference-data/date-type': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get the date type definitions
      * @description Returns the date types and their definitions
      */
     get: operations['getDateTypeDefinitions']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/non-friday-release/{date}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Find the non friday release day from a given date
      * @description Finds the non friday release day, adjusting for weekends and bank holidays
      */
     get: operations['nonFridayReleaseDay']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/manual-calculation/{bookingId}/has-recall-sentences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Determine if a booking has any recall sentences
      * @description This endpoint will return true if a booking has any recall sentences
      */
     get: operations['hasRecallSentences']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/manual-calculation/{bookingId}/has-indeterminate-sentences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Determine if a booking has any indeterminate sentences
      * @description This endpoint will return true if a booking has any indeterminate sentences
      */
     get: operations['hasIndeterminateSentences']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/historicCalculations/{nomsId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get historic calculations for a prisoner
      * @description This endpoint will return a list of calculations performed for a given prisoner
      */
     get: operations['getCalculationResults']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison/{comparisonReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns the people for a particular caseload
      * @description This endpoint return the people associated to a specific comparison
      */
     get: operations['getComparisonByShortReference']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison/{comparisonReference}/mismatch/{mismatchReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns the mismatch for a particular comparison
      * @description This endpoint return the mismatch for a particular comparison
      */
     get: operations['getComparisonMismatchByShortReference']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison/{comparisonReference}/count': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns a count of the number of people compared for a particular caseload
      * @description This endpoint will count all the people associated to a specific comparison
      */
     get: operations['getCountOfPersonsInComparison']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison/manual/{comparisonReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns the people for a particular caseload
      * @description This endpoint return the people associated to a specific comparison
      */
     get: operations['getComparisonByShortReference_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison/manual/{comparisonReference}/mismatch/{mismatchReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns the mismatch for a particular comparison
      * @description This endpoint return the mismatch for a particular comparison
      */
     get: operations['getManualComparisonMismatchByShortReference']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/comparison/manual/{comparisonReference}/count': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns a count of the number of people compared for a particular caseload
      * @description This endpoint will count all the people associated to a specific comparison
      */
     get: operations['getCountOfPersonsInComparison_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculationReference/{calculationReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get release dates for a calculationRequestId
      * @description This endpoint will return the release dates based on a calculationRequestId
      */
     get: operations['getCalculationResults_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/{prisonerId}/latest': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get latest release dates for a prisoner
      * @description This endpoint will return the latest release dates for a prisoner. They may come from CRDS or NOMIS as identified by the source in the results.
      */
     get: operations['getLatestCalculation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/sentence-and-offences/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get sentences and offences for a calculationRequestId
      * @description This endpoint will return the sentences and offences based on a calculationRequestId
      */
     get: operations['getSentencesAndOffence']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/return-to-custody/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get return to custody date for a calculationRequestId
      * @description This endpoint will return the return to custody date based on a calculationRequestId
      */
     get: operations['getReturnToCustodyDate']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/results/{prisonerId}/{bookingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get confirmed release dates for a prisoner's specific booking
      * @description This endpoint will return the confirmed release dates based on a prisoners booking
      */
     get: operations['getConfirmedCalculationResults']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/results/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get release dates for a calculationRequestId
      * @description This endpoint will return the release dates based on a calculationRequestId
      */
     get: operations['getCalculationResults_2']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/release-dates/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get release dates summary for a calculation request id
      * @description This endpoint will return the list of release dates based on a calculation request id
      */
     get: operations['getKeyDatesForABooking']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/prisoner-details/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get prisoner details for a calculationRequestId
      * @description This endpoint will return the prisoner details based on a calculationRequestId
      */
     get: operations['getPrisonerDetails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/nomis-calculation-summary/{offenderSentCalculationId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get Nomis calculation summary with release dates for a offenderSentCalculationId
      * @description This endpoint will return the nomis calculation summary with release dates based on a offenderSentCalculationId
      */
     get: operations['getNomisCalculationSummary']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/detailed-results/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get release dates for a calculationRequestId with additional details
      * @description This endpoint will return the release dates based on a calculationRequestId along with hints and full descriptions.
      */
     get: operations['getDetailedResults']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/calculation-user-input/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get user input for a calculationRequestId
      * @description This endpoint will return the user input based on a calculationRequestId
      */
     get: operations['getCalculationInput']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/breakdown/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get breakdown for a calculationRequestId
      * @description This endpoint will return the breakdown based on a calculationRequestId
      */
     get: operations['getCalculationBreakdown']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation/adjustments/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get adjustments for a calculationRequestId
      * @description This endpoint will return the adjustments based on a calculationRequestId
      */
     get: operations['get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/calculation-reasons/': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     get: operations['getActiveCalculationReasons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/booking-and-sentence-adjustments/{bookingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get booking and sentence adjusments
      * @description This endpoint will return a response model which shows booking and sentence adjustments. It will notify if there are new adjustments since last calculation
      */
     get: operations['getBookingAndSentenceAdjustments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     /** @description List of sentences and the users input for each sentence */
@@ -383,7 +972,6 @@ export interface components {
         | 'A_FINE_SENTENCE_WITH_PAYMENTS'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED_REMAND'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED_TAGGED_BAIL'
-        | 'DTO_RECALL'
         | 'DTO_CONSECUTIVE_TO_SENTENCE'
         | 'DTO_HAS_SENTENCE_CONSECUTIVE_TO_IT'
         | 'EDS18_EDS21_EDSU18_SENTENCE_TYPE_INCORRECT'
@@ -418,14 +1006,16 @@ export interface components {
         | 'SENTENCE_HAS_NO_LICENCE_TERM'
         | 'SOPC18_SOPC21_SENTENCE_TYPE_INCORRECT'
         | 'SOPC_LICENCE_TERM_NOT_12_MONTHS'
+        | 'SDS_TORERA_EXCLUSION'
+        | 'SOPC_TORERA_EXCLUSION'
         | 'UNSUPPORTED_ADJUSTMENT_LAWFULLY_AT_LARGE'
         | 'UNSUPPORTED_ADJUSTMENT_SPECIAL_REMISSION'
+        | 'UNSUPPORTED_DTO_RECALL_SEC104_SEC105'
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'ZERO_IMPRISONMENT_TERM'
         | 'UNSUPPORTED_CALCULATION_DTO_WITH_RECALL'
         | 'PRE_PCSC_DTO_WITH_ADJUSTMENT'
         | 'BOTUS_CONSECUTIVE_OR_CONCURRENT_TO_OTHER_SENTENCE'
-        | 'SDS_EARLY_RELEASE_UNSUPPORTED'
         | 'UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE'
         | 'UNSUPPORTED_SDS40_CONSECUTIVE_SDS_BETWEEN_TRANCHE_COMMENCEMENTS'
         | 'UNSUPPORTED_OFFENCE_ENCOURAGING_OR_ASSISTING'
@@ -440,8 +1030,7 @@ export interface components {
         | 'VALIDATION'
         | 'UNSUPPORTED_OFFENCE'
         | 'SUSPENDED_OFFENCE'
-        | 'UNSUPPORTED_SDS40_SENTENCE'
-        | 'UNSUPPORTED_SDS40_CONSECUTIVE_SDS'
+        | 'MANUAL_ENTRY_JOURNEY_REQUIRED'
     }
     AdjustmentServiceAdjustment: {
       /** Format: uuid */
@@ -649,15 +1238,18 @@ export interface components {
       calculationReasonId: number
       otherReasonDescription?: string
     }
-    AFineSentence: WithRequired<
-      {
-        type: 'AFineSentence'
-      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
-          duration?: components['schemas']['Duration']
-          fineAmount?: number
-        },
-      'consecutiveSentenceUUIDs' | 'duration' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
-    >
+    AFineSentence: {
+      type: 'AFineSentence'
+    } & (Omit<
+      WithRequired<
+        components['schemas']['AbstractSentence'],
+        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
+      >,
+      'type'
+    > & {
+      duration: components['schemas']['Duration']
+      fineAmount?: number
+    })
     AbstractSentence: {
       offence: components['schemas']['Offence']
       /** Format: date */
@@ -708,18 +1300,21 @@ export interface components {
       bookingId: number
       historicalTusedData?: components['schemas']['HistoricalTusedData']
     }
-    BotusSentence: WithRequired<
-      {
-        type: 'BotusSentence'
-      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
-          duration?: components['schemas']['Duration']
-          /** Format: date */
-          latestTusedDate?: string
-          /** @enum {string} */
-          latestTusedSource?: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
-        },
-      'consecutiveSentenceUUIDs' | 'duration' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
-    >
+    BotusSentence: {
+      type: 'BotusSentence'
+    } & (Omit<
+      WithRequired<
+        components['schemas']['AbstractSentence'],
+        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
+      >,
+      'type'
+    > & {
+      duration: components['schemas']['Duration']
+      /** Format: date */
+      latestTusedDate?: string
+      /** @enum {string} */
+      latestTusedSource?: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
+    })
     CalculatedReleaseDates: {
       dates: {
         [key: string]: string
@@ -795,36 +1390,35 @@ export interface components {
       isOther: boolean
       displayName: string
     }
-    DetentionAndTrainingOrderSentence: WithRequired<
-      {
-        type: 'DetentionAndTrainingOrderSentence'
-      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
-          duration?: components['schemas']['Duration']
-        },
-      'consecutiveSentenceUUIDs' | 'duration' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
-    >
+    DetentionAndTrainingOrderSentence: {
+      type: 'DetentionAndTrainingOrderSentence'
+    } & (Omit<
+      WithRequired<
+        components['schemas']['AbstractSentence'],
+        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
+      >,
+      'type'
+    > & {
+      duration: components['schemas']['Duration']
+    })
     Duration: {
       durationElements: {
         [key: string]: number
       }
     }
-    ExtendedDeterminateSentence: WithRequired<
-      {
-        type: 'ExtendedDeterminateSentence'
-      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
-          custodialDuration?: components['schemas']['Duration']
-          extensionDuration?: components['schemas']['Duration']
-          automaticRelease?: boolean
-        },
-      | 'automaticRelease'
-      | 'consecutiveSentenceUUIDs'
-      | 'custodialDuration'
-      | 'extensionDuration'
-      | 'identifier'
-      | 'isSDSPlus'
-      | 'offence'
-      | 'sentencedAt'
-    >
+    ExtendedDeterminateSentence: {
+      type: 'ExtendedDeterminateSentence'
+    } & (Omit<
+      WithRequired<
+        components['schemas']['AbstractSentence'],
+        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
+      >,
+      'type'
+    > & {
+      custodialDuration: components['schemas']['Duration']
+      extensionDuration: components['schemas']['Duration']
+      automaticRelease: boolean
+    })
     FixedTermRecallDetails: {
       /** Format: int64 */
       bookingId: number
@@ -850,45 +1444,32 @@ export interface components {
       dateOfBirth: string
       isActiveSexOffender: boolean
     }
-    SopcSentence: WithRequired<
-      {
-        type: 'SopcSentence'
-      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
-          custodialDuration?: components['schemas']['Duration']
-          extensionDuration?: components['schemas']['Duration']
-          sdopcu18?: boolean
-        },
-      | 'consecutiveSentenceUUIDs'
-      | 'custodialDuration'
-      | 'extensionDuration'
-      | 'identifier'
-      | 'isSDSPlus'
-      | 'offence'
-      | 'sdopcu18'
-      | 'sentencedAt'
-    >
-    StandardDeterminateSentence: WithRequired<
-      {
-        type: 'StandardDeterminateSentence'
-      } & Omit<components['schemas']['AbstractSentence'], 'type'> & {
-          duration?: components['schemas']['Duration']
-          /** @enum {string} */
-          hasAnSDSEarlyReleaseExclusion?:
-            | 'SEXUAL'
-            | 'VIOLENT'
-            | 'DOMESTIC_ABUSE'
-            | 'NATIONAL_SECURITY'
-            | 'TERRORISM'
-            | 'NO'
-        },
-      | 'consecutiveSentenceUUIDs'
-      | 'duration'
-      | 'hasAnSDSEarlyReleaseExclusion'
-      | 'identifier'
-      | 'isSDSPlus'
-      | 'offence'
-      | 'sentencedAt'
-    >
+    SopcSentence: {
+      type: 'SopcSentence'
+    } & (Omit<
+      WithRequired<
+        components['schemas']['AbstractSentence'],
+        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
+      >,
+      'type'
+    > & {
+      custodialDuration: components['schemas']['Duration']
+      extensionDuration: components['schemas']['Duration']
+      sdopcu18: boolean
+    })
+    StandardDeterminateSentence: {
+      type: 'StandardDeterminateSentence'
+    } & (Omit<
+      WithRequired<
+        components['schemas']['AbstractSentence'],
+        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
+      >,
+      'type'
+    > & {
+      duration: components['schemas']['Duration']
+      /** @enum {string} */
+      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'TERRORISM' | 'NO'
+    })
     CalculationResults: {
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
       validationMessages: components['schemas']['ValidationMessage'][]
@@ -1145,15 +1726,13 @@ export interface components {
       /**
        * @description Calculation rules used to determine this calculation.
        * @example [
-       *   'HDCED_GE_MIN_PERIOD_LT_MIDPOINT'
-       * ]
+       *       'HDCED_GE_MIN_PERIOD_LT_MIDPOINT'
+       *     ]
        */
       rules: (
         | 'HDCED_GE_MIN_PERIOD_LT_MIDPOINT'
         | 'HDCED_GE_MIDPOINT_LT_MAX_PERIOD'
         | 'HDCED_MINIMUM_CUSTODIAL_PERIOD'
-        | 'CONSECUTIVE_SENTENCE_HDCED_MINIMUM_CUSTODIAL_PERIOD'
-        | 'CONSECUTIVE_SENTENCE_HDCED_CALCULATION'
         | 'TUSED_LICENCE_PERIOD_LT_1Y'
         | 'LED_CONSEC_ORA_AND_NON_ORA'
         | 'UNUSED_ADA'
@@ -1497,18 +2076,12 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
-export type external = Record<string, never>
-
 export interface operations {
-  /**
-   * Validates that the data for the given prisoner in NOMIS can be used to calculate a release date
-   * @description This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine
-   */
   validate: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The prisoners ID (aka nomsId)
@@ -1516,6 +2089,7 @@ export interface operations {
          */
         prisonerId: string
       }
+      cookie?: never
     }
     requestBody?: {
       content: {
@@ -1525,27 +2099,37 @@ export interface operations {
     responses: {
       /** @description Validation job has run successfully, the response indicates if there are any errors */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
         }
       }
     }
   }
-  /** Calculate unused deductions. */
   calculate: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The prisoners ID (aka nomsId)
@@ -1553,6 +2137,7 @@ export interface operations {
          */
         prisonerId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1562,29 +2147,40 @@ export interface operations {
     responses: {
       /** @description Calculated */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['UnusedDeductionCalculationResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['UnusedDeductionCalculationResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['UnusedDeductionCalculationResponse']
         }
       }
     }
   }
-  /**
-   * Store a genuine override
-   * @description This endpoint will return a response model which indicates the success of storing a genuine override
-   */
   storeGenuineOverride: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['GenuineOverrideRequest']
@@ -1593,29 +2189,40 @@ export interface operations {
     responses: {
       /** @description Returns a GenuineOverrideResponse */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideResponse']
         }
       }
     }
   }
-  /**
-   * Store a genuine override
-   * @description This endpoint will return a response model which indicates the success of storing a genuine override
-   */
   storeGenuineOverrideDates: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['GenuineOverrideDateRequest']
@@ -1624,33 +2231,41 @@ export interface operations {
     responses: {
       /** @description Returns a GenuineOverrideResponse */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideDateResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideDateResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideDateResponse']
         }
       }
     }
   }
-  /**
-   * Store a manual calculation
-   * @description This endpoint will return a response model which indicates the success of storing a manual calculation
-   */
   storeManualCalculation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonerId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1660,59 +2275,79 @@ export interface operations {
     responses: {
       /** @description Returns a ManualCalculationResponse */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ManualCalculationResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ManualCalculationResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ManualCalculationResponse']
         }
       }
     }
   }
-  /**
-   * List all Comparisons performed using presets
-   * @description This endpoint will return all the comparisons for your caseload
-   */
   getComparisons: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Returns a list of comparisons Comparison */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
     }
   }
-  /**
-   * Create a record of a new calculation
-   * @description This endpoint will create a new calculation and return the new calculation object
-   */
   createComparison: {
     parameters: {
+      query?: never
       header: {
         Authorization: string
       }
+      path?: never
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1722,30 +2357,37 @@ export interface operations {
     responses: {
       /** @description Returns a new Comparison */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Comparison']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Comparison']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Comparison']
         }
       }
     }
   }
-  /**
-   * Returns the latest discrepancy record for a comparison person
-   * @description This endpoint returns the mismatch discrepancy for a particular mismatch
-   */
   getComparisonPersonDiscrepancy: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -1758,34 +2400,43 @@ export interface operations {
          */
         mismatchReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a summary of a comparison person discrepancy */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
     }
   }
-  /**
-   * Create a comparison person discrepancy record
-   * @description This endpoint will create a new comparison person discrepancy and return a summary of it
-   */
   createComparisonPersonDiscrepancy: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -1798,6 +2449,7 @@ export interface operations {
          */
         mismatchReference: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1807,59 +2459,79 @@ export interface operations {
     responses: {
       /** @description New discrepancy created and summary returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
     }
   }
-  /**
-   * List all comparisons which were performed manually
-   * @description This endpoint will return all of the manually performed calculations recorded in the service. This is not limited by caseload, but requires the MANUAL_COMPARER role.
-   */
   getManualComparisons: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Returns a list of comparisons Comparison */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonSummary'][]
         }
       }
     }
   }
-  /**
-   * Create a record of a new manual calculation
-   * @description This endpoint will create a new manual comparison and return the new manual comparison object
-   */
   createComparison_1: {
     parameters: {
+      query?: never
       header: {
         Authorization: string
       }
+      path?: never
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1869,30 +2541,37 @@ export interface operations {
     responses: {
       /** @description Returns a new Comparison */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Comparison']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Comparison']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Comparison']
         }
       }
     }
   }
-  /**
-   * Returns the latest discrepancy record for a comparison person
-   * @description This endpoint returns the mismatch discrepancy for a particular mismatch
-   */
   getComparisonPersonDiscrepancy_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -1905,34 +2584,43 @@ export interface operations {
          */
         mismatchReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a summary of a comparison person discrepancy */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
     }
   }
-  /**
-   * Create a comparison person discrepancy record
-   * @description This endpoint will create a new comparison person discrepancy and return a summary of it
-   */
   createComparisonPersonDiscrepancy_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -1945,6 +2633,7 @@ export interface operations {
          */
         mismatchReference: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1954,30 +2643,37 @@ export interface operations {
     responses: {
       /** @description New discrepancy created and summary returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonDiscrepancySummary']
         }
       }
     }
   }
-  /**
-   * Calculate release dates for a prisoner - preliminary calculation, this does not publish to NOMIS
-   * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a PRELIMINARY calculation that will not be published to NOMIS
-   */
   calculate_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The prisoners ID (aka nomsId)
@@ -1985,6 +2681,7 @@ export interface operations {
          */
         prisonerId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -1994,30 +2691,37 @@ export interface operations {
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
   }
-  /**
-   * Calculate release dates for a prisoner - test calculation, this does not publish to NOMIS
-   * @description This endpoint will calculate release dates based on a prisoners latest booking, this can includeinactive bookings of historic prisoners. Endpoint is used to test calculations against NOMIS.
-   */
   testCalculation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The prisoners ID (aka nomsId)
@@ -2025,6 +2729,7 @@ export interface operations {
          */
         prisonerId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -2034,30 +2739,37 @@ export interface operations {
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationResults']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationResults']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationResults']
         }
       }
     }
   }
-  /**
-   * Calculate a release date at a point in time for the relevant remand tool.
-   * @description This endpoint calculates the release date of an intersecting sentence, this is needed by therelevant remand tool in order to work out remand periods.
-   */
   relevantRemandCalculation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The prisoners ID (aka nomsId)
@@ -2065,6 +2777,7 @@ export interface operations {
          */
         prisonerId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -2074,30 +2787,37 @@ export interface operations {
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['RelevantRemandCalculationResult']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['RelevantRemandCalculationResult']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['RelevantRemandCalculationResult']
         }
       }
     }
   }
-  /**
-   * Calculate release dates for a prisoner - used explicitly by the record-a-recall service, this does not publish to NOMIS
-   * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a transitory calculation that will not be published to NOMIS
-   */
   calculateForRecall: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The prisoners ID (aka nomsId)
@@ -2105,37 +2825,56 @@ export interface operations {
          */
         prisonerId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+      /** @description Unprocessable request, the existing data cannot be used to perform a calculation */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
   }
-  /**
-   * Calculate release dates and persist the results for a prisoners latest booking
-   * @description This endpoint will calculate release dates based on a prisoners latest booking
-   */
   confirmCalculation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         calculationRequestId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -2145,42 +2884,55 @@ export interface operations {
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description No calculation exists for the passed calculationRequestId or the write to NOMIS has failed */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description The booking data that was used for the preliminary calculation has changed */
       412: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
   }
-  /**
-   * Find the previous working day from a given date
-   * @description Finds the previous working day, adjusting for weekends and bank holidays
-   */
   previousWorkingDay: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The date to adjust
@@ -2188,34 +2940,43 @@ export interface operations {
          */
         date: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns previous working day */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['WorkingDay']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['WorkingDay']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['WorkingDay']
         }
       }
     }
   }
-  /**
-   * Find the next working day from a given date
-   * @description Finds the next working day, adjusting for weekends and bank holidays
-   */
   nextWorkingDay: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The date to adjust
@@ -2223,34 +2984,43 @@ export interface operations {
          */
         date: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns next working day */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['WorkingDay']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['WorkingDay']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['WorkingDay']
         }
       }
     }
   }
-  /**
-   * Validates that the sentences for the given prisoner in NOMIS can be used to calculate a release date
-   * @description This endpoint will validate that the data for the given prisoner in NOMIS can be supported by the calculate release dates engine
-   */
   validateSupported: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The prisoners ID (aka nomsId)
@@ -2258,34 +3028,43 @@ export interface operations {
          */
         prisonerId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Validation job has run successfully, the response indicates if there are any errors */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
         }
       }
     }
   }
-  /**
-   * Validates that the sentences for the given prisoner in NOMIS are ok adequate to record a manual date against for unsupported types
-   * @description This endpoint will validate that the data for the given prisoner in NOMIS is of sufficient quality to allow a manual date to be recorded via CRD
-   */
   validateForManualEntry: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The prisoners ID (aka nomisId)
@@ -2293,122 +3072,161 @@ export interface operations {
          */
         prisonerId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Validation job has run successfully, the response indicates if there are any errors */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
         }
       }
     }
   }
-  /**
-   * Get a genuine override
-   * @description This endpoint will return a response model which returns a genuine override
-   */
   getGenuineOverride: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         calculationReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a GenuineOverrideResponse */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideResponse']
         }
       }
       /** @description Not Found, a genuine override doesn't exist for the calculation reference */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GenuineOverrideResponse']
         }
       }
     }
   }
-  /**
-   * Get sentence and offence information
-   * @description This endpoint will return a response model which lists sentence and offence information. It will notify if there have been any changed since last calculation
-   */
   getSentencesAndOffences: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a List<AnalyzedSentenceAndOffences */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AnalysedSentenceAndOffence'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AnalysedSentenceAndOffence'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AnalysedSentenceAndOffence'][]
         }
       }
     }
   }
-  /**
-   * Get the date type definitions
-   * @description Returns the date types and their definitions
-   */
   getDateTypeDefinitions: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Returns the date types and their definitions */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['DateTypeDefinition'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['DateTypeDefinition'][]
         }
       }
     }
   }
-  /**
-   * Find the non friday release day from a given date
-   * @description Finds the non friday release day, adjusting for weekends and bank holidays
-   */
   nonFridayReleaseDay: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The date to adjust
@@ -2416,34 +3234,43 @@ export interface operations {
          */
         date: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns non friday release day */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['NonFridayReleaseDay']
         }
       }
       /** @description Bad Request */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['NonFridayReleaseDay']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['NonFridayReleaseDay']
         }
       }
     }
   }
-  /**
-   * Determine if a booking has any recall sentences
-   * @description This endpoint will return true if a booking has any recall sentences
-   */
   hasRecallSentences: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The booking ID to check against
@@ -2451,34 +3278,43 @@ export interface operations {
          */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a boolean value */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': boolean
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': boolean
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': boolean
         }
       }
     }
   }
-  /**
-   * Determine if a booking has any indeterminate sentences
-   * @description This endpoint will return true if a booking has any indeterminate sentences
-   */
   hasIndeterminateSentences: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The booking ID to check against
@@ -2486,34 +3322,43 @@ export interface operations {
          */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a boolean value */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': boolean
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': boolean
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': boolean
         }
       }
     }
   }
-  /**
-   * Get historic calculations for a prisoner
-   * @description This endpoint will return a list of calculations performed for a given prisoner
-   */
   getCalculationResults: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The nomsId of the prisoner
@@ -2521,40 +3366,52 @@ export interface operations {
          */
         nomsId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns historic calculations */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['HistoricCalculation'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['HistoricCalculation'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['HistoricCalculation'][]
         }
       }
       /** @description This prisoner id does not exist */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['HistoricCalculation'][]
         }
       }
     }
   }
-  /**
-   * Returns the people for a particular caseload
-   * @description This endpoint return the people associated to a specific comparison
-   */
   getComparisonByShortReference: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -2562,34 +3419,43 @@ export interface operations {
          */
         comparisonReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a list of comparisons Comparison */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonOverview']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonOverview']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonOverview']
         }
       }
     }
   }
-  /**
-   * Returns the mismatch for a particular comparison
-   * @description This endpoint return the mismatch for a particular comparison
-   */
   getComparisonMismatchByShortReference: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -2602,34 +3468,43 @@ export interface operations {
          */
         mismatchReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a details of a comparison mismatch */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonPersonOverview']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonPersonOverview']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonPersonOverview']
         }
       }
     }
   }
-  /**
-   * Returns a count of the number of people compared for a particular caseload
-   * @description This endpoint will count all the people associated to a specific comparison
-   */
   getCountOfPersonsInComparison: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -2637,34 +3512,43 @@ export interface operations {
          */
         comparisonReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a list of comparisons Comparison */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': number
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': number
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': number
         }
       }
     }
   }
-  /**
-   * Returns the people for a particular caseload
-   * @description This endpoint return the people associated to a specific comparison
-   */
   getComparisonByShortReference_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -2672,34 +3556,43 @@ export interface operations {
          */
         comparisonReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a list of comparisons Comparison */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonOverview']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonOverview']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonOverview']
         }
       }
     }
   }
-  /**
-   * Returns the mismatch for a particular comparison
-   * @description This endpoint return the mismatch for a particular comparison
-   */
   getManualComparisonMismatchByShortReference: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -2712,34 +3605,43 @@ export interface operations {
          */
         mismatchReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a details of a comparison mismatch */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonPersonOverview']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonPersonOverview']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ComparisonPersonOverview']
         }
       }
     }
   }
-  /**
-   * Returns a count of the number of people compared for a particular caseload
-   * @description This endpoint will count all the people associated to a specific comparison
-   */
   getCountOfPersonsInComparison_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The short reference of the comparison
@@ -2747,37 +3649,45 @@ export interface operations {
          */
         comparisonReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns a list of comparisons Comparison */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': number
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': number
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': number
         }
       }
     }
   }
-  /**
-   * Get release dates for a calculationRequestId
-   * @description This endpoint will return the release dates based on a calculationRequestId
-   */
   getCalculationResults_1: {
     parameters: {
       query?: {
         checkForChange?: boolean
       }
+      header?: never
       path: {
         /**
          * @description The calculationRequestId of the results
@@ -2785,40 +3695,52 @@ export interface operations {
          */
         calculationReference: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
   }
-  /**
-   * Get latest release dates for a prisoner
-   * @description This endpoint will return the latest release dates for a prisoner. They may come from CRDS or NOMIS as identified by the source in the results.
-   */
   getLatestCalculation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The id of the prisoner
@@ -2826,40 +3748,52 @@ export interface operations {
          */
         prisonerId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['LatestCalculation']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['LatestCalculation']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['LatestCalculation']
         }
       }
       /** @description The prisoner could not be found or there are no calculations yet */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['LatestCalculation']
         }
       }
     }
   }
-  /**
-   * Get sentences and offences for a calculationRequestId
-   * @description This endpoint will return the sentences and offences based on a calculationRequestId
-   */
   getSentencesAndOffence: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The calculationRequestId of the calculation
@@ -2867,40 +3801,52 @@ export interface operations {
          */
         calculationRequestId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns sentences and offences */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
         }
       }
     }
   }
-  /**
-   * Get return to custody date for a calculationRequestId
-   * @description This endpoint will return the return to custody date based on a calculationRequestId
-   */
   getReturnToCustodyDate: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The calculationRequestId of the calculation
@@ -2908,40 +3854,52 @@ export interface operations {
          */
         calculationRequestId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns return to custody */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReturnToCustodyDate']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReturnToCustodyDate']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReturnToCustodyDate']
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReturnToCustodyDate']
         }
       }
     }
   }
-  /**
-   * Get confirmed release dates for a prisoner's specific booking
-   * @description This endpoint will return the confirmed release dates based on a prisoners booking
-   */
   getConfirmedCalculationResults: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The prisoners ID (aka nomsId)
@@ -2954,40 +3912,52 @@ export interface operations {
          */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description No confirmed calculation exists for this prisoner and booking */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
   }
-  /**
-   * Get release dates for a calculationRequestId
-   * @description This endpoint will return the release dates based on a calculationRequestId
-   */
   getCalculationResults_2: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The calculationRequestId of the results
@@ -2995,40 +3965,52 @@ export interface operations {
          */
         calculationRequestId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
     }
   }
-  /**
-   * Get release dates summary for a calculation request id
-   * @description This endpoint will return the list of release dates based on a calculation request id
-   */
   getKeyDatesForABooking: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The calculation request id of the offender
@@ -3036,40 +4018,52 @@ export interface operations {
          */
         calculationRequestId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns list of release dates based on a calculation request id */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReleaseDatesAndCalculationContext']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReleaseDatesAndCalculationContext']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReleaseDatesAndCalculationContext']
         }
       }
       /** @description No release dates exists for this calculation request id */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReleaseDatesAndCalculationContext']
         }
       }
     }
   }
-  /**
-   * Get prisoner details for a calculationRequestId
-   * @description This endpoint will return the prisoner details based on a calculationRequestId
-   */
   getPrisonerDetails: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The calculationRequestId of the calculation
@@ -3077,40 +4071,52 @@ export interface operations {
          */
         calculationRequestId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns prisoner details */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerDetails']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerDetails']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerDetails']
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerDetails']
         }
       }
     }
   }
-  /**
-   * Get Nomis calculation summary with release dates for a offenderSentCalculationId
-   * @description This endpoint will return the nomis calculation summary with release dates based on a offenderSentCalculationId
-   */
   getNomisCalculationSummary: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderSentCalculationId of the offender booking or a calculation
@@ -3118,40 +4124,52 @@ export interface operations {
          */
         offenderSentCalculationId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns Nomis calculation summary with release dates based on a offenderSentCalculationId */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['NomisCalculationSummary']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['NomisCalculationSummary']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['NomisCalculationSummary']
         }
       }
       /** @description No nomis calculation summary - release dates exists for this offenderSentCalculationId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['NomisCalculationSummary']
         }
       }
     }
   }
-  /**
-   * Get release dates for a calculationRequestId with additional details
-   * @description This endpoint will return the release dates based on a calculationRequestId along with hints and full descriptions.
-   */
   getDetailedResults: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The calculationRequestId of the results
@@ -3159,40 +4177,52 @@ export interface operations {
          */
         calculationRequestId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['DetailedCalculationResults']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['DetailedCalculationResults']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['DetailedCalculationResults']
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['DetailedCalculationResults']
         }
       }
     }
   }
-  /**
-   * Get user input for a calculationRequestId
-   * @description This endpoint will return the user input based on a calculationRequestId
-   */
   getCalculationInput: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The calculationRequestId of the calculation
@@ -3200,40 +4230,52 @@ export interface operations {
          */
         calculationRequestId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns calculation inputs */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationUserInputs']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationUserInputs']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationUserInputs']
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationUserInputs']
         }
       }
     }
   }
-  /**
-   * Get breakdown for a calculationRequestId
-   * @description This endpoint will return the breakdown based on a calculationRequestId
-   */
   getCalculationBreakdown: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The calculationRequestId of the breakdown
@@ -3241,40 +4283,52 @@ export interface operations {
          */
         calculationRequestId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns breakdown of calculated dates */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationBreakdown']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationBreakdown']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationBreakdown']
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationBreakdown']
         }
       }
     }
   }
-  /**
-   * Get adjustments for a calculationRequestId
-   * @description This endpoint will return the adjustments based on a calculationRequestId
-   */
   get: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The calculationRequestId of the calculation
@@ -3282,28 +4336,42 @@ export interface operations {
          */
         calculationRequestId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns adjustments */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BookingAndSentenceAdjustments']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BookingAndSentenceAdjustments']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BookingAndSentenceAdjustments']
         }
       }
       /** @description No calculation exists for this calculationRequestId */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BookingAndSentenceAdjustments']
         }
@@ -3311,62 +4379,93 @@ export interface operations {
     }
   }
   getActiveCalculationReasons: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Returns list of active reasons */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationReason'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationReason'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationReason'][]
         }
       }
       /** @description No active calculation reasons were found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CalculationReason'][]
         }
       }
     }
   }
-  /**
-   * Get booking and sentence adjusments
-   * @description This endpoint will return a response model which shows booking and sentence adjustments. It will notify if there are new adjustments since last calculation
-   */
   getBookingAndSentenceAdjustments: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
-      /** @description Returns a List<AnalyzedSentenceAndOffences */
+      /** @description Returns a List<AnalyzedBookingAndSentenceAdjustments */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AnalyzedBookingAndSentenceAdjustments']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AnalyzedBookingAndSentenceAdjustments']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AnalyzedBookingAndSentenceAdjustments']
         }
       }
     }
   }
+}
+type WithRequired<T, K extends keyof T> = T & {
+  [P in K]-?: T[P]
 }
