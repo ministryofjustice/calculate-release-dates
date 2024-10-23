@@ -2,6 +2,8 @@ import { Readable } from 'stream'
 import type HmppsAuthClient from '../data/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
 import {
+  PrisonApiPrison,
+  PrisonApiPrisonDetails,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiUserCaseloads,
@@ -78,5 +80,24 @@ export default class PrisonerService {
   async getReturnToCustodyDate(bookingId: number, token: string): Promise<PrisonApiReturnToCustodyDate> {
     const { returnToCustodyDate } = await new PrisonApiClient(token).getFixedTermRecallDetails(bookingId)
     return { bookingId, returnToCustodyDate } as PrisonApiReturnToCustodyDate
+  }
+
+  async getActivePrisons(token: string): Promise<PrisonApiPrison[]> {
+    return new PrisonApiClient(token).getActivePrisons()
+  }
+
+  async getPrisonsWithServiceCode(serviceCode: string): Promise<PrisonApiPrisonDetails[]> {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    return new PrisonApiClient(token).getPrisonsWithServiceCode(serviceCode)
+  }
+
+  async postServiceCodeForPrison(serviceCode: string, prisonId): Promise<PrisonApiPrisonDetails> {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    return new PrisonApiClient(token).postServiceCodeForPrison(serviceCode, prisonId)
+  }
+
+  async deleteServiceCodeForPrison(serviceCode: string, prisonId): Promise<PrisonApiPrisonDetails> {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    return new PrisonApiClient(token).deleteServiceCodeForPrison(serviceCode, prisonId)
   }
 }

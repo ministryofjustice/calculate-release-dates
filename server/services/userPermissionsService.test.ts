@@ -61,4 +61,12 @@ describe('UserPermissionService', () => {
       expect(isAllowed).toBeTruthy()
     })
   })
+  describe('allowNomisReadOnlyScreensConfigurationAccess', () => {
+    it('Test that people with ROLE_COURTCASE_RELEASEDATE_SUPPORT role are valid', async () => {
+      const isAllowed = userPermissionsService.allowNomisReadOnlyScreensConfigurationAccess([
+        AuthorisedRoles.ROLE_COURTCASE_RELEASEDATE_SUPPORT,
+      ])
+      expect(isAllowed).toBeTruthy()
+    })
+  })
 })

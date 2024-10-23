@@ -395,6 +395,44 @@ describe('Start routes tests', () => {
       })
   })
 
+  it('GET if the user does not have the ROLE_COURTCASE_RELEASEDATE_SUPPORT role the config link is not present', () => {
+    userPermissionsService.allowNomisReadOnlyScreensConfigurationAccess.mockReturnValue(false)
+
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=configure-nomis-screens-action-link]').contents().text()).not.toContain(
+          'Configure Nomis Screens',
+        )
+        expect($('[data-qa=configure-nomis-screens-action-link]').length).toStrictEqual(0)
+      })
+  })
+
+  it('GET if the user does has the ROLE_COURTCASE_RELEASEDATE_SUPPORT role the config link is present', () => {
+    userPermissionsService.allowNomisReadOnlyScreensConfigurationAccess.mockReturnValue(true)
+
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=configure-nomis-screens-action-link]').contents().text()).toStrictEqual(
+          'Configure Nomis Screens',
+        )
+        expect($('[data-qa=configure-nomis-screens-action-link]').length).toStrictEqual(1)
+      })
+  })
+
   it('GET /supported-sentences/ASD123 should return the supported sentence page', () => {
     return request(app)
       .get('/supported-sentences/ASD123')

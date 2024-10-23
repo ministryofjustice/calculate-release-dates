@@ -23,4 +23,8 @@ export default class UserPermissionsService {
   public allowSpecialistSupportFeatureAccess(roles: string[]): boolean {
     return roles.includes(AuthorisedRoles.ROLE_CRDS_GENUINE_OVERRIDES)
   }
+
+  public allowNomisReadOnlyScreensConfigurationAccess(roles: string[]): boolean {
+    return roles.includes(AuthorisedRoles.ROLE_COURTCASE_RELEASEDATE_SUPPORT)
+  }
 }

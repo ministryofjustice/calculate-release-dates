@@ -16,6 +16,9 @@ export default class StartRoutes {
   public startPage: RequestHandler = async (req, res): Promise<void> => {
     const { prisonId } = req.query as Record<string, string>
     const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
+    const allowConfigurationAccess = this.userPermissionsService.allowNomisReadOnlyScreensConfigurationAccess(
+      res.locals.user.userRoles,
+    )
     if (prisonId) {
       const { caseloads, token } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, caseloads, token)
@@ -37,6 +40,7 @@ export default class StartRoutes {
           calculationHistory,
           prisonId,
           allowBulkLoad,
+          allowConfigurationAccess,
           latestCalcCard,
           latestCalcCardAction,
           !hasIndeterminateSentence,

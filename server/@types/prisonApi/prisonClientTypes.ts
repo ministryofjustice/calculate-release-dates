@@ -14,6 +14,8 @@ export type PrisonApiOffenderSentenceAndOffences = components['schemas']['Offend
 export type PrisonApiOffenderSentenceTerm = components['schemas']['OffenderSentenceTerm']
 export type PrisonApiOffenderKeyDates = components['schemas']['OffenderKeyDates']
 export type PrisonApiFixedTermRecallDetails = components['schemas']['FixedTermRecallDetails']
+export type PrisonApiPrison = components['schemas']['Prison']
+export type PrisonApiPrisonDetails = components['schemas']['PrisonDetails']
 export type PrisonApiOffenderCalculatedKeyDates = PrisonApiOffenderKeyDates & {
   earlyRemovalSchemeEligibilityDate: string
   releaseOnTemporaryLicenceDate: string

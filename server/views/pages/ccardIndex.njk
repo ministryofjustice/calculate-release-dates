@@ -81,6 +81,16 @@
             %}
         {% endif %}
 
+        {% if configureReadOnlyScreens %}
+            {% set actions = (actions.push(
+                {
+                    href: '/config',
+                    title: 'Configure Nomis Screens',
+                    dataQa: 'configure-nomis-screens-action-link'
+                }), actions)
+            %}
+        {% endif %}
+
         {{ actionsCard(actions) }}
     </div>
 {% endblock %}

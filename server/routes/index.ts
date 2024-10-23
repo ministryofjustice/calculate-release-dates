@@ -13,6 +13,7 @@ import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
 import GenuineOverrideRoutes from './genuineOverrideRoutes'
 import GenuineOverridesEmailTemplateService from '../services/genuineOverridesEmailTemplateService'
+import ConfigRoutes from './configRoutes'
 
 export default function Index({
   prisonerService,
@@ -50,6 +51,8 @@ export default function Index({
     prisonerService,
     comparisonService,
   )
+
+  const configureAccessRoutes = new ConfigRoutes(prisonerService, userPermissionsService)
 
   const otherAccessRoutes = new OtherRoutes(prisonerService)
   const startRoutes = new StartRoutes(calculateReleaseDatesService, prisonerService, userPermissionsService)
@@ -253,6 +256,11 @@ export default function Index({
     post(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.submitManualDetail)
   }
 
+  const configureRoutes = () => {
+    get('/config', configureAccessRoutes.getConfig)
+    post('/config', configureAccessRoutes.postConfig)
+  }
+
   indexRoutes()
   calculationRoutes()
   reasonRoutes()
@@ -264,5 +272,6 @@ export default function Index({
   compareRoutes()
   approvedDatesRoutes()
   specialistSupportRoutes()
+  configureRoutes()
   return router
 }

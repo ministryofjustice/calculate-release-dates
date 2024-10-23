@@ -1,0 +1,57 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - Configure Nomis screens" %}
+{% set pageId = "configure" %}
+
+{% block content %}
+
+  <div class="browse__header-wrapper govuk-!-margin-bottom-9">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <h1 class="browse__heading govuk-heading-xl">
+          Configure Nomis screens read only
+        </h1>
+        <p class="gem-c-lead-paragraph gem-c-lead-paragraph--inverse govuk-!-margin-bottom-2">
+          Select which screens are read only in which prisons
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  {% macro getTabHtml(boxes, apiId) %}
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {{ govukCheckboxes(boxes) }}
+      {{ govukButton(
+        { text: 'Submit changes', type: 'submit', name: 'apiId', value: apiId, preventDoubleClick: true }
+      ) }}
+    </form>
+  {% endmacro %}
+
+  {% set items = [] %}
+
+  {% for tab in model.tabs() %}
+    {% set items = (items.push(
+      {
+        label: tab.display,
+        id: tab.id,
+        panel: {
+        html: getTabHtml(tab.table, tab.apiId)
+        }
+      }), items) %}
+  {% endfor %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukTabs({
+        items: items
+      }) }}
+    </div>
+  </div>
+
+{% endblock %}
