@@ -61,16 +61,25 @@ export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
         fullName: detailed.description,
         date: detailed.date,
         hints: detailed.hints.map((hint, index) => {
-          if (hint.link) {
-            return {
-              html: `<p class="govuk-body govuk-hint govuk-!-font-size-16"><a class="govuk-link" rel="noreferrer noopener" target="_blank" data-qa="${detailed.type}-release-date-hint-${index}" href="${hint.link}">${hint.text}</a></p>`,
-            }
+          const qaAttr = `${detailed.type}-release-date-hint-${index}`
+          let hintText = hint.text
+
+          // Check if the hint contains 'HDC policy' and add a link just surrounding the 'HDC policy' text
+          if (hint.link && hint.text.includes('HDC policy')) {
+            hintText = hint.text.replace(
+              'HDC policy',
+              `<a class="govuk-link" rel="noreferrer noopener" target="_blank" href="${hint.link}" data-qa="${qaAttr}">HDC policy</a>`,
+            )
+          } else if (hint.link) {
+            hintText = `<a class="govuk-link" rel="noreferrer noopener" target="_blank" href="${hint.link}" data-qa="${qaAttr}">${hint.text}</a>`
           }
+
           return {
-            html: `<p class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="${detailed.type}-release-date-hint-${index}">${hint.text}</p>`,
+            html: `<p class="govuk-body govuk-hint govuk-!-font-size-16" ${hint.link ? '' : `data-qa="${qaAttr}"`}>${hintText}</p>`,
           }
         }),
       }
+
       releaseDates.push(line)
     }
   }

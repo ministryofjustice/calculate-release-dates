@@ -567,6 +567,31 @@ describe('View journey routes tests', () => {
           )
         })
     })
+
+    it('GET /view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId should show correct hint text with link when it relates to HDC policy', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue({
+        ...pastNomisCalculation,
+        releaseDates: pastNomisCalculation.releaseDates.map(releaseDate => ({
+          ...releaseDate,
+          hints: [
+            {
+              text: 'New hint text here with HDC policy',
+              link: 'https://example.com',
+            },
+          ],
+        })),
+      } as never)
+
+      return request(app)
+        .get('/view/A1234AA/nomis-calculation-summary/-1')
+        .expect(200)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=HDCED-release-date-hint-0]').text()).toStrictEqual('HDC policy')
+          expect($('[data-qa=HDCED-release-date-hint-0]').first().attr('href')).toStrictEqual('https://example.com')
+        })
+    })
   })
 
   describe('Get latest view tests', () => {
