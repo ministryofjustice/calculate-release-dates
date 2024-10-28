@@ -136,7 +136,7 @@
     "redis": "^4.7.0",
     "superagent": "^10.1.1",
     "url-value-parser": "^2.2.0",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.2"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.11",
