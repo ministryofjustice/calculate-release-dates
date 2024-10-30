@@ -12,6 +12,7 @@ import {
   ComparisonPersonDiscrepancyRequest,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { FieldValidationError } from '../types/FieldValidationError'
+import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
 
 export const comparePaths = {
   COMPARE_INDEX: '/compare',
@@ -22,6 +23,7 @@ export const comparePaths = {
   COMPARE_LIST: '/compare/list',
   COMPARE_RESULT: '/compare/result/:bulkComparisonResultId',
   COMPARE_DETAIL: '/compare/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId',
+  COMPARE_DETAIL_JSON: '/compare/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId/json',
   COMPARE_MANUAL_RESULT: '/compare/manual/result/:bulkComparisonResultId',
   COMPARE_MANUAL_DETAIL: '/compare/manual/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId',
 }
@@ -177,6 +179,17 @@ export default class CompareRoutes {
       discrepancy,
     })
     return
+  }
+
+  public viewJson: RequestHandler = async (req, res): Promise<void> => {
+    const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
+    const { token } = res.locals.user
+    const jsonData = await this.calculateReleaseDatesService.getPrisonJsonMismatchComparison(
+      token,
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+    )
+    res.render('pages/compare/resultJson', new ComparisonResultMismatchDetailJsonModel(jsonData))
   }
 
   public submitDetail: RequestHandler = async (req, res) => {
