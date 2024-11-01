@@ -189,7 +189,12 @@ export default class CompareRoutes {
       bulkComparisonResultId,
       bulkComparisonDetailId,
     )
-    res.render('pages/compare/resultJson', new ComparisonResultMismatchDetailJsonModel(jsonData))
+
+    res.render('pages/compare/resultJson', {
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      jsonData,
+    })
   }
 
   public submitDetail: RequestHandler = async (req, res) => {

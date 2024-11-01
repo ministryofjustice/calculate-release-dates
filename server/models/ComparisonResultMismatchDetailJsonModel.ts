@@ -1,5 +1,7 @@
-import { ComparisonPersonJson } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-
 export default class ComparisonResultMismatchDetailJsonModel {
-  constructor(private data: ComparisonPersonJson) {}
+  constructor(
+    private inputData: Record<string, never>,
+    private sentenceAndOffences: Record<string, never>,
+    private adjustments: Record<string, never>,
+  ) {}
 }
