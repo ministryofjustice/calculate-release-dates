@@ -12,7 +12,6 @@ import {
   ComparisonPersonDiscrepancyRequest,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { FieldValidationError } from '../types/FieldValidationError'
-import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
 
 export const comparePaths = {
   COMPARE_INDEX: '/compare',

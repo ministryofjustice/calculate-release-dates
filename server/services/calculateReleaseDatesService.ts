@@ -14,7 +14,6 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
-  ComparisonPersonJson,
   GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
