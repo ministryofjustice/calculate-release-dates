@@ -12,7 +12,6 @@ import {
   ComparisonPersonDiscrepancyRequest,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { FieldValidationError } from '../types/FieldValidationError'
-import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
 
 export const comparePaths = {
   COMPARE_INDEX: '/compare',
@@ -189,7 +188,12 @@ export default class CompareRoutes {
       bulkComparisonResultId,
       bulkComparisonDetailId,
     )
-    res.render('pages/compare/resultJson', new ComparisonResultMismatchDetailJsonModel(jsonData))
+
+    res.render('pages/compare/resultJson', {
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      jsonData,
+    })
   }
 
   public submitDetail: RequestHandler = async (req, res) => {

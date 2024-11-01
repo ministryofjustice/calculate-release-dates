@@ -41,6 +41,23 @@
 
 {% block content %}
     <div class="json-view">
-        {{ data | dumpJson }}
+        <h2 class="govuk-heading-m">Calculate release dates</h2>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                Input data
+            </li>
+            {{ jsonData.inputData | dumpJson }}
+        </ul>
+        <h2 class="govuk-heading-m">Nomis</h2>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                Sentences and offences
+            </li>
+            {{ jsonData.sentenceAndOffences | dumpJson }}
+            <li>
+                Adjustments
+            </li>
+            {{ jsonData.adjustments | dumpJson }}
+        </ul>
     </div>
 {% endblock %}

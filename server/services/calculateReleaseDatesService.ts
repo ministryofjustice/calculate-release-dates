@@ -14,7 +14,6 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
-  ComparisonPersonJson,
   GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
@@ -37,6 +36,7 @@ import {
 import ErrorMessage from '../types/ErrorMessage'
 import { FullPageError } from '../types/FullPageError'
 import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
+import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
 
 export default class CalculateReleaseDatesService {
   // TODO test method - will be removed
@@ -444,9 +444,10 @@ export default class CalculateReleaseDatesService {
     token: string,
     comparisonReference: string,
     mismatchReference: string,
-  ): Promise<ComparisonPersonJson> {
+  ): Promise<ComparisonResultMismatchDetailJsonModel> {
     const crdAPIClient = new CalculateReleaseDatesApiClient(token)
-    return crdAPIClient.getPrisonJsonMismatchComparison(comparisonReference, mismatchReference)
+    const data = await crdAPIClient.getPrisonJsonMismatchComparison(comparisonReference, mismatchReference)
+    return new ComparisonResultMismatchDetailJsonModel(data.inputData, data.sentenceAndOffences, data.adjustments)
   }
 
   private latestCalculationComponentConfig(latestCalculation: LatestCalculation): LatestCalculationCardConfig {
