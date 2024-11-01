@@ -246,6 +246,7 @@ export default function Index({
     get(comparePaths.COMPARE_RESULT, compareAccessRoutes.result)
     get(comparePaths.COMPARE_DETAIL, compareAccessRoutes.detail)
     post(comparePaths.COMPARE_DETAIL, compareAccessRoutes.submitDetail)
+    get(comparePaths.COMPARE_DETAIL_JSON, compareAccessRoutes.viewJson)
     get(comparePaths.COMPARE_LIST, compareAccessRoutes.list)
     get(comparePaths.COMPARE_MANUAL_LIST, compareAccessRoutes.manual_list)
     get(comparePaths.COMPARE_MANUAL_RESULT, compareAccessRoutes.manualResult)

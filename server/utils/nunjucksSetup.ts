@@ -136,6 +136,11 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     return null
   })
 
+  njkEnv.addFilter(
+    'dumpJson',
+    (val: string) => new nunjucks.runtime.SafeString(`<pre>${JSON.stringify(val, null, 2)}</pre>`),
+  )
+
   njkEnv.addFilter('personProfileName', personProfileName)
   njkEnv.addFilter('personDateOfBirth', personDateOfBirth)
   njkEnv.addFilter('personStatus', personStatus)

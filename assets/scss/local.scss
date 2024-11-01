@@ -187,3 +187,12 @@ div.govuk-width-container {
 .autocomplete__option {
   font-family: "GDS Transport", arial, sans-serif;
 }
+
+.json-view pre {
+  font-size: .9rem;
+  padding: 10px;
+  font-family: Courier,monospace;
+  color: #fff;
+  background-color: #000;
+  white-space: pre-wrap
+}

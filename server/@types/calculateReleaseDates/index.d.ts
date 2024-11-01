@@ -557,6 +557,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/comparison/{comparisonReference}/mismatch/{mismatchReference}/json': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns JSON data for a particular comparison
+     * @description This endpoint returns JSON data mismatch for a particular comparison
+     */
+    get: operations['getComparisonPersonJson']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/comparison/{comparisonReference}/count': {
     parameters: {
       query?: never
@@ -669,6 +689,22 @@ export interface paths {
      * @description This endpoint will return the latest release dates for a prisoner. They may come from CRDS or NOMIS as identified by the source in the results.
      */
     get: operations['getLatestCalculation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/calculation/view-json/': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getCalculationJson']
     put?: never
     post?: never
     delete?: never
@@ -1797,6 +1833,11 @@ export interface components {
       isSDSPlus: boolean
       /** @enum {string} */
       hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'TERRORISM' | 'NO'
+    }
+    PersonComparisonJson: {
+      inputData: components['schemas']['JsonNode']
+      sentenceAndOffences?: components['schemas']['JsonNode']
+      adjustments?: components['schemas']['JsonNode']
     }
     DetailedDate: {
       /** @enum {string} */
@@ -3501,6 +3542,55 @@ export interface operations {
       }
     }
   }
+  getComparisonPersonJson: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The short reference of the comparison
+         * @example A1B2C3D4
+         */
+        comparisonReference: string
+        /**
+         * @description The short reference of the mismatch
+         * @example A1B2C3D4
+         */
+        mismatchReference: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns JSON data for a comparison mismatch */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonComparisonJson']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonComparisonJson']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonComparisonJson']
+        }
+      }
+    }
+  }
   getCountOfPersonsInComparison: {
     parameters: {
       query?: never
@@ -3787,6 +3877,24 @@ export interface operations {
         content: {
           'application/json': components['schemas']['LatestCalculation']
         }
+      }
+    }
+  }
+  getCalculationJson: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }

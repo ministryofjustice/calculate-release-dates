@@ -14,6 +14,7 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
+  ComparisonPersonJson,
   GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
@@ -437,6 +438,15 @@ export default class CalculateReleaseDatesService {
         logger.info(`Unable to load latest calc ${error}`)
         return { latestCalcCard: undefined, latestCalcCardAction: undefined }
       })
+  }
+
+  public async getPrisonJsonMismatchComparison(
+    token: string,
+    comparisonReference: string,
+    mismatchReference: string,
+  ): Promise<ComparisonPersonJson> {
+    const crdAPIClient = new CalculateReleaseDatesApiClient(token)
+    return crdAPIClient.getPrisonJsonMismatchComparison(comparisonReference, mismatchReference)
   }
 
   private latestCalculationComponentConfig(latestCalculation: LatestCalculation): LatestCalculationCardConfig {

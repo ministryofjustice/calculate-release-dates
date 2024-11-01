@@ -1,0 +1,46 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% set pageTitle = applicationName + " - view JSON" %}
+{% set pageId = "compare-person-mismatch-JSON" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {% set overviewPath = "/compare/result/" + bulkComparisonResultId %}
+        {% set detailPath = "/compare/result/" + bulkComparisonResultId + '/detail/' + bulkComparisonDetailId %}
+        {{ govukBreadcrumbs({
+            items: [
+                {
+                    text: "Home",
+                    href: "/"
+                },
+                {
+                    text: "Bulk Compare",
+                    href: "/compare/"
+                },
+                {
+                    text: bulkComparison.calculatedAt | date('DD MMMM YYYY'),
+                    href: overviewPath
+                },
+                {
+                    text: "Detail",
+                    href: detailPath
+                }
+            ]
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="json-view">
+        {{ data | dumpJson }}
+    </div>
+{% endblock %}
