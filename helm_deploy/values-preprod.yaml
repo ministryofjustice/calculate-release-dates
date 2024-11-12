@@ -29,6 +29,13 @@ generic-service:
     CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE: 60000
     ENVIRONMENT_NAME: PRE-PRODUCTION
 
+  allowlist:
+    penetration-test-ip-1: 54.37.241.156/30
+    penetration-test-ip-2: 167.71.136.237/32
+    groups:
+      - internal
+      - circleci
+
 generic-prometheus-alerts:
   businessHoursOnly: true
   alertSeverity: legacy-replacement-alerts-non-prod
