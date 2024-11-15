@@ -1,0 +1,14 @@
+<li>
+    <p class="govuk-body">One or more of the sentence types in this calculation is not currently supported in this
+        service:</p>
+</li>
+
+{% include "./list-validation-messages.njk" %}
+
+<li>
+    <p class="govuk-body">If these sentences are correct, you will need to complete this calculation manually in
+        NOMIS.</p>
+    <p class="govuk-body govuk-!-margin-bottom-0">
+        <a href="{{ '/supported-sentences/' + prisonerDetail.offenderNo }}">Check supported sentence types</a>
+    </p>
+</li>

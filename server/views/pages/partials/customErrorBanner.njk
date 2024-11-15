@@ -1,63 +1,37 @@
 {% if validationErrors and validationErrors.messages.length > 0 %}
-    <div class="govuk-error-summary check-information-errors {% if validationErrors.messageType === 'MISSING_PRISON_API_DATA' %}information-summary{% endif %}" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+
+     {% set validErrorKeys = [
+         "missing-prison-api-data",
+         "unsupported-offence",
+         "suspended-offence",
+         "unsupported-sentence",
+         "unsupported-calculation",
+         "validation",
+         "save-dates"
+     ] %}
+
+     {% set rawErrorKey = validationErrors.messageType | lower | replace('_', '-') %}
+
+     {% if rawErrorKey in validErrorKeys %}
+         {% set errorKey = rawErrorKey %}
+     {% else %}
+         {% set errorKey = 'default' %}
+     {% endif %}
+
+
+    <p>Debug: errorKey = {{ errorKey }}</p>
+    <p>Debug: title file = partials/error-title-{{ errorKey }}.njk</p>
+    <p>Debug: summary file = partials/error-summary-{{ errorKey }}.njk</p>
+
+
+    <div class="govuk-error-summary check-information-errors {% if errorKey === 'missing-prison-api-data' %}information-summary{% endif %}"
+         aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
         <h2 class="govuk-error-summary__title" id="error-summary-title">
-            {% if validationErrors.messageType === 'MISSING_PRISON_API_DATA' %}
-            The calculation breakdown cannot be shown on this page.
-            {% elif validationErrors.messageType === 'UNSUPPORTED_OFFENCE' %}
-            One or more offence codes needs updating in NOMIS.
-            {% elif validationErrors.messageType === 'SUSPENDED_OFFENCE' %}
-            ‘Original offence suspended sentence activated’ is an invalid offence.
-            {% else %}
-            There is a problem
-            {% endif %}
+            {% include "./errorBanner/error-title-" + errorKey + ".njk" %}
         </h2>
         <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
-                {% if validationErrors.messageType === 'UNSUPPORTED_SENTENCE' %}
-                    <li>
-                        <p class="govuk-body">One or more of the sentence types in this calculation is not currently supported in this service:</p>
-                    </li>
-                {% elif validationErrors.messageType === 'UNSUPPORTED_CALCULATION' %}
-                    <li>
-                        <p class="govuk-body">This service does not yet support a calculation scenario{% if validationErrors.messages.length > 1 %}s{% endif %} when:</p>
-                    </li>
-                {% endif %}
-                {% for error in validationErrors.messages %}
-                    <li>
-                        <p class="govuk-body">
-                            {% if error.href %}
-                                <a href="{{ error.href }}">{{ error.html | safe if error.html else error.text }}</a>
-                            {% elif error.id %}
-                                <a href="#{{ error.id }}">{{ error.html | safe if error.html else error.text }}</a>
-                            {% else %}
-                                {{ error.html | safe if error.html else error.text
-                                | replace('\n', '<br>')
-                                | replace ('reload this page', '<a href="">reload this page</a>') | safe }}
-                            {% endif %}
-                        </p>
-                    </li>
-                {% endfor %}
-
-                {% if validationErrors.messageType === 'UNSUPPORTED_SENTENCE' %}
-                    <li>
-                        <p class="govuk-body">If these sentences are correct, you will need to complete this calculation manually in NOMIS.</p>
-                        <p class="govuk-body govuk-!-margin-bottom-0">
-                            <a href="{{'/supported-sentences/' + prisonerDetail.offenderNo}}">Check supported sentence types</a>
-                        </p>
-                    </li>
-                {% elif validationErrors.messageType === 'UNSUPPORTED_CALCULATION' %}
-                    <li>
-                        <p class="govuk-body govuk-!-margin-bottom-0">Calculate the release dates manually until {% if validationErrors.messages.length === 1 %}this scenario is{% else %}these scenarios are{% endif %} supported by this service.</p>
-                    </li>
-                {% elif validationErrors.messageType === 'VALIDATION' %}
-                    <li>
-                        <p class="govuk-body govuk-!-margin-bottom-0">Update these details in NOMIS and then <a href="">reload this page</a>.</p>
-                    </li>
-                {% elif validationErrors.messageType === 'SAVE_DATES' %}
-                    <li>
-                        <p class="govuk-body govuk-!-margin-bottom-0"> Review the calculation and try again.</p>
-                    </li>
-                {% endif %}
+                {% include "./errorBanner/error-summary-" + errorKey + ".njk" %}
             </ul>
         </div>
     </div>

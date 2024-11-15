@@ -1,0 +1,11 @@
+{% for error in validationErrors.messages %}
+    <li>
+        <p class="govuk-body">
+            {% if error.href %}
+                <a href="{{ error.href }}">{{ error.html | safe if error.html else error.text }}</a>
+            {% else %}
+                {{ error.html | safe if error.html else error.text | replace('\n', '<br>') | safe }}
+            {% endif %}
+        </p>
+    </li>
+{% endfor %}
