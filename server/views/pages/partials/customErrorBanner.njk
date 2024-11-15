@@ -18,12 +18,6 @@
          {% set errorKey = 'default' %}
      {% endif %}
 
-
-    <p>Debug: errorKey = {{ errorKey }}</p>
-    <p>Debug: title file = partials/error-title-{{ errorKey }}.njk</p>
-    <p>Debug: summary file = partials/error-summary-{{ errorKey }}.njk</p>
-
-
     <div class="govuk-error-summary check-information-errors {% if errorKey === 'missing-prison-api-data' %}information-summary{% endif %}"
          aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
         <h2 class="govuk-error-summary__title" id="error-summary-title">
