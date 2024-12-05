@@ -1,6 +1,6 @@
 import express from 'express'
 import { ApplicationInfo } from '../applicationInfo'
-import nunjucksSetup, { pluraliseName } from './nunjucksSetup'
+import nunjucksSetup, { formatSds40Exclusion, pluraliseName } from './nunjucksSetup'
 
 describe('nunjucksSetup', () => {
   describe('design systems params', () => {
@@ -45,6 +45,24 @@ describe('nunjucksSetup', () => {
 
     it('Names without an s on the end get pluralised with apostrophe s', () => {
       expect(pluraliseName('Smith')).toStrictEqual("Smith's")
+    })
+  })
+  describe('Return valid SDS40 exclusion titles', () => {
+    it('Returns the correct title for standard exclusion', () => {
+      expect(formatSds40Exclusion('DOMESTIC_ABUSE')).toStrictEqual('Domestic Abuse')
+      expect(formatSds40Exclusion('SEXUAL')).toStrictEqual('Sexual')
+      expect(formatSds40Exclusion('MURDER')).toStrictEqual('Murder')
+    })
+    it('Returns the correct title for tranche 3 exclusion', () => {
+      expect(formatSds40Exclusion('DOMESTIC_ABUSE_T3')).toStrictEqual(
+        'Domestic Abuse (for prisoners in custody on or after the 16th Dec 2024)',
+      )
+      expect(formatSds40Exclusion('SEXUAL_T3')).toStrictEqual(
+        'Sexual (for prisoners in custody on or after the 16th Dec 2024)',
+      )
+      expect(formatSds40Exclusion('MURDER_T3')).toStrictEqual(
+        'Murder (for prisoners in custody on or after the 16th Dec 2024)',
+      )
     })
   })
 })
