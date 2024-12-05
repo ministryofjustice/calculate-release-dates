@@ -145,6 +145,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('personDateOfBirth', personDateOfBirth)
   njkEnv.addFilter('personStatus', personStatus)
   njkEnv.addFilter('hmppsFormatDate', hmppsFormatDate)
+  njkEnv.addFilter('formatSds40Exclusion', formatSds40Exclusion)
 }
 
 const getReleaseDateType = (dates: { [key: string]: unknown }): string => {
@@ -195,4 +196,14 @@ export const pluraliseName = (name: string) => {
     return `${name}'`
   }
   return `${name}'s`
+}
+
+export const formatSds40Exclusion = (exclusion: string) => {
+  const isTrancheThree = exclusion.endsWith('_T3')
+  const title = exclusion
+    .replace('_T3', '')
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, char => char.toUpperCase())
+  return isTrancheThree ? `${title} (for prisoners in custody on or after the 16th Dec 2024)` : title
 }
