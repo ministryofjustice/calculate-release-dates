@@ -55,6 +55,12 @@ describe('nunjucksSetup', () => {
       expect(formatSds40Exclusion('DOMESTIC_ABUSE_T3')).toStrictEqual(
         'Domestic Abuse (for prisoners in custody on or after the 16th Dec 2024)',
       )
+      expect(formatSds40Exclusion('SEXUAL_T3')).toStrictEqual(
+        'Sexual (for prisoners in custody on or after the 16th Dec 2024)',
+      )
+      expect(formatSds40Exclusion('MURDER_T3')).toStrictEqual(
+        'Murder (for prisoners in custody on or after the 16th Dec 2024)',
+      )
     })
   })
 })
