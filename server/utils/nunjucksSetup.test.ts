@@ -50,6 +50,8 @@ describe('nunjucksSetup', () => {
   describe('Return valid SDS40 exclusion titles', () => {
     it('Returns the correct title for standard exclusion', () => {
       expect(formatSds40Exclusion('DOMESTIC_ABUSE')).toStrictEqual('Domestic Abuse')
+      expect(formatSds40Exclusion('SEXUAL')).toStrictEqual('Sexual')
+      expect(formatSds40Exclusion('MURDER')).toStrictEqual('Murder')
     })
     it('Returns the correct title for tranche 3 exclusion', () => {
       expect(formatSds40Exclusion('DOMESTIC_ABUSE_T3')).toStrictEqual(
