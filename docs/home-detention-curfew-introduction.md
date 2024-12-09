@@ -83,7 +83,7 @@ From 3rd June 2025, there is a change for prisoners serving longer sentences (wh
 - If one of the sentences is not eligible for HDC, remove its length from the calculation. However, having an ineligible sentence means the prisoner is presumed unsuitable for HDC unless exceptional circumstances apply.
 - If any sentence within the consecutive set is parole-eligible, subject to two-thirds release, or falls under special rules (such as a Section 244ZB notice), HDC either does not apply or the prisoner is presumed unsuitable.
 
-### List of Configured Values and Their Sources in the Codebase:**
+### List of Important Periods and Their Sources in the Codebase
 
 - **Minimum Custodial Period (42 days)**:  
   [`minimum-custodial-period-days`](https://github.com/ministryofjustice/calculate-release-dates-api/blob/6ae73923b549888c311ad0193dcb4ae9c37704f0/src/main/resources/application-calculation-params.yml#L3)
@@ -91,16 +91,23 @@ From 3rd June 2025, there is a change for prisoners serving longer sentences (wh
 - **Minimum Deduction If Half Is Less Than 28 Days (28 days)**:  
   [`custodial-period-below-midpoint-minimum-deduction-days`](https://github.com/ministryofjustice/calculate-release-dates-api/blob/6ae73923b549888c311ad0193dcb4ae9c37704f0/src/main/resources/application-calculation-params.yml#L5)
 
-- **Mid-Point Boundary for Custodial Period (360 days)**:  
-  [`custodial-period-mid-point-days`](https://github.com/ministryofjustice/calculate-release-dates-api/blob/6ae73923b549888c311ad0193dcb4ae9c37704f0/src/main/resources/application-calculation-params.yml#L6)
-
 - **Minimum Days Served Post-Sentencing (14 days)**:  
   [`minimum-days-on-hdc`](https://github.com/ministryofjustice/calculate-release-dates-api/blob/6ae73923b549888c311ad0193dcb4ae9c37704f0/src/main/resources/application-calculation-params.yml#L7)
 
-- **Pre-June 2025 Deduction for Longer Sentences (179 days)**:  
+#### Pre-June Scenarios
+
+- **Mid-Point Boundary for Custodial Period (360 days)**:  
+  [`custodial-period-mid-point-days` (for pre-June 2025 scenarios)](https://github.com/ministryofjustice/calculate-release-dates-api/blob/6ae73923b549888c311ad0193dcb4ae9c37704f0/src/main/resources/application-calculation-params.yml#L6)
+
+- **Deduction for Longer Sentences (179 days)**:  
   [`custodial-period-above-midpoint-deduction-days` (for pre-June 2025 scenarios)](https://github.com/ministryofjustice/calculate-release-dates-api/blob/6ae73923b549888c311ad0193dcb4ae9c37704f0/src/main/resources/application-calculation-params.yml#L6)
 
-- **Post-June 2025 Deduction for Longer Sentences (364 days)**:  
+#### Post-June Scenarios
+
+- **Mid-Point Boundary for Custodial Period (720 days)**:  
+  [`custodial-period-mid-point-days` (for post-June 2025 scenarios)](https://github.com/ministryofjustice/calculate-release-dates-api/blob/6ae73923b549888c311ad0193dcb4ae9c37704f0/src/main/resources/application-calculation-params.yml#L6)
+
+- **Deduction for Longer Sentences (364 days)**:  
   [`custodial-period-above-midpoint-deduction-days` (for post-June 2025 scenarios)](https://github.com/ministryofjustice/calculate-release-dates-api/blob/6ae73923b549888c311ad0193dcb4ae9c37704f0/src/main/resources/application-calculation-params.yml#L4)
 
 ---
