@@ -299,6 +299,12 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<ValidationMessage[]>
   }
 
+  getManualEntryDateValidation(dateTypes: string[]) {
+    return this.restClient.get({
+      path: `/validation/manual-entry-dates-validation?releaseDates=${dateTypes.join(',')}`,
+    }) as Promise<ValidationMessage[]>
+  }
+
   getCalculationHistory(prisonerId: string): Promise<HistoricCalculation[]> {
     return this.restClient.get({
       path: `/historicCalculations/${prisonerId}`,
