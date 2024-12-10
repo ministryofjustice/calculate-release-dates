@@ -501,6 +501,19 @@ export default {
       },
     })
   },
+  stubManualEntryDateValidation: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/validation/manual-entry-dates-validation\\?releaseDates=([A-Z|,]*)',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [],
+      },
+    })
+  },
   stubSupportedValidationNoMessages: (): SuperAgentRequest => {
     return stubFor({
       request: {
