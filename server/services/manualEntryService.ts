@@ -7,6 +7,7 @@ import {
   ManualEntrySelectedDate,
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { createSupportLink } from '../utils/utils'
 
 const order = {
   SED: 1,
@@ -82,7 +83,18 @@ export default class ManualEntryService {
     )
 
     if (validationMessages.messages.length > 0) {
-      const dateErrors = `<div class="govuk-error-message"><ul>${validationMessages.messages.map(e => `<li>${e.text}</li>`).join('\n')}</ul></div>`
+      const errorStart = 'There is a problem'
+      const errorEnd = createSupportLink({
+        prefixText: 'You must reselect the dates, or if you need help, ',
+        linkText: 'contact the Specialist support team',
+        suffixText: ' for support.',
+        emailSubjectText: 'Calculate release dates - Manual Entry - Incompatible Dates',
+      })
+
+      const dateErrors = `<div class="govuk-error-message">${errorStart}<ul>
+      <div class="govuk-error-message"><ul>
+        ${validationMessages.messages.map(e => `<li>${e.text}</li>`).join('\n')}</ul></div>
+      </ul>${errorEnd}</div>`
       const validationError = { errorMessage: { html: dateErrors } }
       const mergedConfig = { ...config, ...validationError }
       // eslint-disable-next-line no-restricted-syntax
