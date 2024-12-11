@@ -7,7 +7,6 @@ import { dataAccess } from '../data'
 import ManualCalculationService from './manualCalculationService'
 import ManualEntryService from './manualEntryService'
 import UserPermissionsService from './userPermissionsService'
-import ManualEntryValidationService from './manualEntryValidationService'
 import ApprovedDatesService from './approvedDatesService'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService from './dateValidationService'
@@ -24,13 +23,12 @@ export const services = () => {
   const viewReleaseDatesService = new ViewReleaseDatesService()
   const userInputService = new UserInputService()
   const manualCalculationService = new ManualCalculationService()
-  const manualEntryValidationService = new ManualEntryValidationService()
   const dateTypeConfigurationService = new DateTypeConfigurationService()
   const dateValidationService = new DateValidationService()
   const manualEntryService = new ManualEntryService(
-    manualEntryValidationService,
     dateTypeConfigurationService,
     dateValidationService,
+    calculateReleaseDatesService,
   )
   const userPermissionsService = new UserPermissionsService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)

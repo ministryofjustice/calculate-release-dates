@@ -19,13 +19,17 @@ import { StorageResponseModel } from '../services/dateValidationService'
 import config from '../config'
 import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
+import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+
+jest.mock('../services/calculateReleaseDatesService')
 
 let app: Express
 let sessionSetup: SessionSetup
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const dateTypeConfigurationService = new DateTypeConfigurationService()
 const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
-const manualEntryService = new ManualEntryService(null, dateTypeConfigurationService, null)
+const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const manualEntryService = new ManualEntryService(dateTypeConfigurationService, null, calculateReleaseDatesService)
 
 jest.mock('../services/prisonerService')
 
@@ -74,6 +78,10 @@ beforeEach(() => {
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
   fakeApi.get('/reference-data/date-type', '').reply(200, testDateTypeDefinitions)
+  calculateReleaseDatesService.validateDatesForManualEntry.mockResolvedValue({
+    messages: [],
+    messageType: null,
+  })
   app = appWithAllRoutes({
     services: { prisonerService, approvedDatesService, manualEntryService },
     sessionSetup,

@@ -16,7 +16,6 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
-import ManualEntryValidationService from '../services/manualEntryValidationService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
 import DateValidationService, { StorageResponseModel } from '../services/dateValidationService'
 import { expectMiniProfile } from './testutils/layoutExpectations'
@@ -24,6 +23,7 @@ import SessionSetup from './testutils/sessionSetup'
 import config from '../config'
 import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
+import { ErrorMessageType } from '../types/ErrorMessages'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -32,13 +32,12 @@ jest.mock('../services/manualCalculationService')
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const manualCalculationService = new ManualCalculationService() as jest.Mocked<ManualCalculationService>
-const manualEntryValidationService = new ManualEntryValidationService()
 const dateTypeConfigurationService = new DateTypeConfigurationService()
 const dateValidationService = new DateValidationService()
 const manualEntryService = new ManualEntryService(
-  manualEntryValidationService,
   dateTypeConfigurationService,
   dateValidationService,
+  calculateReleaseDatesService,
 )
 let app: Express
 let sessionSetup: SessionSetup
@@ -91,6 +90,10 @@ beforeEach(() => {
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
   fakeApi.get('/reference-data/date-type', '').reply(200, testDateTypeDefinitions).persist()
+  calculateReleaseDatesService.validateDatesForManualEntry.mockResolvedValue({
+    messages: [],
+    messageType: null,
+  })
   app = appWithAllRoutes({
     services: {
       calculateReleaseDatesService,
@@ -269,6 +272,32 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         expect(manualEntryHint.text().trim()).toStrictEqual(
           "This calculation includes indeterminate sentences. You'll need to enter the tariff dates that have been supplied by PPCS.",
         )
+      })
+  })
+
+  it('POST where invalid date types are submitted displays errors messages', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    calculateReleaseDatesService.validateDatesForManualEntry.mockResolvedValue({
+      messages: [{ text: 'CRD and ARD cannot be selected together' }],
+      messageType: ErrorMessageType.VALIDATION,
+    })
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
+    return request(app)
+      .post('/calculation/A1234AA/manual-entry/select-dates')
+      .send({ dateSelect: ['CRD', 'ARD'] })
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Tariff')
+        expect(res.text).toContain('/calculation/A1234AA/manual-entry')
+        const $ = cheerio.load(res.text)
+        expect($('.govuk-error-message li').html()).toStrictEqual('CRD and ARD cannot be selected together')
       })
   })
 

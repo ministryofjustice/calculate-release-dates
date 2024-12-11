@@ -29,6 +29,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubSaveManualEntry')
     cy.task('stubGetCalculationResults')
     cy.task('stubHasNoRecallSentences')
+    cy.task('stubManualEntryDateValidation')
   })
 
   it('Can add some manual dates', () => {
@@ -66,14 +67,14 @@ context('End to end user journeys entering and modifying approved dates', () => 
       'NPD',
       'DPRRD',
     ])
-    selectDatesPage.checkDate('SED')
+    selectDatesPage.checkDate('LED')
     selectDatesPage.checkDate('CRD')
     selectDatesPage.checkDate('MTD')
     selectDatesPage.continue().click()
 
     const enterSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
-    enterSedPage.checkIsFor('SED')
-    enterSedPage.enterDate('SED', '01', '06', '2026')
+    enterSedPage.checkIsFor('LED')
+    enterSedPage.enterDate('LED', '01', '06', '2026')
     enterSedPage.continue().click()
 
     const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
@@ -87,7 +88,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     enterMTDPage.continue().click()
 
     const manualDatesConfirmationPage = Page.verifyOnPage(ManualDatesConfirmationPage)
-    manualDatesConfirmationPage.dateShouldHaveValue('SED', '01 June 2026')
+    manualDatesConfirmationPage.dateShouldHaveValue('LED', '01 June 2026')
     manualDatesConfirmationPage.dateShouldHaveValue('CRD', '03 September 2027')
     manualDatesConfirmationPage.dateShouldHaveValue('MTD', '09 March 2028')
     // check unselected dates are not shown

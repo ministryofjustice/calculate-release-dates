@@ -81,6 +81,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/overall-sentence-length': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Find overall sentence length comparison
+     * @description Compares the sentence durations to an overall sentence length
+     */
+    post: operations['compareOverallSentenceLength']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/manual-calculation/{prisonerId}': {
     parameters: {
       query?: never
@@ -369,6 +389,46 @@ export interface paths {
      * @description This endpoint will validate that the data for the given prisoner in NOMIS is of sufficient quality to allow a manual date to be recorded via CRD
      */
     get: operations['validateForManualEntry']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/validation/manual-entry-dates-validation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Validates that requested calculation dates are valid
+     * @description Some dates cannot be calculated together, while some dates may require another date to be valid
+     */
+    get: operations['validateForDatesManualEntry']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/things-to-do/prisoner/{prisonerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve things-to-do for a prisoner
+     * @description Provides a list of things-to-do for a specified prisoner based on their ID.
+     */
+    get: operations['getThingsToDo']
     put?: never
     post?: never
     delete?: never
@@ -697,22 +757,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/calculation/view-json/': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['getCalculationJson']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/calculation/sentence-and-offences/{calculationRequestId}': {
     parameters: {
       query?: never
@@ -1004,6 +1048,7 @@ export interface components {
         | 'ADJUSTMENT_FUTURE_DATED_UAL'
         | 'A_FINE_SENTENCE_CONSECUTIVE'
         | 'A_FINE_SENTENCE_CONSECUTIVE_TO'
+        | 'DTO_RECALL'
         | 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT'
         | 'A_FINE_SENTENCE_WITH_PAYMENTS'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED_REMAND'
@@ -1057,6 +1102,14 @@ export interface components {
         | 'UNSUPPORTED_OFFENCE_ENCOURAGING_OR_ASSISTING'
         | 'UNSUPPORTED_BREACH_97'
         | 'UNSUPPORTED_SUSPENDED_OFFENCE'
+        | 'FTR_NO_RETURN_TO_CUSTODY_DATE'
+        | 'NO_SENTENCES'
+        | 'UNABLE_TO_DETERMINE_SHPO_RELEASE_PROVISIONS'
+        | 'SE2020_INVALID_OFFENCE_DETAIL'
+        | 'SE2020_INVALID_OFFENCE_COURT_DETAIL'
+        | 'REMAND_ON_OR_AFTER_SENTENCE_DATE'
+        | 'DATES_MISSING_REQUIRED_TYPE'
+        | 'DATES_PAIRINGS_INVALID'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1096,7 +1149,7 @@ export interface components {
       effectiveDays: number
     }
     UnusedDeductionCalculationResponse: {
-      /** Format: int32 */
+      /** Format: int64 */
       unusedDeductions?: number
       validationMessages: components['schemas']['ValidationMessage'][]
     }
@@ -1163,6 +1216,33 @@ export interface components {
     GenuineOverrideDateResponse: {
       calculationReference: string
       originalCalculationReference: string
+    }
+    OverallSentenceLength: {
+      /** Format: int64 */
+      years: number
+      /** Format: int64 */
+      months: number
+      /** Format: int64 */
+      weeks: number
+      /** Format: int64 */
+      days: number
+    }
+    OverallSentenceLengthRequest: {
+      overallSentenceLength: components['schemas']['OverallSentenceLengthSentence']
+      consecutiveSentences: components['schemas']['OverallSentenceLengthSentence'][]
+      concurrentSentences: components['schemas']['OverallSentenceLengthSentence'][]
+      /** Format: date */
+      warrantDate: string
+    }
+    OverallSentenceLengthSentence: {
+      custodialDuration: components['schemas']['OverallSentenceLength']
+      extensionDuration?: components['schemas']['OverallSentenceLength']
+    }
+    OverallSentenceLengthComparison: {
+      custodialLength: components['schemas']['OverallSentenceLength']
+      licenseLength?: components['schemas']['OverallSentenceLength']
+      custodialLengthMatches: boolean
+      licenseLengthMatches?: boolean
     }
     ManualCalculationResponse: {
       enteredDates?: {
@@ -1274,83 +1354,6 @@ export interface components {
       calculationReasonId: number
       otherReasonDescription?: string
     }
-    AFineSentence: {
-      type: 'AFineSentence'
-    } & (Omit<
-      WithRequired<
-        components['schemas']['AbstractSentence'],
-        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
-      >,
-      'type'
-    > & {
-      duration: components['schemas']['Duration']
-      fineAmount?: number
-    })
-    AbstractSentence: {
-      offence: components['schemas']['Offence']
-      /** Format: date */
-      sentencedAt: string
-      /** Format: uuid */
-      identifier: string
-      consecutiveSentenceUUIDs: string[]
-      /** Format: int32 */
-      caseSequence?: number
-      /** Format: int32 */
-      lineSequence?: number
-      caseReference?: string
-      /** @enum {string} */
-      recallType?: 'STANDARD_RECALL' | 'FIXED_TERM_RECALL_14' | 'FIXED_TERM_RECALL_28'
-      isSDSPlus: boolean
-      type: string
-    }
-    Adjustment: {
-      /** Format: date */
-      appliesToSentencesFrom: string
-      /** Format: int32 */
-      numberOfDays: number
-      /** Format: date */
-      fromDate?: string
-      /** Format: date */
-      toDate?: string
-    }
-    Adjustments: {
-      adjustments?: {
-        [key: string]: components['schemas']['Adjustment'][]
-      }
-    }
-    Booking: {
-      offender: components['schemas']['Offender']
-      sentences: (
-        | components['schemas']['AFineSentence']
-        | components['schemas']['BotusSentence']
-        | components['schemas']['DetentionAndTrainingOrderSentence']
-        | components['schemas']['ExtendedDeterminateSentence']
-        | components['schemas']['SopcSentence']
-        | components['schemas']['StandardDeterminateSentence']
-      )[]
-      adjustments: components['schemas']['Adjustments']
-      /** Format: date */
-      returnToCustodyDate?: string
-      fixedTermRecallDetails?: components['schemas']['FixedTermRecallDetails']
-      /** Format: int64 */
-      bookingId: number
-      historicalTusedData?: components['schemas']['HistoricalTusedData']
-    }
-    BotusSentence: {
-      type: 'BotusSentence'
-    } & (Omit<
-      WithRequired<
-        components['schemas']['AbstractSentence'],
-        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
-      >,
-      'type'
-    > & {
-      duration: components['schemas']['Duration']
-      /** Format: date */
-      latestTusedDate?: string
-      /** @enum {string} */
-      latestTusedSource?: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
-    })
     CalculatedReleaseDates: {
       dates: {
         [key: string]: string
@@ -1415,7 +1418,6 @@ export interface components {
       sdsEarlyReleaseAllocatedTranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
       /** @enum {string} */
       sdsEarlyReleaseTranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
-      calculatedBooking?: components['schemas']['Booking']
     }
     CalculationFragments: {
       breakdownHtml: string
@@ -1426,86 +1428,6 @@ export interface components {
       isOther: boolean
       displayName: string
     }
-    DetentionAndTrainingOrderSentence: {
-      type: 'DetentionAndTrainingOrderSentence'
-    } & (Omit<
-      WithRequired<
-        components['schemas']['AbstractSentence'],
-        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
-      >,
-      'type'
-    > & {
-      duration: components['schemas']['Duration']
-    })
-    Duration: {
-      durationElements: {
-        [key: string]: number
-      }
-    }
-    ExtendedDeterminateSentence: {
-      type: 'ExtendedDeterminateSentence'
-    } & (Omit<
-      WithRequired<
-        components['schemas']['AbstractSentence'],
-        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
-      >,
-      'type'
-    > & {
-      custodialDuration: components['schemas']['Duration']
-      extensionDuration: components['schemas']['Duration']
-      automaticRelease: boolean
-    })
-    FixedTermRecallDetails: {
-      /** Format: int64 */
-      bookingId: number
-      /** Format: date */
-      returnToCustodyDate: string
-      /** Format: int32 */
-      recallLength: number
-    }
-    HistoricalTusedData: {
-      /** Format: date */
-      tused?: string
-      /** @enum {string} */
-      historicalTusedSource: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
-    }
-    Offence: {
-      /** Format: date */
-      committedAt: string
-      offenceCode?: string
-    }
-    Offender: {
-      reference: string
-      /** Format: date */
-      dateOfBirth: string
-      isActiveSexOffender: boolean
-    }
-    SopcSentence: {
-      type: 'SopcSentence'
-    } & (Omit<
-      WithRequired<
-        components['schemas']['AbstractSentence'],
-        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
-      >,
-      'type'
-    > & {
-      custodialDuration: components['schemas']['Duration']
-      extensionDuration: components['schemas']['Duration']
-      sdopcu18: boolean
-    })
-    StandardDeterminateSentence: {
-      type: 'StandardDeterminateSentence'
-    } & (Omit<
-      WithRequired<
-        components['schemas']['AbstractSentence'],
-        'consecutiveSentenceUUIDs' | 'identifier' | 'isSDSPlus' | 'offence' | 'sentencedAt'
-      >,
-      'type'
-    > & {
-      duration: components['schemas']['Duration']
-      /** @enum {string} */
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'TERRORISM' | 'NO'
-    })
     CalculationResults: {
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
       validationMessages: components['schemas']['ValidationMessage'][]
@@ -1541,8 +1463,6 @@ export interface components {
       releaseDate?: string
       /** Format: date */
       postRecallReleaseDate?: string
-      /** Format: int32 */
-      unusedDeductions: number
       validationMessages: components['schemas']['ValidationMessage'][]
     }
     SubmitCalculationRequest: {
@@ -1555,6 +1475,10 @@ export interface components {
       date: string
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
+    }
+    ThingsToDo: {
+      prisonerId: string
+      thingsToDo: 'CALCULATION_REQUIRED'[]
     }
     AnalysedSentenceAndOffence: {
       /** Format: int64 */
@@ -1582,7 +1506,19 @@ export interface components {
       sentenceAndOffenceAnalysis: 'NEW' | 'UPDATED' | 'SAME'
       isSDSPlus: boolean
       /** @enum {string} */
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'TERRORISM' | 'NO'
+      hasAnSDSEarlyReleaseExclusion:
+        | 'SEXUAL'
+        | 'VIOLENT'
+        | 'DOMESTIC_ABUSE'
+        | 'NATIONAL_SECURITY'
+        | 'TERRORISM'
+        | 'SEXUAL_T3'
+        | 'VIOLENT_T3'
+        | 'DOMESTIC_ABUSE_T3'
+        | 'NATIONAL_SECURITY_T3'
+        | 'TERRORISM_T3'
+        | 'MURDER_T3'
+        | 'NO'
     }
     OffenderOffence: {
       /** Format: int64 */
@@ -1832,7 +1768,19 @@ export interface components {
       fineAmount?: number
       isSDSPlus: boolean
       /** @enum {string} */
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'TERRORISM' | 'NO'
+      hasAnSDSEarlyReleaseExclusion:
+        | 'SEXUAL'
+        | 'VIOLENT'
+        | 'DOMESTIC_ABUSE'
+        | 'NATIONAL_SECURITY'
+        | 'TERRORISM'
+        | 'SEXUAL_T3'
+        | 'VIOLENT_T3'
+        | 'DOMESTIC_ABUSE_T3'
+        | 'NATIONAL_SECURITY_T3'
+        | 'TERRORISM_T3'
+        | 'MURDER_T3'
+        | 'NO'
     }
     PersonComparisonJson: {
       inputData: components['schemas']['JsonNode']
@@ -2299,6 +2247,48 @@ export interface operations {
       }
     }
   }
+  compareOverallSentenceLength: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OverallSentenceLengthRequest']
+      }
+    }
+    responses: {
+      /** @description Returns the sentence length comparison */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OverallSentenceLengthComparison']
+        }
+      }
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OverallSentenceLengthComparison']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OverallSentenceLengthComparison']
+        }
+      }
+    }
+  }
   storeManualCalculation: {
     parameters: {
       query?: never
@@ -2757,6 +2747,15 @@ export interface operations {
           'application/json': components['schemas']['CalculatedReleaseDates']
         }
       }
+      /** @description Unable to perform calculation */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
     }
   }
   testCalculation: {
@@ -3142,6 +3141,90 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+    }
+  }
+  validateForDatesManualEntry: {
+    parameters: {
+      query: {
+        releaseDates: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Validation job has run successfully, the response indicates if there are any errors */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+    }
+  }
+  getThingsToDo: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Prisoner's ID (also known as nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully returns the things-to-do list */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ThingsToDo']
+        }
+      }
+      /** @description Unauthorized - valid Oauth2 token required */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ThingsToDo']
+        }
+      }
+      /** @description Forbidden - requires appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ThingsToDo']
         }
       }
     }
@@ -3880,24 +3963,6 @@ export interface operations {
       }
     }
   }
-  getCalculationJson: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
   getSentencesAndOffence: {
     parameters: {
       query?: never
@@ -4573,7 +4638,4 @@ export interface operations {
       }
     }
   }
-}
-type WithRequired<T, K extends keyof T> = T & {
-  [P in K]-?: T[P]
 }

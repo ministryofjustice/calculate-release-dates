@@ -1,8 +1,8 @@
 import { Request } from 'express'
 import { DateTime } from 'luxon'
-import ManualEntryValidationService from './manualEntryValidationService'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService, { DateInputItem, EnteredDate, StorageResponseModel } from './dateValidationService'
+import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import {
   ManualEntrySelectedDate,
   SubmittedDate,
@@ -38,9 +38,9 @@ const errorMessage = {
 }
 export default class ManualEntryService {
   constructor(
-    private readonly manualEntryValidationService: ManualEntryValidationService,
     private readonly dateTypeConfigurationService: DateTypeConfigurationService,
     private readonly dateValidationService: DateValidationService,
+    private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
   ) {
     // intentionally left blank
   }
@@ -75,9 +75,15 @@ export default class ManualEntryService {
       return { error: true, config: mergedConfig }
     }
     const selectedDateTypes: string[] = Array.isArray(req.body.dateSelect) ? req.body.dateSelect : [req.body.dateSelect]
-    const validationMessage = this.manualEntryValidationService.validatePairs(selectedDateTypes)
-    if (validationMessage) {
-      const validationError = { errorMessage: { html: validationMessage } }
+
+    const validationMessages = await this.calculateReleaseDatesService.validateDatesForManualEntry(
+      token,
+      selectedDateTypes,
+    )
+
+    if (validationMessages.messages.length > 0) {
+      const dateErrors = `<div class="govuk-error-message"><ul>${validationMessages.messages.map(e => `<li>${e.text}</li>`).join('\n')}</ul></div>`
+      const validationError = { errorMessage: { html: dateErrors } }
       const mergedConfig = { ...config, ...validationError }
       // eslint-disable-next-line no-restricted-syntax
       this.enrichConfiguration(<DateSelectConfiguration>mergedConfig, req, nomsId)
