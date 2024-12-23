@@ -11,7 +11,7 @@ import UserInputService from '../services/userInputService'
 import { DetailedDate, ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculationCompleteViewModel from '../models/CalculationCompleteViewModel'
 import CalculationSummaryPageViewModel from '../models/CalculationSummaryPageViewModel'
-import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { nomisCalculationSummaryDatesViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import {
   ApprovedDateActionConfig,
   approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
@@ -101,7 +101,7 @@ export default class CalculationRoutes {
       'pages/calculation/calculationSummary',
       new CalculationSummaryPageViewModel(
         model,
-        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
+        nomisCalculationSummaryDatesViewModel(model, false),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, true, {
           nomsId,
           calculationRequestId,
@@ -175,7 +175,7 @@ export default class CalculationRoutes {
       'pages/calculation/printCalculationSummary',
       new CalculationSummaryPageViewModel(
         model,
-        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
+        nomisCalculationSummaryDatesViewModel(model, hasNone), // copy this
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
         req.session.isAddDatesFlow,
         req.originalUrl,

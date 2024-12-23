@@ -40,7 +40,7 @@ export const filteredListOfDates = [
   'APD',
 ]
 
-export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
+export function nomisCalculationSummaryDatesViewModel(
   model: CalculationSummaryViewModel | NomisCalculationSummary,
   showNoDatesApply: boolean,
 ): CalculationSummaryDatesCardModel {

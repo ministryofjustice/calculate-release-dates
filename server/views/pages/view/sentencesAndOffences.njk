@@ -12,9 +12,9 @@
     {% set backlink = "/?prisonId=" + prisonerDetail.offenderNo %}
     <nav>
         {{ govukBackLink({
-        text: "Back",
-        href: backlink
-    }) }}
+            text: "Back",
+            href: backlink
+        }) }}
     </nav>
 {% endblock %}
 
@@ -28,6 +28,12 @@
                 {% set reason = model.calculationReason.displayName %}
             {% endif %}
 
+            {% if model.calculationType.startsWith("MANUAL") %}
+                {% set source = "Paper calculation" %}
+            {% else %}
+                {% set source = "Calculate release dates service" %}
+            {% endif %}
+
             {% if model.calculationReason|length %}
                 <h2 class="govuk-heading-m">Calculation details</h2>
                 {{ govukSummaryList({
@@ -35,18 +41,27 @@
                     rows: [
                         {
                             key: {
-                            text: "Date"
+                            text: "Date here"
                         },
                             value: {
                             text: model.calculationDate
                         }
-                        },{
+                        },
+                        {
                             key: {
-                                text: "Reason"
-                            },
+                            text: "Reason"
+                        },
                             value: {
-                                text: reason
-                            }
+                            text: reason
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Source"
+                        },
+                        value: {
+                            text: source
+                        }
                         }]
                 }) }}
             {% endif %}

@@ -15,7 +15,7 @@ import ViewCalculateReleaseDatePageViewModel from '../models/ViewCalculateReleas
 import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageViewModel'
 // eslint-disable-next-line prettier/prettier
 import {
-  calculationSummaryDatesCardModelFromCalculationSummaryViewModel,
+  nomisCalculationSummaryDatesViewModel,
   filteredListOfDates,
 } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
@@ -96,6 +96,7 @@ export default class ViewRoutes {
             sentencesAndOffences,
             adjustmentDetails,
             true,
+            detailedCalculationResults.context.calculationType,
             returnToCustody,
             null,
             detailedCalculationResults.context.calculationReason,
@@ -230,7 +231,7 @@ export default class ViewRoutes {
       'pages/view/calculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
         model,
-        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, model.hasNone),
+        nomisCalculationSummaryDatesViewModel(model, model.hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
         nomsId,
       ),
@@ -247,7 +248,7 @@ export default class ViewRoutes {
       'pages/view/printCalculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
         model,
-        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, model.hasNone),
+        nomisCalculationSummaryDatesViewModel(model, model.hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
         nomsId,
       ),
@@ -316,7 +317,7 @@ export default class ViewRoutes {
         pastNomisCalculation.calculatedAt,
         pastNomisCalculation.reason,
         'NOMIS',
-        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(pastNomisCalculation, false),
+        nomisCalculationSummaryDatesViewModel(pastNomisCalculation, false),
       ),
     )
   }

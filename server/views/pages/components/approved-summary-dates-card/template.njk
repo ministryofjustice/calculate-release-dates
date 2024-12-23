@@ -1,6 +1,6 @@
 {% macro approvedDateLine(approvedDate, showActions, actionConfig) %}
     <div class="govuk-summary-list__row">
-        <dt class="custom-summary-list__key release-dates-key govuk-!-font-size-24" style="max-width: 40%;">{{ approvedDate.shortName }}
+        <dt class="custom-summary-list__key release-dates-key govuk-!-font-size-24">{{ approvedDate.shortName }}
             <p class="govuk-hint">{{ approvedDate.fullName }}</p>
         </dt>
         <dd class="govuk-summary-list__value release-dates-value" data-qa="{{ approvedDate.shortName }}-date">{{ approvedDate.date }}

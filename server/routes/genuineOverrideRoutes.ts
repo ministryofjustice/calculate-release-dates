@@ -30,7 +30,7 @@ import GenuineOverridesIndexViewModel from '../models/GenuineOverridesIndexViewM
 import GenuineOverridesLoadReasonsViewModel from '../models/GenuineOverridesLoadReasonsViewModel'
 import GenuineOverridesRemoveDateViewModel from '../models/GenuineOverridesRemoveDateViewModel'
 import GenuineOverridesRequestSupportViewModel from '../models/GenuineOverridesRequestSupportViewModel'
-import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { nomisCalculationSummaryDatesViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import {
   ApprovedDateActionConfig,
   approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
@@ -250,7 +250,7 @@ export default class GenuineOverrideRoutes {
           model,
           formError,
           calculationReference,
-          calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
+          nomisCalculationSummaryDatesViewModel(model, false),
           approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, true, {
             nomsId: detailedCalculationResults.context.prisonerId,
             calculationRequestId,
