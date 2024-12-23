@@ -1,5 +1,5 @@
 # Stage: base image
-FROM node:20.18-bullseye-slim as base
+FROM node:22.12-bookworm-slim as base
 
 ARG BUILD_NUMBER
 ARG GIT_REF
