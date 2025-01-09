@@ -7,7 +7,8 @@
 {% set pageId = "ccard-index" %}
 
 {% set navigation = {
-    activeSubNav: 'release-dates',
+    activeSubNav: 'release-dates', 
+    recalls: { enabled: commonElementConfig.environment == 'dev' },
     documents: { enabled: false },
     courtCases: { enabled: false }
 } %}
