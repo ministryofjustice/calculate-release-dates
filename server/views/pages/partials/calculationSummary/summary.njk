@@ -1,0 +1,39 @@
+<h3 class="govuk-heading-l">Latest calculation</h3>
+<dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-2">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Calculation date
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{ calculationHistory.calculationDate | date('DD MMMM YYYY') }}
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Calculation reason
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{ reason }}
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Establishment
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{ establishment }}
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Source
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{ source }}
+            {% if source === 'Paper calculation' %}
+                <br/>
+                <span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>
+            {% endif %}
+        </dd>
+    </div>
+</dl>

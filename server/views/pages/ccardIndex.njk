@@ -20,7 +20,7 @@
     recalls: { enabled: false }
 } %}
 {% block beforeContent %}
-    {{super()}}
+    {{ super() }}
     {% if showCCARDNav %}
         {{ subNavigation(commonElementConfig.environment, navigation, commonElementConfig.prisonNumber) }}
     {% endif %}
@@ -38,74 +38,31 @@
             {% if calculationHistory.length %}
                 {% if latestCalculationCardConfig %}
                     {% set latestCalc = calculationHistory[0] %}
+
+                    {% set source = "Calculate release dates service" %}
                     {% if latestCalc.calculationSource === 'NOMIS' %}
                         {% set source = "NOMIS" %}
-                    {% else %}
-                        {% if (latestCalc.calculationType) and (latestCalc.calculationType.startsWith("MANUAL")) %}
-                            {% set source = "Paper calculation" %}
-                        {% else %}
-                            {% set source = "Calculate release dates service" %}
-                        {% endif %}
+                    {% elseif latestCalc.calculationType and latestCalc.calculationType.startsWith("MANUAL") %}
+                        {% set source = "Paper calculation" %}
                     {% endif %}
 
-                    {% if latestCalc.establishment %}
-                        {% set establishment = latestCalc.establishment %}
-                    {% else %}
-                        {% set establishment = "Not entered" %}
-                    {% endif %}
+                    {% set establishment = latestCalc.establishment or "Not entered" %}
+                    {% set reason = latestCalc.calculationReason or "Not entered" %}
 
-                    {% if latestCalc.calculationReason %}
-                        {% set reason = latestCalc.calculationReason %}
-                    {% else %}
-                        {% set reason = 'Not entered' %}
-                    {% endif %}
-                    <h3 class="govuk-heading-l">Latest calculation</h3>
-                    <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-2">
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Calculation date
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ calculationHistory.calculationDate | date('DD MMMM YYYY') }}
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Calculation reason
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ reason }}
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Establishment
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                               {{ establishment }}
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Source
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ source }}
-                                {% if source === 'Paper calculation' %}
-                                    <br/>
-                                    <span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>
-                                {% endif %}
-                            </dd>
-                        </div>
-                    </dl>
+                    {% include "./partials/calculationSummary/summary.njk" %}
+
                     {{ latestCalculationCard(latestCalculationCardConfig, latestCalculationCardAction, false) }}
 
                     <ul class="govuk-list">
                         <li class="">
                             {% if latestCalc.calculationSource === 'NOMIS' %}
-                                <a class="govuk-link" href="/view/{{ latestCalc.offenderNo }}/nomis-calculation-summary/{{latestCalc.offenderSentCalculationId}}">View calculation details</a>
+                                <a class="govuk-link"
+                                   href="/view/{{ latestCalc.offenderNo }}/nomis-calculation-summary/{{ latestCalc.offenderSentCalculationId }}">View
+                                    calculation details</a>
                             {% else %}
-                                <a class="govuk-link" href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalc.calculationRequestId }}">View calculation details</a>
+                                <a class="govuk-link"
+                                   href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalc.calculationRequestId }}">View
+                                    calculation details</a>
                             {% endif %}
                         </li>
                     </ul>
@@ -131,8 +88,7 @@
                 title: 'Calculate release dates',
                 dataQa: 'calc-release-dates-for-prisoner-action-link'
             }
-        ]
-        %}
+        ] %}
 
         {% if hasNoIndeterminateSentence %}
             {% set _ = actions.push({
@@ -148,8 +104,7 @@
                     href: '/compare',
                     title: 'Perform bulk comparison',
                     dataQa: 'bulk-comparison-action-link'
-                }), actions)
-            %}
+                }), actions) %}
         {% endif %}
 
         {{ actionsCard(actions) }}
