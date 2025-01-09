@@ -37,9 +37,6 @@ ARG BUILD_NUMBER
 ARG GIT_REF
 ARG GIT_BRANCH
 
-RUN apt-get update && \
-        apt-get install -y make python g++
-
 COPY package*.json ./
 RUN CYPRESS_INSTALL_BINARY=0 npm ci --no-audit
 
