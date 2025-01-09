@@ -10,6 +10,7 @@ describe('CalculationSummaryViewModel', () => {
         null,
         false,
         false,
+        'CALCULATED',
         'Abc',
         { id: 1, displayName: 'Other', isOther: true },
         '',

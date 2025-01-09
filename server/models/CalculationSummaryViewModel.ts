@@ -17,6 +17,7 @@ export default class CalculationSummaryViewModel {
     public sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[],
     public hasNone: boolean,
     public viewJourney: boolean,
+    public calculationType: string,
     public calculationReference: string,
     public calculationReason?: CalculationReason,
     public otherReasonDescription?: string,

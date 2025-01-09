@@ -265,7 +265,7 @@ describe('Start routes tests', () => {
           'Source',
         ])
         const calculationHistoryRow1 = $('[data-qa=calculation-history-table-data-1] td')
-          .map((i, element) => $(element).text())
+          .map((i, element) => $(element).text().trim())
           .get()
         expect(calculationHistoryRow1).toStrictEqual([
           '05 March 2024',
@@ -274,7 +274,7 @@ describe('Start routes tests', () => {
           'Calculate release dates service',
         ])
         const calculationHistoryRow2 = $('[data-qa=calculation-history-table-data-2] td')
-          .map((i, element) => $(element).text())
+          .map((i, element) => $(element).text().trim())
           .get()
         expect(calculationHistoryRow2).toStrictEqual([
           '27 September 2021',

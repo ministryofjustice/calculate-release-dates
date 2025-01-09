@@ -12,12 +12,12 @@
     {% set enableAdjustments = true %}
 {% endif %}
 
-
 {% set navigation = {
     activeSubNav: 'release-dates',
     adjustments: { enabled: enableAdjustments },
     documents: { enabled: false },
-    courtCases: { enabled: false }
+    courtCases: { enabled: false },
+    recalls: { enabled: false }
 } %}
 {% block beforeContent %}
     {{super()}}
@@ -37,8 +37,79 @@
 
             {% if calculationHistory.length %}
                 {% if latestCalculationCardConfig %}
-                    <h3 class="govuk-heading-m">Latest calculation</h3>
-                    {{ latestCalculationCard(latestCalculationCardConfig, latestCalculationCardAction) }}
+                    {% set latestCalc = calculationHistory[0] %}
+                    {% if latestCalc.calculationSource === 'NOMIS' %}
+                        {% set source = "NOMIS" %}
+                    {% else %}
+                        {% if (latestCalc.calculationType) and (latestCalc.calculationType.startsWith("MANUAL")) %}
+                            {% set source = "Paper calculation" %}
+                        {% else %}
+                            {% set source = "Calculate release dates service" %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if latestCalc.establishment %}
+                        {% set establishment = latestCalc.establishment %}
+                    {% else %}
+                        {% set establishment = "Not entered" %}
+                    {% endif %}
+
+                    {% if latestCalc.calculationReason %}
+                        {% set reason = latestCalc.calculationReason %}
+                    {% else %}
+                        {% set reason = 'Not entered' %}
+                    {% endif %}
+                    <h3 class="govuk-heading-l">Latest calculation</h3>
+                    <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-2">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Calculation date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                {{ calculationHistory.calculationDate | date('DD MMMM YYYY') }}
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Calculation reason
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                {{ reason }}
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Establishment
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                               {{ establishment }}
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Source
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                {{ source }}
+                                {% if source === 'Paper calculation' %}
+                                    <br/>
+                                    <span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                    </dl>
+                    {{ latestCalculationCard(latestCalculationCardConfig, latestCalculationCardAction, false) }}
+
+                    <ul class="govuk-list">
+                        <li class="">
+                            {% if latestCalc.calculationSource === 'NOMIS' %}
+                                <a class="govuk-link" href="/view/{{ latestCalc.offenderNo }}/nomis-calculation-summary/{{latestCalc.offenderSentCalculationId}}">View calculation details</a>
+                            {% else %}
+                                <a class="govuk-link" href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalc.calculationRequestId }}">View calculation details</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
                 {% endif %}
 
                 {% include "./partials/calculationHistory/calculationHistory.njk" %}
