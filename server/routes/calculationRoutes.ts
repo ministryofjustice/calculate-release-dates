@@ -177,7 +177,7 @@ export default class CalculationRoutes {
       'pages/calculation/printCalculationSummary',
       new CalculationSummaryPageViewModel(
         model,
-        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone), // copy this
+        calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
         req.session.isAddDatesFlow,
         req.originalUrl,
