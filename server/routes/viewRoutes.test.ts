@@ -42,6 +42,9 @@ let app: Express
 const pastNomisCalculation = {
   calculatedAt: '2022-01-01T00:00:00Z',
   reason: 'Some reason',
+  prisonerDetail: {
+    locationDescription: 'Inside - Leeds HMP',
+  },
   comment: null,
   releaseDates: [
     {
@@ -553,10 +556,11 @@ describe('View journey routes tests', () => {
           expect($('[data-qa=calculation-title]').text()).toStrictEqual('Calculation details')
           expect($('[data-qa=calculation-date]').text()).toStrictEqual('01 January 2022')
           expect($('[data-qa=calculation-reason]').text()).toStrictEqual('Some reason')
+          expect($('[data-qa=calculation-location-description]').text()).toStrictEqual('Inside - Leeds HMP')
           expect($('[data-qa=calculation-source]').text()).toStrictEqual('NOMIS')
-          expect($('[data-qa=release-dates-title]').text()).toContain('Release dates')
           expect($('[data-qa=calculation-date-title]').text()).toStrictEqual('Date of calculation')
-          expect($('[data-qa=calculation-reason-title]').text()).toStrictEqual('Calculation reason')
+          expect($('[data-qa=calculation-reason-title]').text()).toStrictEqual('Reason')
+          expect($('[data-qa=calculation-establishment-title]').text()).toStrictEqual('Establishment')
           expect($('[data-qa=calculation-source-title]').text()).toStrictEqual('Source')
           expect($('[data-qa=HDCED-date]').text().trim()).toContain('Sunday, 12 May 2024')
           expect($('[data-qa=HDCED-short-name]').text().trim()).toContain('HDCED')

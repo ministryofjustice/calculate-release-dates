@@ -20,44 +20,38 @@
 
 {% block content %}
     <div class="govuk-grid-row">
-       <div class="govuk-grid-column-three-quarters">
-           <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" data-qa="calculation-title">Calculation details</h1>
-          <div class="moj-width-container">
-                 <div class="govuk-grid-row">
-                     <div class="govuk-grid-column-two-thirds ">
-                         <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-2">
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key" data-qa="calculation-date-title">Date of calculation</dt>
-                                <dd class="govuk-summary-list__value"  data-qa="calculation-date">{{calculatedAt | date('DD MMMM YYYY')}}</dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key" data-qa="calculation-reason-title">Calculation reason</dt>
-                                <dd class="govuk-summary-list__value" data-qa="calculation-reason">{{reason}}</dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key" data-qa="calculation-source-title">Source</dt>
-                                <dd class="govuk-summary-list__value" data-qa="calculation-source">{{source}}</dd>
-                            </div>
-                         </dl>
-                     </div>
-                 </div>
-          </div>
-          <br>
-          <div class="govuk-summary-card">
-                <div class="govuk-summary-card__title-wrapper">
-                  <h2 class="govuk-summary-card__title">
-                    <span class="govuk-!-font-size-24" data-qa="release-dates-title">Release dates</span>
-                  </h2>
+        <div class="moj-width-container">
+            <h1 class="govuk-heading-xl" data-qa="calculation-title">Calculation details</h1>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-6">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key custom-summary-list__key" data-qa="calculation-date-title">Date of calculation</dt>
+                            <dd class="govuk-summary-list__value" data-qa="calculation-date">{{ calculatedAt | date('DD MMMM YYYY') }}</dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key custom-summary-list__key" data-qa="calculation-reason-title">Reason</dt>
+                            <dd class="govuk-summary-list__value" data-qa="calculation-reason">{{ reason }}</dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key custom-summary-list__key" data-qa="calculation-establishment-title">Establishment</dt>
+                            <dd class="govuk-summary-list__value" data-qa="calculation-location-description">{{ prisonerDetail.locationDescription }}</dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key custom-summary-list__key" data-qa="calculation-source-title">Source</dt>
+                            <dd class="govuk-summary-list__value" data-qa="calculation-source">{{ source }}</dd>
+                        </div>
+                    </dl>
                 </div>
-                <div class="govuk-summary-card__content">
-                  {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel) }}
+            </div>
+        </div>
+        <div class="moj-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-three-quarters">
+                    <h2 class="govuk-heading-l">Release dates</h2>
+                    {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel) }}
                 </div>
-          </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
-            {% include "../partials/calculationSummary/howDatesCalculatedInset.njk" %}
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -39,6 +39,15 @@
             {% endif %}
 
             {% if model.calculationReason|length %}
+                {% if model.calculationSource === 'NOMIS' %}
+                    {% set source = "NOMIS" %}
+                {% else %}
+                    {% if model.calculationType.startsWith("MANUAL") %}
+                        {% set source = "Paper calculation" %}
+                    {% else %}
+                        {% set source = "Calculate release dates service" %}
+                    {% endif %}
+                {% endif %}
                 <h2 class="govuk-heading-m">Calculation details</h2>
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
@@ -56,6 +65,20 @@
                             },
                             value: {
                                 text: reason
+                            }
+                        },{
+                            key: {
+                                text: "Establishment"
+                            },
+                            value: {
+                                text: model.prisonerDetail.locationDescription
+                            }
+                        },{
+                            key: {
+                                text: "Source"
+                            },
+                            value: {
+                                text: source
                             }
                         }]
                 }) }}
