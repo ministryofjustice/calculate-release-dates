@@ -1,16 +1,17 @@
 {% macro releaseDateLine(releaseDate) %}
     <div class="govuk-summary-list__row">
-        <dt class="custom-summary-list__key release-dates-key govuk-!-font-size-24" style="max-width: 40%;" data-qa="{{ releaseDate.shortName }}-short-name">{{ releaseDate.shortName }}
+        <dt class="custom-summary-list__key release-dates-key govuk-!-font-size-24"
+            data-qa="{{ releaseDate.shortName }}-short-name">{{ releaseDate.shortName }}
             <p class="govuk-hint" data-qa="{{ releaseDate.shortName }}-full-name">{{ releaseDate.fullName }}</p>
         </dt>
-        <dd class="govuk-summary-list__value" style="max-width: 40%;" data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | date('dddd, DD MMMM YYYY') }}
+        <dd class="govuk-summary-list__value"
+            data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | date('dddd, DD MMMM YYYY') }}
             <p style="margin-top: 10px;" data-qa="{{ releaseDate.shortName }}-release-date-hints">
-            {% for hint in releaseDate.hints %}
-                {{ hint.html | safe}}
-            {% endfor %}
+                {% for hint in releaseDate.hints %}
+                    {{ hint.html | safe }}
+                {% endfor %}
             </p>
         </dd>
-        <dd class="govuk-summary-list__actions"></dd>
     </div>
 {% endmacro %}
 
@@ -20,7 +21,7 @@
 {% endmacro %}
 
 <dl class="govuk-summary-list">
-    {%  for releaseDate in calculationSummaryDatesCardModel.releaseDates %}
+    {% for releaseDate in calculationSummaryDatesCardModel.releaseDates %}
         {{ releaseDateLine(releaseDate) }}
     {% endfor %}
     {% if calculationSummaryDatesCardModel.showNoDatesApply %}

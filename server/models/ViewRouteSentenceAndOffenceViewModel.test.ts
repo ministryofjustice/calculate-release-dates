@@ -92,6 +92,7 @@ const stubbedAdjustments = {
     },
   ],
 }
+const sentenceCalculationType = 'CALCULATION'
 
 describe('ViewRouteSentenceAndOffenceViewModel', () => {
   describe('handles multiple offences to a sentence banner', () => {
@@ -161,6 +162,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
         sentencesAndOffences,
         stubbedEmptyAdjustments,
         false,
+        sentenceCalculationType,
         stubbedReturnToCustodyDate,
         null,
       )
@@ -233,6 +235,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
         sentencesAndOffences,
         stubbedEmptyAdjustments,
         false,
+        sentenceCalculationType,
         stubbedReturnToCustodyDate,
         null,
       )
@@ -247,6 +250,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
       [],
       stubbedAdjustments as AnalysedPrisonApiBookingAndSentenceAdjustments,
       false,
+      sentenceCalculationType,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -260,6 +264,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
       [],
       stubbedAdjustments as AnalysedPrisonApiBookingAndSentenceAdjustments,
       false,
+      sentenceCalculationType,
       stubbedReturnToCustodyDate,
       null,
     )

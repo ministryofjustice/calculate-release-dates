@@ -10,10 +10,11 @@
     activeSubNav: 'release-dates', 
     recalls: { enabled: commonElementConfig.environment == 'dev' },
     documents: { enabled: false },
-    courtCases: { enabled: false }
+    courtCases: { enabled: false },
+    recalls: { enabled: false }
 } %}
 {% block beforeContent %}
-    {{super()}}
+    {{ super() }}
     {% if showCCARDNav %}
         {{ subNavigation(commonElementConfig.environment, navigation, commonElementConfig.prisonNumber) }}
     {% endif %}
@@ -30,8 +31,36 @@
 
             {% if calculationHistory.length %}
                 {% if latestCalculationCardConfig %}
-                    <h3 class="govuk-heading-m">Latest calculation</h3>
-                    {{ latestCalculationCard(latestCalculationCardConfig, latestCalculationCardAction) }}
+                    {% set latestCalc = calculationHistory[0] %}
+
+                    {% set source = "Calculate release dates service" %}
+                    {% if latestCalc.calculationSource === 'NOMIS' %}
+                        {% set source = "NOMIS" %}
+                    {% elseif latestCalc.calculationType and latestCalc.calculationType.startsWith("MANUAL") %}
+                        {% set source = "Paper calculation" %}
+                    {% endif %}
+
+                    {% set establishment = latestCalc.establishment or "Not entered" %}
+                    {% set reason = latestCalc.calculationReason or "Not entered" %}
+
+                    {% include "./partials/calculationSummary/summary.njk" %}
+
+                    {{ latestCalculationCard(latestCalculationCardConfig, latestCalculationCardAction, false) }}
+
+                    <ul class="govuk-list">
+                        <li class="">
+                            {% if latestCalc.calculationSource === 'NOMIS' %}
+                                <a class="govuk-link"
+                                   href="/view/{{ latestCalc.offenderNo }}/nomis-calculation-summary/{{ latestCalc.offenderSentCalculationId }}">View
+                                    calculation details</a>
+                            {% else %}
+                                <a class="govuk-link"
+                                   href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalc.calculationRequestId }}">View
+                                    calculation details</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
                 {% endif %}
 
                 {% include "./partials/calculationHistory/calculationHistory.njk" %}
@@ -53,8 +82,7 @@
                 title: 'Calculate release dates',
                 dataQa: 'calc-release-dates-for-prisoner-action-link'
             }
-        ]
-        %}
+        ] %}
 
         {% if hasNoIndeterminateSentence %}
             {% set _ = actions.push({
@@ -70,8 +98,7 @@
                     href: '/compare',
                     title: 'Perform bulk comparison',
                     dataQa: 'bulk-comparison-action-link'
-                }), actions)
-            %}
+                }), actions) %}
         {% endif %}
 
         {{ actionsCard(actions) }}
