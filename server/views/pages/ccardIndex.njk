@@ -6,15 +6,9 @@
 {% set pageTitle = applicationName + " - Home" %}
 {% set pageId = "ccard-index" %}
 
-{% if commonElementConfig.establishmentCode == 'OUT' or commonElementConfig.establishmentCode == 'TRN' %}
-    {% set enableAdjustments = false %}
-{% else %}
-    {% set enableAdjustments = true %}
-{% endif %}
-
 {% set navigation = {
-    activeSubNav: 'release-dates',
-    adjustments: { enabled: enableAdjustments },
+    activeSubNav: 'release-dates', 
+    recalls: { enabled: commonElementConfig.environment == 'dev' },
     documents: { enabled: false },
     courtCases: { enabled: false },
     recalls: { enabled: false }
