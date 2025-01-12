@@ -30,7 +30,9 @@
     {% include "../partials/ersedCannotHappenNotificationBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Calculation summary</h1>
+            <h1 class="govuk-heading-xl">Calculation details</h1>
+
+            {% set isManualCalc = (model.calculationType != null) and (model.calculationType.startsWith("MANUAL")) %}
 
             {% if model.calculationReason.isOther %}
                 {% set reason = "Other (" + model.otherReasonDescription + ")" %}
@@ -39,43 +41,43 @@
             {% endif %}
 
             {% if model.calculationReason|length %}
+                {% set source = "Calculate release dates service" %}
                 {% if model.calculationSource === 'NOMIS' %}
                     {% set source = "NOMIS" %}
-                {% else %}
-                    {% if model.calculationType.startsWith("MANUAL") %}
-                        {% set source = "Paper calculation" %}
-                    {% else %}
-                        {% set source = "Calculate release dates service" %}
-                    {% endif %}
+                {% elseif isManualCalc %}
+                    {% set source = "Paper calculation <br/><span class=\"govuk-!-font-size-16 govuk-hint\">Entered in the Calculate release dates service</span>" | safe %}
                 {% endif %}
-                <h2 class="govuk-heading-m">Calculation details</h2>
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
                     rows: [
                         {
                             key: {
-                            text: "Date"
+                            text: "Calculation date",
+                            classes: "custom-summary-list__key"
                         },
                             value: {
                             text: model.calculationDate
                         }
                         },{
                             key: {
-                                text: "Reason"
+                                text: "Calculation reason",
+                                classes: "custom-summary-list__key"
                             },
                             value: {
                                 text: reason
                             }
                         },{
                             key: {
-                                text: "Establishment"
+                                text: "Establishment",
+                                classes: "custom-summary-list__key"
                             },
                             value: {
                                 text: model.prisonerDetail.locationDescription
                             }
                         },{
                             key: {
-                                text: "Source"
+                                text: "Source",
+                                classes: "custom-summary-list__key"
                             },
                             value: {
                                 text: source
@@ -93,19 +95,24 @@
     </div>
 
     <nav class="moj-sub-navigation" aria-label="Sub navigation">
-      <ul class="moj-sub-navigation__list">
-        <li class="moj-sub-navigation__item">
-          <a class="moj-sub-navigation__link" data-qa="sub-nav-sent-and-off" href={{"/view/" + nomsId + "/sentences-and-offences/" + model.calculationRequestId}}>Sentence and offence information</a>
-        </li>
-        <li class="moj-sub-navigation__item">
-          <a class="moj-sub-navigation__link" data-qa="sub-nav-calc-summary" aria-current="page" href={{"/view/" + nomsId + "/calculation-summary/" + model.calculationRequestId}}>Calculation summary</a>
-        </li>
-      </ul>
+        <ul class="moj-sub-navigation__list">
+            <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link" data-qa="sub-nav-sent-and-off"
+                   href={{ "/view/" + nomsId + "/sentences-and-offences/" + model.calculationRequestId }}>Sentence and
+                    offence information</a>
+            </li>
+            <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link" data-qa="sub-nav-calc-summary" aria-current="page"
+                   href={{ "/view/" + nomsId + "/calculation-summary/" + model.calculationRequestId }}>Calculation
+                    summary</a>
+            </li>
+        </ul>
     </nav>
 
-    <a data-qa="slip-establishment-copy" data-prevent-double-click="true" class="govuk-button govuk-button--secondary no-js-hidden govuk-!-margin-bottom-0" data-module="govuk-button"
-         href="{{ "/view/" + model.nomsId + "/calculation-summary/" + model.calculationRequestId + "/print" }}">
-         Print calculation summary
+    <a data-qa="slip-establishment-copy" data-prevent-double-click="true"
+       class="govuk-button govuk-button--secondary no-js-hidden govuk-!-margin-bottom-0" data-module="govuk-button"
+       href="{{ "/view/" + model.nomsId + "/calculation-summary/" + model.calculationRequestId + "/print" }}">
+        Print calculation summary
     </a>
 
     <div class="govuk-grid-row">
@@ -123,12 +130,14 @@
             </div>
         </div>
     {% endif %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
-            {% include "../partials/calculationSummary/howDatesCalculatedInset.njk" %}
+    {% if isManualCalc == false %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
+                {% include "../partials/calculationSummary/howDatesCalculatedInset.njk" %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% include "../partials/calculationSummaryBreakdown.njk" %}
 

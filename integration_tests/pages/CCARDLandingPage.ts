@@ -17,8 +17,4 @@ export default class CCARDLandingPage extends Page {
   addReleaseDatesAction(): PageElement {
     return cy.get('[data-qa=calc-release-dates-for-adding-dates-link]')
   }
-
-  latestCalcViewDetailsAction(): PageElement {
-    return cy.get('[data-qa=latest-calc-card-action]')
-  }
 }

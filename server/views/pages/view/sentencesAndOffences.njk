@@ -21,31 +21,30 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
-            <h1 class="govuk-heading-xl" id="check-nomis-heading" data-qa="sentAndOff-title">Sentence and offence information</h1>
+            <h1 class="govuk-heading-xl" id="check-nomis-heading" data-qa="sentAndOff-title">Calculation details</h1>
             {% if model.calculationReason.isOther %}
                 {% set reason = "Other (" + model.otherReasonDescription + ")" %}
             {% else %}
                 {% set reason = model.calculationReason.displayName %}
             {% endif %}
 
+            {% set isManualCalc = (model.calculationType != null) and (model.calculationType.startsWith("MANUAL")) %}
+
+            {% set source = "Calculate release dates service" %}
             {% if model.calculationSource === 'NOMIS' %}
                 {% set source = "NOMIS" %}
-            {% else %}
-                {% if model.calculationType.startsWith("MANUAL") %}
-                    {% set source = "Paper calculation" %}
-                {% else %}
-                    {% set source = "Calculate release dates service" %}
-                {% endif %}
+            {% elseif isManualCalc %}
+                {% set source = "Paper calculation <br/><span class=\"govuk-!-font-size-16 govuk-hint\">Entered in the Calculate release dates service</span>" | safe %}
             {% endif %}
 
             {% if model.calculationReason|length %}
-                <h2 class="govuk-heading-m">Calculation details</h2>
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
                     rows: [
                         {
                             key: {
-                            text: "Date here"
+                            text: "Calculation date",
+                            classes: "custom-summary-list__key"
                         },
                             value: {
                             text: model.calculationDate
@@ -53,7 +52,8 @@
                         },
                         {
                             key: {
-                            text: "Reason"
+                            text: "Calculation reason",
+                            classes: "custom-summary-list__key"
                         },
                             value: {
                             text: reason
@@ -61,7 +61,8 @@
                         },
                         {
                             key: {
-                            text: "Establishment"
+                            text: "Establishment",
+                            classes: "custom-summary-list__key"
                         },
                             value: {
                             text: model.prisonerDetail.assignedLivingUnit.agencyName
@@ -69,7 +70,8 @@
                         },
                         {
                             key: {
-                            text: "Source"
+                            text: "Source",
+                            classes: "custom-summary-list__key"
                         },
                         value: {
                             text: source

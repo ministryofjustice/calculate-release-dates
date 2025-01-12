@@ -26,11 +26,10 @@
     {% endif %}
 {% endblock %}
 {% block content %}
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row release-dates-summary-container">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Release dates and calculations</h1>
         </div>
-
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -51,7 +50,7 @@
 
                     {% include "./partials/calculationSummary/summary.njk" %}
 
-                    {{ latestCalculationCard(latestCalculationCardConfig, latestCalculationCardAction, false) }}
+                    {{ latestCalculationCard(latestCalculationCardConfig, null, false) }}
 
                     <ul class="govuk-list">
                         <li class="">
