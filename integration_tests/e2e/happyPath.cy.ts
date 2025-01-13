@@ -128,9 +128,6 @@ context('End to end happy path of user journey', () => {
     const cancelQuestionPage = Page.verifyOnPage(CancelQuestionPage)
     cancelQuestionPage.yesOption().check()
     cancelQuestionPage.confirm().click()
-
-    const landingPage1 = Page.verifyOnPage(CCARDLandingPage)
-    landingPage1.latestCalcViewDetailsAction().click()
   })
 
   it('View journey', () => {
@@ -140,8 +137,8 @@ context('End to end happy path of user journey', () => {
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
 
-    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
-    ccardLandingPage.latestCalcViewDetailsAction().click()
+    const landingPage = Page.verifyOnPage(CCARDLandingPage)
+    landingPage.navigateToSentenceDetailsAction().click()
 
     const checkInformationPage = Page.verifyOnPage(ViewSentencesAndOffencesPage)
     checkInformationPage.offenceTitle('123').should('have.text', '123 - Doing a crime')

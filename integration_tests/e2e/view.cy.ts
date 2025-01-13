@@ -26,7 +26,6 @@ context('View journey tests', () => {
 
     const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
     ccardLandingPage.hasMiniProfile()
-    ccardLandingPage.latestCalcViewDetailsAction().should('not.exist')
     ccardLandingPage.calculateReleaseDatesAction().should('exist')
   })
 })

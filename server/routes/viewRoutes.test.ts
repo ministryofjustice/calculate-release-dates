@@ -557,7 +557,7 @@ describe('View journey routes tests', () => {
           expect($('[data-qa=calculation-date]').text()).toStrictEqual('01 January 2022')
           expect($('[data-qa=calculation-reason]').text()).toStrictEqual('Some reason')
           expect($('[data-qa=calculation-location-description]').text()).toStrictEqual('Inside - Leeds HMP')
-          expect($('[data-qa=calculation-source]').text()).toStrictEqual('NOMIS')
+          expect($('[data-qa=calculation-source]').text().trim()).toStrictEqual('NOMIS')
           expect($('[data-qa=calculation-date-title]').text()).toStrictEqual('Date of calculation')
           expect($('[data-qa=calculation-reason-title]').text()).toStrictEqual('Reason')
           expect($('[data-qa=calculation-establishment-title]').text()).toStrictEqual('Establishment')
@@ -646,7 +646,7 @@ describe('View journey routes tests', () => {
           expect($('[data-qa=sub-nav-sent-and-off]').first().attr('href')).toStrictEqual(
             '/view/A1234AA/sentences-and-offences/123456',
           )
-          expect($('[data-qa=sentAndOff-title]').text()).toStrictEqual('Sentence and offence information')
+          expect($('[data-qa=sentAndOff-title]').text()).toStrictEqual('Calculation details')
           expect(res.text).toContain('A1234AA')
           expect(res.text).toContain('Anon')
           expect(res.text).toContain('Nobody')
@@ -1037,10 +1037,39 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('HDCED with adjustments')
           expect(res.text).toContain('13 May 2029')
           expect(res.text).toContain('14 May 2029 minus 1 day')
-          expect(res.text).toContain('Reason')
+          expect(res.text).toContain('Calculation reason')
           expect(res.text).toContain('A calculation reason')
           expect(res.text).toContain('01 June 2020')
           expect(res.text).toContain('/?prisonId=A1234AA')
+          expect(res.text).toContain('Why are some details missing?')
+          expect(res.text).toContain('How are final release dates calculated?')
+          expectMiniProfile(res.text, expectedMiniProfile)
+        })
+    })
+
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should not show help links for manual calculation', () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: {
+          calculationRequestId: stubbedCalculationResults.calculationRequestId,
+          prisonerId: stubbedCalculationResults.prisonerId,
+          bookingId: stubbedCalculationResults.bookingId,
+          calculationDate: stubbedCalculationResults.calculationDate,
+          calculationStatus: stubbedCalculationResults.calculationStatus,
+          calculationReference: stubbedCalculationResults.calculationReference,
+          calculationType: 'MANUAL_OVERRIDE',
+          calculationReason: stubbedCalculationResults.calculationReason,
+          otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+        },
+      })
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).not.toContain('Why are some details missing?')
+          expect(res.text).not.toContain('How are final release dates calculated?')
           expectMiniProfile(res.text, expectedMiniProfile)
         })
     })
@@ -1151,7 +1180,7 @@ describe('View journey routes tests', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).toContain('Reason')
+          expect(res.text).toContain('Calculation reason')
           expect(res.text).toContain('A calculation reason')
           expect(res.text).toContain('13 January 2024')
         })
@@ -1193,7 +1222,7 @@ describe('View journey routes tests', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).toContain('Reason')
+          expect(res.text).toContain('Calculation reason')
           expect(res.text).toContain('Other (Another reason for calculation)')
           expect(res.text).toContain('19 January 2024')
         })

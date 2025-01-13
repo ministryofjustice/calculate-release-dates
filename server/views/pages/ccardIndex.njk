@@ -1,7 +1,6 @@
 {% extends "../partials/layout.njk" %}
 {% from "hmpps/components/court-cases-release-dates/actions-card/macro.njk" import actionsCard %}
 {% from "hmpps/components/court-cases-release-dates/sub-navigation/macro.njk" import subNavigation %}
-{% from "hmpps/components/court-cases-release-dates/latest-calculation-card/macro.njk" import latestCalculationCard %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set pageId = "ccard-index" %}
@@ -13,18 +12,19 @@
     courtCases: { enabled: false },
     recalls: { enabled: false }
 } %}
+
 {% block beforeContent %}
     {{ super() }}
     {% if showCCARDNav %}
         {{ subNavigation(commonElementConfig.environment, navigation, commonElementConfig.prisonNumber) }}
     {% endif %}
 {% endblock %}
+
 {% block content %}
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row release-dates-summary-container">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Release dates and calculations</h1>
         </div>
-
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -44,36 +44,27 @@
                     {% set reason = latestCalc.calculationReason or "Not entered" %}
 
                     {% include "./partials/calculationSummary/summary.njk" %}
+                    {% include "./partials/calculationSummary/minimalCalculationCard.njk" %}
 
-                    {{ latestCalculationCard(latestCalculationCardConfig, latestCalculationCardAction, false) }}
-
-                    <ul class="govuk-list">
-                        <li class="">
-                            {% if latestCalc.calculationSource === 'NOMIS' %}
-                                <a class="govuk-link"
-                                   href="/view/{{ latestCalc.offenderNo }}/nomis-calculation-summary/{{ latestCalc.offenderSentCalculationId }}">View
-                                    calculation details</a>
-                            {% else %}
-                                <a class="govuk-link"
-                                   href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalc.calculationRequestId }}">View
-                                    calculation details</a>
-                            {% endif %}
-                        </li>
-                    </ul>
+                    {% if latestCalc.calculationSource !== 'NOMIS' %}
+                        <ul class="govuk-list">
+                            <li>
+                                <a data-qa="ccard-sentence-details-link" class="govuk-link"
+                                   href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalc.calculationRequestId }}">View calculation details</a>
+                            </li>
+                        </ul>
+                    {% endif %}
                     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+                    {% include "./partials/calculationHistory/calculationHistory.njk" %}
+                {% else %}
+                    {% set calculate_release_dates = {
+                        href: '/calculation/' + prisonerDetail.offenderNo + '/reason',
+                        title: 'Calculate release dates',
+                        dataQa: 'calc-release-dates-for-prisoner-panel-link'
+                    } %}
+                    {% include "./partials/calculationHistory/noCalculations.njk" %}
                 {% endif %}
-
-                {% include "./partials/calculationHistory/calculationHistory.njk" %}
-
-            {% else %}
-
-                {% set calculate_release_dates ={
-                    href: '/calculation/' + prisonerDetail.offenderNo + '/reason',
-                    title: 'Calculate release dates',
-                    dataQa: 'calc-release-dates-for-prisoner-panel-link'
-                } %}
-                {% include "./partials/calculationHistory/noCalculations.njk" %}
-
             {% endif %}
         </div>
         {% set actions = [
