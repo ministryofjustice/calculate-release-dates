@@ -10,6 +10,10 @@ export default class CCARDLandingPage extends Page {
     return new CCARDLandingPage()
   }
 
+  navigateToSentenceDetailsAction(): PageElement {
+    return cy.get('[data-qa=ccard-sentence-details-link]')
+  }
+
   calculateReleaseDatesAction(): PageElement {
     return cy.get('[data-qa=calc-release-dates-for-prisoner-action-link]')
   }

@@ -742,7 +742,7 @@ export default {
           {
             offenderNo: 'A1234AB',
             calculationDate: '2024-03-05',
-            calculationSource: 'NOMIS',
+            calculationSource: 'CRS',
             commentText: 'a calculation',
             calculationType: 'CALCULATED',
             establishment: 'Kirkham (HMP)',

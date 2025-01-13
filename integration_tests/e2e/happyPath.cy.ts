@@ -137,6 +137,9 @@ context('End to end happy path of user journey', () => {
     prisonerSearchPage.searchForFirstName('Marvin')
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
 
+    const landingPage = Page.verifyOnPage(CCARDLandingPage)
+    landingPage.navigateToSentenceDetailsAction().click()
+
     const checkInformationPage = Page.verifyOnPage(ViewSentencesAndOffencesPage)
     checkInformationPage.offenceTitle('123').should('have.text', '123 - Doing a crime')
     checkInformationPage.loadCalculationSummary().click()
