@@ -33,6 +33,7 @@
                 {% if latestCalculationCardConfig %}
                     {% set latestCalc = calculationHistory[0] %}
 
+                    {% set calculationDate = latestCalc.calculationDate %}
                     {% set source = "Calculate release dates service" %}
                     {% if latestCalc.calculationSource === 'NOMIS' %}
                         {% set source = "NOMIS" %}
