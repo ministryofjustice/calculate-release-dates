@@ -18,6 +18,22 @@ export default class CCARDLandingPage extends Page {
     return cy.get('[data-qa=calc-release-dates-for-prisoner-action-link]')
   }
 
+  latestCalculationDate(): PageElement {
+    return cy.get('[data-qa=calculation-summary-date]')
+  }
+
+  latestCalculationReason(): PageElement {
+    return cy.get('[data-qa=calculation-summary-reason]')
+  }
+
+  latestCalculationEstablishment(): PageElement {
+    return cy.get('[data-qa=calculation-summary-establishment]')
+  }
+
+  latestCalculationSource(): PageElement {
+    return cy.get('[data-qa=calculation-summary-source]')
+  }
+
   addReleaseDatesAction(): PageElement {
     return cy.get('[data-qa=calc-release-dates-for-adding-dates-link]')
   }

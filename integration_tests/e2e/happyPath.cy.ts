@@ -138,6 +138,35 @@ context('End to end happy path of user journey', () => {
     prisonerSearchPage.prisonerLinkFor('A1234AB').click()
 
     const landingPage = Page.verifyOnPage(CCARDLandingPage)
+
+    landingPage
+      .latestCalculationDate()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('05 March 2024')
+      })
+
+    landingPage
+      .latestCalculationReason()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('Transfer')
+      })
+
+    landingPage
+      .latestCalculationEstablishment()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('Kirkham (HMP)')
+      })
+
+    landingPage
+      .latestCalculationSource()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('Calculate release dates service')
+      })
+
     landingPage.navigateToSentenceDetailsAction().click()
 
     const checkInformationPage = Page.verifyOnPage(ViewSentencesAndOffencesPage)
