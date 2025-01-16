@@ -2,11 +2,14 @@ import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import CalculationReasonViewModel from '../models/CalculationReasonViewModel'
+import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
+import config from '../config'
 
 export default class CalculationQuestionRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
+    private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
   ) {
     // intentionally left blank
   }
@@ -19,6 +22,16 @@ export default class CalculationQuestionRoutes {
 
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+
+    const thingsToDo = await this.courtCasesReleaseDatesService.getThingsToDo(nomsId)
+
+    if (
+      thingsToDo.hasAdjustmentThingsToDo &&
+      thingsToDo.adjustmentThingsToDo.adaIntercept.type !== 'NONE' &&
+      config.featureToggles.thingsToDo
+    ) {
+      return res.redirect(`${config.adjustments.url}/${nomsId}/additional-days/intercept`)
+    }
 
     return res.render(
       'pages/calculation/reason',
