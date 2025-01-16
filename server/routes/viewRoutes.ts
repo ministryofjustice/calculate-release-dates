@@ -310,6 +310,7 @@ export default class ViewRoutes {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const pastNomisCalculation = await this.calculateReleaseDatesService.getNomisCalculationSummary(
       offenderSentCalculationId,
+      prisonerDetail.bookingId,
       token,
     )
     res.render(
