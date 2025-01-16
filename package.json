@@ -122,7 +122,7 @@
     "express-session": "^1.18.1",
     "govuk-frontend": "^5.7.1",
     "helmet": "^8.0.0",
-    "hmpps-court-cases-release-dates-design": "^2.13.0",
+    "hmpps-court-cases-release-dates-design": "^4.1.0",
     "http-errors": "^2.0.0",
     "jwt-decode": "^4.0.0",
     "luxon": "^3.5.0",
