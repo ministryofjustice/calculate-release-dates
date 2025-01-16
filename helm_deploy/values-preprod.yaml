@@ -28,7 +28,9 @@ generic-service:
     CALCULATE_RELEASE_DATES_API_TIMEOUT_RESPONSE: 60000
     CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE: 60000
     ENVIRONMENT_NAME: PRE-PRODUCTION
-
+    ADJUSTMENTS_UI_URL: "https://adjust-release-dates-preprod.hmpps.service.justice.gov.uk"
+    FEATURE_FLAG_THINGS_TO_DO: "false"
+    COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-preprod.hmpps.service.justice.gov.uk"
   allowlist:
     penetration-test-ip-1: 54.37.241.156/30
     penetration-test-ip-2: 167.71.136.237/32
