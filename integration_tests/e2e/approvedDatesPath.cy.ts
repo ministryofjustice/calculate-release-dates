@@ -41,6 +41,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubGetLatestCalculation')
     cy.task('stubGetReferenceDates')
     cy.task('stubHasNoIndeterminateSentences')
+    cy.task('stubGetThingsToDo')
   })
 
   it('Can add all dates', () => {
