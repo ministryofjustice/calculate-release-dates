@@ -54,6 +54,14 @@ export default {
     expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 20)),
   },
   apis: {
+    courtCasesReleaseDatesApi: {
+      url: get('COURT_CASES_RELEASE_DATES_API_URL', 'http://localhost:8083', requiredInProduction),
+      timeout: {
+        response: Number(get('COURT_CASES_RELEASE_DATES_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('COURT_CASES_RELEASE_DATES_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('COURT_CASES_RELEASE_DATES_API_TIMEOUT_RESPONSE', 10000))),
+    },
     hmppsAuth: {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
       externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://localhost:9090/auth')),
@@ -122,6 +130,9 @@ export default {
       url: get('COURT_CASES_AND_RELEASE_DATES_URL', 'http://localhost:3100', requiredInProduction),
     },
   },
+  adjustments: {
+    url: get('ADJUSTMENTS_UI_URL', 'http://127.0.0.1:3000/adjustments', requiredInProduction),
+  },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   analytics: {
     tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),
@@ -129,6 +140,7 @@ export default {
   featureToggles: {
     sdsExclusionIndicatorsEnabled: get('SDS_EXCLUSION_INDICATORS_ENABLED', false) === 'true',
     showBreakdown: get('SHOW_BREAKDOWN', false) === 'true',
+    thingsToDo: get('FEATURE_FLAG_THINGS_TO_DO', 'false') === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),

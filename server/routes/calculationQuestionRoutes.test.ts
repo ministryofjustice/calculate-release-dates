@@ -12,15 +12,22 @@ import {
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import { FullPageError } from '../types/FullPageError'
+import { ThingsToDo } from '../@types/courtCasesReleaseDatesApi/types'
+import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
+import config from '../config'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/userInputService')
+jest.mock('../services/courtCasesReleaseDatesService')
 
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(
+  null,
+) as jest.Mocked<CourtCasesReleaseDatesService>
 
 let app: Express
 
@@ -63,6 +70,36 @@ const expectedMiniProfile = {
   status: 'Serving Life Imprisonment',
 }
 
+const noThingsToDo = {
+  prisonerId: 'ABC123',
+  calculationThingsToDo: [],
+  adjustmentThingsToDo: {
+    prisonerId: 'ABC123',
+    thingsToDo: [],
+    adaIntercept: {},
+  },
+  hasAdjustmentThingsToDo: false,
+  hasCalculationThingsToDo: false,
+} as ThingsToDo
+
+const thingsToDoWithProspective = {
+  prisonerId: 'ABC123',
+  calculationThingsToDo: [],
+  adjustmentThingsToDo: {
+    prisonerId: 'ABC123',
+    thingsToDo: ['ADA_INTERCEPT'],
+    adaIntercept: {
+      type: 'PADAS',
+      number: 2,
+      anyProspective: true,
+      messageArguments: [],
+      message: 'Prospective ADA message.',
+    },
+  },
+  hasAdjustmentThingsToDo: true,
+  hasCalculationThingsToDo: false,
+} as ThingsToDo
+
 const stubbedCalculationReasons = [
   { id: 9, isOther: false, displayName: '2 day check' },
   { id: 10, isOther: false, displayName: 'Appeal decision' },
@@ -71,7 +108,7 @@ const stubbedCalculationReasons = [
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { userService, prisonerService, calculateReleaseDatesService },
+    services: { userService, prisonerService, calculateReleaseDatesService, courtCasesReleaseDatesService },
   })
 })
 
@@ -202,6 +239,7 @@ it('POST /calculation/:nomsId/reason should return to the reason page and displa
 it('GET /calculation/:nomsId/reason should include the mini profile', () => {
   prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
   calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+  courtCasesReleaseDatesService.getThingsToDo.mockResolvedValue(noThingsToDo)
 
   return request(app)
     .get('/calculation/A1234AA/reason/')
@@ -214,9 +252,37 @@ it('GET /calculation/:nomsId/reason should include the mini profile', () => {
       expectMiniProfile(res.text, expectedMiniProfile)
     })
 })
+it('GET /calculation/:nomsId/reason should be ada intercepted if there are ada review needed', () => {
+  config.adjustments.url = 'http://localhost:9000'
+  config.featureToggles.thingsToDo = true
+  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+  courtCasesReleaseDatesService.getThingsToDo.mockResolvedValue(thingsToDoWithProspective)
+
+  return request(app)
+    .get('/calculation/A1234AA/reason/')
+    .expect(302)
+    .expect('Location', `${config.adjustments.url}/A1234AA/additional-days/intercept`)
+})
 it('GET /calculation/:nomsId/reason back should take you to CCARD landing page', () => {
   prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
   calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+  courtCasesReleaseDatesService.getThingsToDo.mockResolvedValue(noThingsToDo)
+
+  return request(app)
+    .get('/calculation/A1234AA/reason/')
+    .expect(200)
+    .expect(res => {
+      const $ = cheerio.load(res.text)
+      expect($('.govuk-back-link').first().attr('href')).toStrictEqual('/?prisonId=A1234AA')
+    })
+})
+it('GET /calculation/:nomsId/reason should not redirect if feture toggle off and hasThingsToDo', () => {
+  config.adjustments.url = 'http://localhost:9000'
+  config.featureToggles.thingsToDo = false
+  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+  courtCasesReleaseDatesService.getThingsToDo.mockResolvedValue(thingsToDoWithProspective)
 
   return request(app)
     .get('/calculation/A1234AA/reason/')
