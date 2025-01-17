@@ -28,7 +28,6 @@ generic-service:
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     ENVIRONMENT_NAME: DEV
     ADJUSTMENTS_UI_URL: "https://adjust-release-dates-dev.hmpps.service.justice.gov.uk"
-    FEATURE_FLAG_THINGS_TO_DO: "true"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk"
   # Switches off the allow list in the DEV env only.
   allowlist: null

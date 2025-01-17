@@ -40,7 +40,7 @@ export const services = () => {
   )
   const frontEndComponentService = new FrontEndComponentsService(new FrontendComponentsApiClient())
   const comparisonService = new ComparisonService()
-  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(hmppsAuthClient)
+  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
 
   return {
     applicationInfo,

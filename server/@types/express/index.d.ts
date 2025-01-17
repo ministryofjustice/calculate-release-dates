@@ -41,6 +41,7 @@ export declare global {
 
     interface Locals {
       user: Express.User
+      showCCARDNav: boolean
     }
   }
 }

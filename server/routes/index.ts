@@ -53,7 +53,12 @@ export default function Index({
   )
 
   const otherAccessRoutes = new OtherRoutes(prisonerService)
-  const startRoutes = new StartRoutes(calculateReleaseDatesService, prisonerService, userPermissionsService)
+  const startRoutes = new StartRoutes(
+    calculateReleaseDatesService,
+    prisonerService,
+    userPermissionsService,
+    courtCasesReleaseDatesService,
+  )
   const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
 
   const calculationQuestionRoutes = new CalculationQuestionRoutes(

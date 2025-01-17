@@ -52,6 +52,7 @@ function appSetup(
     req.flash = flashProvider
     res.locals = {
       user: { ...req.user },
+      showCCARDNav: false, // Set further down by setUpCCARDComponents
     }
     sessionSetup.sessionDoctor(req)
     next()

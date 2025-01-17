@@ -3,12 +3,15 @@ import PrisonerService from '../services/prisonerService'
 import UserPermissionsService from '../services/userPermissionsService'
 import { indexViewModelForPrisoner } from '../models/IndexViewModel'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
+import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 
 export default class StartRoutes {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly userPermissionsService: UserPermissionsService,
+    private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
   ) {
     // intentionally left blank
   }
@@ -30,6 +33,11 @@ export default class StartRoutes {
           token,
           hasIndeterminateSentence,
         )
+
+      let serviceDefinitions = { services: {} } as CcrdServiceDefinitions
+      if (res.locals.showCCARDNav) {
+        serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(prisonId, token)
+      }
       return res.render(
         'pages/ccardIndex',
         indexViewModelForPrisoner(
@@ -40,6 +48,7 @@ export default class StartRoutes {
           latestCalcCard,
           latestCalcCardAction,
           !hasIndeterminateSentence,
+          serviceDefinitions,
         ),
       )
     }
