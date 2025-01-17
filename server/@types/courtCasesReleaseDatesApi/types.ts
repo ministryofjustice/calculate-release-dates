@@ -1,3 +1,4 @@
 import { components } from './index'
 
-export type ThingsToDo = components['schemas']['ThingsToDo']
+export type CcrdServiceDefinitions = components['schemas']['CcrdServiceDefinitions']
+export type CcrdServiceDefinition = components['schemas']['CcrdServiceDefinition']

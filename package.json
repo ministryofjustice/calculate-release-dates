@@ -10,7 +10,7 @@
     "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend/dist --load-path=node_modules/@ministryofjustice/frontend --load-path=node_modules/accessible-autocomplete --load-path=node_modules/hmpps-court-cases-release-dates-design --load-path=. ./assets/scss/application.scss:./assets/stylesheets/application.css --style compressed",
     "watch-ts": "tsc -w",
     "watch-views": "nodemon --watch server/views -e html,njk -x npm run copy-views",
-    "watch-node": "DEBUG=gov-starter-server* nodemon --watch dist/ dist/server.js | bunyan -o short",
+    "watch-node": "DEBUG=gov-starter-server* nodemon -r dotenv/config --watch dist/ dist/server.js | bunyan -o short",
     "watch-sass": "npm run compile-sass -- --watch",
     "build": "npm run compile-sass && tsc && npm run copy-views",
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
@@ -29,7 +29,8 @@
     "int-test": "cypress run --config video=false",
     "int-test-ui": "cypress open --e2e --browser chrome",
     "clean": "rm -rf dist build node_modules stylesheets",
-    "generate-calculate-release-dates-api-types": "openapi-typescript https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/calculateReleaseDates/index.d.ts"
+    "generate-calculate-release-dates-api-types": "openapi-typescript https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/calculateReleaseDates/index.d.ts",
+    "generate-court-cases-release-dates-api-types": "openapi-typescript https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > server/@types/courtCasesReleaseDatesApi/index.d.ts"
   },
   "engines": {
     "node": "^22",
@@ -122,7 +123,7 @@
     "express-session": "^1.18.1",
     "govuk-frontend": "^5.7.1",
     "helmet": "^8.0.0",
-    "hmpps-court-cases-release-dates-design": "^2.13.0",
+    "hmpps-court-cases-release-dates-design": "^4.1.0",
     "http-errors": "^2.0.0",
     "jwt-decode": "^4.0.0",
     "luxon": "^3.5.0",

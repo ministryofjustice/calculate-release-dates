@@ -22,15 +22,17 @@ export default class CalculationQuestionRoutes {
 
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    if (res.locals.showCCARDNav) {
+      const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token)
 
-    const thingsToDo = await this.courtCasesReleaseDatesService.getThingsToDo(nomsId)
+      const anyNonCrdsThingsToDo = Object.keys(serviceDefinitions.services)
+        .filter(it => it !== 'releaseDates')
+        .some(it => serviceDefinitions.services[it].thingsToDo.count > 0)
 
-    if (
-      thingsToDo.hasAdjustmentThingsToDo &&
-      thingsToDo.adjustmentThingsToDo.adaIntercept.type !== 'NONE' &&
-      config.featureToggles.thingsToDo
-    ) {
-      return res.redirect(`${config.adjustments.url}/${nomsId}/additional-days/intercept`)
+      if (anyNonCrdsThingsToDo) {
+        // TODO for now the only non crds thing to do is ADA intercept. Change this to a generic page.
+        return res.redirect(`${config.adjustments.url}/${nomsId}/additional-days/intercept`)
+      }
     }
 
     return res.render(

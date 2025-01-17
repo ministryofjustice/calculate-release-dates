@@ -30,7 +30,6 @@ generic-service:
     ENVIRONMENT_NAME: PRE-PRODUCTION
     SHOW_BREAKDOWN: "true"
     ADJUSTMENTS_UI_URL: "https://adjust-release-dates-preprod.hmpps.service.justice.gov.uk"
-    FEATURE_FLAG_THINGS_TO_DO: "false"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-preprod.hmpps.service.justice.gov.uk"
 generic-prometheus-alerts:
   targetApplication: calculate-release-dates-alt-preprod

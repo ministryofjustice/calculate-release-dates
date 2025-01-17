@@ -20,14 +20,18 @@ import AuthorisedRoles from '../enumerations/authorisedRoles'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { FullPageError } from '../types/FullPageError'
+import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
+import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/userPermissionsService')
+jest.mock('../services/courtCasesReleaseDatesService')
 
 const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
+const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService() as jest.Mocked<CourtCasesReleaseDatesService>
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
   firstName: 'Anon',
@@ -73,6 +77,35 @@ const nomisCalculationHistory = [
     offenderSentCalculationId: 123456,
   },
 ] as HistoricCalculation[]
+
+const serviceDefinitionsNoThingsToDo = {
+  services: {
+    overview: {
+      href: 'http://localhost:8000/prisoner/AB1234AB/overview',
+      text: 'Overview',
+      thingsToDo: {
+        things: [],
+        count: 0,
+      },
+    },
+    adjustments: {
+      href: 'http://localhost:8002/AB1234AB',
+      text: 'Adjustments',
+      thingsToDo: {
+        things: [],
+        count: 0,
+      },
+    },
+    releaseDates: {
+      href: 'http://localhost:8004?prisonId=AB1234AB',
+      text: 'Release dates and calculations',
+      thingsToDo: {
+        things: [],
+        count: 0,
+      },
+    },
+  },
+} as CcrdServiceDefinitions
 
 const calculationHistory = [
   {
@@ -121,7 +154,7 @@ let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { calculateReleaseDatesService, prisonerService, userPermissionsService },
+    services: { calculateReleaseDatesService, prisonerService, userPermissionsService, courtCasesReleaseDatesService },
     userSupplier: () => {
       return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'] }
     },
@@ -191,6 +224,7 @@ describe('Start routes tests', () => {
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
     await request(app)
       .get('?prisonId=123')
       .expect(200)
@@ -212,6 +246,7 @@ describe('Start routes tests', () => {
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(true)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
     await request(app)
       .get('?prisonId=123')
       .expect(200)
@@ -234,12 +269,17 @@ describe('Start routes tests', () => {
     }
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
     return request(app)
       .get('?prisonId=123')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
+        const nav = $('nav')
+        const navLink = nav.find('a:contains(Release dates and calculations)')
+        expect(navLink.find('span:contains(1)')).not.toBeUndefined()
+        expect(navLink.attr('aria-current')).toBe('page')
         expect($('[data-qa=main-heading]').text()).toStrictEqual('Release dates and calculations')
         expectMiniProfile(res.text, {
           name: 'Nobody, Anon',
@@ -299,6 +339,7 @@ describe('Start routes tests', () => {
   })
   it('GET ?prisonId=123 CCARD mode should not blow up if latest calc cannot be loaded', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     const cardAndAction = { latestCalcCard: undefined, latestCalcCardAction: undefined }
@@ -316,6 +357,7 @@ describe('Start routes tests', () => {
 
   it('GET ?prisonId=123 if CCARD feature toggle is on and offender has no calculation history', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue([])
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)

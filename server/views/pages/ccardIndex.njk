@@ -1,6 +1,7 @@
 {% extends "../partials/layout.njk" %}
 {% from "hmpps/components/court-cases-release-dates/actions-card/macro.njk" import actionsCard %}
 {% from "hmpps/components/court-cases-release-dates/sub-navigation/macro.njk" import subNavigation %}
+{% from "hmpps/components/court-cases-release-dates/things-to-do/macro.njk" import thingsToDo %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set pageId = "ccard-index" %}
@@ -15,8 +16,8 @@
 
 {% block beforeContent %}
     {{ super() }}
-    {% if showCCARDNav %}
-        {{ subNavigation(commonElementConfig.environment, navigation, commonElementConfig.prisonNumber) }}
+    {% if showCCARDNav and serviceDefinitions %}
+        {{ subNavigation(serviceDefinitions.services, 'releaseDates') }}
     {% endif %}
 {% endblock %}
 
@@ -31,29 +32,33 @@
 
             {% if calculationHistory.length %}
                 {% if latestCalculationCardConfig %}
-                    {% set latestCalc = calculationHistory[0] %}
+                    {% if anyThingsToDo and showCCARDNav and serviceDefinitions %}
+                        {{thingsToDo(serviceDefinitions, 'all')}}
+                    {% else %}
+                        {% set latestCalc = calculationHistory[0] %}
 
-                    {% set calculationDate = latestCalc.calculationDate %}
-                    {% set source = "Calculate release dates service" %}
-                    {% if latestCalc.calculationSource === 'NOMIS' %}
-                        {% set source = "NOMIS" %}
-                    {% elseif latestCalc.calculationType and latestCalc.calculationType.startsWith("MANUAL") %}
-                        {% set source = "Paper calculation" %}
-                    {% endif %}
+                        {% set calculationDate = latestCalc.calculationDate %}
+                        {% set source = "Calculate release dates service" %}
+                        {% if latestCalc.calculationSource === 'NOMIS' %}
+                            {% set source = "NOMIS" %}
+                        {% elseif latestCalc.calculationType and latestCalc.calculationType.startsWith("MANUAL") %}
+                            {% set source = "Paper calculation" %}
+                        {% endif %}
 
-                    {% set establishment = latestCalc.establishment or "Not entered" %}
-                    {% set reason = latestCalc.calculationReason or "Not entered" %}
+                        {% set establishment = latestCalc.establishment or "Not entered" %}
+                        {% set reason = latestCalc.calculationReason or "Not entered" %}
 
-                    {% include "./partials/calculationSummary/summary.njk" %}
-                    {% include "./partials/calculationSummary/minimalCalculationCard.njk" %}
+                        {% include "./partials/calculationSummary/summary.njk" %}
+                        {% include "./partials/calculationSummary/minimalCalculationCard.njk" %}
 
-                    {% if latestCalc.calculationSource !== 'NOMIS' %}
-                        <ul class="govuk-list">
-                            <li>
-                                <a data-qa="ccard-sentence-details-link" class="govuk-link"
-                                   href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalc.calculationRequestId }}">View calculation details</a>
-                            </li>
-                        </ul>
+                        {% if latestCalc.calculationSource !== 'NOMIS' %}
+                            <ul class="govuk-list">
+                                <li>
+                                    <a data-qa="ccard-sentence-details-link" class="govuk-link"
+                                    href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalc.calculationRequestId }}">View calculation details</a>
+                                </li>
+                            </ul>
+                        {% endif %}
                     {% endif %}
                     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 

@@ -1,4 +1,4 @@
-import { ThingsToDo } from '../@types/courtCasesReleaseDatesApi/types'
+import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
 import config, { ApiConfig } from '../config'
 import RestClient from '../data/restClient'
 
@@ -13,7 +13,9 @@ export default class CourtCasesReleaseDatesApiClient {
     )
   }
 
-  getThingsToDoForPrisoner(prisonerId: string): Promise<ThingsToDo> {
-    return this.restClient.get({ path: `/things-to-do/prisoner/${prisonerId}` }) as Promise<ThingsToDo>
+  getServiceDefinitions(prisonerId: string): Promise<CcrdServiceDefinitions> {
+    return this.restClient.get({
+      path: `/service-definitions/prisoner/${prisonerId}`,
+    }) as Promise<CcrdServiceDefinitions>
   }
 }
