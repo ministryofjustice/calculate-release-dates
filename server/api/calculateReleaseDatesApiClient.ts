@@ -329,9 +329,9 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<DateTypeDefinition[]>
   }
 
-  getNomisCalculationSummary(offenderSentCalcId: number): Promise<NomisCalculationSummary> {
+  getNomisCalculationSummary(offenderSentCalcId: number, bookingId: number): Promise<NomisCalculationSummary> {
     return this.restClient.get({
-      path: `/calculation/nomis-calculation-summary/${offenderSentCalcId}`,
+      path: `/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`,
     }) as Promise<NomisCalculationSummary>
   }
 

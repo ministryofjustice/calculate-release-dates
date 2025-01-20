@@ -55,16 +55,23 @@ describe('Calculate release dates API client tests', () => {
 
     describe('Get nomis calculation summary for prisoner', () => {
       it('Get nomis calculation summary for offenderSentCalcId fails with 404 and throws Error', async () => {
-        fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '').reply(404)
+        const bookingId = 123456
+        fakeApi
+          .get(`/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`, '')
+          .reply(404)
         const client = new CalculateReleaseDatesApiClient(token)
-        await expect(client.getNomisCalculationSummary(offenderSentCalcId)).rejects.toThrow('Not Found')
+        await expect(client.getNomisCalculationSummary(offenderSentCalcId, bookingId)).rejects.toThrow('Not Found')
       })
 
       it('Get nomis calculation summary for offenderSentCalcId successfully', async () => {
+        const bookingId = 123456
         fakeApi
-          .get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '')
+          .get(`/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`, '')
           .reply(200, nomisCalculationSummary)
-        const data = await new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
+        const data = await new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(
+          offenderSentCalcId,
+          bookingId,
+        )
         expect(data).toEqual(nomisCalculationSummary)
         expect(nock.isDone()).toBe(true)
       })
