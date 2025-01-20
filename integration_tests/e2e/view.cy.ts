@@ -15,6 +15,7 @@ context('View journey tests', () => {
     cy.task('stubGetLatestCalculationNone')
     cy.task('stubGetCalculationHistoryNone')
     cy.task('stubHasNoIndeterminateSentences')
+    cy.task('stubGetServiceDefinitions')
   })
 
   it('View journey search for prisoner without calculation submitted', () => {

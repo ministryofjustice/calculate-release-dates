@@ -29,12 +29,14 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-
+            
+            {% if anyThingsToDo %}
+                {{thingsToDo(serviceDefinitions, 'all')}}
+            {% endif %}
+            
             {% if calculationHistory.length %}
                 {% if latestCalculationCardConfig %}
-                    {% if anyThingsToDo and showCCARDNav and serviceDefinitions %}
-                        {{thingsToDo(serviceDefinitions, 'all')}}
-                    {% else %}
+                    {% if not anyThingsToDo  %}
                         {% set latestCalc = calculationHistory[0] %}
 
                         {% set calculationDate = latestCalc.calculationDate %}
@@ -60,9 +62,10 @@
                             </ul>
                         {% endif %}
                     {% endif %}
-                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
+                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
                     {% include "./partials/calculationHistory/calculationHistory.njk" %}
+
                 {% else %}
                     {% set calculate_release_dates = {
                         href: '/calculation/' + prisonerDetail.offenderNo + '/reason',

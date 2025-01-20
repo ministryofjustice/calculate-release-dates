@@ -107,6 +107,27 @@ const serviceDefinitionsNoThingsToDo = {
   },
 } as CcrdServiceDefinitions
 
+const onlyCrdsServiceDefinitionsWithThingsToDo = {
+  services: {
+    releaseDates: {
+      href: 'http://localhost:8004?prisonId=AB1234AB',
+      text: 'Release dates and calculations',
+      thingsToDo: {
+        things: [
+          {
+            buttonHref: '/calculation-required',
+            buttonText: 'Calculate',
+            message: 'Calculation is required',
+            title: 'A calculation is required',
+            type: 'CALCULATION_REQUIRED',
+          },
+        ],
+        count: 1,
+      },
+    },
+  },
+} as CcrdServiceDefinitions
+
 const calculationHistory = [
   {
     offenderNo: 'GU32342',
@@ -374,7 +395,12 @@ describe('Start routes tests', () => {
 
   it('GET ?prisonId=123 if user has CRD only then hide service banner and sub nav', () => {
     app = appWithAllRoutes({
-      services: { calculateReleaseDatesService, prisonerService, userPermissionsService },
+      services: {
+        calculateReleaseDatesService,
+        prisonerService,
+        userPermissionsService,
+        courtCasesReleaseDatesService,
+      },
       userSupplier: () => {
         return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
       },
@@ -385,6 +411,7 @@ describe('Start routes tests', () => {
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(onlyCrdsServiceDefinitionsWithThingsToDo)
     return request(app)
       .get('?prisonId=123')
       .expect(200)
@@ -407,12 +434,18 @@ describe('Start routes tests', () => {
         )
         expect($('[data-qa=bulk-comparison-action-link]').attr('href')).toStrictEqual('/compare')
         expect($('.moj-sub-navigation__link').length).toStrictEqual(0)
+        expect($('p:contains(Calculation is required)').length).toStrictEqual(1)
       })
   })
 
   it('GET ?prisonId=123 if CCARD feature is on does not have bulk comparison action link if user does not have comparison role', () => {
     app = appWithAllRoutes({
-      services: { calculateReleaseDatesService, prisonerService, userPermissionsService },
+      services: {
+        calculateReleaseDatesService,
+        prisonerService,
+        userPermissionsService,
+        courtCasesReleaseDatesService,
+      },
       userSupplier: () => {
         return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
       },
@@ -423,6 +456,7 @@ describe('Start routes tests', () => {
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(onlyCrdsServiceDefinitionsWithThingsToDo)
     return request(app)
       .get('?prisonId=123')
       .expect(200)

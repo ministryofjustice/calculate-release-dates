@@ -3,7 +3,6 @@ import PrisonerService from '../services/prisonerService'
 import UserPermissionsService from '../services/userPermissionsService'
 import { indexViewModelForPrisoner } from '../models/IndexViewModel'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 
 export default class StartRoutes {
@@ -34,10 +33,7 @@ export default class StartRoutes {
           hasIndeterminateSentence,
         )
 
-      let serviceDefinitions = { services: {} } as CcrdServiceDefinitions
-      if (res.locals.showCCARDNav) {
-        serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(prisonId, token)
-      }
+      const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(prisonId, token)
       return res.render(
         'pages/ccardIndex',
         indexViewModelForPrisoner(
