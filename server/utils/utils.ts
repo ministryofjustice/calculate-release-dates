@@ -97,6 +97,9 @@ export const hmppsDesignSystemsEnvironmentName = (
   return 'prod'
 }
 
+export const validPreCalcHints = (hints: [{ html: string }]) =>
+  hints.filter(h => !h.html.includes('Manually overridden'))
+
 export type EmailLinkOptions = {
   emailAddress?: string
   linkText: string

@@ -2,9 +2,11 @@ import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import dateFilter from 'nunjucks-date-filter'
 import CalculationSummaryDatesCardModel, { filteredListOfDates } from './CalculationSummaryDatesCardModel'
+import { validPreCalcHints } from '../../../../utils/utils'
 
 const njkEnv = nunjucks.configure([__dirname])
 njkEnv.addFilter('date', dateFilter)
+njkEnv.addFilter('validPreCalcHints', validPreCalcHints)
 
 describe('ReleaseDateType', () => {
   it('should not have some of the properties in filteredListOfDates', () => {

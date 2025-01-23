@@ -9,7 +9,7 @@ import {
   hmppsFormatDate,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import dateFilter from 'nunjucks-date-filter'
-import { hmppsDesignSystemsEnvironmentName, initialiseName, createSupportLink } from './utils'
+import { hmppsDesignSystemsEnvironmentName, initialiseName, createSupportLink, validPreCalcHints } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
@@ -146,6 +146,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('personStatus', personStatus)
   njkEnv.addFilter('hmppsFormatDate', hmppsFormatDate)
   njkEnv.addFilter('formatSds40Exclusion', formatSds40Exclusion)
+  njkEnv.addFilter('validPreCalcHints', validPreCalcHints)
 }
 
 const getReleaseDateType = (dates: { [key: string]: unknown }): string => {

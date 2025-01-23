@@ -947,7 +947,7 @@ export default {
           date: dayjs().add(7, 'day').format('YYYY-MM-DD'),
           type: 'CRD',
           description: 'Conditional release date',
-          hints: [{ text: 'Friday, 05 May 2017 when adjusted to a working day' }],
+          hints: [{ text: 'Friday, 05 May 2017 when adjusted to a working day' }, { text: 'Manually overridden' }],
         },
         HDCED: {
           date: dayjs().add(3, 'day').format('YYYY-MM-DD'),
