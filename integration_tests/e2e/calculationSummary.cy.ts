@@ -61,6 +61,7 @@ context('Calculation summary', () => {
     calculationSummaryPage.consecutiveDatesTable().should('contain.text', '2071 days')
     calculationSummaryPage.consecutiveDatesTable().should('contain.text', '20 November 2018')
     calculationSummaryPage.consecutiveDatesTable().should('contain.text', '13 May 2017')
+    calculationSummaryPage.crdDateShouldNotNotBePresent('CRD')
 
     calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '20 November 2018 minus 15 days')
     calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '13 May 2017 minus 6 days')

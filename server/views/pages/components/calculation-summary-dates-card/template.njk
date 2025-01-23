@@ -7,7 +7,7 @@
         <dd class="govuk-summary-list__value"
             data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | date('dddd, DD MMMM YYYY') }}
             <p style="margin-top: 10px;" data-qa="{{ releaseDate.shortName }}-release-date-hints">
-                {% for hint in releaseDate.hints %}
+                {% for hint in releaseDate.hints | validPreCalcHints %}
                     {{ hint.html | safe }}
                 {% endfor %}
             </p>

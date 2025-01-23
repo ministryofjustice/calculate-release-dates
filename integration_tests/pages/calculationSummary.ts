@@ -29,6 +29,10 @@ export default class CalculationSummaryPage extends CalculationSummaryCommon {
     cy.get(`[data-qa=${type}-date]`).should('not.exist')
   }
 
+  public crdDateShouldNotNotBePresent(date: string) {
+    cy.get(`[data-qa=${date}-date]`).should('not.contain.text', 'Manually overridden')
+  }
+
   public changeDateLink(type: string): PageElement {
     return cy.get(`[data-qa=change-approved-${type}-link]`)
   }
