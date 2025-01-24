@@ -14,4 +14,8 @@ export default class ViewCalculationSummary extends CalculationSummaryCommon {
   public loadSentenceAndOffences(): PageElement {
     return cy.get('[data-qa=sub-nav-sent-and-off]')
   }
+
+  public getCRDDateHintText(): PageElement {
+    return cy.get('[data-qa=CRD-release-date-hint-1]')
+  }
 }

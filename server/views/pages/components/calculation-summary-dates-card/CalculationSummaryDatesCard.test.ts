@@ -115,6 +115,33 @@ describe('Tests for actions card component', () => {
     const $ = cheerio.load(content)
     expect($('[data-qa=my-link]').first().attr('href')).toStrictEqual('/my-link')
   })
+  it('hints with overrides should not show for pre calc summary ', () => {
+    const calculationSummaryDatesCardModel: CalculationSummaryDatesCardModel = {
+      releaseDates: [
+        {
+          shortName: 'SLED',
+          fullName: 'Sentence and licence expiry date',
+          date: '2010-09-01',
+          hints: [
+            {
+              html: '<p data-qa="date-hint"><a data-qa="my-link-1" href="/my-link-1">Manually overridden</a></p>',
+            },
+            {
+              html: '<p data-qa="foo-hint"><a data-qa="my-link-2" href="/my-link-2">Some hint</a></p>',
+            },
+          ],
+        },
+      ],
+      showNoDatesApply: false,
+    }
+    const content = nunjucks.render('test_pre_calc.njk', { calculationSummaryDatesCardModel })
+    const values = getValues(content)
+    expect(values).toHaveLength(1)
+    expect(values[0]).toStrictEqual(['Wednesday, 01 September 2010', 'Some hint'])
+    const $ = cheerio.load(content)
+    expect($('[data-qa=my-link-2]').first().attr('href')).toStrictEqual('/my-link-2')
+  })
+
   function getKeys(content: string) {
     return getTextLines(content, '.custom-summary-list__key')
   }
