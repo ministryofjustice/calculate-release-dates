@@ -11,7 +11,7 @@
         {% endif %}
     </div>
 </div>
-
+{% set isPreCalc = true %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
         <div class="govuk-summary-card">
@@ -21,7 +21,7 @@
             </h2>
           </div>
           <div class="govuk-summary-card__content">
-            {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel) }}
+            {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel, isPreCalc) }}
           </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
                 </h2>
               </div>
               <div class="govuk-summary-card__content">
-                {{ approvedSummaryDatesCard(approvedSummaryDatesCardModel) }}
+                {{ approvedSummaryDatesCard(approvedSummaryDatesCardModel, isPreCalc) }}
               </div>
             </div>
         </div>

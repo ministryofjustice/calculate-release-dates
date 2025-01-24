@@ -176,5 +176,12 @@ context('End to end happy path of user journey', () => {
 
     const calculationSummaryPage = Page.verifyOnPage(ViewCalculationSummary)
     calculationSummaryPage.loadSentenceAndOffences()
+
+    calculationSummaryPage
+      .getCRDDateHintText()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('Manually overridden')
+      })
   })
 })
