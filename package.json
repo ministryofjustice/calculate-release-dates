@@ -105,7 +105,7 @@
   "dependencies": {
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.4",
     "@microsoft/applicationinsights-web": "^3.3.4",
-    "@ministryofjustice/frontend": "^3.0.2",
+    "@ministryofjustice/frontend": "^3.3.1",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.6",

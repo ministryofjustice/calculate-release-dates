@@ -30,7 +30,9 @@ export default class CalculationQuestionRoutes {
         .some(it => serviceDefinitions.services[it].thingsToDo.count > 0)
 
       if (anyNonCrdsThingsToDo) {
-        // TODO for now the only non crds thing to do is ADA intercept. Change this to a generic page.
+        if (config.featureToggles.showCrdsIntercept) {
+          return res.redirect(`/calculation/${nomsId}/things-to-do-before-calculation`)
+        }
         return res.redirect(`${config.adjustments.url}/${nomsId}/additional-days/intercept`)
       }
     }

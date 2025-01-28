@@ -13,6 +13,7 @@ import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
 import GenuineOverrideRoutes from './genuineOverrideRoutes'
 import GenuineOverridesEmailTemplateService from '../services/genuineOverridesEmailTemplateService'
+import ThingsToDoInterceptRoutes from './thingsToDoInterceptRoutes'
 
 export default function Index({
   prisonerService,
@@ -86,6 +87,7 @@ export default function Index({
     manualCalculationService,
     genuineOverridesEmailTemplateService,
   )
+  const thingsToDoInterceptRoutes = new ThingsToDoInterceptRoutes(prisonerService, courtCasesReleaseDatesService)
 
   const indexRoutes = () => {
     get('/', startRoutes.startPage)
@@ -264,6 +266,10 @@ export default function Index({
     post(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.submitManualDetail)
   }
 
+  const thingsToDoInterceptRouter = () => {
+    get('/calculation/:nomsId/things-to-do-before-calculation', thingsToDoInterceptRoutes.thingsToDoIntercept)
+  }
+
   indexRoutes()
   calculationRoutes()
   reasonRoutes()
@@ -275,5 +281,6 @@ export default function Index({
   compareRoutes()
   approvedDatesRoutes()
   specialistSupportRoutes()
+  thingsToDoInterceptRouter()
   return router
 }

@@ -1,0 +1,46 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{%- from "moj/components/interruption-card/macro.njk" import interruptionCard -%}
+
+{% set thingToDoTitle = 'Things to do before calculation' %}
+{% set pageTitle = applicationName + " - " + thingToDoTitle %}
+{% set pageId = "reason" %}
+{% set cancelUrl = "/?prisonId=" + prisonerDetail.offenderNo %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: cancelUrl
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+        {% set primaryThingToDo  = thingsToDo[0] %}
+        {% call interruptionCard({
+            heading: "There are things to do before you can calculate release dates",
+            primaryAction: {
+                text: primaryThingToDo.buttonText,
+                href: primaryThingToDo.buttonHref
+            },
+            secondaryAction: {
+                text: "Go back to release dates and calculations",
+                href: cancelUrl
+            }
+            }) -%}
+            <p>Before you can calculate release dates you'll need to do the following:</p>
+            <ul>
+                {% for thingToDo in thingsToDo %}
+                    <li>{{thingToDo.message}}</li>
+                {% endfor %}
+            </ul>
+
+        {%- endcall %}
+        </div>
+    </div>
+{% endblock %}
