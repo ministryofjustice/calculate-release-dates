@@ -140,6 +140,7 @@ export default {
   featureToggles: {
     sdsExclusionIndicatorsEnabled: get('SDS_EXCLUSION_INDICATORS_ENABLED', false) === 'true',
     showBreakdown: get('SHOW_BREAKDOWN', false) === 'true',
+    showCrdsIntercept: get('SHOW_CRDS_INTERCEPT', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
