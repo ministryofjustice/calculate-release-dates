@@ -15,14 +15,16 @@ export default class CalculationQuestionRoutes {
   }
 
   public selectCalculationReason: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { user } = res.locals
+    const { caseloads, token } = user
     const { nomsId } = req.params
     const { isAddDatesFlow } = req.query as Record<string, string>
     req.session.isAddDatesFlow = isAddDatesFlow === 'true'
 
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
-    if (res.locals.showCCARDNav) {
+    const isSupportUser = user.isDigitalSupportUser || user.isSpecialistSupportUser
+    if (res.locals.showCCARDNav && !isSupportUser) {
       const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token)
 
       const anyNonCrdsThingsToDo = Object.keys(serviceDefinitions.services)
