@@ -18,6 +18,7 @@ import {
 } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import UserPermissionsService from '../services/userPermissionsService'
 import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
+import config from '../config'
 
 export default class CalculationRoutes {
   constructor(
@@ -96,7 +97,7 @@ export default class CalculationRoutes {
       approvedDates,
       null,
       detailedCalculationResults,
-      this.userPermissionsService.allowSpecialistSupportFeatureAccess(res.locals.user.userRoles),
+      config.featureToggles.genuineOverrides,
     )
     res.render(
       'pages/calculation/calculationSummary',

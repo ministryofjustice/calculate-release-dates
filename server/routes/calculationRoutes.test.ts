@@ -927,7 +927,7 @@ describe('Calculation routes tests', () => {
       })
   })
   it('GET /calculation/:nomsId/summary/:calculationRequestId with specialist support on should display help text', () => {
-    userPermissionsService.allowSpecialistSupportFeatureAccess.mockReturnValue(true)
+    config.featureToggles.genuineOverrides = true
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
       stubbedResultsWithBreakdownAndAdjustments,
@@ -940,6 +940,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain('If you think the calculation is wrong')
         expect(res.text).toContain('contact the specialist')
         expect(res.text).toContain('support team')
+        config.featureToggles.genuineOverrides = false
       })
   })
   it('GET /calculation/:nomsId/summary/:calculationRequestId/print should return a printable page about the calculation requested', () => {

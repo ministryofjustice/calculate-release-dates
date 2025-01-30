@@ -14,6 +14,7 @@ import ApprovedDatesRoutes from './approvedDatesRoutes'
 import GenuineOverrideRoutes from './genuineOverrideRoutes'
 import GenuineOverridesEmailTemplateService from '../services/genuineOverridesEmailTemplateService'
 import ThingsToDoInterceptRoutes from './thingsToDoInterceptRoutes'
+import config from '../config'
 
 export default function Index({
   prisonerService,
@@ -185,68 +186,77 @@ export default function Index({
     get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
   }
 
-  const specialistSupportRoutes = () => {
-    get(
-      '/calculation/:calculationReference/request-support',
-      genuineOverrideAccessRoutes.loadGenuineOverrideRequestPage,
-    )
-    get('/specialist-support/', genuineOverrideAccessRoutes.startPage)
-    get('/specialist-support/search/', genuineOverrideAccessRoutes.loadSearch)
-    post('/specialist-support/search/', genuineOverrideAccessRoutes.submitSearch)
-    get('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.loadConfirmPage)
-    post('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.submitConfirmPage)
-    get(
-      '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
-      genuineOverrideAccessRoutes.loadCheckSentenceAndInformationPage,
-    )
-    post(
-      '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
-      genuineOverrideAccessRoutes.submitCheckSentenceAndInformationPage,
-    )
-    get(
-      '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
-      genuineOverrideAccessRoutes.loadCalculationPage,
-    )
-    post(
-      '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
-      genuineOverrideAccessRoutes.submitCalculationPage,
-    )
-    get(
-      '/specialist-support/calculation/:calculationReference/complete',
-      genuineOverrideAccessRoutes.loadConfirmationPage,
-    )
-    get('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.loadReasonPage)
-    post('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.submitReasonPage)
-    get(
-      '/specialist-support/calculation/:calculationReference/select-date-types',
-      genuineOverrideAccessRoutes.loadSelectDatesPage,
-    )
-    post(
-      '/specialist-support/calculation/:calculationReference/select-date-types',
-      genuineOverrideAccessRoutes.submitSelectDatesPage,
-    )
-    get(
-      '/specialist-support/calculation/:calculationReference/enter-date',
-      genuineOverrideAccessRoutes.loadEnterDatePage,
-    )
-    post(
-      '/specialist-support/calculation/:calculationReference/enter-date',
-      genuineOverrideAccessRoutes.submitEnterDatePage,
-    )
-    get(
-      '/specialist-support/calculation/:calculationReference/confirm-override',
-      genuineOverrideAccessRoutes.loadConfirmOverridePage,
-    )
-    post(
-      '/specialist-support/calculation/:calculationReference/confirm-override',
-      genuineOverrideAccessRoutes.submitConfirmOverridePage,
-    )
-    get('/specialist-support/calculation/:calculationReference/remove-date', genuineOverrideAccessRoutes.loadRemoveDate)
-    post(
-      '/specialist-support/calculation/:calculationReference/remove-date',
-      genuineOverrideAccessRoutes.submitRemoveDate,
-    )
-    get('/specialist-support/calculation/:calculationReference/change-date', genuineOverrideAccessRoutes.loadChangeDate)
+  let specialistSupportRoutes = () => {}
+  if (config.featureToggles.genuineOverrides) {
+    specialistSupportRoutes = () => {
+      get(
+        '/calculation/:calculationReference/request-support',
+        genuineOverrideAccessRoutes.loadGenuineOverrideRequestPage,
+      )
+      get('/specialist-support/', genuineOverrideAccessRoutes.startPage)
+      get('/specialist-support/search/', genuineOverrideAccessRoutes.loadSearch)
+      post('/specialist-support/search/', genuineOverrideAccessRoutes.submitSearch)
+      get('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.loadConfirmPage)
+      post('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.submitConfirmPage)
+      get(
+        '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
+        genuineOverrideAccessRoutes.loadCheckSentenceAndInformationPage,
+      )
+      post(
+        '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
+        genuineOverrideAccessRoutes.submitCheckSentenceAndInformationPage,
+      )
+      get(
+        '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
+        genuineOverrideAccessRoutes.loadCalculationPage,
+      )
+      post(
+        '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
+        genuineOverrideAccessRoutes.submitCalculationPage,
+      )
+      get(
+        '/specialist-support/calculation/:calculationReference/complete',
+        genuineOverrideAccessRoutes.loadConfirmationPage,
+      )
+      get('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.loadReasonPage)
+      post('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.submitReasonPage)
+      get(
+        '/specialist-support/calculation/:calculationReference/select-date-types',
+        genuineOverrideAccessRoutes.loadSelectDatesPage,
+      )
+      post(
+        '/specialist-support/calculation/:calculationReference/select-date-types',
+        genuineOverrideAccessRoutes.submitSelectDatesPage,
+      )
+      get(
+        '/specialist-support/calculation/:calculationReference/enter-date',
+        genuineOverrideAccessRoutes.loadEnterDatePage,
+      )
+      post(
+        '/specialist-support/calculation/:calculationReference/enter-date',
+        genuineOverrideAccessRoutes.submitEnterDatePage,
+      )
+      get(
+        '/specialist-support/calculation/:calculationReference/confirm-override',
+        genuineOverrideAccessRoutes.loadConfirmOverridePage,
+      )
+      post(
+        '/specialist-support/calculation/:calculationReference/confirm-override',
+        genuineOverrideAccessRoutes.submitConfirmOverridePage,
+      )
+      get(
+        '/specialist-support/calculation/:calculationReference/remove-date',
+        genuineOverrideAccessRoutes.loadRemoveDate,
+      )
+      post(
+        '/specialist-support/calculation/:calculationReference/remove-date',
+        genuineOverrideAccessRoutes.submitRemoveDate,
+      )
+      get(
+        '/specialist-support/calculation/:calculationReference/change-date',
+        genuineOverrideAccessRoutes.loadChangeDate,
+      )
+    }
   }
 
   const compareRoutes = () => {
