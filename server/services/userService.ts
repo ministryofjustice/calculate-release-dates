@@ -11,6 +11,8 @@ export interface UserDetails extends User {
   caseloadDescriptions: string[]
   caseloadMap: Map<string, string>
   hasAdjustmentsAccess: boolean
+  isDigitalSupportUser: boolean
+  isSpecialistSupportUser: boolean
 }
 
 export default class UserService {
@@ -31,6 +33,8 @@ export default class UserService {
       caseloadDescriptions: userCaseloads.map(uc => uc.description),
       caseloadMap: new Map(userCaseloads.map(uc => [uc.caseLoadId, uc.description])),
       hasAdjustmentsAccess: this.hasAdjustmentsAccess(roles),
+      isDigitalSupportUser: roles.includes('COURTCASE_RELEASEDATE_SUPPORT'),
+      isSpecialistSupportUser: roles.includes('CRDS_SPECIALIST_SUPPORT'),
     }
   }
 
