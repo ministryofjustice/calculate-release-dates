@@ -23,6 +23,7 @@ generic-service:
     CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE: 60000
     ADJUSTMENTS_UI_URL: "https://adjust-release-dates.hmpps.service.justice.gov.uk"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api.hmpps.service.justice.gov.uk"
+    GENUINE_OVERRIDES_ENABLED: "false"
 
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts

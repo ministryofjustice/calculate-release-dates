@@ -19,8 +19,4 @@ export default class UserPermissionsService {
   public allowSpecialSupport(roles: string[]): boolean {
     return roles.includes(AuthorisedRoles.ROLE_CRDS_SPECIALIST_SUPPORT)
   }
-
-  public allowSpecialistSupportFeatureAccess(roles: string[]): boolean {
-    return roles.includes(AuthorisedRoles.ROLE_CRDS_GENUINE_OVERRIDES)
-  }
 }
