@@ -142,6 +142,7 @@ export default {
     showBreakdown: get('SHOW_BREAKDOWN', false) === 'true',
     showCrdsIntercept: get('SHOW_CRDS_INTERCEPT', false) === 'true',
     genuineOverrides: get('GENUINE_OVERRIDES_ENABLED', false) === 'true',
+    thingsToDoIntercept: get('THING_TO_DO_INTERCEPT_ENABLED', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
