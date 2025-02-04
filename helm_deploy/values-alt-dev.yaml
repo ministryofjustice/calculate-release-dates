@@ -31,6 +31,7 @@ generic-service:
     ADJUSTMENTS_UI_URL: "https://adjust-release-dates-dev.hmpps.service.justice.gov.uk"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk"
     GENUINE_OVERRIDES_ENABLED: "true"
+    THING_TO_DO_INTERCEPT_ENABLED: "true"
 
   # Switches off the allow list in the DEV env only.
   allowlist: null

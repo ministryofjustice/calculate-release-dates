@@ -24,7 +24,7 @@ export default class CalculationQuestionRoutes {
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const isSupportUser = user.isDigitalSupportUser || user.isSpecialistSupportUser
-    if (res.locals.showCCARDNav && !isSupportUser) {
+    if (res.locals.showCCARDNav && !isSupportUser && config.featureToggles.thingsToDoIntercept) {
       const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token)
 
       const anyNonCrdsThingsToDo = Object.keys(serviceDefinitions.services)

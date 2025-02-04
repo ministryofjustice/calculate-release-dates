@@ -296,6 +296,7 @@ it('GET /calculation/:nomsId/reason should include the mini profile', () => {
     })
 })
 it('GET /calculation/:nomsId/reason should be ada intercepted if there are ada review needed', () => {
+  config.featureToggles.thingsToDoIntercept = true
   const testSpecificApp = appWithAllRoutes({
     services: { userService, prisonerService, calculateReleaseDatesService, courtCasesReleaseDatesService },
     userSupplier: () => {
@@ -312,7 +313,28 @@ it('GET /calculation/:nomsId/reason should be ada intercepted if there are ada r
     .expect(302)
     .expect('Location', `${config.adjustments.url}/A1234AA/additional-days/intercept`)
 })
+it('GET /calculation/:nomsId/reason shouldnt intercepted if toggled off', () => {
+  config.featureToggles.thingsToDoIntercept = false
+  const testSpecificApp = appWithAllRoutes({
+    services: { userService, prisonerService, calculateReleaseDatesService, courtCasesReleaseDatesService },
+    userSupplier: () => {
+      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'] }
+    },
+  })
+  config.adjustments.url = 'http://localhost:9000'
+  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+  courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyAdjustmentsThingsToDo)
+
+  return request(testSpecificApp)
+    .get('/calculation/A1234AA/reason/')
+    .expect(200)
+    .expect(res => {
+      expect(courtCasesReleaseDatesService.getServiceDefinitions.mock.calls.length).toBe(0)
+    })
+})
 it('GET /calculation/:nomsId/reason should not be ada intercepted if they are a support user', () => {
+  config.featureToggles.thingsToDoIntercept = true
   const testSpecificApp = appWithAllRoutes({
     services: { userService, prisonerService, calculateReleaseDatesService, courtCasesReleaseDatesService },
     userSupplier: () => {
@@ -336,6 +358,7 @@ it('GET /calculation/:nomsId/reason should not be ada intercepted if they are a 
     })
 })
 it('GET /calculation/:nomsId/reason should not be ada intercepted if there showCCARDNav is disabled', () => {
+  config.featureToggles.thingsToDoIntercept = true
   config.adjustments.url = 'http://localhost:9000'
   prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
   calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
