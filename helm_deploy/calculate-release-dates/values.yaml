@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: calculate-release-dates
-  productId: "DPS005" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
+  productId: "DPS014" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
 
 
   replicaCount: 4
