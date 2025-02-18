@@ -27,5 +27,14 @@
         {% endfor %}
 </div>
 
+
 {% set adjustments = model.adjustments %}
 {% include "./sentenceAdjustments.njk" %}
+
+{% if hasAdjustmentsAccess %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p data-qa="adjust-link" class="govuk-body">You can edit or add more adjustments in the <a href="{{adjustmentsUiUrl}}/{{model.prisonerDetail.offenderNo}}">adjustments service</a>.</p>
+        </div>
+    </div>
+{% endif %}
