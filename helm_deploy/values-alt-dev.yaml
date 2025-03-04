@@ -33,6 +33,11 @@ generic-service:
     GENUINE_OVERRIDES_ENABLED: "true"
     THING_TO_DO_INTERCEPT_ENABLED: "true"
 
+  namespace_secrets:
+    sqs-hmpps-audit-secret:
+      AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'
+      AUDIT_SQS_QUEUE_NAME: 'sqs_queue_name'
+
   # Switches off the allow list in the DEV env only.
   allowlist: null
 
