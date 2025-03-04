@@ -37,8 +37,11 @@ import ErrorMessage from '../types/ErrorMessage'
 import { FullPageError } from '../types/FullPageError'
 import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
+import AuditService from './auditService'
 
 export default class CalculateReleaseDatesService {
+  constructor(private auditService: AuditService) {}
+
   // TODO test method - will be removed
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   async calculateReleaseDates(booking: any, token: string): Promise<BookingCalculation> {
@@ -327,11 +330,25 @@ export default class CalculateReleaseDatesService {
   }
 
   async confirmCalculation(
+    userName: string,
+    nomsId: string,
     calculationRequestId: number,
     token: string,
     body: SubmitCalculationRequest,
   ): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).confirmCalculation(calculationRequestId, body)
+    try {
+      const calculation = await new CalculateReleaseDatesApiClient(token).confirmCalculation(calculationRequestId, body)
+      await this.auditService.publishSentenceCalculation(
+        userName,
+        calculation.prisonerId,
+        nomsId,
+        calculation.calculationReference,
+      )
+      return calculation
+    } catch (error) {
+      await this.auditService.publishSentenceCalculationFailure(userName, nomsId, error)
+      throw error
+    }
   }
 
   async getNextWorkingDay(date: string, token: string): Promise<string> {

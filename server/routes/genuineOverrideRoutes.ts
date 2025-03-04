@@ -276,7 +276,7 @@ export default class GenuineOverrideRoutes {
         )
       }
       if (doYouAgree === 'yes') {
-        const { token } = res.locals.user
+        const { token, username } = res.locals.user
         const { nomsId } = req.params
         const calculationRequestIdNumber = Number(req.params.calculationRequestId)
         const breakdownHtml = await this.getBreakdownFragment(calculationRequestIdNumber, token)
@@ -286,6 +286,8 @@ export default class GenuineOverrideRoutes {
             : []
         try {
           const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
+            username,
+            nomsId,
             calculationRequestIdNumber,
             token,
             {

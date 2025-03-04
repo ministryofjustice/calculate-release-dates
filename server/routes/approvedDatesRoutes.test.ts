@@ -20,15 +20,20 @@ import config from '../config'
 import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+import AuditService from '../services/auditService'
 
 jest.mock('../services/calculateReleaseDatesService')
+jest.mock('../services/auditService')
 
 let app: Express
 let sessionSetup: SessionSetup
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const dateTypeConfigurationService = new DateTypeConfigurationService()
 const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const auditService = new AuditService() as jest.Mocked<AuditService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService(
+  auditService,
+) as jest.Mocked<CalculateReleaseDatesService>
 const manualEntryService = new ManualEntryService(dateTypeConfigurationService, null, calculateReleaseDatesService)
 
 jest.mock('../services/prisonerService')

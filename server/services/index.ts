@@ -15,10 +15,12 @@ import FrontEndComponentsService from './frontEndComponentsService'
 import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
 import ComparisonService from './comparisonService'
 import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
+import AuditService from './auditService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuthClient, manageUsersApiClient } = dataAccess()
-  const calculateReleaseDatesService = new CalculateReleaseDatesService()
+  const auditService = new AuditService()
+  const calculateReleaseDatesService = new CalculateReleaseDatesService(auditService)
   const prisonerService = new PrisonerService(hmppsAuthClient)
   const userService = new UserService(manageUsersApiClient, prisonerService)
   const viewReleaseDatesService = new ViewReleaseDatesService()
@@ -57,6 +59,7 @@ export const services = () => {
     frontEndComponentService,
     comparisonService,
     courtCasesReleaseDatesService,
+    auditService,
   }
 }
 

@@ -16,16 +16,21 @@ import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/type
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import config from '../config'
 import AuthorisedRoles from '../enumerations/authorisedRoles'
+import AuditService from '../services/auditService'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/userInputService')
 jest.mock('../services/courtCasesReleaseDatesService')
+jest.mock('../services/auditService')
 
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const auditService = new AuditService() as jest.Mocked<AuditService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService(
+  auditService,
+) as jest.Mocked<CalculateReleaseDatesService>
 const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService() as jest.Mocked<CourtCasesReleaseDatesService>
 
 let app: Express

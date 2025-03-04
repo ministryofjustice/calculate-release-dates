@@ -25,6 +25,7 @@ import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDa
 import UserPermissionsService from '../services/userPermissionsService'
 import config from '../config'
 import { FullPageError } from '../types/FullPageError'
+import AuditService from '../services/auditService'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -32,10 +33,14 @@ jest.mock('../services/prisonerService')
 jest.mock('../services/userInputService')
 jest.mock('../services/viewReleaseDatesService')
 jest.mock('../services/userPermissionsService')
+jest.mock('../services/auditService')
 
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const auditService = new AuditService() as jest.Mocked<AuditService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService(
+  auditService,
+) as jest.Mocked<CalculateReleaseDatesService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>

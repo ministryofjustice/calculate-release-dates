@@ -19,9 +19,13 @@ import {
   psiExample16CalculationBreakdown,
   psiExample25CalculationBreakdown,
 } from './breakdownExamplesTestData'
+import AuditService from './auditService'
 
 jest.mock('../data/hmppsAuthClient')
+jest.mock('./auditService')
 
+const userName = 'USERNAME'
+const nomsId = 'A1234AB'
 const prisonerId = 'A1234AB'
 const calculationRequestId = 123456
 const offenderSentCalcId = 123456
@@ -148,9 +152,12 @@ describe('Calculate release dates service tests', () => {
   let calculateReleaseDatesService: CalculateReleaseDatesService
   let fakeApi: nock.Scope
   beforeEach(() => {
+    const auditService = new AuditService()
+    auditService.publishSentenceCalculation = jest.fn().mockImplementation(() => Promise.resolve())
+    auditService.publishSentenceCalculationFailure = jest.fn().mockImplementation(() => Promise.resolve())
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.calculateReleaseDates.url)
-    calculateReleaseDatesService = new CalculateReleaseDatesService()
+    calculateReleaseDatesService = new CalculateReleaseDatesService(auditService)
   })
   afterEach(() => {
     nock.cleanAll()
@@ -214,12 +221,18 @@ describe('Calculate release dates service tests', () => {
   it('Test confirming the results of a calculation', async () => {
     fakeApi.post(`/calculation/confirm/${calculationRequestId}`).reply(200, calculationResults)
 
-    const result = await calculateReleaseDatesService.confirmCalculation(calculationRequestId, token, {
-      calculationFragments: {
-        breakdownHtml: '',
+    const result = await calculateReleaseDatesService.confirmCalculation(
+      userName,
+      nomsId,
+      calculationRequestId,
+      token,
+      {
+        calculationFragments: {
+          breakdownHtml: '',
+        },
+        approvedDates: [],
       },
-      approvedDates: [],
-    })
+    )
 
     expect(result).toEqual(calculationResults)
   })

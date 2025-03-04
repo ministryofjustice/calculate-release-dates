@@ -27,6 +27,7 @@ import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import { expectMiniProfile, expectMiniProfileNoLocation } from './testutils/layoutExpectations'
 import config from '../config'
 import SessionSetup from './testutils/sessionSetup'
+import AuditService from '../services/auditService'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -36,7 +37,10 @@ jest.mock('../services/checkInformationService')
 
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const auditService = new AuditService() as jest.Mocked<AuditService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService(
+  auditService,
+) as jest.Mocked<CalculateReleaseDatesService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 const checkInformationService = new CheckInformationService(
   calculateReleaseDatesService,
