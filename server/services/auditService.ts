@@ -20,7 +20,7 @@ export default class AuditService {
         details: `{ "nomisId": "${nomisId}", "calculationReference": "${calculationReference}" }`,
       })
     } catch (error) {
-      logger.error('Failed to publish audit event CALCULATION_CREATED', error.message)
+      logger.error(`Failed to publish audit event CALCULATION_CREATED: ${error.message}`)
     }
   }
 
