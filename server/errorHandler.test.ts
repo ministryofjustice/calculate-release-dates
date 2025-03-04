@@ -2,10 +2,15 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes } from './routes/testutils/appSetup'
 import CalculateReleaseDatesService from './services/calculateReleaseDatesService'
+import AuditService from './services/auditService'
 
 jest.mock('./services/calculateReleaseDatesService')
+jest.mock('./services/auditService')
 
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const auditService = new AuditService() as jest.Mocked<AuditService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService(
+  auditService,
+) as jest.Mocked<CalculateReleaseDatesService>
 
 let app: Express
 

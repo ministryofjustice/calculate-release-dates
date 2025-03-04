@@ -22,13 +22,18 @@ import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateRe
 import { FullPageError } from '../types/FullPageError'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
+import AuditService from '../services/auditService'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/userPermissionsService')
 jest.mock('../services/courtCasesReleaseDatesService')
+jest.mock('../services/auditService')
 
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const auditService = new AuditService() as jest.Mocked<AuditService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService(
+  auditService,
+) as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
 const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService() as jest.Mocked<CourtCasesReleaseDatesService>

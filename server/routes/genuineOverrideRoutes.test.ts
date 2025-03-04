@@ -32,6 +32,7 @@ import ManualEntryService from '../services/manualEntryService'
 import SessionSetup from './testutils/sessionSetup'
 import { StorageResponseModel } from '../services/dateValidationService'
 import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
+import AuditService from '../services/auditService'
 
 let app: Express
 let fakeApi: nock.Scope
@@ -44,10 +45,14 @@ jest.mock('../services/viewReleaseDatesService')
 jest.mock('../services/userInputService')
 jest.mock('../services/checkInformationService')
 jest.mock('../services/manualEntryService')
+jest.mock('../services/auditService')
 
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
-const calculateReleaseDatesService = new CalculateReleaseDatesService() as jest.Mocked<CalculateReleaseDatesService>
+const auditService = new AuditService() as jest.Mocked<AuditService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService(
+  auditService,
+) as jest.Mocked<CalculateReleaseDatesService>
 const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 const checkInformationService = new CheckInformationService(

@@ -187,7 +187,7 @@ export default class CalculationRoutes {
   }
 
   public submitCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { token } = res.locals.user
+    const { token, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const breakdownHtml = await this.getBreakdownFragment(calculationRequestId, token)
@@ -197,6 +197,8 @@ export default class CalculationRoutes {
         : []
     try {
       const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
+        username,
+        nomsId,
         calculationRequestId,
         token,
         {
