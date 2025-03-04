@@ -17,7 +17,7 @@ export default class AuditService {
         subjectId: prisonerId,
         subjectType: 'CALCULATION',
         service: this.serviceName,
-        details: `{ nomisId: ${nomisId}, calculationReference: ${calculationReference} }`,
+        details: `{ "nomisId": "${nomisId}", "calculationReference": "${calculationReference}" }`,
       })
     } catch (error) {
       logger.error('Failed to publish audit event CALCULATION_CREATED', error.message)
