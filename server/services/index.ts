@@ -25,7 +25,7 @@ export const services = () => {
   const userService = new UserService(manageUsersApiClient, prisonerService)
   const viewReleaseDatesService = new ViewReleaseDatesService()
   const userInputService = new UserInputService()
-  const manualCalculationService = new ManualCalculationService()
+  const manualCalculationService = new ManualCalculationService(auditService)
   const dateTypeConfigurationService = new DateTypeConfigurationService()
   const dateValidationService = new DateValidationService()
   const manualEntryService = new ManualEntryService(

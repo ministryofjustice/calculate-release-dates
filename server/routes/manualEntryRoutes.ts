@@ -327,7 +327,7 @@ export default class ManualEntryRoutes {
   }
 
   public save: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, username } = res.locals.user
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
@@ -342,7 +342,7 @@ export default class ManualEntryRoutes {
     }
 
     try {
-      const response = await this.manualCalculationService.storeManualCalculation(nomsId, req, token)
+      const response = await this.manualCalculationService.storeManualCalculation(username, nomsId, req, token)
       const isNone =
         req.session.selectedManualEntryDates[nomsId].length === 1 &&
         req.session.selectedManualEntryDates[nomsId][0].dateType === 'None'
