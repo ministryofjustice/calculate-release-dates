@@ -41,7 +41,7 @@ export const services = () => {
     userInputService,
   )
   const frontEndComponentService = new FrontEndComponentsService(new FrontendComponentsApiClient())
-  const comparisonService = new ComparisonService()
+  const comparisonService = new ComparisonService(auditService)
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
 
   return {
