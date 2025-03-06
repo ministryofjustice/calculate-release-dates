@@ -48,4 +48,18 @@ export default class AuditService {
   public async publishSentenceCalculationFailure(user: string, nomisId: string, exception: Error) {
     await this.sendAuditMessage(AuditAction.CALCULATION_FAILED, user, nomisId, exception.message)
   }
+
+  public async publishBulkComparison(
+    user: string,
+    selectedOMU: string,
+    comparisonShortReference: string,
+    comparisonType: string,
+  ) {
+    const detail = { comparisonShortReference, comparisonType }
+    await this.sendAuditMessage(AuditAction.BULK_COMPARISON_CREATED, user, selectedOMU, JSON.stringify(detail))
+  }
+
+  public async publishBulkComparisonFailure(user: string, selectedOMU: string, exception: Error) {
+    await this.sendAuditMessage(AuditAction.BULK_COMPARISON_FAILED, user, selectedOMU, exception.message)
+  }
 }

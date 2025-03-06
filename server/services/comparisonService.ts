@@ -8,14 +8,33 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import ComparisonType from '../enumerations/comparisonType'
+import AuditService from './auditService'
 
 export default class ComparisonService {
+  constructor(private auditService: AuditService) {}
+
   async createPrisonComparison(
+    userName: string,
     selectedOMU: string,
     comparisonType: ComparisonType,
     token: string,
   ): Promise<Comparison> {
-    return new CalculateReleaseDatesApiClient(token).createPrisonComparison(selectedOMU, comparisonType)
+    try {
+      const bulkCalc = await new CalculateReleaseDatesApiClient(token).createPrisonComparison(
+        selectedOMU,
+        comparisonType,
+      )
+      await this.auditService.publishBulkComparison(
+        userName,
+        selectedOMU,
+        bulkCalc.comparisonShortReference,
+        bulkCalc.comparisonType,
+      )
+      return bulkCalc
+    } catch (error) {
+      await this.auditService.publishBulkComparisonFailure(userName, selectedOMU, error)
+      throw error
+    }
   }
 
   async getPrisonComparison(bulkComparisonId: string, token: string): Promise<ComparisonOverview> {

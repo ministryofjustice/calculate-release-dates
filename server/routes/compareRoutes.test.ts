@@ -9,13 +9,15 @@ import {
   ComparisonSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonType from '../enumerations/comparisonType'
+import AuditService from '../services/auditService'
 
 let app: Express
 
 jest.mock('../services/userPermissionsService')
 jest.mock('../services/comparisonService')
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
-const comparisonService = new ComparisonService() as jest.Mocked<ComparisonService>
+const auditService = new AuditService() as jest.Mocked<AuditService>
+const comparisonService = new ComparisonService(auditService) as jest.Mocked<ComparisonService>
 
 beforeEach(() => {
   app = appWithAllRoutes({

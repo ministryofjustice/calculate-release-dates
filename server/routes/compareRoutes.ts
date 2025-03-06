@@ -147,8 +147,8 @@ export default class CompareRoutes {
 
   public run: RequestHandler = async (req, res) => {
     const { selectedOMU, comparisonType } = req.body
-    const { token } = res.locals.user
-    const comparison = await this.comparisonService.createPrisonComparison(selectedOMU, comparisonType, token)
+    const { token, username } = res.locals.user
+    const comparison = await this.comparisonService.createPrisonComparison(username, selectedOMU, comparisonType, token)
     return res.redirect(`/compare/result/${comparison.comparisonShortReference}`)
   }
 
