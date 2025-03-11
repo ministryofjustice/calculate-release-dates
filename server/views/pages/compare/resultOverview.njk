@@ -42,7 +42,7 @@
 
             {% if comparison.status === 'PROCESSING' %}
                 {% set bannerHtml %}
-                    <h2 class="govuk-heading-l">Comparison is still processing</h2>
+                    <h2 class="govuk-heading-l">Comparison is still processing {{comparison.percentageComplete}}% complete. Expected completion time {{ comparison.expectedCompletionTime | date('DD MMMM YYYY') }} at {{comparison.expectedCompletionTime | date('HH:mm') }}</h2>
                 {% endset %}
                 {{ mojBanner({
                     type: 'information',

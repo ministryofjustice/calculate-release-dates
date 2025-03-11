@@ -18,6 +18,14 @@ export default class ListComparisonViewModel {
 
   numberOfPeopleCompared: number
 
+  percentageComplete: number
+
+  expectedCompletionTime: string
+
+  numberOfPeopleExpected: number
+
+  status: string
+
   constructor(comparison: ComparisonSummary, prisons: Map<string, string>) {
     this.comparisonShortReference = comparison.comparisonShortReference
     this.prisonName = prisons.get(comparison.prison) ?? comparison.prison
@@ -27,5 +35,9 @@ export default class ListComparisonViewModel {
     this.numberOfMismatches = comparison.numberOfMismatches
     this.numberOfPeopleCompared = comparison.numberOfPeopleCompared
     this.numberOfPeopleComparisonFailedFor = comparison.numberOfPeopleComparisonFailedFor
+    this.percentageComplete = Math.floor(comparison.comparisonProgress.percentageComplete)
+    this.expectedCompletionTime = comparison.comparisonProgress.expectedCompletionTime
+    this.numberOfPeopleExpected = comparison.numberOfPeopleExpected
+    this.status = comparison.comparisonStatus
   }
 }
