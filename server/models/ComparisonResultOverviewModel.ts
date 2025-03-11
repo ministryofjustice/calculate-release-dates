@@ -16,7 +16,7 @@ export default class ComparisonResultOverviewModel {
 
   numberOfMismatches: number
 
-  numberOfPeopleCompared: number
+  numberOfPeopleCompared: string
 
   numberOfPeopleComparisonFailedFor: number
 
@@ -25,6 +25,10 @@ export default class ComparisonResultOverviewModel {
   unsupportedSentenceMismatchesTable: MismatchResultTable
 
   status: string
+
+  percentageComplete: number
+
+  expectedCompletionTime: string
 
   validationErrorMismatchesTable: MismatchResultTable
 
@@ -38,8 +42,14 @@ export default class ComparisonResultOverviewModel {
     this.calculatedAt = comparison.calculatedAt
     this.calculatedBy = comparison.calculatedByUsername
     this.numberOfMismatches = comparison.numberOfMismatches
-    this.numberOfPeopleCompared = comparison.numberOfPeopleCompared
+    if (comparison.status === 'PROCESSING') {
+      this.numberOfPeopleCompared = `${comparison.numberOfPeopleCompared} out of ${comparison.numberOfPeopleExpected}`
+    } else {
+      this.numberOfPeopleCompared = `${comparison.numberOfPeopleCompared}`
+    }
     this.numberOfPeopleComparisonFailedFor = comparison.numberOfPeopleComparisonFailedFor
+    this.percentageComplete = Math.floor(comparison.comparisonProgress.percentageComplete)
+    this.expectedCompletionTime = comparison.comparisonProgress.expectedCompletionTime
 
     this.releaseDateMismatchesTable = new ReleaseDatesMismatchResultTable(comparison)
 

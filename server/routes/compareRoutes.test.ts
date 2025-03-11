@@ -45,9 +45,16 @@ const comparison = {
 const comparisonOverview = {
   comparisonShortReference: comparison.comparisonShortReference,
   comparisonType: ComparisonType.MANUAL,
+  comparisonStatus: 'PROCESSING',
+  status: 'PROCESSING',
   calculatedAt: comparison.calculatedAt,
+  numberOfPeopleExpected: 20,
   numberOfPeopleCompared: 10,
   numberOfMismatches: 0,
+  comparisonProgress: {
+    percentageComplete: 50.0,
+    expectedCompletionTime: '2030-01-01T13:00Z',
+  },
   mismatches: [],
 } as ComparisonOverview
 
@@ -57,20 +64,32 @@ const comparisonSummaryWithFailures = {
   comparisonType: 'ESTABLISHMENT_FULL',
   calculatedAt: '2020-01-01 10:53:46',
   calculatedByUsername: 'me',
+  comparisonStatus: 'PROCESSING',
+  numberOfPeopleExpected: 20,
   numberOfMismatches: 10,
   numberOfPeopleCompared: 15,
   numberOfPeopleComparisonFailedFor: 5,
+  comparisonProgress: {
+    percentageComplete: 50.0,
+    expectedCompletionTime: '2030-01-01T13:00Z',
+  },
 } as ComparisonSummary
 
 const comparisonSummaryNoFailures = {
   comparisonShortReference: 'bar',
   prison: 'HMP',
   comparisonType: 'ESTABLISHMENT_FULL',
+  comparisonStatus: 'PROCESSING',
   calculatedAt: '2020-01-01 10:53:46',
   calculatedByUsername: 'me',
+  numberOfPeopleExpected: 20,
   numberOfMismatches: 15,
   numberOfPeopleCompared: 15,
   numberOfPeopleComparisonFailedFor: 0,
+  comparisonProgress: {
+    percentageComplete: 50.0,
+    expectedCompletionTime: '2030-01-01T13:00Z',
+  },
 } as ComparisonSummary
 
 describe('Compare routes tests', () => {
@@ -123,8 +142,9 @@ describe('Compare routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('15 mismatches from 15 results - full comparison')
-        expect(res.text).toContain('10 mismatches with 5 failures from 15 results - full comparison')
+        expect(res.text).toContain('15 mismatches from 15 out of 20 results - full comparison')
+        expect(res.text).toContain('50% complete. Expected completion time 01 January 2030 at 13:00')
+        expect(res.text).toContain('10 mismatches with 5 failures from 15 out of 20 results - full comparison')
       })
   })
   it('GET /compare/manual/list should return the Bulk Comparison previous list page', () => {
@@ -138,8 +158,9 @@ describe('Compare routes tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('15 mismatches from 15 results - full comparison')
-        expect(res.text).toContain('10 mismatches with 5 failures from 15 results - full comparison')
+        expect(res.text).toContain('15 mismatches from 15 out of 20 results - full comparison')
+        expect(res.text).toContain('50% complete. Expected completion time 01 January 2030 at 13:00')
+        expect(res.text).toContain('10 mismatches with 5 failures from 15 out of 20 results - full comparison')
       })
   })
   it('GET /compare/result/ref should return the Bulk Comparison overview page', () => {
@@ -155,6 +176,7 @@ describe('Compare routes tests', () => {
       .expect(res => {
         expect(res.text).toContain('Failed comparison count')
         expect(res.text).toContain('978654321')
+        expect(res.text).toContain('50% complete. Expected completion time 01 January 2030 at 13:00')
       })
   })
   it('GET /compare/manual/result/ref should return the Bulk Comparison overview page', () => {

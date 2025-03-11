@@ -1579,20 +1579,31 @@ export interface components {
       /** Format: int64 */
       offenderSentCalculationId?: number
     }
+    ComparisonProgress: {
+      /** Format: double */
+      percentageComplete: number
+      /** Format: date-time */
+      expectedCompletionTime?: string
+    }
     ComparisonSummary: {
       comparisonShortReference: string
       prison?: string
       /** @enum {string} */
       comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
+      /** @enum {string} */
+      comparisonStatus: 'PROCESSING' | 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
       /** Format: int64 */
       numberOfMismatches: number
       /** Format: int64 */
+      numberOfPeopleExpected: number
+      /** Format: int64 */
       numberOfPeopleCompared: number
       /** Format: int64 */
       numberOfPeopleComparisonFailedFor: number
+      comparisonProgress: components['schemas']['ComparisonProgress']
     }
     ComparisonMismatchSummary: {
       personId: string
@@ -1617,17 +1628,22 @@ export interface components {
       prison?: string
       /** @enum {string} */
       comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
+      /** @enum {string} */
+      comparisonStatus: 'PROCESSING' | 'ACTIVE' | 'COMPLETED' | 'ARCHIVED'
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
       /** Format: int64 */
       numberOfMismatches: number
       /** Format: int64 */
+      numberOfPeopleExpected: number
+      /** Format: int64 */
       numberOfPeopleCompared: number
       /** Format: int64 */
       numberOfPeopleComparisonFailedFor: number
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
       status: string
+      comparisonProgress: components['schemas']['ComparisonProgress']
     }
     /** @description Adjustments details associated that are specifically added as part of a rule */
     AdjustmentDuration: {
