@@ -42,11 +42,21 @@ export default class AuditService {
   }
 
   public async publishManualSentenceCalculationFailure(user: string, nomisId: string, exception: Error) {
-    await this.sendAuditMessage(AuditAction.MANUAL_CALCULATION_FAILED, user, nomisId, exception.message)
+    await this.sendAuditMessage(
+      AuditAction.MANUAL_CALCULATION_FAILED,
+      user,
+      nomisId,
+      JSON.stringify({ error: exception.message }),
+    )
   }
 
   public async publishSentenceCalculationFailure(user: string, nomisId: string, exception: Error) {
-    await this.sendAuditMessage(AuditAction.CALCULATION_FAILED, user, nomisId, exception.message)
+    await this.sendAuditMessage(
+      AuditAction.CALCULATION_FAILED,
+      user,
+      nomisId,
+      JSON.stringify({ error: exception.message }),
+    )
   }
 
   public async publishBulkComparison(
@@ -60,6 +70,11 @@ export default class AuditService {
   }
 
   public async publishBulkComparisonFailure(user: string, selectedOMU: string, exception: Error) {
-    await this.sendAuditMessage(AuditAction.BULK_COMPARISON_FAILED, user, selectedOMU, exception.message)
+    await this.sendAuditMessage(
+      AuditAction.BULK_COMPARISON_FAILED,
+      user,
+      selectedOMU,
+      JSON.stringify({ error: exception.message }),
+    )
   }
 }
