@@ -27,7 +27,7 @@ export default class AuditService {
     nomisId: string,
     calculationReference: string,
   ) {
-    const details = `{ "nomisId": "${nomisId}", "calculationReference": "${calculationReference}" }`
+    const details = JSON.stringify({ nomisId, calculationReference })
     await this.sendAuditMessage(AuditAction.CALCULATION_CREATED, user, prisonerId, details)
   }
 
