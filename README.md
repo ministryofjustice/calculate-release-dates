@@ -18,7 +18,7 @@ This is the user interface service for calculating release dates for people in p
 
 * [Types of Release Date](docs/release-date-types.md)
 * [SDS Plus rules](docs/sds-plus.md)
-
+* [Home Detention Curfew](docs/home-detention-curfew-introduction.md)
 
 ## Check Information page
 
