@@ -755,6 +755,7 @@ export default {
   },
   stubGetDetailedCalculationResults: (): SuperAgentRequest => {
     const breakdown = {
+      showSds40Hints: false,
       concurrentSentences: [
         {
           sentencedAt: '2020-07-17',

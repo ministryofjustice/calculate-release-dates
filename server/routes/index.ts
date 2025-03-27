@@ -159,6 +159,8 @@ export default function Index({
     get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
     get('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.askCancelQuestion)
     post('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.submitCancelQuestion)
+    get('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.concurrentConsecutive)
+    post('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.confirmConcurrentConsecutive)
   }
 
   const reasonRoutes = () => {

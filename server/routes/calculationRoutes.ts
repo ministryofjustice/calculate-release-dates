@@ -19,6 +19,7 @@ import {
 import UserPermissionsService from '../services/userPermissionsService'
 import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
 import config from '../config'
+import ConcurrentConsecutiveSentence from '../models/ConcurrentConsecutiveSentencesModel'
 
 export default class CalculationRoutes {
   constructor(
@@ -33,6 +34,7 @@ export default class CalculationRoutes {
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
+    const { callbackUrl } = req.query as Record<string, string>
     await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
     const calculationRequestId = Number(req.params.calculationRequestId)
     if (
@@ -78,6 +80,7 @@ export default class CalculationRoutes {
       req.session.HDCED_WEEKEND_ADJUSTED[nomsId] =
         detailedCalculationResults.dates.HDCED.date != null && hcedWeekendAdjusted != null
     }
+
     const model = new CalculationSummaryViewModel(
       calculationRequestId,
       nomsId,
@@ -109,7 +112,7 @@ export default class CalculationRoutes {
           calculationRequestId,
         } as ApprovedDateActionConfig),
         req.session.isAddDatesFlow,
-        req.originalUrl,
+        callbackUrl || req.originalUrl,
       ),
     )
   }
@@ -293,6 +296,50 @@ export default class CalculationRoutes {
     res.render(
       'pages/calculation/calculationComplete',
       new CalculationCompleteViewModel(prisonerDetail, calculationRequestId, noDates, hasIndeterminateSentence),
+    )
+  }
+
+  public concurrentConsecutive: RequestHandler = async (req, res): Promise<void> => {
+    const { caseloads, token } = res.locals.user
+    const { nomsId } = req.params
+    const { duration } = req.query as Record<string, string>
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+
+    if (req.session.calculationReasonId == null || duration == null) {
+      return res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+
+    return res.render(
+      'pages/calculation/consecutiveConcurrentSentences',
+      new ConcurrentConsecutiveSentence(
+        prisonerDetail,
+        duration,
+        `/calculation/${nomsId}/cancelCalculation?redirectUrl=/calculation/${nomsId}/check-information`,
+        `/calculation/${nomsId}/check-information/`,
+      ),
+    )
+  }
+
+  public confirmConcurrentConsecutive: RequestHandler = async (req, res): Promise<void> => {
+    const { token } = res.locals.user
+    const { nomsId } = req.params
+    const { sentenceDuration } = req.body
+
+    const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
+    const calculationRequestModel = await this.calculateReleaseDatesService.getCalculationRequestModel(
+      req,
+      userInputs,
+      nomsId,
+    )
+
+    const preliminaryRequest = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
+      nomsId,
+      calculationRequestModel,
+      token,
+    )
+
+    res.redirect(
+      `summary/${preliminaryRequest.calculationRequestId}?callbackUrl=/calculation/${nomsId}/concurrent-consecutive?duration=${sentenceDuration}`,
     )
   }
 

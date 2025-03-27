@@ -897,6 +897,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/calculation/nomis-calculation-summary/booking/{bookingId}/calculation/{offenderSentCalculationId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Nomis calculation summary with release dates (including overrides) for a offenderSentCalculationId
+     * @description This endpoint will return the nomis calculation summary with release dates based on a offenderSentCalculationId. Any date overridden in Nomis will be highlighted
+     */
+    get: operations['getNomisCalculationSummaryWithOverrides']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/calculation/detailed-results/{calculationRequestId}': {
     parameters: {
       query?: never
@@ -1067,6 +1087,9 @@ export interface components {
         | 'FTR_28_DAYS_AGGREGATE_LT_12_MONTHS'
         | 'FTR_TYPE_14_DAYS_SENTENCE_GE_12_MONTHS'
         | 'FTR_TYPE_14_DAYS_AGGREGATE_GE_12_MONTHS'
+        | 'FTR_TYPE_14_DAYS_SENTENCE_GT_12_MONTHS'
+        | 'FTR_TYPE_14_DAYS_SENTENCE_GAP_GT_14_DAYS'
+        | 'FTR_TYPE_28_DAYS_SENTENCE_GAP_LT_14_DAYS'
         | 'FTR_TYPE_28_DAYS_SENTENCE_LT_12_MONTHS'
         | 'FTR_TYPE_28_DAYS_AGGREGATE_LT_12_MONTHS'
         | 'LASPO_AR_SENTENCE_TYPE_INCORRECT'
@@ -1091,11 +1114,14 @@ export interface components {
         | 'SOPC_TORERA_EXCLUSION'
         | 'UNSUPPORTED_ADJUSTMENT_LAWFULLY_AT_LARGE'
         | 'UNSUPPORTED_ADJUSTMENT_SPECIAL_REMISSION'
+        | 'UNSUPPORTED_ADJUSTMENT_TIME_SPENT_IN_CUSTODY_ABROAD'
+        | 'UNSUPPORTED_ADJUSTMENT_TIME_SPENT_AS_AN_APPEAL_APPLICANT'
         | 'UNSUPPORTED_DTO_RECALL_SEC104_SEC105'
         | 'UNSUPPORTED_SENTENCE_TYPE'
         | 'ZERO_IMPRISONMENT_TERM'
         | 'UNSUPPORTED_CALCULATION_DTO_WITH_RECALL'
         | 'PRE_PCSC_DTO_WITH_ADJUSTMENT'
+        | 'BOTUS_CONSECUTIVE_TO_OTHER_SENTENCE'
         | 'BOTUS_CONSECUTIVE_OR_CONCURRENT_TO_OTHER_SENTENCE'
         | 'UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE'
         | 'UNSUPPORTED_SDS40_CONSECUTIVE_SDS_BETWEEN_TRANCHE_COMMENCEMENTS'
@@ -1110,6 +1136,7 @@ export interface components {
         | 'REMAND_ON_OR_AFTER_SENTENCE_DATE'
         | 'DATES_MISSING_REQUIRED_TYPE'
         | 'DATES_PAIRINGS_INVALID'
+        | 'CONCURRENT_CONSECUTIVE_SENTENCES'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1120,14 +1147,15 @@ export interface components {
         | 'UNSUPPORTED_OFFENCE'
         | 'SUSPENDED_OFFENCE'
         | 'MANUAL_ENTRY_JOURNEY_REQUIRED'
+        | 'CONCURRENT_CONSECUTIVE'
     }
-    AdjustmentServiceAdjustment: {
-      /** Format: uuid */
-      id?: string
+    AdditionalDaysAwardedDto: {
+      adjudicationId: string[]
+      prospective: boolean
+    }
+    AdjustmentDto: {
       /** Format: int64 */
       bookingId: number
-      /** Format: int32 */
-      sentenceSequence?: number
       person: string
       /** @enum {string} */
       adjustmentType:
@@ -1139,14 +1167,72 @@ export interface components {
         | 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED'
         | 'SPECIAL_REMISSION'
         | 'UNUSED_DEDUCTIONS'
+        | 'CUSTODY_ABROAD'
+        | 'APPEAL_APPLICANT'
+      /** Format: uuid */
+      id?: string
       /** Format: date */
       toDate?: string
       /** Format: date */
       fromDate?: string
       /** Format: int32 */
-      days: number
+      days?: number
+      remand?: components['schemas']['RemandDto']
+      additionalDaysAwarded?: components['schemas']['AdditionalDaysAwardedDto']
+      unlawfullyAtLarge?: components['schemas']['UnlawfullyAtLargeDto']
+      lawfullyAtLarge?: components['schemas']['LawfullyAtLargeDto']
+      specialRemission?: components['schemas']['SpecialRemissionDto']
+      taggedBail?: components['schemas']['TaggedBailDto']
+      timeSpentInCustodyAbroad?: components['schemas']['TimeSpentInCustodyAbroadDto']
+      timeSpentAsAnAppealApplicant?: components['schemas']['TimeSpentAsAnAppealApplicantDto']
       /** Format: int32 */
-      effectiveDays: number
+      sentenceSequence?: number
+      adjustmentTypeText?: string
+      /** @enum {string} */
+      adjustmentArithmeticType?: 'ADDITION' | 'DEDUCTION' | 'NONE'
+      prisonName?: string
+      prisonId?: string
+      lastUpdatedBy?: string
+      /** @enum {string} */
+      status?: 'ACTIVE' | 'INACTIVE' | 'DELETED' | 'INACTIVE_WHEN_DELETED'
+      /** Format: date-time */
+      lastUpdatedDate?: string
+      /** Format: date-time */
+      createdDate?: string
+      /** Format: int32 */
+      effectiveDays?: number
+      /** @enum {string} */
+      source?: 'NOMIS' | 'DPS'
+    }
+    LawfullyAtLargeDto: {
+      /** @enum {string} */
+      affectsDates?: 'YES' | 'NO'
+    }
+    RemandDto: {
+      chargeId: number[]
+    }
+    SpecialRemissionDto: {
+      /** @enum {string} */
+      type?: 'MERITORIOUS_CONDUCT' | 'RELEASE_DATE_CALCULATED_TOO_EARLY' | 'RELEASE_IN_ERROR'
+    }
+    TaggedBailDto: {
+      /** Format: int32 */
+      caseSequence?: number
+      /** Format: uuid */
+      courtCaseUuid?: string
+    }
+    TimeSpentAsAnAppealApplicantDto: {
+      chargeIds: number[]
+      courtOfAppealReferenceNumber?: string
+    }
+    TimeSpentInCustodyAbroadDto: {
+      chargeIds: number[]
+      /** @enum {string} */
+      documentationSource?: 'COURT_WARRANT' | 'PPCS_LETTER'
+    }
+    UnlawfullyAtLargeDto: {
+      /** @enum {string} */
+      type?: 'RECALL' | 'ESCAPE' | 'SENTENCED_IN_ABSENCE' | 'RELEASE_IN_ERROR' | 'IMMIGRATION_DETENTION'
     }
     UnusedDeductionCalculationResponse: {
       /** Format: int64 */
@@ -1274,6 +1360,8 @@ export interface components {
       calculatedByUsername: string
       comparisonStatus: components['schemas']['ComparisonStatus']
       /** Format: int64 */
+      numberOfPeopleExpected: number
+      /** Format: int64 */
       numberOfPeopleCompared: number
       /** Format: int64 */
       numberOfPeopleComparisonFailedFor: number
@@ -1364,7 +1452,7 @@ export interface components {
       bookingId: number
       prisonerId: string
       /** @enum {string} */
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL'
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL' | 'BULK'
       calculationFragments?: components['schemas']['CalculationFragments']
       effectiveSentenceLength?: {
         /** Format: int32 */
@@ -1714,7 +1802,7 @@ export interface components {
       /**
        * @description Calculation rules used to determine this calculation.
        * @example [
-       *       "HDCED_GE_MIN_PERIOD_LT_MIDPOINT"
+       *       'HDCED_GE_MIN_PERIOD_LT_MIDPOINT'
        *     ]
        */
       rules: (
@@ -1741,6 +1829,8 @@ export interface components {
         | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_2_COMMENCEMENT'
         | 'SDS_STANDARD_RELEASE_APPLIES'
         | 'SDS_EARLY_RELEASE_APPLIES'
+        | 'ADJUSTED_AFTER_TRANCHE_COMMENCEMENT'
+        | 'BOTUS_LATEST_TUSED_USED'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
@@ -1785,6 +1875,8 @@ export interface components {
       courtDescription?: string
       fineAmount?: number
       isSDSPlus: boolean
+      isSDSPlusEligibleSentenceTypeLengthAndOffence: boolean
+      isSDSPlusOffenceInPeriod: boolean
       /** @enum {string} */
       hasAnSDSEarlyReleaseExclusion:
         | 'SEXUAL'
@@ -1868,7 +1960,7 @@ export interface components {
       bookingId: number
       prisonerId: string
       /** @enum {string} */
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL'
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL' | 'BULK'
       /** Format: uuid */
       calculationReference: string
       calculationReason?: components['schemas']['CalculationReason']
@@ -1913,6 +2005,76 @@ export interface components {
       alerts: components['schemas']['Alert'][]
       agencyId: string
       assignedLivingUnit?: components['schemas']['AssignedLivingUnit']
+      sentenceDetail?: components['schemas']['SentenceCalcDates']
+    }
+    /** @description Sentence Calculation Dates */
+    SentenceCalcDates: {
+      /** Format: date */
+      sentenceExpiryCalculatedDate?: string
+      /** Format: date */
+      sentenceExpiryOverrideDate?: string
+      /** Format: date */
+      automaticReleaseDate?: string
+      /** Format: date */
+      automaticReleaseOverrideDate?: string
+      /** Format: date */
+      conditionalReleaseDate?: string
+      /** Format: date */
+      conditionalReleaseOverrideDate?: string
+      /** Format: date */
+      nonParoleDate?: string
+      /** Format: date */
+      nonParoleOverrideDate?: string
+      /** Format: date */
+      postRecallReleaseDate?: string
+      /** Format: date */
+      postRecallReleaseOverrideDate?: string
+      /** Format: date */
+      licenceExpiryCalculatedDate?: string
+      /** Format: date */
+      licenceExpiryOverrideDate?: string
+      /** Format: date */
+      homeDetentionCurfewEligibilityCalculatedDate?: string
+      /** Format: date */
+      homeDetentionCurfewEligibilityOverrideDate?: string
+      /** Format: date */
+      paroleEligibilityCalculatedDate?: string
+      /** Format: date */
+      paroleEligibilityOverrideDate?: string
+      /** Format: date */
+      homeDetentionCurfewActualDate?: string
+      /** Format: date */
+      actualParoleDate?: string
+      /** Format: date */
+      releaseOnTemporaryLicenceDate?: string
+      /** Format: date */
+      earlyRemovalSchemeEligibilityDate?: string
+      /** Format: date */
+      tariffEarlyRemovalSchemeEligibilityDate?: string
+      /** Format: date */
+      tariffDate?: string
+      /** Format: date */
+      etdCalculatedDate?: string
+      /** Format: date */
+      etdOverrideDate?: string
+      /** Format: date */
+      mtdCalculatedDate?: string
+      /** Format: date */
+      mtdOverrideDate?: string
+      /** Format: date */
+      ltdCalculatedDate?: string
+      /** Format: date */
+      ltdOverrideDate?: string
+      /** Format: date */
+      topupSupervisionExpiryCalculatedDate?: string
+      /** Format: date */
+      topupSupervisionExpiryOverrideDate?: string
+      /** Format: date */
+      dtoPostRecallReleaseDate?: string
+      /** Format: date */
+      dtoPostRecallReleaseDateOverride?: string
+      /** Format: date */
+      effectiveSentenceEndDate?: string
     }
     NomisCalculationSummary: {
       reason: string
@@ -1933,6 +2095,7 @@ export interface components {
         [key: string]: string
       }
       ersedNotApplicableDueToDtoLaterThanCrd: boolean
+      showSds40Hints: boolean
     }
     CalculationOriginalData: {
       prisonerDetails?: components['schemas']['PrisonerDetails']
@@ -2037,7 +2200,14 @@ export interface components {
       /** Format: int32 */
       numberOfDays: number
       /** @enum {string} */
-      type: 'RECALL_SENTENCE_REMAND' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'TAGGED_BAIL' | 'UNUSED_REMAND'
+      type:
+        | 'RECALL_SENTENCE_REMAND'
+        | 'RECALL_SENTENCE_TAGGED_BAIL'
+        | 'REMAND'
+        | 'TAGGED_BAIL'
+        | 'UNUSED_REMAND'
+        | 'TIME_SPENT_IN_CUSTODY_ABROAD'
+        | 'TIME_SPENT_AS_AN_APPEAL_APPLICANT'
     }
     AnalyzedBookingAdjustment: {
       active: boolean
@@ -2072,7 +2242,14 @@ export interface components {
       /** Format: int32 */
       numberOfDays: number
       /** @enum {string} */
-      type: 'RECALL_SENTENCE_REMAND' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'TAGGED_BAIL' | 'UNUSED_REMAND'
+      type:
+        | 'RECALL_SENTENCE_REMAND'
+        | 'RECALL_SENTENCE_TAGGED_BAIL'
+        | 'REMAND'
+        | 'TAGGED_BAIL'
+        | 'UNUSED_REMAND'
+        | 'TIME_SPENT_IN_CUSTODY_ABROAD'
+        | 'TIME_SPENT_AS_AN_APPEAL_APPLICANT'
       /** @enum {string} */
       analysisResult: 'NEW' | 'SAME'
     }
@@ -2148,7 +2325,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['AdjustmentServiceAdjustment'][]
+        'application/json': components['schemas']['AdjustmentDto'][]
       }
     }
     responses: {
@@ -4314,6 +4491,60 @@ export interface operations {
          * @example 123456
          */
         offenderSentCalculationId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns Nomis calculation summary with release dates based on a offenderSentCalculationId */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NomisCalculationSummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NomisCalculationSummary']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NomisCalculationSummary']
+        }
+      }
+      /** @description No nomis calculation summary - release dates exists for this offenderSentCalculationId */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NomisCalculationSummary']
+        }
+      }
+    }
+  }
+  getNomisCalculationSummaryWithOverrides: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The offenderSentCalculationId of the offender booking or a calculation
+         * @example 123456
+         */
+        offenderSentCalculationId: number
+        bookingId: number
       }
       cookie?: never
     }

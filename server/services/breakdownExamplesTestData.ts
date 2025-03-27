@@ -5,6 +5,7 @@ import {
 
 export function psiExample16CalculationBreakdown(): CalculationBreakdown {
   return {
+    showSds40Hints: false,
     concurrentSentences: [
       {
         sentencedAt: '2015-02-12',
@@ -74,6 +75,7 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
 
 export function psiExample25CalculationBreakdown(): CalculationBreakdown {
   return {
+    showSds40Hints: false,
     concurrentSentences: [],
     consecutiveSentence: {
       sentencedAt: '2015-02-22',
@@ -160,6 +162,7 @@ export function pedAdjustedByCrdAndBeforePrrdReleaseDates(): BookingCalculation 
 
 export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
   return {
+    showSds40Hints: false,
     concurrentSentences: [
       {
         sentencedAt: '2015-07-20',
@@ -234,6 +237,7 @@ export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
 
 export function hdcedAdjustedToArd(): CalculationBreakdown {
   return {
+    showSds40Hints: false,
     concurrentSentences: [
       {
         sentencedAt: '2022-03-21',
@@ -531,6 +535,7 @@ export function ersedAdjustedByArdReleaseDate(): BookingCalculation {
 
 export function ersedHalfwayBreakdown(): CalculationBreakdown {
   return {
+    showSds40Hints: false,
     concurrentSentences: [],
     consecutiveSentence: null,
     breakdownByReleaseDateType: {
@@ -548,6 +553,7 @@ export function ersedHalfwayBreakdown(): CalculationBreakdown {
 }
 export function ersedTwoThirdsBreakdown(): CalculationBreakdown {
   return {
+    showSds40Hints: false,
     concurrentSentences: [],
     consecutiveSentence: null,
     breakdownByReleaseDateType: {
@@ -565,6 +571,7 @@ export function ersedTwoThirdsBreakdown(): CalculationBreakdown {
 }
 export function ersedAdjustedByArdBreakdown(): CalculationBreakdown {
   return {
+    showSds40Hints: false,
     concurrentSentences: [],
     consecutiveSentence: null,
     breakdownByReleaseDateType: {
@@ -582,6 +589,7 @@ export function ersedAdjustedByArdBreakdown(): CalculationBreakdown {
 }
 export function ersedBeforeSentenceBreakdown(): CalculationBreakdown {
   return {
+    showSds40Hints: false,
     concurrentSentences: [],
     consecutiveSentence: null,
     breakdownByReleaseDateType: {

@@ -369,17 +369,34 @@ export default class CalculateReleaseDatesService {
 
   async validateBackend(prisonId: string, userInput: CalculationUserInputs, token: string): Promise<ErrorMessages> {
     const validationMessages = await new CalculateReleaseDatesApiClient(token).validate(prisonId, userInput)
+    if (validationMessages.length === 0) {
+      return { messages: [] }
+    }
     return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
   }
 
+  /**
+   * if all / only validation relates to concurrent consecutive sentences, return single error to trigger
+   * related informational page
+   * @param validationMessages
+   * @private
+   */
   private convertMessages(validationMessages: ValidationMessage[]): ErrorMessages {
-    const { type } = validationMessages[0] // atm all messages are of the same type for each run of the validation
-    const messages = validationMessages.map(m => {
-      return { text: m.message } as ErrorMessage
-    })
+    if (validationMessages.every(e => e.type === 'CONCURRENT_CONSECUTIVE')) {
+      return {
+        messageType: ErrorMessageType.CONCURRENT_CONSECUTIVE,
+        messages: [{ text: validationMessages[0].message } as ErrorMessage],
+      }
+    }
+
+    const messages = validationMessages
+      .filter(v => v.type !== 'CONCURRENT_CONSECUTIVE')
+      .map(m => {
+        return { text: m.message } as ErrorMessage
+      })
 
     return {
-      messageType: ErrorMessageType[type],
+      messageType: ErrorMessageType[validationMessages[0].type],
       messages,
     }
   }
