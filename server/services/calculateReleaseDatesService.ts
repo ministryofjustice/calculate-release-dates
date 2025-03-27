@@ -375,13 +375,17 @@ export default class CalculateReleaseDatesService {
     return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
   }
 
+  /**
+   * if all / only validation relates to concurrent consecutive sentences, return single error to trigger
+   * related informational page
+   * @param validationMessages
+   * @private
+   */
   private convertMessages(validationMessages: ValidationMessage[]): ErrorMessages {
-    const consecutiveConcurrentError = validationMessages.find(v => v.type === 'CONCURRENT_CONSECUTIVE')
-
-    if (consecutiveConcurrentError) {
+    if (validationMessages.every(e => e.type === 'CONCURRENT_CONSECUTIVE')) {
       return {
         messageType: ErrorMessageType.CONCURRENT_CONSECUTIVE,
-        messages: [{ text: consecutiveConcurrentError.message } as ErrorMessage],
+        messages: [{ text: validationMessages[0].message } as ErrorMessage],
       }
     }
 
