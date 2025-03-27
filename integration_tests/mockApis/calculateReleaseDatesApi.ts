@@ -754,6 +754,121 @@ export default {
     })
   },
   stubGetDetailedCalculationResults: (): SuperAgentRequest => {
+    const breakdown = {
+      showSds40Hints: false,
+      concurrentSentences: [
+        {
+          sentencedAt: '2020-07-17',
+          sentenceLength: '12 months',
+          sentenceLengthDays: 365,
+          dates: {
+            SLED: {
+              unadjusted: '2021-07-16',
+              adjusted: '2021-07-01',
+              daysFromSentenceStart: 365,
+              adjustedByDays: 15,
+            },
+            CRD: {
+              unadjusted: '2021-01-15',
+              adjusted: '2021-01-06',
+              daysFromSentenceStart: 183,
+              adjustedByDays: 9,
+            },
+          },
+          lineSequence: 2,
+          caseSequence: 2,
+          caseReference: 'ABC123',
+        },
+        {
+          sentencedAt: '2020-12-13',
+          sentenceLength: '2 months',
+          sentenceLengthDays: 62,
+          dates: {
+            SLED: {
+              unadjusted: '2021-02-12',
+              adjusted: '2021-01-28',
+              daysFromSentenceStart: 62,
+              adjustedByDays: 15,
+            },
+            CRD: {
+              unadjusted: '2021-01-12',
+              adjusted: '2021-01-03',
+              daysFromSentenceStart: 31,
+              adjustedByDays: 9,
+            },
+          },
+          lineSequence: 4,
+          caseSequence: 4,
+          caseReference: 'ABC234',
+        },
+      ],
+      consecutiveSentence: {
+        sentencedAt: '2020-03-20',
+        sentenceLength: '5 years 8 months',
+        sentenceLengthDays: 2071,
+        dates: {
+          SLED: {
+            unadjusted: '2018-11-20',
+            adjusted: '2018-11-05',
+            daysFromSentenceStart: 2071,
+            adjustedByDays: 15,
+          },
+          CRD: {
+            unadjusted: '2017-05-13',
+            adjusted: '2017-05-07',
+            daysFromSentenceStart: 1036,
+            adjustedByDays: 6,
+          },
+        },
+        sentenceParts: [
+          {
+            lineSequence: 1,
+            caseSequence: 1,
+            caseReference: 'ABC345',
+            sentenceLength: '2 years',
+            sentenceLengthDays: 730,
+            consecutiveToLineSequence: null,
+            consecutiveToCaseSequence: null,
+          },
+          {
+            lineSequence: 3,
+            caseSequence: 3,
+            caseReference: 'ABC567',
+            sentenceLength: '8 months',
+            sentenceLengthDays: 242,
+            consecutiveToLineSequence: 1,
+            consecutiveToCaseSequence: 1,
+          },
+          {
+            lineSequence: 5,
+            caseSequence: 5,
+            caseReference: 'ABC678',
+            sentenceLength: '3 years',
+            sentenceLengthDays: 1095,
+            consecutiveToLineSequence: 3,
+            consecutiveToCaseSequence: 3,
+          },
+        ],
+      },
+      breakdownByReleaseDateType: {
+        CRD: {
+          rules: [],
+          rulesWithExtraAdjustments: {},
+          adjustedDays: -15,
+          releaseDate: '2015-07-23',
+          unadjustedDate: '2018-11-20',
+        },
+        SED: {
+          rules: [],
+          rulesWithExtraAdjustments: {},
+          adjustedDays: -6,
+          releaseDate: '2015-12-21',
+          unadjustedDate: '2017-05-13',
+        },
+      },
+      otherDates: {},
+      ersedNotApplicableDueToDtoLaterThanCrd: false,
+    }
     const prisonerDetails = {
       offenderNo: 'A1234AB',
       bookingId: 1234,
@@ -854,6 +969,7 @@ export default {
         prisonerDetails,
         sentencesAndOffences,
       },
+      calculationBreakdown: breakdown,
       approvedDates: {},
     }
 
