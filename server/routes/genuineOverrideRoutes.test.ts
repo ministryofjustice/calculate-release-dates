@@ -334,6 +334,7 @@ const stubbedGenuineOverrideRequest = {
   isOverridden: true,
 } as GenuineOverrideRequest
 const stubbedCalculationBreakdown: CalculationBreakdown = {
+  showSds40Hints: false,
   concurrentSentences: [
     {
       dates: {
@@ -413,6 +414,10 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         terms: [
           {
             years: 3,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            code: '',
           },
         ],
         sentenceCalculationType: 'ADIMP',
@@ -420,9 +425,23 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         caseSequence: 1,
         lineSequence: 1,
         sentenceSequence: 1,
-        offence: { offenceEndDate: '2021-02-03' },
+        offence: {
+          offenceEndDate: '2021-02-03',
+          offenderChargeId: 0,
+          offenceCode: '',
+          offenceDescription: '',
+          indicators: [],
+        },
         isSDSPlus: false,
-      } as AnalysedSentenceAndOffence,
+        bookingId: 0,
+        sentenceStatus: '',
+        sentenceCategory: '',
+        sentenceDate: '',
+        // sentenceAndOffenceAnalysis: 'NEW',
+        hasAnSDSEarlyReleaseExclusion: 'SEXUAL',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
+      },
       {
         terms: [
           {
@@ -446,7 +465,16 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           offenceDescription: '',
           indicators: [],
         },
-      } as AnalysedSentenceAndOffence,
+        bookingId: 0,
+        sentenceStatus: '',
+        sentenceCategory: '',
+        sentenceDate: '',
+        // sentenceAndOffenceAnalysis: 'NEW',
+        isSDSPlus: false,
+        hasAnSDSEarlyReleaseExclusion: 'SEXUAL',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
+      },
     ],
   },
   approvedDates: {},

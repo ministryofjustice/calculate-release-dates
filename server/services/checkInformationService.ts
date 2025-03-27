@@ -57,7 +57,7 @@ export default class CheckInformationService {
       ? this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
       : ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
 
-    let validationMessages: ErrorMessages
+    let validationMessages: ErrorMessages = null
 
     if (req.query.hasErrors) {
       if (suppressSentenceTypeOrCalcErrors) {
@@ -65,8 +65,6 @@ export default class CheckInformationService {
       } else {
         validationMessages = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
       }
-    } else {
-      validationMessages = null
     }
 
     return new SentenceAndOffenceViewModel(

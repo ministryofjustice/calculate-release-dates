@@ -82,16 +82,23 @@ export default class CheckInformationRoutes {
     this.userInputService.setCalculationUserInputForPrisoner(req, nomsId, userInputs)
 
     const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
+
     if (errors.messages.length > 0) {
-      if (errors.messageType === ErrorMessageType.MANUAL_ENTRY_JOURNEY_REQUIRED) {
-        if (req.session.manualEntryRoutingForBookings === undefined) {
-          req.session.manualEntryRoutingForBookings = [nomsId]
-        } else {
-          req.session.manualEntryRoutingForBookings.push(nomsId)
-        }
-        return res.redirect(`/calculation/${nomsId}/manual-entry`)
+      switch (errors.messageType) {
+        case ErrorMessageType.MANUAL_ENTRY_JOURNEY_REQUIRED:
+          if (req.session.manualEntryRoutingForBookings === undefined) {
+            req.session.manualEntryRoutingForBookings = [nomsId]
+          } else {
+            req.session.manualEntryRoutingForBookings.push(nomsId)
+          }
+          return res.redirect(`/calculation/${nomsId}/manual-entry`)
+        case ErrorMessageType.CONCURRENT_CONSECUTIVE:
+          return res.redirect(
+            `/calculation/${nomsId}/concurrent-consecutive?duration=${encodeURIComponent(errors.messages[0].text)}`,
+          )
+        default:
+          return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
       }
-      return res.redirect(`/calculation/${nomsId}/check-information?hasErrors=true`)
     }
 
     const calculationRequestModel = await this.calculateReleaseDatesService.getCalculationRequestModel(

@@ -71,6 +71,7 @@ const calculationResults: BookingCalculation = {
   calculationStatus: 'CONFIRMED',
 }
 const calculationBreakdown: CalculationBreakdown = {
+  showSds40Hints: false,
   concurrentSentences: [
     {
       dates: {
@@ -672,6 +673,8 @@ describe('Calculate release dates service tests', () => {
             },
             isSDSPlus: false,
             hasAnSDSEarlyReleaseExclusion: 'NO',
+            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+            isSDSPlusOffenceInPeriod: false,
           },
           {
             bookingId: 1,
@@ -702,6 +705,8 @@ describe('Calculate release dates service tests', () => {
             },
             isSDSPlus: false,
             hasAnSDSEarlyReleaseExclusion: 'NO',
+            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+            isSDSPlusOffenceInPeriod: false,
           },
           {
             bookingId: 1,
@@ -731,6 +736,8 @@ describe('Calculate release dates service tests', () => {
             },
             isSDSPlus: false,
             hasAnSDSEarlyReleaseExclusion: 'NO',
+            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+            isSDSPlusOffenceInPeriod: false,
           },
           {
             bookingId: 1,
@@ -761,6 +768,8 @@ describe('Calculate release dates service tests', () => {
             },
             isSDSPlus: false,
             hasAnSDSEarlyReleaseExclusion: 'NO',
+            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+            isSDSPlusOffenceInPeriod: false,
           },
           {
             bookingId: 1,
@@ -791,6 +800,8 @@ describe('Calculate release dates service tests', () => {
             },
             isSDSPlus: false,
             hasAnSDSEarlyReleaseExclusion: 'NO',
+            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+            isSDSPlusOffenceInPeriod: false,
           },
         ],
       },
@@ -903,6 +914,7 @@ describe('Calculate release dates service tests', () => {
           },
           otherDates: {},
           ersedNotApplicableDueToDtoLaterThanCrd: false,
+          showSds40Hints: false,
         },
       }
       fakeApi.get(`/calculation/detailed-results/${calculationRequestId}`).reply(200, detailedResultsWithABreakdown)

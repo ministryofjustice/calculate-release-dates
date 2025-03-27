@@ -105,6 +105,7 @@ const stubbedCalculationResults = {
 } as BookingCalculation
 
 const stubbedCalculationBreakdown: CalculationBreakdown = {
+  showSds40Hints: false,
   concurrentSentences: [
     {
       dates: {
@@ -221,6 +222,8 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         },
         isSDSPlus: false,
         hasAnSDSEarlyReleaseExclusion: 'NO',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
       },
       {
         bookingId: 1,
@@ -251,6 +254,8 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         },
         isSDSPlus: false,
         hasAnSDSEarlyReleaseExclusion: 'NO',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
       },
       {
         bookingId: 1,
@@ -280,6 +285,8 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         },
         isSDSPlus: false,
         hasAnSDSEarlyReleaseExclusion: 'NO',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
       },
       {
         bookingId: 1,
@@ -310,6 +317,8 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         },
         isSDSPlus: false,
         hasAnSDSEarlyReleaseExclusion: 'NO',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
       },
       {
         bookingId: 1,
@@ -340,6 +349,8 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         },
         isSDSPlus: false,
         hasAnSDSEarlyReleaseExclusion: 'NO',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
       },
     ],
   },
@@ -573,6 +584,8 @@ describe('Calculation routes tests', () => {
             },
             isSDSPlus: false,
             hasAnSDSEarlyReleaseExclusion: 'NO',
+            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+            isSDSPlusOffenceInPeriod: false,
           },
         ],
       },
@@ -650,6 +663,7 @@ describe('Calculation routes tests', () => {
 
   it('GET /calculation/:nomsId/summary/:calculationRequestId should display notification when ERSED cannot happen because of DTO', () => {
     const stubbedCalculationBreakdownWithErsedBanner: CalculationBreakdown = {
+      showSds40Hints: false,
       concurrentSentences: [
         {
           dates: {

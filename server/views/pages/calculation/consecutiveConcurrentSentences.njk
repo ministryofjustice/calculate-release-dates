@@ -1,0 +1,61 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set pageTitle = applicationName + " - check information" %}
+{% set pageId = "check-information" %}
+
+{% block beforeContent %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    {% set backlink = "/calculation/" + prisonerDetail.offenderNo + "/reason" %}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: checkInformationLink
+        }) }}
+    </nav>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                <input type="hidden" name="sentenceDuration" value="{{ validationMessage }}">
+                <div class="moj-interruption-card">
+                    <div class="moj-interruption-card__content">
+                        <h1 class="govuk-heading-l moj-interruption-card__heading" style="color: #ffff;">Multiple sentences have been made consecutive to one sentence</h1>
+                        <div class="govuk-body-l moj-interruption-card__body">
+                            <p>This means these sentences are now concurrent to others in the aggregate.</p>
+                            <p>The length of the aggregate is currently&nbsp;<b>{{ validationMessage }}</b>.</p>
+                            <h2 class="govuk-heading-m moj-interruption-card__heading" style="color: #ffff;">What to do next</h2>
+                            <ol class="govuk-list govuk-list--number govuk-body-l" style="color: #ffff;">
+                                <li>Check each sentence has been recorded correctly, as either consecutive or concurrent.</li>
+                                <li>Once you've confirmed the information is correct, calculate release dates.&nbsp;</li>
+                            </ol>
+                        </div>
+                        <div class="govuk-button-group moj-interruption-card__actions">
+                            {{ govukButton({
+                                text: "Calculate release dates",
+                                classes: "govuk-button--inverse",
+                                value: 'save',
+                                preventDoubleClick: true,
+                                type: submit,
+                                attributes: { 'data-qa': 'confirm-link' }
+                            }) }}
+                            <a data-qa="cancel-link"
+                               data-prevent-double-click="true" class="govuk-link govuk-link--inverse"
+                               data-module="govuk-button"
+                               href="{{ cancelCalculationLink }}">
+                               Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

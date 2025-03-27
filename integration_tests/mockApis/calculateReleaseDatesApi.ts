@@ -968,7 +968,6 @@ export default {
         prisonerDetails,
         sentencesAndOffences,
       },
-      calculationBreakdown: breakdown,
       approvedDates: {},
     }
 

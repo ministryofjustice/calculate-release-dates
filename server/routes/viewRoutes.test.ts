@@ -236,6 +236,7 @@ const stubbedCalculationResults = {
 } as BookingCalculation
 
 const stubbedCalculationBreakdown: CalculationBreakdown = {
+  showSds40Hints: false,
   concurrentSentences: [
     {
       dates: {
@@ -400,6 +401,8 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         },
         isSDSPlus: false,
         hasAnSDSEarlyReleaseExclusion: 'NO',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
       },
       {
         bookingId: 1,
@@ -430,6 +433,8 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         },
         isSDSPlus: false,
         hasAnSDSEarlyReleaseExclusion: 'NO',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
       },
     ],
   },
