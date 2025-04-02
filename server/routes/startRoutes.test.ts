@@ -1,7 +1,10 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
-import { Action, LatestCalculationCardConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
+import {
+  Action,
+  LatestCalculationCardConfig,
+} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import {

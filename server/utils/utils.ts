@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { DesignSystemEnvironment } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
+import { DesignSystemEnvironment } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import config from '../config'
 

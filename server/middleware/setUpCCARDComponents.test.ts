@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 
-import { ServiceHeaderConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
+import { ServiceHeaderConfig } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import setUpCCARDComponents from './setUpCCARDComponents'
 
 describe('setUpCCARDComponents', () => {

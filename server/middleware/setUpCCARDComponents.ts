@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { ServiceHeaderConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
+import { ServiceHeaderConfig } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import AuthorisedRoles from '../enumerations/authorisedRoles'
 import { hmppsDesignSystemsEnvironmentName } from '../utils/utils'
 
