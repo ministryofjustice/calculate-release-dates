@@ -1,4 +1,7 @@
-import { Action, LatestCalculationCardConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
+import {
+  Action,
+  LatestCalculationCardConfig,
+} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OptionalPrisonerContextViewModel from './OptionalPrisonerContextViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'

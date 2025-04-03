@@ -5,7 +5,7 @@ import {
   LatestCalculationCardConfig,
   LatestCalculationCardDate,
   LatestCalculationCardDateHint,
-} from 'hmpps-court-cases-release-dates-design/hmpps/@types'
+} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
   AnalysedSentenceAndOffence,

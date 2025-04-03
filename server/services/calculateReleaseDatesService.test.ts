@@ -1,6 +1,9 @@
 import nock from 'nock'
 import dayjs from 'dayjs'
-import { Action, LatestCalculationCardConfig } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
+import {
+  Action,
+  LatestCalculationCardConfig,
+} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import config from '../config'
 import {

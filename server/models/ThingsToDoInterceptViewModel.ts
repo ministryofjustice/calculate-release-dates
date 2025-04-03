@@ -1,4 +1,4 @@
-import { ThingToDo } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
+import { ThingToDo } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import PrisonerContextViewModel from './PrisonerContextViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 

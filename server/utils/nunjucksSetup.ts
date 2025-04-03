@@ -7,7 +7,7 @@ import {
   personDateOfBirth,
   personStatus,
   hmppsFormatDate,
-} from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
+} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import dateFilter from 'nunjucks-date-filter'
 import { hmppsDesignSystemsEnvironmentName, initialiseName, createSupportLink, validPreCalcHints } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
@@ -59,8 +59,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       'node_modules/govuk-frontend/dist/components/',
       'node_modules/@ministryofjustice/frontend/',
       'node_modules/@ministryofjustice/frontend/moj/components/',
-      'node_modules/hmpps-court-cases-release-dates-design/',
-      'node_modules/hmpps-court-cases-release-dates-design/hmpps/components/',
+      'node_modules/@ministryofjustice/hmpps-court-cases-release-dates-design/',
+      'node_modules/@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/components/',
     ],
     {
       autoescape: true,
