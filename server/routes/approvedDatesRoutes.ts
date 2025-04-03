@@ -98,7 +98,7 @@ export default class ApprovedDatesRoutes {
     const { nomsId, calculationRequestId } = req.params
     const { year, month, day } = req.query
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
-    if (req.session.selectedApprovedDates[nomsId].length === 0) {
+    if (!req.session.selectedApprovedDates[nomsId]?.length) {
       return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/select-dates`)
     }
     let previousDate
