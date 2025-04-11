@@ -10,7 +10,6 @@ export interface UserDetails extends User {
   caseloads: string[]
   caseloadDescriptions: string[]
   caseloadMap: Map<string, string>
-  hasAdjustmentsAccess: boolean
   isDigitalSupportUser: boolean
   isSpecialistSupportUser: boolean
 }
@@ -32,7 +31,6 @@ export default class UserService {
       caseloads: userCaseloads.map(uc => uc.caseLoadId),
       caseloadDescriptions: userCaseloads.map(uc => uc.description),
       caseloadMap: new Map(userCaseloads.map(uc => [uc.caseLoadId, uc.description])),
-      hasAdjustmentsAccess: this.hasAdjustmentsAccess(roles),
       isDigitalSupportUser: roles.includes('COURTCASE_RELEASEDATE_SUPPORT'),
       isSpecialistSupportUser: roles.includes('CRDS_SPECIALIST_SUPPORT'),
     }
@@ -41,9 +39,5 @@ export default class UserService {
   getUserRoles(token: string): string[] {
     const { authorities: roles = [] } = jwtDecode(token) as { authorities?: string[] }
     return roles.map(role => role.substring(role.indexOf('_') + 1))
-  }
-
-  hasAdjustmentsAccess(roles: string[]): boolean {
-    return roles.includes('ADJUSTMENTS_MAINTAINER')
   }
 }

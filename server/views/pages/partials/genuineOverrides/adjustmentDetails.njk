@@ -162,8 +162,8 @@
                 </table>
             {% endif %}
             {% if adjustments.unusedRemand.aggregate != 0 %}
-                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Unused {% if user and user.hasAdjustmentsAccess %}deductions{% else %}remand{% endif %}</h4>
-                {% if user and user.hasAdjustmentsAccess and adjustments.unusedRemand.details.length == 1 %}
+                <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Unused deductions</h4>
+                {% if adjustments.unusedRemand.details.length == 1 %}
                     <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key column-width-eighty-percent govuk-!-text-align-right">

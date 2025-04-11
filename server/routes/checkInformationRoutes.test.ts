@@ -562,7 +562,6 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Restore additional days awarded (RADA)')
         expect(res.text).toContain('2')
         expect(res.text).toContain('Detailed')
-        expect(res.text).toContain('From 01 February 2021 to 02 February 2021')
         expect(res.text).toContain('CASE001')
         expect(res.text).toContain('Court 1')
         expect(res.text).toContain('Return to custody')
@@ -580,8 +579,8 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
         expect(res.text).not.toContain('987654')
         expect(res.text).toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
-        expect(res.text).toContain('Unused remand')
-        expect(res.text).not.toContain('Unused deductions')
+        expect(res.text).toContain('Unused deductions')
+        expect(res.text).not.toContain('Unused remand')
 
         const $ = cheerio.load(res.text)
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
@@ -824,7 +823,7 @@ describe('Check information routes tests', () => {
         checkInformationService,
       },
       userSupplier: () => {
-        return { ...user, hasAdjustmentsAccess: true }
+        return { ...user }
       },
     })
     return request(app)
