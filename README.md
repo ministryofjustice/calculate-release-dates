@@ -18,6 +18,7 @@ This is the user interface service for calculating release dates for people in p
 
 * [Types of Release Date](docs/release-date-types.md)
 * [SDS Plus rules](docs/sds-plus.md)
+* [SDS 40](docs/sds-40.md)
 
 
 ## Check Information page
