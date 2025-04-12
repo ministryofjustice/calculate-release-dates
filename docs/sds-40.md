@@ -19,14 +19,15 @@ SDS40 was introduced in two tranches to support a phased recalculation and relea
 To be included in Tranche 1, the following conditions had to be met:
 
 - The person was **in custody on 10 September 2024**
-- They had **at least one SDS sentence imposed before 10 September 2024** which produced a **50% Conditional Release Date (CRD) on or after 10 September 2024**
+- They had **at least one SDS sentence imposed before 10 September 2024**, which produced a **50% Conditional Release Date (CRD) on or after 10 September 2024**
 - And either:
-    - They had **no sentences or aggregates of 5 years or more** in their booking, or
+    - They had **no sentences or aggregates of 5 years or more** in their calculable sentence envelope or
     - They had **sentences or aggregates of 5 years or more**, but the **latest Sentence Licence Expiry Date (SLED)** of those longer sentences was **before 10 September 2024**
 
-To be Tranche 2 a person must have a longer SDS sentences or aggregates (5 years or more) with a latest SLED after 10 September 2024.
+To be Tranche 2, a person must have longer SDS sentences or aggregates (5 years or more) with the latest SLED after 10 September 2024.
 
-Generally, people who were **not in custody on 10 September 2024** were not considered for tranching or defaulting - though specific considerations apply. Refer to the relevant SDS Operational Guidance or Policy. Similarly, for detailed examples and exceptions (e.g. transitional cases between tranches, aggregate sentences), refer to the relevant SDS Operational Guidance.
+Generally, people **not in custody on 10 September 2024** were not considered for tranching or defaulting - though specific considerations apply.
+Also, please refer to the SDS Operational Guidance for detailed examples and exceptions (e.g., transitional cases between tranches and aggregate sentences).
 
 ## Scope and Eligibility
 
