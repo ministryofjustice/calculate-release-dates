@@ -29,6 +29,7 @@ To be Tranche 2, a person must have longer SDS sentences or aggregates (5 years 
 Generally, people **not in custody on 10 September 2024** were not considered for tranching or defaulting - though specific considerations apply.
 Also, please refer to the SDS Operational Guidance for detailed examples and exceptions (e.g., transitional cases between tranches and aggregate sentences).
 
+
 ## Scope and Eligibility
 
 SDS40 eligibility is assessed on a per-sentence basis. This means that when an individual is serving multiple sentences—whether concurrently or consecutively—each sentence is reviewed separately to determine whether it qualifies for release at 40%.
