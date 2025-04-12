@@ -10,16 +10,23 @@ SDS40 remains in force and continues to shape the release framework for determin
 
 ## Tranching
 
-SDS40 was introduced in two tranches:
-- **Tranche 1 (10 September 2024)** – applied to those serving SDS/DYOI/S250 of less than 5 years
-- **Tranche 2 (22 October 2024)** – applied to all remaining eligible sentences
-- Tranching and defaulting rules do not apply to sentences imposed after 10 September 2024 
+SDS40 was introduced in two tranches to support a phased recalculation and release process:
 
-These tranche dates allowed for a staged recalculation and release process.
+- **Tranche 1 (10 September 2024)** – applied to prisoners serving SDS sentences where the longest sentence or aggregate in the sentence envelope was **less than 5 years**
+- **Tranche 2 (22 October 2024)** – applied to all remaining eligible cases
+- For **any sentence imposed on or after 10 September 2024**, SDS40 applies immediately (if eligible), and tranche rules do not apply.
 
-Any new sentence imposed on or after 10 September 2024 is subject to the 40% rule unless excluded by relevant criteria (see below). For sentences imposed after this date, SDS40 eligibility is determined by the offence type and sentence characteristics.
+To be included in Tranche 1, the following conditions had to be met:
 
-For detailed examples and exceptions (e.g. transitional cases between tranches, aggregate sentences), refer to the relevant SDS Operational Guidance.
+- The person was **in custody on 10 September 2024**
+- They had **at least one SDS sentence imposed before 10 September 2024** which produced a **50% Conditional Release Date (CRD) on or after 10 September 2024**
+- And either:
+    - They had **no sentences or aggregates of 5 years or more** in their booking, or
+    - They had **sentences or aggregates of 5 years or more**, but the **latest Sentence Licence Expiry Date (SLED)** of those longer sentences was **before 10 September 2024**
+
+To be Tranche 2 a person must have a longer SDS sentences or aggregates (5 years or more) with a latest SLED after 10 September 2024.
+
+Generally, people who were **not in custody on 10 September 2024** were not considered for tranching or defaulting - though specific considerations apply. Refer to the relevant SDS Operational Guidance or Policy. Similarly, for detailed examples and exceptions (e.g. transitional cases between tranches, aggregate sentences), refer to the relevant SDS Operational Guidance.
 
 ## Scope and Eligibility
 
