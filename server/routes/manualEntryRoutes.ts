@@ -308,6 +308,11 @@ export default class ManualEntryRoutes {
   public loadChangeDate: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
+
+    if (req.session.calculationReasonId == null) {
+      return res.redirect(`/calculation/${nomsId}/reason`)
+    }
+
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
@@ -330,6 +335,10 @@ export default class ManualEntryRoutes {
     const { caseloads, token, username } = res.locals.user
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+
+    if (req.session.calculationReasonId == null) {
+      return res.redirect(`/calculation/${nomsId}/reason`)
+    }
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,

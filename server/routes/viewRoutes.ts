@@ -279,6 +279,11 @@ export default class ViewRoutes {
       .filter(dateObject => dateObject && dateObject.date && filteredListOfDates.includes(dateObject.type))
       .map(dateObject => ({ code: dateObject.type, description: dateObject.description, date: dateObject.date }))
 
+    const reasonForCalculation =
+      releaseDateAndCalcContext.calculation.calculationReason != null
+        ? releaseDateAndCalcContext.calculation.calculationReason.displayName
+        : 'Not specified'
+
     res.render(
       'pages/printNotification/printNotificationSlip',
       new PrintNotificationSlipViewModel(
@@ -296,7 +301,7 @@ export default class ViewRoutes {
         datesArray,
         fromPage,
         pageType,
-        releaseDateAndCalcContext.calculation.calculationReason.displayName,
+        reasonForCalculation,
         hasDTOSentence,
         hasOnlyDTOSentences,
       ),

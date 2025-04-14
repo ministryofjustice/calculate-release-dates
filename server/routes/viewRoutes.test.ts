@@ -1976,5 +1976,61 @@ describe('View journey routes tests', () => {
           )
         })
     })
+
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip?fromPage=view should handle no calculation reason', () => {
+      const stubbedSentencesAndOffencesLocal = [
+        {
+          terms: [
+            {
+              years: 3,
+              code: 'IMP',
+            },
+          ],
+          sentenceDate: '2004-02-03',
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          caseSequence: 1,
+          lineSequence: 1,
+          sentenceSequence: 1,
+          offence: { offenceEndDate: '2021-02-03' },
+          isSDSPlus: false,
+        } as SentenceAndOffenceWithReleaseArrangements,
+        {
+          terms: [
+            {
+              years: 2,
+            },
+          ],
+          sentenceDate: '2010-02-03',
+          caseSequence: 2,
+          lineSequence: 2,
+          sentenceSequence: 2,
+          consecutiveToSequence: 1,
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
+          isSDSPlus: false,
+        } as SentenceAndOffenceWithReleaseArrangements,
+      ]
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(
+        Object.assign(stubbedReleaseDatesUsingCalcReqId, {
+          calculation: {
+            calculationReason: null,
+          },
+        }),
+      )
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const calcReason = $('[data-qa="calculation-reason"]')
+          expect(calcReason.text().trim()).toStrictEqual('Not specified')
+        })
+    })
   })
 })
