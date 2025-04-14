@@ -663,4 +663,22 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         )
       })
   })
+
+  it('GET /calculation/:nomsId/manual-entry/save should redirect when no reasonId is within the session', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/save')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/reason')
+  })
+
+  it('GET /calculation/:nomsId/manual-entry/change-date should redirect when no reasonId is within the session', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/change-date')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/reason')
+  })
 })
