@@ -5,7 +5,6 @@ export default class CheckInformationViewModel extends PrisonerContextViewModel 
   constructor(
     public model: SentenceAndOffenceViewModel,
     public displayNoOfOffenceCount: boolean,
-    public hasAdjustmentsAccess: boolean,
     public pageCancelRedirectUrl?: string,
   ) {
     super(model.prisonerDetail)

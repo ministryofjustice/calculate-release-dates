@@ -30,7 +30,6 @@ export const user: Express.User = {
   activeCaseLoadId: 'MDI',
   authSource: 'NOMIS',
   userRoles: ['ROLE'],
-  hasAdjustmentsAccess: false,
 }
 
 export const flashProvider = jest.fn()

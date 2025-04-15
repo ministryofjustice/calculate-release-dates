@@ -18,7 +18,7 @@ export default class CheckInformationRoutes {
   }
 
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, hasAdjustmentsAccess } = res.locals.user
+    const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
 
     await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
@@ -34,10 +34,7 @@ export default class CheckInformationRoutes {
     }
 
     const model = await this.checkInformationService.checkInformation(req, res, true)
-    return res.render(
-      'pages/calculation/checkInformation',
-      new CheckInformationViewModel(model, true, hasAdjustmentsAccess, req.originalUrl),
-    )
+    return res.render('pages/calculation/checkInformation', new CheckInformationViewModel(model, true, req.originalUrl))
   }
 
   public unsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {

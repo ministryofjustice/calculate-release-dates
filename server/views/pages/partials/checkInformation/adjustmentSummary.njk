@@ -63,7 +63,7 @@
         </tr>
         <tr class="govuk-table__row">
             <!-- Adjustment -->
-            <td class="govuk-table__cell">Unused {% if user and user.hasAdjustmentsAccess %}deductions{% else %}remand{% endif %}</td>
+            <td class="govuk-table__cell">Unused deductions</td>
             <!-- Days -->
             <td class="govuk-table__cell">
                 {{ adjustments.unusedRemand.aggregate | default(nilIndicator, true) }}
