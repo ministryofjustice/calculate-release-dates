@@ -22,30 +22,6 @@ describe('setUpCCARDComponents', () => {
     jest.resetAllMocks()
   })
 
-  it('should set showCCARDNav to false if user has access no relevant roles', () => {
-    const res = createResWithToken({ roles: [] })
-
-    setUpCCARDComponents()(req, res, next)
-    expect(res.locals.showCCARDNav).toBeFalsy()
-    expect(next).toHaveBeenCalled()
-  })
-
-  it('should set showCCARDNav to false if user has access to CRD only', () => {
-    const res = createResWithToken({ roles: ['ROLE_RELEASE_DATES_CALCULATOR'] })
-
-    setUpCCARDComponents()(req, res, next)
-    expect(res.locals.showCCARDNav).toBeFalsy()
-    expect(next).toHaveBeenCalled()
-  })
-
-  it('should set showCCARDNav to true if user has access to CRD and adjustments', () => {
-    const res = createResWithToken({ roles: ['ROLE_RELEASE_DATES_CALCULATOR', 'ROLE_ADJUSTMENTS_MAINTAINER'] })
-
-    setUpCCARDComponents()(req, res, next)
-    expect(res.locals.showCCARDNav).toBeTruthy()
-    expect(next).toHaveBeenCalled()
-  })
-
   it('should add default service header config with just env in so any page not specifying a model gets the correct service header link', () => {
     const res = createResWithToken({ roles: [] })
     setUpCCARDComponents()(req, res, next)

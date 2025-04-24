@@ -115,27 +115,6 @@ const serviceDefinitionsNoThingsToDo = {
   },
 } as CcrdServiceDefinitions
 
-const onlyCrdsServiceDefinitionsWithThingsToDo = {
-  services: {
-    releaseDates: {
-      href: 'http://localhost:8004?prisonId=AB1234AB',
-      text: 'Release dates and calculations',
-      thingsToDo: {
-        things: [
-          {
-            buttonHref: '/calculation-required',
-            buttonText: 'Calculate',
-            message: 'Calculation is required',
-            title: 'A calculation is required',
-            type: 'CALCULATION_REQUIRED',
-          },
-        ],
-        count: 1,
-      },
-    },
-  },
-} as CcrdServiceDefinitions
-
 const calculationHistory = [
   {
     offenderNo: 'GU32342',
@@ -185,7 +164,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: { calculateReleaseDatesService, prisonerService, userPermissionsService, courtCasesReleaseDatesService },
     userSupplier: () => {
-      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'] }
+      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
     },
   })
 })
@@ -398,84 +377,6 @@ describe('Start routes tests', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
         expect($('[data-qa=calculation-history-table]').length).toStrictEqual(0)
-      })
-  })
-
-  it('GET ?prisonId=123 if user has CRD only then hide service banner and sub nav', () => {
-    app = appWithAllRoutes({
-      services: {
-        calculateReleaseDatesService,
-        prisonerService,
-        userPermissionsService,
-        courtCasesReleaseDatesService,
-      },
-      userSupplier: () => {
-        return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
-      },
-    })
-
-    userPermissionsService.allowBulkLoad.mockReturnValue(true)
-
-    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
-    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(onlyCrdsServiceDefinitionsWithThingsToDo)
-    return request(app)
-      .get('?prisonId=123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('[data-qa=main-heading]').text()).toStrictEqual('Release dates and calculations')
-        expectMiniProfile(res.text, {
-          name: 'Nobody, Anon',
-          dob: '24/06/2000',
-          prisonNumber: 'A1234AA',
-          establishment: 'Foo Prison (HMP)',
-          location: 'D-2-003',
-          status: 'Serving Life Imprisonment',
-        })
-        expect($('.service-header').length).toStrictEqual(0)
-        expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
-        expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
-          '/calculation/A1234AA/reason',
-        )
-        expect($('[data-qa=bulk-comparison-action-link]').attr('href')).toStrictEqual('/compare')
-        expect($('.moj-sub-navigation__link').length).toStrictEqual(0)
-        expect($('p:contains(Calculation is required)').length).toStrictEqual(1)
-      })
-  })
-
-  it('GET ?prisonId=123 if CCARD feature is on does not have bulk comparison action link if user does not have comparison role', () => {
-    app = appWithAllRoutes({
-      services: {
-        calculateReleaseDatesService,
-        prisonerService,
-        userPermissionsService,
-        courtCasesReleaseDatesService,
-      },
-      userSupplier: () => {
-        return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
-      },
-    })
-
-    userPermissionsService.allowBulkLoad.mockReturnValue(false)
-
-    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
-    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(noLatestCalcCard)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(onlyCrdsServiceDefinitionsWithThingsToDo)
-    return request(app)
-      .get('?prisonId=123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
-          '/calculation/A1234AA/reason',
-        )
-        expect($('[data-qa=bulk-comparison-action-link]').length).toStrictEqual(0)
-        expect($('.moj-sub-navigation__link').length).toStrictEqual(0)
       })
   })
 

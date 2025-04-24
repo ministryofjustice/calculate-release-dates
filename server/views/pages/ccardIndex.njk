@@ -16,7 +16,7 @@
 
 {% block beforeContent %}
     {{ super() }}
-    {% if showCCARDNav and serviceDefinitions %}
+    {% if serviceDefinitions %}
         {{ subNavigation(serviceDefinitions.services, 'releaseDates') }}
     {% endif %}
 {% endblock %}

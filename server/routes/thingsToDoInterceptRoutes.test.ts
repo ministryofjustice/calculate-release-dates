@@ -109,7 +109,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: { prisonerService, courtCasesReleaseDatesService },
     userSupplier: () => {
-      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'] }
+      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
     },
   })
 })
