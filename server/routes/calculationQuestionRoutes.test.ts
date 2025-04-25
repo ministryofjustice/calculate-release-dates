@@ -305,7 +305,7 @@ it('GET /calculation/:nomsId/reason should be ada intercepted if there are ada r
   const testSpecificApp = appWithAllRoutes({
     services: { userService, prisonerService, calculateReleaseDatesService, courtCasesReleaseDatesService },
     userSupplier: () => {
-      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'] }
+      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
     },
   })
   config.adjustments.url = 'http://localhost:9000'
@@ -323,7 +323,7 @@ it('GET /calculation/:nomsId/reason shouldnt intercepted if toggled off', () => 
   const testSpecificApp = appWithAllRoutes({
     services: { userService, prisonerService, calculateReleaseDatesService, courtCasesReleaseDatesService },
     userSupplier: () => {
-      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'] }
+      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
     },
   })
   config.adjustments.url = 'http://localhost:9000'
@@ -346,7 +346,7 @@ it('GET /calculation/:nomsId/reason should not be ada intercepted if they are a 
       return {
         ...user,
         isDigitalSupportUser: true,
-        userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, 'ROLE_ADJUSTMENTS_MAINTAINER'],
+        userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR],
       }
     },
   })
@@ -356,20 +356,6 @@ it('GET /calculation/:nomsId/reason should not be ada intercepted if they are a 
   courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyAdjustmentsThingsToDo)
 
   return request(testSpecificApp)
-    .get('/calculation/A1234AA/reason/')
-    .expect(200)
-    .expect(res => {
-      expect(courtCasesReleaseDatesService.getServiceDefinitions.mock.calls.length).toBe(0)
-    })
-})
-it('GET /calculation/:nomsId/reason should not be ada intercepted if there showCCARDNav is disabled', () => {
-  config.featureToggles.thingsToDoIntercept = true
-  config.adjustments.url = 'http://localhost:9000'
-  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-  calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-  courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyAdjustmentsThingsToDo)
-
-  return request(app)
     .get('/calculation/A1234AA/reason/')
     .expect(200)
     .expect(res => {

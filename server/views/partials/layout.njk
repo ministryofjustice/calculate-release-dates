@@ -117,12 +117,10 @@
     {% include "./fallback_header.njk" %}
   {% endif %}
 
-  {% if showCCARDNav %}
-      {% if commonElementConfig.serviceHeader %}
-        {{ serviceHeader(commonElementConfig.serviceHeader) }}
-      {% else %}
-        {{ serviceHeader(defaultServiceHeaderConfig) }}
-      {% endif %}
+  {% if commonElementConfig.serviceHeader %}
+    {{ serviceHeader(commonElementConfig.serviceHeader) }}
+  {% else %}
+      {{ serviceHeader(defaultServiceHeaderConfig) }}
   {% endif %}
 
 {% endblock %}
