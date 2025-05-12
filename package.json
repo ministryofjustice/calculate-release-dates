@@ -110,7 +110,7 @@
     "@ministryofjustice/hmpps-court-cases-release-dates-design": "^4.4.5",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
-    "applicationinsights": "^3.7.0",
+    "applicationinsights": "^2.9.6",
     "body-parser": "^2.2.0",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
