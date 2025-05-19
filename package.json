@@ -120,7 +120,7 @@
     "cookie-parser": "^1.4.7",
     "csrf-sync": "^4.2.0",
     "dayjs": "^1.11.13",
-    "express": "^4.21.2",
+    "express": "^5.1.0",
     "express-prom-bundle": "^8.0.0",
     "express-session": "^1.18.1",
     "govuk-frontend": "^5.10.0",
