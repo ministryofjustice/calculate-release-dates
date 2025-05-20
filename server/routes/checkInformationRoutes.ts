@@ -75,7 +75,7 @@ export default class CheckInformationRoutes {
     await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-    userInputs.calculateErsed = req.body.ersed === 'true'
+    userInputs.calculateErsed = req?.body?.ersed === 'true'
     this.userInputService.setCalculationUserInputForPrisoner(req, nomsId, userInputs)
 
     const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)

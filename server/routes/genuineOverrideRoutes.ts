@@ -166,7 +166,7 @@ export default class GenuineOverrideRoutes {
         token,
       )
       const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, calculation.prisonerId)
-      userInputs.calculateErsed = req.body.ersed === 'true'
+      userInputs.calculateErsed = req?.body?.ersed === 'true'
       this.userInputService.setCalculationUserInputForPrisoner(req, calculation.prisonerId, userInputs)
 
       const errors = await this.calculateReleaseDatesService.validateBackend(calculation.prisonerId, userInputs, token)

@@ -60,9 +60,10 @@ export default class ManualEntryService {
       req.session.selectedManualEntryDates[nomsId] = []
     }
     const insufficientDatesSelected =
-      !firstLoad &&
-      req.session.selectedManualEntryDates[nomsId].length === 0 &&
-      (req.body.dateSelect === undefined || req.body.dateSelect.length === 0)
+      req.body == null ||
+      (!firstLoad &&
+        req.session.selectedManualEntryDates[nomsId].length === 0 &&
+        (req.body.dateSelect === undefined || req.body.dateSelect.length === 0))
     let config: DateSelectConfiguration
     if (hasIndeterminateSentences) {
       config = await this.indeterminateConfig(token)
@@ -268,7 +269,7 @@ export default class ManualEntryService {
 
   public removeDate(req: Request, nomsId: string): number {
     const dateToRemove = req.query.dateType
-    if (req.body['remove-date'] === 'yes') {
+    if (req.body != null && req.body['remove-date'] === 'yes') {
       req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
         (d: ManualEntrySelectedDate) => d.dateType !== dateToRemove,
       )
