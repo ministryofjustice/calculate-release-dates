@@ -1,5 +1,4 @@
-import { RequestHandler, Router } from 'express'
-import asyncMiddleware from '../middleware/asyncMiddleware'
+import { Router } from 'express'
 import { Services } from '../services'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
@@ -31,8 +30,6 @@ export default function Index({
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
-  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-  const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
   const calculationAccessRoutes = new CalculationRoutes(
     calculateReleaseDatesService,
     prisonerService,
@@ -91,170 +88,197 @@ export default function Index({
   const thingsToDoInterceptRoutes = new ThingsToDoInterceptRoutes(prisonerService, courtCasesReleaseDatesService)
 
   const indexRoutes = () => {
-    get('/', startRoutes.startPage)
-    get('/supported-sentences', startRoutes.supportedSentences)
-    get('/supported-sentences/:nomsId', startRoutes.supportedSentences)
-    get('/accessibility', startRoutes.accessibility)
+    router.get('/', startRoutes.startPage)
+    router.get('/supported-sentences', startRoutes.supportedSentences)
+    router.get('/supported-sentences/:nomsId', startRoutes.supportedSentences)
+    router.get('/accessibility', startRoutes.accessibility)
   }
 
   const checkInformationRoutes = () => {
-    get('/calculation/:nomsId/check-information', checkInformationAccessRoutes.checkInformation)
-    post('/calculation/:nomsId/check-information', checkInformationAccessRoutes.submitCheckInformation)
+    router.get('/calculation/:nomsId/check-information', checkInformationAccessRoutes.checkInformation)
+    router.post('/calculation/:nomsId/check-information', checkInformationAccessRoutes.submitCheckInformation)
   }
 
   const manualEntryRoutes = () => {
-    get('/calculation/:nomsId/check-information-unsupported', checkInformationAccessRoutes.unsupportedCheckInformation)
-    post(
+    router.get(
+      '/calculation/:nomsId/check-information-unsupported',
+      checkInformationAccessRoutes.unsupportedCheckInformation,
+    )
+    router.post(
       '/calculation/:nomsId/check-information-unsupported',
       checkInformationAccessRoutes.submitUnsupportedCheckInformation,
     )
-    get('/calculation/:nomsId/manual-entry', manualEntryAccessRoutes.landingPage)
-    get('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.dateSelection)
-    post('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.submitSelectedDates)
-    get('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.enterDate)
-    post('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.submitDate)
-    get('/calculation/:nomsId/manual-entry/confirmation', manualEntryAccessRoutes.loadConfirmation)
-    get('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.loadRemoveDate)
-    post('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.submitRemoveDate)
-    get('/calculation/:nomsId/manual-entry/change-date', manualEntryAccessRoutes.loadChangeDate)
-    get('/calculation/:nomsId/manual-entry/save', manualEntryAccessRoutes.save)
-    get('/calculation/:nomsId/manual-entry/no-dates-confirmation', manualEntryAccessRoutes.noDatesConfirmation)
-    post('/calculation/:nomsId/manual-entry/no-dates-confirmation', manualEntryAccessRoutes.submitNoDatesConfirmation)
+    router.get('/calculation/:nomsId/manual-entry', manualEntryAccessRoutes.landingPage)
+    router.get('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.dateSelection)
+    router.post('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.submitSelectedDates)
+    router.get('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.enterDate)
+    router.post('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.submitDate)
+    router.get('/calculation/:nomsId/manual-entry/confirmation', manualEntryAccessRoutes.loadConfirmation)
+    router.get('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.loadRemoveDate)
+    router.post('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.submitRemoveDate)
+    router.get('/calculation/:nomsId/manual-entry/change-date', manualEntryAccessRoutes.loadChangeDate)
+    router.get('/calculation/:nomsId/manual-entry/save', manualEntryAccessRoutes.save)
+    router.get('/calculation/:nomsId/manual-entry/no-dates-confirmation', manualEntryAccessRoutes.noDatesConfirmation)
+    router.post(
+      '/calculation/:nomsId/manual-entry/no-dates-confirmation',
+      manualEntryAccessRoutes.submitNoDatesConfirmation,
+    )
   }
 
   const approvedDatesRoutes = () => {
-    get(
+    router.get(
       '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
       approvedDatesAccessRoutes.askApprovedDatesQuestion,
     )
-    post(
+    router.post(
       '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
       approvedDatesAccessRoutes.submitApprovedDatesQuestion,
     )
-    get('/calculation/:nomsId/:calculationRequestId/store', calculationAccessRoutes.submitCalculationSummary)
-    get(
+    router.get('/calculation/:nomsId/:calculationRequestId/store', calculationAccessRoutes.submitCalculationSummary)
+    router.get(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
       approvedDatesAccessRoutes.selectApprovedDateTypes,
     )
-    post(
+    router.post(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
       approvedDatesAccessRoutes.submitApprovedDateTypes,
     )
-    get('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.loadSubmitDates)
-    post('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.storeSubmitDates)
-    get('/calculation/:nomsId/:calculationRequestId/confirmation', calculationAccessRoutes.calculationSummary)
-    post('/calculation/:nomsId/:calculationRequestId/confirmation', calculationAccessRoutes.submitCalculationSummary)
-    get('/calculation/:nomsId/:calculationRequestId/change', approvedDatesAccessRoutes.loadChangeDate)
-    get('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.loadRemoveDate)
-    post('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.submitRemoveDate)
+    router.get('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.loadSubmitDates)
+    router.post('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.storeSubmitDates)
+    router.get('/calculation/:nomsId/:calculationRequestId/confirmation', calculationAccessRoutes.calculationSummary)
+    router.post(
+      '/calculation/:nomsId/:calculationRequestId/confirmation',
+      calculationAccessRoutes.submitCalculationSummary,
+    )
+    router.get('/calculation/:nomsId/:calculationRequestId/change', approvedDatesAccessRoutes.loadChangeDate)
+    router.get('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.loadRemoveDate)
+    router.post('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.submitRemoveDate)
   }
   const calculationRoutes = () => {
-    get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
-    post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
-    get(
+    router.get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
+    router.post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
+    router.get(
       '/calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip',
       viewAccessRoutes.printNotificationSlip,
     )
-    get('/calculation/:nomsId/summary/:calculationRequestId/print', calculationAccessRoutes.printCalculationSummary)
-    get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
-    get('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.askCancelQuestion)
-    post('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.submitCancelQuestion)
-    get('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.concurrentConsecutive)
-    post('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.confirmConcurrentConsecutive)
+    router.get(
+      '/calculation/:nomsId/summary/:calculationRequestId/print',
+      calculationAccessRoutes.printCalculationSummary,
+    )
+    router.get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
+    router.get('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.askCancelQuestion)
+    router.post('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.submitCancelQuestion)
+    router.get('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.concurrentConsecutive)
+    router.post('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.confirmConcurrentConsecutive)
   }
 
   const reasonRoutes = () => {
-    get('/calculation/:nomsId/reason', calculationQuestionRoutes.selectCalculationReason)
-    post('/calculation/:nomsId/reason', calculationQuestionRoutes.submitCalculationReason)
+    router.get('/calculation/:nomsId/reason', calculationQuestionRoutes.selectCalculationReason)
+    router.post('/calculation/:nomsId/reason', calculationQuestionRoutes.submitCalculationReason)
   }
 
   const searchRoutes = () => {
-    get('/search/prisoners', searchAccessRoutes.searchCalculatePrisoners)
+    router.get('/search/prisoners', searchAccessRoutes.searchCalculatePrisoners)
   }
 
   const viewRoutes = () => {
-    get('/view/:nomsId/latest', viewAccessRoutes.startViewJourney)
-    get('/view/:nomsId/sentences-and-offences/:calculationRequestId', viewAccessRoutes.sentencesAndOffences)
-    get('/view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId', viewAccessRoutes.nomisCalculationSummary)
-    get('/view/:nomsId/calculation-summary/:calculationRequestId', viewAccessRoutes.calculationSummary)
-    get('/view/:nomsId/calculation-summary/:calculationRequestId/print', viewAccessRoutes.printCalculationSummary)
-    get(
+    router.get('/view/:nomsId/latest', viewAccessRoutes.startViewJourney)
+    router.get('/view/:nomsId/sentences-and-offences/:calculationRequestId', viewAccessRoutes.sentencesAndOffences)
+    router.get(
+      '/view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId',
+      viewAccessRoutes.nomisCalculationSummary,
+    )
+    router.get('/view/:nomsId/calculation-summary/:calculationRequestId', viewAccessRoutes.calculationSummary)
+    router.get(
+      '/view/:nomsId/calculation-summary/:calculationRequestId/print',
+      viewAccessRoutes.printCalculationSummary,
+    )
+    router.get(
       '/view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip',
       viewAccessRoutes.printNotificationSlip,
     )
   }
 
   const otherRoutes = () => {
-    get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
+    router.get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
   }
 
   let specialistSupportRoutes = () => {}
   if (config.featureToggles.genuineOverrides) {
     specialistSupportRoutes = () => {
-      get(
+      router.get(
         '/calculation/:calculationReference/request-support',
         genuineOverrideAccessRoutes.loadGenuineOverrideRequestPage,
       )
-      get('/specialist-support/', genuineOverrideAccessRoutes.startPage)
-      get('/specialist-support/search/', genuineOverrideAccessRoutes.loadSearch)
-      post('/specialist-support/search/', genuineOverrideAccessRoutes.submitSearch)
-      get('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.loadConfirmPage)
-      post('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.submitConfirmPage)
-      get(
+      router.get('/specialist-support/', genuineOverrideAccessRoutes.startPage)
+      router.get('/specialist-support/search/', genuineOverrideAccessRoutes.loadSearch)
+      router.post('/specialist-support/search/', genuineOverrideAccessRoutes.submitSearch)
+      router.get('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.loadConfirmPage)
+      router.post(
+        '/specialist-support/calculation/:calculationReference',
+        genuineOverrideAccessRoutes.submitConfirmPage,
+      )
+      router.get(
         '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
         genuineOverrideAccessRoutes.loadCheckSentenceAndInformationPage,
       )
-      post(
+      router.post(
         '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
         genuineOverrideAccessRoutes.submitCheckSentenceAndInformationPage,
       )
-      get(
+      router.get(
         '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
         genuineOverrideAccessRoutes.loadCalculationPage,
       )
-      post(
+      router.post(
         '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
         genuineOverrideAccessRoutes.submitCalculationPage,
       )
-      get(
+      router.get(
         '/specialist-support/calculation/:calculationReference/complete',
         genuineOverrideAccessRoutes.loadConfirmationPage,
       )
-      get('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.loadReasonPage)
-      post('/specialist-support/calculation/:calculationReference/reason', genuineOverrideAccessRoutes.submitReasonPage)
-      get(
+      router.get(
+        '/specialist-support/calculation/:calculationReference/reason',
+        genuineOverrideAccessRoutes.loadReasonPage,
+      )
+      router.post(
+        '/specialist-support/calculation/:calculationReference/reason',
+        genuineOverrideAccessRoutes.submitReasonPage,
+      )
+      router.get(
         '/specialist-support/calculation/:calculationReference/select-date-types',
         genuineOverrideAccessRoutes.loadSelectDatesPage,
       )
-      post(
+      router.post(
         '/specialist-support/calculation/:calculationReference/select-date-types',
         genuineOverrideAccessRoutes.submitSelectDatesPage,
       )
-      get(
+      router.get(
         '/specialist-support/calculation/:calculationReference/enter-date',
         genuineOverrideAccessRoutes.loadEnterDatePage,
       )
-      post(
+      router.post(
         '/specialist-support/calculation/:calculationReference/enter-date',
         genuineOverrideAccessRoutes.submitEnterDatePage,
       )
-      get(
+      router.get(
         '/specialist-support/calculation/:calculationReference/confirm-override',
         genuineOverrideAccessRoutes.loadConfirmOverridePage,
       )
-      post(
+      router.post(
         '/specialist-support/calculation/:calculationReference/confirm-override',
         genuineOverrideAccessRoutes.submitConfirmOverridePage,
       )
-      get(
+      router.get(
         '/specialist-support/calculation/:calculationReference/remove-date',
         genuineOverrideAccessRoutes.loadRemoveDate,
       )
-      post(
+      router.post(
         '/specialist-support/calculation/:calculationReference/remove-date',
         genuineOverrideAccessRoutes.submitRemoveDate,
       )
-      get(
+      router.get(
         '/specialist-support/calculation/:calculationReference/change-date',
         genuineOverrideAccessRoutes.loadChangeDate,
       )
@@ -262,24 +286,24 @@ export default function Index({
   }
 
   const compareRoutes = () => {
-    get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
-    get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation) // TODO remove this route as it was only for testing
-    post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation) // TODO remove this route as it was only for testing
-    post(comparePaths.COMPARE_RUN, compareAccessRoutes.run)
-    get(comparePaths.COMPARE_CHOOSE, compareAccessRoutes.choose)
-    get(comparePaths.COMPARE_RESULT, compareAccessRoutes.result)
-    get(comparePaths.COMPARE_DETAIL, compareAccessRoutes.detail)
-    post(comparePaths.COMPARE_DETAIL, compareAccessRoutes.submitDetail)
-    get(comparePaths.COMPARE_DETAIL_JSON, compareAccessRoutes.viewJson)
-    get(comparePaths.COMPARE_LIST, compareAccessRoutes.list)
-    get(comparePaths.COMPARE_MANUAL_LIST, compareAccessRoutes.manual_list)
-    get(comparePaths.COMPARE_MANUAL_RESULT, compareAccessRoutes.manualResult)
-    get(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.manualDetail)
-    post(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.submitManualDetail)
+    router.get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
+    router.get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation) // TODO remove this route as it was only for testing
+    router.post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation) // TODO remove this route as it was only for testing
+    router.post(comparePaths.COMPARE_RUN, compareAccessRoutes.run)
+    router.get(comparePaths.COMPARE_CHOOSE, compareAccessRoutes.choose)
+    router.get(comparePaths.COMPARE_RESULT, compareAccessRoutes.result)
+    router.get(comparePaths.COMPARE_DETAIL, compareAccessRoutes.detail)
+    router.post(comparePaths.COMPARE_DETAIL, compareAccessRoutes.submitDetail)
+    router.get(comparePaths.COMPARE_DETAIL_JSON, compareAccessRoutes.viewJson)
+    router.get(comparePaths.COMPARE_LIST, compareAccessRoutes.list)
+    router.get(comparePaths.COMPARE_MANUAL_LIST, compareAccessRoutes.manual_list)
+    router.get(comparePaths.COMPARE_MANUAL_RESULT, compareAccessRoutes.manualResult)
+    router.get(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.manualDetail)
+    router.post(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.submitManualDetail)
   }
 
   const thingsToDoInterceptRouter = () => {
-    get('/calculation/:nomsId/things-to-do-before-calculation', thingsToDoInterceptRoutes.thingsToDoIntercept)
+    router.get('/calculation/:nomsId/things-to-do-before-calculation', thingsToDoInterceptRoutes.thingsToDoIntercept)
   }
 
   indexRoutes()
