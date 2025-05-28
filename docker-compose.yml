@@ -28,7 +28,7 @@ services:
       - DELIUS_ENABLED=false
 
   prison-api:
-    image: quay.io/hmpps/prison-api:latest
+    image: ghcr.io/ministryofjustice/prison-api:latest
     networks:
       - hmpps
     container_name: prison-api
