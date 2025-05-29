@@ -32,8 +32,7 @@
 
 Point a browser to `localhost:3000`
 
-the username is CALCULATE_RELEASE_DATES_LOCAL
-The password is : password123456
+Login using the user credentials detailed [here](https://dsdmoj.atlassian.net/wiki/spaces/CS/pages/5710774603/Local+Development#Local-user-credentials)
 
 ## Running ui app
 Install dependencies using `npm install`, ensuring you are using >= `Node v14.x`
