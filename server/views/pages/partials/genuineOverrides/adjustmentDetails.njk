@@ -18,7 +18,7 @@
                         {% for adjustment in adjustments.recallSentenceRemand.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <td class="govuk-table__cell">From {{ adjustment.from | remandDate('DD MMMM YYYY') }} to {{ adjustment.to | remandDate('DD MMMM YYYY') }}</td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}</td>
                             </tr>
@@ -47,7 +47,7 @@
                         {% for adjustment in adjustments.remand.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}</td>
+                                <td class="govuk-table__cell">From {{ adjustment.from | remandDate('DD MMMM YYYY') }} to {{ adjustment.to | remandDate('DD MMMM YYYY') }}</td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}</td>
                             </tr>

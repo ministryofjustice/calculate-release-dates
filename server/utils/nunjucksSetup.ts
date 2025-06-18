@@ -9,6 +9,7 @@ import {
   hmppsFormatDate,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import dateFilter from 'nunjucks-date-filter'
+import dayjs from 'dayjs'
 import { hmppsDesignSystemsEnvironmentName, initialiseName, createSupportLink, validPreCalcHints } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -88,6 +89,13 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   })
 
   njkEnv.addFilter('date', dateFilter)
+
+  njkEnv.addFilter('remandDate', (date, format) => {
+    if (!date) {
+      return 'Date Not Entered'
+    }
+    return dayjs(date).format(format)
+  })
 
   njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
 
