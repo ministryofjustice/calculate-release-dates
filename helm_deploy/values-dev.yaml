@@ -27,7 +27,7 @@ generic-service:
     COURT_CASES_AND_RELEASE_DATES_URL: "https://court-cases-release-dates-dev.hmpps.service.justice.gov.uk"
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     ENVIRONMENT_NAME: DEV
-    ADJUSTMENTS_UI_URL: "https://adjust-release-dates-dev.hmpps.service.justice.gov.uk"
+    ADJUSTMENTS_UI_URL: "https://adjustments-dev.hmpps.service.justice.gov.uk"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk"
     SHOW_CRDS_INTERCEPT: "true"
     GENUINE_OVERRIDES_ENABLED: "true"

@@ -87,7 +87,7 @@ const serviceDefinitionsOnlyAdjustmentsThingsToDo = {
             message: 'Updates have been made to ADA (Additional days awarded) information, which need to be approved.',
             buttonText: 'Review ADA',
             buttonHref:
-              'https://adjust-release-dates-dev.hmpps.service.justice.gov.uk/A1234AA/additional-days/review-and-approve',
+              'https://adjustments-dev.hmpps.service.justice.gov.uk/A1234AA/additional-days/review-and-approve',
             type: 'ADA_INTERCEPT',
           },
         ],
