@@ -25,7 +25,8 @@ import {
   NomisCalculationSummary,
   ReleaseDatesAndCalculationContext,
   SentenceAndOffenceWithReleaseArrangements,
-  SubmitCalculationRequest, SupportedValidationResponse,
+  SubmitCalculationRequest,
+  SupportedValidationResponse,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
