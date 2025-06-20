@@ -20,27 +20,38 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            {% if hasIndeterminateSentences %}
-                <h1 class="govuk-heading-xl" data-qa="manual-entry-title">
-                    Enter the release dates manually
-                </h1>
-                <p class="govuk-body" data-qa="manual-entry-hint">This calculation includes indeterminate sentences. You'll need to enter the tariff dates that have been supplied by PPCS.</p>
-                <h2 class="govuk-heading-m">What you need to do</h2>
-                <p>Continue in this service to enter the release dates or eligibility dates you need to record.</p>
-                <p>If you do not want to record any of these dates, select 'none of these dates apply'.</p>
-                <p class="govuk-body" data-qa="entry-crds-nomis">This will be recorded in NOMIS and the CRDS.</p>
-            {% else %}
-                <h1 class="govuk-heading-xl">
-                    Manual calculation required
-                </h1>
-                <p class="govuk-body">This calculation includes unsupported calculation scenarios. You will need to enter the dates manually.</p>
-                <h2 class="govuk-heading-m">What you need to do</h2>
-                <ul class="govuk-list govuk-list--number">
-                    <li>Complete a calculation using a paper calculation sheet.</li>
-                    <li>Continue in this service to enter the release dates.</li>
-                </ul>
-                <p class="govuk-body">This will be recorded as a manual calculation on NOMIS.</p>
+            <h1 class="govuk-heading-xl" data-qa="manual-entry-title">
+                Enter the dates manually
+            </h1>
+            <p class="govuk-body" data-qa="manual-entry-hint">This calculation includes one or more reasons why dates cannot be calculated by this service.</p>
+
+            {% if validationMessages and validationMessages.unsupportedSentenceMessages.length > 0 %}
+                <h2 class="govuk-heading-m">
+                    {% if validationMessages.unsupportedSentenceMessages.length > 1 %}
+                        The unsupported sentence types are:
+                    {% else %}
+                        The unsupported sentence type is:
+                    {% endif %}
+                </h2>
+                {% for unsupportedSentenceItem in validationMessages.unsupportedSentenceMessages %}
+                    <p class="govuk-body"> {{ unsupportedSentenceItem.message }}</p>
+                {% endfor %}
             {% endif %}
+            {% if validationMessages and validationMessages.unsupportedCalculationMessages.length > 0 %}
+                <h2 class="govuk-heading-m">
+                    {% if validationMessages.unsupportedCalculationMessages.length > 1 %}
+                        The scenarios are not supported because:
+                    {% else %}
+                        The scenario is not supported because:
+                    {% endif %}
+                </h2>
+                {% for unsupportedCalculationItem in validationMessages.unsupportedCalculationMessages %}
+                    <p class="govuk-body"> {{ unsupportedCalculationItem.message }}</p>
+                {% endfor %}
+            {% endif %}
+            <p></p>
+            <h2 class="govuk-heading-m">What you need to do</h2>
+            <p class="govuk-body"> Enter the dates from the paper calculation sheet into this service.</p>
         </div>
     </div>
 

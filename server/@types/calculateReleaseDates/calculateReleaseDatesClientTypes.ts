@@ -36,3 +36,4 @@ export type ReleaseDatesAndCalculationContext = components['schemas']['ReleaseDa
 export type SentenceAndOffenceWithReleaseArrangements =
   components['schemas']['SentenceAndOffenceWithReleaseArrangements']
 export type OffenderOffence = components['schemas']['OffenderOffence']
+export type SupportedValidationResponse = components['schemas']['SupportedValidationResponse']

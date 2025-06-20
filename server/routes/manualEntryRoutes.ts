@@ -8,6 +8,7 @@ import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import {
   ManualEntrySelectedDate,
   SubmittedDate,
+  ValidationMessage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualEntryConfirmationViewModel from '../models/ManualEntryConfirmationViewModel'
 import ManualEntryDateEntryViewModel from '../models/ManualEntryDateEntryViewModel'
@@ -30,6 +31,9 @@ export default class ManualEntryRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
 
+    const unsupportedSentenceOrCalculationMessages =
+      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType(nomsId, token)
+
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
@@ -50,9 +54,13 @@ export default class ManualEntryRoutes {
       prisonerDetail.bookingId,
       token,
     )
+
     return res.render(
       'pages/manualEntry/manualEntry',
-      new ManualEntryLandingPageViewModel(prisonerDetail, hasIndeterminateSentences, req.originalUrl),
+      new ManualEntryLandingPageViewModel(prisonerDetail, hasIndeterminateSentences, req.originalUrl, {
+        unsupportedSentenceMessages: unsupportedSentenceOrCalculationMessages.unsupportedSentenceMessages,
+        unsupportedCalculationMessages: unsupportedSentenceOrCalculationMessages.unsupportedCalculationMessages,
+      }),
     )
   }
 
@@ -61,13 +69,15 @@ export default class ManualEntryRoutes {
     token: string,
     bookingId: number,
     req: Request,
+    validationMessages?: ValidationMessage[],
   ) {
     if (
       req.session.manualEntryRoutingForBookings === undefined ||
       req.session.manualEntryRoutingForBookings.includes(nomsId) === false
     ) {
       const unsupportedSentenceOrCalculationMessages =
-        await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
+        validationMessages ||
+        (await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token))
       const hasRecallSentences = await this.manualCalculationService.hasRecallSentences(bookingId, token)
 
       if (unsupportedSentenceOrCalculationMessages.length === 0 && !hasRecallSentences) {

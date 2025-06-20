@@ -167,6 +167,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   it('GET if there is a recall the page display correctly', () => {
     manualCalculationService.hasRecallSentences.mockResolvedValue(true)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([])
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType.mockResolvedValue({
+      unsupportedSentenceMessages: [],
+      unsupportedCalculationMessages: [],
+    })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
 
@@ -175,7 +179,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Manual calculation required')
+        expect(res.text).toContain('Enter the dates manually')
         expectMiniProfile(res.text, expectedMiniProfile)
         const $ = cheerio.load(res.text)
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
@@ -187,6 +191,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   it('GET if postCalculationValidationRedirect is set', () => {
     manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([])
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType.mockResolvedValue({
+      unsupportedSentenceMessages: [],
+      unsupportedCalculationMessages: [],
+    })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
 
@@ -199,7 +207,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Manual calculation required')
+        expect(res.text).toContain('Enter the dates manually')
         expectMiniProfile(res.text, expectedMiniProfile)
         const $ = cheerio.load(res.text)
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
@@ -234,6 +242,15 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         type: 'UNSUPPORTED_SENTENCE',
       } as ValidationMessage,
     ])
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType.mockResolvedValue({
+      unsupportedSentenceMessages: [
+        {
+          type: 'UNSUPPORTED_SENTENCE',
+          message: 'This type of sentence is a not supported.',
+        } as ValidationMessage,
+      ],
+      unsupportedCalculationMessages: [],
+    })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
 
@@ -242,7 +259,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Manual calculation required')
+        expect(res.text).toContain('Enter the dates manually')
+        expect(res.text).toContain('The unsupported sentence type is:')
+        expect(res.text).toContain('This type of sentence is a not supported')
         expectMiniProfile(res.text, expectedMiniProfile)
         const $ = cheerio.load(res.text)
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
@@ -258,6 +277,15 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         type: 'UNSUPPORTED_SENTENCE',
       } as ValidationMessage,
     ])
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType.mockResolvedValue({
+      unsupportedSentenceMessages: [
+        {
+          type: 'UNSUPPORTED_SENTENCE',
+          message: 'This type of sentence is a not supported.',
+        } as ValidationMessage,
+      ],
+      unsupportedCalculationMessages: [],
+    })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
     return request(app)
@@ -270,13 +298,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry',
         )
         const manualEntryTitle = $('[data-qa=manual-entry-title]').first()
-        const manualEntryHint = $('[data-qa=manual-entry-hint]').first()
-        const manualEntryConfirmation = $('[data-qa=entry-crds-nomis]').first()
-        expect(manualEntryTitle.text().trim()).toStrictEqual('Enter the release dates manually')
-        expect(manualEntryConfirmation.text().trim()).toStrictEqual('This will be recorded in NOMIS and the CRDS.')
-        expect(manualEntryHint.text().trim()).toStrictEqual(
-          "This calculation includes indeterminate sentences. You'll need to enter the tariff dates that have been supplied by PPCS.",
-        )
+        expect(manualEntryTitle.text().trim()).toStrictEqual('Enter the dates manually')
+        expect(res.text).toContain('The unsupported sentence type is:')
+        expect(res.text).toContain('This type of sentence is a not supported')
       })
   })
 

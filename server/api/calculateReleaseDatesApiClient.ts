@@ -26,6 +26,7 @@ import {
   ReleaseDatesAndCalculationContext,
   SentenceAndOffenceWithReleaseArrangements,
   SubmitCalculationRequest,
+  SupportedValidationResponse,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -145,10 +146,16 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<CalculationUserInputs>
   }
 
-  getUnsupportedValidation(prisonerId: string): Promise<ValidationMessage[]> {
+  getUnsupportedCalculationValidation(prisonerId: string): Promise<ValidationMessage[]> {
+    return this.restClient.get({
+      path: `/validation/${prisonerId}/unsupported-calculation`,
+    }) as Promise<ValidationMessage[]>
+  }
+
+  getUnsupportedSentenceValidation(prisonerId: string): Promise<SupportedValidationResponse> {
     return this.restClient.get({
       path: `/validation/${prisonerId}/supported-validation`,
-    }) as Promise<ValidationMessage[]>
+    }) as Promise<SupportedValidationResponse>
   }
 
   hasIndeterminateSentences(bookingId: number): Promise<boolean> {

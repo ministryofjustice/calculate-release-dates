@@ -459,7 +459,11 @@ export default {
             caseReference: 'ABC123',
             sentenceSequence: 1,
             sentenceStatus: 'A',
-            offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
+            offence: {
+              offenceEndDate: '2021-02-03',
+              offenceCode: '123',
+              offenceDescription: 'Doing a crime',
+            },
           },
           {
             terms: [
@@ -536,11 +540,15 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: [
-          {
-            type: 'UNSUPPORTED_SENTENCE',
-          } as ValidationMessage,
-        ],
+        jsonBody: {
+          unsupportedSentenceMessages: [
+            {
+              type: 'UNSUPPORTED_SENTENCE',
+              message: 'Sentence type is not supported',
+            } as ValidationMessage,
+          ],
+          unsupportedCalculationMessages: [],
+        },
       },
     })
   },
