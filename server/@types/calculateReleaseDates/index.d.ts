@@ -1564,6 +1564,10 @@ export interface components {
       adjustedForWeekend: boolean
       adjustedForBankHoliday: boolean
     }
+    SupportedValidationResponse: {
+      unsupportedSentenceMessages: components['schemas']['ValidationMessage'][]
+      unsupportedCalculationMessages: components['schemas']['ValidationMessage'][]
+    }
     ThingsToDo: {
       prisonerId: string
       thingsToDo: 'CALCULATION_REQUIRED'[]
@@ -3273,7 +3277,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ValidationMessage'][]
+          'application/json': components['schemas']['SupportedValidationResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -3282,7 +3286,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ValidationMessage'][]
+          'application/json': components['schemas']['SupportedValidationResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
@@ -3291,7 +3295,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ValidationMessage'][]
+          'application/json': components['schemas']['SupportedValidationResponse']
         }
       }
     }

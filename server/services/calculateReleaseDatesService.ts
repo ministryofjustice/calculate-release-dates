@@ -20,7 +20,7 @@ import {
   NomisCalculationSummary,
   ReleaseDateCalculationBreakdown,
   ReleaseDatesAndCalculationContext,
-  SubmitCalculationRequest,
+  SubmitCalculationRequest, SupportedValidationResponse,
   ValidationMessage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
@@ -76,7 +76,18 @@ export default class CalculateReleaseDatesService {
   }
 
   async getUnsupportedSentenceOrCalculationMessages(prisonId: string, token: string): Promise<ValidationMessage[]> {
-    return new CalculateReleaseDatesApiClient(token).getUnsupportedValidation(prisonId)
+    const validationMessages = await new CalculateReleaseDatesApiClient(token).getUnsupportedSentenceValidation(prisonId)
+
+    let combinedMessages: ValidationMessage[] = []
+    if (validationMessages.unsupportedSentenceMessages)
+      combinedMessages.push(...validationMessages.unsupportedSentenceMessages.values())
+    if (validationMessages.unsupportedCalculationMessages)
+      combinedMessages.push(...validationMessages.unsupportedCalculationMessages.values())
+    return combinedMessages
+  }
+
+  async getUnsupportedSentenceOrCalculationMessagesWithType(prisonId: string, token: string): Promise<SupportedValidationResponse> {
+    return new CalculateReleaseDatesApiClient(token).getUnsupportedSentenceValidation(prisonId)
   }
 
   async getBookingAndSentenceAdjustments(
