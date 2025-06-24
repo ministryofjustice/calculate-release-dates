@@ -509,7 +509,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/calculate-release-dates/validation/manual-entry-dates-validation\\?releaseDates=([A-Z|,]*)',
+        urlPattern: '/calculate-release-dates/validation/manual-entry-dates-validation\\?releaseDates=([A-Za-z|,]*)',
       },
       response: {
         status: 200,
@@ -1115,6 +1115,19 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: false,
+      },
+    })
+  },
+  stubHasSomeIndeterminateSentences: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/manual-calculation/1234/has-indeterminate-sentences`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: true,
       },
     })
   },

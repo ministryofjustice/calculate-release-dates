@@ -33,7 +33,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubGetServiceDefinitions')
   })
 
-  it('Can add some manual dates', () => {
+  it('Can add some manual dates when there are no indeterminate sentences', () => {
     cy.signIn()
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
@@ -94,6 +94,57 @@ context('End to end user journeys entering and modifying approved dates', () => 
     manualDatesConfirmationPage.dateShouldHaveValue('MTD', '09 March 2028')
     // check unselected dates are not shown
     manualDatesConfirmationPage.dateShouldNotBePresent('LTD')
+    manualDatesConfirmationPage.submitToNomisButton().click()
+
+    const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
+  })
+
+  it('Can add some manual dates when there are some indeterminate sentences', () => {
+    cy.task('stubHasSomeIndeterminateSentences')
+    cy.signIn()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.calculateReleaseDatesAction().click()
+
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.submitReason().click()
+
+    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+    checkInformationUnsupportedPage.manualEntryButton().click()
+
+    const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
+    manualEntryLandingPage.continue().click()
+
+    const selectDatesPage = Page.verifyOnPage(ManualEntrySelectDatesPage)
+    selectDatesPage.expectDateOffered(['Tariff', 'TERSED', 'ROTL', 'APD', 'PED', 'None'])
+    selectDatesPage.checkDate('Tariff')
+    selectDatesPage.checkDate('ROTL')
+    selectDatesPage.checkDate('PED')
+    selectDatesPage.continue().click()
+
+    const enterSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
+    enterSedPage.checkIsFor('Tariff')
+    enterSedPage.enterDate('Tariff', '01', '06', '2026')
+    enterSedPage.continue().click()
+
+    const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
+    enterCRDPage.checkIsFor('ROTL')
+    enterCRDPage.enterDate('ROTL', '03', '09', '2027')
+    enterCRDPage.continue().click()
+
+    const enterMTDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
+    enterMTDPage.checkIsFor('PED')
+    enterMTDPage.enterDate('PED', '09', '03', '2028')
+    enterMTDPage.continue().click()
+
+    const manualDatesConfirmationPage = Page.verifyOnPage(ManualDatesConfirmationPage)
+    manualDatesConfirmationPage.dateShouldHaveValue('Tariff', '01 June 2026')
+    manualDatesConfirmationPage.dateShouldHaveValue('ROTL', '03 September 2027')
+    manualDatesConfirmationPage.dateShouldHaveValue('PED', '09 March 2028')
+    // check unselected dates are not shown
+    manualDatesConfirmationPage.dateShouldNotBePresent('TERSED')
     manualDatesConfirmationPage.submitToNomisButton().click()
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
