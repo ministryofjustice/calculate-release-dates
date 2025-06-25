@@ -60,6 +60,7 @@ export default class ManualEntryRoutes {
       new ManualEntryLandingPageViewModel(prisonerDetail, hasIndeterminateSentences, req.originalUrl, {
         unsupportedSentenceMessages: unsupportedSentenceOrCalculationMessages.unsupportedSentenceMessages,
         unsupportedCalculationMessages: unsupportedSentenceOrCalculationMessages.unsupportedCalculationMessages,
+        unsupportedManualMessages: unsupportedSentenceOrCalculationMessages.unsupportedManualMessages,
       }),
     )
   }

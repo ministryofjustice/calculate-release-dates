@@ -86,6 +86,8 @@ export default class CalculateReleaseDatesService {
       combinedMessages.push(...validationMessages.unsupportedSentenceMessages.values())
     if (validationMessages.unsupportedCalculationMessages)
       combinedMessages.push(...validationMessages.unsupportedCalculationMessages.values())
+    if (validationMessages.unsupportedCalculationMessages)
+      combinedMessages.push(...validationMessages.unsupportedCalculationMessages.values())
     return combinedMessages
   }
 

@@ -10,6 +10,7 @@ export default class ManualEntryLandingPageViewModel extends PrisonerContextView
     public validationMessages?: {
       unsupportedSentenceMessages: ValidationMessage[]
       unsupportedCalculationMessages: ValidationMessage[]
+      unsupportedManualMessages: ValidationMessage[]
     },
   ) {
     super(prisonerDetail)
