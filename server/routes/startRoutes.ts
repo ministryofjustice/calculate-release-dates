@@ -4,6 +4,7 @@ import UserPermissionsService from '../services/userPermissionsService'
 import { indexViewModelForPrisoner } from '../models/IndexViewModel'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
+import config from '../config'
 
 export default class StartRoutes {
   constructor(
@@ -57,6 +58,7 @@ export default class StartRoutes {
   }
 
   public accessibility: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/accessibility')
+    const ccardAccessibility = `${config.apis.courtCasesAndReleaseDatesUi.url}/accessibility`
+    return res.redirect(ccardAccessibility)
   }
 }
