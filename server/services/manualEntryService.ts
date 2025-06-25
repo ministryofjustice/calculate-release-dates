@@ -454,6 +454,12 @@ export default class ManualEntryService {
           text: dateTypeDefinitions.APD,
         },
         {
+          value: 'PED',
+          attributes: {},
+          checked: false,
+          text: dateTypeDefinitions.PED,
+        },
+        {
           divider: 'or',
         },
         {
