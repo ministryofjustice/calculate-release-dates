@@ -386,6 +386,34 @@ describe('Calculate release dates service tests', () => {
   })
 
   describe('Validation tests', () => {
+    it('returns all validation messages from sentence, calculation, and manual entry', async () => {
+      const mockResponse = {
+        unsupportedSentenceMessages: [
+          { type: 'UNSUPPORTED_SENTENCE', message: 'Unsupported sentence' } as ValidationMessage,
+        ],
+        unsupportedCalculationMessages: [
+          { type: 'UNSUPPORTED_CALCULATION', message: 'Unsupported calculation' } as ValidationMessage,
+        ],
+        unsupportedManualMessages: [
+          { type: 'MANUAL_ENTRY_JOURNEY_REQUIRED', message: 'Manual input required' } as ValidationMessage,
+        ],
+      }
+
+      // Mock the API endpoint
+      fakeApi.get(`/validation/${prisonerId}/supported-validation`).reply(200, mockResponse)
+
+      const result = await calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(prisonerId, token)
+
+      expect(result).toHaveLength(3)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ message: 'Unsupported sentence' }),
+          expect.objectContaining({ message: 'Unsupported calculation' }),
+          expect.objectContaining({ message: 'Manual input required' }),
+        ]),
+      )
+    })
+
     it('Test validation passes', async () => {
       fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, validResult)
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)

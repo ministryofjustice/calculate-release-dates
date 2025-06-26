@@ -170,6 +170,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType.mockResolvedValue({
       unsupportedSentenceMessages: [],
       unsupportedCalculationMessages: [],
+      unsupportedManualMessages: [],
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
@@ -194,6 +195,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType.mockResolvedValue({
       unsupportedSentenceMessages: [],
       unsupportedCalculationMessages: [],
+      unsupportedManualMessages: [],
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
@@ -250,6 +252,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         } as ValidationMessage,
       ],
       unsupportedCalculationMessages: [],
+      unsupportedManualMessages: [],
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
@@ -285,6 +288,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         } as ValidationMessage,
       ],
       unsupportedCalculationMessages: [],
+      unsupportedManualMessages: [],
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)

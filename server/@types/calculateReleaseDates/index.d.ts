@@ -1567,6 +1567,7 @@ export interface components {
     SupportedValidationResponse: {
       unsupportedSentenceMessages: components['schemas']['ValidationMessage'][]
       unsupportedCalculationMessages: components['schemas']['ValidationMessage'][]
+      unsupportedManualMessages: components['schemas']['ValidationMessage'][]
     }
     ThingsToDo: {
       prisonerId: string
