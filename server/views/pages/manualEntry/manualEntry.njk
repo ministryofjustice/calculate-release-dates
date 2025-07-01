@@ -23,8 +23,10 @@
             <h1 class="govuk-heading-xl" data-qa="manual-entry-title">
                 Enter the dates manually
             </h1>
-            <p class="govuk-body" data-qa="manual-entry-hint">This calculation includes one or more reasons why dates cannot be calculated by this service.</p>
-            <p class="govuk-body" data-qa="manual-entry-scenarios">More scenarios and sentence types will be supported as the service is developed.</p>
+            <p class="govuk-body" data-qa="manual-entry-hint">This calculation includes one or more reasons why dates
+                cannot be calculated by this service.</p>
+            <p class="govuk-body" data-qa="manual-entry-scenarios">More scenarios and sentence types will be supported
+                as the service is developed.</p>
 
             {% if validationMessages and validationMessages.unsupportedSentenceMessages.length > 0 %}
                 <h2 class="govuk-heading-m">
@@ -38,19 +40,23 @@
                     <p class="govuk-body"> {{ unsupportedSentenceItem.message }}</p>
                 {% endfor %}
             {% endif %}
-            {% if validationMessages and validationMessages.unsupportedCalculationMessages.length > 0 %}
+            {% if validationMessages and (validationMessages.unsupportedCalculationMessages.length > 0 or validationMessages.unsupportedManualMessages.length > 0) %}
                 <h2 class="govuk-heading-m">
-                    {% if validationMessages.unsupportedCalculationMessages.length > 1 %}
+                    {% set totalManualMessages = validationMessages.unsupportedCalculationMessages.length + validationMessages.unsupportedManualMessages.length %}
+                    {% if totalManualMessages > 1 %}
                         The scenarios are not supported because:
                     {% else %}
                         The scenario is not supported because:
                     {% endif %}
                 </h2>
                 {% for unsupportedCalculationItem in validationMessages.unsupportedCalculationMessages %}
-                    <p class="govuk-body"> {{ unsupportedCalculationItem.message }}</p>
+                    <p class="govuk-body">{{ unsupportedCalculationItem.message }}</p>
                 {% endfor %}
-            {% endif %}
-            <p></p>
+
+                {% for unsupportedManualItem in validationMessages.unsupportedManualMessages %}
+                    <p class="govuk-body">{{ unsupportedManualItem.message }}</p>
+                {% endfor %}
+            {% endif %} <p></p>
             <h2 class="govuk-heading-m">What you need to do</h2>
             <p class="govuk-body"> Enter the dates from the paper calculation sheet into this service.</p>
         </div>
@@ -68,9 +74,10 @@
             }) }}
             {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
             <a data-qa="cancel-link"
-                data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
-                data-module="govuk-button"
-                href="{{ cancelUrl }}">
+               data-prevent-double-click="true"
+               class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+               data-module="govuk-button"
+               href="{{ cancelUrl }}">
                 Cancel
             </a>
         </div>
