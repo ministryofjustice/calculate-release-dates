@@ -106,4 +106,46 @@ describe('GET Search routes for /search/prisoners', () => {
         expect($('.govuk-back-link')).toHaveLength(0)
       })
   })
+  it('Should include OUT in search when user has ROLE_INACTIVE_BOOKINGS', async () => {
+    const prisonerWithOut = { prisonerNumber: 'A654321', prisonId: 'OUT' } as unknown as Prisoner
+
+    app = appWithAllRoutes({
+      services: { prisonerService },
+      userSupplier: () => ({
+        ...user,
+        caseloads: ['MDI'],
+        userRoles: ['ROLE_INACTIVE_BOOKINGS'],
+      }),
+    })
+
+    prisonerService.searchPrisoners.mockResolvedValue([prisonerWithOut])
+
+    await request(app).get('/search/prisoners?firstName=Jane').expect(200)
+
+    const [calledUsername, criteria] = prisonerService.searchPrisoners.mock.calls[0]
+
+    expect(calledUsername).toBe(user.username)
+    expect(criteria.prisonIds).toEqual(expect.arrayContaining(['MDI', 'TRN', 'OUT']))
+  })
+
+  it('Should not include OUT in search when user lacks ROLE_INACTIVE_BOOKINGS', async () => {
+    app = appWithAllRoutes({
+      services: { prisonerService },
+      userSupplier: () => ({
+        ...user,
+        caseloads: ['MDI'],
+        userRoles: [],
+      }),
+    })
+
+    prisonerService.searchPrisoners.mockResolvedValue([])
+
+    await request(app).get('/search/prisoners?firstName=Jane').expect(200)
+
+    const [calledUsername, criteria] = prisonerService.searchPrisoners.mock.calls[0]
+
+    expect(calledUsername).toBe(user.username)
+    expect(criteria.prisonIds).toEqual(expect.arrayContaining(['MDI', 'TRN']))
+    expect(criteria.prisonIds).not.toContain('OUT')
+  })
 })

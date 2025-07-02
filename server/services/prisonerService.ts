@@ -11,27 +11,33 @@ import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSear
 import { FullPageError } from '../types/FullPageError'
 
 export default class PrisonerService {
-  private readonly includeReleased: boolean
-
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {
-    this.includeReleased = true
-  }
+  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
   async getPrisonerImage(username: string, nomsId: string): Promise<Readable> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
     return new PrisonApiClient(token).getPrisonerImage(nomsId)
   }
 
-  async checkPrisonerAccess(nomsId: string, userCaseloads: string[], token: string) {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, this.includeReleased, false)
+  async checkPrisonerAccess(
+    nomsId: string,
+    userCaseloads: string[],
+    token: string,
+    hasReleasedPrisonerViewingRole: boolean = false,
+  ) {
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, hasReleasedPrisonerViewingRole, false)
   }
 
-  async getPrisonerDetail(nomsId: string, userCaseloads: string[], token: string): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, this.includeReleased, false)
+  async getPrisonerDetail(
+    nomsId: string,
+    userCaseloads: string[],
+    token: string,
+    hasReleasedPrisonerViewingRole: boolean = false,
+  ): Promise<PrisonApiPrisoner> {
+    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, hasReleasedPrisonerViewingRole, false)
   }
 
   async getPrisonerDetailForSpecialistSupport(nomsId: string, token: string): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, [], token, this.includeReleased, true)
+    return this.getPrisonerDetailImpl(nomsId, [], token, true, true)
   }
 
   private async getPrisonerDetailImpl(

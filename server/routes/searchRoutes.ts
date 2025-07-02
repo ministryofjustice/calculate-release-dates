@@ -13,14 +13,14 @@ export default class SearchRoutes {
   private searchPrisoners(): RequestHandler {
     return async (req, res): Promise<void> => {
       const { firstName, lastName, prisonerIdentifier } = req.query as Record<string, string>
-      const { username, caseloads } = res.locals.user
+      const { username, caseloads, userRoles } = res.locals.user
       const searchValues = { firstName, lastName, prisonerIdentifier }
 
       if (this.isSearchCriteriaEmpty(searchValues)) {
         return res.render('pages/search/searchPrisoners', {})
       }
 
-      this.addInactiveBookingCaseloads(caseloads)
+      this.addInactiveBookingCaseloads(caseloads, userRoles)
 
       const prisoners = await this.getPrisoners(searchValues, username, caseloads)
 
@@ -37,9 +37,9 @@ export default class SearchRoutes {
     return !prisonerIdentifier && !firstName && !lastName
   }
 
-  private addInactiveBookingCaseloads(caseloads: string[]): void {
+  private addInactiveBookingCaseloads(caseloads: string[], userRoles: string[]): void {
     caseloads.push('TRN')
-    if (authorisedRoles.ROLE_INACTIVE_BOOKINGS) {
+    if (userRoles.includes(authorisedRoles.ROLE_INACTIVE_BOOKINGS)) {
       caseloads.push('OUT')
     }
   }

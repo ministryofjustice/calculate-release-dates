@@ -21,7 +21,7 @@ export default class CheckInformationRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
 
     if (!this.userInputService.isCalculationReasonSet(req, nomsId)) {
       return res.redirect(`/calculation/${nomsId}/reason`)
@@ -41,7 +41,7 @@ export default class CheckInformationRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
 
     const model = await this.checkInformationService.checkInformation(req, res, true, true)
 
@@ -55,7 +55,7 @@ export default class CheckInformationRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
 
     const manualEntryValidationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(
       nomsId,
@@ -72,7 +72,7 @@ export default class CheckInformationRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     userInputs.calculateErsed = req?.body?.ersed === 'true'

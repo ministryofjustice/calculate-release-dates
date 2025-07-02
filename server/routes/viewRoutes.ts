@@ -39,7 +39,7 @@ export default class ViewRoutes {
   public startViewJourney: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token, false)
     try {
       const latestCalculation = await this.viewReleaseDatesService.getLatestCalculation(
         nomsId,
@@ -58,7 +58,7 @@ export default class ViewRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
     try {
       const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
         calculationRequestId,
@@ -140,7 +140,7 @@ export default class ViewRoutes {
       calculationRequestId,
       token,
     )
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token, false)
     const { calculationBreakdown, calculationOriginalData, breakdownMissingReason, releaseDatesWithAdjustments } =
       detailedCalculationResults
     if (!calculationBreakdown && breakdownMissingReason && breakdownMissingReason === 'PRISON_API_DATA_MISSING') {
@@ -227,7 +227,7 @@ export default class ViewRoutes {
     const { nomsId } = req.params
     const { caseloads, token } = res.locals.user
     const calculationRequestId = Number(req.params.calculationRequestId)
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
     const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads)
     res.render(
       'pages/view/calculationSummary',
@@ -244,7 +244,7 @@ export default class ViewRoutes {
     const { caseloads, token } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
     const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads)
     res.render(
       'pages/view/printCalculationSummary',
@@ -263,7 +263,7 @@ export default class ViewRoutes {
     const calculationRequestId = Number(req.params.calculationRequestId)
     const { fromPage, pageType } = req.query as Record<string, string>
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
 
     const [prisonerDetail, sentencesAndOffences, adjustmentDetails, releaseDateAndCalcContext] = await Promise.all([
       this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, caseloads, token),
@@ -312,7 +312,7 @@ export default class ViewRoutes {
     const { nomsId } = req.params
     const { caseloads, token } = res.locals.user
     const offenderSentCalculationId = Number(req.params.offenderSentCalculationId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token, false)
     const pastNomisCalculation = await this.calculateReleaseDatesService.getNomisCalculationSummary(
       offenderSentCalculationId,
       prisonerDetail.bookingId,

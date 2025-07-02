@@ -55,7 +55,7 @@ describe('Prison API client tests', () => {
   describe('Prisoner detail', () => {
     it('Get prisoner detail', async () => {
       fakeApi.get('/api/offenders/AA1234A', '').reply(200, stubbedPrisonerData)
-      const data = await prisonerService.getPrisonerDetail('AA1234A', caseloads, token)
+      const data = await prisonerService.getPrisonerDetail('AA1234A', caseloads, token, false)
       expect(data).toEqual(stubbedPrisonerData)
       expect(nock.isDone()).toBe(true)
     })
@@ -63,7 +63,7 @@ describe('Prison API client tests', () => {
     it('Not found', async () => {
       fakeApi.get('/api/offenders/AA1234A', '').reply(404)
       try {
-        await prisonerService.getPrisonerDetail('AA1234A', caseloads, token)
+        await prisonerService.getPrisonerDetail('AA1234A', caseloads, token, false)
       } catch (e) {
         expect(e.errorKey).toBe(FullPageErrorType.NOT_IN_CASELOAD)
         expect(e.status).toBe(404)

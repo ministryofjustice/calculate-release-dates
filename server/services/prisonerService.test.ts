@@ -86,5 +86,21 @@ describe('Prisoner service related tests', () => {
         }
       })
     })
+    it('should return prisoner details when prisoner is OUT and user has Released Prisoner Viewing role', async () => {
+      fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'OUT' })
+
+      const result = await prisonerService.getPrisonerDetail('A1234AB', ['MDI'], token, true)
+
+      expect(result.agencyId).toBe('OUT')
+    })
+
+    it('should throw NOT_IN_CASELOAD when prisoner is OUT and user lacks Released Prisoner Viewing role', async () => {
+      fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'OUT' })
+
+      await expect(prisonerService.getPrisonerDetail('A1234AB', ['MDI'], token, false)).rejects.toMatchObject({
+        errorKey: FullPageErrorType.NOT_IN_CASELOAD,
+        status: 404,
+      })
+    })
   })
 })
