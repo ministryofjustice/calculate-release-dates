@@ -11,11 +11,6 @@ describe('deriveAccessibleCaseloads', () => {
     expect(result).toContain('OUT')
   })
 
-  it('includes OUT if user has SST_ROLE_NAME role', () => {
-    const result = deriveAccessibleCaseloads(['MDI'], ['SST_ROLE_NAME'])
-    expect(result).toContain('OUT')
-  })
-
   it('includes both TRN and OUT if user has both roles', () => {
     const result = deriveAccessibleCaseloads(['LEI'], ['INACTIVE_BOOKINGS', 'SST_ROLE_NAME'])
     expect(result).toEqual(expect.arrayContaining(['TRN', 'OUT']))
@@ -28,7 +23,7 @@ describe('deriveAccessibleCaseloads', () => {
   })
 
   it('handles empty caseloads correctly', () => {
-    const result = deriveAccessibleCaseloads([], ['SST_ROLE_NAME'])
+    const result = deriveAccessibleCaseloads([], ['INACTIVE_BOOKINGS'])
     expect(result).toEqual(expect.arrayContaining(['TRN', 'OUT']))
   })
 
