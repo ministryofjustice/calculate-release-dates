@@ -22,7 +22,7 @@ export default class CheckInformationService {
     requireUserInputs: boolean,
     suppressSentenceTypeOrCalcErrors: boolean = false,
   ): Promise<SentenceAndOffenceViewModel> {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { calculationReference } = req.params
     let { nomsId } = req.params
     if (!req.session.selectedApprovedDates) {
@@ -31,13 +31,13 @@ export default class CheckInformationService {
     req.session.selectedApprovedDates[nomsId] = []
     let prisonerDetail
     if (nomsId) {
-      prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+      prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     } else {
       const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         calculationReference,
         token,
       )
-      prisonerDetail = await this.prisonerService.getPrisonerDetail(calculation.prisonerId, caseloads, token)
+      prisonerDetail = await this.prisonerService.getPrisonerDetail(calculation.prisonerId, token, caseloads, userRoles)
       nomsId = calculation.prisonerId
     }
 

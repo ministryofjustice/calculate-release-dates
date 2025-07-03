@@ -18,10 +18,10 @@ export default class CheckInformationRoutes {
   }
 
   public checkInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
+    await this.prisonerService.checkPrisonerAccess(nomsId, token, caseloads, userRoles)
 
     if (!this.userInputService.isCalculationReasonSet(req, nomsId)) {
       return res.redirect(`/calculation/${nomsId}/reason`)
@@ -38,10 +38,10 @@ export default class CheckInformationRoutes {
   }
 
   public unsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
+    await this.prisonerService.checkPrisonerAccess(nomsId, token, caseloads, userRoles)
 
     const model = await this.checkInformationService.checkInformation(req, res, true, true)
 
@@ -52,10 +52,10 @@ export default class CheckInformationRoutes {
   }
 
   public submitUnsupportedCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
+    await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
 
     const manualEntryValidationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(
       nomsId,
@@ -69,10 +69,10 @@ export default class CheckInformationRoutes {
   }
 
   public submitCheckInformation: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token, false)
+    await this.prisonerService.checkPrisonerAccess(nomsId, token, caseloads, userRoles)
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     userInputs.calculateErsed = req?.body?.ersed === 'true'

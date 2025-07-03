@@ -1,56 +1,70 @@
 import { Readable } from 'stream'
 import type HmppsAuthClient from '../data/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
+import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
+import { FullPageError } from '../types/FullPageError'
+import deriveAccessibleCaseloads from '../utils/caseloads'
 import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
-import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
 import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
-import { FullPageError } from '../types/FullPageError'
 
 export default class PrisonerService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
-  async getPrisonerImage(username: string, nomsId: string): Promise<Readable> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    return new PrisonApiClient(token).getPrisonerImage(nomsId)
+  private prisonApi(token: string): PrisonApiClient {
+    return new PrisonApiClient(token)
   }
 
-  async checkPrisonerAccess(
-    nomsId: string,
-    userCaseloads: string[],
-    token: string,
-    hasReleasedPrisonerViewingRole: boolean = false,
-  ) {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, hasReleasedPrisonerViewingRole, false)
+  async getPrisonerImage(username: string, nomsId: string): Promise<Readable> {
+    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+    return this.prisonApi(token).getPrisonerImage(nomsId)
   }
 
   async getPrisonerDetail(
     nomsId: string,
-    userCaseloads: string[],
     token: string,
-    hasReleasedPrisonerViewingRole: boolean = false,
+    userCaseloads: string[],
+    userRoles: string[],
   ): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, userCaseloads, token, hasReleasedPrisonerViewingRole, false)
+    return this.getAccessiblePrisoner(nomsId, token, userCaseloads, userRoles)
+  }
+
+  async checkPrisonerAccess(
+    nomsId: string,
+    token: string,
+    userCaseloads: string[],
+    userRoles: string[],
+  ): Promise<PrisonApiPrisoner> {
+    return this.getAccessiblePrisoner(nomsId, token, userCaseloads, userRoles)
   }
 
   async getPrisonerDetailForSpecialistSupport(nomsId: string, token: string): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, [], token, true, true)
+    return this.getPrisonerDetailImpl(nomsId, [], token, true)
+  }
+
+  private getAccessiblePrisoner(
+    nomsId: string,
+    token: string,
+    userCaseloads: string[],
+    userRoles: string[],
+  ): Promise<PrisonApiPrisoner> {
+    const accessibleCaseloads = deriveAccessibleCaseloads(userCaseloads, userRoles)
+    return this.getPrisonerDetailImpl(nomsId, accessibleCaseloads, token)
   }
 
   private async getPrisonerDetailImpl(
     nomsId: string,
-    userCaseloads: string[],
+    accessibleCaseloads: string[],
     token: string,
-    includeReleased: boolean,
-    isSpecialistSupport: boolean,
+    isSpecialistSupport = false,
   ): Promise<PrisonApiPrisoner> {
     try {
-      const prisonerDetail = await new PrisonApiClient(token).getPrisonerDetail(nomsId)
+      const prisonerDetail = await this.prisonApi(token).getPrisonerDetail(nomsId)
 
-      if (isSpecialistSupport || this.isAccessiblePrisoner(prisonerDetail.agencyId, userCaseloads, includeReleased)) {
+      if (isSpecialistSupport || accessibleCaseloads.includes(prisonerDetail.agencyId)) {
         return prisonerDetail
       }
 
@@ -58,31 +72,22 @@ export default class PrisonerService {
     } catch (error) {
       if (error?.status === 404 && !(error instanceof FullPageError)) {
         throw FullPageError.notInCaseLoadError()
-      } else {
-        throw error
       }
+      throw error
     }
   }
 
-  private isAccessiblePrisoner(agencyId: string, caseload: string[], includeReleased: boolean): boolean {
-    return caseload.includes(agencyId) || ['TRN'].includes(agencyId) || this.isReleased(agencyId, includeReleased)
-  }
-
-  private isReleased(agencyId: string, includeReleased: boolean): boolean {
-    return includeReleased && ['OUT'].includes(agencyId)
-  }
-
-  async searchPrisoners(username: string, prisonerSearchCriteria: PrisonerSearchCriteria): Promise<Prisoner[]> {
+  async searchPrisoners(username: string, criteria: PrisonerSearchCriteria): Promise<Prisoner[]> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    return new PrisonerSearchApiClient(token).searchPrisoners(prisonerSearchCriteria)
+    return new PrisonerSearchApiClient(token).searchPrisoners(criteria)
   }
 
   async getUsersCaseloads(token: string): Promise<PrisonApiUserCaseloads[]> {
-    return new PrisonApiClient(token).getUsersCaseloads()
+    return this.prisonApi(token).getUsersCaseloads()
   }
 
   async getReturnToCustodyDate(bookingId: number, token: string): Promise<PrisonApiReturnToCustodyDate> {
-    const { returnToCustodyDate } = await new PrisonApiClient(token).getFixedTermRecallDetails(bookingId)
-    return { bookingId, returnToCustodyDate } as PrisonApiReturnToCustodyDate
+    const { returnToCustodyDate } = await this.prisonApi(token).getFixedTermRecallDetails(bookingId)
+    return { bookingId, returnToCustodyDate }
   }
 }
