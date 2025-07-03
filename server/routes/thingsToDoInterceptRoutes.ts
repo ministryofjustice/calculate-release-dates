@@ -12,7 +12,7 @@ export default class ThingsToDoInterceptRoutes {
   }
 
   public thingsToDoIntercept: RequestHandler = async (req, res): Promise<void> => {
-    const { token, caseloads } = res.locals.user
+    const { token, caseloads, userRoles } = res.locals.user
     const { nomsId } = req.params
 
     const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token)
@@ -26,7 +26,7 @@ export default class ThingsToDoInterceptRoutes {
     if (!thingsToDo.length) {
       return res.redirect(`/?prisonId=${nomsId}`)
     }
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
 
     return res.render(
       'pages/calculation/thingsToDoIntercept',

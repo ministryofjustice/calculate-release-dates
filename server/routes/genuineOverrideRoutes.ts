@@ -200,7 +200,7 @@ export default class GenuineOverrideRoutes {
 
   public loadCalculationPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
       const calculationRequestId = Number(req.params.calculationRequestId)
       const { calculationReference } = req.params
       const formError = <string>req.query.formError === 'true'
@@ -214,8 +214,9 @@ export default class GenuineOverrideRoutes {
       }
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(
         detailedCalculationResults.context.prisonerId,
-        caseloads,
         token,
+        caseloads,
+        userRoles,
       )
       const serverErrors = req.flash('serverErrors')
       let validationErrors = null
@@ -340,12 +341,17 @@ export default class GenuineOverrideRoutes {
   public loadConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         calculationReference,
         token,
       )
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        releaseDates.prisonerId,
+        token,
+        caseloads,
+        userRoles,
+      )
       const override = await this.calculateReleaseDatesService.getGenuineOverride(calculationReference, token)
       const emailContent = override.isOverridden
         ? this.genuineOverridesEmailTemplateService.getIncorrectCalculationEmail(
@@ -369,14 +375,19 @@ export default class GenuineOverrideRoutes {
   public loadReasonPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
       const noRadio = <string>req.query.noRadio === 'true'
       const noOtherReason = <string>req.query.noOtherReason === 'true'
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         calculationReference,
         token,
       )
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        releaseDates.prisonerId,
+        token,
+        caseloads,
+        userRoles,
+      )
       return res.render(
         'pages/genuineOverrides/reason',
         new GenuineOverridesLoadReasonsViewModel(prisonerDetail, noRadio, noOtherReason, calculationReference),
@@ -414,12 +425,17 @@ export default class GenuineOverrideRoutes {
   public loadSelectDatesPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         calculationReference,
         token,
       )
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        releaseDates.prisonerId,
+        token,
+        caseloads,
+        userRoles,
+      )
       const { config } = await this.manualEntryService.verifySelectedDateType(
         token,
         req,
@@ -438,7 +454,7 @@ export default class GenuineOverrideRoutes {
   public submitSelectDatesPage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
 
       if (!req.session.selectedManualEntryDates) {
         req.session.selectedManualEntryDates = {}
@@ -447,7 +463,12 @@ export default class GenuineOverrideRoutes {
         calculationReference,
         token,
       )
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        releaseDates.prisonerId,
+        token,
+        caseloads,
+        userRoles,
+      )
 
       const { error, config } = await this.manualEntryService.verifySelectedDateType(
         token,
@@ -472,13 +493,18 @@ export default class GenuineOverrideRoutes {
   public loadEnterDatePage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
       const { calculationReference } = req.params
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
       const { year, month, day } = req.query
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         calculationReference,
         token,
       )
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        releaseDates.prisonerId,
+        token,
+        caseloads,
+        userRoles,
+      )
       if (req.session.selectedManualEntryDates[releaseDates.prisonerId].length === 0) {
         return res.redirect(`/specialist-support/calculation/${calculationReference}/select-date-types`)
       }
@@ -502,13 +528,18 @@ export default class GenuineOverrideRoutes {
 
   public submitEnterDatePage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
       const { calculationReference } = req.params
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         calculationReference,
         token,
       )
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        releaseDates.prisonerId,
+        token,
+        caseloads,
+        userRoles,
+      )
 
       const storeDateResponse = this.manualEntryService.storeDate(
         req.session.selectedManualEntryDates[releaseDates.prisonerId],
@@ -541,13 +572,18 @@ export default class GenuineOverrideRoutes {
 
   public loadConfirmOverridePage: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
       const { calculationReference } = req.params
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         calculationReference,
         token,
       )
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        releaseDates.prisonerId,
+        token,
+        caseloads,
+        userRoles,
+      )
       const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, releaseDates.prisonerId, true)
 
       return res.render(
@@ -576,13 +612,19 @@ export default class GenuineOverrideRoutes {
 
   public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
       const { calculationReference } = req.params
       const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
         calculationReference,
         token,
       )
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        releaseDates.prisonerId,
+        token,
+        caseloads,
+        userRoles,
+      )
       const dateToRemove: string = <string>req.query.dateType
       if (
         req.session.selectedManualEntryDates[releaseDates.prisonerId].some(
@@ -602,7 +644,7 @@ export default class GenuineOverrideRoutes {
 
   public submitRemoveDate: RequestHandler = async (req, res): Promise<void> => {
     if (this.userPermissionsService.allowSpecialSupport(res.locals.user.userRoles)) {
-      const { caseloads, token } = res.locals.user
+      const { caseloads, token, userRoles } = res.locals.user
       const { calculationReference } = req.params
 
       const dateToRemove: string = <string>req.query.dateType
@@ -610,7 +652,12 @@ export default class GenuineOverrideRoutes {
         calculationReference,
         token,
       )
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+        releaseDates.prisonerId,
+        token,
+        caseloads,
+        userRoles,
+      )
       const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
       if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
         const error = true
@@ -654,13 +701,18 @@ export default class GenuineOverrideRoutes {
   }
 
   public loadGenuineOverrideRequestPage: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { calculationReference } = req.params
     const releaseDates = await this.calculateReleaseDatesService.getCalculationResultsByReference(
       calculationReference,
       token,
     )
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(releaseDates.prisonerId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(
+      releaseDates.prisonerId,
+      token,
+      caseloads,
+      userRoles,
+    )
     const { calculationRequestId } = releaseDates
     return res.render(
       'pages/genuineOverrides/requestSupport',

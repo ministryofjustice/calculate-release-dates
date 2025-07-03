@@ -32,10 +32,10 @@ export default class CalculationRoutes {
   }
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
     const { callbackUrl } = req.query as Record<string, string>
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, token)
+    await this.prisonerService.checkPrisonerAccess(nomsId, token, caseloads, userRoles)
     const calculationRequestId = Number(req.params.calculationRequestId)
     if (
       req.session.selectedApprovedDates &&
@@ -51,7 +51,7 @@ export default class CalculationRoutes {
     if (detailedCalculationResults.context.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
     }
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const serverErrors = req.flash('serverErrors')
     let validationErrors = null
     if (serverErrors && serverErrors[0]) {
@@ -140,10 +140,10 @@ export default class CalculationRoutes {
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       token,
@@ -242,9 +242,9 @@ export default class CalculationRoutes {
   }
 
   public askCancelQuestion: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     let redirectUrl = typeof req.query.redirectUrl === 'string' ? req.query.redirectUrl : ''
     if (typeof req.query === 'object') {
       const params = new URLSearchParams()
@@ -262,9 +262,9 @@ export default class CalculationRoutes {
   }
 
   public submitCancelQuestion: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const { redirectUrl, cancelQuestion } = req.body
     if (cancelQuestion === 'no') {
       return res.redirect(redirectUrl)
@@ -279,11 +279,11 @@ export default class CalculationRoutes {
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
     const noDates: string = <string>req.query.noDates
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const calculation = await this.calculateReleaseDatesService.getCalculationResults(calculationRequestId, token)
     const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
@@ -300,10 +300,10 @@ export default class CalculationRoutes {
   }
 
   public concurrentConsecutive: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token } = res.locals.user
+    const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
     const { duration } = req.query as Record<string, string>
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
 
     if (req.session.calculationReasonId == null || duration == null) {
       return res.redirect(`/calculation/${nomsId}/check-information`)

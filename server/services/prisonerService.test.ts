@@ -48,42 +48,60 @@ describe('Prisoner service related tests', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
   let prisonerService: PrisonerService
   let fakeApi: nock.Scope
+
   beforeEach(() => {
     config.apis.prisonApi.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.prisonApi.url)
     hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
     prisonerService = new PrisonerService(hmppsAuthClient)
   })
+
   afterEach(() => {
     nock.cleanAll()
   })
 
   describe('prisonerService', () => {
-    it('Test fetching user caseloads', async () => {
+    it('should fetch user caseloads', async () => {
       fakeApi.get(`/api/users/me/caseLoads`).reply(200, [caseload])
 
       const result = await prisonerService.getUsersCaseloads(token)
 
       expect(result).toEqual([caseload])
     })
+
     describe('getPrisonerDetail', () => {
-      it('Test getting prisoner details', async () => {
+      it('should return prisoner details when agencyId is in user caseloads', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, prisonerDetails)
 
-        const result = await prisonerService.getPrisonerDetail('A1234AB', ['MDI'], token)
+        const result = await prisonerService.getPrisonerDetail('A1234AB', token, ['MDI'], [])
 
         expect(result).toEqual(prisonerDetails)
       })
 
-      it('Test getting prisoner details when caseload is different', async () => {
+      it('should throw NOT_IN_CASELOAD when agencyId not in derived caseloads', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'LEX' })
 
-        try {
-          await prisonerService.getPrisonerDetail('A1234AB', ['MDI'], token)
-        } catch (error) {
-          expect(error.errorKey).toBe(FullPageErrorType.NOT_IN_CASELOAD)
-          expect(error.status).toBe(404)
-        }
+        await expect(prisonerService.getPrisonerDetail('A1234AB', token, ['MDI'], [])).rejects.toMatchObject({
+          errorKey: FullPageErrorType.NOT_IN_CASELOAD,
+          status: 404,
+        })
+      })
+
+      it('should return prisoner details when agencyId is OUT and user has Released Prisoner Viewing role', async () => {
+        fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'OUT' })
+
+        const result = await prisonerService.getPrisonerDetail('A1234AB', token, ['MDI'], ['INACTIVE_BOOKINGS'])
+
+        expect(result.agencyId).toBe('OUT')
+      })
+
+      it('should throw NOT_IN_CASELOAD when agencyId is OUT and user lacks relevant role', async () => {
+        fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'OUT' })
+
+        await expect(prisonerService.getPrisonerDetail('A1234AB', token, ['MDI'], [])).rejects.toMatchObject({
+          errorKey: FullPageErrorType.NOT_IN_CASELOAD,
+          status: 404,
+        })
       })
     })
   })
