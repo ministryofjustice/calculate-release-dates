@@ -557,7 +557,7 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Committed on 07 January 2021')
         expect(res.text).toContain('SDS Standard Sentence')
         expect(res.text).toContain('Court case 2')
-        expect(res.text).toContain('Consecutive to court case 1 count 1')
+        expect(res.text).toContain('Consecutive to court case 1 NOMIS line number 1')
         expect(res.text).toContain('href="/calculation/A1234AA/reason"')
         expect(res.text).toContain('Restore additional days awarded (RADA)')
         expect(res.text).toContain('2')
@@ -1074,10 +1074,10 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'Court case 1 count 1 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.',
+          'Court case 1 NOMIS line number 1 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.',
         )
         expect(res.text).toContain(
-          'Court case 3 count 3 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.',
+          'Court case 3 NOMIS line number 3 has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.',
         )
       })
   })

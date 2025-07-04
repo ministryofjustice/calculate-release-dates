@@ -16,7 +16,7 @@
               {% set sentence = sentenceModel.sentencesAndOffence %}
               {% set offence = sentence.offence %}
                   <tr class="govuk-table__row">
-                      <td class="govuk-table__cell" data-qa="sentence-{{ case.caseSequence }}-{{ sentence.lineSequence }}-title">Court case {{ case.caseSequence }}, Count {{ sentence.lineSequence }}</td>
+                      <td class="govuk-table__cell" data-qa="sentence-{{ case.caseSequence }}-{{ sentence.lineSequence }}-title">Court case {{ case.caseSequence }}, NOMIS line number {{ sentence.lineSequence }}</td>
                       <td class="govuk-table__cell" data-qa="sentence-{{ case.caseSequence }}-{{ sentence.lineSequence }}-date">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
                       <td class="govuk-table__cell" data-qa="sentence-{{ case.caseSequence }}-{{ sentence.lineSequence }}-length">
                       {% if sentenceModel.hasCustodialAndLicenseTerms() %}
@@ -27,7 +27,7 @@
                       {% if sentence.consecutiveToSequence %}
                         {% set consecutiveToSequence = model.sentenceSequenceToSentence
                             .get(sentence.consecutiveToSequence) %}
-                                consecutive to  court case {{ consecutiveToSequence.caseSequence }} count {{ consecutiveToSequence.lineSequence }}
+                                consecutive to court case {{ consecutiveToSequence.caseSequence }} NOMIS line number {{ consecutiveToSequence.lineSequence }}
                       {% endif %}
                       </td>
                   </tr>

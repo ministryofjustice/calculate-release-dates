@@ -3,7 +3,7 @@
         <h2 class="govuk-heading-m">You have entered multiple offences for a single sentence</h2>
         <p class="govuk-body">
         {% for k,v in model.getMultipleOffencesToASentence() %}
-            <p> {{ 'Court case ' + k + ' count ' + v +' has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.' }}
+            <p> {{ 'Court case ' + k + ' NOMIS line number ' + v +' has multiple offences against the sentence. Each sentence must have only one offence. This service has automatically applied a new sentence for each offence.' }}
             </p>
         {% endfor %}
         </p>
