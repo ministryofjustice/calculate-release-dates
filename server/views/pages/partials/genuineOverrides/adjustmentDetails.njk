@@ -69,7 +69,7 @@
                 <table class="govuk-table govuk-!-margin-bottom-8">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="col">Court case and count</th>
+                            <th class="govuk-table__header" scope="col">Court case and NOMIS line number</th>
                             <th class="govuk-table__header" scope="col">Days</th>
                         </tr>
                     </thead>
@@ -80,7 +80,7 @@
                                     .sentenceSequenceToSentence
                                     .get(adjustment.sentence) %}
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
+                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, NOMIS line number {{sentence.lineSequence}}</td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}
                                 </td>
@@ -103,7 +103,7 @@
                 <table class="govuk-table govuk-!-margin-bottom-8">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="col">Court case and count</th>
+                            <th class="govuk-table__header" scope="col">Court case and NOMIS line number</th>
                             <th class="govuk-table__header" scope="col">Days</th>
                         </tr>
                     </thead>
@@ -114,7 +114,7 @@
                                     .sentenceSequenceToSentence
                                     .get(adjustment.sentence) %}
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, count {{sentence.lineSequence}}</td>
+                                <td class="govuk-table__cell">Court case {{sentence.caseSequence}}, NOMIS line number {{sentence.lineSequence}}</td>
                                 <!-- Days -->
                                 <td class="govuk-table__cell">{{adjustment.days}}
                                 </td>

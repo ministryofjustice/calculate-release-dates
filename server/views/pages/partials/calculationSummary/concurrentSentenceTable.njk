@@ -11,7 +11,7 @@
     <tbody class="govuk-table__body calculation-breakdown">
         {% for sentence in model.calculationBreakdown.concurrentSentences %}
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">Court case {{ sentence.caseSequence }}, count {{ sentence.lineSequence }}
+                <td class="govuk-table__cell">Court case {{ sentence.caseSequence }}, NOMIS line number {{ sentence.lineSequence }}
                     {% if sentence.caseReference %}
                         <br>
                         <p class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">Court case number: {{sentence.caseReference}}</p>

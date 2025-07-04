@@ -35,7 +35,7 @@ context('Check nomis information', () => {
 
     checkInformationPage.sentenceCards(2).should('contain.text', 'Committed on 05 February 2021')
     checkInformationPage.sentenceCards(2).contains('2 years')
-    checkInformationPage.sentenceCards(2).contains('Consecutive to court case 1 count 1')
+    checkInformationPage.sentenceCards(2).contains('Consecutive to court case 1 NOMIS line number 1')
 
     checkInformationPage.adjustmentSummary().should('contain.text', 'Remand')
     checkInformationPage.adjustmentSummary().should('contain.text', '28')
