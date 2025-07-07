@@ -3,6 +3,8 @@ import type HmppsAuthClient from '../data/hmppsAuthClient'
 import PrisonApiClient from '../api/prisonApiClient'
 import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
 import { FullPageError } from '../types/FullPageError'
+import logger from '../../logger'
+
 import deriveAccessibleCaseloads from '../utils/caseloads'
 import {
   PrisonApiPrisoner,
@@ -63,6 +65,9 @@ export default class PrisonerService {
   ): Promise<PrisonApiPrisoner> {
     try {
       const prisonerDetail = await this.prisonApi(token).getPrisonerDetail(nomsId)
+
+      logger.info('Accessible caseloads:', accessibleCaseloads)
+      logger.info('Prisoner agencyId:', prisonerDetail.agencyId)
 
       if (isSpecialistSupport || accessibleCaseloads.includes(prisonerDetail.agencyId)) {
         return prisonerDetail
