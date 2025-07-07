@@ -10,6 +10,7 @@ import {
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
 import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSearch/prisonerSearchClientTypes'
+import logger from '../../logger'
 
 export default class PrisonerService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
@@ -63,6 +64,9 @@ export default class PrisonerService {
   ): Promise<PrisonApiPrisoner> {
     try {
       const prisonerDetail = await this.prisonApi(token).getPrisonerDetail(nomsId)
+
+      logger.info('Accessible caseloads:', accessibleCaseloads)
+      logger.info('Prisoner agencyId:', prisonerDetail.agencyId)
 
       if (isSpecialistSupport || accessibleCaseloads.includes(prisonerDetail.agencyId)) {
         return prisonerDetail
