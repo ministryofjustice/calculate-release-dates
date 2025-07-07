@@ -8,6 +8,7 @@ import {
   PrisonApiUserCaseloads,
 } from '../@types/prisonApi/prisonClientTypes'
 import { FullPageErrorType } from '../types/FullPageError'
+import AuthorisedRoles from '../enumerations/authorisedRoles'
 
 jest.mock('../data/hmppsAuthClient')
 
@@ -90,7 +91,12 @@ describe('Prisoner service related tests', () => {
       it('should return prisoner details when agencyId is OUT and user has Released Prisoner Viewing role', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'OUT' })
 
-        const result = await prisonerService.getPrisonerDetail('A1234AB', token, ['MDI'], ['INACTIVE_BOOKINGS'])
+        const result = await prisonerService.getPrisonerDetail(
+          'A1234AB',
+          token,
+          ['MDI'],
+          [AuthorisedRoles.ROLE_INACTIVE_BOOKINGS],
+        )
 
         expect(result.agencyId).toBe('OUT')
       })
