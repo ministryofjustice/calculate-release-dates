@@ -122,6 +122,7 @@ describe('SentenceAndOffenceViewModel', () => {
         sentencesAndOffences,
         stubbedEmptyAdjustments,
         false,
+        true,
         stubbedReturnToCustodyDate,
         null,
       )
@@ -194,6 +195,7 @@ describe('SentenceAndOffenceViewModel', () => {
         sentencesAndOffences,
         stubbedEmptyAdjustments,
         false,
+        true,
         stubbedReturnToCustodyDate,
         null,
       )

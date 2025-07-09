@@ -96,6 +96,10 @@ const calculationBreakdown: CalculationBreakdown = {
       sentencedAt: '2020-01-01',
       lineSequence: 2,
       caseSequence: 1,
+      externalSentenceId: {
+        sentenceSequence: 0,
+        bookingId: 0,
+      },
     },
   ],
   breakdownByReleaseDateType: {},
@@ -915,6 +919,10 @@ describe('Calculate release dates service tests', () => {
                 sentenceLengthDays: 89,
                 consecutiveToLineSequence: null,
                 consecutiveToCaseSequence: null,
+                externalSentenceId: {
+                  sentenceSequence: 0,
+                  bookingId: 0,
+                },
               },
               {
                 lineSequence: 2,
@@ -923,6 +931,10 @@ describe('Calculate release dates service tests', () => {
                 sentenceLengthDays: 212,
                 consecutiveToLineSequence: 1,
                 consecutiveToCaseSequence: 1,
+                externalSentenceId: {
+                  sentenceSequence: 0,
+                  bookingId: 0,
+                },
               },
             ],
           },

@@ -34,6 +34,7 @@ export default class SentenceAndOffenceViewModel {
     sentencesAndOffences: AnalysedSentenceAndOffence[],
     adjustments: AnalysedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
+    public ersedEligible: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
   ) {
@@ -62,7 +63,7 @@ export default class SentenceAndOffenceViewModel {
   }
 
   public isErsedEligible(): boolean {
-    return this.sentencesAndOffences.some(sentence => SentenceTypes.isSentenceErsedEligible(sentence))
+    return this.ersedEligible
   }
 
   public isRecallOnly(): boolean {

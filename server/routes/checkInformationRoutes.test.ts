@@ -535,6 +535,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -629,6 +630,7 @@ describe('Check information routes tests', () => {
       singleSentencesAndOffencesWithExclusions,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -654,6 +656,7 @@ describe('Check information routes tests', () => {
       sentencesAndOffencesWithExclusions,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -683,6 +686,7 @@ describe('Check information routes tests', () => {
       sentencesAndOffencesWithExclusions,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -711,6 +715,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -736,6 +741,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -757,6 +763,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -784,6 +791,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedEmptyAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -809,6 +817,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -851,6 +860,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       {
         messages: [{ text: 'An error occurred with the nomis information' }],
@@ -920,6 +930,7 @@ describe('Check information routes tests', () => {
         stubbedSentencesAndOffences,
         stubbedAdjustments,
         false,
+        true,
         stubbedReturnToCustodyDate,
         {
           messages: [{ text: 'Court case 1 count 1 must include an offence date' }],
@@ -958,6 +969,7 @@ describe('Check information routes tests', () => {
         stubbedSentencesAndOffences,
         stubbedAdjustments,
         false,
+        true,
         stubbedReturnToCustodyDate,
         { messages: [] } as never,
       )
@@ -1011,6 +1023,7 @@ describe('Check information routes tests', () => {
       sentenceAndOffencesWithNoSDSPlus,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       {
         messages: [{ text: 'Court case 1 count 1 must include an offence date' }],
@@ -1040,6 +1053,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       { messages: [] } as never,
     )
@@ -1092,6 +1106,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -1145,6 +1160,7 @@ describe('Check information routes tests', () => {
       sentenceAndOffencesWithNoSDSPlus,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -1167,7 +1183,7 @@ describe('Check information routes tests', () => {
     calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue({
       calculationRequestId: 123,
       dates: {},
-      effectiveSentenceLength: {},
+      effectiveSentenceLength: null,
       prisonerId: 'A1234AA',
       calculationReference: 'ABC123',
       bookingId: 123,
@@ -1315,6 +1331,7 @@ describe('Check information routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )

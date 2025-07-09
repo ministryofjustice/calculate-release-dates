@@ -17,6 +17,10 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
         },
         lineSequence: 1,
         caseSequence: 1,
+        externalSentenceId: {
+          sentenceSequence: 0,
+          bookingId: 0,
+        },
       },
       {
         sentencedAt: '2015-02-12',
@@ -28,6 +32,10 @@ export function psiExample16CalculationBreakdown(): CalculationBreakdown {
         },
         lineSequence: 2,
         caseSequence: 1,
+        externalSentenceId: {
+          sentenceSequence: 0,
+          bookingId: 0,
+        },
       },
     ],
     consecutiveSentence: null,
@@ -93,6 +101,10 @@ export function psiExample25CalculationBreakdown(): CalculationBreakdown {
           sentenceLengthDays: 89,
           consecutiveToLineSequence: null,
           consecutiveToCaseSequence: null,
+          externalSentenceId: {
+            sentenceSequence: 0,
+            bookingId: 0,
+          },
         },
         {
           lineSequence: 2,
@@ -101,6 +113,10 @@ export function psiExample25CalculationBreakdown(): CalculationBreakdown {
           sentenceLengthDays: 212,
           consecutiveToLineSequence: 1,
           consecutiveToCaseSequence: 1,
+          externalSentenceId: {
+            sentenceSequence: 0,
+            bookingId: 0,
+          },
         },
       ],
     },
@@ -185,6 +201,10 @@ export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
         lineSequence: 1,
         caseSequence: 1,
         caseReference: null,
+        externalSentenceId: {
+          sentenceSequence: 0,
+          bookingId: 0,
+        },
       },
       {
         sentencedAt: '2021-10-13',
@@ -197,6 +217,10 @@ export function pedAdjustedByCrdAndBeforePrrdBreakdown(): CalculationBreakdown {
         lineSequence: 3,
         caseSequence: 3,
         caseReference: null,
+        externalSentenceId: {
+          sentenceSequence: 0,
+          bookingId: 0,
+        },
       },
     ],
     consecutiveSentence: null,
@@ -260,6 +284,10 @@ export function hdcedAdjustedToArd(): CalculationBreakdown {
         lineSequence: 0,
         caseSequence: 0,
         caseReference: null,
+        externalSentenceId: {
+          sentenceSequence: 0,
+          bookingId: 0,
+        },
       },
       {
         sentencedAt: '2022-07-11',
@@ -282,6 +310,10 @@ export function hdcedAdjustedToArd(): CalculationBreakdown {
         lineSequence: 0,
         caseSequence: 0,
         caseReference: null,
+        externalSentenceId: {
+          sentenceSequence: 0,
+          bookingId: 0,
+        },
       },
     ],
     consecutiveSentence: null,

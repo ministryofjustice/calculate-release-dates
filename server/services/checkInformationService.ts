@@ -29,26 +29,20 @@ export default class CheckInformationService {
       req.session.selectedApprovedDates = {}
     }
     req.session.selectedApprovedDates[nomsId] = []
-    let prisonerDetail
-    if (nomsId) {
-      prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
-    } else {
-      const calculation = await this.calculateReleaseDatesService.getCalculationResultsByReference(
-        calculationReference,
-        token,
-      )
-      prisonerDetail = await this.prisonerService.getPrisonerDetail(calculation.prisonerId, token, caseloads, userRoles)
-      nomsId = calculation.prisonerId
-    }
 
-    const sentencesAndOffences = await this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(
-      prisonerDetail.bookingId,
-      token,
-    )
-    const adjustmentDetails = await this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(
-      prisonerDetail.bookingId,
-      token,
-    )
+    const prisonerId =
+      nomsId ??
+      (await this.calculateReleaseDatesService.getCalculationResultsByReference(calculationReference, token)).prisonerId
+
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonerId, token, caseloads, userRoles)
+    nomsId = prisonerId
+
+    const [sentencesAndOffences, adjustmentDetails, ersedAvailable] = await Promise.all([
+      this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, token),
+      this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(prisonerDetail.bookingId, token),
+      this.calculateReleaseDatesService.getErsedEligibility(prisonerDetail.bookingId, token),
+    ])
+
     const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
       ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
       : null
@@ -73,6 +67,7 @@ export default class CheckInformationService {
       sentencesAndOffences,
       adjustmentDetails,
       false,
+      ersedAvailable.isValid,
       returnToCustody,
       validationMessages,
     )

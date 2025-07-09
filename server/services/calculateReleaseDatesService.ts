@@ -150,6 +150,10 @@ export default class CalculateReleaseDatesService {
     return sentencesAndOffences.filter((s: AnalysedSentenceAndOffence) => s.sentenceStatus === 'A')
   }
 
+  async getErsedEligibility(bookingId: number, token: string) {
+    return new CalculateReleaseDatesApiClient(token).getErsedEligibility(bookingId)
+  }
+
   private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
     const releaseDatesWithAdjustments: ReleaseDateWithAdjustments[] = []
     if (breakdown.breakdownByReleaseDateType.LED) {

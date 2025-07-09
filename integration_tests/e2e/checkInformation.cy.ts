@@ -15,6 +15,7 @@ context('Check nomis information', () => {
     cy.task('stubSupportedValidationNoMessages')
     cy.task('stubComponents')
     cy.task('stubGetServiceDefinitions')
+    cy.task('stubGetEligibility')
   })
 
   it('Visit check nomis information page', () => {

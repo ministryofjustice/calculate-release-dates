@@ -95,7 +95,6 @@ export default class ViewRoutes {
             calculationUserInputs,
             sentencesAndOffences,
             adjustmentDetails,
-            true,
             detailedCalculationResults.context.calculationType,
             returnToCustody,
             null,
@@ -141,6 +140,7 @@ export default class ViewRoutes {
       calculationRequestId,
       token,
     )
+    const hasErsed = 'ERSED' in detailedCalculationResults.dates
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const { calculationBreakdown, calculationOriginalData, breakdownMissingReason, releaseDatesWithAdjustments } =
       detailedCalculationResults
@@ -154,6 +154,7 @@ export default class ViewRoutes {
         true,
         null,
         detailedCalculationResults.context.calculationReference,
+        hasErsed,
         null,
         null,
         null,
@@ -187,6 +188,7 @@ export default class ViewRoutes {
       true,
       detailedCalculationResults.context.calculationType,
       detailedCalculationResults.context.calculationReference,
+      hasErsed,
       detailedCalculationResults.context.calculationReason,
       detailedCalculationResults.context.otherReasonDescription,
       detailedCalculationResults.context.calculationDate === undefined
@@ -275,7 +277,7 @@ export default class ViewRoutes {
 
     const hasDTOSentence = sentencesAndOffences.some(sentence => SentenceTypes.isSentenceDto(sentence))
     const hasOnlyDTOSentences = sentencesAndOffences.every(sentence => SentenceTypes.isSentenceDto(sentence))
-
+    const hasErsed = sentencesAndOffences.some(sentence => SentenceTypes.isSentenceErsed(sentence))
     const datesArray = Object.values(releaseDateAndCalcContext.dates)
       .filter(dateObject => dateObject && dateObject.date && filteredListOfDates.includes(dateObject.type))
       .map(dateObject => ({ code: dateObject.type, description: dateObject.description, date: dateObject.date }))
@@ -288,14 +290,7 @@ export default class ViewRoutes {
     res.render(
       'pages/printNotification/printNotificationSlip',
       new PrintNotificationSlipViewModel(
-        new ViewRouteSentenceAndOffenceViewModel(
-          prisonerDetail,
-          null,
-          sentencesAndOffences,
-          adjustmentDetails,
-          true,
-          null,
-        ),
+        new ViewRouteSentenceAndOffenceViewModel(prisonerDetail, null, sentencesAndOffences, adjustmentDetails, null),
         calculationRequestId,
         nomsId,
         releaseDateAndCalcContext.calculation.calculationDate,
