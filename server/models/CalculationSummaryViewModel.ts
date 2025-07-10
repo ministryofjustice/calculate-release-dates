@@ -19,6 +19,7 @@ export default class CalculationSummaryViewModel {
     public viewJourney: boolean,
     public calculationType: string,
     public calculationReference: string,
+    public ersedEligible: boolean,
     public calculationReason?: CalculationReason,
     public otherReasonDescription?: string,
     public calculationDate?: string,
@@ -72,7 +73,7 @@ export default class CalculationSummaryViewModel {
   }
 
   public isErsedEligible(): boolean {
-    return this.sentencesAndOffences?.some(sentence => SentenceTypes.isSentenceErsedEligible(sentence))
+    return this.ersedEligible
   }
 
   public isRecallOnly(): boolean {

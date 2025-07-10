@@ -70,7 +70,7 @@ const stubbedCalculationResults = {
     ERSED: '2020-02-03',
   },
   calculationRequestId: 123456,
-  effectiveSentenceLength: {},
+  effectiveSentenceLength: null,
   prisonerId: 'A1234AB',
   calculationStatus: 'CONFIRMED',
   calculationType: 'CALCULATED',
@@ -87,7 +87,7 @@ const stubbedCalculationResultsWithReason = {
     ERSED: '2020-02-03',
   },
   calculationRequestId: 123456,
-  effectiveSentenceLength: {},
+  effectiveSentenceLength: null,
   prisonerId: 'A1234AB',
   calculationStatus: 'CONFIRMED',
   calculationType: 'CALCULATED',
@@ -109,7 +109,7 @@ const stubbedNewCalculationResults = {
     ERSED: '2020-02-03',
   },
   calculationRequestId: 987654,
-  effectiveSentenceLength: {},
+  effectiveSentenceLength: null,
   prisonerId: 'A1234AB',
   calculationStatus: 'CONFIRMED',
   calculationType: 'CALCULATED',
@@ -356,6 +356,10 @@ const stubbedCalculationBreakdown: CalculationBreakdown = {
       sentencedAt: '2020-01-01',
       lineSequence: 2,
       caseSequence: 1,
+      externalSentenceId: {
+        sentenceSequence: 0,
+        bookingId: 0,
+      },
     },
   ],
   breakdownByReleaseDateType: {},
@@ -739,6 +743,7 @@ describe('Genuine overrides routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -761,6 +766,7 @@ describe('Genuine overrides routes tests', () => {
       stubbedSentencesAndOffences,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -784,6 +790,7 @@ describe('Genuine overrides routes tests', () => {
       sentencesAndOffencesWithExclusions,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -834,6 +841,7 @@ describe('Genuine overrides routes tests', () => {
       singleSentencesAndOffencesWithExclusions,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -856,6 +864,7 @@ describe('Genuine overrides routes tests', () => {
       sentencesAndOffencesWithExclusions,
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )
@@ -896,6 +905,7 @@ describe('Genuine overrides routes tests', () => {
       ],
       stubbedAdjustments,
       false,
+      true,
       stubbedReturnToCustodyDate,
       null,
     )

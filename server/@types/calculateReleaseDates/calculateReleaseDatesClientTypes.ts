@@ -37,3 +37,4 @@ export type SentenceAndOffenceWithReleaseArrangements =
   components['schemas']['SentenceAndOffenceWithReleaseArrangements']
 export type OffenderOffence = components['schemas']['OffenderOffence']
 export type SupportedValidationResponse = components['schemas']['SupportedValidationResponse']
+export type ErsedEligibility = components['schemas']['ErsedEligibility']

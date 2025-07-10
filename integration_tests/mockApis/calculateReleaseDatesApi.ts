@@ -179,6 +179,22 @@ export default {
       },
     })
   },
+  stubGetEligibility: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/eligibility/([0-9]*)/ersed`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          isValid: true,
+          reason: null,
+        },
+      },
+    })
+  },
   stubGetCalculationBreakdown: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -210,6 +226,10 @@ export default {
               },
               lineSequence: 2,
               caseSequence: 2,
+              externalSentenceId: {
+                sentenceSequence: 0,
+                bookingId: 0,
+              },
               caseReference: 'ABC123',
             },
             {
@@ -785,6 +805,10 @@ export default {
           },
           lineSequence: 2,
           caseSequence: 2,
+          externalSentenceId: {
+            sentenceSequence: 0,
+            bookingId: 0,
+          },
           caseReference: 'ABC123',
         },
         {
@@ -807,6 +831,10 @@ export default {
           },
           lineSequence: 4,
           caseSequence: 4,
+          externalSentenceId: {
+            sentenceSequence: 0,
+            bookingId: 0,
+          },
           caseReference: 'ABC234',
         },
       ],
@@ -837,6 +865,10 @@ export default {
             sentenceLengthDays: 730,
             consecutiveToLineSequence: null,
             consecutiveToCaseSequence: null,
+            externalSentenceId: {
+              sentenceSequence: 0,
+              bookingId: 0,
+            },
           },
           {
             lineSequence: 3,
@@ -846,6 +878,10 @@ export default {
             sentenceLengthDays: 242,
             consecutiveToLineSequence: 1,
             consecutiveToCaseSequence: 1,
+            externalSentenceId: {
+              sentenceSequence: 0,
+              bookingId: 0,
+            },
           },
           {
             lineSequence: 5,
@@ -855,6 +891,10 @@ export default {
             sentenceLengthDays: 1095,
             consecutiveToLineSequence: 3,
             consecutiveToCaseSequence: 3,
+            externalSentenceId: {
+              sentenceSequence: 0,
+              bookingId: 0,
+            },
           },
         ],
       },

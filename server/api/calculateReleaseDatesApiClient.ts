@@ -16,6 +16,7 @@ import {
   ComparisonSummary,
   DateTypeDefinition,
   DetailedCalculationResults,
+  ErsedEligibility,
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,
   GenuineOverrideRequest,
@@ -352,5 +353,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/manual-calculation/${bookingId}/has-recall-sentences`,
     }) as Promise<boolean>
+  }
+
+  getErsedEligibility(bookingId: number) {
+    return this.restClient.get({
+      path: `/eligibility/${bookingId}/ersed`,
+    }) as Promise<ErsedEligibility>
   }
 }

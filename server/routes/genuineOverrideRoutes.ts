@@ -224,6 +224,8 @@ export default class GenuineOverrideRoutes {
         validationErrors = JSON.parse(serverErrors[0])
       }
 
+      const hasErsed = 'ERSED' in detailedCalculationResults.dates
+
       const model = new CalculationSummaryViewModel(
         calculationRequestId,
         detailedCalculationResults.context.prisonerId,
@@ -233,6 +235,7 @@ export default class GenuineOverrideRoutes {
         false,
         null,
         detailedCalculationResults.context.calculationReference,
+        hasErsed,
         null,
         null,
         null,
