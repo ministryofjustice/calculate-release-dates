@@ -5,7 +5,7 @@
   "repository": "git@github.com:ministryofjustice/calculate-release-dates.git",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "hmpps-precommit-hooks-prepare",
     "copy-views": "cp -R server/views dist/server/",
     "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend/dist --load-path=node_modules/@ministryofjustice/frontend --load-path=node_modules/accessible-autocomplete --load-path=node_modules/@ministryofjustice/hmpps-court-cases-release-dates-design --load-path=. ./assets/scss/application.scss:./assets/stylesheets/application.css --style compressed",
     "watch-ts": "tsc -w",
@@ -30,7 +30,10 @@
     "int-test-ui": "cypress open --e2e --browser chrome",
     "clean": "rm -rf dist build node_modules stylesheets",
     "generate-calculate-release-dates-api-types": "openapi-typescript https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/calculateReleaseDates/index.d.ts",
-    "generate-court-cases-release-dates-api-types": "openapi-typescript https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > server/@types/courtCasesReleaseDatesApi/index.d.ts"
+    "generate-court-cases-release-dates-api-types": "openapi-typescript https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > server/@types/courtCasesReleaseDatesApi/index.d.ts",
+    "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml",
+    "precommit:lint": "node_modules/.bin/lint-staged",
+    "precommit:verify": "npm run typecheck && npm test"
   },
   "engines": {
     "node": "^22",
@@ -138,6 +141,7 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@ministryofjustice/hmpps-precommit-hooks": "^0.0.3",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
     "@types/compression": "^1.7.5",
@@ -174,7 +178,6 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "husky": "^9.1.6",
     "jest": "^29.7.0",
     "jest-html-reporter": "^3.10.2",
     "jest-junit": "^16.0.0",
