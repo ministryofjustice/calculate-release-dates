@@ -7,7 +7,7 @@ generic-service:
   replicaCount: 4
 
   image:
-    repository: quay.io/hmpps/calculate-release-dates
+    repository: ghcr.io/ministryofjustice/calculate-release-dates
     tag: app_version # override at deployment time
     port: 3000
 
