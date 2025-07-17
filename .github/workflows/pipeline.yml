@@ -79,6 +79,7 @@ jobs:
     secrets: inherit
     with:
       environment: 'alt-dev'
+      k8s_deployment_name: 'calculate-release-dates-alt-dev'
       app_version: '${{ needs.build.outputs.app_version }}'
 #  deploy_preprod:
 #    name: Deploy to the preprod environment
