@@ -11,8 +11,8 @@
    CALCULATE_RELEASE_DATES_API_URL="https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk"
    PRISON_API_URL="https://api-dev.prison.service.justice.gov.uk"
    PRISONER_SEARCH_API_URL=https://prisoner-search-dev.prison.service.justice.gov.uk
-   API_CLIENT_SECRET= FILL THIS IN WITH SECRET FROM DEV!!
-   SYSTEM_CLIENT_SECRET= FILL THIS IN WITH SECRET FROM DEV!!
+   AUTH_CODE_CLIENT_SECRET= FILL THIS IN WITH SECRET FROM DEV!!
+   CLIENT_CREDS_CLIENT_SECRET= FILL THIS IN WITH SECRET FROM DEV!!
 ```   
 
 3. Start a local `calculate-release-dates` service with `$ npm run start`, which will use the `.env` file to set
