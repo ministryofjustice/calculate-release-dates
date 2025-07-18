@@ -58,11 +58,11 @@ generic-service:
     calculate-release-dates-session-secret:
       SESSION_SECRET: "SESSION_SECRET"
     calculate-release-dates-client-creds:
-      CLIENT_CREDS_CLIENT_ID: 'CLIENT_CREDS_CLIENT_ID'
-      CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
-    calculate-release-dates-auth-code:
       AUTH_CODE_CLIENT_ID: 'AUTH_CODE_CLIENT_ID'
       AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'
+    calculate-release-dates-auth-code:
+      CLIENT_CREDS_CLIENT_ID: 'CLIENT_CREDS_CLIENT_ID'
+      CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
 
   allowlist:
     ark-dom1-farnborough: 194.33.192.0/24
