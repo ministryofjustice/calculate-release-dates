@@ -38,7 +38,6 @@ generic-service:
     TOKEN_VERIFICATION_ENABLED: "true"
     AUDIT_SQS_REGION: "eu-west-2"
     AUDIT_SERVICE_NAME: "calculate-release-dates"
-    APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -47,12 +46,6 @@ generic-service:
 
   namespace_secrets:
     calculate-release-dates:
-      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
-      API_CLIENT_ID: "API_CLIENT_ID"
-      API_CLIENT_SECRET: "API_CLIENT_SECRET"
-      SYSTEM_CLIENT_ID: "SYSTEM_CLIENT_ID"
-      SYSTEM_CLIENT_SECRET: "SYSTEM_CLIENT_SECRET"
-      SESSION_SECRET: "SESSION_SECRET"
       TAG_MANAGER_CONTAINER_ID: "TAG_MANAGER_CONTAINER_ID"
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
@@ -60,6 +53,16 @@ generic-service:
     sqs-hmpps-audit-secret:
       AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'
       AUDIT_SQS_QUEUE_NAME: 'sqs_queue_name'
+    calculate-release-dates-application-insights:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
+    calculate-release-dates-session-secret:
+      SESSION_SECRET: "SESSION_SECRET"
+    calculate-release-dates-client-creds:
+      CLIENT_CREDS_CLIENT_ID: 'CLIENT_CREDS_CLIENT_ID'
+      CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
+    calculate-release-dates-auth-code:
+      AUTH_CODE_CLIENT_ID: 'AUTH_CODE_CLIENT_ID'
+      AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'
 
   allowlist:
     ark-dom1-farnborough: 194.33.192.0/24
