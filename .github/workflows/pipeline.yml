@@ -81,35 +81,36 @@ jobs:
       environment: 'alt-dev'
       k8s_deployment_name: 'calculate-release-dates-alt-dev'
       app_version: '${{ needs.build.outputs.app_version }}'
-#  deploy_preprod:
-#    name: Deploy to the preprod environment
-#    needs:
-#    - build
-#    - helm_lint
-#    - deploy_dev
-#    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
-#    secrets: inherit
-#    with:
-#      environment: 'preprod'
-#      app_version: '${{ needs.build.outputs.app_version }}'
-#  deploy_alt-preprod:
-#    name: Deploy to the alt-preprod environment
-#    needs:
-#    - build
-#    - helm_lint
-#    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
-#    secrets: inherit
-#    with:
-#      environment: 'alt-preprod'
-#      app_version: '${{ needs.build.outputs.app_version }}'
-#  deploy_prod:
-#    name: Deploy to the prod environment
-#    needs:
-#    - build
-#    - helm_lint
-#    - deploy_preprod
-#    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
-#    secrets: inherit
-#    with:
-#      environment: 'prod'
-#      app_version: '${{ needs.build.outputs.app_version }}'
+  deploy_preprod:
+    name: Deploy to the preprod environment
+    needs:
+    - build
+    - helm_lint
+    - deploy_dev
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
+    secrets: inherit
+    with:
+      environment: 'preprod'
+      app_version: '${{ needs.build.outputs.app_version }}'
+  deploy_alt-preprod:
+    name: Deploy to the alt-preprod environment
+    needs:
+    - build
+    - helm_lint
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
+    secrets: inherit
+    with:
+      environment: 'alt-preprod'
+      k8s_deployment_name: 'calculate-release-dates-alt-preprod'
+      app_version: '${{ needs.build.outputs.app_version }}'
+  deploy_prod:
+    name: Deploy to the prod environment
+    needs:
+    - build
+    - helm_lint
+    - deploy_preprod
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
+    secrets: inherit
+    with:
+      environment: 'prod'
+      app_version: '${{ needs.build.outputs.app_version }}'
