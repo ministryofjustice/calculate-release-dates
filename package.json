@@ -103,7 +103,7 @@
     ]
   },
   "dependencies": {
-    "@microsoft/applicationinsights-clickanalytics-js": "^3.3.4",
+    "@microsoft/applicationinsights-clickanalytics-js": "^3.3.9",
     "@microsoft/applicationinsights-web": "^3.3.4",
     "@ministryofjustice/frontend": "^5.1.x",
     "@ministryofjustice/hmpps-audit-client": "^1.1.1",
