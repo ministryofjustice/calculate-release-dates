@@ -48,5 +48,4 @@ And then, to build the assets and start the app with nodemon:
 ## Dependency Checks
 
 Some scheduled checks ensure that key dependencies are kept up to date.
-They are implemented via a scheduled job in CircleCI.
-See the `check_outdated` job in `.circleci/config.yml`
+They are implemented via scheduled jobs in github actions
