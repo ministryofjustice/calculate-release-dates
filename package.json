@@ -169,7 +169,7 @@
     "cypress-axe": "^1.6.0",
     "cypress-multi-reporters": "^2.0.5",
     "dotenv": "^16.6.1",
-    "eslint": "^8.57.1",
+    "eslint": "^9.32.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.2",
     "eslint-import-resolver-typescript": "^3.10.1",
