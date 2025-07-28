@@ -5,28 +5,155 @@
 
 export interface paths {
   '/api/users/me/activeCaseLoad': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update working caseload for current user.
      * @description Update working caseload for current user.
      */
     put: operations['updateMyActiveCaseLoad']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/users/add/default/{caseload}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Add the NWEB caseload to specified caseload.
      * @description Requires role MAINTAIN_ACCESS_ROLES or MAINTAIN_ACCESS_ROLES_ADMIN
      */
     put: operations['addApiAccessForCaseload']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/splash-screen/{moduleName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get splash screen by module name
+     * @description Returns a splash screen by module name. Requires PRISON_API__SPLASH_SCREEN__RO.
+     */
+    get: operations['getSplashScreenByModuleName']
+    /**
+     * Update a splash screen
+     * @description Updates an existing splash screen. Requires PRISON_API__SPLASH_SCREEN__RW.
+     */
+    put: operations['updateSplashScreen']
+    /**
+     * Create a new splash screen
+     * @description Creates a new splash screen. Requires PRISON_API__SPLASH_SCREEN__RW.
+     */
+    post: operations['createSplashScreen']
+    /**
+     * Delete a splash screen
+     * @description Deletes an existing splash screen. Requires PRISON_API__SPLASH_SCREEN__RW.
+     */
+    delete: operations['deleteSplashScreen']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/splash-screen/{moduleName}/condition/{conditionType}/{conditionValue}/{blockAccess}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update a condition
+     * @description Updates an existing condition. Requires PRISON_API__SPLASH_SCREEN__RW.
+     */
+    put: operations['updateCondition']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/smoketest/offenders/{offenderNo}/status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Sets the status for this offender to IN if it currently OUT, with smoke test data */
+    put: operations['offenderStatusSetup']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/smoketest/offenders/{offenderNo}/release': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** Releases this offender, with smoke test data */
     put: operations['releasePrisoner']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/smoketest/offenders/{offenderNo}/recall': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** Recalls this offender, with smoke test data */
     put: operations['recallPrisoner']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/reference-domains/domains/{domain}/codes/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Reference code detail for reference domain and code (with sub-codes).
      * @description Reference code detail for reference domain and code (with sub-codes).<p>This endpoint uses the REPLICA database.</p>
@@ -36,85 +163,551 @@ export interface paths {
     put: operations['updateReferenceCode']
     /** Creates a reference code */
     post: operations['createReferenceCode']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/person/{prisonerNumber}/distinguishing-mark/{seqId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a specific distinguishing mark associated with a prisoner
+     * @description Requires role PRISON_API__PRISONER_PROFILE__RW
+     */
+    get: operations['getIdentifyingMark']
+    /**
+     * Update an existing distinguishing mark
+     * @description Requires role PRISON_API__PRISONER_PROFILE__RW
+     */
+    put: operations['updateMark']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/person/photo/{photoId}/image': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update the content of an image
+     * @description Requires role PRISON_API__PRISONER_PROFILE__RW
+     */
+    put: operations['updateImage']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/transfer-out': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** *** BETA *** Marks a prisoner as in transit from their current prison location to a new prison. Must be an active prisoner in currently inside a prison, requires the TRANSFER_PRISONER role */
     put: operations['transferOutPrisoner']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/transfer-in': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** *** BETA *** Transfer a prisoner into a prison. Must be an out prisoner in currently in transfer status, requires the TRANSFER_PRISONER role */
     put: operations['transferInPrisoner']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/temporary-absence-out': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** *** ALPHA *** transfer a prisoner to a temporary absence with the option to release the prisoners bed, requires the TRANSFER_PRISONER_ALPHA role. Only support scenarios are unscheduled to city and scheduled to address */
     put: operations['transferOutPrisonerToTemporaryAbsence']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/temporary-absence-arrival': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** Transfer a prisoner into a prison from temporary absence. Must be an out prisoner in currently in TAP status, requires the TRANSFER_PRISONER role */
     put: operations['temporaryAbsenceArrival']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/smoker': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update the prisoner's smoker status on the current alias. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    put: operations['updateSmokerStatus']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/sexual-orientation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update the prisoner's sexual orientation on the latest booking. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    put: operations['updateSexualOrientation']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/religion': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update the prisoner's religion on the current alias. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    put: operations['updateReligion']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/release': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** *** BETA *** Releases a prisoner from their current prison location. Must be an active prisoner in currently inside a prison, requires the RELEASE_PRISONER role */
     put: operations['releasePrisoner_1']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/recall': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** Recalls a prisoner into prison. TRANSFER_PRISONER role */
     put: operations['recallPrisoner_1']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/phone-numbers/{phoneNumberId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update a phone number for the prisoner */
+    put: operations['updateOffenderPhoneNumber']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/nationality': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update the prisoner's nationality on the current alias. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    put: operations['updateNationality']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/military-records/{militarySeq}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update the prisoner's military record. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    put: operations['updateMilitaryRecord']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/living-unit/{internalLocationDescription}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Move the prisoner to the specified cell.
      * @description Unilink specific version of /api/bookings/{bookingId}/living-unit/{internalLocationDescription}.<br/>
-     *       Requires either a valid user token or a token with UNILINK role.
+     *           Requires either a valid user token or a token with UNILINK role.
      */
     put: operations['moveToCellOrReception']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/email-addresses/{emailAddressId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update an email number for the prisoner */
+    put: operations['updateOffenderEmailAddress']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/discharge-to-hospital': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** Discharges a prisoner to hospital, requires the RELEASE_PRISONER role */
     put: operations['dischargePrisonerToHospital']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/court-transfer-out': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** *** ALPHA *** transfer a prisoner to a court with the option to release the prisoners bed, requires the TRANSFER_PRISONER_ALPHA role */
     put: operations['transferOutPrisonerToCourt']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/court-transfer-in': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** Transfer a prisoner into a prison from court. Must be an out prisoner in currently in transfer status, requires the TRANSFER_PRISONER role */
     put: operations['courtTransferIn']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/core-person-record/secondary-language': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Adds or replaces core person record secondary language data.
+     * @description Requires the PRISON_API__PRISONER_PROFILE__RW role.
+     */
+    put: operations['addSecondaryLanguage']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/core-person-record/physical-attributes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get core person record physical attributes of a prisoner
+     * @description Requires the PRISON_API__PRISONER_PROFILE__RW role.
+     */
+    get: operations['getPhysicalAttributes']
+    /**
+     * Update core person record physical attributes of a prisoner.
+     * @description Requires the PRISON_API__PRISONER_PROFILE__RW role.
+     */
+    put: operations['updatePhysicalAttributes']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/core-person-record/language-preferences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update core person record language preferences of a prisoner.
+     * @description Requires the PRISON_API__PRISONER_PROFILE__RW role.
+     */
+    put: operations['updateLanguagePreferences']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/birth-place': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update the prisoner's birth place on the current alias. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    put: operations['updateBirthPlaceOfCurrentAlias']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/birth-country': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update the prisoner's birth country on the current alias. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    put: operations['updateBirthCountryOfCurrentAlias']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-sentences/booking/{bookingId}/home-detention-curfews/latest/checks-passed': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** Set the HDC checks passed flag */
     put: operations['setCurfewChecks']
+    post?: never
     /** Clear the HDC checks passed flag */
     delete: operations['clearCurfewChecks']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-sentences/booking/{bookingId}/home-detention-curfews/latest/approval-status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /** Set the HDC approval status */
     put: operations['setApprovalStatus']
+    post?: never
     /** Clear the HDC approval status */
     delete: operations['clearApprovalStatus']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-assessments/category/{bookingId}/nextReviewDate/{nextReviewDate}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update the next review date on the latest active categorisation
      * @description Update categorisation record with new next review date. Requires client role MAINTAIN_ASSESSMENTS.
      */
     put: operations['updateCategorisationNextReviewDate']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-assessments/category/{bookingId}/inactive': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Set all active or pending (status A or P) categorisations inactive
      * @description This endpoint should only be used with edge case categorisations. Requires client role MAINTAIN_ASSESSMENTS.
      */
     put: operations['setCategorisationInactive']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-assessments/category/reject': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Reject a pending offender categorisation.
      * @description Update categorisation record with rejection. Requires client role MAINTAIN_ASSESSMENTS or user role APPROVE_CATEGORISATION.
      */
     put: operations['rejectCategorisation']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-assessments/category/categorise': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update a pending offender categorisation.
      * @description This is intended for use by the categoriser to correct any problems with a pending (in-progress) categorisation. Fields left as null will be left unchanged. Requires client role MAINTAIN_ASSESSMENTS or user role ROLE_CREATE_CATEGORISATION or ROLE_CREATE_RECATEGORISATION.
@@ -125,22 +718,60 @@ export interface paths {
      * @description Create new categorisation record. The booking id and new sequence number is returned. Requires client role MAINTAIN_ASSESSMENTS or user role ROLE_CREATE_CATEGORISATION or ROLE_CREATE_RECATEGORISATION.
      */
     post: operations['createCategorisation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-assessments/category/approve': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Approve a pending offender categorisation.
      * @description Update categorisation record with approval. Requires client role MAINTAIN_ASSESSMENTS or user role APPROVE_CATEGORISATION.
      */
     put: operations['approveCategorisation']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offences/update-active-flag': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update the active flag of an offence
      * @description Requires NOMIS_OFFENCE_ACTIVATOR role
      */
     put: operations['updateOffenceActiveFlag']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offences/offence': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update offences
      * @description Requires OFFENCE_MAINTAINER role
@@ -151,68 +782,213 @@ export interface paths {
      * @description Requires OFFENCE_MAINTAINER role
      */
     post: operations['createOffences']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/prison-to-prison/{eventId}/cancel': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Cancels a scheduled prison to prison move for an offender.
      * @description Cancels a scheduled prison to prison move for an offender. Requires role PRISON_MOVE_MAINTAINER and scope write
      */
     put: operations['cancelPrisonToPrisonMove']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/move-to-cell-swap': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Move the prisoner from current cell to cell swap
      * @deprecated
      * @description Using role MAINTAIN_CELL_MOVEMENTS will no longer check for user access to prisoner booking, this endpoint will be removed in future releases
      */
     put: operations['moveToCellSwap']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/living-unit/{internalLocationDescription}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Move Offender to another cell or reception */
     put: operations['moveToCell']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/court-hearings/{hearingId}/hearing-date': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Amends the scheduled court hearing date and/or time for an offender.
      * @description Amends the scheduled court hearing date and/or time for an offender. Requires role COURT_HEARING_MAINTAINER and scope write
      */
     put: operations['courtHearingDateAmendment']
-  }
-  '/api/bookings/{bookingId}/alert/{alertSeq}': {
-    /**
-     * Update an alert
-     * @description Requires role UPDATE_ALERT
-     */
-    put: operations['updateAlert']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/activities/{activityId}/attendance': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update offender attendance and pay.
      * @description Requires role PAY
      */
     put: operations['updateAttendance']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/offenderNo/{offenderNo}/activities/{activityId}/attendance': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update offender attendance and pay.
      * @description Requires role PAY
      */
     put: operations['updateAttendance_1']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/activities/attendance': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update attendance and pay for multiple bookings.
      * @description Requires role PAY
      */
     put: operations['updateAttendanceForMultipleBookingIds']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/appointments/{appointmentId}/comment': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Change an appointment's comment.
      * @description Requires role GLOBAL_APPOINTMENT
      */
     put: operations['updateAppointmentComment']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/aliases/{offenderId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Retrieve a specific aliases for the prisoner. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    get: operations['getAlias']
+    /** Update the prisoner's alias. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    put: operations['updateAlias']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/aliases/{offenderId}/offender-identifiers/{offenderIdSeq}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get a single identifier for the alias by sequence id */
+    get: operations['getOffenderIdentifier']
+    /** Update an existing identifier for the alias */
+    put: operations['updateOffenderIdentifier']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Agency detail.
      * @description Agency detail.
@@ -223,1781 +999,5339 @@ export interface paths {
      * @description Requires MAINTAIN_REF_DATA
      */
     put: operations['updateAgency']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}/addresses/{addressId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update an existing address
      * @description Requires MAINTAIN_REF_DATA
      */
     put: operations['updateAgencyAddress']
+    post?: never
     /**
      * Delete an existing address
      * @description Requires MAINTAIN_REF_DATA
      */
     delete: operations['deleteAgencyAddress']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}/addresses/{addressId}/phones/{phoneId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update an existing contact on an address
      * @description Requires MAINTAIN_REF_DATA
      */
     put: operations['updateAgencyAddressPhoneContact']
+    post?: never
     /**
      * Delete an existing address contact
      * @description Requires MAINTAIN_REF_DATA
      */
     delete: operations['deleteAgencyAddressPhoneContact']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/v1/prison/{prison_id}/offenders/{noms_id}/transactions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Post a financial transaction to NOMIS.
      * @description The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu. Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>
-     * This will be setup by script intially as part of the deployment process as shown below<br/><br/>
-     * <table>
-     *   <tr><th>Transaction Type</th><th>Description</th><th>Digital Prison</th><th>Non Digital Prison</th></tr>
-     *   <tr><td>CANT</td><td>Canteen Spend</td><td>Yes</td><td>No</td></tr>
-     *   <tr><td>REFND</td><td>Canteen Refund</td><td>Yes</td><td>No</td></tr>
-     *   <tr><td>PHONE</td><td>Phone Credit</td><td>Yes</td><td>No</td></tr>
-     *   <tr><td>MRPR</td><td>Misc Receipt - Private Cash</td><td>Yes</td><td>Yes</td></tr>
-     *   <tr><td>MTDS</td><td>Money through digital service</td><td>Yes</td><td>Yes</td></tr>
-     *   <tr><td>DTDS</td><td>Disbursement through Digital service</td><td>Yes</td><td>Yes</td></tr>
-     *   <tr><td>CASHD</td><td>Cash Disbursement</td><td>Yes</td><td>Yes</td></tr>
-     *   <tr><td>RELA</td><td>Money to Relatives</td><td>Yes</td><td>Yes</td></tr>
-     *   <tr><td>RELS</td><td>Money to Relatives- Spends</td><td>Yes</td><td>Yes</td></tr>
-     * </table>Notes:<br/>
-     * <ul>
-     *   <li>The sub_account the amount is debited or credited from will be determined by the transaction_type definition in NOMIS.</li>
-     *   <li>If the field X-Client-Name is present in the request header then the value is prepended to the client_unique_ref separated by a dash. When this API is invoked via the Nomis gateway this will already have been created by the gateway.</li>
-     *   <li>The client_unique_ref can have a maximum of 64 characters, only alphabetic, numeric, ‘-’ and ‘_’ characters are allowed</li>
-     * </ul>
-     * Requires NOMIS_API_V1 or UNILINK role.
+     *     This will be setup by script intially as part of the deployment process as shown below<br/><br/>
+     *     <table>
+     *       <tr><th>Transaction Type</th><th>Description</th><th>Digital Prison</th><th>Non Digital Prison</th></tr>
+     *       <tr><td>CANT</td><td>Canteen Spend</td><td>Yes</td><td>No</td></tr>
+     *       <tr><td>REFND</td><td>Canteen Refund</td><td>Yes</td><td>No</td></tr>
+     *       <tr><td>PHONE</td><td>Phone Credit</td><td>Yes</td><td>No</td></tr>
+     *       <tr><td>MRPR</td><td>Misc Receipt - Private Cash</td><td>Yes</td><td>Yes</td></tr>
+     *       <tr><td>MTDS</td><td>Money through digital service</td><td>Yes</td><td>Yes</td></tr>
+     *       <tr><td>DTDS</td><td>Disbursement through Digital service</td><td>Yes</td><td>Yes</td></tr>
+     *       <tr><td>CASHD</td><td>Cash Disbursement</td><td>Yes</td><td>Yes</td></tr>
+     *       <tr><td>RELA</td><td>Money to Relatives</td><td>Yes</td><td>Yes</td></tr>
+     *       <tr><td>RELS</td><td>Money to Relatives- Spends</td><td>Yes</td><td>Yes</td></tr>
+     *     </table>Notes:<br/>
+     *     <ul>
+     *       <li>The sub_account the amount is debited or credited from will be determined by the transaction_type definition in NOMIS.</li>
+     *       <li>If the field X-Client-Name is present in the request header then the value is prepended to the client_unique_ref separated by a dash. When this API is invoked via the Nomis gateway this will already have been created by the gateway.</li>
+     *       <li>The client_unique_ref can have a maximum of 64 characters, only alphabetic, numeric, ‘-’ and ‘_’ characters are allowed</li>
+     *     </ul>
+     *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
+     *
      */
     post: operations['createTransaction']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/v1/prison/{prison_id}/offenders/{noms_id}/payment': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Store a payment for an offender account.
      * @description Pay events will be stored in a table on receipt by Nomis to be processed by a batch job scheduled to run after the last Nomis payroll batch job but before the advances and scheduled payments batch jobs.
-     * <br/>Possible payment types are:<br/><table><tr><td>A_EARN</td><td>Credit, Offender Payroll</td></tr><tr><td>ADJ</td><td>Debit, Adjudication Award</td></tr></table><br/>Example request:<br/>
-     * <pre>
-     * {
-     *   "type": "A_EARN",
-     *   "description": "May earnings",
-     *   "amount": 1,
-     *   "client_transaction_id": "PAY-05-19"
-     * }
-     * </pre>
-     * <br/>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu.
-     * Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>This will be setup by script intially as part of the deployment process as shown below<br/><br/>
-     * Requires NOMIS_API_V1 or UNILINK role.
+     *     <br/>Possible payment types are:<br/><table><tr><td>A_EARN</td><td>Credit, Offender Payroll</td></tr><tr><td>ADJ</td><td>Debit, Adjudication Award</td></tr></table><br/>Example request:<br/>
+     *     <pre>
+     *     {
+     *       'type': 'A_EARN',
+     *       'description': 'May earnings',
+     *       'amount': 1,
+     *       'client_transaction_id': 'PAY-05-19'
+     *     }
+     *     </pre>
+     *     <br/>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu.
+     *     Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>This will be setup by script intially as part of the deployment process as shown below<br/><br/>
+     *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
+     *
      */
     post: operations['storePayment']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/v1/prison/{previous_prison_id}/offenders/{noms_id}/transfer_transactions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Record transaction at previous Prison.
      * @description <p>Post a financial transaction to Nomis to a prison that the offender is no longer at.</p><p>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu. Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid. Only Transaction types with a usage of R (Receipt) are valid.Transaction Types are maintained via the Maintain Transaction Types screen (OCMTRANS).</p><p>Transaction is posted to the specified prison.  if the account has been closed at this prison then it is re-opened first.</p><p>If the offender has been transferred to another prison then the funds are transferred to this prison.</p><p>If the account was previously closed then it will be closed again.</p><p>If the offender has been released then the funds are transferred to NACRO. Based on the Nomis Clear Inactive accounts screen (OTDCLINA).</p>
      */
     post: operations['transferTransaction']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/users/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Returns the user details for supplied usernames - POST version to allow large user lists.
      * @description Requires role STAFF_SEARCH
      */
     post: operations['getUserDetailsList']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
-  '/api/smoketest/offenders/{offenderNo}/imprisonment-status': {
-    /** Sets imprisonment status smoke test data for this offender */
-    post: operations['imprisonmentDataSetup']
+  '/api/staff': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Retrieve details for multiple staff members using ids.
+     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
+     */
+    post: operations['getStaffDetails']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/splash-screen/{moduleName}/condition': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Add a condition to a splash screen
+     * @description Adds a new condition to an existing splash screen. Requires PRISON_API__SPLASH_SCREEN__RW.
+     */
+    post: operations['addCondition']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/smoketest/offenders/{offenderNo}/details': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Updates the offender details for this offender, with smoke test data */
     post: operations['updatePrisonerDetails']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/service-prisons/{serviceCode}/prison/{prisonId}': {
-    /** Activates a prison for the given service */
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns if the service is switched on for the specified service code / prison id.
+     * @deprecated
+     * @description Returns 204 if the service is switched on for the service code / prison id combination.
+     *         If the service is not switched on then 404 is returned.
+     *         This endpoint also takes into account the special `*ALL*` prison id - if the service code has a prison entry of
+     *         `*ALL*` then the service is deemed to be switched on for all prisons and will therefore return 204 irrespective of the
+     *         prison id that is passed in.
+     *         Deprecated - use /agency-switches/{serviceCode}/agency/{agencyId} instead.
+     *         Requires ROLE_PRISON_API__SERVICE_AGENCY_SWITCHES__RO.
+     *
+     */
+    get: operations['checkServicePrison']
+    put?: never
+    /**
+     * Activates a prison for the given service
+     * @deprecated
+     * @description Deprecated - use /agency-switches/{serviceCode}/agency/{agencyId} instead.
+     */
     post: operations['addServicePrison']
-    /** Deactivates a prison for the given service */
+    /**
+     * Deactivates a prison for the given service
+     * @deprecated
+     * @description Deprecated - use /agency-switches/{serviceCode}/agency/{agencyId} instead.
+     */
     delete: operations['removeServicePrison']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
-  '/api/schedules/{agencyId}/visits': {
-    /** @description <p>This endpoint uses the REPLICA database.</p> */
-    post: operations['getVisits']
-  }
-  '/api/schedules/{agencyId}/externalTransfers': {
-    /** @description <p>This endpoint uses the REPLICA database.</p> */
-    post: operations['getExternalTransfers']
-  }
-  '/api/schedules/{agencyId}/events-by-location-ids': {
+  '/api/schedules/{prisonId}/events-by-location-path': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Get all events for given date for prisoners in listed cells. Note secondary sort is by start time
      * @description Get all events for given date for prisoners in listed cells. Note secondary sort is by start time<p>This endpoint uses the REPLICA database.</p>
      */
+    post: operations['getEventsByLocationPath']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/schedules/{agencyId}/visits': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** @description <p>This endpoint uses the REPLICA database.</p> */
+    post: operations['getVisits']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/schedules/{agencyId}/externalTransfers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** @description <p>This endpoint uses the REPLICA database.</p> */
+    post: operations['getExternalTransfers']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/schedules/{agencyId}/events-by-location-ids': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Get all events for given date for prisoners in listed cells. Note secondary sort is by start time
+     * @deprecated
+     * @description Get all events for given date for prisoners in listed cells. Note secondary sort is by start time<p>This endpoint uses the REPLICA database.</p>
+     */
     post: operations['getEventsByLocationId']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/schedules/{agencyId}/courtEvents': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** @description <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getCourtEvents']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/schedules/{agencyId}/count-activities': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Get all Prisoner activities for given date.
      * @description Get count of suspended prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p>
      */
     post: operations['getCountActivitiesByDateRange']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/schedules/{agencyId}/appointments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** @description <p>This endpoint uses the REPLICA database.</p> */
     get: operations['getAppointments']
-    /** @description <p>This endpoint uses the REPLICA database.</p> */
+    put?: never
+    /**
+     * Requires role VIEW_ACTIVITIES
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
     post: operations['getAppointmentsForOffenders']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/schedules/{agencyId}/activities': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get all Prisoner activities for given date.
      * @description Get all Prisoner activities for given date<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getActivitiesAtAllLocations']
+    put?: never
     /** @description <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getActivitiesForBookings']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/schedules/{agencyId}/activities-by-event-ids': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** @description <p>This endpoint uses the REPLICA database.</p> */
     post: operations['getActivitiesByEventIds']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/prisoners': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of offenders matching specified criteria.
      * @description List of offenders matching specified criteria. Requires GLOBAL_SEARCH role.<p>This endpoint uses the REPLICA database.</p>
      */
-    get: operations['getPrisoners_1']
+    get: operations['getPrisoners']
+    put?: never
     /**
      * List of offenders matching specified criteria. (POST version)
      * @description List of offenders matching specified criteria. Requires GLOBAL_SEARCH role.<p>This endpoint uses the REPLICA database.</p>
      */
-    post: operations['getPrisoners']
+    post: operations['getPrisoners_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/person/{prisonerNumber}/distinguishing-mark': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create a new distinguishing mark, optionally providing a photo. The calling service is responsible for virus scanning the photo.
+     * @description Requires role PRISON_API__PRISONER_PROFILE__RW
+     */
+    post: operations['createMark']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/person/{prisonerNumber}/distinguishing-mark/{seqId}/photo': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Add a new photo to an distinguishing mark. The calling service is responsible for virus scanning the photo.
+     * @description Requires role PRISON_API__PRISONER_PROFILE__RW
+     */
+    post: operations['addMarkPhoto']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Creates a prisoner and optional receives them into a prison by creating a new booking. BOOKING_CREATE role */
     post: operations['createPrisoner']
-  }
-  '/api/offenders/{offenderNo}/booking': {
-    /** Receives a prisoner on a new booking. BOOKING_CREATE role */
-    post: operations['newBooking']
-  }
-  '/api/offenders/adjudication-hearings': {
-    /**
-     * Gets a list of offender adjudication hearings
-     * @description <p>This endpoint returns a list of offender adjudication hearings for 1 or more offenders for a given date range and optional time slot.</p>
-     * <p>If the date range goes beyond 31 days then an exception will be thrown.</p>
-     * <p>At least one offender number must be supplied if not then an exception will be thrown.</p>
-     * <p>If the time slot is provided then the results will be further restricted to the hearings that fall in that time slot.</p>
-     */
-    post: operations['getOffenderAdjudicationHearings']
-  }
-  '/api/offender-sentences': {
-    /**
-     * List of offenders (with associated sentence detail)
-     * @description <h3>Algorithm</h3>
-     * <ul>
-     *   <li>If there is a confirmed release date, the offender release date is the confirmed release date.</li>
-     *   <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
-     *   <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
-     * </ul>
-     * <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getOffenderSentences']
-    /**
-     * Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists.
-     * @description Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists.<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['postOffenderSentences']
-  }
-  '/api/offender-sentences/home-detention-curfews/latest': {
-    /**
-     * Retrieve the latest Home Detention Curfew status for a list of offender booking identifiers
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getBatchLatestHomeDetentionCurfew']
-  }
-  '/api/offender-sentences/bookings': {
-    /**
-     * Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists.
-     * @description Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists.<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['postOffenderSentencesBookings']
-  }
-  '/api/offender-dates/{bookingId}': {
-    /**
-     * Get the key dates for an offender.
-     * @description Requires RELEASE_DATES_CALCULATOR
-     */
-    get: operations['getOffenderKeyDates']
-    /**
-     * Update the key dates for an offender.
-     * @description Requires RELEASE_DATES_CALCULATOR
-     */
-    post: operations['updateOffenderKeyDates']
-  }
-  '/api/offender-assessments/{assessmentCode}': {
-    /**
-     * Offender assessment detail for multiple offenders.
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getOffenderAssessmentsAssessmentCode']
-    /**
-     * Retrieves Offender assessment details for multiple offenders - POST version to allow large offender lists.
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['postOffenderAssessmentsAssessmentCode']
-  }
-  '/api/offender-assessments/csra/list': {
-    /**
-     * Retrieves Offender CSRAs for multiple offenders - POST version to allow large offender lists.
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['postOffenderAssessmentsCsraList']
-  }
-  '/api/offender-assessments/category': {
-    /**
-     * Returns Categorisation details for supplied Offenders - POST version to allow large offender lists.
-     * @description Requires VIEW_PRISONER_DATA role<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getOffenderCategorisationsSystem']
-  }
-  '/api/offences/unlink-from-schedule': {
-    /**
-     * Unlink offence from schedule
-     * @description Requires UPDATE_OFFENCE_SCHEDULES role
-     */
-    post: operations['unlinkOffencesFromSchedules']
-  }
-  '/api/offences/statute': {
-    /**
-     * Create statutes if they dont already exist
-     * @description Requires OFFENCE_MAINTAINER role
-     */
-    post: operations['createStatute']
-  }
-  '/api/offences/link-to-schedule': {
-    /**
-     * Link offence to schedule
-     * @description Requires UPDATE_OFFENCE_SCHEDULES role
-     */
-    post: operations['linkOffencesToSchedules']
-  }
-  '/api/offences/ho-code': {
-    /**
-     * Create Home Office Notifiable Offence Code records if they dont already exist
-     * @description Requires OFFENCE_MAINTAINER role
-     */
-    post: operations['createHomeOfficeCodes']
-  }
-  '/api/movements': {
-    /**
-     * Returns a list of recently released or moved offender nos and the associated timestamp.
-     * @description Returns a list of recently released or moved offender nos and the associated timestamp.
-     */
-    get: operations['getRecentMovementsByDate']
-    /**
-     * Create a new external movement for inactive bookings only
-     * @description requires the INACTIVE_BOOKINGS role
-     */
-    post: operations['createExternalMovement']
-  }
-  '/api/movements/offenders': {
-    post: operations['getMovementsByOffenders']
-  }
-  '/api/key-worker/{agencyId}/current-allocations': {
-    /**
-     * Retrieves Specified key worker's currently assigned offenders - POST version to allow larger staff lists.
-     * @description Retrieves Specified key worker's currently assigned offenders - POST version to allow larger staff lists.<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['postKeyWorkerAgencyIdCurrentAllocations']
-  }
-  '/api/key-worker/offenders/allocationHistory': {
-    /**
-     * Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists.
-     * @description Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists.<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['postKeyWorkerOffendersAllocationHistory']
-  }
-  '/api/images/offenders/{offenderNo}': {
-    /**
-     * Image details related to offender.
-     * @description Requires role VIEW_PRISONER_DATA.
-     */
-    get: operations['getImagesByOffender']
-    /**
-     * DEV USE ONLY *** Upload a new image for a prisoner.
-     * @description Requires ROLE_IMAGE_UPLOAD, write scope and a user in the token.
-     */
-    post: operations['putImageMultiPart']
-  }
-  '/api/finance/prison/{prisonId}/offenders/{offenderNo}/transfer-to-savings': {
-    /**
-     * Post a financial transaction to NOMIS.
-     * @description Notes:<br/>
-     *   <ul>
-     *     <li>If the field X-Client-Name is present in the request header then the value is prepended to the client_unique_ref separated by a dash</li>
-     *     <li>The client_unique_ref can have a maximum of 64 characters, only alphabetic, numeric, ‘-’ and ‘_’ characters are allowed</li>
-     *   </ul>
-     * <p>Requires role NOMIS_API_V1 or UNILINK</p>
-     */
-    post: operations['transferToSavings']
-  }
-  '/api/education/prisoners': {
-    /**
-     * A list of offender educations.
-     * @description A list of offender educations given a list of offender identifiers
-     */
-    post: operations['getPrisonerEducationsInBulk']
-  }
-  '/api/case-notes/usage': {
-    /**
-     * Count of case notes
-     * @description Count of case notes. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getCaseNoteUsageSummary']
-    /**
-     * Retrieves list of case notes grouped by type and offender
-     * @description Retrieves list of case notes grouped by type and offender. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getCaseNoteUsageSummaryByPost']
-  }
-  '/api/case-notes/usage-by-types': {
-    /**
-     * Retrieves list of case notes grouped by types, bookings and from dates
-     * @description Retrieves list of case notes grouped by type/sub and offender. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getCaseNoteUsageSummaryByDates']
-  }
-  '/api/case-notes/staff-usage': {
-    /**
-     * Retrieves list of case notes grouped by type/sub-type and staff
-     * @description Retrieves list of case notes grouped by type/sub-type and staff. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getCaseNoteStaffUsageSummaryByPost']
-  }
-  '/api/bookings/{bookingId}/prison-to-prison': {
-    /**
-     * Schedules a future prison to prison move for an offender.
-     * @description Schedules a future prison to prison move for an offender. Requires role PRISON_MOVE_MAINTAINER and scope write.
-     */
-    post: operations['prisonToPrison']
-  }
-  '/api/bookings/{bookingId}/prison-to-court-hearings': {
-    /**
-     * Schedules a prison to court hearing for an offender.
-     * @description Schedules a prison to court hearing for an offender. Requires role COURT_HEARING_MAINTAINER and scope write
-     */
-    post: operations['prisonToCourt']
-  }
-  '/api/bookings/{bookingId}/personal-care-needs': {
-    /**
-     * Personal Care Needs
-     * @description Personal Care Need. Requires booking access (via caseload) or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
-     */
-    get: operations['getPersonalCareNeeds_1']
-    /**
-     * Personal Care Needs
-     * @description Requires role MAINTAIN_HEALTH_PROBLEMS and scope write
-     */
-    post: operations['addPersonalCareNeed']
-  }
-  '/api/bookings/{bookingId}/court-cases/{courtCaseId}/prison-to-court-hearings': {
-    /**
-     * Schedules a prison to court hearing for an offender and given court case.
-     * @description Schedules a prison to court hearing for an offender and given court case. Requires role COURT_HEARING_MAINTAINER and scope write
-     */
-    post: operations['prisonToCourt_1']
-  }
-  '/api/bookings/{bookingId}/appointments': {
-    /**
-     * Create appointment for offender.
-     * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
-     */
-    post: operations['postBookingsBookingIdAppointments']
-  }
-  '/api/bookings/{bookingId}/alert': {
-    /**
-     * Create an alert
-     * @description Requires role UPDATE_ALERT
-     */
-    post: operations['postAlert']
-  }
-  '/api/bookings/offenders': {
-    /**
-     * Offender detail.
-     * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or prisoners are in caseload<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getBasicInmateDetailsForOffenders']
-  }
-  '/api/bookings/offenderNo/{agencyId}/alerts': {
-    /**
-     * Get alerts for a list of offenders at a prison
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getAlertsByOffenderNosAtAgency']
-  }
-  '/api/bookings/offenderNo/personal-care-needs': {
-    /**
-     * Personal Care Needs  - POST version to allow for large numbers of offenders
-     * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH
-     */
-    post: operations['getPersonalCareNeeds']
-  }
-  '/api/bookings/offenderNo/personal-care-needs/count': {
-    /**
-     * Personal Care Needs Counter - POST version to allow to count heath problem by type for large numbers of offenders
-     * @description Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
-     */
-    post: operations['countPersonalCareNeeds']
-  }
-  '/api/bookings/offenderNo/alerts': {
-    /**
-     * Get alerts for a list of offenders. Requires VIEW_PRISONER_DATA role
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getAlertsByOffenderNos']
-  }
-  '/api/bookings/offence-history': {
-    /**
-     * Offence histories.
-     * @description Offence histories for a set of booking ids.<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getOffenceHistoryForBookings']
-  }
-  '/api/bookings/mainOffence': {
-    /**
-     * Get Offender main offence detail.
-     * @description Post version to allow specifying a large number of bookingIds. Requires role VIEW_PRISONER_DATA<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations['getMainOffence']
-  }
-  '/api/bookings/court-event-outcomes': {
-    /** Get court event outcome reason codes for active court cases for a booking */
-    post: operations['getCourtEventOutcomes']
-  }
-  '/api/appointments': {
-    /**
-     * Create multiple appointments
-     * @description Create multiple appointments
-     */
-    post: operations['createAppointments']
-  }
-  '/api/appointments/delete': {
-    /**
-     * Delete multiple appointments.
-     * @description Requires role GLOBAL_APPOINTMENT and write scope
-     */
-    post: operations['deleteAppointments']
-  }
-  '/api/agencies': {
-    /**
-     * List of active agencies.
-     * @description List of active agencies.
-     */
-    get: operations['getAgencies']
-    /**
-     * Create an agency
-     * @description Requires MAINTAIN_REF_DATA
-     */
-    post: operations['createAgency']
-  }
-  '/api/agencies/{agencyId}/addresses': {
-    /**
-     * Create an address
-     * @description Requires MAINTAIN_REF_DATA
-     */
-    post: operations['createAgencyAddress']
-  }
-  '/api/agencies/{agencyId}/addresses/{addressId}/phones': {
-    /**
-     * Create an contact for an address
-     * @description Requires MAINTAIN_REF_DATA
-     */
-    post: operations['createAgencyAddressPhoneContact']
-  }
-  '/api/v1/prison/{prison_id}/slots': {
-    /**
-     * Fetch visit slots with capacity
-     * @description returns list slots with capacity details<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getVisitSlotsWithCapacity']
-  }
-  '/api/v1/prison/{prison_id}/offenders/{noms_id}/transactions/{client_unique_ref}': {
-    /**
-     * Retrieve a single financial transaction using client unique ref.
-     * @description All transaction amounts are represented as pence values.<br/>
-     * Requires NOMIS_API_V1 or UNILINK role.
-     */
-    get: operations['getTransactionByClientUniqueRef']
-  }
-  '/api/v1/prison/{prison_id}/offenders/{noms_id}/holds': {
-    /**
-     * Get holds.
-     * @description Gets every hold on an offender’s account or just the hold identified by the client_unique_ref<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getHolds']
-  }
-  '/api/v1/prison/{prison_id}/offenders/{noms_id}/accounts': {
-    /**
-     * Retrieve an offender's financial account balances.
-     * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
-     * All balance values are represented as pence values.<br/>
-     * Requires NOMIS_API_V1 or UNILINK role.
-     */
-    get: operations['getAccountBalance']
-  }
-  '/api/v1/prison/{prison_id}/offenders/{noms_id}/accounts/{account_code}/transactions': {
-    /**
-     * Retrieve an offender's financial transaction history for cash, spends or savings.
-     * @description Transactions are returned in NOMIS order (Descending date followed by id).<br/>
-     * All transaction amounts are represented as pence values.<br/>
-     * Requires NOMIS_API_V1 or UNILINK role.
-     */
-    get: operations['getAccountTransactions']
-  }
-  '/api/v1/prison/{prison_id}/offenders/{noms_id}/accounts/': {
-    /**
-     * Deprecated - use the version without the trailing slash. Retrieve an offender's financial account balances.
-     * @deprecated
-     * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
-     * All balance values are represented as pence values.<br/>
-     * Requires NOMIS_API_V1 or UNILINK role.
-     */
-    get: operations['getAccountBalanceTrailingSlash']
-  }
-  '/api/v1/prison/{prison_id}/live_roll': {
-    /**
-     * Fetching live roll.
-     * @description Requires NOMIS_API_V1 or UNILINK role.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getLiveRoll']
-  }
-  '/api/v1/offenders/{offender_id}/visits/unavailability': {
-    /**
-     * Fetch unavailability reason for dates
-     * @description returns list of reason if unavailable date<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getVisitUnavailability']
-  }
-  '/api/v1/offenders/{offender_id}/visits/contact_list': {
-    /**
-     * Fetch contacts list for offender
-     * @description returns list of contacts<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getVisitContactList']
-  }
-  '/api/v1/offenders/{offender_id}/visits/available_dates': {
-    /**
-     * Fetch available_dates for offender
-     * @description returns list of dates<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getVisitAvailableDates']
-  }
-  '/api/v1/offenders/{noms_id}': {
-    /**
-     * Returns general offender information.
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getOffender']
-  }
-  '/api/v1/offenders/{noms_id}/pss_detail': {
-    /**
-     * Get the PSS detail by offender
-     * @description Returns the PSS detail information for the specified offender including personal data, warnings, sentence details and location information.<br/>
-     * <ul>
-     *   <li>The 'type' field is always OFFENDER_DETAILS_REQUEST</li>
-     *   <li>The field 'offender_details_request' contains a JSON block of data containing the offender data.</li>
-     * </ul>
-     * The format of 'offender_details_request' is not specified here.<br/>
-     * Requires NOMIS_API_V1 or UNILINK role.
-     * <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getOffenderPssDetail']
-  }
-  '/api/v1/offenders/{noms_id}/location': {
-    /**
-     * Current Location of the offender
-     * @description The levels shows the type of each level of the location address as defined on the Agency Details tab in Maintain Agency Locations screen (OUMAGLOC).<br/><br/>Since the offender's location can change often and is fairly sensitive (and therefore should not automatically be exposed to all services), this information is not included in the general offender information call.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getLatestBookingLocation']
-  }
-  '/api/v1/offenders/{noms_id}/image': {
-    /**
-     * Get Current Photograph of the offender
-     * @description Returns a 480wx600h JPEG photograph of the offender. The data is base64 encoded within the image key.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getOffenderImage']
-  }
-  '/api/v1/offenders/{noms_id}/charges': {
-    /**
-     * Legal cases for each booking and charges within each legal case.
-     * @description Returns all the bookings, the legal cases for each booking and charges within each legal case.<br/>The ordering is as follows:<ul><li><strong>bookings</strong>: Current or latest booking first, others in descending order of booking date</li><li><strong>legal_cases</strong>: Active cases followed by inactive cases, further ordered by begin_date, latest first</li><li><strong>charges</strong>: Most serious active charge first, then remaining active charges, followed by inactive charges</li></ul><p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getBookings']
-  }
-  '/api/v1/offenders/{noms_id}/alerts': {
-    /**
-     * Fetch alerts by offender
-     * @description Returns all active alerts for the specified offender or those that meet the optional criteria. Active alerts are listed first, followed by inactive alerts, both sorted by ascending order of alert date.<br/>
-     * <ul>
-     *   <li>if alert_type is specified then only alerts of that type are returned</li>
-     *   <li>if modified_since is specified then only those alerts created or modified on or after the specified date time. The following formats are supported: 2018-01-10, 2018-01-10 03:34, 2018-01-10 03:34:12, 2018-01-10 03:34:12.123</li>
-     *   <li>If include_inactive=true is specified then inactive alerts are also returned.</li>
-     * </ul>
-     * Requires NOMIS_API_V1 or UNILINK role.
-     * <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getAlerts']
-  }
-  '/api/v1/offenders/events': {
-    /**
-     * Fetch events
-     * @description Returns all events that required to update the prisoner self service application. Currently these are:
-     * <ul>
-     *   <li>ALERT</li>
-     *   <li>DISCHARGE</li>
-     *   <li>IEP_CHANGED</li>
-     *   <li>INTERNAL_LOCATION_CHANGED</li>
-     *   <li>NOMS_ID_CHANGED</li>
-     *   <li>PERSONAL_DETAILS_CHANGED</li>
-     *   <li>PERSONAL_OFFICER_CHANGED</li>
-     *   <li>RECEPTION</li>
-     *   <li>SENTENCE_INFORMATION_CHANGED</li>
-     *   <li>BALANCE_UPDATE</li>
-     * </ul>
-     * Requires NOMIS_API_V1 or UNILINK role.
-     * <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getOffenderEvents']
-  }
-  '/api/v1/lookup/active_offender': {
-    /**
-     * Retrieve active offender
-     * @description offender id will be returned if offender is found<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getActiveOffender']
-  }
-  '/api/users/{username}': {
-    /**
-     * User detail.
-     * @description User detail.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getUserDetails']
-  }
-  '/api/users/me': {
-    /**
-     * Current user detail.
-     * @description Current user detail.
-     */
-    get: operations['getMyUserInformation']
-  }
-  '/api/users/me/roles': {
-    /**
-     * List of roles for current user.
-     * @description List of roles for current user.
-     */
-    get: operations['getMyRoles']
-  }
-  '/api/users/me/locations': {
-    /**
-     * List of locations accessible to current user.
-     * @description List of locations accessible to current user.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getMyLocations']
-  }
-  '/api/users/me/caseLoads': {
-    /**
-     * List of caseloads accessible to current user.
-     * @description List of caseloads accessible to current user.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getMyCaseLoads']
-  }
-  '/api/staff/{staffId}': {
-    /**
-     * Staff detail.
-     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
-     */
-    get: operations['getStaffDetail']
-  }
-  '/api/staff/{staffId}/{agencyId}/roles': {
-    /**
-     * List of job roles for specified staff and agency Id
-     * @description Security note: the agency must be in the current user's caseload.
-     */
-    get: operations['getAllRolesForAgency']
-  }
-  '/api/staff/{staffId}/{agencyId}/roles/{roleType}': {
-    /**
-     * Check if staff member has a role
-     * @description Check if staff member has a role, either KW or POM. Security note: the agency must be in the current user's caseload.
-     */
-    get: operations['hasStaffRole']
-  }
-  '/api/staff/{staffId}/emails': {
-    /**
-     * Returns a list of email addresses associated with this staff user
-     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
-     */
-    get: operations['getStaffEmailAddresses']
-  }
-  '/api/staff/{staffId}/caseloads': {
-    /**
-     * Returns a list of caseloads associated with this staff user
-     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
-     */
-    get: operations['getStaffCaseloads']
-  }
-  '/api/staff/roles/{agencyId}/role/{role}': {
-    /**
-     * Get staff members within agency who are currently assigned the specified role.
-     * @description Get staff members within agency who are currently assigned the specified role. Security note: the agency must be in the current user's caseload.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getStaffByAgencyRole']
-  }
-  '/api/service-prisons/{serviceCode}': {
-    /** Retrieve a list of prisons switched on for the service code */
-    get: operations['getServicePrisons']
-  }
-  '/api/schedules/{prisonerNumber}/scheduled-transfers': {
-    /** @description <p>This endpoint uses the REPLICA database.</p> */
-    get: operations['getScheduledTransfersForPrisoner']
-  }
-  '/api/schedules/{agencyId}/suspended-activities-by-date-range': {
-    /**
-     * Get all Prisoner activities for given date.
-     * @description Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getSuspendedActivitiesAtAllLocationsByDateRange']
-  }
-  '/api/schedules/{agencyId}/locations/{locationId}/usage/{usage}': {
-    /**
-     * Get all Prisoner events for given date at location.
-     * @description Get all Prisoner events for given date at location.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getLocationEvents']
-  }
-  '/api/schedules/locations/{locationId}/activities': {
-    /**
-     * Get all Prisoner activities for given date at location.
-     * @description Get all Prisoner activities for given date at location.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getActivitiesAtLocation']
-  }
-  '/api/restore-info': {
-    /** The last restore date or not found is returned if no restore data available */
-    get: operations['getLastRestoreDate']
-  }
-  '/api/reference-domains/scheduleReasons': {
-    /**
-     * Get possible reason codes for created event.
-     * @description Get possible reason codes for created event.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getScheduleReasons']
-  }
-  '/api/reference-domains/domains': {
-    /**
-     * List of all reference domains
-     * @description A reference domain can be used to retrieve all codes related to that domain. Ordered by domain ascending<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getAllReferenceDomains']
-  }
-  '/api/reference-domains/domains/{domain}': {
-    /**
-     * List of reference codes for reference domain paged.
-     * @description List of reference codes for reference domain paged. Please note this API has the incorrect name so the non-paged /domains/{domain}/codes version is preferred.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getReferenceCodesByDomain']
-  }
-  '/api/reference-domains/domains/{domain}/reverse-lookup': {
-    /**
-     * Reference code matching description
-     * @description Wild card can be specified<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getReferenceCodeByDomainAndDescription']
-  }
-  '/api/reference-domains/domains/{domain}/codes': {
-    /**
-     * List of reference codes for reference domain.
-     * @description List of reference codes for reference domain ordered by code ascending. The list is an un-paged flat list<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getReferenceCodesByDomain_1']
-  }
-  '/api/reference-domains/alertTypes': {
-    /**
-     * List of alert types (with alert codes).
-     * @description List of alert types (with alert codes).<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getAlertTypes']
-  }
-  '/api/prisoners/{offenderNo}': {
-    /**
-     * List of offenders globally matching the offenderNo.
-     * @description List of offenders globally matching the offenderNo, Requires offender agency to be in user caseload or VIEW_PRISONER_DATA role. Returns an empty array if no results are found or if does not have correct permissions
-     */
-    get: operations['getPrisonersOffenderNo']
-  }
-  '/api/prisoners/{offenderNo}/full-status': {
-    /** Status and core offender information */
-    get: operations['getPrisonerInformationById']
-  }
-  '/api/prisoners/prisoner-numbers': {
-    /**
-     * Return a list of all unique prisoner numbers (also called NOMS ID or offenderNo).
-     *     Results are ordered by max(ROOT_OFFENDER_ID), therefore ensuring that new offenders are added to the end of the
-     *     results.
-     *     This is an internal endpoint used by Prisoner Search to ensure that NOMIS and OpenSearch are in sync.
-     *     Other services should use Prisoner Search instead to get the list of prisoners.
-     *     Requires PRISONER_INDEX or GLOBAL_SEARCH role.
-     *
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getPrisonerNumbers']
-  }
-  '/api/prison/{establishmentId}/booking/latest/paged/calculable-sentence-envelope': {
-    /** Details of the active sentence envelope, a combination of the person information, the active booking and calculable sentences at a particular establishment (paged response) */
-    get: operations['getCalculableSentenceEnvelopeByEstablishment']
-  }
-  '/api/persons/{personId}/phones': {
-    /**
-     * The phone numbers for person
-     * @description Requires role ROLE_VIEW_CONTACTS
-     */
-    get: operations['getPersonPhones']
-  }
-  '/api/persons/{personId}/identifiers': {
-    /**
-     * The most recent value of each type of person identifier
-     * @description Requires role ROLE_VIEW_CONTACTS
-     */
-    get: operations['getPersonIdentifiers']
-  }
-  '/api/persons/{personId}/emails': {
-    /**
-     * The emails for person
-     * @description Requires role ROLE_VIEW_CONTACTS
-     */
-    get: operations['getPersonEmails']
-  }
-  '/api/persons/{personId}/addresses': {
-    /**
-     * The addresses for person
-     * @description Requires role ROLE_VIEW_CONTACTS
-     */
-    get: operations['getPersonAddresses']
-  }
-  '/api/offenders/{offenderNo}': {
-    /** Full details about the current state of an offender */
-    get: operations['getOffender_1']
-  }
-  '/api/offenders/{offenderNo}/transaction-history': {
-    /**
-     * Retrieve an offender's financial transaction history for cash, spends or savings.
-     * @description Transactions are returned in order of entryDate descending and sequence ascending).<br/>All transaction amounts are represented as pence values.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getTransactionsHistory']
-  }
-  '/api/offenders/{offenderNo}/sentences': {
-    /**
-     * Offender Sentence Details
-     * @description Retrieve an single offender sentence details
-     */
-    get: operations['getOffenderSentenceDetail']
-  }
-  '/api/offenders/{offenderNo}/scheduled-events': {
-    /**
-     * All future (scheduled) events for offender
-     * @description All future events for offender that are in a scheduled and not cancelled state.
-     */
-    get: operations['getScheduledEvents']
-  }
-  '/api/offenders/{offenderNo}/prison-timeline': {
-    /**
-     * Summary of the different periods this prisoner has been in prison.
-     * @description This is a summary of the different periods this prisoner has been in prison grouped by booking.
-     *
-     * It includes the dates of each period, the prison and the reason for the movement. Each booking is divided into periods of time spent in prison separated by periods when the were out either via a release or a temporary absence (periods at court are not included).
-     *
-     * The periods are ordered by date ascending, therefore the final period will be their last time in prison. For each period the prison admitted into and optionally released from will be listed. These can be different if there has been transfers in between the dates.
-     *
-     * Transfers are also listed separately.
-     *
-     *
-     * **Example response:**
-     * #### Booking 47828A
-     * Has 2 periods of temporary absence. In the second absence they return to a different prison. They are eventually released.
-     *
-     * #### Booking 47829A
-     * The person is still is prison but has been transferred to a 2nd prison.
-     *
-     * There are a number of transfers during this booking.
-     * ```
-     * {
-     *   "prisonerNumber": "A7748DZ",
-     *   "prisonPeriod": [
-     *     {
-     *       "bookNumber": "47828A",
-     *       "bookingId": 1211013,
-     *       "entryDate": "2023-12-08T15:50:37",
-     *       "releaseDate": "2023-12-08T16:21:24",
-     *       "movementDates": [
-     *         {
-     *           "reasonInToPrison": "Imprisonment Without Option",
-     *           "dateInToPrison": "2023-12-08T15:50:37",
-     *           "inwardType": "ADM",
-     *           "reasonOutOfPrison": "Wedding/Civil Ceremony",
-     *           "dateOutOfPrison": "2023-12-08T15:53:37",
-     *           "outwardType": "TAP",
-     *           "admittedIntoPrisonId": "BMI",
-     *           "releaseFromPrisonId": "BSI"
-     *         },
-     *         {
-     *           "reasonInToPrison": "Wedding/Civil Ceremony",
-     *           "dateInToPrison": "2023-12-08T15:54:12",
-     *           "inwardType": "TAP",
-     *           "reasonOutOfPrison": "Conditional Release (CJA91) -SH Term>1YR",
-     *           "dateOutOfPrison": "2023-12-08T16:20:19",
-     *           "outwardType": "REL",
-     *           "admittedIntoPrisonId": "BSI",
-     *           "releaseFromPrisonId": "AYI"
-     *         },
-     *         {
-     *           "reasonInToPrison": "Recall From Intermittent Custody",
-     *           "dateInToPrison": "2023-12-08T16:20:45",
-     *           "inwardType": "ADM",
-     *           "reasonOutOfPrison": "Conditional Release (CJA91) -SH Term>1YR",
-     *           "dateOutOfPrison": "2023-12-08T16:21:24",
-     *           "outwardType": "REL",
-     *           "admittedIntoPrisonId": "AYI",
-     *           "releaseFromPrisonId": "AYI"
-     *         }
-     *       ],
-     *       "transfers": [
-     *         {
-     *           "dateOutOfPrison": "2023-12-08T15:51:09",
-     *           "dateInToPrison": "2023-12-08T15:52:32",
-     *           "transferReason": "Compassionate Transfer",
-     *           "fromPrisonId": "BMI",
-     *           "toPrisonId": "BSI"
-     *         },
-     *         {
-     *           "dateOutOfPrison": "2023-12-08T15:54:56",
-     *           "dateInToPrison": "2023-12-08T15:55:54",
-     *           "transferReason": "Transfer Via Court",
-     *           "fromPrisonId": "BSI",
-     *           "toPrisonId": "BRI"
-     *         },
-     *         {
-     *           "dateOutOfPrison": "2023-12-08T15:56:05",
-     *           "dateInToPrison": "2023-12-08T15:57:25",
-     *           "transferReason": "Appeals",
-     *           "fromPrisonId": "BRI",
-     *           "toPrisonId": "DAI"
-     *         },
-     *         {
-     *           "dateOutOfPrison": "2023-12-08T16:18:45",
-     *           "dateInToPrison": "2023-12-08T16:19:45",
-     *           "transferReason": "Medical",
-     *           "fromPrisonId": "DAI",
-     *           "toPrisonId": "AYI"
-     *         }
-     *       ],
-     *       "prisons": [
-     *         "BMI",
-     *         "BSI",
-     *         "BRI",
-     *         "DAI",
-     *         "AYI"
-     *       ]
-     *     },
-     *     {
-     *       "bookNumber": "47829A",
-     *       "bookingId": 1211014,
-     *       "entryDate": "2023-12-08T16:21:21",
-     *       "movementDates": [
-     *         {
-     *           "reasonInToPrison": "Imprisonment Without Option",
-     *           "dateInToPrison": "2023-12-08T16:21:21",
-     *           "inwardType": "ADM",
-     *           "admittedIntoPrisonId": "DGI"
-     *         }
-     *       ],
-     *       "transfers": [
-     *         {
-     *           "dateOutOfPrison": "2023-12-08T16:22:02",
-     *           "dateInToPrison": "2023-12-08T16:23:32",
-     *           "transferReason": "Overcrowding Draft",
-     *           "fromPrisonId": "DGI",
-     *           "toPrisonId": "BLI"
-     *         }
-     *       ],
-     *       "prisons": [
-     *         "DGI",
-     *         "BLI"
-     *       ]
-     *     }
-     *   ]
-     * }
-     * ```
-     */
-    get: operations['getOffenderPrisonPeriods']
-  }
-  '/api/offenders/{offenderNo}/offender-restrictions': {
-    /**
-     * Gets the offender visit restrictions for a given offender using the latest booking
-     * @description Get offender visit restrictions by offender No. <p>Requires a relationship (via caseload) with the offender or VISIT_SCHEDULER role.</p>
-     */
-    get: operations['getVisitRestrictions']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/phone-numbers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get phone numbers for a prisoner. */
+    get: operations['getOffenderNumbers']
+    put?: never
+    /** Add a phone number for the prisoner */
+    post: operations['addOffenderPhoneNumbers']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/offender-identifiers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get all identifiers for the prisoner (with or without alias identifiers) */
+    get: operations['getAllOffenderIdentifiers']
+    put?: never
+    /** Add identifiers for the prisoner on the current working name */
+    post: operations['addOffenderIdentifiers']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/military-records': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Military Records
      * @description Military Records
      */
     get: operations['getMilitaryRecords']
+    put?: never
+    /** Create the prisoner's military record. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    post: operations['createMilitaryRecord']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/email-addresses': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get email addresses for a prisoner. */
+    get: operations['getOffenderEmails']
+    put?: never
+    /** Add an email address for the prisoner */
+    post: operations['addOffenderEmailAddress']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/booking': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Receives a prisoner on a new booking. BOOKING_CREATE role */
+    post: operations['newBooking']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/aliases': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Retrieve all aliases (including the working name alias) for the prisoner. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    get: operations['getAliases']
+    put?: never
+    /** Create a new alias for the prisoner. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+    post: operations['createAlias']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/addresses': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Return a list of addresses for a given offender, most recent first.
+     * @description Requires offender to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getAddressesByOffenderNo']
+    put?: never
+    /** Add an address for the prisoner */
+    post: operations['addOffenderAddress']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/adjudication-hearings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Gets a list of offender adjudication hearings
+     * @description <p>This endpoint returns a list of offender adjudication hearings for 1 or more offenders for a given date range and optional time slot.</p>
+     *     <p>If the date range goes beyond 31 days then an exception will be thrown.</p>
+     *     <p>At least one offender number must be supplied if not then an exception will be thrown.</p>
+     *     <p>If the time slot is provided then the results will be further restricted to the hearings that fall in that time slot.</p>
+     *
+     */
+    post: operations['getOffenderAdjudicationHearings']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offender-sentences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of offenders (with associated sentence detail)
+     * @description <h3>Algorithm</h3>
+     *     <ul>
+     *       <li>If there is a confirmed release date, the offender release date is the confirmed release date.</li>
+     *       <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
+     *       <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
+     *     </ul>
+     *     <p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getOffenderSentences']
+    put?: never
+    /**
+     * Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists.
+     * @description Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists.<p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['postOffenderSentences']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offender-sentences/home-detention-curfews/latest': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Retrieve the latest Home Detention Curfew status for a list of offender booking identifiers
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['getBatchLatestHomeDetentionCurfew']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offender-sentences/bookings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists.
+     * @description Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists.<p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['postOffenderSentencesBookings']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offender-dates/{bookingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the key dates for an offender.
+     * @description Requires RELEASE_DATES_CALCULATOR
+     */
+    get: operations['getOffenderKeyDates']
+    put?: never
+    /**
+     * Update the key dates for an offender.
+     * @description Requires RELEASE_DATES_CALCULATOR
+     */
+    post: operations['updateOffenderKeyDates']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offender-assessments/{assessmentCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Offender assessment detail for multiple offenders.
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getOffenderAssessmentsAssessmentCode']
+    put?: never
+    /**
+     * Retrieves Offender assessment details for multiple offenders - POST version to allow large offender lists.
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['postOffenderAssessmentsAssessmentCode']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offender-assessments/csra/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Retrieves Offender CSRAs for multiple offenders - POST version to allow large offender lists.
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['postOffenderAssessmentsCsraList']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offender-assessments/category': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Returns Categorisation details for supplied Offenders - POST version to allow large offender lists.
+     * @description Requires VIEW_PRISONER_DATA role<p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['getOffenderCategorisationsSystem']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offences/unlink-from-schedule': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Unlink offence from schedule
+     * @description Requires UPDATE_OFFENCE_SCHEDULES role
+     */
+    post: operations['unlinkOffencesFromSchedules']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offences/statute': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create statutes if they dont already exist
+     * @description Requires OFFENCE_MAINTAINER role
+     */
+    post: operations['createStatute']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offences/link-to-schedule': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Link offence to schedule
+     * @description Requires UPDATE_OFFENCE_SCHEDULES role
+     */
+    post: operations['linkOffencesToSchedules']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offences/ho-code': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create Home Office Notifiable Offence Code records if they dont already exist
+     * @description Requires OFFENCE_MAINTAINER role
+     */
+    post: operations['createHomeOfficeCodes']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/movements': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns a list of recently released or moved offender nos and the associated timestamp.
+     * @description Returns a list of recently released or moved offender nos and the associated timestamp.
+     */
+    get: operations['getRecentMovementsByDate']
+    put?: never
+    /**
+     * Create a new external movement for inactive bookings only
+     * @description requires the INACTIVE_BOOKINGS role
+     */
+    post: operations['createExternalMovement']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/movements/offenders': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['getMovementsByOffenders']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/movements/offenders/latest-arrival-date': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Get the dates of the latest arrival into prison for multiple offenders */
+    post: operations['getLatestArrivalDate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/key-worker/{agencyId}/current-allocations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Retrieves Specified key worker's currently assigned offenders - POST version to allow larger staff lists.
+     * @description Retrieves Specified key worker's currently assigned offenders - POST version to allow larger staff lists.<p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['postKeyWorkerAgencyIdCurrentAllocations']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/key-worker/offenders/allocationHistory': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists.
+     * @description Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists.<p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['postKeyWorkerOffendersAllocationHistory']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/images/offenders/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Image details related to offender.
+     * @description Requires role VIEW_PRISONER_DATA.
+     */
+    get: operations['getImagesByOffender']
+    put?: never
+    /**
+     * Upload a new image for a prisoner.
+     * @description Requires PRISON_API__PRISONER_PROFILE__RW. Additionally scales the image to 480 x 600 and creates a thumbnail 240 x 300 (4:5 aspect ratio).
+     */
+    post: operations['putImageMultiPart']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/finance/prison/{prisonId}/offenders/{offenderNo}/transfer-to-savings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Post a financial transaction to NOMIS.
+     * @description Notes:<br/>
+     *       <ul>
+     *         <li>If the field X-Client-Name is present in the request header then the value is prepended to the client_unique_ref separated by a dash</li>
+     *         <li>The client_unique_ref can have a maximum of 64 characters, only alphabetic, numeric, ‘-’ and ‘_’ characters are allowed</li>
+     *       </ul>
+     *     <p>Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.</p>
+     */
+    post: operations['transferToSavings']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/education/prisoners': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * A list of offender educations.
+     * @description A list of offender educations given a list of offender identifiers
+     */
+    post: operations['getPrisonerEducationsInBulk']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/case-notes/usage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * This endpoint has been replaced in the case notes service - see case-notes-service/case-notes/usage
+     * @deprecated
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getCaseNoteUsageSummary']
+    put?: never
+    /**
+     * This endpoint has been replaced in the case notes service - see case-notes-service/case-notes/usage
+     * @deprecated
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['getCaseNoteUsageSummaryByPost']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/case-notes/usage-by-types': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * This endpoint has been replaced in the case notes service - see case-notes-service/case-notes/usage
+     * @deprecated
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['getCaseNoteUsageSummaryByDates']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/case-notes/staff-usage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * This endpoint has been replaced in the case notes service - see case-notes-service/case-notes/staff-usage
+     * @deprecated
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['getCaseNoteStaffUsageSummaryByPost']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/{bookingId}/prison-to-prison': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Schedules a future prison to prison move for an offender.
+     * @description Schedules a future prison to prison move for an offender. Requires role PRISON_MOVE_MAINTAINER and scope write.
+     */
+    post: operations['prisonToPrison']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/{bookingId}/prison-to-court-hearings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Schedules a prison to court hearing for an offender.
+     * @description Schedules a prison to court hearing for an offender. Requires role COURT_HEARING_MAINTAINER and scope write
+     */
+    post: operations['prisonToCourt']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/{bookingId}/personal-care-needs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Personal Care Needs
+     * @description Personal Care Need. Requires booking access (via caseload) or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
+     */
+    get: operations['getPersonalCareNeeds']
+    put?: never
+    /**
+     * Personal Care Needs
+     * @description Requires role MAINTAIN_HEALTH_PROBLEMS and scope write
+     */
+    post: operations['addPersonalCareNeed']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/{bookingId}/court-cases/{courtCaseId}/prison-to-court-hearings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Schedules a prison to court hearing for an offender and given court case.
+     * @description Schedules a prison to court hearing for an offender and given court case. Requires role COURT_HEARING_MAINTAINER and scope write
+     */
+    post: operations['prisonToCourt_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/{bookingId}/appointments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create appointment for offender.
+     * @description Requires role GLOBAL_APPOINTMENT, or booking is in caseload
+     */
+    post: operations['postBookingsBookingIdAppointments']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/offenders': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Offender detail.
+     * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or prisoners are in caseload<p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['getBasicInmateDetailsForOffenders']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/offenderNo/personal-care-needs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Personal Care Needs  - POST version to allow for large numbers of offenders
+     * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH
+     */
+    post: operations['getPersonalCareNeeds_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/offenderNo/personal-care-needs/count': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Personal Care Needs Counter - POST version to allow to count heath problem by type for large numbers of offenders
+     * @description Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
+     */
+    post: operations['countPersonalCareNeeds']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/offenderNo/alerts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Deprecated - Please use the alerts api for access to alerts (eg https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
+     * @deprecated
+     * @description Replace with https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html#/prisoner-alerts-controller/retrievePrisonerAlerts_1<p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['getAlertsByOffenderNos']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/offence-history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Offence histories.
+     * @description Offence histories for a set of booking ids.<p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['getOffenceHistoryForBookings']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/mainOffence': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Get Offender main offence detail.
+     * @description Post version to allow specifying a large number of bookingIds. Requires role VIEW_PRISONER_DATA<p>This endpoint uses the REPLICA database.</p>
+     */
+    post: operations['getMainOffence']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/court-event-outcomes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Get court event outcome reason codes for active court cases for a booking */
+    post: operations['getCourtEventOutcomes']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/appointments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create multiple appointments
+     * @description Requires bookings to be in caseload and write scope, and role BULK_APPOINTMENTS if more than 1 appointment is being created
+     */
+    post: operations['createAppointments']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/appointments/delete': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Delete multiple appointments.
+     * @description Requires role GLOBAL_APPOINTMENT and write scope
+     */
+    post: operations['deleteAppointments']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/agency-switches/{serviceCode}/agency/{agencyId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns if the service is switched on for the specified service code / agency id.
+     * @description Returns 204 if the service is switched on for the service code / agency id combination.
+     *         If the service is not switched on then 404 is returned.
+     *         This endpoint also takes into account the special `*ALL*` agency id - if the service code has a agency entry of
+     *         `*ALL*` then the service is deemed to be switched on for all agencies and will therefore return 204 irrespective of the
+     *         agency id that is passed in.
+     *         An agency in this context is normally a prison, but can also be any agency location e.g. prisoner escort service area.
+     *         Requires ROLE_PRISON_API__SERVICE_AGENCY_SWITCHES__RO.
+     *
+     */
+    get: operations['checkServiceAgency']
+    put?: never
+    /** Activates an agency for the given service */
+    post: operations['addServiceAgency']
+    /** Deactivates an agency for the given service */
+    delete: operations['removeServiceAgency']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/agencies': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of active agencies.
+     * @description List of active agencies.
+     */
+    get: operations['getAgencies']
+    put?: never
+    /**
+     * Create an agency
+     * @description Requires MAINTAIN_REF_DATA
+     */
+    post: operations['createAgency']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/agencies/{agencyId}/addresses': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create an address
+     * @description Requires MAINTAIN_REF_DATA
+     */
+    post: operations['createAgencyAddress']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/agencies/{agencyId}/addresses/{addressId}/phones': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create an contact for an address
+     * @description Requires MAINTAIN_REF_DATA
+     */
+    post: operations['createAgencyAddressPhoneContact']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/prison/{prison_id}/slots': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Fetch visit slots with capacity
+     * @description returns list slots with capacity details<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getVisitSlotsWithCapacity']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/prison/{prison_id}/offenders/{noms_id}/transactions/{client_unique_ref}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve a single financial transaction using client unique ref.
+     * @description All transaction amounts are represented as pence values.<br/>
+     *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
+     *
+     */
+    get: operations['getTransactionByClientUniqueRef']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/prison/{prison_id}/offenders/{noms_id}/holds': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get holds.
+     * @description Gets every hold on an offender’s account or just the hold identified by the client_unique_ref<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getHolds']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/prison/{prison_id}/offenders/{noms_id}/accounts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve an offender's financial account balances.
+     * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
+     *     All balance values are represented as pence values.<br/>
+     *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
+     *
+     */
+    get: operations['getAccountBalance']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/prison/{prison_id}/offenders/{noms_id}/accounts/{account_code}/transactions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve an offender's financial transaction history for cash, spends or savings.
+     * @description Transactions are returned in NOMIS order (Descending date followed by id).<br/>
+     *     All transaction amounts are represented as pence values.<br/>
+     *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
+     *
+     */
+    get: operations['getAccountTransactions']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/prison/{prison_id}/offenders/{noms_id}/accounts/': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Deprecated - use the version without the trailing slash. Retrieve an offender's financial account balances.
+     * @deprecated
+     * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
+     *     All balance values are represented as pence values.<br/>
+     *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
+     *
+     */
+    get: operations['getAccountBalanceTrailingSlash']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/prison/{prison_id}/live_roll': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Fetching live roll.
+     * @description Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getLiveRoll']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/{offender_id}/visits/unavailability': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Fetch unavailability reason for dates
+     * @description returns list of reason if unavailable date<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getVisitUnavailability']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/{offender_id}/visits/contact_list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Fetch contacts list for offender
+     * @description returns list of contacts<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getVisitContactList']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/{offender_id}/visits/available_dates': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Fetch available_dates for offender
+     * @description returns list of dates<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getVisitAvailableDates']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/{noms_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns general offender information.
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getOffender']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/{noms_id}/pss_detail': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the PSS detail by offender
+     * @description Returns the PSS detail information for the specified offender including personal data, warnings, sentence details and location information.<br/>
+     *     <ul>
+     *       <li>The 'type' field is always OFFENDER_DETAILS_REQUEST</li>
+     *       <li>The field 'offender_details_request' contains a JSON block of data containing the offender data.</li>
+     *     </ul>
+     *     The format of 'offender_details_request' is not specified here.<br/>
+     *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
+     *     <p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getOffenderPssDetail']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/{noms_id}/location': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Current Location of the offender
+     * @description The levels shows the type of each level of the location address as defined on the Agency Details tab in Maintain Agency Locations screen (OUMAGLOC).<br/><br/>Since the offender's location can change often and is fairly sensitive (and therefore should not automatically be exposed to all services), this information is not included in the general offender information call.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getLatestBookingLocation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/{noms_id}/image': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Current Photograph of the offender
+     * @description Returns a 480wx600h JPEG photograph of the offender. The data is base64 encoded within the image key.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getOffenderImage']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/{noms_id}/charges': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Legal cases for each booking and charges within each legal case.
+     * @description Returns all the bookings, the legal cases for each booking and charges within each legal case.<br/>The ordering is as follows:<ul><li><strong>bookings</strong>: Current or latest booking first, others in descending order of booking date</li><li><strong>legal_cases</strong>: Active cases followed by inactive cases, further ordered by begin_date, latest first</li><li><strong>charges</strong>: Most serious active charge first, then remaining active charges, followed by inactive charges</li></ul><p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getBookings']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/{noms_id}/alerts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Deprecated - Please use the alerts api for access to alerts (eg https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
+     * @deprecated
+     * @description Replace with https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html#/prisoner-alerts-controller/retrievePrisonerAlerts<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getAlerts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/offenders/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Fetch events
+     * @description Returns all events that required to update the prisoner self service application. Currently these are:
+     *     <ul>
+     *       <li>ALERT</li>
+     *       <li>DISCHARGE</li>
+     *       <li>IEP_CHANGED</li>
+     *       <li>INTERNAL_LOCATION_CHANGED</li>
+     *       <li>NOMS_ID_CHANGED</li>
+     *       <li>PERSONAL_DETAILS_CHANGED</li>
+     *       <li>PERSONAL_OFFICER_CHANGED</li>
+     *       <li>RECEPTION</li>
+     *       <li>SENTENCE_INFORMATION_CHANGED</li>
+     *       <li>BALANCE_UPDATE</li>
+     *     </ul>
+     *     This endpoint requires a from_datetime to be specified.  If a date over a week ago is requested then limit
+     *     must be specified.  This is to stop too much data being requested.  Multiple calls can then be made to
+     *     retrieve all the data, by specifying a more recent from_datetime after each call. For example the first
+     *     request could specify data from 2022-05-18 with limit of 1000.  The next request could then look at the last
+     *     event in the response and specify that as the from_datetime with limit of 1000 again etc. until all data is
+     *     retrieved.
+     *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
+     *     <p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getOffenderEvents']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/lookup/active_offender': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve active offender
+     * @description offender id will be returned if offender is found<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getActiveOffender']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/users/{username}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * User detail.
+     * @description User detail.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getUserDetails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/users/me': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Current user detail.
+     * @description Current user detail.
+     */
+    get: operations['getMyUserInformation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/users/me/roles': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of roles for current user.
+     * @description List of roles for current user.
+     */
+    get: operations['getMyRoles']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/users/me/locations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of locations accessible to current user.
+     * @deprecated
+     * @description Deprecated - Use /locations/prison/{prisonId}/residential-first-level instead in the locations-inside-prison-api<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getMyLocations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/users/me/caseLoads': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of caseloads accessible to current user.
+     * @description List of caseloads accessible to current user.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getMyCaseLoads']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/transactions/prison/{prison_id}/offenders/{noms_id}/accounts/{account_code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve an offender's financial transaction history for cash, spends or savings.
+     * @description
+     *                 Transactions are returned in NOMIS order (Descending date followed by id).<br/>
+     *                 All transaction amounts are represented as pence values.<br/>
+     *                 Requires UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
+     *
+     */
+    get: operations['getAccountTransactions_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/staff/{staffId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Staff detail.
+     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
+     */
+    get: operations['getStaffDetail']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/staff/{staffId}/{agencyId}/roles': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of job roles for specified staff and agency Id
+     * @description Security note: the agency must be in the current user's caseload.
+     */
+    get: operations['getAllRolesForAgency']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/staff/{staffId}/{agencyId}/roles/{roleType}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Check if staff member has a role
+     * @description Check if staff member has a role, either KW or POM. Security note: the agency must be in the current user's caseload.
+     */
+    get: operations['hasStaffRole']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/staff/{staffId}/emails': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns a list of email addresses associated with this staff user
+     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
+     */
+    get: operations['getStaffEmailAddresses']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/staff/{staffId}/caseloads': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns a list of caseloads associated with this staff user
+     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
+     */
+    get: operations['getStaffCaseloads']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/staff/roles/{agencyId}/role/{role}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get staff members within agency who are currently assigned the specified role.
+     * @description Get staff members within agency who are currently assigned the specified role. Security note: the agency must be in the current user's caseload.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getStaffByAgencyRole']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/splash-screen': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get all splash screens
+     * @description Returns a list of all splash screens. Requires PRISON_API__SPLASH_SCREEN__RO.
+     */
+    get: operations['getAllSplashScreens']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/splash-screen/{moduleName}/condition/{conditionType}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get conditions by type for a splash screen
+     * @description Returns a list of conditions of the specified type for a splash screen. Requires PRISON_API__SPLASH_SCREEN__RO.
+     */
+    get: operations['getConditionsByType']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/splash-screen/{moduleName}/condition/{conditionType}/{conditionValue}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get conditions by type and value for a splash screen
+     * @description Returns a condition of the specified type for a splash screen. Requires PRISON_API__SPLASH_SCREEN__RO.
+     */
+    get: operations['getConditionsByTypeAndValue']
+    put?: never
+    post?: never
+    /**
+     * Remove a condition
+     * @description Removes an existing condition. Requires PRISON_API__SPLASH_SCREEN__RW.
+     */
+    delete: operations['removeCondition']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/splash-screen/condition/{conditionType}/{conditionValue}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get splash screens by condition
+     * @description Returns a list of splash screens that have the specified condition. Requires PRISON_API__SPLASH_SCREEN__RO.
+     */
+    get: operations['getSplashScreensByCondition']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/service-prisons/{serviceCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve a list of prisons switched on for the service code
+     * @deprecated
+     * @description Returns a list of prisons switched on for the service code.
+     *           A special prisonId of `*ALL*` is used to designate that the service is switched on for all prisons.
+     *           Deprecated - use /agency-switches/{serviceCode} instead.
+     *           Requires ROLE_PRISON_API__SERVICE_AGENCY_SWITCHES__RO.
+     *
+     */
+    get: operations['getServicePrisons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/schedules/{prisonerNumber}/scheduled-transfers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** @description <p>This endpoint uses the REPLICA database.</p> */
+    get: operations['getScheduledTransfersForPrisoner']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/schedules/{agencyId}/suspended-activities-by-date-range': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get all Prisoner activities for given date.
+     * @description Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getSuspendedActivitiesAtAllLocationsByDateRange']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/schedules/{agencyId}/locations/{locationId}/usage/{usage}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get all Prisoner events for given date at location.
+     * @description Get all Prisoner events for given date at location.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getLocationEvents']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/schedules/locations/{locationId}/activities': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get all Prisoner activities for given date at location.
+     * @description Get all Prisoner activities for given date at location.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getActivitiesAtLocation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/restore-info': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** The last restore date or not found is returned if no restore data available */
+    get: operations['getLastRestoreDate']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/reference-domains/scheduleReasons': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get possible reason codes for created event.
+     * @description Get possible reason codes for created event.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getScheduleReasons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/reference-domains/domains': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of all reference domains
+     * @description A reference domain can be used to retrieve all codes related to that domain. Ordered by domain ascending<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getAllReferenceDomains']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/reference-domains/domains/{domain}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of reference codes for reference domain paged.
+     * @description List of reference codes for reference domain paged. Please note this API has the incorrect name so the non-paged /domains/{domain}/codes version is preferred.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getReferenceCodesByDomain']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/reference-domains/domains/{domain}/reverse-lookup': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Reference code matching description
+     * @description Wild card can be specified<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getReferenceCodeByDomainAndDescription']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/reference-domains/domains/{domain}/codes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of reference codes for reference domain.
+     * @description List of reference codes for reference domain ordered by code ascending. The list is an un-paged flat list<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getReferenceCodesByDomain_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/reference-domains/domains/{domain}/all-codes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of reference codes for reference domain.
+     * @description List of reference codes / profile codes for reference domain / profile type, ordered by code ascending. The list is an un-paged flat list<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getReferenceOrProfileCodesByDomain']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/reference-domains/alertTypes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Deprecated - Please use the alerts api for access to alerts (eg https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
+     * @deprecated
+     * @description Replace with https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html#/alert-types-controller/retrieveAlertTypes<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getAlertTypes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prisoners/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of offenders globally matching the offenderNo.
+     * @description List of offenders globally matching the offenderNo, Requires offender agency to be in user caseload or VIEW_PRISONER_DATA role. Returns an empty array if no results are found or if does not have correct permissions
+     */
+    get: operations['getPrisonersOffenderNo']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prisoners/{offenderNo}/full-status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Status and core offender information */
+    get: operations['getPrisonerInformationById']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prisoners/prisoner-numbers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     *
+     *         Return a list of all unique prisoner numbers (also called NOMS ID or offenderNo).
+     *         Results are ordered by max(ROOT_OFFENDER_ID), therefore ensuring that new offenders are added to the end of the
+     *         results.
+     *         This is an internal endpoint used by Prisoner Search to ensure that NOMIS and OpenSearch are in sync.
+     *         Other services should use Prisoner Search instead to get the list of prisoners.
+     *         Requires PRISONER_INDEX or GLOBAL_SEARCH or ROLE_PRISON_API__CORE_PERSON__NUMBERS__RO role.
+     *
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getPrisonerNumbers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prisoner-search/offenders/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns details required by Prisoner Search for the given offender number.
+     * @description This endpoint is dedicated to returning the details required by Prisoner Search so the role and endpoint are not for general use. If you're thinking of calling this endpoint try calling Prisoner Search instead.
+     */
+    get: operations['getPrisonerDetails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prison/{agencyId}/booking/latest/paged/calculable-prisoner': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Details of the the person to be calculated at a particular establishment (paged response) */
+    get: operations['getCalculablePrisonerEnvelopeByEstablishment']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prison/roll-count/{prisonId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Roll count for a specific prison
+     * @description Requires role ESTABLISHMENT_ROLL or agency in caseload.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getPrisonRollCount']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prison/roll-count/{prisonId}/summary': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Roll count summary for a specific prison
+     * @description Requires role ESTABLISHMENT_ROLL or agency in caseload.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getPrisonRollCountSummary']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prison/roll-count/{prisonId}/movement-count': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Provide the IN/OUT movements and en-route counts for today
+     * @description Requires role ESTABLISHMENT_ROLL or agency in caseload.
+     */
+    get: operations['getRollCountMovementInformation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prison/roll-count/{prisonId}/cells-only/{locationId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Provides the list of cells with roll counts under a specified location provided
+     * @description Requires role ESTABLISHMENT_ROLL or agency in caseload.<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getCellLevelRollCount']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/persons/{personId}/phones': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * The phone numbers for person
+     * @description Requires role ROLE_VIEW_CONTACTS
+     */
+    get: operations['getPersonPhones']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/persons/{personId}/identifiers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * The most recent value of each type of person identifier
+     * @description Requires role ROLE_VIEW_CONTACTS
+     */
+    get: operations['getPersonIdentifiers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/persons/{personId}/emails': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * The emails for person
+     * @description Requires role ROLE_VIEW_CONTACTS
+     */
+    get: operations['getPersonEmails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/persons/{personId}/addresses': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * The addresses for person
+     * @description Requires role ROLE_VIEW_CONTACTS
+     */
+    get: operations['getPersonAddresses']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/person/{prisonerNumber}/distinguishing-marks': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get all distinguishing marks associated with a prisoner's latest booking
+     * @description Requires role PRISON_API__PRISONER_PROFILE__RW
+     */
+    get: operations['getIdentifyingMarksForLatestBooking']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/person/photo/{photoId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the content of an image
+     * @description Requires role PRISON_API__PRISONER_PROFILE__RW
+     */
+    get: operations['getImage']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Full details about the current state of an offender
+     * @description Requires GLOBAL_SEARCH, VIEW_PRISONER_DATA or a user token with valid offender access
+     */
+    get: operations['getOffender_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/transaction-history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve an offender's financial transaction history for cash, spends or savings.
+     * @description Transactions are returned in order of entryDate descending and sequence ascending).<br/>All transaction amounts are represented as pence values. Requires offender to be in caseload or role GLOBAL_SEARCH or VIEW_PRISONER_DATA<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getTransactionsHistory']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/sentences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Offender Sentence Details
+     * @description Retrieve an single offender sentence details. Requires offender to be in caseload or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
+     */
+    get: operations['getOffenderSentenceDetail']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/scheduled-events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * All future (scheduled) events for offender
+     * @description All future events for offender that are in a scheduled and not cancelled state. Requires offender to be in caseload or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
+     */
+    get: operations['getScheduledEvents']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/prison-timeline': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Summary of the different periods this prisoner has been in prison.
+     * @description This is a summary of the different periods this prisoner has been in prison grouped by booking.
+     *
+     *     It includes the dates of each period, the prison and the reason for the movement. Each booking is divided into periods of time spent in prison separated by periods when the were out either via a release or a temporary absence (periods at court are not included).
+     *
+     *     The periods are ordered by date ascending, therefore the final period will be their last time in prison. For each period the prison admitted into and optionally released from will be listed. These can be different if there has been transfers in between the dates.
+     *
+     *     Transfers are also listed separately.
+     *
+     *
+     *     **Example response:**
+     *     #### Booking 47828A
+     *     Has 2 periods of temporary absence. In the second absence they return to a different prison. They are eventually released.
+     *
+     *     #### Booking 47829A
+     *     The person is still is prison but has been transferred to a 2nd prison.
+     *
+     *     There are a number of transfers during this booking.
+     *     ```
+     *     {
+     *       'prisonerNumber': 'A7748DZ',
+     *       'prisonPeriod': [
+     *         {
+     *           'bookNumber': '47828A',
+     *           'bookingId': 1211013,
+     *           'entryDate': '2023-12-08T15:50:37',
+     *           'releaseDate': '2023-12-08T16:21:24',
+     *           'movementDates': [
+     *             {
+     *               'reasonInToPrison': 'Imprisonment Without Option',
+     *               'dateInToPrison': '2023-12-08T15:50:37',
+     *               'inwardType': 'ADM',
+     *               'reasonOutOfPrison': 'Wedding/Civil Ceremony',
+     *               'dateOutOfPrison': '2023-12-08T15:53:37',
+     *               'outwardType': 'TAP',
+     *               'admittedIntoPrisonId': 'BMI',
+     *               'releaseFromPrisonId': 'BSI'
+     *             },
+     *             {
+     *               'reasonInToPrison': 'Wedding/Civil Ceremony',
+     *               'dateInToPrison': '2023-12-08T15:54:12',
+     *               'inwardType': 'TAP',
+     *               'reasonOutOfPrison': 'Conditional Release (CJA91) -SH Term>1YR',
+     *               'dateOutOfPrison': '2023-12-08T16:20:19',
+     *               'outwardType': 'REL',
+     *               'admittedIntoPrisonId': 'BSI',
+     *               'releaseFromPrisonId': 'AYI'
+     *             },
+     *             {
+     *               'reasonInToPrison': 'Recall From Intermittent Custody',
+     *               'dateInToPrison': '2023-12-08T16:20:45',
+     *               'inwardType': 'ADM',
+     *               'reasonOutOfPrison': 'Conditional Release (CJA91) -SH Term>1YR',
+     *               'dateOutOfPrison': '2023-12-08T16:21:24',
+     *               'outwardType': 'REL',
+     *               'admittedIntoPrisonId': 'AYI',
+     *               'releaseFromPrisonId': 'AYI'
+     *             }
+     *           ],
+     *           'transfers': [
+     *             {
+     *               'dateOutOfPrison': '2023-12-08T15:51:09',
+     *               'dateInToPrison': '2023-12-08T15:52:32',
+     *               'transferReason': 'Compassionate Transfer',
+     *               'fromPrisonId': 'BMI',
+     *               'toPrisonId': 'BSI'
+     *             },
+     *             {
+     *               'dateOutOfPrison': '2023-12-08T15:54:56',
+     *               'dateInToPrison': '2023-12-08T15:55:54',
+     *               'transferReason': 'Transfer Via Court',
+     *               'fromPrisonId': 'BSI',
+     *               'toPrisonId': 'BRI'
+     *             },
+     *             {
+     *               'dateOutOfPrison': '2023-12-08T15:56:05',
+     *               'dateInToPrison': '2023-12-08T15:57:25',
+     *               'transferReason': 'Appeals',
+     *               'fromPrisonId': 'BRI',
+     *               'toPrisonId': 'DAI'
+     *             },
+     *             {
+     *               'dateOutOfPrison': '2023-12-08T16:18:45',
+     *               'dateInToPrison': '2023-12-08T16:19:45',
+     *               'transferReason': 'Medical',
+     *               'fromPrisonId': 'DAI',
+     *               'toPrisonId': 'AYI'
+     *             }
+     *           ],
+     *           'prisons': [
+     *             'BMI',
+     *             'BSI',
+     *             'BRI',
+     *             'DAI',
+     *             'AYI'
+     *           ]
+     *         },
+     *         {
+     *           'bookNumber': '47829A',
+     *           'bookingId': 1211014,
+     *           'entryDate': '2023-12-08T16:21:21',
+     *           'movementDates': [
+     *             {
+     *               'reasonInToPrison': 'Imprisonment Without Option',
+     *               'dateInToPrison': '2023-12-08T16:21:21',
+     *               'inwardType': 'ADM',
+     *               'admittedIntoPrisonId': 'DGI'
+     *             }
+     *           ],
+     *           'transfers': [
+     *             {
+     *               'dateOutOfPrison': '2023-12-08T16:22:02',
+     *               'dateInToPrison': '2023-12-08T16:23:32',
+     *               'transferReason': 'Overcrowding Draft',
+     *               'fromPrisonId': 'DGI',
+     *               'toPrisonId': 'BLI'
+     *             }
+     *           ],
+     *           'prisons': [
+     *             'DGI',
+     *             'BLI'
+     *           ]
+     *         }
+     *       ]
+     *     }
+     *     ```
+     *
+     *
+     */
+    get: operations['getOffenderPrisonPeriods']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/offender-restrictions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Gets the offender visit restrictions for a given offender using the latest booking
+     * @description Get offender visit restrictions by offender No. <p>Requires a relationship (via caseload) with the offender or VISIT_SCHEDULER role.</p>
+     */
+    get: operations['getVisitRestrictions']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/incidents': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Return a set Incidents for a given offender No.
      * @description Can be filtered by participation type and incident type. Requires the VIEW_INCIDENTS role.
      */
     get: operations['getIncidentsByOffenderNo']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/housing-location': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Housing location for prisoner
      * @description <p>Housing location split out into different levels for a prisoner, or an empty response if the prisoner is not currently in a prison.</p>
-     * <p>There will be either 3 or 4 levels returned depending on the layout in NOMIS.
-     * Level 1 is the top level, so normally a wing or a house block and level 3 / 4 will be the individual cell.</p>
-     * <p>This endpoint returns the prison levels as recorded in NOMIS and may not accurately reflect the physical layout of the prison.
-     * For example Bristol has wings, spurs and landings, but this endpoint will only return wings and landings as spurs are not mapped in NOMIS.
-     * Another example is Moorland where 5-1-B-014 in NOMIS is Wing 5, Landing 1, Cell B and Cell 014, whereas in reality it should be Houseblock 5, Spur 1, Wing B and Cell 014 instead.
-     * This endpoint will therefore also return different information from Whereabouts API as that service re-maps the NOMIS layout to include spurs etc.</p>
-     * <p>If the current location is temporary (reception, court, tap, cell swap or early conditional licence) then the previous permanent location is also returned, provided
-     * that the location is at the same prison and they haven't moved to a different prison in the meantime.</p>
-     * <p>Requires a relationship (via caseload) with the prisoner or VIEW_PRISONER_DATA role.</p>
+     *     <p>There will be either 3 or 4 levels returned depending on the layout in NOMIS.
+     *     Level 1 is the top level, so normally a wing or a house block and level 3 / 4 will be the individual cell.</p>
+     *     <p>This endpoint returns the prison levels as recorded in NOMIS and may not accurately reflect the physical layout of the prison.
+     *     For example Bristol has wings, spurs and landings, but this endpoint will only return wings and landings as spurs are not mapped in NOMIS.
+     *     Another example is Moorland where 5-1-B-014 in NOMIS is Wing 5, Landing 1, Cell B and Cell 014, whereas in reality it should be Houseblock 5, Spur 1, Wing B and Cell 014 instead.
+     *     This endpoint will therefore also return different information from Whereabouts API as that service re-maps the NOMIS layout to include spurs etc.</p>
+     *     <p>If the current location is temporary (reception, court, tap, cell swap or early conditional licence) then the previous permanent location is also returned, provided
+     *     that the location is at the same prison and they haven't moved to a different prison in the meantime.</p>
+     *     <p>Requires a relationship (via caseload) with the prisoner or the GLOBAL_SEARCH or VIEW_PRISONER_DATA role.</p>
+     *
      */
     get: operations['getHousingLocation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * All scheduled events for offender.
      * @description All scheduled events for offender.
      */
     get: operations['getEvents']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/damage-obligations': {
-    /** Return a list of damage obligations */
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Return a list of damage obligations
+     * @description Requires offender to be in caseload or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
+     */
     get: operations['getOffenderDamageObligations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/core-person-record/communication-needs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get core person record communication needs of a prisoner
+     * @description Requires the PRISON_API__PRISONER_PROFILE__RW role.
+     */
+    get: operations['getCommunicationNeeds']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/contacts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offender Contacts
      * @description Active Contacts including restrictions, using latest offender booking  and including inactive contacts by default
      */
     get: operations['getOffenderContacts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/bookings/latest/alerts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
-     * Return a list of alerts for latest booking for a given offender No.
-     * @description System or cat tool access only
+     * Deprecated - Please use the alerts api for access to alerts (eg https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
+     * @deprecated
+     * @description Replace with https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html#/prisoner-alerts-controller/retrievePrisonerAlerts
      */
     get: operations['getAlertsForLatestBookingByOffenderNo']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/booking/latest/sentence-summary': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offender Sentence Details
      * @description Retrieve an single offender sentence details
      */
     get: operations['getLatestSentenceSummary']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/belief-history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Get belief history for a prisoner */
     get: operations['getOffenderBeliefHistory']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/{offenderNo}/alerts/v2': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
-     * Return a list of alerts for all booking for a given offender No.
-     * @description System or cat tool access only
+     * Deprecated - Please use the alerts api for access to alerts (eg https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
+     * @deprecated
+     * @description Replace with https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html#/prisoner-alerts-controller/retrievePrisonerAlerts
      */
     get: operations['getAlertsForAllBookingByOffenderNo']
-  }
-  '/api/offenders/{offenderNo}/addresses': {
-    /**
-     * Return a list of addresses for a given offender, most recent first.
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getAddressesByOffenderNo']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offenders/next-sequence': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Returns the next prisoner number (NOMS ID or Offender No) that can be used to create an offender */
     get: operations['getNextPrisonerIdentifier']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-sentences/home-detention-curfew-candidates': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of offenders eligible for HDC
      * @description Version 1<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getOffenderSentencesHomeDetentionCurfewCandidates']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-sentences/booking/{bookingId}/sentences-and-offences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Sentence and offence details  for a prisoner */
     get: operations['getSentenceAndOffenceDetails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-sentences/booking/{bookingId}/sentenceTerms': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Sentence term details for a prisoner
      * @description Requires booking access (via caseload) or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
      */
     get: operations['getOffenderSentenceTerms']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-sentences/booking/{bookingId}/home-detention-curfews/latest': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Retrieve the current state of the latest Home Detention Curfew for a booking */
     get: operations['getLatestHomeDetentionCurfew']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-fine-payment/booking/{bookingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Offender fine payments for a prisoner */
     get: operations['getOffenderFinePayments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offender-dates/sentence-calculation/{offenderSentCalcId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the key dates for an offender.
+     * @description Requires RELEASE_DATES_CALCULATOR
+     */
+    get: operations['getOffenderKeyDatesForOffenderSentCalcId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offender-dates/latest-tused/{nomsId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the latest TUSED data for an offender. This will return the latest calculated TUSED for an offender
+     * @description Requires RELEASE_DATES_CALCULATOR
+     */
+    get: operations['getOffenderLatestTused']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-dates/calculations/{nomsId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get the key dates for an offender.
      * @description Requires RELEASE_DATES_CALCULATOR
      */
     get: operations['getOffenderCalculations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-assessments/csra/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Retrieves CSRAs for the given offender, ordered by the latest first.
      * @description Requires offender in the caseload, or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
      */
     get: operations['getOffenderCsraAssessments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-assessments/csra/{bookingId}/assessment/{assessmentSeq}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Retrieves details of a single CSRA assessment.
      * @description Requires offender in the caseload, or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
      */
     get: operations['getOffenderCsraAssessment']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-assessments/category/{agencyId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns category information on Offenders at a prison.
      * @description Requires offender in the caseload, or VIEW_ASSESSMENTS role.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getOffenderCategorisations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-assessments/assessments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns assessment information on Offenders at a prison.
      * @description Requires VIEW_PRISONER_DATA role.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getAssessments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-activities/{offenderNo}/attendance-history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * The activities that this offender attended over a time period.
      * @description <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getHistoricalAttendances']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offender-activities/{offenderNo}/activities-history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * The activities that this offender has been allocated to.
      * @description This includes suspended activities<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getRecentStartedActivities']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/offences/code/{offenceCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Paged List of all offences where the offence code starts with the passed in offenceCode param
      * @deprecated
      * @description Deprecated - use https://manage-offences-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html
      */
     get: operations['getOffencesThatStartWith']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/{agencyId}/out/{isoDate}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Count for prisoners out today.
+     * @description Requires role ESTABLISHMENT_ROLL or agency in caseload.
+     */
     get: operations['getOffendersOutToday']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/{agencyId}/in': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offenders who entered a prison during a time period.
-     * @description Offenders who entered a prison during a time period.<p>This endpoint uses the REPLICA database.</p>
+     * @description Requires role ESTABLISHMENT_ROLL or agency in caseload.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getMovementsIn']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/{agencyId}/in/{isoDate}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Information on offenders in today.
      * @description Information on offenders in on given date.
      */
     get: operations['getMovementsIn_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/{agencyId}/enroute': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
-     * Enroute prisoner movement details.
-     * @description Enroute to reception
+     * En-route prisoner movement details.
+     * @description En-route to reception. Requires role ESTABLISHMENT_ROLL or agency in caseload.
      */
-    get: operations['getEnrouteOffenderMovements']
+    get: operations['getEnRouteOffenderMovements']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/upcomingCourtAppearances': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get future court hearings for all offenders
      * @description Requires role VIEW_COURT_EVENTS.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getUpcomingCourtAppearances']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/transfers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Information on scheduled court, transfer and release events, and confirmed movements between two dates/times for a specified number of agencies.
      * @description Planned movements are recorded as events of type court, release or transfers/appointments. When these events are started they are actualised as external movements.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getTransfers']
-  }
-  '/api/movements/rollcount/{agencyId}': {
-    /**
-     * Current establishment rollcount numbers.
-     * @description Current establishment rollcount numbers.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getRollcount']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/rollcount/{agencyId}/movements': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
-     * Rollcount movement numbers.
-     * @description Rollcount movement numbers.<p>This endpoint uses the REPLICA database.</p>
+     * Roll-count movement numbers.
+     * @deprecated
+     * @description Requires role ESTABLISHMENT_ROLL or agency in caseload.<p>This endpoint uses the REPLICA database.</p>
      */
-    get: operations['getRollcountMovements']
+    get: operations['getRollCountMovements']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/rollcount/{agencyId}/in-reception': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Count for prisoners in reception.
+     * @description Requires agency in caseload.
+     */
     get: operations['getOffendersInReception']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/rollcount/{agencyId}/enroute': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
-     * Enroute prisoner movement count.
-     * @description Enroute to reception count
+     * En-route prisoner movement count.
+     * @deprecated
+     * @description En-route to reception count. Requires role ESTABLISHMENT_ROLL.
      */
-    get: operations['getEnrouteOffenderMovementCount']
+    get: operations['getEnRouteOffenderMovementCount']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/movements/offenders/{offenderNumber}/latest-arrival-date': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get the date of the latest arrival into prison for the offender */
+    get: operations['getLatestArrivalDate_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/movements/offender/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getMovementsByOffender']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/livingUnit/{livingUnitId}/currently-out': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Information on offenders currently out.
      * @description Requires role ESTABLISHMENT_ROLL.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getOffendersCurrentlyOut']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/movements/booking/{bookingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get all movements (with sequence numbers) for booking */
+    get: operations['getMovementsByBooking']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/agency/{agencyId}/temporary-absences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Information about the set of offenders at an agency who are currently out due to temporary absence.
      * @description Requires role ESTABLISHMENT_ROLL.
      */
     get: operations['getTemporaryAbsences']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/movements/agency/{agencyId}/currently-out': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Information on offenders currently out.
      * @description Requires role ESTABLISHMENT_ROLL.
      */
     get: operations['getOffendersCurrentlyOut_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/locations/{locationId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Location detail.
+     * @deprecated
      * @description Location detail.
      */
     get: operations['getLocation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/locations/{locationId}/inmates': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of offenders at location.
      * @description Requires role VIEW_PRISONER_DATA and a user in the token.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getOffendersAtLocation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/locations/description/{locationPrefix}/inmates': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of offenders at location.
      * @description Requires role VIEW_PRISONER_DATA and a user in the token.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getOffendersAtLocationDescription']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/locations/code/{code}': {
-    /** Returns the location (internal) for a prison based on description */
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the location (internal) for a prison based on description
+     * @deprecated
+     */
     get: operations['getLocationByCode']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/key-worker/{agencyId}/available': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Key workers available for allocation at specified agency.
      * @description Key workers available for allocation at specified agency.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getAvailableKeyworkers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/key-worker/{agencyId}/allocationHistory': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * All allocations in specified agency.
      * @description All allocations in specified agency.
      */
     get: operations['getAllocationHistory']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/incidents/{incidentId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Return an Incident for a given incident ID
      * @description Requires the VIEW_INCIDENTS role.
      */
     get: operations['getIncident']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/incidents/configuration': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns incident type configuration data sets for incident reports
+     * @description No additional role required<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getQuestionnaires']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/imprisonment-status-history/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Returns the details of all the historic imprisonment statuses for an offender. */
+    get: operations['getImprisonmentStatusHistory']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/images/{imageId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Image detail (with image data).
      * @description Requires role VIEW_PRISONER_DATA.
      */
-    get: operations['getImage']
+    get: operations['getImage_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/images/{imageId}/data': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Image data (as bytes).
      * @description Requires role VIEW_PRISONER_DATA.
      */
     get: operations['getImageData']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/gang/non-associations/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Returns a list of gangs for a prisoner and the gang non-associations and their members */
     get: operations['getNonAssociationGangsForPrisoner']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/education/prisoner/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * A list of offender educations.
      * @description A list of offender educations.
      */
     get: operations['getPrisonerEducations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/court/{bookingId}/next-court-event': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Returns the next court event details (if one exists) related to the passed in booking */
+    get: operations['getNextCourtEvent']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/court/{bookingId}/count-active-cases': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Returns the number of active court cases for the passed in bookingId */
+    get: operations['getCountOfActiveCourtCases']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/court-date-results/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Returns details of all court dates and the result of each.
      * @description <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getCourtDateResults']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
-  '/api/digital-warrant/court-date-results/{offenderNo}': {
+  '/api/court-date-results/by-charge/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
-     * Returns details of all court dates and the result of each.
+     * Returns details of all the court outcomes grouped by charge
      * @description <p>This endpoint uses the REPLICA database.</p>
      */
-    get: operations['getCourtDateResults_1']
+    get: operations['getCourtDateChargesAndOutcomes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/cell/{locationId}/history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get occupancy history of a location.
      * @description Requires role MAINTAIN_CELL_MOVEMENTS.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBedAssignmentsHistory']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/cell/{locationId}/attributes': {
-    /** Get details of a location. */
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get details of a location.
+     * @deprecated
+     */
     get: operations['getCellAttributes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/cell/{agencyId}/history/{assignmentDate}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get occupancy of locations in a prison on a date.
      * @description Requires agency to be in caseload or role MAINTAIN_CELL_MOVEMENTS.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBedAssignmentsHistoryByDateForAgency']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offender detail.
      * @description Offender detail.
      */
     get: operations['getOffenderBooking']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/visits/summary': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * The summary of the visits for the offender.
      * @description Will return whether there are any visits and also the date of the next scheduled visit. Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBookingVisitsSummary']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/visits/prisons': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * The list of prisons for which there are visits for the specified booking.
      * @description To be used for filtering visits by prison. Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
      */
     get: operations['getBookingVisitsPrisons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/visits/next': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * The next visit for the offender.
      * @description The next visit for the offender. Will return 200 with no body if no next visit is scheduled. Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBookingVisitsNext']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/visits-with-visitors': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * visits with visitor list for offender.
      * @description visits with visitor list for offender.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBookingVisitsWithVisitor']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/sentenceDetail': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offender sentence detail (key dates and additional days awarded)
      * @description <h3>Algorithm</h3>
-     * <ul>
-     *   <li>If there is a confirmed release date, the offender release date is the confirmed release date.</li>
-     *   <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
-     *   <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
-     * </ul>
-     * Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
-     * <p>This endpoint uses the REPLICA database.</p>
+     *     <ul>
+     *       <li>If there is a confirmed release date, the offender release date is the confirmed release date.</li>
+     *       <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
+     *       <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
+     *     </ul>
+     *     Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
+     *     <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBookingSentenceDetail']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/sentenceAdjustments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offender sentence adjustments.
      * @description Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
      */
     get: operations['getBookingSentenceAdjustments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/secondary-languages': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get secondary languages
      * @description Get secondary languages
      */
     get: operations['getSecondaryLanguages']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/reasonable-adjustments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Reasonable Adjustment Information
      * @description Reasonable Adjustment Information. Requires booking access (via caseload) or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
      */
     get: operations['getReasonableAdjustments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/{bookingId}/reasonable-adjustments/all': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Reasonable Adjustment Information
+     * @description Reasonable Adjustment Information. Requires booking access (via caseload) or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
+     */
+    get: operations['getAllReasonableAdjustments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/property': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of active property containers
      * @description Requires booking to be in caseload, or role VIEW_PRISONER_DATA
      */
     get: operations['getOffenderPropertyContainers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/bookings/{bookingId}/personal-care-needs/all': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Personal Care Needs
+     * @description Personal Care Need. Requires booking access (via caseload) or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
+     */
+    get: operations['getAllPersonalCareNeeds']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/military-records': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Military Records
      * @description Requires booking to be in caseload, or role VIEW_PRISONER_DATA
      */
     get: operations['getMilitaryRecords_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/mainOffence': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get Offender main offence detail.
      * @description Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
      */
     get: operations['getMainOffence_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/image/data': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Image data (as bytes).
      * @description Image data (as bytes).<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getMainBookingImageData']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/identifiers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Identifiers for this booking
      * @description Identifiers for this booking
      */
     get: operations['getOffenderIdentifiers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/fixed-term-recall': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Gets the Fixed Term Recall details for a booking
      * @description Requires role VIEW_PRISONER_DATA, or booking is in caseload
      */
     get: operations['getFixedTermRecallDetails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * All scheduled events for offender.
      * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
      */
     get: operations['getEvents_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/events/today': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Today's scheduled events for offender.
      * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
      */
     get: operations['getEventsToday']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/events/thisWeek': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Scheduled events for offender for coming week (from current day).
      * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
      */
     get: operations['getEventsThisWeek']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/events/nextWeek': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Scheduled events for offender for following week.
      * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
      */
     get: operations['getEventsNextWeek']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/court-hearings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     get: operations['getCourtHearings']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/court-cases': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Court Cases
      * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
      */
     get: operations['getCourtCases']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/contacts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offender contacts (e.g. next of kin).
      * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
      */
     get: operations['getContacts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/cell-history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Gets cell history for an offender booking
      * @description Default sort order is by assignment date descending.  Requires a relationship (via caseload) with the prisoner or VIEW_PRISONER_DATA role.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBedAssignmentsHistory_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/caseNotes/{type}/{subType}/count': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Count of case notes
      * @description Count of case notes<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getCaseNoteCount']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/balances': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offender account balances.
      * @description Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
      */
     get: operations['getBalances']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/assessments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Assessment Information
      * @description Assessment Information. Requires booking access (via caseload) or VIEW_ASSESSMENTS role.
      */
     get: operations['getAssessments_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/aliases': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offender aliases.
      * @description Offender aliases.
      */
     get: operations['getOffenderAliases']
-  }
-  '/api/bookings/{bookingId}/alerts/{alertId}': {
-    /**
-     * Offender alert detail.
-     * @description Offender alert detail.
-     */
-    get: operations['getOffenderAlert']
-  }
-  '/api/bookings/{bookingId}/alerts/v2': {
-    /**
-     * Offender alerts.
-     * @description Offender alerts.
-     */
-    get: operations['getOffenderAlertsV2']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/activities': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * All scheduled activities for offender.
      * @description Requires booking id to be in caseload, or role VIEW_SCHEDULES<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBookingActivities']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/v2': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Prisoners Booking Summary
-     * @description Returns data that is available to the users caseload privileges, at least one attribute of a prisonId, bookingId or offenderNo must be specified
+     * @description Returns data that is available to the users caseload privileges, at least one attribute of a prisonId, bookingId or offenderNo must be specified.Requires parameter(s) prisonId/bookingIds/offenderNos to be in caseload, or VIEW_PRISONER_DATA
      */
     get: operations['getPrisonerBookingsV2']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/offenderNo/{offenderNo}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offender detail.
      * @description Offender detail.
      */
     get: operations['getOffenderBookingByOffenderNo']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/offenderNo/{offenderNo}/visit/balances': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Balances visit orders and privilege visit orders for offender.
      * @description Balances visit orders and privilege visit orders for offender.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getBookingVisitBalances']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/offenderNo/{offenderNo}/offenceHistory': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Offence history.
      * @description All Offences recorded for this offender.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getOffenceHistory']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/offenderNo/{offenderNo}/key-worker': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Key worker details.
      * @deprecated
      * @description Key worker details. This should not be used - call keyworker API instead
      */
     get: operations['getKeyworkerByOffenderNo']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/offenderNo/{offenderNo}/image/data': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Image data (as bytes).
      * @description Image data (as bytes).
      */
     get: operations['getMainBookingImageDataByNo']
-  }
-  '/api/bookings/latest/calculable-sentence-envelope': {
-    /** Details of the active sentence envelope, a combination of the person information, the active booking and calculable sentences for offenders */
-    get: operations['getCalculableSentenceEnvelopeByOffenderNos']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/appointments/{appointmentId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get an appointment by id.
      * @description Requires role GLOBAL_APPOINTMENT
      */
     get: operations['getAppointment']
+    put?: never
+    post?: never
     /**
      * Delete an appointment.
      * @description Requires role GLOBAL_APPOINTMENT and write scope
      */
     delete: operations['deleteAppointment']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/agency-switches/{serviceCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve a list of agencies switched on for the service code
+     * @description Returns a list of agencies switched on for the service code.
+     *           A special agencyId of `*ALL*` is used to designate that the service is switched on for all agencies.
+     *           An agency in this context is normally a prison, but can also be any agency location e.g. prisoner escort service area.
+     *           Requires ROLE_PRISON_API__SERVICE_AGENCY_SWITCHES__RO.
+     *
+     */
+    get: operations['getServiceAgencies']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}/receptionsWithCapacity': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of receptions with capacity for agency.
      * @description List of active receptions with capacity for agency.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getAgencyActiveReceptionsWithCapacity']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}/pay-profile': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Return the payment profile data for the given Agency.
      * @description Each agency can configure its own pay profile and this endpoint provides its key data, such as min/max pay and bonus rates. Requires VIEW_PRISON_DATA.
      */
     get: operations['getAgencyPayProfile']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}/locations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of active internal locations for agency.
+     * @deprecated
      * @description List of active internal locations for agency.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getAgencyLocations']
-  }
-  '/api/agencies/{agencyId}/locations/type/{type}': {
-    /**
-     * List of active internal locations for agency by type.
-     * @description List of active internal locations for agency by type.
-     */
-    get: operations['getAgencyLocationsByType']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}/locations/groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of all available Location Groups at agency.
+     * @deprecated
      * @description List of all available Location Groups at agency.
      */
     get: operations['getAvailableLocationGroups']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}/eventLocations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of locations for agency where events (appointments, visits, activities) could be held.
-     * @description List of locations for agency where events (appointments, visits, activities) could be held.
+     * @deprecated
+     * @description *** DEPRECATED *** List of locations for agency where events (appointments, visits, activities) could be held.
      */
     get: operations['getAgencyEventLocations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}/eventLocationsBooked': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
-     * List of locations for agency where events (appointments, visits, activities) are being held.
-     * @description List of locations for agency where events (appointments, visits, activities) are being held.<p>This endpoint uses the REPLICA database.</p>
+     * List of location summaries for agency where events (appointments, visits, activities) are being held.
+     * @description List of location summaries for agency where events (appointments, visits, activities) are being held.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getAgencyEventLocationsBooked']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/{agencyId}/establishment-types': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Return the establishment types for the given Agency.
      * @description An agency can have one to many establishment types. For example a prison could be both a youth and adult establishment.
      */
     get: operations['getAgencyEstablishmentTypes']
-  }
-  '/api/agencies/{agencyId}/cellsWithCapacity': {
-    /**
-     * List of active cells with capacity for agency.
-     * @description List of active cells with capacity for agency.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations['getAgencyActiveCellsWithCapacity']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/type/{type}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of agencies by type
      * @description List of active agencies by type
      */
     get: operations['getAgenciesByType']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/prisons': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of all active prisons.
      * @description <p>List of active prisons.</p>
-     * <p>This is the same response as normally generated by calling the /agencies/type/INST endpoint with default parameters, added here for ease of use and speed.</p>
-     * <p>This endpoint uses the REPLICA database.</p>
+     *     <p>This is the same response as normally generated by calling the /agencies/type/INST endpoint with default parameters, added here for ease of use and speed.</p>
+     *     <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getPrisons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/prison': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of prison contact details.
      * @deprecated
      * @description <p>List of prison contact details.</p>
-     * <p>DEPRECATED. This endpoint is quite slow as it currently retrieves address and telephone information for each prison separately.
-     * In all the main usages of the endpoint we found that the clients didn't need or use the contact details so have deprecated the endpoint.
-     * Use /agencies/prisons to get the list of active prisons.</p>
-     * <p>This endpoint uses the REPLICA database.</p>
+     *     <p>DEPRECATED. This endpoint is quite slow as it currently retrieves address and telephone information for each prison separately.
+     *     In all the main usages of the endpoint we found that the clients didn't need or use the contact details so have deprecated the endpoint.
+     *     Use /agencies/prisons to get the list of active prisons.</p>
+     *     <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations['getPrisonContactDetailList']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/prison/{agencyId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Prison contact detail.
      * @description Prison contact detail.
      */
     get: operations['getPrisonContactDetail']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/agencies/caseload/{caseload}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * List of agencies for caseload.
      * @description List of agencies for caseload.
      */
     get: operations['getAgenciesByCaseload']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/adjustments/{bookingId}/sentence-and-booking': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Offender sentence adjustments. */
     get: operations['getBookingAndSentenceAdjustments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/offenders/{offenderNo}/core-person-record/secondary-language/{languageCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Deletes core person record secondary language data.
+     * @description Requires the PRISON_API__PRISONER_PROFILE__RW role.
+     */
+    delete: operations['deleteSecondaryLanguage']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/api/bookings/{bookingId}/court-hearings/{hearingId}/cancel': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
     /**
      * Cancels the scheduled court hearing for an offender.
      * @description Cancels the scheduled court hearing for an offender. Requires role COURT_HEARING_MAINTAINER and scope write
      */
     delete: operations['cancelCourtHearing']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     /** @description Case Load */
@@ -2073,6 +6407,116 @@ export interface components {
        * @example 5
        */
       numUsersEnabled: number
+    }
+    /** @description Condition details */
+    RequestSplashCondition: {
+      /**
+       * @description Condition type
+       * @example CASELOAD
+       */
+      conditionType: string
+      /**
+       * @description Condition value
+       * @example MDI
+       */
+      conditionValue: string
+      /**
+       * @description Block access
+       * @example false
+       */
+      blockAccess: boolean
+    }
+    /** @description Splash screen details */
+    RequestSplashScreenCreateOrUpdate: {
+      /** @description Function name */
+      functionName?: string
+      /** @description Function details */
+      function?: components['schemas']['SplashScreenFunctionDto']
+      /**
+       * @description Warning text to display
+       * @example Access to this screen will soon be revoked
+       */
+      warningText?: string
+      /**
+       * @description Blocked text to display when access is blocked
+       * @example You can not longer use this screen, use DPS
+       */
+      blockedText?: string
+      /**
+       * @description Block access type
+       * @example NO
+       * @enum {string}
+       */
+      blockAccessType: 'YES' | 'NO' | 'COND'
+      /** @description List of conditions for this splash screen */
+      conditions: components['schemas']['RequestSplashCondition'][]
+    }
+    /** @description Splash Screen Function */
+    SplashScreenFunctionDto: {
+      /** @description Function name */
+      functionName: string
+      /** @description Description of the function */
+      description: string
+    }
+    /** @description Splash Screen Condition */
+    SplashConditionDto: {
+      /**
+       * Format: int64
+       * @description Splash condition ID
+       * @example 1
+       */
+      splashConditionId: number
+      /**
+       * @description Condition type
+       * @example CASELOAD
+       */
+      conditionType: string
+      /**
+       * @description Condition value
+       * @example MDI
+       */
+      conditionValue: string
+      /**
+       * @description Block access
+       * @example false
+       */
+      blockAccess: boolean
+    }
+    /** @description Splash Screen */
+    SplashScreenDto: {
+      /**
+       * Format: int64
+       * @description Splash screen ID
+       * @example 1
+       */
+      splashId: number
+      /**
+       * @description Module name
+       * @example OIDCHOLO
+       */
+      moduleName: string
+      /** @description Function name */
+      functionName?: string
+      /** @description Function details */
+      function?: components['schemas']['SplashScreenFunctionDto']
+      /**
+       * @description Warning text to display
+       * @example Access to this screen will soon be revoked
+       */
+      warningText?: string
+      /**
+       * @description Blocked text to display when access is blocked
+       * @example You can not longer use this screen, use DPS
+       */
+      blockedText?: string
+      /**
+       * @description Block access type
+       * @example NO
+       * @enum {string}
+       */
+      blockAccessType: 'YES' | 'NO' | 'COND'
+      /** @description List of conditions for this splash screen */
+      conditions: components['schemas']['SplashConditionDto'][]
     }
     /** @description Reference Information */
     ReferenceCodeInfo: {
@@ -2170,6 +6614,83 @@ export interface components {
       /** @description List of subordinate reference data items associated with this reference data item. Not returned by default */
       subCodes?: components['schemas']['ReferenceCode'][]
     }
+    /** @description The update request */
+    DistinguishingMarkDetails: {
+      /**
+       * @description Code representing the type of distinguishing mark. Reference code from the MARK_TYPE domain.
+       * @example SCAR
+       */
+      markType: string
+      /**
+       * @description Code representing the part of body the distinguishing mark is on. Reference code from the BODY_PART domain.
+       * @example HEAD
+       */
+      bodyPart: string
+      /**
+       * @description Code representing the side of the body part the mark is on. Reference code from the SIDE domain.
+       * @example SIDE_R
+       */
+      side?: string
+      /**
+       * @description Code representing the orientation of the mark on the body part. Reference code from the PART_ORIENT domain.
+       * @example PART_ORIENT_CENTR
+       */
+      partOrientation?: string
+      /**
+       * @description Comment about the distinguishing mark.
+       * @example Long healed scar from an old fight
+       */
+      comment?: string
+    }
+    /** @description Distinguishing Mark */
+    DistinguishingMark: {
+      /**
+       * Format: int32
+       * @description The sequence id of the distinguishing mark
+       */
+      id: number
+      /**
+       * Format: int64
+       * @description The id of the booking associated with the mark
+       */
+      bookingId: number
+      /**
+       * @description Offender Unique Reference
+       * @example A1234AA
+       */
+      offenderNo: string
+      /** @description The body part the mark is on */
+      bodyPart: components['schemas']['ReferenceCode']
+      /** @description The type of distinguishing mark (e.g. tattoo, scar) */
+      markType: components['schemas']['ReferenceCode']
+      /** @description The side of the body part the mark is on */
+      side?: components['schemas']['ReferenceCode']
+      /** @description The orientation of the mark on the body part (e.g. Centre, Low, Upper) */
+      partOrientation?: components['schemas']['ReferenceCode']
+      /** @description Comment about the distinguishing mark */
+      comment?: string
+      /**
+       * Format: date-time
+       * @description The date and time the data was created
+       */
+      createdAt: string
+      /**
+       * @description Username of the user that created the mark
+       * @example USER1
+       */
+      createdBy: string
+      /** @description List of images associated with this distinguishing mark */
+      photographUuids: components['schemas']['DistinguishingMarkImageDetail'][]
+    }
+    DistinguishingMarkImageDetail: {
+      /**
+       * Format: int64
+       * @description The image id
+       */
+      id: number
+      /** @description True if this image is the latest one associated with a mark */
+      latest: boolean
+    }
     /** @description Represents the data required for transferring a prisoner to a new location */
     RequestToTransferOut: {
       /**
@@ -2178,8 +6699,9 @@ export interface components {
        */
       toLocation: string
       /**
+       * Format: date-time
        * @description The time the movement occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       movementTime: string
       /**
@@ -2197,6 +6719,212 @@ export interface components {
        * @example Prisoner was transferred to a new prison
        */
       commentText?: string
+    }
+    /** @description An Address */
+    AddressDto: {
+      /**
+       * Format: int64
+       * @description Address Id
+       * @example 543524
+       */
+      addressId?: number
+      /**
+       * @description Address Type. Note: Reference domain is ADDR_TYPE
+       * @example BUS
+       */
+      addressType?: string
+      /**
+       * @description Flat
+       * @example 3B
+       */
+      flat?: string
+      /**
+       * @description Premise
+       * @example Liverpool Prison
+       */
+      premise?: string
+      /**
+       * @description Street
+       * @example Slinn Street
+       */
+      street?: string
+      /**
+       * @description Locality
+       * @example Brincliffe
+       */
+      locality?: string
+      /**
+       * @description Town/City description. Note: Reference domain is CITY
+       * @example Liverpool
+       */
+      town?: string
+      /**
+       * @description Town/City code. Note: Reference domain is CITY
+       * @example 17743
+       */
+      townCode?: string
+      /**
+       * @description Postal Code
+       * @example LI1 5TH
+       */
+      postalCode?: string
+      /**
+       * @description County description. Note: Reference domain is COUNTY
+       * @example Herefordshire
+       */
+      county?: string
+      /**
+       * @description County code. Note: Reference domain is COUNTY
+       * @example HEREFORD
+       */
+      countyCode?: string
+      /**
+       * @description Country description. Note: Reference domain is COUNTRY
+       * @example England
+       */
+      country?: string
+      /**
+       * @description Country code. Note: Reference domain is COUNTRY
+       * @example ENG
+       */
+      countryCode?: string
+      /**
+       * @description Comment
+       * @example This is a comment text
+       */
+      comment?: string
+      /**
+       * @description Primary Address
+       * @example true
+       */
+      primary: boolean
+      /**
+       * @description Mail Address
+       * @example true
+       */
+      mail: boolean
+      /**
+       * @description No Fixed Address
+       * @example false
+       */
+      noFixedAddress: boolean
+      /**
+       * Format: date
+       * @description Date Added
+       * @example 2005-05-12
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description Date ended
+       * @example 2021-02-12
+       */
+      endDate?: string
+      /** @description The phone number associated with the address */
+      phones?: components['schemas']['Telephone'][]
+      /** @description The address usages/types */
+      addressUsages?: components['schemas']['AddressUsageDto'][]
+    }
+    /** @description An Offender's address usage */
+    AddressUsageDto: {
+      /**
+       * Format: int64
+       * @description Address ID of the associated address
+       * @example 23422313
+       */
+      addressId?: number
+      /**
+       * @description The address usages
+       * @example HDC
+       */
+      addressUsage?: string
+      /**
+       * @description The address usages description
+       * @example HDC Address
+       */
+      addressUsageDescription?: string
+      /**
+       * @description Active Flag
+       * @example true
+       */
+      activeFlag?: boolean
+    }
+    /** @description Agency Details */
+    Agency: {
+      /**
+       * @description Agency identifier.
+       * @example MDI
+       */
+      agencyId: string
+      /**
+       * @description Agency description.
+       * @example Moorland (HMP & YOI)
+       */
+      description: string
+      /**
+       * @description Long description of the agency
+       * @example Moorland (HMP & YOI)
+       */
+      longDescription?: string
+      /**
+       * @description Agency type.  Reference domain is AGY_LOC_TYPE
+       * @example INST
+       * @enum {string}
+       */
+      agencyType:
+        | 'CRC'
+        | 'POLSTN'
+        | 'INST'
+        | 'COMM'
+        | 'APPR'
+        | 'CRT'
+        | 'POLICE'
+        | 'IMDC'
+        | 'TRN'
+        | 'OUT'
+        | 'YOT'
+        | 'SCH'
+        | 'STC'
+        | 'HOST'
+        | 'AIRPORT'
+        | 'HSHOSP'
+        | 'HOSPITAL'
+        | 'PECS'
+        | 'PAR'
+        | 'PNP'
+        | 'PSY'
+      /**
+       * @description Indicates the Agency is active
+       * @example true
+       */
+      active: boolean
+      /**
+       * @description Court Type.  Reference domain is JURISDICTION
+       * @example CC
+       * @enum {string}
+       */
+      courtType?: 'CACD' | 'CB' | 'CC' | 'CO' | 'DCM' | 'GCM' | 'IMM' | 'MC' | 'OTHER' | 'YC'
+      /**
+       * @description Court Type description.  Reference domain is JURISDICTION. Not always present for all end points
+       * @example Crown Court
+       */
+      courtTypeDescription?: string
+      /**
+       * Format: date
+       * @description Date agency became inactive
+       * @example 2012-01-12
+       */
+      deactivationDate?: string
+      /** @description List of addresses associated with agency */
+      addresses?: components['schemas']['AddressDto'][]
+      /** @description List of phones associated with agency */
+      phones?: components['schemas']['Telephone'][]
+      /** @description List of emails associated with agency */
+      emails?: components['schemas']['Email'][]
+      /** @description Area of this agency */
+      area?: components['schemas']['RefCodeAndDescription']
+      /** @description Region of this agency */
+      region?: components['schemas']['RefCodeAndDescription']
     }
     /** @description Alert */
     Alert: {
@@ -2216,32 +6944,32 @@ export interface components {
        * @description Offender Unique Reference
        * @example G3878UK
        */
-      offenderNo?: string
+      offenderNo: string
       /**
        * @description Alert Type
        * @example X
        */
-      alertType?: string
+      alertType: string
       /**
        * @description Alert Type Description
        * @example Security
        */
-      alertTypeDescription?: string
+      alertTypeDescription: string
       /**
        * @description Alert Code
        * @example XER
        */
-      alertCode?: string
+      alertCode: string
       /**
        * @description Alert Code Description
        * @example Escape Risk
        */
-      alertCodeDescription?: string
+      alertCodeDescription: string
       /**
        * @description Alert comments
        * @example Profession lock pick.
        */
-      comment?: string
+      comment: string
       /**
        * Format: date
        * @description Date of the alert, which might differ to the date it was created
@@ -2255,8 +6983,9 @@ export interface components {
        */
       dateExpires?: string
       /**
+       * Format: date-time
        * @description The date and time the alert was last modified in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS. If this Alert hasn't been modified since its creation this field will be null
-       * @example 2021-07-05T10:35:17
+       * @example 2020-08-20T12:34:56
        */
       modifiedDateTime?: string
       /**
@@ -2293,10 +7022,15 @@ export interface components {
     /** @description Alias */
     Alias: {
       /**
+       * @description Title of offender alias
+       * @example Mr
+       */
+      title?: string
+      /**
        * @description First name of offender alias
        * @example Mike
        */
-      firstName?: string
+      firstName: string
       /**
        * @description Middle names of offender alias
        * @example John
@@ -2306,7 +7040,7 @@ export interface components {
        * @description Last name of offender alias
        * @example Smith
        */
-      lastName?: string
+      lastName: string
       /**
        * Format: int32
        * @description Age of Offender
@@ -2323,12 +7057,17 @@ export interface components {
        * @description Gender
        * @example Male
        */
-      gender?: string
+      gender: string
       /**
        * @description Ethnicity
        * @example Mixed: White and Black African
        */
       ethnicity?: string
+      /**
+       * @description Ethnicity Code
+       * @example M2
+       */
+      raceCode?: string
       /**
        * @description Type of Alias
        * @example Alias Name
@@ -2340,6 +7079,12 @@ export interface components {
        * @example 2019-02-15
        */
       createDate?: string
+      /**
+       * Format: int64
+       * @description Offender ID
+       * @example 543548
+       */
+      offenderId: number
     }
     /** @description Assessment */
     Assessment: {
@@ -2353,27 +7098,27 @@ export interface components {
        * @description Offender number (e.g. NOMS Number).
        * @example GV09876N
        */
-      offenderNo?: string
+      offenderNo: string
       /**
        * @description Classification code
        * @example C
        */
-      classificationCode?: string
+      classificationCode: string
       /**
        * @description Classification description
        * @example Cat C
        */
-      classification?: string
+      classification: string
       /**
        * @description Identifies the type of assessment
        * @example CATEGORY
        */
-      assessmentCode?: string
+      assessmentCode: string
       /**
        * @description Assessment description
        * @example Categorisation
        */
-      assessmentDescription?: string
+      assessmentDescription: string
       /** @description Indicates the presence of a cell sharing alert */
       cellSharingAlertFlag?: boolean
       /**
@@ -2431,16 +7176,26 @@ export interface components {
     /** @description Assigned Living Unit */
     AssignedLivingUnit: {
       /** @description Agency Id */
-      agencyId?: string
+      agencyId: string
       /**
        * Format: int64
        * @description location Id
        */
       locationId?: number
       /** @description Living Unit Desc */
-      description?: string
+      description: string
       /** @description Name of the agency where this living unit resides */
-      agencyName?: string
+      agencyName: string
+    }
+    /** @description An Email Address */
+    Email: {
+      /**
+       * Format: int64
+       * @description Email address ID
+       */
+      emailAddressId?: number
+      /** @description Email */
+      email?: string
     }
     /** @description Inmate Detail */
     InmateDetail: {
@@ -2448,7 +7203,7 @@ export interface components {
        * @description Offender Unique Reference
        * @example A1234AA
        */
-      offenderNo?: string
+      offenderNo: string
       /**
        * Format: int64
        * @description Offender Booking Id
@@ -2461,18 +7216,18 @@ export interface components {
        * Format: int64
        * @description Internal Offender ID
        */
-      offenderId?: number
+      offenderId: number
       /**
        * Format: int64
        * @description Internal Root Offender ID
        */
-      rootOffenderId?: number
+      rootOffenderId: number
       /** @description First Name */
-      firstName?: string
+      firstName: string
       /** @description Middle Name(s) */
       middleName?: string
       /** @description Last Name */
-      lastName?: string
+      lastName: string
       /**
        * Format: date
        * @description Date of Birth of prisoner
@@ -2520,7 +7275,9 @@ export interface components {
       inactiveAlertCount?: number
       /** @description List of alert details */
       alerts?: components['schemas']['Alert'][]
+      /** @description Cell or location of the prisoner */
       assignedLivingUnit?: components['schemas']['AssignedLivingUnit']
+      /** @description A set of physical attributes */
       physicalAttributes?: components['schemas']['PhysicalAttributes']
       /** @description List of physical characteristics */
       physicalCharacteristics?: components['schemas']['PhysicalCharacteristic'][]
@@ -2565,6 +7322,7 @@ export interface components {
       identifiers?: components['schemas']['OffenderIdentifier'][]
       /** @description Personal Care Needs. Note: Only returned when requesting extra details */
       personalCareNeeds?: components['schemas']['PersonalCareNeed'][]
+      /** @description Sentence Detail. Note: Only returned when requesting extra details */
       sentenceDetail?: components['schemas']['SentenceCalcDates']
       /** @description Offence History. Note: Only returned when requesting extra details */
       offenceHistory?: components['schemas']['OffenceHistoryDetail'][]
@@ -2592,6 +7350,13 @@ export interface components {
        * @example CA
        */
       lastMovementReasonCode?: string
+      /** @description Last Movement to location, such as a court or prison */
+      lastMovementToAgency?: components['schemas']['Agency']
+      /**
+       * @description Last Movement comment
+       * @example Scheduled visit to dentist
+       */
+      lastMovementComment?: string
       /**
        * @description Legal Status. Note: Only returned when requesting extra details
        * @example REMAND
@@ -2623,6 +7388,11 @@ export interface components {
        * @example Serving Life Imprisonment
        */
       imprisonmentStatusDescription?: string
+      /**
+       * @description The prisoner's convicted status. Note: Only returned when requesting extra details
+       * @example Convicted
+       */
+      convictedStatus?: string
       /**
        * Format: date
        * @description Date prisoner was received into the prison.
@@ -2664,20 +7434,20 @@ export interface components {
        * @description Description associated with the offence code
        * @example Commit an act / series of acts with intent to pervert the course of public justice
        */
-      offenceDescription?: string
+      offenceDescription: string
       /**
        * @description Reference Code
        * @example RR84070
        */
-      offenceCode?: string
+      offenceCode: string
       /**
        * @description Statute code
        * @example RR84
        */
-      statuteCode?: string
+      statuteCode: string
       /** @description Identifies the main offence per booking */
       mostSerious?: boolean
-      /** @description Primary result code */
+      /** @description Primary result code  */
       primaryResultCode?: string
       /** @description Secondary result code */
       secondaryResultCode?: string
@@ -2685,9 +7455,9 @@ export interface components {
       primaryResultDescription?: string
       /** @description Description for Secondary result */
       secondaryResultDescription?: string
-      /** @description Conviction flag for Primary result */
+      /** @description Conviction flag for Primary result  */
       primaryResultConviction?: boolean
-      /** @description Conviction flag for Secondary result */
+      /** @description Conviction flag for Secondary result  */
       secondaryResultConviction?: boolean
       /**
        * Format: date
@@ -2701,6 +7471,20 @@ export interface components {
        * @example 100
        */
       caseId?: number
+      /**
+       * Format: int32
+       * @description Offence Severity Ranking
+       * @example 100
+       */
+      offenceSeverityRanking?: number
+      /**
+       * Format: date
+       * @description Start date of sentence - null if there is no associated sentence. This will not be populated if called from /offenderNo/{offenderNo}/offenceHistory, /offenders/{offenderNo} or /bookings/offenderNo/{offenderNo}
+       * @example 2018-03-10
+       */
+      sentenceStartDate?: string
+      /** @description Primary sentence - true if it is not a consecutive sentence, false if it is a consecutive sentence, null if no sentence found for the charge. This will not be populated if called from /offenderNo/{offenderNo}/offenceHistory, /offenders/{offenderNo} or /bookings/offenderNo/{offenderNo} */
+      primarySentence?: boolean
     }
     /** @description Offender Identifier */
     OffenderIdentifier: {
@@ -2708,12 +7492,12 @@ export interface components {
        * @description Type of offender identifier
        * @example PNC
        */
-      type?: string
+      type: string
       /**
        * @description The value of the offender identifier
        * @example 1231/XX/121
        */
-      value?: string
+      value: string
       /**
        * @description The offender number for this identifier
        * @example A1234AB
@@ -2742,10 +7526,29 @@ export interface components {
        */
       caseloadType?: string
       /**
+       * Format: date-time
        * @description Creation date and time
-       * @example 2021-07-05T10:35:17
+       * @example 2018-01-21T15:00:00
        */
       whenCreated?: string
+      /**
+       * Format: int64
+       * @description Offender ID
+       * @example 234547
+       */
+      offenderId?: number
+      /**
+       * Format: int64
+       * @description Root Offender ID
+       * @example 654321
+       */
+      rootOffenderId?: number
+      /**
+       * Format: int64
+       * @description Identifier sequence
+       * @example 123456
+       */
+      offenderIdSeq?: number
     }
     /** @description Offender Sentence terms details for booking id */
     OffenderSentenceTerms: {
@@ -2892,12 +7695,12 @@ export interface components {
        * @description Gender Code
        * @example M
        */
-      sexCode?: string
+      sexCode: string
       /**
        * @description Gender
        * @example Male
        */
-      gender?: string
+      gender: string
       /**
        * @description Ethnicity Code
        * @example W1
@@ -2947,11 +7750,11 @@ export interface components {
     /** @description Physical Characteristic */
     PhysicalCharacteristic: {
       /** @description Type code of physical characteristic */
-      type?: string
+      type: string
       /** @description Type of physical characteristic */
-      characteristic?: string
+      characteristic: string
       /** @description Detailed information about the physical characteristic */
-      detail?: string
+      detail: string
       /**
        * Format: int64
        * @description Image Id Ref
@@ -2961,15 +7764,15 @@ export interface components {
     /** @description Physical Mark */
     PhysicalMark: {
       /** @description Type of Mark */
-      type?: string
+      type: string
       /** @description Left or Right Side */
-      side?: string
+      side: string
       /** @description Where on the body */
-      bodyPart?: string
+      bodyPart: string
       /** @description Image orientation */
-      orientation?: string
+      orientation: string
       /** @description More information */
-      comment?: string
+      comment: string
       /**
        * Format: int64
        * @description Image Id Ref
@@ -2979,11 +7782,24 @@ export interface components {
     /** @description Profile Information */
     ProfileInformation: {
       /** @description Type of profile information */
-      type?: string
+      type: string
       /** @description Profile Question */
-      question?: string
+      question: string
       /** @description Profile Result Answer */
-      resultValue?: string
+      resultValue: string
+    }
+    /** @description Reference code and description */
+    RefCodeAndDescription: {
+      /**
+       * @description Reference code
+       * @example code
+       */
+      code: string
+      /**
+       * @description Reference description
+       * @example description
+       */
+      description: string
     }
     /** @description Sentence Calculation Dates */
     SentenceCalcDates: {
@@ -3277,22 +8093,47 @@ export interface components {
       ltdCalculatedDate?: string
       /**
        * Format: date
-       * @description Top-up supervision start date for offender - calculated as licence end date + 1 day or releaseDate if licence end date not set.
-       * @example 2019-04-01
-       */
-      topupSupervisionStartDate?: string
-      /**
-       * Format: date
        * @description Offender's home detention curfew end date - calculated as one day before the releaseDate.
        * @example 2019-04-01
        */
       homeDetentionCurfewEndDate?: string
+      /**
+       * Format: date
+       * @description Top-up supervision start date for offender - calculated as licence end date + 1 day or releaseDate if licence end date not set.
+       * @example 2019-04-01
+       */
+      topupSupervisionStartDate?: string
+    }
+    /** @description Telephone Details */
+    Telephone: {
+      /**
+       * Format: int64
+       * @description Phone Id
+       * @example 2234232
+       */
+      phoneId?: number
+      /**
+       * @description Telephone number
+       * @example 0114 2345678
+       */
+      number: string
+      /**
+       * @description Telephone type
+       * @example TEL
+       */
+      type: string
+      /**
+       * @description Telephone extension number
+       * @example 123
+       */
+      ext?: string
     }
     /** @description Represents the data required for receiving a prisoner transfer */
     RequestToTransferIn: {
       /**
+       * Format: date-time
        * @description The time the movement occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       receiveTime: string
       /**
@@ -3314,8 +8155,9 @@ export interface components {
        */
       toCity?: string
       /**
+       * Format: date-time
        * @description The time the movement occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       movementTime?: string
       /**
@@ -3359,10 +8201,52 @@ export interface components {
        */
       commentText?: string
       /**
+       * Format: date-time
        * @description The date and time the movement occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       dateTime: string
+    }
+    /** @description Update to prisoner's smoker status */
+    UpdateSmokerStatus: {
+      /**
+       * @description The smoker status code ('Y' for 'Yes', 'N' for 'No', 'V' for 'Vaper/NRT Only')
+       * @example Y
+       * @enum {string}
+       */
+      smokerStatus: 'Y' | 'N' | 'V'
+    }
+    /** @description Update to prisoner sexual orientation */
+    UpdateSexualOrientation: {
+      /**
+       * @description The sexual orientation code
+       * @example HET
+       */
+      sexualOrientation: string
+    }
+    /** @description Update to prisoner religion */
+    UpdateReligion: {
+      /**
+       * @description The religion code
+       * @example ZORO
+       */
+      religion: string
+      /**
+       * @description Reason for the religion change
+       * @example Some information
+       */
+      comment?: string
+      /**
+       * Format: date
+       * @description The date the religious belief is valid from (in YYYY-MM-DD format)
+       */
+      effectiveFromDate?: string
+      /**
+       * @description Has the religious belief been verified?
+       * @default false
+       * @example false
+       */
+      verified: boolean
     }
     /** @description Request release of prisoner */
     RequestToReleasePrisoner: {
@@ -3413,8 +8297,9 @@ export interface components {
         | 'SC'
         | 'UAL'
       /**
+       * Format: date-time
        * @description The time the release occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       releaseTime: string
       /**
@@ -3436,8 +8321,9 @@ export interface components {
        */
       prisonId: string
       /**
+       * Format: date-time
        * @description The time the recall occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       recallTime: string
       /**
@@ -3465,6 +8351,107 @@ export interface components {
        * @example CUR_ORA
        */
       imprisonmentStatus?: string
+    }
+    /** @description Offender Phone Number Create Request */
+    OffenderPhoneNumberCreateRequest: {
+      /**
+       * @description Type of offender phone number
+       * @example BUS
+       */
+      phoneNumberType: string
+      /**
+       * @description The phone number
+       * @example 01234 567 890
+       */
+      phoneNumber: string
+      /**
+       * @description The telephone extension
+       * @example 123
+       */
+      extension?: string
+    }
+    /** @description Update to prisoner nationality */
+    UpdateNationality: {
+      /**
+       * @description The nationality code
+       * @example BRIT
+       */
+      nationality: string
+      /**
+       * @description Other nationalities
+       * @example Irish
+       */
+      otherNationalities: string
+    }
+    /** @description Military record request object. Used to create or update a military record. */
+    MilitaryRecordRequest: {
+      /**
+       * @description Code identifying the war zone where the service took place.
+       * @example AFG
+       */
+      warZoneCode?: string
+      /**
+       * Format: date
+       * @description Start date of the military service.
+       * @example 2017-06-01
+       */
+      startDate: string
+      /**
+       * Format: date
+       * @description End date of the military service, if applicable.
+       * @example 2019-12-01
+       */
+      endDate?: string
+      /**
+       * @description Code indicating the discharge status from the UK military forces.
+       * @example HON
+       */
+      militaryDischargeCode?: string
+      /**
+       * @description Code identifying the branch of the UK military in which the individual served.
+       * @example ARM
+       */
+      militaryBranchCode: string
+      /**
+       * @description Additional notes or details about the military service.
+       * @example Deployed to Afghanistan in support of Operation Herrick.
+       */
+      description?: string
+      /**
+       * @description Unit number in which the individual served.
+       * @example 2nd Battalion, The Royal Anglian Regiment
+       */
+      unitNumber?: string
+      /**
+       * @description Location where the individual enlisted in the UK military.
+       * @example Windsor, Berkshire
+       */
+      enlistmentLocation?: string
+      /**
+       * @description Location where the individual was discharged from the UK military.
+       * @example Colchester, Essex
+       */
+      dischargeLocation?: string
+      /**
+       * @description Flag indicating if the individual was registered for UK selective military service (National Service).
+       * @example false
+       */
+      selectiveServicesFlag: boolean
+      /**
+       * @description Code identifying the individual's military rank in the UK forces.
+       * @example CPL_ARM
+       */
+      militaryRankCode?: string
+      /**
+       * @description Service number of the individual within the UK military.
+       * @example 2345678
+       */
+      serviceNumber?: string
+      /**
+       * @description Code identifying any disciplinary actions taken against the individual during service.
+       * @example CM
+       */
+      disciplinaryActionCode?: string
     }
     /** @description Cell move result */
     CellMoveResult: {
@@ -3497,6 +8484,14 @@ export interface components {
        */
       bedAssignmentHistorySequence?: number
     }
+    /** @description Offender Email Address Create Request */
+    OffenderEmailAddressCreateRequest: {
+      /**
+       * @description The email address
+       * @example foo@bar.example
+       */
+      emailAddress: string
+    }
     /** @description Request release of prisoner */
     RequestToDischargePrisoner: {
       /**
@@ -3505,8 +8500,9 @@ export interface components {
        */
       hospitalLocationCode: string
       /**
+       * Format: date-time
        * @description The time the release occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       dischargeTime?: string
       /**
@@ -3528,8 +8524,9 @@ export interface components {
        */
       toLocation: string
       /**
+       * Format: date-time
        * @description The time the movement occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       movementTime: string
       /**
@@ -3573,10 +8570,113 @@ export interface components {
        */
       commentText?: string
       /**
+       * Format: date-time
        * @description The date and time the movement occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       dateTime: string
+    }
+    /** @description Secondary language request. Used to add or update secondary language information. */
+    CorePersonSecondaryLanguageRequest: {
+      /**
+       * @description Language reference code. Uses the `LANG` reference data domain.
+       * @example ENG
+       */
+      language: string
+      /**
+       * @description Reading proficiency
+       * @example true
+       */
+      canRead: boolean
+      /**
+       * @description Writing proficiency
+       * @example true
+       */
+      canWrite: boolean
+      /**
+       * @description Speaking proficiency
+       * @example true
+       */
+      canSpeak: boolean
+    }
+    /** @description Core Person Record Physical Attributes Request. Used to create or update physical attributes. */
+    CorePersonPhysicalAttributesRequest: {
+      /**
+       * Format: int32
+       * @description Height (in centimetres)
+       */
+      height?: number
+      /**
+       * Format: int32
+       * @description Weight (in kilograms)
+       */
+      weight?: number
+      /**
+       * @description Code for hair type or colour. Note: uses PROFILE_TYPE of `HAIR`
+       * @example BROWN
+       */
+      hairCode?: string
+      /**
+       * @description Code for facial hair type. Note: uses PROFILE_TYPE of `FACIAL_HAIR`
+       * @example BEARDED
+       */
+      facialHairCode?: string
+      /**
+       * @description Code for face shape. Note: uses PROFILE_TYPE of `FACE`
+       * @example ROUND
+       */
+      faceCode?: string
+      /**
+       * @description Code for build. Note: uses PROFILE_TYPE of `BUILD`
+       * @example MEDIUM
+       */
+      buildCode?: string
+      /**
+       * @description Code for left eye colour. Note: uses PROFILE_TYPE of `L_EYE_C`
+       * @example BLUE
+       */
+      leftEyeColourCode?: string
+      /**
+       * @description Code for right eye colour. Note: uses PROFILE_TYPE of `R_EYE_C`
+       * @example BLUE
+       */
+      rightEyeColourCode?: string
+      /** @description Shoe size */
+      shoeSize?: string
+    }
+    /** @description Language Preferences Request. Used to create or update language preferences. */
+    CorePersonLanguagePreferencesRequest: {
+      /**
+       * @description Preferred spoken language code. Uses the `LANG` reference data domain.
+       * @example ENG
+       */
+      preferredSpokenLanguageCode?: string
+      /**
+       * @description Preferred written language code. Uses the `LANG` reference data domain.
+       * @example ENG
+       */
+      preferredWrittenLanguageCode?: string
+      /**
+       * @description Is interpreter required
+       * @example true
+       */
+      interpreterRequired?: boolean
+    }
+    /** @description Update to prisoner birth place (city or town of birth) */
+    UpdateBirthPlace: {
+      /**
+       * @description Birth place (city or town of birth)
+       * @example SHEFFIELD
+       */
+      birthPlace: string
+    }
+    /** @description Update to prisoner birth country */
+    UpdateBirthCountry: {
+      /**
+       * @description Country code
+       * @example GBR
+       */
+      countryCode: string
     }
     /** @description HDC Curfew Check */
     HdcChecks: {
@@ -3701,10 +8801,7 @@ export interface components {
       statuteCode: string
       activationFlag: boolean
     }
-    /**
-     * @description HO Code
-     * @example 825/99
-     */
+    /** @description HO Code */
     HOCodeDto: {
       /**
        * @description HO code
@@ -3737,7 +8834,15 @@ export interface components {
       code: string
       /** @description Description of offence */
       description: string
+      /**
+       * @description Statute code
+       * @example RR84
+       */
       statuteCode: components['schemas']['StatuteDto']
+      /**
+       * @description HO code
+       * @example 825/99
+       */
       hoCode?: components['schemas']['HOCodeDto']
       /**
        * @description Severity Ranking
@@ -3762,10 +8867,7 @@ export interface components {
        */
       expiryDate?: string
     }
-    /**
-     * @description Statute
-     * @example RR84
-     */
+    /** @description Statute */
     StatuteDto: {
       /**
        * @description Statute code
@@ -3804,8 +8906,9 @@ export interface components {
        */
       reasonCode?: string
       /**
+       * Format: date-time
        * @description The date / time of the move (defaults to current)
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       dateTime?: string
     }
@@ -3924,187 +9027,11 @@ export interface components {
     /** @description The amendments for the scheduled court hearing. */
     CourtHearingDateAmendment: {
       /**
+       * Format: date-time
        * @description The date and time of the court hearing in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2022-12-01T14:40:00
        */
       hearingDateTime: string
-    }
-    /** @description An Address */
-    AddressDto: {
-      /**
-       * Format: int64
-       * @description Address Id
-       * @example 543524
-       */
-      addressId?: number
-      /**
-       * @description Address Type. Note: Reference domain is ADDR_TYPE
-       * @example BUS
-       */
-      addressType?: string
-      /**
-       * @description Flat
-       * @example 3B
-       */
-      flat?: string
-      /**
-       * @description Premise
-       * @example Liverpool Prison
-       */
-      premise?: string
-      /**
-       * @description Street
-       * @example Slinn Street
-       */
-      street?: string
-      /**
-       * @description Locality
-       * @example Brincliffe
-       */
-      locality?: string
-      /**
-       * @description Town/City. Note: Reference domain is CITY
-       * @example Liverpool
-       */
-      town?: string
-      /**
-       * @description Postal Code
-       * @example LI1 5TH
-       */
-      postalCode?: string
-      /**
-       * @description County. Note: Reference domain is COUNTY
-       * @example HEREFORD
-       */
-      county?: string
-      /**
-       * @description Country. Note: Reference domain is COUNTRY
-       * @example ENG
-       */
-      country?: string
-      /**
-       * @description Comment
-       * @example This is a comment text
-       */
-      comment?: string
-      /**
-       * @description Primary Address
-       * @example false
-       */
-      primary: boolean
-      /**
-       * @description No Fixed Address
-       * @example false
-       */
-      noFixedAddress: boolean
-      /**
-       * Format: date
-       * @description Date Added
-       * @example 2005-05-12
-       */
-      startDate?: string
-      /**
-       * Format: date
-       * @description Date ended
-       * @example 2021-02-12
-       */
-      endDate?: string
-      /** @description The phone number associated with the address */
-      phones?: components['schemas']['Telephone'][]
-      /** @description The address usages/types */
-      addressUsages?: components['schemas']['AddressUsageDto'][]
-    }
-    /** @description An Offender's address usage */
-    AddressUsageDto: {
-      /**
-       * Format: int64
-       * @description Address ID of the associated address
-       * @example 23422313
-       */
-      addressId?: number
-      /**
-       * @description The address usages
-       * @example HDC
-       */
-      addressUsage?: string
-      /**
-       * @description The address usages description
-       * @example HDC Address
-       */
-      addressUsageDescription?: string
-      /**
-       * @description Active Flag
-       * @example true
-       */
-      activeFlag?: boolean
-    }
-    /** @description Agency Details */
-    Agency: {
-      /**
-       * @description Agency identifier.
-       * @example MDI
-       */
-      agencyId: string
-      /**
-       * @description Agency description.
-       * @example Moorland (HMP & YOI)
-       */
-      description: string
-      /**
-       * @description Long description of the agency
-       * @example Moorland (HMP & YOI)
-       */
-      longDescription?: string
-      /**
-       * @description Agency type.  Reference domain is AGY_LOC_TYPE
-       * @example INST
-       * @enum {string}
-       */
-      agencyType:
-        | 'CRC'
-        | 'POLSTN'
-        | 'INST'
-        | 'COMM'
-        | 'APPR'
-        | 'CRT'
-        | 'POLICE'
-        | 'IMDC'
-        | 'TRN'
-        | 'OUT'
-        | 'YOT'
-        | 'SCH'
-        | 'STC'
-        | 'HOST'
-        | 'AIRPORT'
-        | 'HSHOSP'
-        | 'HOSPITAL'
-        | 'PECS'
-        | 'PAR'
-        | 'PNP'
-        | 'PSY'
-      /**
-       * @description Indicates the Agency is active
-       * @example true
-       */
-      active: boolean
-      /**
-       * @description Court Type.  Reference domain is JURISDICTION
-       * @example CC
-       * @enum {string}
-       */
-      courtType?: 'CACD' | 'CB' | 'CC' | 'CO' | 'DCM' | 'GCM' | 'IMM' | 'MC' | 'OTHER' | 'YC'
-      /**
-       * Format: date
-       * @description Date agency became inactive
-       * @example 2012-01-12
-       */
-      deactivationDate?: string
-      /** @description List of addresses associated with agency */
-      addresses?: components['schemas']['AddressDto'][]
-      /** @description List of phones associated with agency */
-      phones?: components['schemas']['Telephone'][]
-      /** @description List of emails associated with agency */
-      emails?: components['schemas']['Email'][]
     }
     /** @description Represents a court hearing for an offender court case. */
     CourtHearing: {
@@ -4115,51 +9042,13 @@ export interface components {
        */
       id?: number
       /**
+       * Format: date-time
        * @description The date and start time of the court hearing in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2020-02-28T14:40:00
        */
       dateTime?: string
+      /** @description The location of the court for the hearing. */
       location?: components['schemas']['Agency']
-    }
-    /** @description An Email Address */
-    Email: {
-      /** @description Email */
-      email?: string
-    }
-    /** @description Telephone Details */
-    Telephone: {
-      /**
-       * Format: int64
-       * @description Phone Id
-       * @example 2234232
-       */
-      phoneId?: number
-      /**
-       * @description Telephone number
-       * @example 0114 2345678
-       */
-      number: string
-      /**
-       * @description Telephone type
-       * @example TEL
-       */
-      type: string
-      /**
-       * @description Telephone extension number
-       * @example 123
-       */
-      ext?: string
-    }
-    /** @description Alert details */
-    AlertChanges: {
-      /**
-       * Format: date
-       * @description Date the alert became inactive
-       * @example 2019-02-13
-       */
-      expiryDate?: string
-      /** @description Alert comment */
-      comment?: string
     }
     /** @description Attendance details.  This is used to update the attendance details of an offender */
     UpdateAttendance: {
@@ -4181,7 +9070,6 @@ export interface components {
        */
       outcomeComment?: string
     }
-    /** @description set of booking and activity ids */
     BookingActivity: {
       /** Format: int64 */
       bookingId?: number
@@ -4209,6 +9097,162 @@ export interface components {
       outcomeComment?: string
       /** @description set of booking and activity ids */
       bookingActivities: components['schemas']['BookingActivity'][]
+    }
+    /** @description The comment. May be empty or null */
+    UpdateComment: {
+      comment?: string
+      commentOrNull?: string
+    }
+    /** @description Update prisoner's alias */
+    UpdateAlias: {
+      /**
+       * @description Prisoner's first name
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description Prisoner's first middle name.
+       * @example Middleone
+       */
+      middleName1?: string
+      /**
+       * @description Prisoner's second middle name.
+       * @example Middleone
+       */
+      middleName2?: string
+      /**
+       * @description Prisoner's last name
+       * @example Smith
+       */
+      lastName: string
+      /**
+       * Format: date
+       * @description The prisoner's date of birth. Must be specified in YYYY-MM-DD format. Range allowed is 16-110 years
+       * @example 1970-01-01
+       */
+      dateOfBirth: string
+      /**
+       * @description A code representing the prisoner's sex (from SEX reference domain).
+       * @example F
+       * @enum {string}
+       */
+      sex: 'M' | 'F' | 'NK' | 'NS' | 'REF'
+      /**
+       * @description A code representing the prisoner's title (from TITLE reference domain).
+       * @example MR
+       * @enum {string}
+       */
+      title?:
+        | 'BR'
+        | 'DAME'
+        | 'DR'
+        | 'FR'
+        | 'IMAM'
+        | 'LADY'
+        | 'LORD'
+        | 'MISS'
+        | 'MR'
+        | 'MRS'
+        | 'MS'
+        | 'RABBI'
+        | 'REV'
+        | 'SIR'
+        | 'SR'
+      /**
+       * @description A code representing the prisoner's ethnicity (from ETHNICITY reference domain).
+       * @example W1
+       */
+      ethnicity?: string
+      /**
+       * @description The name type (from NAME_TYPE reference domain)
+       * @example CN
+       * @enum {string}
+       */
+      nameType?: 'A' | 'CN' | 'MAID' | 'NICK'
+    }
+    /** @description Core Person Record Alias - DTO for use in returning alias data for the Core Person Record proxy */
+    CorePersonRecordAlias: {
+      /**
+       * @description Prisoner number
+       * @example A1234AA
+       */
+      prisonerNumber: string
+      /**
+       * Format: int64
+       * @description Offender ID
+       * @example 543548
+       */
+      offenderId: number
+      /**
+       * @description Boolean flag to indicate if the alias is a working name
+       * @example true
+       */
+      isWorkingName: boolean
+      /**
+       * @description First name
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description Middle name 1
+       * @example Middleone
+       */
+      middleName1?: string
+      /**
+       * @description Middle name 2
+       * @example Middleone
+       */
+      middleName2?: string
+      /**
+       * @description Last name
+       * @example Smith
+       */
+      lastName: string
+      /**
+       * Format: date
+       * @description Date of birth
+       * @example 1980-02-28
+       */
+      dateOfBirth: string
+      /** @description Name type */
+      nameType?: components['schemas']['ReferenceDataValue']
+      /** @description Title */
+      title?: components['schemas']['ReferenceDataValue']
+      /** @description Sex */
+      sex?: components['schemas']['ReferenceDataValue']
+      /** @description Ethnicity */
+      ethnicity?: components['schemas']['ReferenceDataValue']
+    }
+    /** @description Reference Data Value - basic summary of a reference data code selected as the value for a field */
+    ReferenceDataValue: {
+      /**
+       * @description Domain
+       * @example ETHNICITY
+       */
+      domain?: string
+      /**
+       * @description Code
+       * @example W1
+       */
+      code: string
+      /**
+       * @description Description of the reference data code
+       * @example White: Eng./Welsh/Scot./N.Irish/British
+       */
+      description: string
+    }
+    /** @description Offender Identifier Update Request */
+    OffenderIdentifierUpdateRequest: {
+      /**
+       * @description The value of the offender identifier
+       * @example 1231/XX/121
+       */
+      identifier: string
+      /**
+       * @description Issuing Authority Information
+       * @example Important info
+       */
+      issuedAuthorityText?: string
     }
     /** @description Update Agency Request */
     RequestToUpdateAgency: {
@@ -4315,7 +9359,7 @@ export interface components {
       comment?: string
       /**
        * @description Primary Address
-       * @example false
+       * @example true
        */
       primary: boolean
       /**
@@ -4352,7 +9396,7 @@ export interface components {
        * @example CANT
        * @enum {string}
        */
-      type: 'CANT,REFND,PHONE,MRPR,MTDS,DTDS,CASHD,RELA,RELS'
+      type: 'CANT' | 'REFND' | 'PHONE' | 'MRPR' | 'MTDS' | 'DTDS' | 'CASHD' | 'RELA' | 'RELS'
       /**
        * @description Description of the Transaction
        * @example Canteen Purchase of £16.34
@@ -4425,7 +9469,9 @@ export interface components {
     }
     /** @description Transfer Response */
     Transfer: {
+      /** @description Transaction */
       transaction?: components['schemas']['Transaction']
+      /** @description Current Location */
       current_location?: components['schemas']['CodeDescription']
     }
     /** @description User Details */
@@ -4469,13 +9515,15 @@ export interface components {
        */
       accountStatus: 'ACTIVE' | 'INACT' | 'SUS' | 'CAREER' | 'MAT' | 'SAB' | 'SICK'
       /**
+       * Format: date-time
        * @description Date the user account was locked
-       * @example 2021-07-05T10:35:17
+       * @example 2018-06-04T12:35:00
        */
       lockDate: string
       /**
+       * Format: date-time
        * @description Date the user account has expired
-       * @example 2021-07-05T10:35:17
+       * @example 2018-01-04T12:35:00
        */
       expiryDate?: string
       /**
@@ -4493,6 +9541,49 @@ export interface components {
        * @example true
        */
       active: boolean
+    }
+    /** @description Staff Details */
+    StaffDetail: {
+      /**
+       * Format: int64
+       * @description Unique identifier for staff member.
+       * @example 423142
+       */
+      staffId: number
+      /**
+       * @description Staff member's first name.
+       * @example JOHN
+       */
+      firstName: string
+      /**
+       * @description Staff member's last name.
+       * @example SMITH
+       */
+      lastName: string
+      /**
+       * @description Status of staff member.
+       * @example ACTIVE
+       * @enum {string}
+       */
+      status: 'ACTIVE' | 'INACTIVE'
+      /**
+       * Format: int64
+       * @description Identifier for staff member image.
+       * @example 231232
+       */
+      thumbnailId?: number
+      /**
+       * @description Gender of Staff Member
+       * @example M
+       * @enum {string}
+       */
+      gender?: 'M' | 'F' | 'NK' | 'NS' | 'REF'
+      /**
+       * Format: date
+       * @description Date of Birth of Staff Member
+       * @example 1970-01-02
+       */
+      dateOfBirth?: string
     }
     UpdatePrisonerDetails: {
       /** @example John */
@@ -4554,15 +9645,15 @@ export interface components {
       /** @description The event's status. Includes 'CANC', meaning cancelled for 'VISIT' */
       eventStatus: string
       /** @description Comment */
-      comment: string
+      comment?: string
       /**
+       * Format: date-time
        * @description Date and time at which event starts
-       * @example 2021-07-05T10:35:17
        */
-      startTime: string
+      startTime?: string
       /**
+       * Format: date-time
        * @description Date and time at which event ends
-       * @example 2021-07-05T10:35:17
        */
       endTime?: string
       /** @description Attendance, possible values are the codes in the 'PS_PA_OC' reference domain */
@@ -4860,8 +9951,9 @@ export interface components {
        */
       prisonId: string
       /**
+       * Format: date-time
        * @description The time the booking in occurred, if not supplied it will be the current time
-       * @example 2021-07-05T10:35:17
+       * @example 2020-03-24T12:13:40
        */
       bookingInTime: string
       /**
@@ -4981,7 +10073,173 @@ export interface components {
         | 'W9'
       /** @description The offender's CRO (Criminal Records Office) number. */
       croNumber?: string
+      /** @description Optional prison booking data for the offender. */
       booking?: components['schemas']['RequestForNewBooking']
+    }
+    /** @description Offender Identifier Create Request */
+    OffenderIdentifierCreateRequest: {
+      /**
+       * @description Type of offender identifier
+       * @example PNC
+       */
+      identifierType: string
+      /**
+       * @description The value of the offender identifier
+       * @example 1231/XX/121
+       */
+      identifier: string
+      /**
+       * @description Issuing Authority Information
+       * @example Important info
+       */
+      issuedAuthorityText?: string
+    }
+    /** @description Create a prisoner alias */
+    CreateAlias: {
+      /**
+       * @description Prisoner's first name
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description Prisoner's first middle name.
+       * @example Middleone
+       */
+      middleName1?: string
+      /**
+       * @description Prisoner's second middle name.
+       * @example Middletwo
+       */
+      middleName2?: string
+      /**
+       * @description Prisoner's last name
+       * @example Smith
+       */
+      lastName: string
+      /**
+       * Format: date
+       * @description The prisoner's date of birth. Must be specified in YYYY-MM-DD format. Range allowed is 16-110 years
+       * @example 1970-01-01
+       */
+      dateOfBirth: string
+      /**
+       * @description A code representing the prisoner's sex (from SEX reference domain).
+       * @example F
+       * @enum {string}
+       */
+      sex: 'M' | 'F' | 'NK' | 'NS' | 'REF'
+      /**
+       * @description A code representing the prisoner's title (from TITLE reference domain).
+       * @example MR
+       * @enum {string}
+       */
+      title?:
+        | 'BR'
+        | 'DAME'
+        | 'DR'
+        | 'FR'
+        | 'IMAM'
+        | 'LADY'
+        | 'LORD'
+        | 'MISS'
+        | 'MR'
+        | 'MRS'
+        | 'MS'
+        | 'RABBI'
+        | 'REV'
+        | 'SIR'
+        | 'SR'
+      /**
+       * @description A code representing the prisoner's ethnicity (from ETHNICITY reference domain).
+       * @example W1
+       */
+      ethnicity?: string
+      /**
+       * @description The name type (from NAME_TYPE reference domain)
+       * @example CN
+       * @enum {string}
+       */
+      nameType?: 'A' | 'CN' | 'MAID' | 'NICK'
+      /**
+       * @description Boolean flag to indicate if the alias is a working name
+       * @example true
+       */
+      isWorkingName: boolean
+    }
+    /** @description Create a prisoner address */
+    CreateAddress: {
+      /**
+       * @description Flat
+       * @example 3B
+       */
+      flat?: string
+      /**
+       * @description Premise
+       * @example Liverpool Prison
+       */
+      premise?: string
+      /**
+       * @description Street
+       * @example Slinn Street
+       */
+      street?: string
+      /**
+       * @description Locality
+       * @example Brincliffe
+       */
+      locality?: string
+      /**
+       * @description Town/City code. Note: Reference domain is CITY
+       * @example 17743
+       */
+      townCode?: string
+      /**
+       * @description County code. Note: Reference domain is COUNTY
+       * @example HEREFORD
+       */
+      countyCode?: string
+      /**
+       * @description Country code. Note: Reference domain is COUNTRY
+       * @example ENG
+       */
+      countryCode: string
+      /**
+       * @description Postal code
+       * @example LI1 5TH
+       */
+      postalCode?: string
+      /**
+       * @description Primary address
+       * @example true
+       */
+      primary?: boolean
+      /**
+       * @description Mail address
+       * @example true
+       */
+      mail?: boolean
+      /**
+       * @description No fixed address
+       * @example false
+       */
+      noFixedAddress?: boolean
+      /**
+       * Format: date
+       * @description Date address is in use from
+       * @example 2005-05-12
+       */
+      startDate: string
+      /**
+       * Format: date
+       * @description Date address is in use to
+       * @example 2005-05-12
+       */
+      endDate?: string
+      /**
+       * @description Address usages
+       * @example HOME
+       */
+      addressUsages: string[]
     }
     /** @description Represents an adjudication hearing at the offender level. */
     OffenderAdjudicationHearing: {
@@ -5000,8 +10258,9 @@ export interface components {
        */
       hearingType?: string
       /**
+       * Format: date-time
        * @description Hearing Time
-       * @example 2021-07-05T10:35:17
+       * @example 2017-03-17T08:30:00
        */
       startTime?: string
       /**
@@ -5054,6 +10313,7 @@ export interface components {
        * @example true
        */
       mostRecentActiveBooking: boolean
+      /** @description Offender Sentence Detail Information */
       sentenceDetail?: components['schemas']['SentenceCalcDates']
       /**
        * Format: date
@@ -5242,12 +10502,13 @@ export interface components {
        */
       calculationUuid: string
       /**
+       * Format: date-time
        * @description Timestamp when the calculation was performed
-       * @example 2021-07-05T10:35:17
        */
       calculationDateTime?: string
       /** @description DPS/NOMIS user who submitted the calculated dates. */
       submissionUser: string
+      /** @description Key dates to be updated for the offender. */
       keyDates: components['schemas']['OffenderKeyDates']
       /** @description Comment to be associated with the sentence calculation, if not set a default comment is used */
       comment?: string
@@ -5375,8 +10636,9 @@ export interface components {
        */
       toAgencyId: string
       /**
+       * Format: date-time
        * @description Date time of movement
-       * @example 2021-07-05T10:35:17
+       * @example 2020-02-28T14:40:00
        */
       movementTime: string
       /**
@@ -5429,24 +10691,23 @@ export interface components {
       movementReasonDescription: string
       /** @description IN or OUT */
       directionCode: string
-      /**
-       * Format: partial-time
-       * @description Movement time
-       */
+      /** @description Movement time */
       movementTime: string
       /**
        * Format: date
        * @description Movement date
        */
       movementDate: string
+      /** @description To address */
+      toAddress?: string
     }
     /** @description Prisoner Custody Status */
     Movement: {
       /** @description Display Prisoner Number (UK is NOMS ID) */
       offenderNo: string
       /**
+       * Format: date-time
        * @description Timestamp when the external movement record was created
-       * @example 2021-07-05T10:35:17
        */
       createDateTime: string
       /** @description Agency travelling from */
@@ -5454,9 +10715,9 @@ export interface components {
       /** @description Description of the agency travelling from */
       fromAgencyDescription?: string
       /** @description Agency travelling to */
-      toAgency: string
+      toAgency?: string
       /** @description Description of the agency travelling to */
-      toAgencyDescription: string
+      toAgencyDescription?: string
       /** @description City offender was received from */
       fromCity?: string
       /** @description City offender was sent to */
@@ -5476,10 +10737,7 @@ export interface components {
        * @description Movement date
        */
       movementDate: string
-      /**
-       * Format: partial-time
-       * @description Movement time
-       */
+      /** @description Movement time */
       movementTime: string
       /** @description Description of movement reason */
       movementReason: string
@@ -5487,6 +10745,19 @@ export interface components {
       movementReasonCode: string
       /** @description Comment */
       commentText?: string
+    }
+    OffenderLatestArrivalDate: {
+      /**
+       * @description The offender of the offender
+       * @example A1234AA
+       */
+      offenderNo: string
+      /**
+       * Format: date
+       * @description The latest arrival date for the offender
+       * @example 2020-12-09
+       */
+      latestArrivalDate: string
     }
     /** @description Key worker allocation details */
     KeyWorkerAllocationDetail: {
@@ -5511,8 +10782,8 @@ export interface components {
       /** @description Agency Id */
       agencyId: string
       /**
+       * Format: date-time
        * @description Date and time of the allocation
-       * @example 2021-07-05T10:35:17
        */
       assigned: string
       /** @description Description of the location within the prison */
@@ -5530,13 +10801,13 @@ export interface components {
       /** @description Agency Id */
       agencyId: string
       /**
+       * Format: date-time
        * @description Date and time allocation was assigned
-       * @example 2021-07-05T10:35:17
        */
       assigned: string
       /**
+       * Format: date-time
        * @description Date and time allocation expired
-       * @example 2021-07-05T10:35:17
        */
       expired?: string
       /** @description Username of user who processed allocation */
@@ -5544,15 +10815,15 @@ export interface components {
       /** @description Y */
       active: string
       /**
+       * Format: date-time
        * @description Date and time allocation record was created
-       * @example 2021-07-05T10:35:17
        */
       created: string
       /** @description Username of user who created allocation record */
       createdBy: string
       /**
+       * Format: date-time
        * @description Date and time allocation record was last modified
-       * @example 2021-07-05T10:35:17
        */
       modified?: string
       /** @description Username of user who last modified allocation record */
@@ -5578,8 +10849,9 @@ export interface components {
        */
       captureDate: string
       /**
+       * Format: date-time
        * @description Date and time of image capture
-       * @example 2021-07-05T10:35:17
+       * @example 2008-08-28T01:01:01
        */
       captureDateTime: string
       /**
@@ -5629,7 +10901,7 @@ export interface components {
        */
       objectId?: number
     }
-    /** @description Transfer to Savings Transaction */
+    /** @description Saving Transfer Transaction Details */
     TransferTransaction: {
       /**
        * Format: int64
@@ -5652,6 +10924,18 @@ export interface components {
        * @example CLIENT121131-0_11
        */
       client_unique_ref: string
+    }
+    /** @description Detail of result of transfer transaction */
+    TransferTransactionDetail: {
+      /** @description Debit Transaction */
+      debitTransaction?: components['schemas']['Transaction']
+      /** @description Credit Transaction */
+      creditTransaction?: components['schemas']['Transaction']
+      /**
+       * Format: int64
+       * @description Transaction Id
+       */
+      transactionId?: number
     }
     /** @description Offender Education */
     Education: {
@@ -5785,8 +11069,9 @@ export interface components {
        */
       numCaseNotes: number
       /**
+       * Format: date-time
        * @description Last case note of this type
-       * @example 2021-07-05T10:35:17
+       * @example 2018-12-01T14:55:23
        */
       latestCaseNote: string
     }
@@ -5798,8 +11083,9 @@ export interface components {
        */
       bookingId?: number
       /**
+       * Format: date-time
        * @description Only case notes occurring on or after this date (in YYYY-MM-DDTHH:MM:SS format) will be considered.
-       * @example 2021-07-05T10:35:17
+       * @example 2018-11-01T12:00:00
        */
       fromDate?: string
     }
@@ -5884,8 +11170,9 @@ export interface components {
        */
       numCaseNotes: number
       /**
+       * Format: date-time
        * @description Last case note of this type
-       * @example 2021-07-05T10:35:17
+       * @example 2018-12-01T14:55:23
        */
       latestCaseNote: string
     }
@@ -5907,8 +11194,9 @@ export interface components {
        */
       escortType: string
       /**
+       * Format: date-time
        * @description The date and time of the move in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2020-02-28T14:40:00
        */
       scheduledMoveDateTime: string
     }
@@ -5921,11 +11209,20 @@ export interface components {
        */
       id?: number
       /**
+       * Format: date-time
        * @description The date and start time of the move in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2020-02-28T14:40:00
        */
       scheduledMoveDateTime?: string
+      /**
+       * @description The location of the prison to move from.
+       * @example PVI
+       */
       fromPrisonLocation?: components['schemas']['Agency']
+      /**
+       * @description The location of the prison to move to.
+       * @example LEI
+       */
       toPrisonLocation?: components['schemas']['Agency']
     }
     /** @description The prison to court hearing to be scheduled for the offender booking. */
@@ -5941,8 +11238,9 @@ export interface components {
        */
       toCourtLocation: string
       /**
+       * Format: date-time
        * @description The future date and time of the court hearing in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2020-02-28T14:40:00
        */
       courtHearingDateTime: string
       /**
@@ -5991,13 +11289,13 @@ export interface components {
        */
       locationId: number
       /**
+       * Format: date-time
        * @description Date and time at which event starts
-       * @example 2021-07-05T10:35:17
        */
       startTime: string
       /**
+       * Format: date-time
        * @description Date and time at which event ends
-       * @example 2021-07-05T10:35:17
        */
       endTime?: string
       /** @description Details of appointment */
@@ -6033,13 +11331,13 @@ export interface components {
        */
       eventDate: string
       /**
+       * Format: date-time
        * @description Date and time at which event starts
-       * @example 2021-07-05T10:35:17
        */
       startTime?: string
       /**
+       * Format: date-time
        * @description Date and time at which event ends
-       * @example 2021-07-05T10:35:17
        */
       endTime?: string
       /** @description Location at which event takes place (could be an internal location, agency or external address). */
@@ -6074,40 +11372,6 @@ export interface components {
       locationCode?: string
       /** @description Staff member who created the appointment */
       createUserId?: string
-    }
-    /** @description Alert details */
-    CreateAlert: {
-      /**
-       * @description Code identifying type of alert
-       * @example X
-       */
-      alertType: string
-      /**
-       * @description Code identifying the sub type of alert
-       * @example XEL
-       */
-      alertCode: string
-      /**
-       * @description Free Text Comment
-       * @example has a large poster on cell wall
-       */
-      comment: string
-      /**
-       * Format: date
-       * @description Date the alert became effective
-       * @example 2019-02-13
-       */
-      alertDate: string
-      /**
-       * Format: date
-       * @description Date the alert should expire
-       * @example 2099-02-13
-       */
-      expiryDate?: string
-    }
-    AlertCreated: {
-      /** Format: int64 */
-      alertId?: number
     }
     /** @description Offender basic detail */
     InmateBasicDetails: {
@@ -6220,13 +11484,15 @@ export interface components {
        */
       locationId: number
       /**
+       * Format: date-time
        * @description The date and time at which the appointments start. ISO 8601 Date-time format. startTime must be in the future.
-       * @example 2021-07-05T10:35:17
+       * @example 2018-12-31T14:00
        */
       startTime: string
       /**
+       * Format: date-time
        * @description The date and time at which the appointments end. ISO 8601 Date-time format. endTime, if present, must be later than startTime.
-       * @example 2021-07-05T10:35:17
+       * @example 2018-12-31T14:50:00
        */
       endTime?: string
       /**
@@ -6244,13 +11510,15 @@ export interface components {
        */
       bookingId: number
       /**
+       * Format: date-time
        * @description A replacement for the default startTime. ISO 8601 date-time format.  This value, when present, must be in the future.
-       * @example 2021-07-05T10:35:17
+       * @example 2018-12-31T23:50
        */
       startTime?: string
       /**
+       * Format: date-time
        * @description A replacement for the default endTime. ISO 8601 date-time format.  This value, when present, must be later than the default startTime, or the startTime in this object if it is defined.
-       * @example 2021-07-05T10:35:17
+       * @example 2018-12-31T23:59
        */
       endTime?: string
       /**
@@ -6261,12 +11529,13 @@ export interface components {
     }
     /** @description Details for creating appointments in bulk */
     AppointmentsToCreate: {
+      /** @description The default values to be applied to each new appointment. An individual appointment may change the startTime, add or change the endTime and provide text for that appointment's comment. */
       appointmentDefaults: components['schemas']['AppointmentDefaults']
       /** @description The details for creating each appointment.  A Missing value falls back to the default value if present. Mandatory, but an empty list is accepted. */
       appointments: components['schemas']['AppointmentDetails'][]
+      /** @description If present specifies the number of times to repeat the appointments and the period of the repeat */
       repeat?: components['schemas']['Repeat']
     }
-    /** @description If present specifies the number of times to repeat the appointments and the period of the repeat */
     Repeat: {
       /**
        * @description The period at which the appointment should repeat.
@@ -6289,13 +11558,15 @@ export interface components {
        */
       bookingId: number
       /**
+       * Format: date-time
        * @description The start time of the appointment.
-       * @example 2021-07-05T10:35:17
+       * @example 2018-12-31T23:50
        */
       startTime?: string
       /**
+       * Format: date-time
        * @description The end time of the appointment.
-       * @example 2021-07-05T10:35:17
+       * @example 2018-12-31T23:59
        */
       endTime?: string
       /** Format: int64 */
@@ -6311,6 +11582,19 @@ export interface components {
        * @example 25
        */
       locationId: number
+    }
+    /** @description A agency */
+    AgencyDetails: {
+      /**
+       * @description The agency code. Normally a prison, but can be any location e.g. a prisoner escort service area.
+       * @example BXI
+       */
+      agencyId: string
+      /**
+       * @description The agency name
+       * @example Brixton
+       */
+      name: string
     }
     /** @description Create Agency Request */
     RequestToCreateAgency: {
@@ -6368,7 +11652,7 @@ export interface components {
        */
       active?: boolean
     }
-    /** @description Visit slots Details */
+    /** @description Visit slots Details  */
     VisitSlotCapacity: {
       /**
        * @description Time
@@ -6424,6 +11708,7 @@ export interface components {
        * @example 204564839-3
        */
       id: string
+      /** @description The type of transaction */
       type: components['schemas']['CodeDescription']
       /**
        * @description Transaction description
@@ -6584,8 +11869,11 @@ export interface components {
        * @example 1970-01-01
        */
       date_of_birth?: string
+      /** @description Gender */
       gender?: components['schemas']['CodeDescription']
+      /** @description Relationship Type */
       'relationship type'?: components['schemas']['CodeDescription']
+      /** @description Contact Type */
       'contact type'?: components['schemas']['CodeDescription']
       /** @description Approved Visitor */
       'approved visitor'?: boolean
@@ -6596,6 +11884,7 @@ export interface components {
     }
     /** @description Visit Restriction */
     VisitRestriction: {
+      /** @description Type */
       type?: components['schemas']['CodeDescription']
       /**
        * Format: date
@@ -6619,6 +11908,7 @@ export interface components {
     }
     /** @description Language */
     Language: {
+      /** @description Spoken language */
       preferred_spoken?: components['schemas']['CodeDescription']
       /**
        * @description whether an interpreter is required
@@ -6658,12 +11948,17 @@ export interface components {
       date_of_birth?: string
       /** @description List of offender’s aliases */
       aliases?: components['schemas']['OffenderAlias'][]
+      /** @description Gender */
       gender?: components['schemas']['CodeDescription']
       /** @description Nationalities */
       nationalities?: string
+      /** @description Religion */
       religion?: components['schemas']['CodeDescription']
+      /** @description Ethnicity */
       ethnicity?: components['schemas']['CodeDescription']
+      /** @description Language */
       language?: components['schemas']['Language']
+      /** @description Cell Sharing Risk Assessment */
       csra?: components['schemas']['CodeDescription']
       /**
        * @description indicates whether the offender has been convicted or is on remand
@@ -6680,9 +11975,13 @@ export interface components {
        * @example ADF567890
        */
       cro_number?: string
+      /** @description Imprisonment Status */
       imprisonment_status?: components['schemas']['CodeDescription']
+      /** @description IEP Level */
       iep_level?: components['schemas']['CodeDescription']
+      /** @description Diet */
       diet?: components['schemas']['CodeDescription']
+      /** @description Security Categorisation */
       security_category?: components['schemas']['CodeDescription']
     }
     /** @description Offender Alias */
@@ -6733,49 +12032,48 @@ export interface components {
        */
       prison_id: string
       /**
+       * Format: date-time
        * @description Date and time the event occurred
-       * @example 2021-07-05T10:35:17
+       * @example 2016-10-21 15:55:06.284
        */
       timestamp: string
       eventData?: string
     }
-    /** @description Location Details */
-    Location: {
+    /** @description Internal Location */
+    InternalLocation: {
       /**
-       * Format: int64
-       * @description Location identifier.
+       * @description Description
+       * @example BMI-C-2-03
        */
-      locationId: number
-      /** @description Location type. */
-      locationType: string
-      /** @description Location description. */
-      description: string
-      /** @description What events this room can be used for. */
-      locationUsage?: string
-      /** @description Identifier of Agency this location is associated with. */
-      agencyId: string
+      description?: string
+      /** @description Levels */
+      levels?: components['schemas']['TypeValue'][]
+    }
+    /** @description Location */
+    OffenderLocation: {
       /**
-       * Format: int64
-       * @description Identifier of this location's parent location.
+       * @description Establishment
+       * @example {code: 'BMI', desc: 'BIRMINGHAM (HMP)'}
        */
-      parentLocationId?: number
+      establishment?: components['schemas']['CodeDescription']
       /**
-       * Format: int32
-       * @description Current occupancy of location.
+       * @description Housing Location
+       * @example [{ type: 'Wing', value: 'C' },{ type: 'Landing', value: '2' },{ type: 'Cell', value: '03' }]
        */
-      currentOccupancy?: number
-      /** @description Location prefix. Defines search prefix that will constrain search to this location and its subordinate locations. */
-      locationPrefix?: string
+      housing_location?: components['schemas']['InternalLocation']
+    }
+    /** @description Type Value */
+    TypeValue: {
       /**
-       * Format: int32
-       * @description Operational capacity of the location.
+       * @description Type
+       * @example Wing
        */
-      operationalCapacity?: number
-      /** @description User-friendly location description. */
-      userDescription?: string
-      internalLocationCode?: string
-      /** @description Indicates that sub locations exist for this location e.g. landings or cells */
-      subLocations?: boolean
+      type?: string
+      /**
+       * @description Value
+       * @example C
+       */
+      value?: string
     }
     /** @description Prisoner Photo */
     Image: {
@@ -6787,7 +12085,8 @@ export interface components {
     }
     /** @description Offender Booking */
     Booking: {
-      location?: components['schemas']['Location']
+      /** @description Location of Offender */
+      location?: components['schemas']['OffenderLocation']
       /**
        * @description Bookings
        * @example A12313
@@ -6826,7 +12125,21 @@ export interface components {
     }
     /** @description Offender Charge */
     Charge: {
+      /**
+       * @description Statute
+       * @example {
+       *       'code': 'PL96',
+       *       'desc': 'Police Act 1996'
+       *     }
+       */
       statute?: components['schemas']['CodeDescription']
+      /**
+       * @description Offence
+       * @example {
+       *       'code': 'PL96001',
+       *       'desc': 'Assault a constable in the execution of his / her duty'
+       *     }
+       */
       offence?: components['schemas']['CodeDescription']
       /**
        * @description Most Serious Offence
@@ -6843,14 +12156,42 @@ export interface components {
        * @example 100
        */
       severity_ranking?: string
+      /**
+       * @description Result
+       * @example {
+       *       'code': '1002',
+       *       'desc': 'Imprisonment'
+       *     }
+       */
       result?: components['schemas']['CodeDescription']
+      /**
+       * @description Disposition
+       * @example {
+       *       'code': 'F',
+       *       'desc': 'Final'
+       *     }
+       */
       disposition?: components['schemas']['CodeDescription']
       /**
        * @description Convicted
        * @example true
        */
       convicted?: boolean
+      /**
+       * @description Imprisonment Status
+       * @example {
+       *       'code': 'UNK_SENT',
+       *       'desc': 'Unknown Sentenced'
+       *     }
+       */
       imprisonment_status?: components['schemas']['CodeDescription']
+      /**
+       * @description Band
+       * @example {
+       *       'code': '1',
+       *       'desc': 'Sent-Determinate NonFine'
+       *     }
+       */
       band?: components['schemas']['CodeDescription']
     }
     /** @description Legal Case */
@@ -6871,14 +12212,42 @@ export interface components {
        * @example 2019-01-17
        */
       case_started?: string
+      /**
+       * @description Court
+       * @example {
+       *       'code': 'ABDRCT',
+       *       'desc': 'Aberdare County Court'
+       *     }
+       */
       court?: components['schemas']['CodeDescription']
+      /**
+       * @description Legal Case Type
+       * @example {
+       *       'code': 'A',
+       *       'desc': 'Adult'
+       *     }
+       */
       legal_case_type?: components['schemas']['CodeDescription']
       /** @description Charges */
       charges?: components['schemas']['Charge'][]
     }
     /** @description Offender Alert */
     AlertV1: {
+      /**
+       * @description Code and description identifying the type of alert
+       * @example {
+       *       'code': 'FX',
+       *       'desc': 'Security'
+       *     }
+       */
       alert_type: components['schemas']['CodeDescription']
+      /**
+       * @description Code and description identifying the sub type of alert
+       * @example {
+       *       'code': 'XEL',
+       *       'desc': 'Escape List'
+       *     }
+       */
       alert_sub_type: components['schemas']['CodeDescription']
       /**
        * Format: date
@@ -6921,6 +12290,7 @@ export interface components {
        * @example true
        */
       found?: boolean
+      /** @description offender */
       offender?: components['schemas']['OffenderId']
     }
     /** @description offender ID */
@@ -6948,48 +12318,79 @@ export interface components {
       /** @description caseload that this role belongs to, (NOMIS only) */
       caseloadId?: string
     }
-    /** @description Staff Details */
-    StaffDetail: {
+    /** @description Location Details */
+    Location: {
       /**
        * Format: int64
-       * @description Unique identifier for staff member.
-       * @example 423142
+       * @description Location identifier.
        */
-      staffId: number
-      /**
-       * @description Staff member's first name.
-       * @example JOHN
-       */
-      firstName: string
-      /**
-       * @description Staff member's last name.
-       * @example SMITH
-       */
-      lastName: string
-      /**
-       * @description Status of staff member.
-       * @example ACTIVE
-       * @enum {string}
-       */
-      status: 'ACTIVE' | 'INACTIVE'
+      locationId: number
+      /** @description Location type. */
+      locationType: string
+      /** @description Location description. */
+      description: string
+      /** @description What events this room can be used for. */
+      locationUsage?: string
+      /** @description Identifier of Agency this location is associated with. */
+      agencyId: string
       /**
        * Format: int64
-       * @description Identifier for staff member image.
-       * @example 231232
+       * @description Identifier of this location's parent location.
        */
-      thumbnailId?: number
+      parentLocationId?: number
       /**
-       * @description Gender of Staff Member
-       * @example M
-       * @enum {string}
+       * Format: int32
+       * @description Current occupancy of location.
        */
-      gender?: 'M' | 'F' | 'NK' | 'NS' | 'REF'
+      currentOccupancy?: number
+      /** @description Location prefix. Defines search prefix that will constrain search to this location and its subordinate locations. */
+      locationPrefix?: string
+      /**
+       * Format: int32
+       * @description Operational capacity of the location.
+       */
+      operationalCapacity?: number
+      /** @description User-friendly location description. */
+      userDescription?: string
+      internalLocationCode?: string
+      /** @description Indicates that sub locations exist for this location e.g. landings or cells */
+      subLocations?: boolean
+    }
+    PrisonerTransaction: {
+      /**
+       * @description Transaction ID
+       * @example 204564839-3
+       */
+      id: string
+      /** @description The type of transaction */
+      type: components['schemas']['CodeDescription']
+      /**
+       * @description Transaction description
+       * @example Transfer In Regular from caseload PVR
+       */
+      description: string
+      /**
+       * Format: int64
+       * @description Amount in pence
+       * @example 12345
+       */
+      amount: number
       /**
        * Format: date
-       * @description Date of Birth of Staff Member
-       * @example 1970-01-02
+       * @description Date of the transaction
+       * @example 2016-10-21
        */
-      dateOfBirth?: string
+      date: string
+      /**
+       * @description A reference unique to the client making the post. Maximum size 64 characters, only alphabetic, numeric, '-' and '_' are allowed
+       * @example CLIENT121131-0_11
+       */
+      clientUniqueRef?: string
+    }
+    /** @description Account Transactions */
+    PrisonerTransactions: {
+      /** @description List of account transactions */
+      transactions: components['schemas']['PrisonerTransaction'][]
     }
     /** @description Staff Role */
     StaffRole: {
@@ -7117,15 +12518,15 @@ export interface components {
       /** @description The event's status. Includes 'CANC', meaning cancelled for 'VISIT' */
       eventStatus: string
       /** @description Comment */
-      comment: string
+      comment?: string
       /**
+       * Format: date-time
        * @description Date and time at which event starts
-       * @example 2021-07-05T10:35:17
        */
-      startTime: string
+      startTime?: string
       /**
+       * Format: date-time
        * @description Date and time at which event ends
-       * @example 2021-07-05T10:35:17
        */
       endTime?: string
     }
@@ -7148,13 +12549,13 @@ export interface components {
        */
       date?: string
       /**
+       * Format: date-time
        * @description Date and time at which appointment starts
-       * @example 2021-07-05T10:35:17
        */
       startTime?: string
       /**
+       * Format: date-time
        * @description Date and time at which appointment ends
-       * @example 2021-07-05T10:35:17
        */
       endTime?: string
       /** @description Description of appointment type */
@@ -7172,6 +12573,8 @@ export interface components {
       createUserId?: string
       /** @description Agency the appointment belongs to */
       agencyId?: string
+      /** @description The event status for this appointment, one of SCH (scheduled), COMP (completed), EXP (expired) or CANC (cancelled) */
+      eventStatus?: string
     }
     /** @description Reference Domain */
     ReferenceDomain: {
@@ -7332,9 +12735,9 @@ export interface components {
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      paged?: boolean
       unpaged?: boolean
     }
     SortObject: {
@@ -7342,220 +12745,227 @@ export interface components {
       sorted?: boolean
       unsorted?: boolean
     }
-    /** @description Sentence Adjustment values */
-    BookingAdjustment: {
+    OffenderLanguageDto: {
       /**
-       * @description Adjustment type
+       * @description A LOV from domain LANG_TYPE
        * @enum {string}
        */
-      type?:
-        | 'SPECIAL_REMISSION'
-        | 'ADDITIONAL_DAYS_AWARDED'
-        | 'RESTORED_ADDITIONAL_DAYS_AWARDED'
-        | 'UNLAWFULLY_AT_LARGE'
-        | 'LAWFULLY_AT_LARGE'
-        | 'SPECIAL_REMISSION, ADDITIONAL_DAYS_AWARDED, RESTORED_ADDITIONAL_DAYS_AWARDED, UNLAWFULLY_AT_LARGE, LAWFULLY_AT_LARGE'
+      type: 'PRIM' | 'SEC' | 'PREF_SPEAK' | 'PREF_WRITE'
       /**
-       * Format: int32
-       * @description Number of days to adjust
-       * @example 12
+       * @description The actual language code, from domain LANG
+       * @example ENG
        */
-      numberOfDays?: number
+      code: string
+      /**
+       * @description The level of reading skill, from domain LANG_SKILLS:
+       *         |Y  Yes
+       *         |A	Average
+       *         |D	Dyslexia
+       *         |G	Good
+       *         |N	Nil
+       *         |P	Poor
+       *         |R	Refused
+       * @enum {string}
+       */
+      readSkill?: 'Y' | 'N' | 'A' | 'D' | 'G' | 'P' | 'R'
+      /**
+       * @description The level of writing skill, see description for readSkill
+       * @enum {string}
+       */
+      writeSkill?: 'Y' | 'N' | 'A' | 'D' | 'G' | 'P' | 'R'
+      /**
+       * @description The level of speaking skill, see description for readSkill
+       * @enum {string}
+       */
+      speakSkill?: 'Y' | 'N' | 'A' | 'D' | 'G' | 'P' | 'R'
+      /** @description Whether interpreter requested */
+      interpreterRequested: boolean
+    }
+    /** @description Prisoner details required by Prisoner Search */
+    PrisonerSearchDetails: {
+      /**
+       * @description Prisoner Number a.k.a NOMS number, offender number
+       * @example A1234AA
+       */
+      offenderNo: string
+      /**
+       * Format: int64
+       * @description Offender Id
+       * @example 678673
+       */
+      offenderId?: number
+      /**
+       * Format: int64
+       * @description Booking Id of the active booking
+       * @example 432132
+       */
+      bookingId?: number
+      /** @description Booking Number of the active booking */
+      bookingNo?: string
+      /** @description Title */
+      title?: string
+      /** @description First Name */
+      firstName: string
+      /** @description Middle Name(s) */
+      middleName?: string
+      /** @description Last Name */
+      lastName: string
       /**
        * Format: date
-       * @description The 'from date' of the adjustment
-       * @example 2022-01-01
+       * @description Date of Birth of prisoner
+       * @example 1970-03-15
        */
-      fromDate?: string
+      dateOfBirth: string
       /**
-       * Format: date
-       * @description The 'to date' of the adjustment
-       * @example 2022-01-31
+       * @description Prison ID
+       * @example MDI
        */
-      toDate?: string
+      agencyId?: string
+      /** @description Cell or location of the prisoner */
+      assignedLivingUnit?: components['schemas']['AssignedLivingUnit']
+      /** @description Religion of the prisoner */
+      religion?: string
+      /** @description A set of physical attributes */
+      physicalAttributes?: components['schemas']['PhysicalAttributes']
+      /** @description List of physical characteristics */
+      physicalCharacteristics?: components['schemas']['PhysicalCharacteristic'][]
+      /** @description List of profile information */
+      profileInformation?: components['schemas']['ProfileInformation'][]
+      /** @description List of physical marks */
+      physicalMarks?: components['schemas']['PhysicalMark'][]
+      /** @description CSRA (Latest assessment with cellSharing=true from list of assessments) */
+      csra?: string
+      /** @description Category code (from list of assessments) */
+      categoryCode?: string
       /**
-       * @description Boolean flag showing if the adjustment is active
+       * @description In/Out Status
+       * @example IN, OUT, TRN
+       */
+      inOutStatus?: string
+      /** @description Prisoner Identifiers */
+      identifiers?: components['schemas']['OffenderIdentifier'][]
+      /** @description Prisoner Identifiers including those from aliases */
+      allIdentifiers?: components['schemas']['OffenderIdentifier'][]
+      /** @description Sentence Detail */
+      sentenceDetail?: components['schemas']['SentenceCalcDates']
+      /** @description Most serious offence */
+      mostSeriousOffence?: string
+      /** @description Currently serving an indeterminate sentence? */
+      indeterminateSentence?: boolean
+      /** @description Aliases */
+      aliases?: components['schemas']['Alias'][]
+      /**
+       * @description Status of prisoner
+       * @example ACTIVE IN, ACTIVE OUT, INACTIVE OUT, INACTIVE TRN
+       */
+      status?: string
+      /**
+       * @description Last Movement Type Code of prisoner. Note: Reference Data from MOVE_TYPE Domain
+       * @example TAP, CRT, TRN, ADM, REL
+       */
+      lastMovementTypeCode?: string
+      /**
+       * @description Last Movement Reason of prisoner. Note: Reference Data from MOVE_RSN Domain
+       * @example CA
+       */
+      lastMovementReasonCode?: string
+      /**
+       * Format: date-time
+       * @description Last Movement time
+       * @example 2024-12-01 12:23:34
+       */
+      lastMovementTime?: string
+      /**
+       * Format: date-time
+       * @description Time of transfer into the current or most recent prison
+       * @example 2024-12-01 12:23:34
+       */
+      lastAdmissionTime?: string
+      /**
+       * @description Legal Status
+       * @example REMAND
+       * @enum {string}
+       */
+      legalStatus?:
+        | 'RECALL'
+        | 'DEAD'
+        | 'INDETERMINATE_SENTENCE'
+        | 'SENTENCED'
+        | 'CONVICTED_UNSENTENCED'
+        | 'CIVIL_PRISONER'
+        | 'IMMIGRATION_DETAINEE'
+        | 'REMAND'
+        | 'UNKNOWN'
+        | 'OTHER'
+      /**
+       * @description Recall
        * @example true
        */
-      active?: boolean
+      recall?: boolean
+      /**
+       * @description The prisoner's imprisonment status
+       * @example LIFE
+       */
+      imprisonmentStatus?: string
+      /**
+       * @description The prisoner's imprisonment status description
+       * @example Serving Life Imprisonment
+       */
+      imprisonmentStatusDescription?: string
+      /**
+       * @description The prisoner's convicted status
+       * @example Convicted
+       */
+      convictedStatus?: string
+      /**
+       * Format: date
+       * @description Date prisoner was first received into prison in their current or most recent term.
+       * @example 2023-01-01
+       */
+      receptionDate?: string
+      /**
+       * @description current prison or outside with last movement information.
+       * @example Outside - released from Leeds
+       */
+      locationDescription?: string
+      /**
+       * @description the current prison id or the last prison before release
+       * @example MDI
+       */
+      latestLocationId?: string
+      /** @description Prisoner Addresses */
+      addresses?: components['schemas']['AddressDto'][]
+      /** @description Prisoner Phone Numbers */
+      phones?: components['schemas']['Telephone'][]
+      /** @description Prisoner Email Addresses */
+      emailAddresses?: components['schemas']['Email'][]
+      /** @description Convicted offences for ALL bookings */
+      allConvictedOffences?: components['schemas']['OffenceHistoryDetail'][]
+      /** @description Personal Care Needs. Specific types are selected for the prisoner profile : DISAB, MATSTAT, PHY, PSYCH, SC */
+      personalCareNeeds?: components['schemas']['PersonalCareNeed'][]
+      /** @description Languages spoken, read or written */
+      languages?: components['schemas']['OffenderLanguageDto'][]
+      /**
+       * Format: int64
+       * @description The prisoner's current facial image can be retrieved by plugging this id into the endpoint /api/images/{prisonerNumber}/data?imageId={imageId}
+       * @example 341221
+       */
+      imageId?: number
     }
-    /** @description The active sentence envelope is a combination of the person information, the active booking and calculable sentences at a particular establishment */
-    CalculableSentenceEnvelope: {
-      person: components['schemas']['Person']
+    /** @description The prisoner to be calculated as part of a bulk calculation */
+    CalculablePrisoner: {
+      /**
+       * @description Prisoner Identifier
+       * @example A1234AA
+       */
+      prisonerNumber: string
       /**
        * Format: int64
        * @description The booking ID
        */
       bookingId: number
-      /** @description Sentence and offence details  for a prisoner */
-      sentenceAndOffences: components['schemas']['OffenderSentenceAndOffences'][]
-      /** @description Adjustments at a sentence level */
-      sentenceAdjustments: components['schemas']['SentenceAdjustmentValues'][]
-      /** @description Adjustments at a booking level */
-      bookingAdjustments: components['schemas']['BookingAdjustment'][]
-      /** @description List of offender fine payments */
-      offenderFinePayments: components['schemas']['OffenderFinePaymentDto'][]
-      fixedTermRecallDetails?: components['schemas']['FixedTermRecallDetails']
-      sentenceCalcDates?: components['schemas']['SentenceCalcDates']
     }
-    /** @description Details relating to the fixed term recall on a booking */
-    FixedTermRecallDetails: {
-      /**
-       * Format: int64
-       * @description The booking id
-       */
-      bookingId?: number
-      /**
-       * Format: date
-       * @description The date the offender returned to custody
-       */
-      returnToCustodyDate?: string
-      /**
-       * Format: int32
-       * @description The length of the fixed term recall
-       */
-      recallLength?: number
-    }
-    /** @description Offender fine payments */
-    OffenderFinePaymentDto: {
-      /**
-       * Format: int64
-       * @description The bookingId this payment relates to
-       */
-      bookingId?: number
-      /**
-       * Format: int32
-       * @description Payment sequence - a unique identifier a payment on a booking
-       */
-      sequence?: number
-      /**
-       * Format: date
-       * @description The date of the payment
-       */
-      paymentDate?: string
-      /** @description The amount of the payment */
-      paymentAmount?: number
-    }
-    /** @description Offence details related to an offender */
-    OffenderOffence: {
-      /**
-       * Format: int64
-       * @description Internal ID for charge relating to offender
-       */
-      offenderChargeId?: number
-      /**
-       * Format: date
-       * @description Offence Start Date
-       */
-      offenceStartDate?: string
-      /**
-       * Format: date
-       * @description Offence End Date
-       */
-      offenceEndDate?: string
-      /** @description Offence statute */
-      offenceStatute?: string
-      /** @description Offence Code */
-      offenceCode?: string
-      /** @description Offence Description */
-      offenceDescription?: string
-      /** @description Offence Indicators */
-      indicators?: string[]
-    }
-    /** @description Offender sentence and offence details */
-    OffenderSentenceAndOffences: {
-      /**
-       * Format: int64
-       * @description The bookingId this sentence and offence(s) relates to
-       */
-      bookingId?: number
-      /**
-       * Format: int32
-       * @description Sentence sequence - a unique identifier a sentence on a booking
-       */
-      sentenceSequence?: number
-      /**
-       * Format: int32
-       * @description This sentence is consecutive to this sequence (if populated)
-       */
-      consecutiveToSequence?: number
-      /**
-       * Format: int64
-       * @description Sentence line sequence - a number representing the order
-       */
-      lineSequence?: number
-      /**
-       * Format: int32
-       * @description Case sequence - a number representing the order of the case this sentence belongs to
-       */
-      caseSequence?: number
-      /** @description Case reference - a string identifying the case this sentence belongs to */
-      caseReference?: string
-      /** @description Court description - a string describing the the court that the case was heard at */
-      courtDescription?: string
-      /** @description This sentence status: A = Active I = Inactive */
-      sentenceStatus?: string
-      /** @description The sentence category e.g. 2003 or Licence */
-      sentenceCategory?: string
-      /** @description The sentence calculation type e.g. R or ADIMP_ORA */
-      sentenceCalculationType?: string
-      /** @description The sentence type description e.g. Standard Determinate Sentence */
-      sentenceTypeDescription?: string
-      /**
-       * Format: date
-       * @description The sentenced date for this sentence (aka court date)
-       */
-      sentenceDate?: string
-      /**
-       * Format: date
-       * @description Date that this sentence did or will start
-       */
-      sentenceStartDate?: string
-      /**
-       * Format: date
-       * @description Date that this sentence would expire
-       */
-      sentenceEndDate?: string
-      /** @description The sentence terms of the sentence */
-      terms?: components['schemas']['OffenderSentenceTerm'][]
-      /** @description The offences related to this sentence (will usually only have one offence per sentence) */
-      offences?: components['schemas']['OffenderOffence'][]
-      /**
-       * Format: double
-       * @description The amount of fine related to the sentence and offence
-       */
-      fineAmount?: number
-    }
-    /** @description Offender sentence term */
-    OffenderSentenceTerm: {
-      /**
-       * Format: int32
-       * @description The term duration - years
-       * @example 1
-       */
-      years?: number
-      /**
-       * Format: int32
-       * @description The term duration - months
-       * @example 2
-       */
-      months?: number
-      /**
-       * Format: int32
-       * @description The term duration - weeks
-       * @example 3
-       */
-      weeks?: number
-      /**
-       * Format: int32
-       * @description The term duration - days
-       * @example 4
-       */
-      days?: number
-      /** @description The sentence term code, indicating if this is the term of imprisonment or license */
-      code?: string
-    }
-    PageCalculableSentenceEnvelope: {
+    PageCalculablePrisoner: {
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
@@ -7564,7 +12974,7 @@ export interface components {
       last?: boolean
       /** Format: int32 */
       size?: number
-      content?: components['schemas']['CalculableSentenceEnvelope'][]
+      content?: components['schemas']['CalculablePrisoner'][]
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
@@ -7573,55 +12983,168 @@ export interface components {
       pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
-    /** @description The identifiers of a person necessary for a calculation */
-    Person: {
+    /** @description Summary of cell usage for this level */
+    LocationRollCount: {
       /**
-       * @description Prisoner Identifier
-       * @example A1234AA
+       * Format: int32
+       * @description Beds in use
        */
-      prisonerNumber: string
-      /** Format: date */
-      dateOfBirth: string
-      lastName: string
-      agencyId: string
-      alerts: components['schemas']['Alert'][]
+      bedsInUse: number
+      /**
+       * Format: int32
+       * @description Currently in cell
+       */
+      currentlyInCell: number
+      /**
+       * Format: int32
+       * @description Currently out
+       */
+      currentlyOut: number
+      /**
+       * Format: int32
+       * @description Working capacity
+       */
+      workingCapacity: number
+      /**
+       * Format: int32
+       * @description Net vacancies
+       */
+      netVacancies: number
+      /**
+       * Format: int32
+       * @description Out of order
+       */
+      outOfOrder: number
     }
-    /** @description Sentence Adjustment values */
-    SentenceAdjustmentValues: {
+    /** @description Establishment Roll Count */
+    PrisonRollCount: {
+      /** @description Prison Id */
+      prisonId: string
       /**
        * Format: int32
-       * @description Sentence sequence
-       * @example 1
+       * @description Unlock roll today
        */
-      sentenceSequence?: number
-      /**
-       * @description Adjustment type
-       * @enum {string}
-       */
-      type?: 'RECALL_SENTENCE_REMAND' | 'TAGGED_BAIL' | 'RECALL_SENTENCE_TAGGED_BAIL' | 'REMAND' | 'UNUSED_REMAND'
+      numUnlockRollToday: number
       /**
        * Format: int32
-       * @description Number of days to adjust
-       * @example 12
+       * @description Current population
        */
-      numberOfDays?: number
+      numCurrentPopulation: number
       /**
-       * Format: date
-       * @description The 'from date' of the adjustment
-       * @example 2022-01-01
+       * Format: int32
+       * @description Arrived today
        */
-      fromDate?: string
+      numArrivedToday: number
       /**
-       * Format: date
-       * @description The 'to date' of the adjustment
-       * @example 2022-01-31
+       * Format: int32
+       * @description In reception
        */
-      toDate?: string
+      numInReception: number
       /**
-       * @description Boolean flag showing if the adjustment is active
+       * Format: int32
+       * @description Still to arrive
+       */
+      numStillToArrive: number
+      /**
+       * Format: int32
+       * @description Out today
+       */
+      numOutToday: number
+      /**
+       * Format: int32
+       * @description No cell allocated
+       */
+      numNoCellAllocated: number
+      /** @description Totals */
+      totals: components['schemas']['LocationRollCount']
+      /** @description Residential location roll count summary */
+      locations: components['schemas']['ResidentialLocation'][]
+    }
+    /** @description Residential Roll Count Summary */
+    ResidentialLocation: {
+      /**
+       * @description Location Id
+       * @example 121212
+       */
+      locationId: string
+      /**
+       * @description Type of location
+       * @example CELL
+       */
+      locationType: string
+      /**
+       * @description Code of this location
+       * @example 002
+       */
+      locationCode: string
+      /**
+       * @description Path of this location from top level
+       * @example A-1-002
+       */
+      fullLocationPath: string
+      /**
+       * @description Certified location
        * @example true
        */
-      active?: boolean
+      certified: boolean
+      /**
+       * @description Local name of the location
+       * @example Wing A
+       */
+      localName?: string
+      /** @description Summary of cell roll count for this level (aggregated) */
+      rollCount: components['schemas']['LocationRollCount']
+      /** @description List of residential locations for this summary, including wings and sub-locations such as landings and cells */
+      subLocations: unknown
+      key: string
+    }
+    /** @description Prison Roll Summary */
+    PrisonRollSummary: {
+      /** @description Prison Id */
+      prisonId: string
+      /**
+       * Format: int32
+       * @description Unlock roll today
+       */
+      numUnlockRollToday: number
+      /**
+       * Format: int32
+       * @description Arrived today
+       */
+      numArrivedToday: number
+      /**
+       * Format: int32
+       * @description Out today
+       */
+      numOutToday: number
+      /**
+       * Format: int32
+       * @description Current population
+       */
+      numCurrentPopulation: number
+    }
+    /** @description Establishment roll count in and out numbers */
+    MovementCount: {
+      /**
+       * Format: int32
+       * @description Number of prisoners arrived so far on given date
+       */
+      in: number
+      /**
+       * Format: int32
+       * @description Number of prisoners that have left so far on given date
+       */
+      out: number
+    }
+    /** @description Summary movements in and out of a prison today */
+    PrisonRollMovementInfo: {
+      /** @description In/Out count of movements today */
+      inOutMovementsToday: components['schemas']['MovementCount']
+      /**
+       * Format: int32
+       * @description Prisoner en-route count for today
+       */
+      enRouteToday: number
     }
     /** @description PersonIdentifier */
     PersonIdentifier: {
@@ -7706,8 +13229,9 @@ export interface components {
       /** @description Indicates that the amount has been cleared from holding */
       holdingCleared?: boolean
       /**
+       * Format: date-time
        * @description Creation date time
-       * @example 2021-07-05T10:35:17
+       * @example 2020-12-11T:20:00
        */
       createDateTime?: string
     }
@@ -7787,13 +13311,18 @@ export interface components {
        */
       bookingId: number
       /**
+       * Format: int32
+       * @description The order sequence of this booking
+       */
+      bookingSequence: number
+      /**
+       * Format: date-time
        * @description Date they first entered prison in this booking
-       * @example 2021-07-05T10:35:17
        */
       entryDate: string
       /**
+       * Format: date-time
        * @description Date they were last released from prison in this booking if they have been released
-       * @example 2021-07-05T10:35:17
        */
       releaseDate?: string
       /** @description List of significant period of time when in prison. The time between these periods means they person was out of prison (but not including court) */
@@ -7820,7 +13349,7 @@ export interface components {
        * @example Unconvicted Remand
        */
       reasonInToPrison: string
-      /** @example 2021-07-05T10:35:17 */
+      /** Format: date-time */
       dateInToPrison?: string
       /**
        * @description Type of movement into prison
@@ -7833,8 +13362,8 @@ export interface components {
        */
       reasonOutOfPrison?: string
       /**
+       * Format: date-time
        * @description Date this sub-period ended - if it has ended
-       * @example 2021-07-05T10:35:17
        */
       dateOutOfPrison?: string
       /**
@@ -7856,13 +13385,13 @@ export interface components {
     /** @description A movement that is a transfer */
     TransferDetail: {
       /**
+       * Format: date-time
        * @description Date prisoner left the original prison
-       * @example 2021-07-05T10:35:17
        */
       dateOutOfPrison?: string
       /**
+       * Format: date-time
        * @description Date prisoner entered the new prison. Can be absent if they have not arrived at the prison yet
-       * @example 2021-07-05T10:35:17
        */
       dateInToPrison?: string
       /**
@@ -7890,9 +13419,15 @@ export interface components {
       restrictionId: number
       /** @description Restriction comment text */
       comment?: string
-      /** @description code of restriction type */
+      /**
+       * @description code of restriction type
+       * @example ACC
+       */
       restrictionType: string
-      /** @description description of restriction type */
+      /**
+       * @description description of restriction type
+       * @example Access Requirements
+       */
       restrictionTypeDescription: string
       /**
        * Format: date
@@ -7919,105 +13454,117 @@ export interface components {
       /** @description Offender restrictions */
       offenderRestrictions?: components['schemas']['OffenderRestriction'][]
     }
-    /** @description Military Record */
+    /** @description Prisoner military record with details about service in the UK Armed Forces. */
     MilitaryRecord: {
       /**
-       * @description War zone code
+       * Format: int64
+       * @description Booking ID of the prisoner.
+       * @example 1234567
+       */
+      bookingId: number
+      /**
+       * Format: int32
+       * @description Sequence number of the military record within the booking.
+       * @example 1
+       */
+      militarySeq: number
+      /**
+       * @description Code identifying the war zone where the service took place.
        * @example AFG
        */
       warZoneCode?: string
       /**
-       * @description War zone description
+       * @description Description of the war zone where the service took place.
        * @example Afghanistan
        */
       warZoneDescription?: string
       /**
        * Format: date
-       * @description Start date
-       * @example 2000-01-01
+       * @description Start date of the military service.
+       * @example 2017-06-01
        */
       startDate: string
       /**
        * Format: date
-       * @description End date
-       * @example 2020-10-17
+       * @description End date of the military service, if applicable.
+       * @example 2019-12-01
        */
       endDate?: string
       /**
-       * @description Military discharge code
-       * @example DIS
+       * @description Code indicating the discharge status from the UK military forces.
+       * @example HON
        */
       militaryDischargeCode?: string
       /**
-       * @description Military discharge description
-       * @example Dishonourable
+       * @description Description of the discharge status from the UK military forces.
+       * @example Honourable
        */
       militaryDischargeDescription?: string
       /**
-       * @description Military branch code
+       * @description Code identifying the branch of the UK military in which the individual served.
        * @example ARM
        */
       militaryBranchCode: string
       /**
-       * @description Military branch description
+       * @description Description of the military branch of the UK Armed Forces.
        * @example Army
        */
-      militaryBranchDescription: string
+      militaryBranchDescription?: string
       /**
-       * @description Description
-       * @example Some description
+       * @description Additional notes or details about the military service.
+       * @example Deployed to Afghanistan in support of Operation Herrick.
        */
       description?: string
       /**
-       * @description The unit number
-       * @example 255 TACP Battery
+       * @description Unit number in which the individual served.
+       * @example 2nd Battalion, The Royal Anglian Regiment
        */
       unitNumber?: string
       /**
-       * @description Enlistment location
-       * @example Sheffield
+       * @description Location where the individual enlisted in the UK military.
+       * @example Windsor, Berkshire
        */
       enlistmentLocation?: string
       /**
-       * @description Discharge location
-       * @example Manchester
+       * @description Location where the individual was discharged from the UK military.
+       * @example Colchester, Essex
        */
       dischargeLocation?: string
       /**
-       * @description Selective services flag
+       * @description Flag indicating if the individual was registered for UK selective military service (National Service).
        * @example false
        */
       selectiveServicesFlag: boolean
       /**
-       * @description Military rank code
-       * @example LCPL_RMA
+       * @description Code identifying the individual's military rank in the UK forces.
+       * @example CPL_ARM
        */
       militaryRankCode?: string
       /**
-       * @description Military rank description
-       * @example Lance Corporal  (Royal Marines)
+       * @description Description of the individual's military rank in the UK forces.
+       * @example Corporal
        */
       militaryRankDescription?: string
       /**
-       * @description Service number
-       * @example 25232301
+       * @description Service number of the individual within the UK military.
+       * @example 2345678
        */
       serviceNumber?: string
       /**
-       * @description Disciplinary action code
+       * @description Code identifying any disciplinary actions taken against the individual during service.
        * @example CM
        */
       disciplinaryActionCode?: string
       /**
-       * @description Disciplinary action description
+       * @description Description of any disciplinary actions taken against the individual during service.
        * @example Court Martial
        */
       disciplinaryActionDescription?: string
     }
-    /** @description Military Records */
+    /** @description Prisoner military records with details about service in the UK Armed Forces. */
     MilitaryRecords: {
-      /** @description Military Records */
-      militaryRecords?: components['schemas']['MilitaryRecord'][]
+      /** @description List of military records. */
+      militaryRecords: components['schemas']['MilitaryRecord'][]
     }
     /** @description Incident Case */
     IncidentCase: {
@@ -8087,8 +13634,9 @@ export interface components {
        */
       incidentDate: string
       /**
+       * Format: date-time
        * @description Time when incident occurred
-       * @example 2021-07-05T10:35:17
+       * @example 2018-02-10T16:35:20
        */
       incidentTime: string
       /**
@@ -8104,20 +13652,21 @@ export interface components {
        */
       reportDate: string
       /**
+       * Format: date-time
        * @description Time incident reported
-       * @example 2021-07-05T10:35:17
+       * @example 2018-02-11T08:00:00
        */
       reportTime: string
       /**
        * @description Current Status of Incident.  Note:
-       * AWAN = Awaiting Analysis
-       * INAN = In Analysis
-       * INREQ = Information Required
-       * INAME =Information Amended
-       * CLOSE = Closed
-       * PIU = Post Incident Update
-       * IUP = Incident Updated
-       * DUP = Duplicate (Created In Error)
+       *     AWAN = Awaiting Analysis
+       *     INAN = In Analysis
+       *     INREQ = Information Required
+       *     INAME =Information Amended
+       *     CLOSE = Closed
+       *     PIU = Post Incident Update
+       *     IUP = Incident Updated
+       *     DUP = Duplicate (Created In Error)
        * @example CLOSE
        * @enum {string}
        */
@@ -8216,8 +13765,9 @@ export interface components {
        */
       questionnaireAnsId: number
       /**
+       * Format: date-time
        * @description Date response was recorded
-       * @example 2021-07-05T10:35:17
+       * @example 2018-03-04T11:00:05
        */
       responseDate?: string
       /**
@@ -8231,37 +13781,6 @@ export interface components {
        * @example 123123
        */
       recordStaffId?: number
-    }
-    /** @description Previous permanent housing levels at the same prison without moving to a different prison inbetween */
-    HousingLocation: {
-      /**
-       * Format: int32
-       * @description The level (starting from 1) of the individual location. The highest number level will be the cell.
-       * @example 1
-       */
-      level: number
-      /**
-       * @description The code for the location e.g. 010 for a cell, A for a wing
-       * @example 010
-       */
-      code: string
-      /**
-       * @description Description of the location, either from the user description if set or reference code description and code
-       * @example Wing A
-       */
-      description: string
-      /**
-       * @description The type of the location - from LIVING_UNIT reference code
-       * @example WING
-       * @enum {string}
-       */
-      type?: 'BED' | 'BLK' | 'CB' | 'CELL' | 'LAND' | 'SPUR' | 'TIER' | 'WING'
-    }
-    OffenderLocation: {
-      /** @description Current housing levels or null if not currently in prison */
-      levels?: components['schemas']['HousingLocation'][]
-      /** @description Previous permanent housing levels at the same prison without moving to a different prison inbetween */
-      lastPermanentLevels?: components['schemas']['HousingLocation'][]
     }
     /** @description Damage obligation for an offender */
     OffenderDamageObligationModel: {
@@ -8282,13 +13801,15 @@ export interface components {
        */
       referenceNumber?: string
       /**
+       * Format: date-time
        * @description The start date time when the damage obligation started
-       * @example 2021-07-05T10:35:17
+       * @example 2020-12-10T21:00:00
        */
       startDateTime?: string
       /**
+       * Format: date-time
        * @description The end date time when the damage obligation ended
-       * @example 2021-07-05T10:35:17
+       * @example 2020-12-11T21:00:00
        */
       endDateTime?: string
       /**
@@ -8326,6 +13847,123 @@ export interface components {
     OffenderDamageObligationResponse: {
       /** @description List of offender damage obligations */
       damageObligations?: components['schemas']['OffenderDamageObligationModel'][]
+    }
+    /** @description Core Person Record Physical Attributes */
+    CorePersonPhysicalAttributes: {
+      /**
+       * Format: int32
+       * @description Height (in centimetres)
+       */
+      height?: number
+      /**
+       * Format: int32
+       * @description Weight (in kilograms)
+       */
+      weight?: number
+      /** @description Hair type or colour */
+      hair?: components['schemas']['ProfileCode']
+      /** @description Facial hair type */
+      facialHair?: components['schemas']['ProfileCode']
+      /** @description Face shape */
+      face?: components['schemas']['ProfileCode']
+      /** @description Build */
+      build?: components['schemas']['ProfileCode']
+      /** @description Left eye colour */
+      leftEyeColour?: components['schemas']['ProfileCode']
+      /** @description Right eye colour */
+      rightEyeColour?: components['schemas']['ProfileCode']
+      /**
+       * @description Shoe size
+       * @example 9
+       */
+      shoeSize?: string
+    }
+    PK: {
+      type?: components['schemas']['ProfileType']
+      code?: string
+    }
+    ProfileCode: {
+      createUserId?: string
+      /** Format: date-time */
+      createDatetime?: string
+      modifyUserId?: string
+      /** Format: date-time */
+      modifyDatetime?: string
+      id?: components['schemas']['PK']
+      description?: string
+      updateAllowed?: boolean
+      active?: boolean
+      /** Format: date */
+      endDate?: string
+      /** Format: int32 */
+      listSequence?: number
+    }
+    ProfileType: {
+      createUserId?: string
+      /** Format: date-time */
+      createDatetime?: string
+      modifyUserId?: string
+      /** Format: date-time */
+      modifyDatetime?: string
+      type?: string
+      category?: string
+      description?: string
+      mandatory?: boolean
+      updateAllowed?: boolean
+      codeValueType?: string
+      active?: boolean
+      /** Format: date */
+      endDate?: string
+      /** Format: int32 */
+      listSequence?: number
+    }
+    /** @description Core Person Record Communication Needs */
+    CorePersonCommunicationNeeds: {
+      /**
+       * @description Prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /** @description Language preferences */
+      languagePreferences?: components['schemas']['CorePersonLanguagePreferences']
+      /** @description List of secondary languages */
+      secondaryLanguages: components['schemas']['CorePersonSecondaryLanguage'][]
+    }
+    /** @description Core Person Record Language Preferences */
+    CorePersonLanguagePreferences: {
+      /** @description Preferred spoken language */
+      preferredSpokenLanguage?: components['schemas']['LanguageReferenceCode']
+      /** @description Preferred written language */
+      preferredWrittenLanguage?: components['schemas']['LanguageReferenceCode']
+      /**
+       * @description Is interpreter required
+       * @example true
+       */
+      interpreterRequired?: boolean
+    }
+    /** @description Secondary language information */
+    CorePersonSecondaryLanguage: {
+      /** @description Language reference code */
+      language: components['schemas']['LanguageReferenceCode']
+      /** @description Reading proficiency */
+      canRead: boolean
+      /** @description Writing proficiency */
+      canWrite: boolean
+      /** @description Speaking proficiency */
+      canSpeak: boolean
+    }
+    LanguageReferenceCode: {
+      domain?: string
+      code?: string
+      description?: string
+      /** Format: int32 */
+      listSequence?: number
+      active?: boolean
+      primaryKey?: components['schemas']['Pk']
+    }
+    Pk: {
+      domain?: string
+      code?: string
     }
     /** @description Offender Contact */
     OffenderContact: {
@@ -8472,6 +14110,7 @@ export interface components {
        * @example 2019-12-01
        */
       beginDate?: string
+      /** @description Court details */
       court?: components['schemas']['Agency']
       /**
        * @description The case type
@@ -8488,6 +14127,7 @@ export interface components {
       caseStatus?: 'ACTIVE' | 'CLOSED' | 'INACTIVE'
       /** @description Court sentences associated with the court case */
       sentences?: components['schemas']['SentencesOffencesTerms'][]
+      /** @description Issuing Court Details */
       issuingCourt?: components['schemas']['Agency']
       /**
        * Format: date
@@ -8655,16 +14295,42 @@ export interface components {
       tariffEarlyRemovalSchemeEligibilityDate?: string
       /**
        * Format: date
-       * @description Top-up supervision start date for offender - calculated as licence end date + 1 day or releaseDate if licence end date not set.
-       * @example 2019-04-01
-       */
-      topupSupervisionStartDate?: string
-      /**
-       * Format: date
        * @description Offender's home detention curfew end date - calculated as one day before the releaseDate.
        * @example 2019-04-01
        */
       homeDetentionCurfewEndDate?: string
+      /**
+       * Format: date
+       * @description Top-up supervision start date for offender - calculated as licence end date + 1 day or releaseDate if licence end date not set.
+       * @example 2019-04-01
+       */
+      topupSupervisionStartDate?: string
+    }
+    /** @description Offence details related to an offender */
+    OffenderOffence: {
+      /**
+       * Format: int64
+       * @description Internal ID for charge relating to offender
+       */
+      offenderChargeId?: number
+      /**
+       * Format: date
+       * @description Offence Start Date
+       */
+      offenceStartDate?: string
+      /**
+       * Format: date
+       * @description Offence End Date
+       */
+      offenceEndDate?: string
+      /** @description Offence statute */
+      offenceStatute?: string
+      /** @description Offence Code */
+      offenceCode?: string
+      /** @description Offence Description */
+      offenceDescription?: string
+      /** @description Offence Indicators */
+      indicators?: string[]
     }
     /** @description Prison Term */
     PrisonTerm: {
@@ -8747,6 +14413,18 @@ export interface components {
        * @example 12
        */
       unusedRemand?: number
+      /**
+       * Format: int32
+       * @description Number of time spent in custody abroad days
+       * @example 12
+       */
+      timeSpentInCustodyAbroad?: number
+      /**
+       * Format: int32
+       * @description Number of time spent as an appeal applicant days
+       * @example 12
+       */
+      timeSpentAsAnAppealApplicant?: number
     }
     /** @description Sentence Summary */
     SentenceSummary: {
@@ -8755,6 +14433,7 @@ export interface components {
        * @example A1234AA
        */
       prisonerNumber: string
+      /** @description Most recent term in prison */
       latestPrisonTerm?: components['schemas']['PrisonTerm']
     }
     /** @description Offender sentence and offence details */
@@ -9072,55 +14751,298 @@ export interface components {
        * @example true
        */
       mostRecentActiveBooking: boolean
+      /** @description Offender Sentence Detail Information */
       sentenceDetail?: components['schemas']['BaseSentenceCalcDates']
     }
-    /** @description Offender Sentence Calculation */
-    OffenderSentenceCalculation: {
-      /** Format: int64 */
+    /** @description Offender sentence and offence details */
+    OffenderSentenceAndOffences: {
+      /**
+       * Format: int64
+       * @description The bookingId this sentence and offence(s) relates to
+       */
       bookingId?: number
-      offenderNo?: string
-      firstName?: string
-      lastName?: string
-      agencyLocationId?: string
-      /** Format: int64 */
-      offenderSentCalculationId?: number
-      /** @example 2021-07-05T10:35:17 */
-      calculationDate?: string
-      /** Format: date */
-      sentenceExpiryDate?: string
-      /** Format: date */
-      licenceExpiryDate?: string
-      /** Format: date */
-      paroleEligibilityDate?: string
-      /** Format: date */
-      homeDetCurfEligibilityDate?: string
-      /** Format: date */
-      homeDetCurfActualDate?: string
-      /** Format: date */
-      automaticReleaseDate?: string
-      /** Format: date */
-      conditionalReleaseDate?: string
-      /** Format: date */
-      nonParoleDate?: string
-      /** Format: date */
-      postRecallReleaseDate?: string
-      /** Format: date */
-      actualParolDate?: string
-      /** Format: date */
-      topupSupervisionExpiryDate?: string
-      /** Format: date */
+      /**
+       * Format: int32
+       * @description Sentence sequence - a unique identifier a sentence on a booking
+       */
+      sentenceSequence?: number
+      /**
+       * Format: int32
+       * @description This sentence is consecutive to this sequence (if populated)
+       */
+      consecutiveToSequence?: number
+      /**
+       * Format: int64
+       * @description Sentence line sequence - a number representing the order
+       */
+      lineSequence?: number
+      /**
+       * Format: int32
+       * @description Case sequence - a number representing the order of the case this sentence belongs to
+       */
+      caseSequence?: number
+      /** @description Case reference - a string identifying the case this sentence belongs to */
+      caseReference?: string
+      /** @description Court description - a string describing the the court that the case was heard at */
+      courtDescription?: string
+      /** @description This sentence status: A = Active I = Inactive */
+      sentenceStatus?: string
+      /** @description The sentence category e.g. 2003 or Licence */
+      sentenceCategory?: string
+      /** @description The sentence calculation type e.g. R or ADIMP_ORA */
+      sentenceCalculationType?: string
+      /** @description The sentence type description e.g. Standard Determinate Sentence */
+      sentenceTypeDescription?: string
+      /**
+       * Format: date
+       * @description The sentenced date for this sentence (aka court date)
+       */
+      sentenceDate?: string
+      /**
+       * Format: date
+       * @description Date that this sentence did or will start
+       */
+      sentenceStartDate?: string
+      /**
+       * Format: date
+       * @description Date that this sentence would expire
+       */
+      sentenceEndDate?: string
+      /** @description The sentence terms of the sentence */
+      terms?: components['schemas']['OffenderSentenceTerm'][]
+      /** @description The offences related to this sentence (will usually only have one offence per sentence) */
+      offences?: components['schemas']['OffenderOffence'][]
+      /**
+       * Format: double
+       * @description The amount of fine related to the sentence and offence
+       */
+      fineAmount?: number
+    }
+    /** @description Offender sentence term */
+    OffenderSentenceTerm: {
+      /**
+       * Format: int32
+       * @description The term duration - years
+       * @example 1
+       */
+      years?: number
+      /**
+       * Format: int32
+       * @description The term duration - months
+       * @example 2
+       */
+      months?: number
+      /**
+       * Format: int32
+       * @description The term duration - weeks
+       * @example 3
+       */
+      weeks?: number
+      /**
+       * Format: int32
+       * @description The term duration - days
+       * @example 4
+       */
+      days?: number
+      /** @description The sentence term code, indicating if this is the term of imprisonment or license */
+      code?: string
+    }
+    /** @description Offender fine payments */
+    OffenderFinePaymentDto: {
+      /**
+       * Format: int64
+       * @description The bookingId this payment relates to
+       */
+      bookingId?: number
+      /**
+       * Format: int32
+       * @description Payment sequence - a unique identifier a payment on a booking
+       */
+      sequence?: number
+      /**
+       * Format: date
+       * @description The date of the payment
+       */
+      paymentDate?: string
+      /** @description The amount of the payment */
+      paymentAmount?: number
+    }
+    /** @description Offender Calculated Key Dates */
+    OffenderCalculatedKeyDates: {
+      /**
+       * Format: date
+       * @description HDCED - date on which offender will be eligible for home detention curfew.
+       * @example 2020-02-03
+       */
+      homeDetentionCurfewEligibilityDate?: string
+      /**
+       * Format: date
+       * @description ETD - early term date for offender.
+       * @example 2020-02-03
+       */
       earlyTermDate?: string
-      /** Format: date */
+      /**
+       * Format: date
+       * @description MTD - mid term date for offender.
+       * @example 2020-02-03
+       */
       midTermDate?: string
-      /** Format: date */
+      /**
+       * Format: date
+       * @description LTD - late term date for offender.
+       * @example 2020-02-03
+       */
       lateTermDate?: string
-      /** Format: date */
+      /**
+       * Format: date
+       * @description DPRRD - Detention training order post recall release date
+       * @example 2020-02-03
+       */
+      dtoPostRecallReleaseDate?: string
+      /**
+       * Format: date
+       * @description ARD - calculated automatic (unconditional) release date for offender.
+       * @example 2020-02-03
+       */
+      automaticReleaseDate?: string
+      /**
+       * Format: date
+       * @description CRD - calculated conditional release date for offender.
+       * @example 2020-02-03
+       */
+      conditionalReleaseDate?: string
+      /**
+       * Format: date
+       * @description PED - date on which offender is eligible for parole.
+       * @example 2020-02-03
+       */
+      paroleEligibilityDate?: string
+      /**
+       * Format: date
+       * @description NPD - calculated non-parole date for offender (relating to the 1991 act).
+       * @example 2020-02-03
+       */
+      nonParoleDate?: string
+      /**
+       * Format: date
+       * @description LED - date on which offender licence expires.
+       * @example 2020-02-03
+       */
+      licenceExpiryDate?: string
+      /**
+       * Format: date
+       * @description PRRD - calculated post-recall release date for offender.
+       * @example 2020-02-03
+       */
+      postRecallReleaseDate?: string
+      /**
+       * Format: date
+       * @description SED - date on which sentence expires.
+       * @example 2020-02-03
+       */
+      sentenceExpiryDate?: string
+      /**
+       * Format: date
+       * @description TUSED - top-up supervision expiry date for offender.
+       * @example 2020-02-03
+       */
+      topupSupervisionExpiryDate?: string
+      /**
+       * Format: date
+       * @description ERSED - Early Removal Scheme Eligibility Date
+       * @example 2020-02-03
+       */
+      earlyRemovalSchemeEligibilityDate?: string
+      /**
+       * Format: date
+       * @description Effective sentence end date.
+       * @example 2020-02-03
+       */
+      effectiveSentenceEndDate: string
+      /**
+       * @description Sentence length in the format 00 years/00 months/00 days.
+       * @example 11/00/00
+       */
+      sentenceLength: string
+      /**
+       * Format: date
+       * @description HDCAD - Home Detention Curfew Approved date
+       * @example 2020-02-03
+       */
+      homeDetentionCurfewApprovedDate?: string
+      /**
+       * Format: date
+       * @description Tarrif - Tarrif date
+       * @example 2020-02-03
+       */
       tariffDate?: string
+      /**
+       * Format: date
+       * @description Tarrif Expiry date
+       * @example 2020-02-03
+       */
+      tariffExpiredRemovalSchemeEligibilityDate?: string
+      /**
+       * Format: date
+       * @description APD - Approved Parole date
+       * @example 2020-02-03
+       */
+      approvedParoleDate?: string
+      /**
+       * Format: date
+       * @description ROTL - Release on Temporary Licence
+       * @example 2020-02-03
+       */
+      releaseOnTemporaryLicenceDate?: string
+      /**
+       * @description Judicially imposed length in the format 00 years/00 months/00 days. Will default to 'sentenceLength'
+       * @example 11/00/00
+       */
+      judiciallyImposedSentenceLength?: string
+      /**
+       * @description Comments for the given calculation
+       * @example Calculated for new sentence
+       */
+      comment?: string
+      /**
+       * @description The reason code for the calculation
+       * @example NEW
+       */
+      reasonCode?: string
+      /**
+       * Format: date-time
+       * @description The date and time the calculation was recorded
+       * @example 2017-10-31T01:30:00
+       */
+      calculatedAt?: string
+    }
+    /** @description Latest TUSED dates and associated info for offender */
+    LatestTusedData: {
       /** Format: date */
-      rotl?: string
+      latestTused?: string
       /** Format: date */
-      ersed?: string
+      latestOverrideTused?: string
+      comment?: string
+      offenderNo?: string
+    }
+    /** @description Offender Sentence Calculation Summary */
+    SentenceCalculationSummary: {
+      /** Format: int64 */
+      bookingId: number
+      offenderNo: string
+      firstName?: string
+      lastName: string
+      agencyLocationId: string
+      agencyDescription: string
+      /** Format: int64 */
+      offenderSentCalculationId: number
+      /** Format: date-time */
+      calculationDate: string
+      /** Format: int64 */
+      staffId?: number
       commentText?: string
+      calculationReason: string
+      calculatedByUserId: string
     }
     /** @description AssessmentSummary */
     AssessmentSummary: {
@@ -9338,46 +15260,64 @@ export interface components {
       dateOfBirth: string
       /** @description Reason for out movement */
       reasonDescription?: string
-      /** Format: partial-time */
       timeOut: string
       firstName: string
       lastName: string
+      /** @description Address to where the prisoner is moving */
+      toAddress?: string
+      /** @description Type of movement */
+      movementType?: string
     }
     /** @description Summary of an offender counted as Establishment Roll - In */
     OffenderIn: {
       /** @description Display Prisoner Number */
       offenderNo: string
-      /** Format: int64 */
+      /**
+       * Format: int64
+       * @description Booking ID
+       */
       bookingId: number
-      /** Format: date */
+      /**
+       * Format: date
+       * @description Date of birth
+       */
       dateOfBirth: string
+      /** @description First name */
       firstName: string
+      /** @description Middle name */
       middleName?: string
+      /** @description Display Prisoner Number */
       lastName: string
       /** @description Id for Agency travelling from */
-      fromAgencyId: string
+      fromAgencyId?: string
       /** @description Description for Agency travelling from */
-      fromAgencyDescription: string
+      fromAgencyDescription?: string
       /** @description Id for Agency travelling to */
-      toAgencyId: string
+      toAgencyId?: string
       /** @description Description for Agency travelling to */
-      toAgencyDescription: string
-      /** @description City offender was received from */
-      fromCity: string
+      toAgencyDescription?: string
+      /** @description From city */
+      fromCity?: string
       /** @description City offender was sent to */
-      toCity: string
-      /**
-       * Format: partial-time
-       * @description Movement time
-       */
+      toCity?: string
+      /** @description Movement time */
       movementTime: string
       /**
+       * Format: date-time
        * @description Movement date time
-       * @example 2021-07-05T10:35:17
        */
       movementDateTime: string
       /** @description Description of the offender's (internal) location */
-      location: string
+      location?: string
+      /**
+       * @description Type of movement
+       * @example TAP
+       */
+      movementType: string
+      /** @description Reason for movement in */
+      movementReasonDescription?: string
+      /** @description From address */
+      fromAddress?: string
     }
     /** @description Basic Summary data for a scheduled court event */
     CourtEventBasic: {
@@ -9397,8 +15337,9 @@ export interface components {
        */
       courtDescription?: string
       /**
+       * Format: date-time
        * @description The planned date and time of the start of the event in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2020-12-01T14:00:00
        */
       startTime: string
       /**
@@ -9422,8 +15363,9 @@ export interface components {
        */
       offenderNo: string
       /**
+       * Format: date-time
        * @description Date and time the record was created in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T13:34:00
        */
       createDateTime: string
       /**
@@ -9459,13 +15401,15 @@ export interface components {
        */
       eventDate: string
       /**
+       * Format: date-time
        * @description The planned date and time of the start of the event in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T14:00:00
        */
       startTime: string
       /**
+       * Format: date-time
        * @description The planned date and time of the end of the event in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T14:40:00
        */
       endTime: string
       /**
@@ -9522,8 +15466,9 @@ export interface components {
        */
       offenderNo: string
       /**
+       * Format: date-time
        * @description Timestamp when the external movement record was created in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T13:34:00
        */
       createDateTime: string
       /**
@@ -9600,8 +15545,9 @@ export interface components {
        */
       directionCode: string
       /**
+       * Format: date-time
        * @description Movement date and time in Europe/London local time format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T13:34:00
        */
       movementTime: string
       /**
@@ -9623,8 +15569,9 @@ export interface components {
        */
       offenderNo: string
       /**
+       * Format: date-time
        * @description Date and time the record was created in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T13:34:00
        */
       createDateTime: string
       /**
@@ -9709,8 +15656,9 @@ export interface components {
        */
       offenderNo: string
       /**
+       * Format: date-time
        * @description Date and time the record was created in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T13:34:00
        */
       createDateTime: string
       /**
@@ -9771,13 +15719,15 @@ export interface components {
        */
       eventDate: string
       /**
+       * Format: date-time
        * @description The planned date and time of the start of the event in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T13:34:00
        */
       startTime: string
       /**
+       * Format: date-time
        * @description The planned date and time of the end of the event in Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T13:34:00
        */
       endTime: string
       /**
@@ -9829,74 +15779,6 @@ export interface components {
       /** @description List of confirmed movements */
       movements?: components['schemas']['MovementSummary'][]
     }
-    /** @description Establishment roll count numbers for a housing block, wing, or reception etc. */
-    RollCount: {
-      /**
-       * Format: int64
-       * @description Id of location
-       */
-      livingUnitId: number
-      /** @description Wing, houseblock etc. name */
-      livingUnitDesc: string
-      /**
-       * Format: int32
-       * @description No of residential prisoners
-       */
-      bedsInUse: number
-      /**
-       * Format: int32
-       * @description No of residential prisoners actually in
-       */
-      currentlyInCell: number
-      /**
-       * Format: int32
-       * @description No of residential prisoners in internal locations
-       */
-      outOfLivingUnits: number
-      /**
-       * Format: int32
-       * @description No of residential prisoners out
-       */
-      currentlyOut: number
-      /**
-       * Format: int32
-       * @description Total capacity not including unavailable cells
-       */
-      operationalCapacity: number
-      /**
-       * Format: int32
-       * @description Available empty beds
-       */
-      netVacancies: number
-      /**
-       * Format: int32
-       * @description Total capacity including unavailable cells
-       */
-      maximumCapacity: number
-      /**
-       * Format: int32
-       * @description All empty beds
-       */
-      availablePhysical: number
-      /**
-       * Format: int32
-       * @description No of unavailable cells
-       */
-      outOfOrder: number
-    }
-    /** @description Establishment roll count in and out numbers */
-    MovementCount: {
-      /**
-       * Format: int32
-       * @description Number of prisoners arrived so far on given date
-       */
-      in: number
-      /**
-       * Format: int32
-       * @description Number of prisoners that have left so far on given date
-       */
-      out: number
-    }
     /** @description Summary of an offender counted as Establishment Roll - Reception */
     OffenderInReception: {
       /** @description Display Prisoner Number */
@@ -9924,6 +15806,42 @@ export interface components {
       /** @description The prisoner's internal location (Cell) */
       location: string
     }
+    /** @description Movement DTO */
+    BookingMovement: {
+      /**
+       * Format: int32
+       * @description Sequence number
+       */
+      sequence?: number
+      /** @description Agency travelling from */
+      fromAgency?: string
+      /** @description Agency travelling to */
+      toAgency?: string
+      /**
+       * @description ADM (admission), CRT (court), REL (release), TAP (temporary absence) or TRN (transfer)
+       * @enum {string}
+       */
+      movementType?: 'ADM' | 'CRT' | 'REL' | 'TAP' | 'TRN'
+      /** @description IN or OUT */
+      directionCode?: string
+      /**
+       * Format: date-time
+       * @description Movement timestamp
+       */
+      movementDateTime?: string
+      /** @description Code of movement reason */
+      movementReasonCode?: string
+      /**
+       * Format: date-time
+       * @description DB create timestamp
+       */
+      createdDateTime?: string
+      /**
+       * Format: date-time
+       * @description DB modify timestamp
+       */
+      modifiedDateTime?: string
+    }
     /** @description Summary data for a completed movement */
     OutOnTemporaryAbsenceSummary: {
       /**
@@ -9948,8 +15866,9 @@ export interface components {
        */
       dateOfBirth: string
       /**
+       * Format: date-time
        * @description Movement date and time in Europe/London local time format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
-       * @example 2021-07-05T10:35:17
+       * @example 2019-12-01T13:34:00
        */
       movementTime: string
       /**
@@ -10007,6 +15926,144 @@ export interface components {
        */
       numberAllocated: number
     }
+    /** @description Incident Type Answer */
+    IncidentTypeAnswer: {
+      /**
+       * Format: int64
+       * @description ID for this Answer
+       */
+      questionnaireAnsId: number
+      /**
+       * Format: int32
+       * @description Sequence for this answer
+       * @example 1
+       */
+      answerSeq: number
+      /**
+       * @description Answer Text
+       * @example YES
+       */
+      answerDesc: string
+      /**
+       * Format: int32
+       * @description Answer Sequence
+       * @example 1
+       */
+      answerListSeq: number
+      /**
+       * @description Indicates this answer is active
+       * @example true
+       */
+      answerActiveFlag: boolean
+      /**
+       * Format: date
+       * @description Date expired (not used)
+       * @example 2017-01-02T00:00:00
+       */
+      answerExpiryDate: string
+      /**
+       * @description Should the answer include date information?
+       * @example false
+       */
+      dateRequiredFlag: boolean
+      /**
+       * @description Should the answer include comment?
+       * @example false
+       */
+      commentRequiredFlag: boolean
+      /**
+       * Format: int64
+       * @description Next questionnaire question ID
+       */
+      nextQuestionnaireQueId: number
+    }
+    /** @description Incident Type Configuration */
+    IncidentTypeConfiguration: {
+      /**
+       * @description Incident type of this configuration
+       * @example DRONE1
+       */
+      incidentType: string
+      /**
+       * @description Incident type description
+       * @example Drone Sighting
+       */
+      incidentTypeDescription?: string
+      /**
+       * Format: int64
+       * @description ID internal of this question set for this incident type
+       * @example 123412
+       */
+      questionnaireId: number
+      /** @description List of questions (with answers) for this incident type */
+      questions: components['schemas']['IncidentTypeQuestion'][]
+      /** @description List of roles that can apply to a prisoner in this incident type */
+      prisonerRoles: components['schemas']['IncidentTypePrisonerRole'][]
+      /** @description Indicates this incident type is still usable */
+      active: boolean
+      /**
+       * Format: date
+       * @description Date the incident type was expired
+       */
+      expiryDate?: string
+    }
+    /** @description Incident type prisoner role */
+    IncidentTypePrisonerRole: {
+      /** @description Role type for this question set */
+      prisonerRole: string
+      /** @description If a single party can have this role in the question set */
+      singleRole: boolean
+      /** @description Indicates this role is active */
+      active: boolean
+      /**
+       * Format: date
+       * @description Indicates the date the role was made inactive
+       */
+      expiryDate: string
+    }
+    /** @description Incident type question */
+    IncidentTypeQuestion: {
+      /**
+       * Format: int64
+       * @description Question ID
+       */
+      questionnaireQueId: number
+      /**
+       * Format: int32
+       * @description Question sequence number
+       */
+      questionSeq: number
+      /** @description Question description */
+      questionDesc: string
+      /**
+       * Format: int32
+       * @description Question list sequence
+       */
+      questionListSeq: number
+      /** @description Indicates question is active */
+      questionActiveFlag: boolean
+      /**
+       * Format: date
+       * @description Date question was retired
+       */
+      questionExpiryDate: string
+      /** @description Indicate multiple responses can be given */
+      multipleAnswerFlag: boolean
+      /** @description Order list of answers */
+      answers: components['schemas']['IncidentTypeAnswer'][]
+    }
+    /** @description Represents an offenders imprisonment status at a point in history */
+    ImprisonmentStatusHistoryDto: {
+      /** @description The imprisonment status */
+      status: string
+      /**
+       * Format: date
+       * @description The date the status was effective from
+       */
+      effectiveDate: string
+      /** @description The agency the status was set by */
+      agencyId: string
+    }
     /** @description Gang Member Detail */
     GangMemberDetail: {
       /**
@@ -10039,6 +16096,7 @@ export interface components {
     }
     /** @description Summary of Gangs for a specified prisoner */
     GangMemberSummary: {
+      /** @description The details of the gang member */
       member?: components['schemas']['GangMemberDetail']
       /** @description Current gang involvement */
       currentGangs: components['schemas']['GangSummary'][]
@@ -10107,6 +16165,16 @@ export interface components {
       pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
+    CourtEventDetails: {
+      /** Format: int64 */
+      eventId: number
+      /** Format: date-time */
+      startTime: string
+      courtLocation: string
+      courtEventType: string
+      comments?: string
+      caseReference?: string
+    }
     /** @description A charge linked to a court date */
     CourtDateCharge: {
       /**
@@ -10151,8 +16219,16 @@ export interface components {
        * @description The sentence date
        */
       sentenceDate?: string
+      /** @description The sentence type */
+      sentenceType?: string
+      /** @description The result code of the charge */
+      resultCode?: string
       /** @description The result description of the charge */
       resultDescription?: string
+      /** @description The disposition code of the result of the charge */
+      resultDispositionCode?: string
+      /** @description Is this charge active in NOMIS. */
+      active?: boolean
     }
     /** @description Represents a court date and its outcome */
     CourtDateResult: {
@@ -10172,6 +16248,7 @@ export interface components {
       resultDescription?: string
       /** @description The disposition code of the result of the court date */
       resultDispositionCode?: string
+      /** @description The charge which is the subject of the court date */
       charge: components['schemas']['CourtDateCharge']
       /**
        * Format: int64
@@ -10180,6 +16257,89 @@ export interface components {
       bookingId: number
       /** @description The user readable ID for a booking */
       bookNumber: string
+    }
+    /** @description A charge and all its court date outcomes */
+    CourtDateChargeAndOutcomes: {
+      /**
+       * Format: int64
+       * @description The id of the charge
+       */
+      chargeId?: number
+      /** @description The offence code of the office in the court case */
+      offenceCode?: string
+      /** @description The offence statute of the office in the court case */
+      offenceStatue?: string
+      /** @description The offence description */
+      offenceDescription?: string
+      /**
+       * Format: date
+       * @description The date of the offence
+       */
+      offenceDate?: string
+      /**
+       * Format: date
+       * @description The offence end date
+       */
+      offenceEndDate?: string
+      /** @description Was the verdict guilty or not guilty */
+      guilty: boolean
+      /**
+       * Format: int64
+       * @description The id of the court case
+       */
+      courtCaseId?: number
+      /** @description Court case reference */
+      courtCaseRef?: string
+      /** @description Court case location */
+      courtLocation?: string
+      /**
+       * Format: int32
+       * @description The sequence of the sentence from this charge
+       */
+      sentenceSequence?: number
+      /**
+       * Format: date
+       * @description The sentence date
+       */
+      sentenceDate?: string
+      /** @description The sentence type */
+      sentenceType?: string
+      /** @description The result code of the charge */
+      resultCode?: string
+      /** @description The result description of the charge */
+      resultDescription?: string
+      /** @description The disposition code of the result of the charge */
+      resultDispositionCode?: string
+      /**
+       * Format: int64
+       * @description The id of the booking this court date was linked to
+       */
+      bookingId: number
+      /** @description The user readable ID for a booking */
+      bookNumber: string
+      /** @description Is this charge active in NOMIS. */
+      active: boolean
+      /** @description All the court date outcomes for this charge */
+      outcomes: components['schemas']['CourtDateOutcome'][]
+    }
+    /** @description Represents the outcome for a court date of a given charge */
+    CourtDateOutcome: {
+      /**
+       * Format: int64
+       * @description The ID of this court date
+       */
+      id: number
+      /**
+       * Format: date
+       * @description The date of the court result
+       */
+      date?: string
+      /** @description The result code of the court date */
+      resultCode?: string
+      /** @description The result description of the court date */
+      resultDescription?: string
+      /** @description The disposition code of the result of the court date */
+      resultDispositionCode?: string
     }
     /** @description Bed assignment history entry */
     BedAssignment: {
@@ -10202,8 +16362,9 @@ export interface components {
        */
       assignmentDate?: string
       /**
+       * Format: date-time
        * @description Date and time the offender was moved to a living unit.
-       * @example 2021-07-05T10:35:17
+       * @example 2020-10-12T08:00
        */
       assignmentDateTime?: string
       /**
@@ -10218,8 +16379,9 @@ export interface components {
        */
       assignmentEndDate?: string
       /**
+       * Format: date-time
        * @description Date and time an offender was moved out of the living unit
-       * @example 2021-07-05T10:35:17
+       * @example 2020-11-12:T15:00
        */
       assignmentEndDateTime?: string
       /**
@@ -10298,8 +16460,8 @@ export interface components {
     /** @description Visit summary */
     VisitSummary: {
       /**
+       * Format: date-time
        * @description Date and time at which next scheduled (i.e. not cancelled) event starts (if any)
-       * @example 2021-07-05T10:35:17
        */
       startDateTime?: string
       /** @description Whether the prisoner has any visits (previous or next) */
@@ -10362,13 +16524,13 @@ export interface components {
       /** @description Description of relationship code */
       relationshipDescription?: string
       /**
+       * Format: date-time
        * @description Date and time at which event starts
-       * @example 2021-07-05T10:35:17
        */
       startTime: string
       /**
+       * Format: date-time
        * @description Date and time at which event ends
-       * @example 2021-07-05T10:35:17
        */
       endTime?: string
       /**
@@ -10396,6 +16558,7 @@ export interface components {
     VisitWithVisitors: {
       /** @description List of visitors on visit */
       visitors: components['schemas']['Visitor'][]
+      /** @description Visit Information */
       visitDetails: components['schemas']['VisitDetails']
     }
     /** @description Visitor */
@@ -10502,6 +16665,7 @@ export interface components {
     }
     /** @description Offender property container details */
     PropertyContainer: {
+      /** @description The location id of the property container */
       location?: components['schemas']['Location']
       /**
        * @description The case sequence number for the offender
@@ -10513,6 +16677,24 @@ export interface components {
        * @example Valuables
        */
       containerType?: string
+    }
+    /** @description Details relating to the fixed term recall on a booking */
+    FixedTermRecallDetails: {
+      /**
+       * Format: int64
+       * @description The booking id
+       */
+      bookingId?: number
+      /**
+       * Format: date
+       * @description The date the offender returned to custody
+       */
+      returnToCustodyDate?: string
+      /**
+       * Format: int32
+       * @description The length of the fixed term recall
+       */
+      recallLength?: number
     }
     /** @description Represents court hearings for an offender booking. */
     CourtHearings: {
@@ -10538,6 +16720,7 @@ export interface components {
        * @example 2019-12-01
        */
       beginDate?: string
+      /** @description Agency details */
       agency?: components['schemas']['Agency']
       /**
        * @description The case type
@@ -10663,8 +16846,9 @@ export interface components {
        */
       bookingId: number
       /**
+       * Format: date-time
        * @description Date time the contact was created
-       * @example 2021-07-05T10:35:17
+       * @example 2020-10-10T:20:00
        */
       createDateTime: string
     }
@@ -10732,24 +16916,6 @@ export interface components {
       damageObligations: number
       /** @description Currency of these balances. */
       currency: string
-    }
-    PageAlert: {
-      /** Format: int64 */
-      totalElements?: number
-      /** Format: int32 */
-      totalPages?: number
-      first?: boolean
-      last?: boolean
-      /** Format: int32 */
-      size?: number
-      content?: components['schemas']['Alert'][]
-      /** Format: int32 */
-      number?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
-      empty?: boolean
     }
     PagePrisonerBookingSummary: {
       /** Format: int64 */
@@ -10962,7 +17128,19 @@ export interface components {
       /** @description A key for the group */
       key: string
       /** @description The child groups of this group */
-      children: components['schemas']['LocationGroup'][]
+      children: unknown[]
+    }
+    /** @description Location Summary Details */
+    LocationSummary: {
+      /**
+       * Format: int64
+       * @description Location identifier.
+       */
+      locationId: number
+      /** @description User-friendly location description. */
+      userDescription?: string
+      /** @description Location description. */
+      description: string
     }
     /** @description Agency Establishment Type */
     AgencyEstablishmentType: {
@@ -11075,12 +17253,102 @@ export interface components {
       /** @description List of Address details */
       addresses: components['schemas']['AddressDto'][]
     }
+    /** @description Sentence Adjustment values */
+    BookingAdjustment: {
+      /**
+       * @description Adjustment type
+       * @enum {string}
+       */
+      type?:
+        | 'SPECIAL_REMISSION'
+        | 'ADDITIONAL_DAYS_AWARDED'
+        | 'RESTORED_ADDITIONAL_DAYS_AWARDED'
+        | 'UNLAWFULLY_AT_LARGE'
+        | 'LAWFULLY_AT_LARGE'
+      /**
+       * Format: int32
+       * @description Number of days to adjust
+       * @example 12
+       */
+      numberOfDays?: number
+      /**
+       * Format: date
+       * @description The 'from date' of the adjustment
+       * @example 2022-01-01
+       */
+      fromDate?: string
+      /**
+       * Format: date
+       * @description The 'to date' of the adjustment
+       * @example 2022-01-31
+       */
+      toDate?: string
+      /**
+       * @description Boolean flag showing if the adjustment is active
+       * @example true
+       */
+      active?: boolean
+      /**
+       * @description The user comments for this adjustment
+       * @example This is an adjustment
+       */
+      comment?: string
+    }
     /** @description Adjustments associated at a booking level and a sentence level */
     BookingAndSentenceAdjustments: {
-      /** @description Adjustments associated at a sentence level (of type RECALL_SENTENCE_REMAND, TAGGED_BAIL, RECALL_SENTENCE_TAGGED_BAIL, REMAND or UNUSED_REMAND) */
+      /** @description Adjustments associated at a sentence level (of type RECALL_SENTENCE_REMAND, TAGGED_BAIL, RECALL_SENTENCE_TAGGED_BAIL, REMAND, UNUSED_REMAND, TIME_SPENT_IN_CUSTODY_ABROAD or TIME_SPENT_AS_AN_APPEAL_APPLICANT) */
       sentenceAdjustments?: components['schemas']['SentenceAdjustmentValues'][]
       /** @description Adjustments associated at a booking level (of type SPECIAL_REMISSION, ADDITIONAL_DAYS_AWARDED, RESTORED_ADDITIONAL_DAYS_AWARDED, UNLAWFULLY_AT_LARGE, LAWFULLY_AT_LARGE) */
       bookingAdjustments?: components['schemas']['BookingAdjustment'][]
+    }
+    /** @description Sentence Adjustment values */
+    SentenceAdjustmentValues: {
+      /**
+       * Format: int32
+       * @description Sentence sequence
+       * @example 1
+       */
+      sentenceSequence?: number
+      /**
+       * @description Adjustment type
+       * @enum {string}
+       */
+      type?:
+        | 'RECALL_SENTENCE_REMAND'
+        | 'TAGGED_BAIL'
+        | 'RECALL_SENTENCE_TAGGED_BAIL'
+        | 'REMAND'
+        | 'UNUSED_REMAND'
+        | 'TIME_SPENT_IN_CUSTODY_ABROAD'
+        | 'TIME_SPENT_AS_AN_APPEAL_APPLICANT'
+      /**
+       * Format: int32
+       * @description Number of days to adjust
+       * @example 12
+       */
+      numberOfDays?: number
+      /**
+       * Format: date
+       * @description The 'from date' of the adjustment
+       * @example 2022-01-01
+       */
+      fromDate?: string
+      /**
+       * Format: date
+       * @description The 'to date' of the adjustment
+       * @example 2022-01-31
+       */
+      toDate?: string
+      /**
+       * @description Boolean flag showing if the adjustment is active
+       * @example true
+       */
+      active?: boolean
+      /**
+       * @description The user comments for this adjustment
+       * @example This is an adjustment
+       */
+      comment?: string
     }
   }
   responses: never
@@ -11089,17 +17357,15 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
-export type external = Record<string, never>
-
 export interface operations {
-  /**
-   * Update working caseload for current user.
-   * @description Update working caseload for current user.
-   */
   updateMyActiveCaseLoad: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CaseLoad']
@@ -11108,51 +17374,422 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid username or password */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description the user does not have permission to view the caseload. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Add the NWEB caseload to specified caseload.
-   * @description Requires role MAINTAIN_ACCESS_ROLES or MAINTAIN_ACCESS_ROLES_ADMIN
-   */
   addApiAccessForCaseload: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The caseload (equates to prison) id to add all active users to default API caseload (NWEB) */
         caseload: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description No New Users */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseloadUpdate']
         }
       }
       /** @description New Users Enabled */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseloadUpdate']
         }
       }
     }
   }
-  /** Releases this offender, with smoke test data */
+  getSplashScreenByModuleName: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Module name
+         * @example OIDCHOLO
+         */
+        moduleName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashScreenDto']
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateSplashScreen: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Module name
+         * @example OIDCHOLO
+         */
+        moduleName: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RequestSplashScreenCreateOrUpdate']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashScreenDto']
+        }
+      }
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createSplashScreen: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Module name
+         * @example OIDCHOLO
+         */
+        moduleName: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RequestSplashScreenCreateOrUpdate']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashScreenDto']
+        }
+      }
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Conflict */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  deleteSplashScreen: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Module name
+         * @example OIDCHOLO
+         */
+        moduleName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateCondition: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Module name
+         * @example OIDCHOLO
+         */
+        moduleName: string
+        /**
+         * @description Condition type
+         * @example CASELOAD
+         */
+        conditionType: string
+        /**
+         * @description Condition value
+         * @example MDI
+         */
+        conditionValue: string
+        /**
+         * @description Block access
+         * @example true
+         */
+        blockAccess: boolean
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashScreenDto']
+        }
+      }
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  offenderStatusSetup: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description offenderNo
+         * @example A1234AA
+         */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Requires role ROLE_SMOKE_TEST */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   releasePrisoner: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description offenderNo
@@ -11160,29 +17797,41 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Requires role ROLE_SMOKE_TEST */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Recalls this offender, with smoke test data */
   recallPrisoner: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description offenderNo
@@ -11190,79 +17839,103 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Requires role ROLE_SMOKE_TEST */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Reference code detail for reference domain and code (with sub-codes).
-   * @description Reference code detail for reference domain and code (with sub-codes).<p>This endpoint uses the REPLICA database.</p>
-   */
   getReferenceCodeByDomainAndCode: {
     parameters: {
       query?: {
         /** @description Specify whether or not to return the reference code with its associated sub-codes. */
         withSubCodes?: boolean
       }
+      header?: never
       path: {
         /** @description The domain identifier/name. */
         domain: string
         /** @description The reference code. */
         code: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceCode']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Updates a reference code */
   updateReferenceCode: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The domain identifier/name. */
         domain: string
         /** @description The reference code. */
         code: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11272,39 +17945,53 @@ export interface operations {
     responses: {
       /** @description Updated */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceCode']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Creates a reference code */
   createReferenceCode: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The domain identifier/name. */
         domain: string
         /** @description The reference code. */
         code: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11314,33 +18001,247 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceCode']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** *** BETA *** Marks a prisoner as in transit from their current prison location to a new prison. Must be an active prisoner in currently inside a prison, requires the TRANSFER_PRISONER role */
+  getIdentifyingMark: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Prisoner unique reference
+         * @example A1234AA
+         */
+        prisonerNumber: string
+        /** @description The sequence id of the mark */
+        seqId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DistinguishingMark']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description PRISON_API__PRISONER_PROFILE__RW role required to access endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateMark: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Prisoner unique reference
+         * @example A1234AA
+         */
+        prisonerNumber: string
+        /** @description The sequence id of the mark */
+        seqId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DistinguishingMarkDetails']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DistinguishingMark']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description PRISON_API__PRISONER_PROFILE__RW role required to access endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The offender number could not be found or has no bookings. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateImage: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The id of the image */
+        photoId: number
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'multipart/form-data': {
+          /**
+           * Format: binary
+           * @description The image as a file to upload
+           */
+          file: string
+        }
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': string
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description PRISON_API__PRISONER_PROFILE__RW role required to access endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   transferOutPrisoner: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -11348,6 +18249,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11357,33 +18259,46 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** *** BETA *** Transfer a prisoner into a prison. Must be an out prisoner in currently in transfer status, requires the TRANSFER_PRISONER role */
   transferInPrisoner: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -11391,6 +18306,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11400,39 +18316,55 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to transfer a prisoner */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** *** ALPHA *** transfer a prisoner to a temporary absence with the option to release the prisoners bed, requires the TRANSFER_PRISONER_ALPHA role. Only support scenarios are unscheduled to city and scheduled to address */
   transferOutPrisonerToTemporaryAbsence: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -11440,6 +18372,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11449,33 +18382,46 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Transfer a prisoner into a prison from temporary absence. Must be an out prisoner in currently in TAP status, requires the TRANSFER_PRISONER role */
   temporaryAbsenceArrival: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -11483,6 +18429,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11492,39 +18439,211 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to transfer a prisoner */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** *** BETA *** Releases a prisoner from their current prison location. Must be an active prisoner in currently inside a prison, requires the RELEASE_PRISONER role */
+  updateSmokerStatus: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateSmokerStatus']
+      }
+    }
+    responses: {
+      /** @description The smoker status has been updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateSexualOrientation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateSexualOrientation']
+      }
+    }
+    responses: {
+      /** @description The sexual orientation has been updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateReligion: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateReligion']
+      }
+    }
+    responses: {
+      /** @description The religion has been updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   releasePrisoner_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -11532,6 +18651,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11541,39 +18661,55 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to release a prisoner. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Recalls a prisoner into prison. TRANSFER_PRISONER role */
   recallPrisoner_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -11581,6 +18717,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11590,41 +18727,246 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to recall a prisoner. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Move the prisoner to the specified cell.
-   * @description Unilink specific version of /api/bookings/{bookingId}/living-unit/{internalLocationDescription}.<br/>
-   *       Requires either a valid user token or a token with UNILINK role.
-   */
+  updateOffenderPhoneNumber: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+        /** @description The phone number ID */
+        phoneNumberId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffenderPhoneNumberCreateRequest']
+      }
+    }
+    responses: {
+      /** @description Phone number updated. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Telephone']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to update phone numbers. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner or phone number ID not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Record in use for this phone ID id (possibly in P-Nomis). */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateNationality: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateNationality']
+      }
+    }
+    responses: {
+      /** @description The nationality has been updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateMilitaryRecord: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Offender No
+         * @example A1234AA
+         */
+        offenderNo: string
+        /**
+         * @description Military record sequence number
+         * @example 1
+         */
+        militarySeq: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MilitaryRecordRequest']
+      }
+    }
+    responses: {
+      /** @description The military record has been updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to update military record for prisoner */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   moveToCellOrReception: {
     parameters: {
       query: {
@@ -11639,6 +18981,7 @@ export interface operations {
          */
         dateTime?: string
       }
+      header?: never
       path: {
         /**
          * @description Offender No
@@ -11651,37 +18994,126 @@ export interface operations {
          */
         internalLocationDescription: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CellMoveResult']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Discharges a prisoner to hospital, requires the RELEASE_PRISONER role */
+  updateOffenderEmailAddress: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+        /** @description The email address ID */
+        emailAddressId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffenderEmailAddressCreateRequest']
+      }
+    }
+    responses: {
+      /** @description Email address updated. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Email']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to update email addresses. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner or email address ID not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Record in use for this email address ID id (possibly in P-Nomis). */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   dischargePrisonerToHospital: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -11689,6 +19121,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11698,39 +19131,55 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to release a prisoner. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** *** ALPHA *** transfer a prisoner to a court with the option to release the prisoners bed, requires the TRANSFER_PRISONER_ALPHA role */
   transferOutPrisonerToCourt: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -11738,6 +19187,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11747,33 +19197,46 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Transfer a prisoner into a prison from court. Must be an out prisoner in currently in transfer status, requires the TRANSFER_PRISONER role */
   courtTransferIn: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -11781,6 +19244,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11790,42 +19254,360 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to transfer a prisoner */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Set the HDC checks passed flag */
+  addSecondaryLanguage: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CorePersonSecondaryLanguageRequest']
+      }
+    }
+    responses: {
+      /** @description A core person secondary language has been added or updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getPhysicalAttributes: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CorePersonPhysicalAttributes']
+        }
+      }
+      /** @description Offender not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updatePhysicalAttributes: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CorePersonPhysicalAttributesRequest']
+      }
+    }
+    responses: {
+      /** @description The core person physical attributes have been updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateLanguagePreferences: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CorePersonLanguagePreferencesRequest']
+      }
+    }
+    responses: {
+      /** @description The core person language preferences have been updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateBirthPlaceOfCurrentAlias: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateBirthPlace']
+      }
+    }
+    responses: {
+      /** @description The birth place has been updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateBirthCountryOfCurrentAlias: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateBirthCountry']
+      }
+    }
+    responses: {
+      /** @description The birth country has been updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   setCurfewChecks: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         bookingId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11835,66 +19617,95 @@ export interface operations {
     responses: {
       /** @description The checks passed flag was set */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Curfew or HDC status in use for this booking id (possibly in P-Nomis). */
       423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Clear the HDC checks passed flag */
   clearCurfewChecks: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description The checks passed flag was cleared */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Curfew or HDC status in use for this booking id (possibly in P-Nomis). */
       423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Set the HDC approval status */
   setApprovalStatus: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         bookingId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -11904,131 +19715,212 @@ export interface operations {
     responses: {
       /** @description The new approval status was set */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Curfew or HDC status in use for this booking id (possibly in P-Nomis). */
       423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Clear the HDC approval status */
   clearApprovalStatus: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description The new approval status was cleared */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Curfew or HDC status in use for this booking id (possibly in P-Nomis). */
       423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update the next review date on the latest active categorisation
-   * @description Update categorisation record with new next review date. Requires client role MAINTAIN_ASSESSMENTS.
-   */
   updateCategorisationNextReviewDate: {
     parameters: {
+      query?: {
+        /**
+         * @description Whether to timeout if locked
+         * @example true
+         */
+        lockTimeout?: boolean
+      }
+      header?: never
       path: {
         /** @description The booking id of offender */
         bookingId: number
         /** @description The new next review date (in YYYY-MM-DD format) */
         nextReviewDate: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Forbidden - user not authorised to update the categorisation. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Active categorisation not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Record in use for this booking id (possibly in P-Nomis). */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Set all active or pending (status A or P) categorisations inactive
-   * @description This endpoint should only be used with edge case categorisations. Requires client role MAINTAIN_ASSESSMENTS.
-   */
   setCategorisationInactive: {
     parameters: {
       query?: {
         /** @description Indicates which categorisation statuses to set.<li>ACTIVE (default): set all active (i.e. approved) categorisations inactive,</li><li>PENDING: set all pending (i.e. awaiting approval) categorisations inactive,</li> */
-        status?: string
+        status?: 'ACTIVE' | 'PENDING'
+        /**
+         * @description Whether to timeout if locked
+         * @example true
+         */
+        lockTimeout?: boolean
       }
+      header?: never
       path: {
         /** @description The booking id of offender */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request - e.g. invalid status. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to update categorisations. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Record in use for this booking id (possibly in P-Nomis). */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Reject a pending offender categorisation.
-   * @description Update categorisation record with rejection. Requires client role MAINTAIN_ASSESSMENTS or user role APPROVE_CATEGORISATION.
-   */
   rejectCategorisation: {
+    parameters: {
+      query?: {
+        /**
+         * @description Whether to timeout if locked
+         * @example true
+         */
+        lockTimeout?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CategoryRejectionDetail']
@@ -12037,21 +19929,44 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation error - e.g. comment too long or committee code does not exist. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Record in use for this booking id (possibly in P-Nomis). */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update a pending offender categorisation.
-   * @description This is intended for use by the categoriser to correct any problems with a pending (in-progress) categorisation. Fields left as null will be left unchanged. Requires client role MAINTAIN_ASSESSMENTS or user role ROLE_CREATE_CATEGORISATION or ROLE_CREATE_RECATEGORISATION.
-   */
   updateCategorisation: {
+    parameters: {
+      query?: {
+        /**
+         * @description Whether to timeout if locked
+         * @example true
+         */
+        lockTimeout?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CategorisationUpdateDetail']
@@ -12060,21 +19975,38 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request - e.g. category does not exist. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Record in use for this booking id (possibly in P-Nomis). */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Record new offender categorisation.
-   * @description Create new categorisation record. The booking id and new sequence number is returned. Requires client role MAINTAIN_ASSESSMENTS or user role ROLE_CREATE_CATEGORISATION or ROLE_CREATE_RECATEGORISATION.
-   */
   createCategorisation: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CategorisationDetail']
@@ -12083,6 +20015,9 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': {
             [key: string]: number
@@ -12091,17 +20026,28 @@ export interface operations {
       }
       /** @description Invalid request - e.g. category does not exist. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Approve a pending offender categorisation.
-   * @description Update categorisation record with approval. Requires client role MAINTAIN_ASSESSMENTS or user role APPROVE_CATEGORISATION.
-   */
   approveCategorisation: {
+    parameters: {
+      query?: {
+        /**
+         * @description Whether to timeout if locked
+         * @example true
+         */
+        lockTimeout?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CategoryApprovalDetail']
@@ -12110,21 +20056,38 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation error - e.g. category does not exist. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Record in use for this booking id (possibly in P-Nomis). */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update the active flag of an offence
-   * @description Requires NOMIS_OFFENCE_ACTIVATOR role
-   */
   updateOffenceActiveFlag: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['OffenceActivationDto']
@@ -12133,19 +20096,27 @@ export interface operations {
     responses: {
       /** @description The active flag has been updated successfully */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * Update offences
-   * @description Requires OFFENCE_MAINTAINER role
-   */
   updateOffences: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['OffenceDto'][]
@@ -12154,27 +20125,38 @@ export interface operations {
     responses: {
       /** @description Offence updated successfully */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description A dependent resource is missing (either the offence or the home office code doesnt exist) */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Create offences
-   * @description Requires OFFENCE_MAINTAINER role
-   */
   createOffences: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['OffenceDto'][]
@@ -12183,40 +20165,51 @@ export interface operations {
     responses: {
       /** @description Offences created successfully */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description A dependent resource is missing (either the statute or the home office code doesnt exist) */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description A record already exists for a passed in offence */
       409: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Cancels a scheduled prison to prison move for an offender.
-   * @description Cancels a scheduled prison to prison move for an offender. Requires role PRISON_MOVE_MAINTAINER and scope write
-   */
   cancelPrisonToPrisonMove: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking linked to the scheduled event. */
         bookingId: number
         /** @description The identifier of the scheduled event to be cancelled. */
         eventId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -12226,35 +20219,44 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Move the prisoner from current cell to cell swap
-   * @deprecated
-   * @description Using role MAINTAIN_CELL_MOVEMENTS will no longer check for user access to prisoner booking, this endpoint will be removed in future releases
-   */
   moveToCellSwap: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offender booking id
@@ -12262,6 +20264,7 @@ export interface operations {
          */
         bookingId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -12271,24 +20274,36 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderBooking']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
@@ -12308,7 +20323,13 @@ export interface operations {
          * @example 2020-03-24T12:13:40
          */
         dateTime?: string
+        /**
+         * @description Whether to timeout if locked
+         * @example true
+         */
+        lockTimeout?: boolean
       }
+      header?: never
       path: {
         /**
          * @description The offender booking id
@@ -12321,46 +20342,68 @@ export interface operations {
          */
         internalLocationDescription: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CellMoveResult']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Record in use for this booking id (possibly in P-Nomis). */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Amends the scheduled court hearing date and/or time for an offender.
-   * @description Amends the scheduled court hearing date and/or time for an offender. Requires role COURT_HEARING_MAINTAINER and scope write
-   */
   courtHearingDateAmendment: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking to associate the update with. */
         bookingId: number
         /** @description The  court hearing to be updated. */
         hearingId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -12370,92 +20413,42 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtHearing']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update an alert
-   * @description Requires role UPDATE_ALERT
-   */
-  updateAlert: {
-    parameters: {
-      query?: {
-        /**
-         * @description Whether to timeout if locked
-         * @example true
-         */
-        lockTimeout?: boolean
-      }
-      path: {
-        /** @description bookingId */
-        bookingId: number
-        /** @description alertSeq */
-        alertSeq: number
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AlertChanges']
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['Alert']
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Record in use for this booking id (possibly in P-Nomis). */
-      423: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Update offender attendance and pay.
-   * @description Requires role PAY
-   */
   updateAttendance: {
     parameters: {
       query?: {
@@ -12465,6 +20458,7 @@ export interface operations {
          */
         lockTimeout?: boolean
       }
+      header?: never
       path: {
         /**
          * @description The booking Id of the prisoner
@@ -12477,6 +20471,7 @@ export interface operations {
          */
         activityId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -12486,46 +20481,62 @@ export interface operations {
     responses: {
       /** @description Attendance data has been updated */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request - e.g. validation error. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to attend activity. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description Resource not found - booking or event does not exist or is not accessible to user. */
+      /** @description Resource not found - booking or event does not exist. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Record in use for this booking id (possibly in P-Nomis). */
       423: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Internal server error. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update offender attendance and pay.
-   * @description Requires role PAY
-   */
   updateAttendance_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of the prisoner
@@ -12538,6 +20549,7 @@ export interface operations {
          */
         activityId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -12547,39 +20559,56 @@ export interface operations {
     responses: {
       /** @description Attendance data has been updated */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request - e.g. validation error. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to attend activity. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description Resource not found - booking or event does not exist or is not accessible to user. */
+      /** @description Resource not found - booking or event does not exist. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Internal server error. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update attendance and pay for multiple bookings.
-   * @description Requires role PAY
-   */
   updateAttendanceForMultipleBookingIds: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['UpdateAttendanceBatch']
@@ -12588,69 +20617,314 @@ export interface operations {
     responses: {
       /** @description Attendance data has been updated */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request - e.g. validation error. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to attend activity. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description Resource not found - booking or event does not exist or is not accessible to user. */
+      /** @description Resource not found - booking or event does not exist. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Internal server error. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Change an appointment's comment.
-   * @description Requires role GLOBAL_APPOINTMENT
-   */
   updateAppointmentComment: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The appointment's unique identifier. */
         appointmentId: number
       }
+      cookie?: never
     }
     requestBody?: {
       content: {
-        'text/plain': string
+        'application/json': components['schemas']['UpdateComment']
       }
     }
     responses: {
       /** @description The appointment's comment has been set. */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description The client is not authorised for this operation */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description The appointment was not found. */
       404: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Record in use for this booking id (possibly in P-Nomis) */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * Agency detail.
-   * @description Agency detail.
-   */
+  getAlias: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The alias identifier (offenderId) */
+        offenderId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Alias successfully returned. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CorePersonRecordAlias']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateAlias: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The alias identifier (offenderId) */
+        offenderId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateAlias']
+      }
+    }
+    responses: {
+      /** @description The prisoner's alias has been updated. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CorePersonRecordAlias']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getOffenderIdentifier: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The alias identifier (offenderId) */
+        offenderId: number
+        /** @description The sequence id */
+        offenderIdSeq: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OffenderIdentifier']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to view identifiers. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateOffenderIdentifier: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The alias identifier (offenderId) */
+        offenderId: number
+        /** @description The identifier sequence */
+        offenderIdSeq: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffenderIdentifierUpdateRequest']
+      }
+    }
+    responses: {
+      /** @description Identifier updated. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to update identifiers. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Identifier not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getAgency: {
     parameters: {
       query?: {
@@ -12662,49 +20936,65 @@ export interface operations {
         withAddresses?: boolean
         /** @description Don't format the location */
         skipFormatLocation?: boolean
+        /** @description Returns area and region information */
+        withAreas?: boolean
       }
+      header?: never
       path: {
         /** @description The ID of the agency */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Agency']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update an existing agency
-   * @description Requires MAINTAIN_REF_DATA
-   */
   updateAgency: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The ID of the agency */
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -12714,48 +21004,62 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Agency']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to update a agency location */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update an existing address
-   * @description Requires MAINTAIN_REF_DATA
-   */
   updateAgencyAddress: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The ID of the agency */
         agencyId: string
         /** @description The ID of the address */
         addressId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -12765,80 +21069,105 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AddressDto']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to update a agency address */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Delete an existing address
-   * @description Requires MAINTAIN_REF_DATA
-   */
   deleteAgencyAddress: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The ID of the agency */
         agencyId: string
         /** @description The ID of the address */
         addressId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Forbidden - user not authorised to delete a agency address */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update an existing contact on an address
-   * @description Requires MAINTAIN_REF_DATA
-   */
   updateAgencyAddressPhoneContact: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The ID of the agency */
         agencyId: string
@@ -12847,6 +21176,7 @@ export interface operations {
         /** @description The ID of the contact */
         phoneId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -12856,42 +21186,55 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Telephone']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to update a agency address */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Delete an existing address contact
-   * @description Requires MAINTAIN_REF_DATA
-   */
   deleteAgencyAddressPhoneContact: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The ID of the agency */
         agencyId: string
@@ -12900,57 +21243,49 @@ export interface operations {
         /** @description The ID of the contact */
         phoneId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Forbidden - user not authorised to delete a agency address */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Post a financial transaction to NOMIS.
-   * @description The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu. Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>
-   * This will be setup by script intially as part of the deployment process as shown below<br/><br/>
-   * <table>
-   *   <tr><th>Transaction Type</th><th>Description</th><th>Digital Prison</th><th>Non Digital Prison</th></tr>
-   *   <tr><td>CANT</td><td>Canteen Spend</td><td>Yes</td><td>No</td></tr>
-   *   <tr><td>REFND</td><td>Canteen Refund</td><td>Yes</td><td>No</td></tr>
-   *   <tr><td>PHONE</td><td>Phone Credit</td><td>Yes</td><td>No</td></tr>
-   *   <tr><td>MRPR</td><td>Misc Receipt - Private Cash</td><td>Yes</td><td>Yes</td></tr>
-   *   <tr><td>MTDS</td><td>Money through digital service</td><td>Yes</td><td>Yes</td></tr>
-   *   <tr><td>DTDS</td><td>Disbursement through Digital service</td><td>Yes</td><td>Yes</td></tr>
-   *   <tr><td>CASHD</td><td>Cash Disbursement</td><td>Yes</td><td>Yes</td></tr>
-   *   <tr><td>RELA</td><td>Money to Relatives</td><td>Yes</td><td>Yes</td></tr>
-   *   <tr><td>RELS</td><td>Money to Relatives- Spends</td><td>Yes</td><td>Yes</td></tr>
-   * </table>Notes:<br/>
-   * <ul>
-   *   <li>The sub_account the amount is debited or credited from will be determined by the transaction_type definition in NOMIS.</li>
-   *   <li>If the field X-Client-Name is present in the request header then the value is prepended to the client_unique_ref separated by a dash. When this API is invoked via the Nomis gateway this will already have been created by the gateway.</li>
-   *   <li>The client_unique_ref can have a maximum of 64 characters, only alphabetic, numeric, ‘-’ and ‘_’ characters are allowed</li>
-   * </ul>
-   * Requires NOMIS_API_V1 or UNILINK role.
-   */
   createTransaction: {
     parameters: {
+      query?: never
       header?: {
         /** @description If present then the value is prepended to the client_unique_ref separated by a dash. When this API is invoked via the Nomis gateway this will already have been created by the gateway. */
         'X-Client-Name'?: string
@@ -12967,6 +21302,7 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -12976,54 +21312,55 @@ export interface operations {
     responses: {
       /** @description Transaction Created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Transaction']
         }
       }
       /** @description One of: <ul><li>Insufficient Funds - The prisoner has insufficient funds in the required account to cover the cost of the debit transaction</li><li>Offender not in specified prison - prisoner identified by {noms_id} is not in prison {prison_id}</li><li>Invalid transaction type - The transaction type has not been set up for the API for {prison_id}</li><li>Finance Exception - An unexpected error has occurred. Details will have been logged in the nomis_api_logs table on the Nomis database.</li></ul> */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Duplicate post - The unique_client_ref has been used before */
       409: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Store a payment for an offender account.
-   * @description Pay events will be stored in a table on receipt by Nomis to be processed by a batch job scheduled to run after the last Nomis payroll batch job but before the advances and scheduled payments batch jobs.
-   * <br/>Possible payment types are:<br/><table><tr><td>A_EARN</td><td>Credit, Offender Payroll</td></tr><tr><td>ADJ</td><td>Debit, Adjudication Award</td></tr></table><br/>Example request:<br/>
-   * <pre>
-   * {
-   *   "type": "A_EARN",
-   *   "description": "May earnings",
-   *   "amount": 1,
-   *   "client_transaction_id": "PAY-05-19"
-   * }
-   * </pre>
-   * <br/>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu.
-   * Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>This will be setup by script intially as part of the deployment process as shown below<br/><br/>
-   * Requires NOMIS_API_V1 or UNILINK role.
-   */
   storePayment: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Prison ID
@@ -13036,6 +21373,7 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13045,42 +21383,54 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PaymentResponse']
         }
       }
       /** @description One of: <ul><li>Offender not in specified prison - prisoner identified by {noms_id} is not in prison {prison_id}</li><li>Invalid payment type</li><li>Client reference more than 12 characters</li><li>Missing data in request</li><li>Exception - An unexpected error has occurred. Details will have been logged in the nomis_api_logs table on the Nomis database.</li></ul> */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested prison or offender could not be found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Duplicate post - after an error with a post this response will be given for subsequent duplicate attempts */
       409: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Record transaction at previous Prison.
-   * @description <p>Post a financial transaction to Nomis to a prison that the offender is no longer at.</p><p>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu. Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid. Only Transaction types with a usage of R (Receipt) are valid.Transaction Types are maintained via the Maintain Transaction Types screen (OCMTRANS).</p><p>Transaction is posted to the specified prison.  if the account has been closed at this prison then it is re-opened first.</p><p>If the offender has been transferred to another prison then the funds are transferred to this prison.</p><p>If the account was previously closed then it will be closed again.</p><p>If the offender has been released then the funds are transferred to NACRO. Based on the Nomis Clear Inactive accounts screen (OTDCLINA).</p>
-   */
   transferTransaction: {
     parameters: {
+      query?: never
       header?: {
         /** @description If present then the value is prepended to the client_unique_ref separated by a dash. When this API is invoked via the Nomis gateway this will already have been created by the gateway. */
         'X-Client-Name'?: string
@@ -13097,6 +21447,7 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13106,41 +21457,58 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Transfer']
         }
       }
       /** @description One of: <ul><li>Invalid transaction type - The transaction type has not been set up for the API for {prison_id}</li><li>Finance Exception - This indicates an unexpected financial problem, check the nomis_api_log table for details.</li><li>Only receipt transaction types allowed - Only transaction types with a transaction usage of Receipt are allowed.</li><li>Sum of sub account balances not equal to current balance - The sum of all the sub account balances does equal the current balance held for the trust account</li><li>Offender being transferred - The offender is currently in transit</li><li>Offender still in specified prison - The offender is still at the specified prison. Use Record Transaction instead.</li></ul> */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description One of: <ul><li>Offender Not Found - No offender matching the specified offender_id has been found on nomis.</li><li>Offender never at prison - The offender has never been at the specified prison</li></ul> */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Duplicate Post - A transaction already exists with the client_unique_ref provided. */
       409: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Returns the user details for supplied usernames - POST version to allow large user lists.
-   * @description Requires role STAFF_SEARCH
-   */
   getUserDetailsList: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': string[]
@@ -13149,45 +21517,145 @@ export interface operations {
     responses: {
       /** @description The list of user details */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['UserDetail'][]
         }
       }
     }
   }
-  /** Sets imprisonment status smoke test data for this offender */
-  imprisonmentDataSetup: {
+  getStaffDetails: {
     parameters: {
-      path: {
-        /**
-         * @description offenderNo
-         * @example A1234AA
-         */
-        offenderNo: string
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': number[]
       }
     }
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StaffDetail'][]
+        }
       }
-      /** @description Requires role ROLE_SMOKE_TEST */
-      403: {
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Updates the offender details for this offender, with smoke test data */
+  addCondition: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Module name
+         * @example OIDCHOLO
+         */
+        moduleName: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RequestSplashCondition']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashScreenDto']
+        }
+      }
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Conflict */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   updatePrisonerDetails: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description offenderNo
@@ -13195,6 +21663,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13204,113 +21673,289 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Requires role ROLE_SMOKE_TEST */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Activates a prison for the given service */
+  checkServicePrison: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The code of the service from the EXTERNAL_SERVICES table
+         * @example ACTIVITY
+         */
+        serviceCode: string
+        /**
+         * @description The id of the prison
+         * @example MDI
+         */
+        prisonId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Service is switched on for the service code and prison id. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description A valid auth token was not presented */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The auth token does not have the necessary role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The service code does not exist or the service is not switched on for the prison. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   addServicePrison: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The code of the service from the EXTERNAL_SERVICES table */
         serviceCode: string
         /** @description The id of the prison from the AGENCY_LOCATIONS table */
         prisonId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonDetails']
         }
       }
       /** @description A valid auth token was not presented */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The auth token does not have the necessary role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The service code or prison does not exist */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The prison is already active for the service */
       409: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Deactivates a prison for the given service */
   removeServicePrison: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The code of the service from the EXTERNAL_SERVICES table */
         serviceCode: string
         /** @description The id of the prison from the AGENCY_LOCATIONS table */
         prisonId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description A valid auth token was not presented */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The auth token does not have the necessary role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The service code or prison does not exist */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
+  getEventsByLocationPath: {
+    parameters: {
+      query?: {
+        /** @description Date of whereabouts list, default today */
+        date?: string
+        /** @description AM, PM or ED */
+        timeSlot?: 'AM' | 'PM' | 'ED'
+      }
+      header?: {
+        /** @description Comma separated list of one or more of the following fields - <b>cellLocation or lastName</b> */
+        'Sort-Fields'?: string
+        /** @description Sort order (ASC or DESC) - defaults to ASC. */
+        'Sort-Order'?: 'ASC' | 'DESC'
+      }
+      path: {
+        /** @description The prison Id */
+        prisonId: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': string[]
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerSchedule'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getVisits: {
     parameters: {
       query?: {
@@ -13319,9 +21964,11 @@ export interface operations {
         /** @description AM, PM or ED */
         timeSlot?: 'AM' | 'PM' | 'ED'
       }
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13331,22 +21978,26 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
     }
   }
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
   getExternalTransfers: {
     parameters: {
       query: {
         /** @description Date of scheduled transfer */
         date: string
       }
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13356,16 +22007,15 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
     }
   }
-  /**
-   * Get all events for given date for prisoners in listed cells. Note secondary sort is by start time
-   * @description Get all events for given date for prisoners in listed cells. Note secondary sort is by start time<p>This endpoint uses the REPLICA database.</p>
-   */
   getEventsByLocationId: {
     parameters: {
       query?: {
@@ -13384,6 +22034,7 @@ export interface operations {
         /** @description The prison. */
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13393,31 +22044,42 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
   getCourtEvents: {
     parameters: {
       query?: {
@@ -13426,9 +22088,11 @@ export interface operations {
         /** @description AM, PM or ED */
         timeSlot?: 'AM' | 'PM' | 'ED'
       }
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13438,16 +22102,15 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
     }
   }
-  /**
-   * Get all Prisoner activities for given date.
-   * @description Get count of suspended prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p>
-   */
   getCountActivitiesByDateRange: {
     parameters: {
       query: {
@@ -13458,6 +22121,7 @@ export interface operations {
         /** @description Set of one or more of AM, PM or ED */
         timeSlots: ('AM' | 'PM' | 'ED')[]
       }
+      header?: never
       path: {
         /**
          * @description The prison.
@@ -13465,6 +22129,7 @@ export interface operations {
          */
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13476,31 +22141,42 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerActivitiesCount']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
   getAppointments: {
     parameters: {
       query: {
@@ -13511,20 +22187,25 @@ export interface operations {
         /** @description AM, PM or ED */
         timeSlot?: 'AM' | 'PM' | 'ED'
       }
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledAppointmentDto'][]
         }
       }
     }
   }
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
   getAppointmentsForOffenders: {
     parameters: {
       query?: {
@@ -13533,9 +22214,11 @@ export interface operations {
         /** @description AM, PM or ED */
         timeSlot?: 'AM' | 'PM' | 'ED'
       }
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13545,16 +22228,15 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
     }
   }
-  /**
-   * Get all Prisoner activities for given date.
-   * @description Get all Prisoner activities for given date<p>This endpoint uses the REPLICA database.</p>
-   */
   getActivitiesAtAllLocations: {
     parameters: {
       query?: {
@@ -13575,35 +22257,48 @@ export interface operations {
         /** @description The prison. */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
   getActivitiesForBookings: {
     parameters: {
       query?: {
@@ -13614,9 +22309,11 @@ export interface operations {
         /** @description Whether to include 'excluded' activities in the results */
         includeExcluded?: boolean
       }
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13626,18 +22323,23 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
     }
   }
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
   getActivitiesByEventIds: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13647,17 +22349,16 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
     }
   }
-  /**
-   * List of offenders matching specified criteria.
-   * @description List of offenders matching specified criteria. Requires GLOBAL_SEARCH role.<p>This endpoint uses the REPLICA database.</p>
-   */
-  getPrisoners_1: {
+  getPrisoners: {
     parameters: {
       query?: {
         /** @description If true the result set should include a row for every matched alias.  If the request includes some combination of firstName, lastName and dateOfBirth then this will be a subset of the OFFENDERS records for one or more offenders. Otherwise it will be every OFFENDERS record for each match on the other search criteria. Default is false. */
@@ -13701,40 +22402,52 @@ export interface operations {
         /** @description Sort order (ASC or DESC) - defaults to ASC. */
         'Sort-Order'?: 'ASC' | 'DESC'
       }
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerDetail'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of offenders matching specified criteria. (POST version)
-   * @description List of offenders matching specified criteria. Requires GLOBAL_SEARCH role.<p>This endpoint uses the REPLICA database.</p>
-   */
-  getPrisoners: {
+  getPrisoners_1: {
     parameters: {
+      query?: never
       header?: {
         /** @description Requested offset of first record in returned collection of prisoner records. */
         'Page-Offset'?: number
@@ -13745,6 +22458,8 @@ export interface operations {
         /** @description Sort order (ASC or DESC) - defaults to ASC. */
         'Sort-Order'?: 'ASC' | 'DESC'
       }
+      path?: never
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13754,32 +22469,201 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerDetail'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Creates a prisoner and optional receives them into a prison by creating a new booking. BOOKING_CREATE role */
+  createMark: {
+    parameters: {
+      query: {
+        /** @description The create request */
+        request: components['schemas']['DistinguishingMarkDetails']
+      }
+      header?: never
+      path: {
+        /**
+         * @description Prisoner unique reference
+         * @example A1234AA
+         */
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          /**
+           * Format: binary
+           * @description The image as a file to upload (optional)
+           */
+          file: string
+        }
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DistinguishingMark']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description PRISON_API__PRISONER_PROFILE__RW role required to access endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The offender number could not be found or has no bookings. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  addMarkPhoto: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Prisoner unique reference
+         * @example A1234AA
+         */
+        prisonerNumber: string
+        /** @description The sequence id of the mark */
+        seqId: number
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'multipart/form-data': {
+          /**
+           * Format: binary
+           * @description The image as a file to upload
+           */
+          file: string
+        }
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DistinguishingMark']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description PRISON_API__PRISONER_PROFILE__RW role required to access endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The offender number could not be found or has no bookings. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   createPrisoner: {
+    parameters: {
+      query: {
+        /** @description When true do not reject new prisoners with same name as existing person */
+        allowNameDuplicate: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['RequestToCreate']
@@ -13788,39 +22672,511 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to create a prisoner. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Receives a prisoner on a new booking. BOOKING_CREATE role */
+  getOffenderNumbers: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Telephone'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to view prisoner phone numbers. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  addOffenderPhoneNumbers: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffenderPhoneNumberCreateRequest']
+      }
+    }
+    responses: {
+      /** @description Phone number added. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Telephone']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to add phone numbers. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAllOffenderIdentifiers: {
+    parameters: {
+      query?: {
+        includeAliases?: boolean
+      }
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OffenderIdentifier'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to view identifiers. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  addOffenderIdentifiers: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffenderIdentifierCreateRequest'][]
+      }
+    }
+    responses: {
+      /** @description Identifiers added. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to add identifiers. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getMilitaryRecords: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Offender No
+         * @example A1234AA
+         */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MilitaryRecords']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createMilitaryRecord: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Offender No
+         * @example A1234AA
+         */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MilitaryRecordRequest']
+      }
+    }
+    responses: {
+      /** @description Military record created. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to create military record for prisoner */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getOffenderEmails: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Email'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to view prisoner email addresses. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  addOffenderEmailAddress: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffenderEmailAddressCreateRequest']
+      }
+    }
+    responses: {
+      /** @description Email address added. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Email']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to add email addresses */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   newBooking: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of prisoner
@@ -13828,6 +23184,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13837,43 +23194,262 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to receive prisoner on new bookings */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Gets a list of offender adjudication hearings
-   * @description <p>This endpoint returns a list of offender adjudication hearings for 1 or more offenders for a given date range and optional time slot.</p>
-   * <p>If the date range goes beyond 31 days then an exception will be thrown.</p>
-   * <p>At least one offender number must be supplied if not then an exception will be thrown.</p>
-   * <p>If the time slot is provided then the results will be further restricted to the hearings that fall in that time slot.</p>
-   */
+  getAliases: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Aliases successfully returned. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CorePersonRecordAlias'][]
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createAlias: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateAlias']
+      }
+    }
+    responses: {
+      /** @description A new alias for the prisoner has been created. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CorePersonRecordAlias']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAddressesByOffenderNo: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description offenderNo
+         * @example A1234AA
+         */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AddressDto'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  addOffenderAddress: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateAddress']
+      }
+    }
+    responses: {
+      /** @description Address added. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AddressDto']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to add email addresses */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getOffenderAdjudicationHearings: {
     parameters: {
       query: {
@@ -13883,6 +23459,9 @@ export interface operations {
         /** @description AM, PM or ED */
         timeSlot?: 'AM' | 'PM' | 'ED'
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -13892,40 +23471,42 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderAdjudicationHearing'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of offenders (with associated sentence detail)
-   * @description <h3>Algorithm</h3>
-   * <ul>
-   *   <li>If there is a confirmed release date, the offender release date is the confirmed release date.</li>
-   *   <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
-   *   <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
-   * </ul>
-   * <p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenderSentences: {
     parameters: {
       query?: {
@@ -13934,39 +23515,57 @@ export interface operations {
         /** @description a list of offender numbers to search. */
         offenderNo?: string[]
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderSentenceDetail'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists.
-   * @description Retrieves list of offenders (with associated sentence detail) - POST version to allow large offender lists.<p>This endpoint uses the REPLICA database.</p>
-   */
   postOffenderSentences: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': string[]
@@ -13975,17 +23574,22 @@ export interface operations {
     responses: {
       /** @description The list of offenders is returned. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderSentenceDetail'][]
         }
       }
     }
   }
-  /**
-   * Retrieve the latest Home Detention Curfew status for a list of offender booking identifiers
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
   getBatchLatestHomeDetentionCurfew: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': number[]
@@ -13994,23 +23598,31 @@ export interface operations {
     responses: {
       /** @description List of HDC status information */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['HomeDetentionCurfew'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists.
-   * @description Retrieves list of offenders (with associated sentence detail) - POST version using booking id lists.<p>This endpoint uses the REPLICA database.</p>
-   */
   postOffenderSentencesBookings: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': number[]
@@ -14019,66 +23631,83 @@ export interface operations {
     responses: {
       /** @description The list of offenders is returned. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderSentenceDetail'][]
         }
       }
     }
   }
-  /**
-   * Get the key dates for an offender.
-   * @description Requires RELEASE_DATES_CALCULATOR
-   */
   getOffenderKeyDates: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The booking id of offender */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Offender key dates found */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
-          'application/json': components['schemas']['SentenceCalcDates']
+          'application/json': components['schemas']['OffenderCalculatedKeyDates']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to update an offender's dates */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update the key dates for an offender.
-   * @description Requires RELEASE_DATES_CALCULATOR
-   */
   updateOffenderKeyDates: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The booking id of offender */
         bookingId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -14088,40 +23717,51 @@ export interface operations {
     responses: {
       /** @description Offender key dates calculation created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SentenceCalcDates']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to update an offender's dates */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender assessment detail for multiple offenders.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenderAssessmentsAssessmentCode: {
     parameters: {
       query: {
@@ -14134,42 +23774,53 @@ export interface operations {
         /** @description Returns only the last assessment per sentence if true, otherwise all assessments for the booking are included */
         mostRecentOnly?: boolean
       }
+      header?: never
       path: {
         /** @description Assessment Type Code */
         assessmentCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Assessment'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieves Offender assessment details for multiple offenders - POST version to allow large offender lists.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
   postOffenderAssessmentsAssessmentCode: {
     parameters: {
       query?: {
@@ -14180,10 +23831,12 @@ export interface operations {
         /** @description Returns only the last assessment per sentence if true, otherwise all assessments for the booking are included */
         mostRecentOnly?: boolean
       }
+      header?: never
       path: {
         /** @description Assessment Type Code */
         assessmentCode: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -14193,17 +23846,22 @@ export interface operations {
     responses: {
       /** @description The assessment list is returned. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Assessment'][]
         }
       }
     }
   }
-  /**
-   * Retrieves Offender CSRAs for multiple offenders - POST version to allow large offender lists.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
   postOffenderAssessmentsCsraList: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': string[]
@@ -14212,22 +23870,24 @@ export interface operations {
     responses: {
       /** @description The CSRA assessment list is returned, 1 per offender. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Assessment'][]
         }
       }
     }
   }
-  /**
-   * Returns Categorisation details for supplied Offenders - POST version to allow large offender lists.
-   * @description Requires VIEW_PRISONER_DATA role<p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenderCategorisationsSystem: {
     parameters: {
       query?: {
         /** @description Only get the latest category for each booking */
         latestOnly?: boolean
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -14237,17 +23897,22 @@ export interface operations {
     responses: {
       /** @description The list of offenders with categorisation details is returned if categorisation record exists */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderCategorise'][]
         }
       }
     }
   }
-  /**
-   * Unlink offence from schedule
-   * @description Requires UPDATE_OFFENCE_SCHEDULES role
-   */
   unlinkOffencesFromSchedules: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['OffenceToScheduleMappingDto'][]
@@ -14256,19 +23921,27 @@ export interface operations {
     responses: {
       /** @description Offences unlinked from schedules successfully */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * Create statutes if they dont already exist
-   * @description Requires OFFENCE_MAINTAINER role
-   */
   createStatute: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['StatuteDto'][]
@@ -14277,21 +23950,29 @@ export interface operations {
     responses: {
       /** @description Statutes created successfully */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Link offence to schedule
-   * @description Requires UPDATE_OFFENCE_SCHEDULES role
-   */
   linkOffencesToSchedules: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['OffenceToScheduleMappingDto'][]
@@ -14300,19 +23981,27 @@ export interface operations {
     responses: {
       /** @description Offences linked to schedules successfully */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * Create Home Office Notifiable Offence Code records if they dont already exist
-   * @description Requires OFFENCE_MAINTAINER role
-   */
   createHomeOfficeCodes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['HOCodeDto'][]
@@ -14321,20 +24010,22 @@ export interface operations {
     responses: {
       /** @description Home Office Notifiable Offence Codes created successfully */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Returns a list of recently released or moved offender nos and the associated timestamp.
-   * @description Returns a list of recently released or moved offender nos and the associated timestamp.
-   */
   getRecentMovementsByDate: {
     parameters: {
       query: {
@@ -14345,39 +24036,57 @@ export interface operations {
         /** @description movement type codes to filter by, defaults to TRN, REL, ADM */
         movementTypes?: string[]
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Movement'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Create a new external movement for inactive bookings only
-   * @description requires the INACTIVE_BOOKINGS role
-   */
   createExternalMovement: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CreateExternalMovement']
@@ -14386,30 +24095,45 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderMovement']
         }
       }
       /** @description Created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderMovement']
         }
       }
       /** @description Invalid request */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
@@ -14426,6 +24150,9 @@ export interface operations {
         /** @description Returns all movements for this offender list from all bookings if true */
         allBookings?: boolean
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -14435,22 +24162,57 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Movement'][]
         }
       }
     }
   }
-  /**
-   * Retrieves Specified key worker's currently assigned offenders - POST version to allow larger staff lists.
-   * @description Retrieves Specified key worker's currently assigned offenders - POST version to allow larger staff lists.<p>This endpoint uses the REPLICA database.</p>
-   */
+  getLatestArrivalDate: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': string[]
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OffenderLatestArrivalDate'][]
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   postKeyWorkerAgencyIdCurrentAllocations: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The agency (prison) identifier. */
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -14460,17 +24222,22 @@ export interface operations {
     responses: {
       /** @description The allocations list is returned. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['KeyWorkerAllocationDetail'][]
         }
       }
     }
   }
-  /**
-   * Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists.
-   * @description Retrieves Specified prisoners allocation history - POST version to allow larger allocation lists.<p>This endpoint uses the REPLICA database.</p>
-   */
   postKeyWorkerOffendersAllocationHistory: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': string[]
@@ -14479,53 +24246,64 @@ export interface operations {
     responses: {
       /** @description The allocations history list is returned. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderKeyWorker'][]
         }
       }
     }
   }
-  /**
-   * Image details related to offender.
-   * @description Requires role VIEW_PRISONER_DATA.
-   */
   getImagesByOffender: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ImageDetail'][]
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * DEV USE ONLY *** Upload a new image for a prisoner.
-   * @description Requires ROLE_IMAGE_UPLOAD, write scope and a user in the token.
-   */
   putImageMultiPart: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender number relating to this image. */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody?: {
       content: {
@@ -14541,47 +24319,54 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ImageDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description IMAGE_UPLOAD role required to access endpoint */
+      /** @description PRISON_API__PRISONER_PROFILE__RW role required to access endpoint */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The offender number could not be found or has no bookings. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Post a financial transaction to NOMIS.
-   * @description Notes:<br/>
-   *   <ul>
-   *     <li>If the field X-Client-Name is present in the request header then the value is prepended to the client_unique_ref separated by a dash</li>
-   *     <li>The client_unique_ref can have a maximum of 64 characters, only alphabetic, numeric, ‘-’ and ‘_’ characters are allowed</li>
-   *   </ul>
-   * <p>Requires role NOMIS_API_V1 or UNILINK</p>
-   */
   transferToSavings: {
     parameters: {
+      query?: never
       header?: {
         /** @description If present then the value is prepended to the client_unique_ref separated by a dash. When this API is invoked via the Nomis gateway this will already have been created by the gateway. */
         'X-Client-Name'?: string
@@ -14598,6 +24383,7 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -14606,42 +24392,59 @@ export interface operations {
     }
     responses: {
       /** @description Transaction Created */
-      201: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
-          'application/json': components['schemas']['TransferTransaction']
+          'application/json': components['schemas']['TransferTransactionDetail']
         }
       }
       /** @description One of: <ul><li>Insufficient Funds - The prisoner has insufficient funds in the required account to cover the cost of the debit transaction</li><li>Offender not in specified prison - prisoner identified by {noms_id} is not in prison {prison_id}</li><li>Finance Exception - An unexpected error has occurred. Details will have been logged in the nomis_api_logs table on the Nomis database.</li></ul> */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Duplicate post - The unique_client_ref has been used before */
       409: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * A list of offender educations.
-   * @description A list of offender educations given a list of offender identifiers
-   */
   getPrisonerEducationsInBulk: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': string[]
@@ -14650,28 +24453,33 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Education'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Count of case notes
-   * @description Count of case notes. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
-   */
   getCaseNoteUsageSummary: {
     parameters: {
       query?: {
@@ -14692,39 +24500,57 @@ export interface operations {
         /** @description Case note sub-type. */
         subType?: string
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseNoteUsage'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieves list of case notes grouped by type and offender
-   * @description Retrieves list of case notes grouped by type and offender. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
-   */
   getCaseNoteUsageSummaryByPost: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CaseNoteUsageRequest']
@@ -14733,17 +24559,22 @@ export interface operations {
     responses: {
       /** @description The case note usage list is returned. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseNoteUsage'][]
         }
       }
     }
   }
-  /**
-   * Retrieves list of case notes grouped by types, bookings and from dates
-   * @description Retrieves list of case notes grouped by type/sub and offender. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
-   */
   getCaseNoteUsageSummaryByDates: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CaseNoteTypeSummaryRequest']
@@ -14752,17 +24583,22 @@ export interface operations {
     responses: {
       /** @description The case note usage list is returned. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseNoteTypeCount'][]
         }
       }
     }
   }
-  /**
-   * Retrieves list of case notes grouped by type/sub-type and staff
-   * @description Retrieves list of case notes grouped by type/sub-type and staff. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
-   */
   getCaseNoteStaffUsageSummaryByPost: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CaseNoteStaffUsageRequest']
@@ -14771,22 +24607,24 @@ export interface operations {
     responses: {
       /** @description The case note usage list is returned. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseNoteStaffUsage'][]
         }
       }
     }
   }
-  /**
-   * Schedules a future prison to prison move for an offender.
-   * @description Schedules a future prison to prison move for an offender. Requires role PRISON_MOVE_MAINTAINER and scope write.
-   */
   prisonToPrison: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking to associate the prison to prison move with. */
         bookingId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -14796,40 +24634,51 @@ export interface operations {
     responses: {
       /** @description The scheduled prison move. */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledPrisonToPrisonMove']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Schedules a prison to court hearing for an offender.
-   * @description Schedules a prison to court hearing for an offender. Requires role COURT_HEARING_MAINTAINER and scope write
-   */
   prisonToCourt: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking to associate the court hearing with. */
         bookingId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -14839,301 +24688,42 @@ export interface operations {
     responses: {
       /** @description Court hearing created. */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtHearing']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Personal Care Needs
-   * @description Personal Care Need. Requires booking access (via caseload) or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
-   */
-  getPersonalCareNeeds_1: {
-    parameters: {
-      query: {
-        /**
-         * @description a list of types and optionally subtypes (joined with +) to search.
-         * @example DISAB+RM
-         */
-        type: string[]
-      }
-      path: {
-        /** @description The offender booking id */
-        bookingId: number
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['PersonalCareNeeds']
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Personal Care Needs
-   * @description Requires role MAINTAIN_HEALTH_PROBLEMS and scope write
-   */
-  addPersonalCareNeed: {
-    parameters: {
-      path: {
-        /** @description The offender booking id */
-        bookingId: number
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreatePersonalCareNeed']
-      }
-    }
-    responses: {
-      /** @description If successful the Personal Care Need is returned. */
-      201: {
-        content: never
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Schedules a prison to court hearing for an offender and given court case.
-   * @description Schedules a prison to court hearing for an offender and given court case. Requires role COURT_HEARING_MAINTAINER and scope write
-   */
-  prisonToCourt_1: {
-    parameters: {
-      path: {
-        /** @description The offender booking to associate the court hearing with. */
-        bookingId: number
-        /** @description The court case to associate the hearing with. */
-        courtCaseId: number
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PrisonToCourtHearing']
-      }
-    }
-    responses: {
-      /** @description Court hearing created. */
-      201: {
-        content: {
-          'application/json': components['schemas']['CourtHearing']
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Create appointment for offender.
-   * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
-   */
-  postBookingsBookingIdAppointments: {
-    parameters: {
-      path: {
-        /** @description The offender booking id */
-        bookingId: number
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['NewAppointment']
-      }
-    }
-    responses: {
-      /** @description The appointment has been recorded. The updated object is returned including the status. */
-      201: {
-        content: {
-          'application/json': components['schemas']['ScheduledEvent']
-        }
-      }
-    }
-  }
-  /**
-   * Create an alert
-   * @description Requires role UPDATE_ALERT
-   */
-  postAlert: {
-    parameters: {
-      path: {
-        /** @description bookingId */
-        bookingId: number
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateAlert']
-      }
-    }
-    responses: {
-      /** @description Alert id. */
-      201: {
-        content: {
-          'application/json': components['schemas']['AlertCreated']
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Offender detail.
-   * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or prisoners are in caseload<p>This endpoint uses the REPLICA database.</p>
-   */
-  getBasicInmateDetailsForOffenders: {
-    parameters: {
-      query?: {
-        /** @description Returns only Offender details with an active booking if true, otherwise Offenders without an active booking are included */
-        activeOnly?: boolean
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': string[]
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['InmateBasicDetails'][]
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Get alerts for a list of offenders at a prison
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
-  getAlertsByOffenderNosAtAgency: {
-    parameters: {
-      path: {
-        /** @description The prison where the offenders are booked */
-        agencyId: string
-      }
-    }
-    requestBody: {
-      content: {
-        'application/json': string[]
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['Alert'][]
-        }
-      }
-    }
-  }
-  /**
-   * Personal Care Needs  - POST version to allow for large numbers of offenders
-   * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH
-   */
   getPersonalCareNeeds: {
     parameters: {
       query: {
@@ -15143,6 +24733,197 @@ export interface operations {
          */
         type: string[]
       }
+      header?: never
+      path: {
+        /** @description The offender booking id */
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonalCareNeeds']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  addPersonalCareNeed: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender booking id */
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePersonalCareNeed']
+      }
+    }
+    responses: {
+      /** @description If successful the Personal Care Need is returned. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  prisonToCourt_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender booking to associate the court hearing with. */
+        bookingId: number
+        /** @description The court case to associate the hearing with. */
+        courtCaseId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PrisonToCourtHearing']
+      }
+    }
+    responses: {
+      /** @description Court hearing created. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtHearing']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  postBookingsBookingIdAppointments: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender booking id */
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['NewAppointment']
+      }
+    }
+    responses: {
+      /** @description The appointment has been recorded. The updated object is returned including the status. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ScheduledEvent']
+        }
+      }
+    }
+  }
+  getBasicInmateDetailsForOffenders: {
+    parameters: {
+      query?: {
+        /** @description Returns only Offender details with an active booking if true, otherwise Offenders without an active booking are included */
+        activeOnly?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -15152,34 +24933,99 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
-          'application/json': components['schemas']['PersonalCareNeeds'][]
+          'application/json': components['schemas']['InmateBasicDetails'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Personal Care Needs Counter - POST version to allow to count heath problem by type for large numbers of offenders
-   * @description Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
-   */
+  getPersonalCareNeeds_1: {
+    parameters: {
+      query: {
+        /**
+         * @description a list of types and optionally subtypes (joined with +) to search.
+         * @example DISAB+RM
+         */
+        type: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': string[]
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonalCareNeeds'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   countPersonalCareNeeds: {
     parameters: {
       query: {
@@ -15193,6 +25039,9 @@ export interface operations {
         /** @description Personal needs care must be on or before this date (in YYYY-MM-DD format). */
         toStartDate: string
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -15202,35 +25051,49 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PersonalCareCounterDto'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get alerts for a list of offenders. Requires VIEW_PRISONER_DATA role
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
   getAlertsByOffenderNos: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': string[]
@@ -15239,17 +25102,22 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Alert'][]
         }
       }
     }
   }
-  /**
-   * Offence histories.
-   * @description Offence histories for a set of booking ids.<p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenceHistoryForBookings: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': number[]
@@ -15258,29 +25126,40 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenceHistoryDetail'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get Offender main offence detail.
-   * @description Post version to allow specifying a large number of bookingIds. Requires role VIEW_PRISONER_DATA<p>This endpoint uses the REPLICA database.</p>
-   */
   getMainOffence: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': number[]
@@ -15289,32 +25168,49 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenceDetail'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Get court event outcome reason codes for active court cases for a booking */
   getCourtEventOutcomes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': number[]
@@ -15323,29 +25219,40 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtEventOutcome'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Create multiple appointments
-   * @description Create multiple appointments
-   */
   createAppointments: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['AppointmentsToCreate']
@@ -15354,17 +25261,22 @@ export interface operations {
     responses: {
       /** @description The appointments have been created. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreatedAppointmentDetails'][]
         }
       }
     }
   }
-  /**
-   * Delete multiple appointments.
-   * @description Requires role GLOBAL_APPOINTMENT and write scope
-   */
   deleteAppointments: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': number[]
@@ -15373,63 +25285,287 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description No Content */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description The client is not authorised for this operation */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Record in use for this booking id (possibly in P-Nomis) */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * List of active agencies.
-   * @description List of active agencies.
-   */
+  checkServiceAgency: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The code of the service from the EXTERNAL_SERVICES table
+         * @example ACTIVITY
+         */
+        serviceCode: string
+        /**
+         * @description The id of the agency
+         * @example MDI
+         */
+        agencyId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Service is switched on for the service code and agency id. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description A valid auth token was not presented */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The auth token does not have the necessary role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The service code does not exist or the service is not switched on for the prison. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  addServiceAgency: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The code of the service from the EXTERNAL_SERVICES table */
+        serviceCode: string
+        /** @description The id of the agency from the AGENCY_LOCATIONS table */
+        agencyId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AgencyDetails']
+        }
+      }
+      /** @description A valid auth token was not presented */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The auth token does not have the necessary role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The service code or agency does not exist */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The agency is already active for the service */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  removeServiceAgency: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The code of the service from the EXTERNAL_SERVICES table */
+        serviceCode: string
+        /** @description The id of the agency from the AGENCY_LOCATIONS table */
+        agencyId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description A valid auth token was not presented */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The auth token does not have the necessary role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The service code or agency does not exist */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getAgencies: {
     parameters: {
+      query?: never
       header?: {
         /** @description Requested offset of first record in returned collection of agency records. */
         'Page-Offset'?: number
         /** @description Requested limit to number of agency records returned. */
         'Page-Limit'?: number
       }
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Agency'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Create an agency
-   * @description Requires MAINTAIN_REF_DATA
-   */
   createAgency: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['RequestToCreateAgency']
@@ -15438,40 +25574,51 @@ export interface operations {
     responses: {
       /** @description The Agency location created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Agency']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to create an agency location */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Create an address
-   * @description Requires MAINTAIN_REF_DATA
-   */
   createAgencyAddress: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The ID of the agency */
         agencyId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -15481,54 +25628,71 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AddressDto']
         }
       }
       /** @description Created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AddressDto']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to create a agency address */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Create an contact for an address
-   * @description Requires MAINTAIN_REF_DATA
-   */
   createAgencyAddressPhoneContact: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The ID of the agency */
         agencyId: string
         /** @description The ID of the address */
         addressId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -15538,46 +25702,60 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Telephone']
         }
       }
       /** @description Created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Telephone']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to create a agency address */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Fetch visit slots with capacity
-   * @description returns list slots with capacity details<p>This endpoint uses the REPLICA database.</p>
-   */
   getVisitSlotsWithCapacity: {
     parameters: {
       query: {
@@ -15592,6 +25770,7 @@ export interface operations {
          */
         end_date: string
       }
+      header?: never
       path: {
         /**
          * @description Prison ID
@@ -15599,41 +25778,51 @@ export interface operations {
          */
         prison_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['VisitSlots']
         }
       }
       /** @description Invalid start and end date range */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Prison Not Found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieve a single financial transaction using client unique ref.
-   * @description All transaction amounts are represented as pence values.<br/>
-   * Requires NOMIS_API_V1 or UNILINK role.
-   */
   getTransactionByClientUniqueRef: {
     parameters: {
+      query?: never
       header?: {
         /** @description If present then the value is prepended to the client_unique_ref separated by a dash. When this API is invoked via the Nomis gateway this will already have been created by the gateway. */
         'X-Client-Name'?: string
@@ -15652,38 +25841,48 @@ export interface operations {
         /** @description Client unique reference */
         client_unique_ref: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AccountTransaction']
         }
       }
       /** @description Not a digital prison.  Prison not found. Offender has no account at this prison. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Prison, offender or accountType not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get holds.
-   * @description Gets every hold on an offender’s account or just the hold identified by the client_unique_ref<p>This endpoint uses the REPLICA database.</p>
-   */
   getHolds: {
     parameters: {
       query?: {
@@ -15706,42 +25905,52 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Hold'][]
         }
       }
       /** @description Offender Not Found - No offender matching the specified offender_id has been found on nomis. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Offender not in specified prison */
       409: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieve an offender's financial account balances.
-   * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
-   * All balance values are represented as pence values.<br/>
-   * Requires NOMIS_API_V1 or UNILINK role.
-   */
   getAccountBalance: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Prison ID
@@ -15754,40 +25963,48 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AccountBalance']
         }
       }
       /** @description Not a digital prison.  Prison not found. Offender has no account at this prison. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Prison or offender was not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieve an offender's financial transaction history for cash, spends or savings.
-   * @description Transactions are returned in NOMIS order (Descending date followed by id).<br/>
-   * All transaction amounts are represented as pence values.<br/>
-   * Requires NOMIS_API_V1 or UNILINK role.
-   */
   getAccountTransactions: {
     parameters: {
       query?: {
@@ -15802,6 +26019,7 @@ export interface operations {
          */
         to_date?: string
       }
+      header?: never
       path: {
         /**
          * @description Prison ID
@@ -15817,45 +26035,54 @@ export interface operations {
          * @description Account code
          * @example spends
          */
-        account_code: string
+        account_code: 'spends' | 'cash' | 'savings'
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AccountTransactions']
         }
       }
       /** @description Not a digital prison.  Prison not found. Offender has no account at this prison. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Prison, offender or accountType not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Deprecated - use the version without the trailing slash. Retrieve an offender's financial account balances.
-   * @deprecated
-   * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
-   * All balance values are represented as pence values.<br/>
-   * Requires NOMIS_API_V1 or UNILINK role.
-   */
   getAccountBalanceTrailingSlash: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Prison ID
@@ -15868,40 +26095,52 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AccountBalance']
         }
       }
       /** @description Not a digital prison.  Prison not found. Offender has no account at this prison. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Prison or offender was not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Fetching live roll.
-   * @description Requires NOMIS_API_V1 or UNILINK role.<p>This endpoint uses the REPLICA database.</p>
-   */
   getLiveRoll: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Prison ID
@@ -15909,32 +26148,39 @@ export interface operations {
          */
         prison_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['LiveRoll']
         }
       }
       /** @description Not a digital prison.  Prison not found. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Fetch unavailability reason for dates
-   * @description returns list of reason if unavailable date<p>This endpoint uses the REPLICA database.</p>
-   */
   getVisitUnavailability: {
     parameters: {
       query: {
@@ -15944,6 +26190,7 @@ export interface operations {
          */
         dates: string
       }
+      header?: never
       path: {
         /**
          * @description Offender Id
@@ -15951,10 +26198,15 @@ export interface operations {
          */
         offender_id: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': {
             [key: string]: components['schemas']['UnavailabilityReason']
@@ -15963,30 +26215,37 @@ export interface operations {
       }
       /** @description Dates requested must be in future */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Offender not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Fetch contacts list for offender
-   * @description returns list of contacts<p>This endpoint uses the REPLICA database.</p>
-   */
   getVisitContactList: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Offender Id
@@ -15994,38 +26253,48 @@ export interface operations {
          */
         offender_id: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ContactList']
         }
       }
       /** @description Invalid start and end date range */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Offender not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Fetch available_dates for offender
-   * @description returns list of dates<p>This endpoint uses the REPLICA database.</p>
-   */
   getVisitAvailableDates: {
     parameters: {
       query: {
@@ -16040,6 +26309,7 @@ export interface operations {
          */
         end_date: string
       }
+      header?: never
       path: {
         /**
          * @description Offender Id
@@ -16047,40 +26317,52 @@ export interface operations {
          */
         offender_id: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AvailableDates']
         }
       }
       /** @description Invalid start and end date range */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Offender not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Returns general offender information.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
   getOffender: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Offender Noms ID
@@ -16088,47 +26370,52 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Offender']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get the PSS detail by offender
-   * @description Returns the PSS detail information for the specified offender including personal data, warnings, sentence details and location information.<br/>
-   * <ul>
-   *   <li>The 'type' field is always OFFENDER_DETAILS_REQUEST</li>
-   *   <li>The field 'offender_details_request' contains a JSON block of data containing the offender data.</li>
-   * </ul>
-   * The format of 'offender_details_request' is not specified here.<br/>
-   * Requires NOMIS_API_V1 or UNILINK role.
-   * <p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenderPssDetail: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Offender Noms Id
@@ -16136,40 +26423,52 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Event']
         }
       }
       /** @description Invalid Noms ID */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Offender not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Current Location of the offender
-   * @description The levels shows the type of each level of the location address as defined on the Agency Details tab in Maintain Agency Locations screen (OUMAGLOC).<br/><br/>Since the offender's location can change often and is fairly sensitive (and therefore should not automatically be exposed to all services), this information is not included in the general offender information call.<p>This endpoint uses the REPLICA database.</p>
-   */
   getLatestBookingLocation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Offender Noms ID
@@ -16177,40 +26476,52 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
-          'application/json': components['schemas']['Location']
+          'application/json': components['schemas']['OffenderLocation']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get Current Photograph of the offender
-   * @description Returns a 480wx600h JPEG photograph of the offender. The data is base64 encoded within the image key.<p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenderImage: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Offender Noms ID
@@ -16218,40 +26529,52 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Image']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Legal cases for each booking and charges within each legal case.
-   * @description Returns all the bookings, the legal cases for each booking and charges within each legal case.<br/>The ordering is as follows:<ul><li><strong>bookings</strong>: Current or latest booking first, others in descending order of booking date</li><li><strong>legal_cases</strong>: Active cases followed by inactive cases, further ordered by begin_date, latest first</li><li><strong>charges</strong>: Most serious active charge first, then remaining active charges, followed by inactive charges</li></ul><p>This endpoint uses the REPLICA database.</p>
-   */
   getBookings: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Offender Noms ID
@@ -16259,45 +26582,48 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Bookings']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Fetch alerts by offender
-   * @description Returns all active alerts for the specified offender or those that meet the optional criteria. Active alerts are listed first, followed by inactive alerts, both sorted by ascending order of alert date.<br/>
-   * <ul>
-   *   <li>if alert_type is specified then only alerts of that type are returned</li>
-   *   <li>if modified_since is specified then only those alerts created or modified on or after the specified date time. The following formats are supported: 2018-01-10, 2018-01-10 03:34, 2018-01-10 03:34:12, 2018-01-10 03:34:12.123</li>
-   *   <li>If include_inactive=true is specified then inactive alerts are also returned.</li>
-   * </ul>
-   * Requires NOMIS_API_V1 or UNILINK role.
-   * <p>This endpoint uses the REPLICA database.</p>
-   */
   getAlerts: {
     parameters: {
       query?: {
@@ -16317,6 +26643,7 @@ export interface operations {
          */
         include_inactive?: boolean
       }
+      header?: never
       path: {
         /**
          * @description Offender Noms Id
@@ -16324,52 +26651,48 @@ export interface operations {
          */
         noms_id: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Alerts']
         }
       }
       /** @description Invalid Noms ID */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Offender not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Fetch events
-   * @description Returns all events that required to update the prisoner self service application. Currently these are:
-   * <ul>
-   *   <li>ALERT</li>
-   *   <li>DISCHARGE</li>
-   *   <li>IEP_CHANGED</li>
-   *   <li>INTERNAL_LOCATION_CHANGED</li>
-   *   <li>NOMS_ID_CHANGED</li>
-   *   <li>PERSONAL_DETAILS_CHANGED</li>
-   *   <li>PERSONAL_OFFICER_CHANGED</li>
-   *   <li>RECEPTION</li>
-   *   <li>SENTENCE_INFORMATION_CHANGED</li>
-   *   <li>BALANCE_UPDATE</li>
-   * </ul>
-   * Requires NOMIS_API_V1 or UNILINK role.
-   * <p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenderEvents: {
     parameters: {
       query: {
@@ -16394,43 +26717,55 @@ export interface operations {
          */
         from_datetime: string
         /**
-         * @description Number of events to return
+         * @description Number of events to return.  If from_datetime is over a week ago then limit has to be specified and be less than or equal to 1000
          * @example 100
          */
         limit?: number
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Events']
         }
       }
       /** @description Invalid Noms ID */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Offender not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieve active offender
-   * @description offender id will be returned if offender is found<p>This endpoint uses the REPLICA database.</p>
-   */
   getActiveOffender: {
     parameters: {
       query: {
@@ -16445,302 +26780,477 @@ export interface operations {
          */
         date_of_birth: string
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ActiveOffender']
         }
       }
       /** @description Invalid Noms ID */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Parameter exception (invalid date, time, format, type) */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * User detail.
-   * @description User detail.<p>This endpoint uses the REPLICA database.</p>
-   */
   getUserDetails: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The username of the user. */
         username: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['UserDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Current user detail.
-   * @description Current user detail.
-   */
   getMyUserInformation: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['UserDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of roles for current user.
-   * @description List of roles for current user.
-   */
   getMyRoles: {
     parameters: {
       query?: {
         /** @description If set to true then all roles are returned rather than just API roles */
         allRoles?: boolean
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['UserRole'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of locations accessible to current user.
-   * @description List of locations accessible to current user.<p>This endpoint uses the REPLICA database.</p>
-   */
   getMyLocations: {
     parameters: {
       query?: {
         /** @description Indicates non residential locations should be included */
         'include-non-residential-locations'?: boolean
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Location'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of caseloads accessible to current user.
-   * @description List of caseloads accessible to current user.<p>This endpoint uses the REPLICA database.</p>
-   */
   getMyCaseLoads: {
     parameters: {
       query?: {
         /** @description If set to true then all caseloads are returned */
         allCaseloads?: boolean
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseLoad'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Staff detail.
-   * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
-   */
+  getAccountTransactions_1: {
+    parameters: {
+      query?: {
+        /**
+         * @description Start date for transactions (defaults to today if not supplied)
+         * @example 2019-04-01
+         */
+        from_date?: string
+        /**
+         * @description To date for transactions
+         * @example 2019-05-01
+         */
+        to_date?: string
+      }
+      header?: never
+      path: {
+        /**
+         * @description Prison ID
+         * @example WLI
+         */
+        prison_id: string
+        /**
+         * @description Offender Noms Id
+         * @example A1404AE
+         */
+        noms_id: string
+        /**
+         * @description Account code
+         * @example spends
+         */
+        account_code: 'spends' | 'cash' | 'savings'
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerTransactions']
+        }
+      }
+      /** @description Not a digital prison.  Prison not found. Offender has no account at this prison. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prison, offender or accountType not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getStaffDetail: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The staff id of the staff member. */
         staffId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['StaffDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of job roles for specified staff and agency Id
-   * @description Security note: the agency must be in the current user's caseload.
-   */
   getAllRolesForAgency: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description Agency Id. */
         agencyId: string
         /** @description The staff id of the staff member. */
         staffId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['StaffRole'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Check if staff member has a role
-   * @description Check if staff member has a role, either KW or POM. Security note: the agency must be in the current user's caseload.
-   */
   hasStaffRole: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Agency Id.
@@ -16758,72 +27268,93 @@ export interface operations {
          */
         roleType: 'KW' | 'POM'
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Returns a list of email addresses associated with this staff user
-   * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
-   */
   getStaffEmailAddresses: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The staff id of the staff user. */
         staffId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': string[]
         }
       }
       /** @description No email addresses were found for this staff member. */
       204: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': string[]
         }
       }
       /** @description The staffId supplied was not valid. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Returns a list of caseloads associated with this staff user
-   * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
-   */
   getStaffCaseloads: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The staff id of the staff user.
@@ -16831,38 +27362,48 @@ export interface operations {
          */
         staffId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseLoad'][]
         }
       }
       /** @description No caseloads were found for this staff member. */
       204: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseLoad'][]
         }
       }
       /** @description The staffId supplied was not valid or not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get staff members within agency who are currently assigned the specified role.
-   * @description Get staff members within agency who are currently assigned the specified role. Security note: the agency must be in the current user's caseload.<p>This endpoint uses the REPLICA database.</p>
-   */
   getStaffByAgencyRole: {
     parameters: {
       query?: {
@@ -16889,95 +27430,409 @@ export interface operations {
         /** @description The staff role. */
         role: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['StaffLocationRole'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Retrieve a list of prisons switched on for the service code */
+  getAllSplashScreens: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashScreenDto'][]
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getConditionsByType: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Module name
+         * @example OIDCHOLO
+         */
+        moduleName: string
+        /**
+         * @description Condition type
+         * @example CASELOAD
+         */
+        conditionType: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashConditionDto'][]
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getConditionsByTypeAndValue: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Module name
+         * @example OIDCHOLO
+         */
+        moduleName: string
+        /**
+         * @description Condition type
+         * @example CASELOAD
+         */
+        conditionType: string
+        /**
+         * @description Condition value
+         * @example MDI
+         */
+        conditionValue: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashConditionDto']
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  removeCondition: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Module name
+         * @example OIDCHOLO
+         */
+        moduleName: string
+        /**
+         * @description Condition type
+         * @example CASELOAD
+         */
+        conditionType: string
+        /**
+         * @description Condition value
+         * @example MDI
+         */
+        conditionValue: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashScreenDto']
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getSplashScreensByCondition: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Condition type
+         * @example CASELOAD
+         */
+        conditionType: string
+        /**
+         * @description Condition value
+         * @example MDI
+         */
+        conditionValue: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplashScreenDto'][]
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getServicePrisons: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The code of the service from the EXTERNAL_SERVICES table */
         serviceCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonDetails'][]
         }
       }
       /** @description A valid auth token was not presented */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The auth token does not have the necessary role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The service code does not exist */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
   getScheduledTransfersForPrisoner: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonerNumber: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerPrisonSchedule'][]
         }
       }
     }
   }
-  /**
-   * Get all Prisoner activities for given date.
-   * @description Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p>
-   */
   getSuspendedActivitiesAtAllLocationsByDateRange: {
     parameters: {
       query?: {
@@ -16988,42 +27843,53 @@ export interface operations {
         /** @description AM, PM or ED */
         timeSlot?: 'AM' | 'PM' | 'ED'
       }
+      header?: never
       path: {
         /** @description The prison. */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get all Prisoner events for given date at location.
-   * @description Get all Prisoner events for given date at location.<p>This endpoint uses the REPLICA database.</p>
-   */
   getLocationEvents: {
     parameters: {
       query?: {
@@ -17046,38 +27912,48 @@ export interface operations {
         /** @description The locationUsage code from the location object - one of the INTERNAL_LOCATION_USAGE reference codes. */
         usage: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get all Prisoner activities for given date at location.
-   * @description Get all Prisoner activities for given date at location.<p>This endpoint uses the REPLICA database.</p>
-   */
   getActivitiesAtLocation: {
     parameters: {
       query?: {
@@ -17098,131 +27974,183 @@ export interface operations {
         /** @description The location id where activity is held. */
         locationId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerSchedule'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** The last restore date or not found is returned if no restore data available */
   getLastRestoreDate: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': string
         }
       }
       /** @description No restore information found - this endpoint is only guaranteed to return information when run on pre-prod. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get possible reason codes for created event.
-   * @description Get possible reason codes for created event.<p>This endpoint uses the REPLICA database.</p>
-   */
   getScheduleReasons: {
     parameters: {
       query: {
         /** @description Specify event type. */
         eventType: string
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceCode'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of all reference domains
-   * @description A reference domain can be used to retrieve all codes related to that domain. Ordered by domain ascending<p>This endpoint uses the REPLICA database.</p>
-   */
   getAllReferenceDomains: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceDomain'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of reference codes for reference domain paged.
-   * @description List of reference codes for reference domain paged. Please note this API has the incorrect name so the non-paged /domains/{domain}/codes version is preferred.<p>This endpoint uses the REPLICA database.</p>
-   */
   getReferenceCodesByDomain: {
     parameters: {
       query?: {
@@ -17243,38 +28171,48 @@ export interface operations {
         /** @description The domain identifier/name. */
         domain: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceCode'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Reference code matching description
-   * @description Wild card can be specified<p>This endpoint uses the REPLICA database.</p>
-   */
   getReferenceCodeByDomainAndDescription: {
     parameters: {
       query: {
@@ -17283,82 +28221,156 @@ export interface operations {
         /** @description Specify whether or not to wild card the results */
         wildcard?: boolean
       }
+      header?: never
       path: {
         /** @description The domain identifier/name. */
         domain: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceCode'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of reference codes for reference domain.
-   * @description List of reference codes for reference domain ordered by code ascending. The list is an un-paged flat list<p>This endpoint uses the REPLICA database.</p>
-   */
   getReferenceCodesByDomain_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The domain identifier/name. */
         domain: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceCode'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of alert types (with alert codes).
-   * @description List of alert types (with alert codes).<p>This endpoint uses the REPLICA database.</p>
-   */
+  getReferenceOrProfileCodesByDomain: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The domain or profile type identifier/name. */
+        domain: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReferenceCode'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getAlertTypes: {
     parameters: {
+      query?: never
       header?: {
         /** @description Requested offset of first record in returned collection of alertType records. */
         'Page-Offset'?: number
@@ -17369,69 +28381,94 @@ export interface operations {
         /** @description Sort order (ASC or DESC) - defaults to ASC. */
         'Sort-Order'?: 'ASC' | 'DESC'
       }
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceCode'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of offenders globally matching the offenderNo.
-   * @description List of offenders globally matching the offenderNo, Requires offender agency to be in user caseload or VIEW_PRISONER_DATA role. Returns an empty array if no results are found or if does not have correct permissions
-   */
   getPrisonersOffenderNo: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offenderNo to search for */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerDetail'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Status and core offender information */
   getPrisonerInformationById: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Offender No (NOMS ID)
@@ -17439,38 +28476,39 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerInformation']
         }
       }
       /** @description Unauthorized. */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description User not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Return a list of all unique prisoner numbers (also called NOMS ID or offenderNo).
-   *     Results are ordered by max(ROOT_OFFENDER_ID), therefore ensuring that new offenders are added to the end of the
-   *     results.
-   *     This is an internal endpoint used by Prisoner Search to ensure that NOMIS and OpenSearch are in sync.
-   *     Other services should use Prisoner Search instead to get the list of prisoners.
-   *     Requires PRISONER_INDEX or GLOBAL_SEARCH role.
-   *
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
   getPrisonerNumbers: {
     parameters: {
       query?: {
@@ -17479,30 +28517,95 @@ export interface operations {
         /** @description Requested limit to number of prisoner numbers returned. */
         size?: number
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PageString']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Details of the active sentence envelope, a combination of the person information, the active booking and calculable sentences at a particular establishment (paged response) */
-  getCalculableSentenceEnvelopeByEstablishment: {
+  getPrisonerDetails: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description offenderNo
+         * @example A1234AA
+         */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerSearchDetails']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requires role ROLE_PRISONER_INDEX */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getCalculablePrisonerEnvelopeByEstablishment: {
     parameters: {
       query?: {
         /** @description The page number to retrieve of the paged results (starts at zero) */
@@ -17510,197 +28613,552 @@ export interface operations {
         /** @description Requested limit of the page size (i.e. the number of bookings in response) */
         size?: number
       }
+      header?: never
       path: {
         /** @description The identifier of the establishment(prison) to get the active bookings for */
-        establishmentId: string
+        agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
-          'application/json': components['schemas']['PageCalculableSentenceEnvelope']
+          'application/json': components['schemas']['PageCalculablePrisoner']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * The phone numbers for person
-   * @description Requires role ROLE_VIEW_CONTACTS
-   */
+  getPrisonRollCount: {
+    parameters: {
+      query?: {
+        'include-cells'?: boolean
+      }
+      header?: never
+      path: {
+        /**
+         * @description Prison Id
+         * @example MDI
+         */
+        prisonId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns roll count for a specific prison */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonRollCount']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Missing required role. Requires the ESTABLISHMENT_ROLL role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getPrisonRollCountSummary: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Prison Id
+         * @example MDI
+         */
+        prisonId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns roll count summary for a specific prison */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonRollSummary']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Missing required role. Requires the ESTABLISHMENT_ROLL role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getRollCountMovementInformation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Prison Id
+         * @example MDI
+         */
+        prisonId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns cell list of roll-counts for a specific prison and sub-location */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonRollMovementInfo']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Missing required role. Requires the ESTABLISHMENT_ROLL role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getCellLevelRollCount: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Prison Id
+         * @example MDI
+         */
+        prisonId: string
+        /**
+         * @description Location ID of parent of the cells
+         * @example 1212312
+         */
+        locationId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns cell list of roll-counts for a specific prison and sub-location */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonRollCount']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Missing required role. Requires the ESTABLISHMENT_ROLL role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getPersonPhones: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The persons NOMIS identifier (personId). */
         personId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Telephone'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * The most recent value of each type of person identifier
-   * @description Requires role ROLE_VIEW_CONTACTS
-   */
   getPersonIdentifiers: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The persons NOMIS identifier (personId). */
         personId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PersonIdentifier'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * The emails for person
-   * @description Requires role ROLE_VIEW_CONTACTS
-   */
   getPersonEmails: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The persons NOMIS identifier (personId). */
         personId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Email'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * The addresses for person
-   * @description Requires role ROLE_VIEW_CONTACTS
-   */
   getPersonAddresses: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The persons NOMIS identifier (personId). */
         personId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AddressDto'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Full details about the current state of an offender */
+  getIdentifyingMarksForLatestBooking: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description Prisoner unique reference
+         * @example A1234AA
+         */
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DistinguishingMark'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description PRISON_API__PRISONER_PROFILE__RW role required to access endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getImage: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The id of the image */
+        photoId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': string
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description PRISON_API__PRISONER_PROFILE__RW role required to access endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getOffender_1: {
     parameters: {
-      header?: {
-        /** @description Version of Offender details, default is 1.0, Beta is version 1.1_beta and is WIP (do not use in production) */
-        version?: string
-      }
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of offender
@@ -17708,38 +29166,48 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieve an offender's financial transaction history for cash, spends or savings.
-   * @description Transactions are returned in order of entryDate descending and sequence ascending).<br/>All transaction amounts are represented as pence values.<p>This endpoint uses the REPLICA database.</p>
-   */
   getTransactionsHistory: {
     parameters: {
       query?: {
@@ -17747,7 +29215,7 @@ export interface operations {
          * @description Account code
          * @example spends
          */
-        account_code?: string
+        account_code?: 'spends' | 'cash' | 'savings'
         /**
          * @description Start date for transactions, format yyyy-MM-dd
          * @example 2019-04-01
@@ -17764,6 +29232,7 @@ export interface operations {
          */
         transaction_type?: string
       }
+      header?: never
       path: {
         /**
          * @description Offender No
@@ -17771,58 +29240,71 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderTransactionHistoryDto'][]
         }
       }
       /** @description Not a digital offender. Offender has no account at this prison. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Prison, offender or accountType not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender Sentence Details
-   * @description Retrieve an single offender sentence details
-   */
   getOffenderSentenceDetail: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description Noms ID or Prisoner number (also called offenderNo) */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderSentenceDetail']
         }
       }
     }
   }
-  /**
-   * All future (scheduled) events for offender
-   * @description All future events for offender that are in a scheduled and not cancelled state.
-   */
   getScheduledEvents: {
     parameters: {
       query?: {
@@ -17831,6 +29313,7 @@ export interface operations {
         /** @description Returned events must be scheduled on or before this date (in YYYY-MM-DD format). */
         toDate?: string
       }
+      header?: never
       path: {
         /**
          * @description Offender No
@@ -17838,164 +29321,52 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Summary of the different periods this prisoner has been in prison.
-   * @description This is a summary of the different periods this prisoner has been in prison grouped by booking.
-   *
-   * It includes the dates of each period, the prison and the reason for the movement. Each booking is divided into periods of time spent in prison separated by periods when the were out either via a release or a temporary absence (periods at court are not included).
-   *
-   * The periods are ordered by date ascending, therefore the final period will be their last time in prison. For each period the prison admitted into and optionally released from will be listed. These can be different if there has been transfers in between the dates.
-   *
-   * Transfers are also listed separately.
-   *
-   *
-   * **Example response:**
-   * #### Booking 47828A
-   * Has 2 periods of temporary absence. In the second absence they return to a different prison. They are eventually released.
-   *
-   * #### Booking 47829A
-   * The person is still is prison but has been transferred to a 2nd prison.
-   *
-   * There are a number of transfers during this booking.
-   * ```
-   * {
-   *   "prisonerNumber": "A7748DZ",
-   *   "prisonPeriod": [
-   *     {
-   *       "bookNumber": "47828A",
-   *       "bookingId": 1211013,
-   *       "entryDate": "2023-12-08T15:50:37",
-   *       "releaseDate": "2023-12-08T16:21:24",
-   *       "movementDates": [
-   *         {
-   *           "reasonInToPrison": "Imprisonment Without Option",
-   *           "dateInToPrison": "2023-12-08T15:50:37",
-   *           "inwardType": "ADM",
-   *           "reasonOutOfPrison": "Wedding/Civil Ceremony",
-   *           "dateOutOfPrison": "2023-12-08T15:53:37",
-   *           "outwardType": "TAP",
-   *           "admittedIntoPrisonId": "BMI",
-   *           "releaseFromPrisonId": "BSI"
-   *         },
-   *         {
-   *           "reasonInToPrison": "Wedding/Civil Ceremony",
-   *           "dateInToPrison": "2023-12-08T15:54:12",
-   *           "inwardType": "TAP",
-   *           "reasonOutOfPrison": "Conditional Release (CJA91) -SH Term>1YR",
-   *           "dateOutOfPrison": "2023-12-08T16:20:19",
-   *           "outwardType": "REL",
-   *           "admittedIntoPrisonId": "BSI",
-   *           "releaseFromPrisonId": "AYI"
-   *         },
-   *         {
-   *           "reasonInToPrison": "Recall From Intermittent Custody",
-   *           "dateInToPrison": "2023-12-08T16:20:45",
-   *           "inwardType": "ADM",
-   *           "reasonOutOfPrison": "Conditional Release (CJA91) -SH Term>1YR",
-   *           "dateOutOfPrison": "2023-12-08T16:21:24",
-   *           "outwardType": "REL",
-   *           "admittedIntoPrisonId": "AYI",
-   *           "releaseFromPrisonId": "AYI"
-   *         }
-   *       ],
-   *       "transfers": [
-   *         {
-   *           "dateOutOfPrison": "2023-12-08T15:51:09",
-   *           "dateInToPrison": "2023-12-08T15:52:32",
-   *           "transferReason": "Compassionate Transfer",
-   *           "fromPrisonId": "BMI",
-   *           "toPrisonId": "BSI"
-   *         },
-   *         {
-   *           "dateOutOfPrison": "2023-12-08T15:54:56",
-   *           "dateInToPrison": "2023-12-08T15:55:54",
-   *           "transferReason": "Transfer Via Court",
-   *           "fromPrisonId": "BSI",
-   *           "toPrisonId": "BRI"
-   *         },
-   *         {
-   *           "dateOutOfPrison": "2023-12-08T15:56:05",
-   *           "dateInToPrison": "2023-12-08T15:57:25",
-   *           "transferReason": "Appeals",
-   *           "fromPrisonId": "BRI",
-   *           "toPrisonId": "DAI"
-   *         },
-   *         {
-   *           "dateOutOfPrison": "2023-12-08T16:18:45",
-   *           "dateInToPrison": "2023-12-08T16:19:45",
-   *           "transferReason": "Medical",
-   *           "fromPrisonId": "DAI",
-   *           "toPrisonId": "AYI"
-   *         }
-   *       ],
-   *       "prisons": [
-   *         "BMI",
-   *         "BSI",
-   *         "BRI",
-   *         "DAI",
-   *         "AYI"
-   *       ]
-   *     },
-   *     {
-   *       "bookNumber": "47829A",
-   *       "bookingId": 1211014,
-   *       "entryDate": "2023-12-08T16:21:21",
-   *       "movementDates": [
-   *         {
-   *           "reasonInToPrison": "Imprisonment Without Option",
-   *           "dateInToPrison": "2023-12-08T16:21:21",
-   *           "inwardType": "ADM",
-   *           "admittedIntoPrisonId": "DGI"
-   *         }
-   *       ],
-   *       "transfers": [
-   *         {
-   *           "dateOutOfPrison": "2023-12-08T16:22:02",
-   *           "dateInToPrison": "2023-12-08T16:23:32",
-   *           "transferReason": "Overcrowding Draft",
-   *           "fromPrisonId": "DGI",
-   *           "toPrisonId": "BLI"
-   *         }
-   *       ],
-   *       "prisons": [
-   *         "DGI",
-   *         "BLI"
-   *       ]
-   *     }
-   *   ]
-   * }
-   * ```
-   */
   getOffenderPrisonPeriods: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description The offenderNo of offender
@@ -18003,44 +29374,55 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonerInPrisonSummary']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Gets the offender visit restrictions for a given offender using the latest booking
-   * @description Get offender visit restrictions by offender No. <p>Requires a relationship (via caseload) with the offender or VISIT_SCHEDULER role.</p>
-   */
   getVisitRestrictions: {
     parameters: {
       query?: {
         /** @description return only restriction that are active (derived from startDate and expiryDate) */
         activeRestrictionsOnly?: boolean
       }
+      header?: never
       path: {
         /**
          * @description Offender No
@@ -18048,79 +29430,48 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderRestrictions']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Military Records
-   * @description Military Records
-   */
-  getMilitaryRecords: {
-    parameters: {
-      path: {
-        /**
-         * @description Offender No
-         * @example A1234AA
-         */
-        offenderNo: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['MilitaryRecords']
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Return a set Incidents for a given offender No.
-   * @description Can be filtered by participation type and incident type. Requires the VIEW_INCIDENTS role.
-   */
   getIncidentsByOffenderNo: {
     parameters: {
       query: {
@@ -18133,8 +29484,20 @@ export interface operations {
          * @description participationRoles
          * @example ASSIAL
          */
-        participationRoles: string
+        participationRoles:
+          | 'ACTINV'
+          | 'ASSIAL'
+          | 'FIGHT'
+          | 'IMPED'
+          | 'PERP'
+          | 'SUSASS'
+          | 'SUSINV'
+          | 'VICT'
+          | 'AI'
+          | 'PAS'
+          | 'AO'
       }
+      header?: never
       path: {
         /**
          * @description offenderNo
@@ -18142,49 +29505,52 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['IncidentCase'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Housing location for prisoner
-   * @description <p>Housing location split out into different levels for a prisoner, or an empty response if the prisoner is not currently in a prison.</p>
-   * <p>There will be either 3 or 4 levels returned depending on the layout in NOMIS.
-   * Level 1 is the top level, so normally a wing or a house block and level 3 / 4 will be the individual cell.</p>
-   * <p>This endpoint returns the prison levels as recorded in NOMIS and may not accurately reflect the physical layout of the prison.
-   * For example Bristol has wings, spurs and landings, but this endpoint will only return wings and landings as spurs are not mapped in NOMIS.
-   * Another example is Moorland where 5-1-B-014 in NOMIS is Wing 5, Landing 1, Cell B and Cell 014, whereas in reality it should be Houseblock 5, Spur 1, Wing B and Cell 014 instead.
-   * This endpoint will therefore also return different information from Whereabouts API as that service re-maps the NOMIS layout to include spurs etc.</p>
-   * <p>If the current location is temporary (reception, court, tap, cell swap or early conditional licence) then the previous permanent location is also returned, provided
-   * that the location is at the same prison and they haven't moved to a different prison in the meantime.</p>
-   * <p>Requires a relationship (via caseload) with the prisoner or VIEW_PRISONER_DATA role.</p>
-   */
   getHousingLocation: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Offender No
@@ -18192,38 +29558,48 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderLocation']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * All scheduled events for offender.
-   * @description All scheduled events for offender.
-   */
   getEvents: {
     parameters: {
       query?: {
@@ -18232,6 +29608,7 @@ export interface operations {
         /** @description Returned events must be scheduled on or before this date (in YYYY-MM-DD format). */
         toDate?: string
       }
+      header?: never
       path: {
         /**
          * @description Offender No
@@ -18239,35 +29616,48 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Return a list of damage obligations */
   getOffenderDamageObligations: {
     parameters: {
       query?: {
@@ -18275,8 +29665,9 @@ export interface operations {
          * @description Filter by obligation status. Leave blank to return all
          * @example ACTIVE
          */
-        status?: string
+        status?: 'INACT' | 'PAID' | 'ONH' | 'ACTIVE' | 'APPEAL'
       }
+      header?: never
       path: {
         /**
          * @description offenderNo
@@ -18284,32 +29675,80 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderDamageObligationResponse']
         }
       }
-      /** @description Offender does not exists or is in a different caseload to the user */
+      /** @description Offender does not exist */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender Contacts
-   * @description Active Contacts including restrictions, using latest offender booking  and including inactive contacts by default
-   */
+  getCommunicationNeeds: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender number */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CorePersonCommunicationNeeds']
+        }
+      }
+      /** @description Offender not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getOffenderContacts: {
     parameters: {
       query?: {
@@ -18318,6 +29757,7 @@ export interface operations {
         /** @description return only active contacts, nb visitors can be inactive contacts */
         activeOnly?: boolean
       }
+      header?: never
       path: {
         /**
          * @description Offender No
@@ -18325,38 +29765,48 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderContacts']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Return a list of alerts for latest booking for a given offender No.
-   * @description System or cat tool access only
-   */
   getAlertsForLatestBookingByOffenderNo: {
     parameters: {
       query?: {
@@ -18366,13 +29816,22 @@ export interface operations {
          */
         alertCodes?: string
         /** @description Comma separated list of one or more Alert fields */
-        sort?: string
+        sort?:
+          | 'alertId'
+          | 'bookingId'
+          | 'alertType'
+          | 'alertCode'
+          | 'comment'
+          | 'dateCreated'
+          | 'dateExpires'
+          | 'active'
         /**
          * @description Sort order
          * @example DESC
          */
         direction?: string
       }
+      header?: never
       path: {
         /**
          * @description Noms ID or Prisoner number
@@ -18380,108 +29839,141 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Alert'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender Sentence Details
-   * @description Retrieve an single offender sentence details
-   */
   getLatestSentenceSummary: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description Noms ID or Prisoner number (also called offenderNo) */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SentenceSummary']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Get belief history for a prisoner */
   getOffenderBeliefHistory: {
     parameters: {
       query?: {
         bookingId?: string
       }
+      header?: never
       path: {
         /** @description The prisoner number */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Belief'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to view belief history. */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Return a list of alerts for all booking for a given offender No.
-   * @description System or cat tool access only
-   */
   getAlertsForAllBookingByOffenderNo: {
     parameters: {
       query?: {
@@ -18491,13 +29983,22 @@ export interface operations {
          */
         alertCodes?: string
         /** @description Comma separated list of one or more Alert fields */
-        sort?: string
+        sort?:
+          | 'alertId'
+          | 'bookingId'
+          | 'alertType'
+          | 'alertCode'
+          | 'comment'
+          | 'dateCreated'
+          | 'dateExpires'
+          | 'active'
         /**
          * @description Sort order
          * @example DESC
          */
         direction?: string
       }
+      header?: never
       path: {
         /**
          * @description Noms ID or Prisoner number
@@ -18505,370 +30006,550 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Alert'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Return a list of addresses for a given offender, most recent first.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
-  getAddressesByOffenderNo: {
-    parameters: {
-      path: {
-        /**
-         * @description offenderNo
-         * @example A1234AA
-         */
-        offenderNo: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['AddressDto'][]
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /** Returns the next prisoner number (NOMS ID or Offender No) that can be used to create an offender */
   getNextPrisonerIdentifier: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of offenders eligible for HDC
-   * @description Version 1<p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenderSentencesHomeDetentionCurfewCandidates: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Sentence details for offenders who are candidates for Home Detention Curfew. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderSentenceCalcBaseSentenceCalcDates'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Sentence and offence details  for a prisoner */
   getSentenceAndOffenceDetails: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The required booking id (mandatory) */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Sentence and offence details for a prisoner. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderSentenceAndOffences']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Sentence term details for a prisoner
-   * @description Requires booking access (via caseload) or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
-   */
   getOffenderSentenceTerms: {
     parameters: {
       query?: {
         filterBySentenceTermCodes?: string[]
       }
+      header?: never
       path: {
         /** @description The required booking id (mandatory) */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Sentence term details for a prisoner. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderSentenceTerms'][]
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Retrieve the current state of the latest Home Detention Curfew for a booking */
   getLatestHomeDetentionCurfew: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description HDC information */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['HomeDetentionCurfew']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Offender fine payments for a prisoner */
   getOffenderFinePayments: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The required booking id (mandatory) */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Offender fine payment details for a prisoner. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderFinePaymentDto']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get the key dates for an offender.
-   * @description Requires RELEASE_DATES_CALCULATOR
-   */
-  getOffenderCalculations: {
+  getOffenderKeyDatesForOffenderSentCalcId: {
     parameters: {
+      query?: never
+      header?: never
       path: {
-        /** @description The booking id of offender */
-        nomsId: string
+        /** @description The Offender Sent Calc Id id of offender */
+        offenderSentCalcId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
-      /** @description Offender calculations found */
+      /** @description Offender key dates found */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
-          'application/json': components['schemas']['OffenderSentenceCalculation']
+          'application/json': components['schemas']['OffenderCalculatedKeyDates']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to get an offender's calculated dates */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getOffenderLatestTused: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The nomis id of the offender */
+        nomsId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description TUSED data found for offender */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LatestTusedData']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden - user not authorised to access latest TUSED information for offender */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getOffenderCalculations: {
+    parameters: {
+      query?: {
+        /** @description return only calculations from the latest booking */
+        latestOnly?: boolean
+      }
+      header?: never
+      path: {
+        /** @description The booking id of offender */
+        nomsId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Offender calculations found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceCalculationSummary'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden - user not authorised to update an offender's dates */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieves CSRAs for the given offender, ordered by the latest first.
-   * @description Requires offender in the caseload, or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
-   */
   getOffenderCsraAssessments: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender number */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AssessmentSummary'][]
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Retrieves details of a single CSRA assessment.
-   * @description Requires offender in the caseload, or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
-   */
   getOffenderCsraAssessment: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The booking id of offender */
         bookingId: number
         /** @description The assessment sequence number for the given offender booking */
         assessmentSeq: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AssessmentDetail']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Returns category information on Offenders at a prison.
-   * @description Requires offender in the caseload, or VIEW_ASSESSMENTS role.<p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenderCategorisations: {
     parameters: {
       query: {
-        /**
-         * @description Indicates which type of category information is required.
-         *     <li>UNCATEGORISED: Offenders who need to be categorised,</li>
-         *     <li>CATEGORISED: Offenders who have an approved categorisation,</li>
-         *     <li>RECATEGORISATIONS: Offenders who will soon require recategorisation</li>
-         */
+        /** @description Indicates which type of category information is required.
+         *         <li>UNCATEGORISED: Offenders who need to be categorised,</li>
+         *         <li>CATEGORISED: Offenders who have an approved categorisation,</li>
+         *         <li>RECATEGORISATIONS: Offenders who will soon require recategorisation</li> */
         type: string
-        /**
-         * @description For type CATEGORISED: The past date from which categorisations are returned.<br />
-         * For type RECATEGORISATIONS: the future cutoff date: list includes all prisoners who require re-categorisation on or before this date.<br />
-         * For type UNCATEGORISED: Ignored; do not set this parameter.
-         */
+        /** @description For type CATEGORISED: The past date from which categorisations are returned.<br />
+         *     For type RECATEGORISATIONS: the future cutoff date: list includes all prisoners who require re-categorisation on or before this date.<br />
+         *     For type UNCATEGORISED: Ignored do not set this parameter. */
         date?: string
       }
+      header?: never
       path: {
         /** @description Prison id */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderCategorise'][]
         }
       }
     }
   }
-  /**
-   * Returns assessment information on Offenders at a prison.
-   * @description Requires VIEW_PRISONER_DATA role.<p>This endpoint uses the REPLICA database.</p>
-   */
   getAssessments: {
     parameters: {
       query: {
@@ -18881,26 +30562,32 @@ export interface operations {
         /** @description Returns only the last assessment per sentence if true, otherwise all assessments for the booking are included */
         mostRecentOnly?: boolean
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Assessment'][]
         }
       }
       /** @description Invalid request - e.g. no offender numbers provided. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * The activities that this offender attended over a time period.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
   getHistoricalAttendances: {
     parameters: {
       query: {
@@ -18915,7 +30602,7 @@ export interface operations {
          */
         toDate: string
         /** @description Only include attendences which have this outcome (default all) */
-        outcome?: string
+        outcome?: 'ABS' | 'ACCAB' | 'ATT' | 'CANC' | 'NREQ' | 'SUS' | 'UNACAB' | 'REST'
         /** @description Zero-based page index (0..N) */
         page?: number
         /** @description The size of the page to be returned */
@@ -18923,24 +30610,26 @@ export interface operations {
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
         sort?: string[]
       }
+      header?: never
       path: {
         /** @description The offenderNo of the prisoner */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * The activities that this offender has been allocated to.
-   * @description This includes suspended activities<p>This endpoint uses the REPLICA database.</p>
-   */
   getRecentStartedActivities: {
     parameters: {
       query: {
@@ -18956,25 +30645,26 @@ export interface operations {
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
         sort?: string[]
       }
+      header?: never
       path: {
         /** @description The offenderNo of the prisoner */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Paged List of all offences where the offence code starts with the passed in offenceCode param
-   * @deprecated
-   * @description Deprecated - use https://manage-offences-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html
-   */
   getOffencesThatStartWith: {
     parameters: {
       query?: {
@@ -18985,6 +30675,7 @@ export interface operations {
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
         sort?: string[]
       }
+      header?: never
       path: {
         /**
          * @description The offence code
@@ -18992,22 +30683,33 @@ export interface operations {
          */
         offenceCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PageOffenceDto']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
@@ -19020,44 +30722,55 @@ export interface operations {
         /** @description The optional movement type to filter by e.g CRT, REL, TAP, TRN */
         movementType?: string
       }
+      header?: never
       path: {
         /** @description The prison id */
         agencyId: string
         /** @description date */
         isoDate: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderOutTodayDto'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offenders who entered a prison during a time period.
-   * @description Offenders who entered a prison during a time period.<p>This endpoint uses the REPLICA database.</p>
-   */
   getMovementsIn: {
     parameters: {
       query: {
@@ -19078,128 +30791,164 @@ export interface operations {
         /** @description The prison id */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderIn'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Information on offenders in today.
-   * @description Information on offenders in on given date.
-   */
   getMovementsIn_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The prison id */
         agencyId: string
         /** @description date */
         isoDate: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderIn'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Enroute prisoner movement details.
-   * @description Enroute to reception
-   */
-  getEnrouteOffenderMovements: {
+  getEnRouteOffenderMovements: {
     parameters: {
       query?: {
         /** @description Optional filter on date of movement */
         movementDate?: string
       }
+      header?: never
       path: {
         /** @description The prison id */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderMovement'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get future court hearings for all offenders
-   * @description Requires role VIEW_COURT_EVENTS.<p>This endpoint uses the REPLICA database.</p>
-   */
   getUpcomingCourtAppearances: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtEventBasic'][]
         }
       }
     }
   }
-  /**
-   * Information on scheduled court, transfer and release events, and confirmed movements between two dates/times for a specified number of agencies.
-   * @description Planned movements are recorded as events of type court, release or transfers/appointments. When these events are started they are actualised as external movements.<p>This endpoint uses the REPLICA database.</p>
-   */
   getTransfers: {
     parameters: {
       query: {
@@ -19218,106 +30967,88 @@ export interface operations {
         /** @description Set to true to include confirmed movements */
         movements?: boolean
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['TransferSummary']
         }
       }
       /** @description Invalid agency identifiers, or from time after the to time, or a time period greater than 24 hours specified, or parameter format not correct. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Current establishment rollcount numbers.
-   * @description Current establishment rollcount numbers.<p>This endpoint uses the REPLICA database.</p>
-   */
-  getRollcount: {
-    parameters: {
-      query?: {
-        /** @description If false return data for prisoners in cell locations, if true return unassigned prisoners, i.e. those in non-cell locations. */
-        unassigned?: boolean
-      }
-      path: {
-        /** @description The prison id */
-        agencyId: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['RollCount'][]
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Rollcount movement numbers.
-   * @description Rollcount movement numbers.<p>This endpoint uses the REPLICA database.</p>
-   */
-  getRollcountMovements: {
+  getRollCountMovements: {
     parameters: {
       query?: {
         /** @description The date for which movements are counted, default today. */
         movementDate?: string
       }
+      header?: never
       path: {
         /** @description The prison id */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['MovementCount']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
@@ -19326,224 +31057,362 @@ export interface operations {
   }
   getOffendersInReception: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The prison id */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderInReception'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Enroute prisoner movement count.
-   * @description Enroute to reception count
-   */
-  getEnrouteOffenderMovementCount: {
+  getEnRouteOffenderMovementCount: {
     parameters: {
       query?: {
         /** @description Optional filter on date of movement. Defaults to today */
         movementDate?: string
       }
+      header?: never
       path: {
         /** @description The prison id */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': number
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Information on offenders currently out.
-   * @description Requires role ESTABLISHMENT_ROLL.<p>This endpoint uses the REPLICA database.</p>
-   */
+  getLatestArrivalDate_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender number */
+        offenderNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': string
+        }
+      }
+    }
+  }
+  getMovementsByOffender: {
+    parameters: {
+      query?: {
+        /** @description movement type codes to filter by */
+        movementTypes?: string[]
+        /** @description Returns all movements for this offender list from all bookings if true */
+        allBookings?: boolean
+        /** @description Filters movements that happened since this date */
+        movementsAfter?: string
+      }
+      header?: never
+      path: {
+        /** @description The required offender id (mandatory) */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Movement'][]
+        }
+      }
+    }
+  }
   getOffendersCurrentlyOut: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The identifier of a living unit, otherwise known as an internal location. */
         livingUnitId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderOut'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Information about the set of offenders at an agency who are currently out due to temporary absence.
-   * @description Requires role ESTABLISHMENT_ROLL.
-   */
+  getMovementsByBooking: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The booking id */
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BookingMovement'][]
+        }
+      }
+    }
+  }
   getTemporaryAbsences: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The prison id */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OutOnTemporaryAbsenceSummary'][]
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Information on offenders currently out.
-   * @description Requires role ESTABLISHMENT_ROLL.
-   */
   getOffendersCurrentlyOut_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The prison id */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderOut'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Location detail.
-   * @description Location detail.
-   */
   getLocation: {
     parameters: {
       query?: {
         /** @description Match a location that is inactive? */
-        includeInactive?: string
+        includeInactive?: 'true' | 'false'
       }
+      header?: never
       path: {
         /** @description The location id of location */
         locationId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Location']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of offenders at location.
-   * @description Requires role VIEW_PRISONER_DATA and a user in the token.<p>This endpoint uses the REPLICA database.</p>
-   */
   getOffendersAtLocation: {
     parameters: {
+      query?: never
       header?: {
         /** @description Requested offset of first record in returned collection of inmate records. */
         'Page-Offset'?: number
@@ -19558,38 +31427,48 @@ export interface operations {
         /** @description The location id of location */
         locationId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderBooking'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of offenders at location.
-   * @description Requires role VIEW_PRISONER_DATA and a user in the token.<p>This endpoint uses the REPLICA database.</p>
-   */
   getOffendersAtLocationDescription: {
     parameters: {
       query?: {
@@ -19627,113 +31506,151 @@ export interface operations {
       path: {
         locationPrefix: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderBooking'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Returns the location (internal) for a prison based on description */
   getLocationByCode: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @example MDI-1 */
         code: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Location']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Key workers available for allocation at specified agency.
-   * @description Key workers available for allocation at specified agency.<p>This endpoint uses the REPLICA database.</p>
-   */
   getAvailableKeyworkers: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The agency (prison) identifier. */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Keyworker'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * All allocations in specified agency.
-   * @description All allocations in specified agency.
-   */
   getAllocationHistory: {
     parameters: {
+      query?: never
       header?: {
         /** @description Requested offset of first record in returned collection of allocationHistory records. */
         'Page-Offset'?: number
@@ -19744,149 +31661,272 @@ export interface operations {
         /** @description The agency (prison) identifier. */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderKeyWorker'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Return an Incident for a given incident ID
-   * @description Requires the VIEW_INCIDENTS role.
-   */
   getIncident: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description Incident Id */
         incidentId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['IncidentCase']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Image detail (with image data).
-   * @description Requires role VIEW_PRISONER_DATA.
-   */
-  getImage: {
+  getQuestionnaires: {
     parameters: {
+      query?: {
+        /** @description Return configuration for incident type only */
+        'incident-type'?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns incident type configuration */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['IncidentTypeConfiguration'][]
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Missing privileges to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getImprisonmentStatusHistory: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The required offender id (mandatory) */
+        offenderNo: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The imprisonment status history. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImprisonmentStatusHistoryDto']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getImage_1: {
+    parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The image id of offender */
         imageId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ImageDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Image data (as bytes).
-   * @description Requires role VIEW_PRISONER_DATA.
-   */
   getImageData: {
     parameters: {
       query?: {
         /** @description Return full size image */
         fullSizeImage?: boolean
       }
+      header?: never
       path: {
         /** @description The image id of offender */
         imageId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'image/jpeg': string
+          'application/json': string
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'image/jpeg': string
+          'application/json': string
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'image/jpeg': string
+          'application/json': string
         }
       }
     }
   }
-  /** Returns a list of gangs for a prisoner and the gang non-associations and their members */
   getNonAssociationGangsForPrisoner: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Prisoner number
@@ -19894,38 +31934,48 @@ export interface operations {
          */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['GangMemberSummary']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * A list of offender educations.
-   * @description A list of offender educations.
-   */
   getPrisonerEducations: {
     parameters: {
       query?: {
@@ -19934,94 +31984,217 @@ export interface operations {
         /** @description Requested limit to number of results returned. */
         size?: number
       }
+      header?: never
       path: {
         /** @description The offender NOMS number. NOMS numbers have the format:<b>G0364GX</b> */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PageEducation']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Returns details of all court dates and the result of each.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
+  getNextCourtEvent: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The bookingId to check court events against */
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtEventDetails']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getCountOfActiveCourtCases: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The bookingId to check court cases against */
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': number
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getCourtDateResults: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The required offender id (mandatory) */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description The court date results. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtDateResult']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Returns details of all court dates and the result of each.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
-  getCourtDateResults_1: {
+  getCourtDateChargesAndOutcomes: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The required offender id (mandatory) */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description The court date results. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
-          'application/json': components['schemas']['CourtDateResult']
+          'application/json': components['schemas']['CourtDateChargeAndOutcomes']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get occupancy history of a location.
-   * @description Requires role MAINTAIN_CELL_MOVEMENTS.<p>This endpoint uses the REPLICA database.</p>
-   */
   getBedAssignmentsHistory: {
     parameters: {
       query: {
@@ -20036,79 +32209,107 @@ export interface operations {
          */
         toDate: string
       }
+      header?: never
       path: {
         /** @description The location id. */
         locationId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BedAssignment'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Get details of a location. */
   getCellAttributes: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The location id. */
         locationId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderCell']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get occupancy of locations in a prison on a date.
-   * @description Requires agency to be in caseload or role MAINTAIN_CELL_MOVEMENTS.<p>This endpoint uses the REPLICA database.</p>
-   */
   getBedAssignmentsHistoryByDateForAgency: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Agency Id
@@ -20121,38 +32322,48 @@ export interface operations {
          */
         assignmentDate: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BedAssignment'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender detail.
-   * @description Offender detail.
-   */
   getOffenderBooking: {
     parameters: {
       query?: {
@@ -20161,160 +32372,206 @@ export interface operations {
         /** @description Only used when requesting more than basic data, returns identifiers,offences,aliases,sentence dates,convicted status */
         extraInfo?: boolean
       }
+      header?: never
       path: {
         /** @description The booking id of offender */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * The summary of the visits for the offender.
-   * @description Will return whether there are any visits and also the date of the next scheduled visit. Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload<p>This endpoint uses the REPLICA database.</p>
-   */
   getBookingVisitsSummary: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['VisitSummary']
         }
       }
       /** @description Invalid request. */
       400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
+        headers: {
+          [name: string]: unknown
         }
-      }
-      /** @description Requested resource not found or no permissions to see it. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * The list of prisons for which there are visits for the specified booking.
-   * @description To be used for filtering visits by prison. Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
-   */
-  getBookingVisitsPrisons: {
-    parameters: {
-      path: {
-        /** @description The offender booking id */
-        bookingId: number
-      }
-    }
-    responses: {
-      /** @description Invalid request. */
-      204: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Invalid request. */
-      400: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * The next visit for the offender.
-   * @description The next visit for the offender. Will return 200 with no body if no next visit is scheduled. Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload<p>This endpoint uses the REPLICA database.</p>
-   */
+  getBookingVisitsPrisons: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender booking id */
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonDetails'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getBookingVisitsNext: {
     parameters: {
       query?: {
         /** @description Toggle to return Visitors in response (or not). */
         withVisitors?: boolean
       }
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Invalid request. */
       204: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * visits with visitor list for offender.
-   * @description visits with visitor list for offender.<p>This endpoint uses the REPLICA database.</p>
-   */
   getBookingVisitsWithVisitor: {
     parameters: {
       query?: {
@@ -20323,7 +32580,7 @@ export interface operations {
         /** @description Returned visits must be scheduled on or before this date (in YYYY-MM-DD format). */
         toDate?: string
         /** @description Type of visit */
-        visitType?: string
+        visitType?: 'SCON' | 'OFFI'
         /** @example SCH */
         'Status of visit. code from VIS_COMPLETE domain, e.g: CANC (Cancelled) or SCH (Scheduled)'?: string
         /** @example NSHOW */
@@ -20338,51 +32595,56 @@ export interface operations {
         /** @description The number of results per page */
         size?: number
       }
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PageVisitWithVisitors']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender sentence detail (key dates and additional days awarded)
-   * @description <h3>Algorithm</h3>
-   * <ul>
-   *   <li>If there is a confirmed release date, the offender release date is the confirmed release date.</li>
-   *   <li>If there is no confirmed release date for the offender, the offender release date is either the actual parole date or the home detention curfew actual date.</li>
-   *   <li>If there is no confirmed release date, actual parole date or home detention curfew actual date for the offender, the release date is the later of the nonDtoReleaseDate or midTermDate value (if either or both are present)</li>
-   * </ul>
-   * Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
-   * <p>This endpoint uses the REPLICA database.</p>
-   */
   getBookingSentenceDetail: {
     parameters: {
+      query?: never
       header?: {
         /** @description Version of Sentence Calc Dates, 1.0 is default */
         version?: string
@@ -20391,114 +32653,148 @@ export interface operations {
         /** @description The booking id of offender */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SentenceCalcDates']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender sentence adjustments.
-   * @description Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
-   */
   getBookingSentenceAdjustments: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The booking id of offender */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SentenceAdjustmentDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get secondary languages
-   * @description Get secondary languages
-   */
   getSecondaryLanguages: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description bookingId */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SecondaryLanguage'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Reasonable Adjustment Information
-   * @description Reasonable Adjustment Information. Requires booking access (via caseload) or GLOBAL_SEARCH or VIEW_PRISONER_DATA role.
-   */
   getReasonableAdjustments: {
     parameters: {
       query: {
@@ -20508,192 +32804,350 @@ export interface operations {
          */
         type: string[]
       }
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReasonableAdjustments']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of active property containers
-   * @description Requires booking to be in caseload, or role VIEW_PRISONER_DATA
-   */
-  getOffenderPropertyContainers: {
+  getAllReasonableAdjustments: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReasonableAdjustments']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getOffenderPropertyContainers: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender booking id */
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PropertyContainer'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Military Records
-   * @description Requires booking to be in caseload, or role VIEW_PRISONER_DATA
-   */
-  getMilitaryRecords_1: {
+  getAllPersonalCareNeeds: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonalCareNeeds']
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getMilitaryRecords_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender booking id */
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['MilitaryRecords']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get Offender main offence detail.
-   * @description Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
-   */
   getMainOffence_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenceDetail'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Image data (as bytes).
-   * @description Image data (as bytes).<p>This endpoint uses the REPLICA database.</p>
-   */
   getMainBookingImageData: {
     parameters: {
       query?: {
         /** @description Return full size image */
         fullSizeImage?: boolean
       }
+      header?: never
       path: {
         /** @description The booking id of offender */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'image/jpeg': string
+          'application/json': string
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'image/jpeg': string
+          'application/json': string
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'image/jpeg': string
+          'application/json': string
         }
       }
     }
   }
-  /**
-   * Identifiers for this booking
-   * @description Identifiers for this booking
-   */
   getOffenderIdentifiers: {
     parameters: {
       query?: {
@@ -20703,80 +33157,103 @@ export interface operations {
          */
         type?: string
       }
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderIdentifier'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Gets the Fixed Term Recall details for a booking
-   * @description Requires role VIEW_PRISONER_DATA, or booking is in caseload
-   */
   getFixedTermRecallDetails: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offenders bookingID */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['FixedTermRecallDetails']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description No Fixed Term Recall exists for this booking */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * All scheduled events for offender.
-   * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
-   */
   getEvents_1: {
     parameters: {
       query?: {
@@ -20785,146 +33262,197 @@ export interface operations {
         /** @description Returned events must be scheduled on or before this date (in YYYY-MM-DD format). */
         toDate?: string
       }
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Today's scheduled events for offender.
-   * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
-   */
   getEventsToday: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Scheduled events for offender for coming week (from current day).
-   * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
-   */
   getEventsThisWeek: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Scheduled events for offender for following week.
-   * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
-   */
   getEventsNextWeek: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
@@ -20939,122 +33467,156 @@ export interface operations {
         /** @description Return court hearings on or before this date (in YYYY-MM-DD format). */
         toDate?: string
       }
+      header?: never
       path: {
         /** @description The offender booking linked to the court hearings. */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtHearings']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Court Cases
-   * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
-   */
   getCourtCases: {
     parameters: {
       query?: {
         /** @description Only return active court cases */
         activeOnly?: boolean
       }
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtCase'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender contacts (e.g. next of kin).
-   * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or booking is in caseload
-   */
   getContacts: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ContactDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Gets cell history for an offender booking
-   * @description Default sort order is by assignment date descending.  Requires a relationship (via caseload) with the prisoner or VIEW_PRISONER_DATA role.<p>This endpoint uses the REPLICA database.</p>
-   */
   getBedAssignmentsHistory_1: {
     parameters: {
       query?: {
@@ -21063,42 +33625,53 @@ export interface operations {
         /** @description The number of results per page. Defaults to 20. */
         size?: number
       }
+      header?: never
       path: {
         /** @description The offender booking linked to the court hearings. */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PageBedAssignment']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Count of case notes
-   * @description Count of case notes<p>This endpoint uses the REPLICA database.</p>
-   */
   getCaseNoteCount: {
     parameters: {
       query?: {
@@ -21107,6 +33680,7 @@ export interface operations {
         /** @description Only case notes occurring on or before this date (in YYYY-MM-DD format) will be considered. */
         toDate?: string
       }
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
@@ -21115,116 +33689,151 @@ export interface operations {
         /** @description Case note sub-type. */
         subType: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CaseNoteCount']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender account balances.
-   * @description Requires booking to be in caseload, or role GLOBAL_SEARCH or VIEW_PRISONER_DATA
-   */
   getBalances: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Account']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Assessment Information
-   * @description Assessment Information. Requires booking access (via caseload) or VIEW_ASSESSMENTS role.
-   */
   getAssessments_1: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Assessment'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender aliases.
-   * @description Offender aliases.
-   */
   getOffenderAliases: {
     parameters: {
+      query?: never
       header?: {
         /** @description Requested offset of first record in returned collection of alias records. */
         'Page-Offset'?: number
@@ -21239,144 +33848,48 @@ export interface operations {
         /** @description The booking id of offender */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Alias'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender alert detail.
-   * @description Offender alert detail.
-   */
-  getOffenderAlert: {
-    parameters: {
-      path: {
-        /** @description The booking id of offender */
-        bookingId: number
-        /** @description The Alert Id */
-        alertId: number
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['Alert']
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Offender alerts.
-   * @description Offender alerts.
-   */
-  getOffenderAlertsV2: {
-    parameters: {
-      query?: {
-        /**
-         * @description start alert date to search from
-         * @example 2021-02-03
-         */
-        from?: string
-        /**
-         * @description end alert date to search up to (including this date)
-         * @example 2021-02-04
-         */
-        to?: string
-        /**
-         * @description Filter by alert type
-         * @example X
-         */
-        alertType?: string
-        /**
-         * @description Filter by alert active status
-         * @example ACTIVE
-         */
-        alertStatus?: string
-        /** @description Zero-based page index (0..N) */
-        page?: number
-        /** @description The size of the page to be returned */
-        size?: number
-        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[]
-      }
-      path: {
-        /** @description The booking id for the booking */
-        bookingId: number
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['PageAlert']
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * All scheduled activities for offender.
-   * @description Requires booking id to be in caseload, or role VIEW_SCHEDULES<p>This endpoint uses the REPLICA database.</p>
-   */
   getBookingActivities: {
     parameters: {
       query?: {
@@ -21399,38 +33912,48 @@ export interface operations {
         /** @description The offender booking id */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Prisoners Booking Summary
-   * @description Returns data that is available to the users caseload privileges, at least one attribute of a prisonId, bookingId or offenderNo must be specified
-   */
   getPrisonerBookingsV2: {
     parameters: {
       query?: {
@@ -21454,32 +33977,41 @@ export interface operations {
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
         sort?: string[]
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PagePrisonerBookingSummary']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offender detail.
-   * @description Offender detail.
-   */
   getOffenderBookingByOffenderNo: {
     parameters: {
       query?: {
@@ -21490,366 +34022,499 @@ export interface operations {
         /** @description Only used when fullInfo=true, returns the applicable CSRA classification for this offender */
         csraSummary?: boolean
       }
+      header?: never
       path: {
         /** @description The offenderNo of offender */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['InmateDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Balances visit orders and privilege visit orders for offender.
-   * @description Balances visit orders and privilege visit orders for offender.<p>This endpoint uses the REPLICA database.</p>
-   */
   getBookingVisitBalances: {
     parameters: {
       query?: {
         /** @description Allow no content (204) response if no data rather than returning a not found (404) */
         allowNoContent?: boolean
       }
+      header?: never
       path: {
         /** @description The offenderNo of offender */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['VisitBalances']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Offence history.
-   * @description All Offences recorded for this offender.<p>This endpoint uses the REPLICA database.</p>
-   */
   getOffenceHistory: {
     parameters: {
       query?: {
         /** @description include offences with convictions only */
         convictionsOnly?: boolean
       }
+      header?: never
       path: {
         /** @description The offender number */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenceHistoryDetail'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Key worker details.
-   * @deprecated
-   * @description Key worker details. This should not be used - call keyworker API instead
-   */
   getKeyworkerByOffenderNo: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The offenderNo of offender */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Keyworker']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Image data (as bytes).
-   * @description Image data (as bytes).
-   */
   getMainBookingImageDataByNo: {
     parameters: {
       query?: {
         /** @description Return full size image */
         fullSizeImage?: boolean
       }
+      header?: never
       path: {
         /** @description The offender No of offender */
         offenderNo: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'image/jpeg': string
+          'application/json': string
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'image/jpeg': string
+          'application/json': string
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'image/jpeg': string
+          'application/json': string
         }
       }
     }
   }
-  /** Details of the active sentence envelope, a combination of the person information, the active booking and calculable sentences for offenders */
-  getCalculableSentenceEnvelopeByOffenderNos: {
-    parameters: {
-      query: {
-        /** @description Filter by a list of offender numbers */
-        offenderNo: string[]
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['CalculableSentenceEnvelope'][]
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * Get an appointment by id.
-   * @description Requires role GLOBAL_APPOINTMENT
-   */
   getAppointment: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The unique identifier for the appointment */
         appointmentId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description The appointment has been returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent']
         }
       }
       /** @description The client is not authorised for this operation */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent']
         }
       }
       /** @description The appointment was not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduledEvent']
         }
       }
     }
   }
-  /**
-   * Delete an appointment.
-   * @description Requires role GLOBAL_APPOINTMENT and write scope
-   */
   deleteAppointment: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The unique identifier for the appointment */
         appointmentId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description The appointment has been deleted */
       204: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description The client is not authorised for this operation */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description The appointment was not found */
       404: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Record in use for this booking id (possibly in P-Nomis) */
+      423: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * List of receptions with capacity for agency.
-   * @description List of active receptions with capacity for agency.<p>This endpoint uses the REPLICA database.</p>
-   */
+  getServiceAgencies: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The code of the service from the EXTERNAL_SERVICES table */
+        serviceCode: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AgencyDetails'][]
+        }
+      }
+      /** @description A valid auth token was not presented */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The auth token does not have the necessary role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The service code does not exist */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getAgencyActiveReceptionsWithCapacity: {
     parameters: {
       query?: {
         /** @description Restricts list of receptions returned to those that have a specified attribute. */
         attribute?: string
       }
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['OffenderCell'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Return the payment profile data for the given Agency.
-   * @description Each agency can configure its own pay profile and this endpoint provides its key data, such as min/max pay and bonus rates. Requires VIEW_PRISON_DATA.
-   */
   getAgencyPayProfile: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AgencyPrisonerPayProfile']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of active internal locations for agency.
-   * @description List of active internal locations for agency.<p>This endpoint uses the REPLICA database.</p>
-   */
   getAgencyLocations: {
     parameters: {
       query?: {
@@ -21865,118 +34530,101 @@ export interface operations {
       path: {
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Location'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of active internal locations for agency by type.
-   * @description List of active internal locations for agency by type.
-   */
-  getAgencyLocationsByType: {
-    parameters: {
-      path: {
-        /** @description The prison */
-        agencyId: string
-        /** @description Restricts list of locations returned to those of the passed type. */
-        type: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['Location'][]
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * List of all available Location Groups at agency.
-   * @description List of all available Location Groups at agency.
-   */
   getAvailableLocationGroups: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The prison */
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['LocationGroup'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of locations for agency where events (appointments, visits, activities) could be held.
-   * @description List of locations for agency where events (appointments, visits, activities) could be held.
-   */
   getAgencyEventLocations: {
     parameters: {
+      query?: never
       header?: {
         /** @description Comma separated list of one or more of the following fields - <b>description, userDescription</b> */
         'Sort-Fields'?: string
@@ -21986,159 +34634,151 @@ export interface operations {
       path: {
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Location'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of locations for agency where events (appointments, visits, activities) are being held.
-   * @description List of locations for agency where events (appointments, visits, activities) are being held.<p>This endpoint uses the REPLICA database.</p>
-   */
   getAgencyEventLocationsBooked: {
     parameters: {
       query: {
         /** @description Filter list to only return locations which prisoners will be attending on this day */
         bookedOnDay: string
         /** @description Only return locations which prisoners will be attending in this time slot (AM, PM or ED, and bookedOnDay must be specified) */
-        timeSlot?: string
+        timeSlot?: 'AM' | 'PM' | 'ED'
       }
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
-          'application/json': components['schemas']['Location'][]
+          'application/json': components['schemas']['LocationSummary'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Return the establishment types for the given Agency.
-   * @description An agency can have one to many establishment types. For example a prison could be both a youth and adult establishment.
-   */
   getAgencyEstablishmentTypes: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AgencyEstablishmentTypes']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of active cells with capacity for agency.
-   * @description List of active cells with capacity for agency.<p>This endpoint uses the REPLICA database.</p>
-   */
-  getAgencyActiveCellsWithCapacity: {
-    parameters: {
-      query?: {
-        /** @description Restricts list of cells returned to those that have a specified attribute. */
-        attribute?: string
-      }
-      path: {
-        agencyId: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          'application/json': components['schemas']['OffenderCell'][]
-        }
-      }
-      /** @description Invalid request. */
-      400: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /**
-   * List of agencies by type
-   * @description List of active agencies by type
-   */
   getAgenciesByType: {
     parameters: {
       query?: {
@@ -22155,255 +34795,411 @@ export interface operations {
          * @example MC
          */
         courtType?: string[]
+        /**
+         * @description Only agencies that match the area code
+         * @example LONDON
+         */
+        areaCode?: string
+        /**
+         * @description Only agencies that match the region code
+         * @example LON
+         */
+        regionCode?: string
+        /**
+         * @description Only agencies that match the establishment type
+         * @example CNOMIS
+         */
+        establishmentType?: string
         /** @description Returns Address Information */
         withAddresses?: boolean
         /** @description Don't format the location */
         skipFormatLocation?: boolean
+        /** @description Returns area and region information */
+        withAreas?: boolean
       }
+      header?: never
       path: {
         /** @description Agency Type */
         type: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Agency'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of all active prisons.
-   * @description <p>List of active prisons.</p>
-   * <p>This is the same response as normally generated by calling the /agencies/type/INST endpoint with default parameters, added here for ease of use and speed.</p>
-   * <p>This endpoint uses the REPLICA database.</p>
-   */
   getPrisons: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Prison'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of prison contact details.
-   * @deprecated
-   * @description <p>List of prison contact details.</p>
-   * <p>DEPRECATED. This endpoint is quite slow as it currently retrieves address and telephone information for each prison separately.
-   * In all the main usages of the endpoint we found that the clients didn't need or use the contact details so have deprecated the endpoint.
-   * Use /agencies/prisons to get the list of active prisons.</p>
-   * <p>This endpoint uses the REPLICA database.</p>
-   */
   getPrisonContactDetailList: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonContactDetail'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Prison contact detail.
-   * @description Prison contact detail.
-   */
   getPrisonContactDetail: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         agencyId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PrisonContactDetail']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * List of agencies for caseload.
-   * @description List of agencies for caseload.
-   */
   getAgenciesByCaseload: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         caseload: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Agency'][]
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Offender sentence adjustments. */
   getBookingAndSentenceAdjustments: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description The booking id of the offender */
         bookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BookingAndSentenceAdjustments']
         }
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Cancels the scheduled court hearing for an offender.
-   * @description Cancels the scheduled court hearing for an offender. Requires role COURT_HEARING_MAINTAINER and scope write
-   */
-  cancelCourtHearing: {
+  deleteSecondaryLanguage: {
     parameters: {
+      query?: never
+      header?: never
       path: {
-        /** @description The offender booking to linked to the scheduled event. */
-        bookingId: number
-        /** @description The identifier of the scheduled event to be cancelled. */
-        hearingId: number
+        /** @description The offender number */
+        offenderNo: string
+        /** @description The code for the secondary language to delete */
+        languageCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
-      /** @description OK */
-      200: {
-        content: never
+      /** @description A core person secondary language has been deleted. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid request. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Requested resource not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  cancelCourtHearing: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The offender booking to linked to the scheduled event. */
+        bookingId: number
+        /** @description The identifier of the scheduled event to be cancelled. */
+        hearingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }

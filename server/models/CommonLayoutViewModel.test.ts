@@ -16,6 +16,8 @@ describe('CommonLayoutViewModel', () => {
   })
   it('produces common view model config with prisoner details', () => {
     const prisonerDetail: PrisonApiPrisoner = {
+      offenderId: 0,
+      rootOffenderId: 0,
       offenderNo: 'ABC123',
       firstName: 'Anon',
       lastName: 'Nobody',
@@ -52,6 +54,8 @@ describe('CommonLayoutViewModel', () => {
   })
   it('produces common view model config with prisoner details that has no location', () => {
     const prisonerDetail: PrisonApiPrisoner = {
+      offenderId: 0,
+      rootOffenderId: 0,
       offenderNo: 'ABC123',
       firstName: 'Anon',
       lastName: 'Nobody',
