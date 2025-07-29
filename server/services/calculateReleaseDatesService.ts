@@ -44,7 +44,7 @@ export default class CalculateReleaseDatesService {
   constructor(private auditService: AuditService) {}
 
   // TODO test method - will be removed
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async calculateReleaseDates(booking: any, token: string): Promise<BookingCalculation> {
     const bookingData = JSON.parse(booking)
     return new CalculateReleaseDatesApiClient(token).calculateReleaseDates(bookingData)

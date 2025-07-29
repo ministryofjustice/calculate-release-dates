@@ -72,7 +72,6 @@ export default class ManualEntryService {
     }
     if (insufficientDatesSelected) {
       const mergedConfig = { ...config, ...errorMessage }
-      // eslint-disable-next-line no-restricted-syntax
       this.enrichConfiguration(mergedConfig, req, nomsId)
       return { error: true, config: mergedConfig }
     }
@@ -98,7 +97,6 @@ export default class ManualEntryService {
       </ul>${errorEnd}</div>`
       const validationError = { errorMessage: { html: dateErrors } }
       const mergedConfig = { ...config, ...validationError }
-      // eslint-disable-next-line no-restricted-syntax
       this.enrichConfiguration(<DateSelectConfiguration>mergedConfig, req, nomsId)
       return { error: true, config: <DateSelectConfiguration>mergedConfig }
     }
@@ -107,7 +105,6 @@ export default class ManualEntryService {
   }
 
   private enrichConfiguration(mergedConfig: DateSelectConfiguration, req: Request, nomsId: string) {
-    // eslint-disable-next-line no-restricted-syntax
     for (const item of mergedConfig.items) {
       if (
         req.session.selectedManualEntryDates[nomsId] &&

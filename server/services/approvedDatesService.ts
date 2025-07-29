@@ -20,7 +20,6 @@ export default class ApprovedDatesService {
   }
 
   private enrichConfiguration(mergedConfig: DateSelectConfiguration, req: Request, nomsId: string) {
-    // eslint-disable-next-line no-restricted-syntax
     for (const item of mergedConfig.items) {
       if (
         req.session.selectedApprovedDates[nomsId] &&
