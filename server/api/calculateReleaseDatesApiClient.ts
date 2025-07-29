@@ -51,7 +51,7 @@ export default class CalculateReleaseDatesApiClient {
   }
 
   // TODO test method - will be removed
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   calculateReleaseDates(booking: any): Promise<BookingCalculation> {
     return this.restClient.post({ path: '/test/calculation-by-booking', data: booking }) as Promise<BookingCalculation>
   }

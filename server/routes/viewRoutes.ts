@@ -13,7 +13,6 @@ import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prison
 import { longDateFormat } from '../utils/utils'
 import ViewCalculateReleaseDatePageViewModel from '../models/ViewCalculateReleaseDatePageViewModel'
 import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageViewModel'
-// eslint-disable-next-line prettier/prettier
 import {
   calculationSummaryDatesCardModelFromCalculationSummaryViewModel,
   filteredListOfDates,
