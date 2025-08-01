@@ -115,7 +115,7 @@
     "bunyan-format": "^0.2.1",
     "compression": "^1.8.1",
     "connect-flash": "^0.1.1",
-    "connect-redis": "^8.1.0",
+    "connect-redis": "^9.0.0",
     "cookie-parser": "^1.4.7",
     "csrf-sync": "^4.2.1",
     "dayjs": "^1.11.13",
