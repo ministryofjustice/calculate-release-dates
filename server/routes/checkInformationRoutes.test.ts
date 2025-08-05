@@ -1204,12 +1204,12 @@ describe('Check information routes tests', () => {
       .expect('Location', '/calculation/A1234AA/summary/123')
       .expect(res => {
         expect(res.redirect).toBeTruthy()
-        expect(calculateReleaseDatesService.validateBackend).toBeCalledWith(
+        expect(calculateReleaseDatesService.validateBackend).toHaveBeenCalledWith(
           expect.anything(),
           { ...stubbedUserInput, calculateErsed: true },
           expect.anything(),
         )
-        expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toBeCalledWith(
+        expect(calculateReleaseDatesService.calculatePreliminaryReleaseDates).toHaveBeenCalledWith(
           'A1234AA',
           {
             ...{
