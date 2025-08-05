@@ -825,7 +825,7 @@ describe('Calculation routes tests', () => {
         expect(res.text).toContain(
           'This is a new service. Your feedback will help make it better. To give feedback you can:',
         )
-        expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
+        expect(userInputService.resetCalculationUserInputForPrisoner).toHaveBeenCalledWith(expect.anything(), 'A1234AB')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
@@ -843,7 +843,7 @@ describe('Calculation routes tests', () => {
         const prisonerNotificationSlipLink = $('[data-qa=prisoner-notification-slip-link]').first()
 
         expect(prisonerNotificationSlipLink).toHaveLength(1)
-        expect(userInputService.resetCalculationUserInputForPrisoner).toBeCalledWith(expect.anything(), 'A1234AB')
+        expect(userInputService.resetCalculationUserInputForPrisoner).toHaveBeenCalledWith(expect.anything(), 'A1234AB')
       })
   })
 
