@@ -8,10 +8,11 @@ export default class InMemoryTokenStore implements TokenStore {
     return Promise.resolve()
   }
 
-  public async getToken(key: string): Promise<string> {
-    if (!this.map.has(key) || this.map.get(key).expiry.getTime() < Date.now()) {
+  public async getToken(key: string): Promise<string | null> {
+    const tokenEntry = this.map.get(key)
+    if (!tokenEntry || tokenEntry.expiry.getTime() < Date.now()) {
       return Promise.resolve(null)
     }
-    return Promise.resolve(this.map.get(key).token)
+    return Promise.resolve(tokenEntry.token)
   }
 }
