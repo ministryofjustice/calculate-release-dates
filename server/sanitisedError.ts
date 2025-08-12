@@ -23,3 +23,15 @@ export default function sanitise(error: UnsanitisedError): SanitisedError {
   }
   return e
 }
+
+export type SanitisedDataResponse = SanitisedError & {
+  data: {
+    userMessage: string
+  }
+}
+
+export function isDataError(value: unknown): value is SanitisedDataResponse {
+  if (typeof value !== 'object' || value === null) return false
+  const obj = value as Record<string, unknown>
+  return typeof obj.data === 'object' && Object.prototype.hasOwnProperty.call(obj.data, 'userMessage')
+}

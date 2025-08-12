@@ -35,10 +35,13 @@ import {
   RulesWithExtraAdjustments,
 } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ErrorMessage from '../types/ErrorMessage'
-import { FullPageError } from '../types/FullPageError'
+import { FullPageError, FullPageErrorType } from '../types/FullPageError'
 import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
 import AuditService from './auditService'
+import { CalculationCard } from '../types/CalculationCard'
+import { isDataError } from '../sanitisedError'
+import getMissingPrisonDataError from '../utils/errorUtils'
 
 export default class CalculateReleaseDatesService {
   constructor(private auditService: AuditService) {}
@@ -471,7 +474,7 @@ export default class CalculateReleaseDatesService {
     prisonerId: string,
     token: string,
     hasIndeterminateSentence: boolean,
-  ): Promise<{ latestCalcCard?: LatestCalculationCardConfig; latestCalcCardAction?: Action }> {
+  ): Promise<CalculationCard | FullPageError> {
     const crdAPIClient = new CalculateReleaseDatesApiClient(token)
     return crdAPIClient
       .getLatestCalculationForPrisoner(prisonerId)
@@ -497,8 +500,19 @@ export default class CalculateReleaseDatesService {
         }
       })
       .catch(error => {
-        logger.info(`Unable to load latest calc ${error}`)
-        return { latestCalcCard: undefined, latestCalcCardAction: undefined }
+        if (!isDataError(error)) return { latestCalcCard: undefined, latestCalcCardAction: undefined }
+        const dataError = getMissingPrisonDataError(error.data.userMessage)
+
+        switch (dataError) {
+          case FullPageErrorType.NO_OFFENCE_DATES:
+            return FullPageError.noOffenceDatesPage()
+          case FullPageErrorType.NO_IMPRISONMENT_TERM_CODE:
+            return FullPageError.noImprisonmentTermPage()
+          case FullPageErrorType.NO_LICENCE_TERM_CODE:
+            return FullPageError.noLicenceTermPage()
+          default:
+            return { latestCalcCard: undefined, latestCalcCardAction: undefined }
+        }
       })
   }
 

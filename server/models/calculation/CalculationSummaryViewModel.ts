@@ -2,12 +2,12 @@ import {
   CalculationBreakdown,
   CalculationReason,
   DetailedCalculationResults,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
-import { PrisonApiOffenderSentenceAndOffences, PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
-import { ErrorMessages } from '../types/ErrorMessages'
-import SentenceTypes from './SentenceTypes'
-import config from '../config'
+} from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import ReleaseDateWithAdjustments from '../../@types/calculateReleaseDates/releaseDateWithAdjustments'
+import { PrisonApiOffenderSentenceAndOffences, PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
+import { ErrorMessages } from '../../types/ErrorMessages'
+import SentenceTypes from '../SentenceTypes'
+import config from '../../config'
 
 export default class CalculationSummaryViewModel {
   constructor(

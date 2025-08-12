@@ -1,5 +1,5 @@
-import PrisonerContextViewModel from './PrisonerContextViewModel'
-import SentenceAndOffenceViewModel from './SentenceAndOffenceViewModel'
+import PrisonerContextViewModel from '../PrisonerContextViewModel'
+import SentenceAndOffenceViewModel from '../SentenceAndOffenceViewModel'
 
 export default class ManualEntryCheckInformationUnsupportedViewModel extends PrisonerContextViewModel {
   constructor(

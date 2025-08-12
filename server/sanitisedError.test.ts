@@ -1,4 +1,4 @@
-import sanitisedError, { UnsanitisedError, SanitisedError } from './sanitisedError'
+import sanitisedError, { UnsanitisedError, SanitisedError, isDataError } from './sanitisedError'
 
 describe('sanitised error', () => {
   it('it should omit the request headers from the error object ', () => {
@@ -52,5 +52,27 @@ describe('sanitised error', () => {
 
     expect(sanitisedError(error)).toBeInstanceOf(Error)
     expect(sanitisedError(error)).not.toHaveProperty('property')
+  })
+
+  it('it should identify SanitisedDataResponse', () => {
+    expect(
+      isDataError({
+        name: 'SanitisedDataResponse',
+        message: 'error description',
+        data: {
+          userMessage: 'user message',
+        },
+      }),
+    ).toBeTruthy()
+  })
+
+  it('it should not identify SanitisedDataResponse', () => {
+    expect(
+      isDataError({
+        name: 'SanitisedDataResponse',
+        message: 'error description',
+        data: {},
+      }),
+    ).toBeFalsy()
   })
 })

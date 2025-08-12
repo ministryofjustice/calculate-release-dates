@@ -1,5 +1,5 @@
-import PrisonerContextViewModel from './PrisonerContextViewModel'
-import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
+import PrisonerContextViewModel from '../PrisonerContextViewModel'
+import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 
 export default class GenuineOverridesLoadReasonsViewModel extends PrisonerContextViewModel {
   constructor(

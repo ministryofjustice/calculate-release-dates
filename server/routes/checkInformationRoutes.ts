@@ -4,8 +4,11 @@ import PrisonerService from '../services/prisonerService'
 import UserInputService from '../services/userInputService'
 import CheckInformationService from '../services/checkInformationService'
 import CheckInformationViewModel from '../models/CheckInformationViewModel'
-import ManualEntryCheckInformationUnsupportedViewModel from '../models/ManualEntryCheckInformationUnsupportedViewModel'
+import ManualEntryCheckInformationUnsupportedViewModel from '../models/manual_calculation/ManualEntryCheckInformationUnsupportedViewModel'
 import { ErrorMessageType } from '../types/ErrorMessages'
+import { FullPageError, FullPageErrorType } from '../types/FullPageError'
+import { isDataError } from '../sanitisedError'
+import getMissingPrisonDataError from '../utils/errorUtils'
 
 export default class CheckInformationRoutes {
   constructor(
@@ -26,11 +29,30 @@ export default class CheckInformationRoutes {
     if (!this.userInputService.isCalculationReasonSet(req, nomsId)) {
       return res.redirect(`/calculation/${nomsId}/reason`)
     }
-    const unsupportedSentenceOrCalculationMessages =
-      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)
 
-    if (unsupportedSentenceOrCalculationMessages.length > 0) {
-      return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
+    try {
+      const unsupportedMessages = await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(
+        nomsId,
+        token,
+      )
+
+      if (Array.isArray(unsupportedMessages) && unsupportedMessages.length > 0) {
+        return res.redirect(`/calculation/${nomsId}/check-information-unsupported`)
+      }
+    } catch (error) {
+      if (!isDataError(error)) throw error
+
+      const dataError = getMissingPrisonDataError(error.data.userMessage)
+      switch (dataError) {
+        case FullPageErrorType.NO_OFFENCE_DATES:
+          throw FullPageError.noOffenceDatesPage()
+        case FullPageErrorType.NO_LICENCE_TERM_CODE:
+          throw FullPageError.noLicenceTermPage()
+        case FullPageErrorType.NO_IMPRISONMENT_TERM_CODE:
+          throw FullPageError.noImprisonmentTermPage()
+        default:
+          throw error
+      }
     }
 
     const model = await this.checkInformationService.checkInformation(req, res, true)

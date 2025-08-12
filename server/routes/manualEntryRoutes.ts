@@ -10,12 +10,12 @@ import {
   SubmittedDate,
   ValidationMessage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import ManualEntryConfirmationViewModel from '../models/ManualEntryConfirmationViewModel'
-import ManualEntryDateEntryViewModel from '../models/ManualEntryDateEntryViewModel'
-import ManualEntrySelectDatesViewModel from '../models/ManualEntrySelectDatesViewModel'
-import ManualEntryLandingPageViewModel from '../models/ManualEntryLandingPageViewModel'
-import ManualEntryNoDatesConfirmationViewModel from '../models/ManualEntryNoDatesConfirmationViewModel'
-import ManualEntryRemoteDateViewModel from '../models/ManualEntryRemoteDateViewModel'
+import ManualEntryConfirmationViewModel from '../models/manual_calculation/ManualEntryConfirmationViewModel'
+import ManualEntryDateEntryViewModel from '../models/manual_calculation/ManualEntryDateEntryViewModel'
+import ManualEntrySelectDatesViewModel from '../models/manual_calculation/ManualEntrySelectDatesViewModel'
+import ManualEntryLandingPageViewModel from '../models/manual_calculation/ManualEntryLandingPageViewModel'
+import ManualEntryNoDatesConfirmationViewModel from '../models/manual_calculation/ManualEntryNoDatesConfirmationViewModel'
+import ManualEntryRemoteDateViewModel from '../models/manual_calculation/ManualEntryRemoteDateViewModel'
 
 export default class ManualEntryRoutes {
   constructor(

@@ -36,7 +36,7 @@ import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
-import ManualCalculationResponse from '../models/ManualCalculationResponse'
+import ManualCalculationResponse from '../models/manual_calculation/ManualCalculationResponse'
 import ComparisonType from '../enumerations/comparisonType'
 
 export default class CalculateReleaseDatesApiClient {

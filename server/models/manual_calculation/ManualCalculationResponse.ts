@@ -1,4 +1,4 @@
-import ReleaseDateType from '../enumerations/releaseDateType'
+import ReleaseDateType from '../../enumerations/releaseDateType'
 
 export default interface ManualCalculationResponse {
   calculationRequestId: number

@@ -56,6 +56,33 @@ export class FullPageError extends Error {
     error.status = 409
     return error
   }
+
+  static noOffenceDatesPage(): FullPageError {
+    const error = new FullPageError(
+      'This service cannot calculate release dates because the offence start date is missing.',
+    )
+    error.errorKey = FullPageErrorType.NO_OFFENCE_DATES
+    error.status = 422
+    return error
+  }
+
+  static noImprisonmentTermPage(): FullPageError {
+    const error = new FullPageError(
+      'This service cannot calculate release dates because the sentence is missing imprisonment terms.',
+    )
+    error.errorKey = FullPageErrorType.NO_IMPRISONMENT_TERM_CODE
+    error.status = 422
+    return error
+  }
+
+  static noLicenceTermPage(): FullPageError {
+    const error = new FullPageError(
+      'This service cannot calculate release dates because the sentence is missing a licence code.',
+    )
+    error.errorKey = FullPageErrorType.NO_LICENCE_TERM_CODE
+    error.status = 422
+    return error
+  }
 }
 
 export enum FullPageErrorType {
@@ -65,4 +92,7 @@ export enum FullPageErrorType {
   NOT_FOUND,
   CALCULATION_OR_PRISONER_NOT_FOUND,
   DATA_CHANGED_AFTER_SUPPORT_REQUEST_RAISED,
+  NO_OFFENCE_DATES,
+  NO_IMPRISONMENT_TERM_CODE,
+  NO_LICENCE_TERM_CODE,
 }
