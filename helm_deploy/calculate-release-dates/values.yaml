@@ -17,6 +17,8 @@ generic-service:
     tlsSecretName: calculate-release-dates-cert
     annotations:
       nginx.ingress.kubernetes.io/proxy-body-size: 100m
+      nginx.ingress.kubernetes.io/server-snippet: |
+        client_max_body_size 100m;
 
   livenessProbe:
     httpGet:
