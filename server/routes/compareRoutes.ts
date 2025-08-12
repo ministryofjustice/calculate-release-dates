@@ -343,8 +343,6 @@ export default class CompareRoutes {
     const { token } = res.locals.user
     const { prisonerIds } = req.body
     const nomsIds = prisonerIds.split(/\r?\n/)
-    if (nomsIds.length > 500) return res.redirect(`/compare/manual`)
-
     const comparison = await this.comparisonService.createManualComparison(nomsIds, token)
     return res.redirect(`/compare/manual/result/${comparison.comparisonShortReference}`)
   }
