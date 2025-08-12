@@ -26,6 +26,7 @@ import { FullPageError } from '../types/FullPageError'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
 import AuditService from '../services/auditService'
+import { CalculationCard } from '../types/CalculationCard'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
@@ -226,8 +227,9 @@ describe('Start routes tests', () => {
 
   it('should render correct links for prisoner with no Indeterminate sentences', async () => {
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
-    const cardAndAction = {
+    const cardAndAction: CalculationCard = {
       latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: null,
     }
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -248,8 +250,9 @@ describe('Start routes tests', () => {
 
   it('should render correct links for prisoner with Indeterminate sentences', async () => {
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
-    const cardAndAction = {
+    const cardAndAction: CalculationCard = {
       latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: null,
     }
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
