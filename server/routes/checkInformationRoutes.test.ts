@@ -28,8 +28,6 @@ import { expectMiniProfile, expectMiniProfileNoLocation } from './testutils/layo
 import config from '../config'
 import SessionSetup from './testutils/sessionSetup'
 import AuditService from '../services/auditService'
-import ErrorMessage from '../types/ErrorMessage'
-import ErrorResponse from '../@types/calculateReleaseDates/ErrorResponse'
 import { SanitisedError } from '../sanitisedError'
 
 jest.mock('../services/userService')
@@ -1242,7 +1240,7 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'This service cannot calculate release dates because the sentence is missing imprisonment terms.',
+          'This service cannot calculate release dates because the offence is missing imprisonment terms.',
         )
       })
   })
@@ -1276,7 +1274,7 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(
-          'This service cannot calculate release dates because the sentence is missing a licence code.',
+          'This service cannot calculate release dates because the offence is missing a licence code.',
         )
       })
   })

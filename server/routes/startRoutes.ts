@@ -5,7 +5,6 @@ import { indexViewModelForPrisoner } from '../models/IndexViewModel'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import config from '../config'
-import { isCalculationCard } from '../types/CalculationCard'
 import { indexErrorViewModelForPrisoner } from '../models/IndexErrorViewModel'
 import { FullPageError } from '../types/FullPageError'
 

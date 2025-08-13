@@ -25,4 +25,28 @@ export default abstract class Page {
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   errorSummary = (): PageElement => cy.get('.govuk-error-summary')
+
+  hasMissingOffenceDates(flag: boolean): PageElement {
+    const check = flag ? 'exist' : 'not.exist'
+    return cy
+      .get('p')
+      .contains('This service cannot calculate release dates because the offence start date is missing.')
+      .should(check)
+  }
+
+  hasMissingOffenceTerms(flag: boolean): PageElement {
+    const check = flag ? 'exist' : 'not.exist'
+    return cy
+      .get('p')
+      .contains('This service cannot calculate release dates because the offence is missing imprisonment terms.')
+      .should(check)
+  }
+
+  hasMissingOffenceLicenceTerms(flag: boolean): PageElement {
+    const check = flag ? 'exist' : 'not.exist'
+    return cy
+      .get('p')
+      .contains('This service cannot calculate release dates because the offence is missing a licence code.')
+      .should(check)
+  }
 }
