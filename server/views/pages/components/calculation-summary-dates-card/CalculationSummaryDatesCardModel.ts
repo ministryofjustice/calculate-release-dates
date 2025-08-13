@@ -1,4 +1,4 @@
-import CalculationSummaryViewModel from '../../../../models/CalculationSummaryViewModel'
+import CalculationSummaryViewModel from '../../../../models/calculation/CalculationSummaryViewModel'
 import {
   DetailedDate,
   NomisCalculationSummary,

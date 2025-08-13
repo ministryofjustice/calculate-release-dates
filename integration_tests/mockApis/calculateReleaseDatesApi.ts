@@ -551,6 +551,51 @@ export default {
       },
     })
   },
+  stubSupportedValidationNoOffenceDates: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/validation/A1234AB/supported-validation',
+      },
+      response: {
+        status: 422,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          userMessage: 'no offence end or start dates provided on charge for charge 123',
+        },
+      },
+    })
+  },
+  stubSupportedValidationNoOffenceTerms: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/validation/A1234AB/supported-validation',
+      },
+      response: {
+        status: 422,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          userMessage: 'missing imprisonment_term_code for charge 123',
+        },
+      },
+    })
+  },
+  stubSupportedValidationNoOffenceLicenceTerms: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/validation/A1234AB/supported-validation',
+      },
+      response: {
+        status: 422,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          userMessage: 'missing licence_term_code for charge 123',
+        },
+      },
+    })
+  },
   stubSupportedValidationUnsupportedSentence: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -1079,6 +1124,51 @@ export default {
       response: {
         status: 404,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
+  stubGetLatestCalculationNoOffenceDates: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/calculation/A1234AB/latest',
+      },
+      response: {
+        status: 422,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          userMessage: 'no offence end or start dates provided on charge for charge 123',
+        },
+      },
+    })
+  },
+  stubGetLatestCalculationNoOffenceTerms: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/calculation/A1234AB/latest',
+      },
+      response: {
+        status: 422,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          userMessage: 'missing imprisonment_term_code for charge 123',
+        },
+      },
+    })
+  },
+  stubGetLatestCalculationNoOffenceLicenceTerms: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/calculation/A1234AB/latest',
+      },
+      response: {
+        status: 422,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          userMessage: 'missing licence_term_code for charge 123',
+        },
       },
     })
   },

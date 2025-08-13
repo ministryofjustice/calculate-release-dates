@@ -1,20 +1,15 @@
-import ErrorResponse from '../@types/calculateReleaseDates/ErrorResponse'
-import GovUkError from '../@types/calculateReleaseDates/GovUkError'
+import { FullPageErrorType } from '../types/FullPageError'
 
-export function serverErrorToGovUkError(errorResponse: ErrorResponse, href: string): GovUkError[] {
-  return [
-    {
-      text: errorResponse.userMessage,
-      href,
-    },
-  ]
-}
-
-export function validationError(text: string, href: string): GovUkError[] {
-  return [
-    {
-      text,
-      href,
-    },
-  ]
+export default function getMissingPrisonDataError(error: string): FullPageErrorType | null {
+  const errorMessage = error.toLowerCase()
+  switch (true) {
+    case errorMessage.startsWith('no offence end or start dates provided on charge'):
+      return FullPageErrorType.NO_OFFENCE_DATES
+    case errorMessage.startsWith('missing imprisonment_term_code'):
+      return FullPageErrorType.NO_IMPRISONMENT_TERM_CODE
+    case errorMessage.startsWith('missing licence_term_code'):
+      return FullPageErrorType.NO_LICENCE_TERM_CODE
+    default:
+      return null
+  }
 }

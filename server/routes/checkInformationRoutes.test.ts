@@ -28,6 +28,7 @@ import { expectMiniProfile, expectMiniProfileNoLocation } from './testutils/layo
 import config from '../config'
 import SessionSetup from './testutils/sessionSetup'
 import AuditService from '../services/auditService'
+import { SanitisedError } from '../sanitisedError'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -488,6 +489,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+  jest.resetModules()
 })
 
 describe('Check access tests', () => {
@@ -1172,6 +1174,108 @@ describe('Check information routes tests', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
         expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(0)
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should redirect to error page if no offence dates found', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockImplementation(() => {
+      const error = new Error('An error occurred') as Error & SanitisedError
+      error.status = 422
+      error.data = {
+        userMessage: 'no offence end or start dates provided on charge etc...',
+      }
+      throw error
+    })
+
+    userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      [],
+      stubbedAdjustments,
+      false,
+      true,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(422)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'This service cannot calculate release dates because the offence start date is missing.',
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should redirect to error page if no imprisonment term is found', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockImplementation(() => {
+      const error = new Error('An error occurred') as Error & SanitisedError
+      error.status = 422
+      error.data = {
+        userMessage: 'Missing IMPRISONMENT_TERM_CODE...',
+      }
+      throw error
+    })
+
+    userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      [],
+      stubbedAdjustments,
+      false,
+      true,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(422)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'This service cannot calculate release dates because the offence is missing imprisonment terms.',
+        )
+      })
+  })
+
+  it('GET /calculation/:nomsId/check-information should redirect to error page if no offence licence code is found', () => {
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockImplementation(() => {
+      const error = new Error('An error occurred') as Error & SanitisedError
+      error.status = 422
+      error.data = {
+        userMessage: 'Missing LICENCE_TERM_CODE...',
+      }
+      throw error
+    })
+
+    userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+    const model = new SentenceAndOffenceViewModel(
+      stubbedPrisonerData,
+      stubbedUserInput,
+      [],
+      stubbedAdjustments,
+      false,
+      true,
+      stubbedReturnToCustodyDate,
+      null,
+    )
+    checkInformationService.checkInformation.mockResolvedValue(model)
+    return request(app)
+      .get('/calculation/A1234AA/check-information')
+      .expect(422)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain(
+          'This service cannot calculate release dates because the offence is missing a licence code.',
+        )
       })
   })
 

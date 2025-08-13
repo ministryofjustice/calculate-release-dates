@@ -1,4 +1,4 @@
-import CalculationSummaryViewModel from './CalculationSummaryViewModel'
+import CalculationSummaryViewModel from './calculation/CalculationSummaryViewModel'
 import OptionalPrisonerContextViewModel from './OptionalPrisonerContextViewModel'
 import CalculationSummaryDatesCardModel from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import ApprovedSummaryDatesCardModel from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'

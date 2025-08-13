@@ -23,6 +23,7 @@ import {
   psiExample25CalculationBreakdown,
 } from './breakdownExamplesTestData'
 import AuditService from './auditService'
+import { FullPageError } from '../types/FullPageError'
 
 jest.mock('../data/hmppsAuthClient')
 jest.mock('./auditService')
@@ -632,6 +633,31 @@ describe('Calculate release dates service tests', () => {
         latestCalcCard: undefined,
         latestCalcCardAction: undefined,
       })
+    })
+    it('Should return undefined card and action if error occurs', async () => {
+      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(422, { userMessage: 'Generic error message' })
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
+      expect(result).toStrictEqual({
+        latestCalcCard: undefined,
+        latestCalcCardAction: undefined,
+      })
+    })
+    it('Should return Error object if no Nomis offence dates are present', async () => {
+      fakeApi
+        .get(`/calculation/${prisonerId}/latest`)
+        .reply(422, { userMessage: 'no offence end or start dates provided on charge 123' })
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
+      expect(result).toStrictEqual(FullPageError.noOffenceDatesPage())
+    })
+    it('Should return Error object if no Nomis sentence terms are present', async () => {
+      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(422, { userMessage: 'missing imprisonment_term_code 123' })
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
+      expect(result).toStrictEqual(FullPageError.noImprisonmentTermPage())
+    })
+    it('Should return Error object if no Nomis licence terms are present', async () => {
+      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(422, { userMessage: 'missing licence_term_code 123' })
+      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
+      expect(result).toStrictEqual(FullPageError.noLicenceTermPage())
     })
   })
   describe('get detailed calculation results with adjustments', () => {

@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
-import CalculationReasonViewModel from '../models/CalculationReasonViewModel'
+import CalculationReasonViewModel from '../models/calculation/CalculationReasonViewModel'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import config from '../config'
 

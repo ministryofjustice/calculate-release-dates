@@ -1,6 +1,6 @@
-import PrisonerContextViewModel from './PrisonerContextViewModel'
-import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
-import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import PrisonerContextViewModel from '../PrisonerContextViewModel'
+import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
+import { ValidationMessage } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ManualEntryLandingPageViewModel extends PrisonerContextViewModel {
   constructor(

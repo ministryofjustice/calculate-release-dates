@@ -5,6 +5,8 @@ import { indexViewModelForPrisoner } from '../models/IndexViewModel'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import config from '../config'
+import { indexErrorViewModelForPrisoner } from '../models/IndexErrorViewModel'
+import { FullPageError } from '../types/FullPageError'
 
 export default class StartRoutes {
   constructor(
@@ -27,14 +29,30 @@ export default class StartRoutes {
         prisonerDetail.bookingId,
         token,
       )
-      const { latestCalcCard, latestCalcCardAction } =
-        await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(
-          prisonId,
-          token,
-          hasIndeterminateSentence,
-        )
+
+      const latestCalculationCardOrError = await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(
+        prisonId,
+        token,
+        hasIndeterminateSentence,
+      )
 
       const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(prisonId, token)
+
+      if (latestCalculationCardOrError instanceof FullPageError) {
+        return res.render(
+          'pages/ccardIndexError',
+          indexErrorViewModelForPrisoner(
+            latestCalculationCardOrError,
+            prisonerDetail,
+            calculationHistory,
+            prisonId,
+            allowBulkLoad,
+            serviceDefinitions,
+          ),
+        )
+      }
+
+      const { latestCalcCard, latestCalcCardAction } = latestCalculationCardOrError
       return res.render(
         'pages/ccardIndex',
         indexViewModelForPrisoner(
@@ -49,6 +67,7 @@ export default class StartRoutes {
         ),
       )
     }
+
     return res.redirect('/search/prisoners')
   }
 

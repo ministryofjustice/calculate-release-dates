@@ -1,6 +1,6 @@
 import { Request } from 'express'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
-import ManualCalculationResponse from '../models/ManualCalculationResponse'
+import ManualCalculationResponse from '../models/manual_calculation/ManualCalculationResponse'
 import {
   GenuineOverrideDateRequest,
   GenuineOverrideDateResponse,

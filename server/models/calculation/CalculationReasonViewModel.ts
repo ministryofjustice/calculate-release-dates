@@ -1,6 +1,6 @@
-import PrisonerContextViewModel from './PrisonerContextViewModel'
-import { CalculationReason } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
+import PrisonerContextViewModel from '../PrisonerContextViewModel'
+import { CalculationReason } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 
 export default class CalculationReasonViewModel extends PrisonerContextViewModel {
   constructor(
