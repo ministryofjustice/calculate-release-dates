@@ -73,20 +73,6 @@
                             <a class="govuk-link" href={{ digitalPrisonServicesUrl }}>Return to Digital Prison Service
                                 (DPS)</a>
                         </p>
-                        {% elif errorKey === 'CALCULATION_OR_PRISONER_NOT_FOUND' %}
-                        <p class="govuk-body">
-                            A calculation or prisoner could not be found.
-                        </p>
-                        <p class="govuk-body">
-                            <a class="govuk-link" href="/specialist-support">Return to specialist support</a>
-                        </p>
-                        {% elif errorKey === 'DATA_CHANGED_AFTER_SUPPORT_REQUEST_RAISED' %}
-                        <p class="govuk-body">
-                            The offence, sentence or adjustments data has changed since the override was requested.
-                        </p>
-                        <p class="govuk-body">
-                            <a class="govuk-link" href="/specialist-support">Return to specialist support</a>
-                        </p>
                     {% endif %}
 
                     {% elif status === 404 %}

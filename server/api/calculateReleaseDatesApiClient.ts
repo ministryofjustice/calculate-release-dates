@@ -17,9 +17,6 @@ import {
   DateTypeDefinition,
   DetailedCalculationResults,
   ErsedEligibility,
-  GenuineOverrideDateRequest,
-  GenuineOverrideDateResponse,
-  GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
   ManualEntryRequest,
@@ -170,26 +167,6 @@ export default class CalculateReleaseDatesApiClient {
       path: `/manual-calculation/${nomsId}`,
       data: manualEntryRequest,
     }) as Promise<ManualCalculationResponse>
-  }
-
-  storeOverrideReason(overrideRequest: GenuineOverrideRequest) {
-    return this.restClient.post({
-      path: '/specialist-support/genuine-override',
-      data: overrideRequest,
-    }) as Promise<GenuineOverrideRequest>
-  }
-
-  storeOverrideCalculation(overrideCalculationRequest: GenuineOverrideDateRequest) {
-    return this.restClient.post({
-      path: '/specialist-support/genuine-override/calculation',
-      data: overrideCalculationRequest,
-    }) as Promise<GenuineOverrideDateResponse>
-  }
-
-  getGenuineOverride(calculationReference: string) {
-    return this.restClient.get({
-      path: `/specialist-support/genuine-override/calculation/${calculationReference}`,
-    }) as Promise<GenuineOverrideRequest>
   }
 
   createPrisonComparison(prison: string, comparisonType: ComparisonType): Promise<Comparison> {

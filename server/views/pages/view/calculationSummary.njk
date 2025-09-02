@@ -85,12 +85,6 @@
                         }]
                 }) }}
             {% endif %}
-
-            {% if model.overrideReason %}
-                {{ govukInsetText({
-                    text: "These dates have been manually entered by the Specialist support team because " + model.overrideReason
-                }) }}
-            {% endif %}
         </div>
     </div>
 

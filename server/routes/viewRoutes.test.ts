@@ -17,7 +17,6 @@ import {
   CalculationBreakdown,
   CalculationSentenceUserInput,
   CalculationUserInputs,
-  GenuineOverrideRequest,
   ReleaseDatesAndCalculationContext,
   SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -1138,47 +1137,6 @@ describe('View journey routes tests', () => {
         })
     })
 
-    it('GET /view/:nomsId/calculation-summary/:calculationRequestId for a genuine override should display the other reason', () => {
-      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-        stubbedResultsWithBreakdownAndAdjustments,
-      )
-      calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
-        reason: 'Other: reason',
-        savedCalculation: '123',
-        originalCalculationRequest: '456',
-        isOverridden: true,
-      } as GenuineOverrideRequest)
-      return request(app)
-        .get('/view/A1234AA/calculation-summary/123456')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain(
-            'These dates have been manually entered by the Specialist support team because reason',
-          )
-        })
-    })
-
-    it('GET /view/:nomsId/calculation-summary/:calculationRequestId for a genuine override should look up reason', () => {
-      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-        stubbedResultsWithBreakdownAndAdjustments,
-      )
-      calculateReleaseDatesService.getGenuineOverride.mockResolvedValue({
-        reason: 'terror',
-        savedCalculation: '123',
-        originalCalculationRequest: '456',
-        isOverridden: true,
-      } as GenuineOverrideRequest)
-      return request(app)
-        .get('/view/A1234AA/calculation-summary/123456')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain(
-            'These dates have been manually entered by the Specialist support team because of terrorism or terror-related offences',
-          )
-        })
-    })
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the reason', () => {
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
         ...stubbedResultsWithBreakdownAndAdjustments,

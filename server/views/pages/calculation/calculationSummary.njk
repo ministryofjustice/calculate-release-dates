@@ -27,13 +27,6 @@
         <div class="govuk-grid-column-two-thirds">
             {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
             {% if not model.approvedDates %}
-                {% if model.hasSpecialistSupportEnabled %}
-                    <div class="govuk-inset-text">
-                        If you think the calculation is wrong <a
-                                href={{ "/calculation/" + model.calculationReference + "/request-support"}}>contact the specialist
-                            support team</a>.
-                    </div>
-                {% endif %}
                 <h3 class="govuk-heading-m govuk-!-margin-top-4">Confirm the dates are correct</h3>
                 <p class="govuk-body">By continuing you are confirming that, to the best of your knowledge, the calculation is correct.</p>
 

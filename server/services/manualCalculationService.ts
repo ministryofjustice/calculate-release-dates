@@ -1,11 +1,7 @@
 import { Request } from 'express'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import ManualCalculationResponse from '../models/manual_calculation/ManualCalculationResponse'
-import {
-  GenuineOverrideDateRequest,
-  GenuineOverrideDateResponse,
-  ManualEntryRequest,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ManualEntryRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import AuditService from './auditService'
 
 export default class ManualCalculationService {
@@ -42,20 +38,5 @@ export default class ManualCalculationService {
       await this.auditService.publishManualSentenceCalculationFailure(userName, prisonerId, error)
       throw error
     }
-  }
-
-  async storeGenuineOverrideCalculation(
-    originalCalculationReference: string,
-    prisonerId: string,
-    req: Request,
-    token: string,
-  ): Promise<GenuineOverrideDateResponse> {
-    const request = {
-      originalCalculationReference,
-      manualEntryRequest: {
-        selectedManualEntryDates: req.session.selectedManualEntryDates[prisonerId],
-      },
-    } as GenuineOverrideDateRequest
-    return new CalculateReleaseDatesApiClient(token).storeOverrideCalculation(request)
   }
 }
