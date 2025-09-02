@@ -14,7 +14,6 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
-  GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
   NomisCalculationSummary,
@@ -425,10 +424,6 @@ export default class CalculateReleaseDatesService {
       messageType: ErrorMessageType[validationMessages[0].type],
       messages,
     }
-  }
-
-  async getGenuineOverride(calculationReference: string, token: string): Promise<GenuineOverrideRequest> {
-    return new CalculateReleaseDatesApiClient(token).getGenuineOverride(calculationReference)
   }
 
   async validateDatesForManualEntry(token: string, dateTypes: string[]): Promise<ErrorMessages> {

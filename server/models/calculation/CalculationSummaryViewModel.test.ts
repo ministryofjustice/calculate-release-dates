@@ -21,7 +21,6 @@ describe('CalculationSummaryViewModel', () => {
         null,
         false,
         {},
-        null,
         {
           dates,
           context: {

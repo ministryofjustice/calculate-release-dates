@@ -18,7 +18,6 @@ import {
 } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import UserPermissionsService from '../services/userPermissionsService'
 import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
-import config from '../config'
 import ConcurrentConsecutiveSentence from '../models/ConcurrentConsecutiveSentencesModel'
 
 export default class CalculationRoutes {
@@ -99,9 +98,7 @@ export default class CalculationRoutes {
       validationErrors,
       false,
       approvedDates,
-      null,
       detailedCalculationResults,
-      config.featureToggles.genuineOverrides,
     )
     res.render(
       'pages/calculation/calculationSummary',
@@ -176,7 +173,6 @@ export default class CalculationRoutes {
       null,
       false,
       approvedDates,
-      null,
       detailedCalculationResults,
     )
     res.render(

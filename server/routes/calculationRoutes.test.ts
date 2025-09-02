@@ -953,23 +953,6 @@ describe('Calculation routes tests', () => {
         expect(res.redirect).toBeTruthy()
       })
   })
-  it('GET /calculation/:nomsId/summary/:calculationRequestId with specialist support on should display help text', () => {
-    config.featureToggles.genuineOverrides = true
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-      stubbedResultsWithBreakdownAndAdjustments,
-    )
-    return request(app)
-      .get('/calculation/A1234AB/summary/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('If you think the calculation is wrong')
-        expect(res.text).toContain('contact the specialist')
-        expect(res.text).toContain('support team')
-        config.featureToggles.genuineOverrides = false
-      })
-  })
   it('GET /calculation/:nomsId/summary/:calculationRequestId/print should return a printable page about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(

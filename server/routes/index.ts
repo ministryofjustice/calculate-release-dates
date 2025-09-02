@@ -10,10 +10,7 @@ import CalculationQuestionRoutes from './calculationQuestionRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
-import GenuineOverrideRoutes from './genuineOverrideRoutes'
-import GenuineOverridesEmailTemplateService from '../services/genuineOverridesEmailTemplateService'
 import ThingsToDoInterceptRoutes from './thingsToDoInterceptRoutes'
-import config from '../config'
 
 export default function Index({
   prisonerService,
@@ -74,17 +71,6 @@ export default function Index({
   )
 
   const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService, approvedDatesService, manualEntryService)
-  const genuineOverridesEmailTemplateService = new GenuineOverridesEmailTemplateService()
-  const genuineOverrideAccessRoutes = new GenuineOverrideRoutes(
-    userPermissionsService,
-    prisonerService,
-    calculateReleaseDatesService,
-    checkInformationService,
-    userInputService,
-    manualEntryService,
-    manualCalculationService,
-    genuineOverridesEmailTemplateService,
-  )
   const thingsToDoInterceptRoutes = new ThingsToDoInterceptRoutes(prisonerService, courtCasesReleaseDatesService)
 
   const indexRoutes = () => {
@@ -203,88 +189,6 @@ export default function Index({
     router.get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
   }
 
-  let specialistSupportRoutes = () => {}
-  if (config.featureToggles.genuineOverrides) {
-    specialistSupportRoutes = () => {
-      router.get(
-        '/calculation/:calculationReference/request-support',
-        genuineOverrideAccessRoutes.loadGenuineOverrideRequestPage,
-      )
-      router.get('/specialist-support/', genuineOverrideAccessRoutes.startPage)
-      router.get('/specialist-support/search/', genuineOverrideAccessRoutes.loadSearch)
-      router.post('/specialist-support/search/', genuineOverrideAccessRoutes.submitSearch)
-      router.get('/specialist-support/calculation/:calculationReference', genuineOverrideAccessRoutes.loadConfirmPage)
-      router.post(
-        '/specialist-support/calculation/:calculationReference',
-        genuineOverrideAccessRoutes.submitConfirmPage,
-      )
-      router.get(
-        '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
-        genuineOverrideAccessRoutes.loadCheckSentenceAndInformationPage,
-      )
-      router.post(
-        '/specialist-support/calculation/:calculationReference/sentence-and-offence-information',
-        genuineOverrideAccessRoutes.submitCheckSentenceAndInformationPage,
-      )
-      router.get(
-        '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
-        genuineOverrideAccessRoutes.loadCalculationPage,
-      )
-      router.post(
-        '/specialist-support/calculation/:calculationReference/summary/:calculationRequestId',
-        genuineOverrideAccessRoutes.submitCalculationPage,
-      )
-      router.get(
-        '/specialist-support/calculation/:calculationReference/complete',
-        genuineOverrideAccessRoutes.loadConfirmationPage,
-      )
-      router.get(
-        '/specialist-support/calculation/:calculationReference/reason',
-        genuineOverrideAccessRoutes.loadReasonPage,
-      )
-      router.post(
-        '/specialist-support/calculation/:calculationReference/reason',
-        genuineOverrideAccessRoutes.submitReasonPage,
-      )
-      router.get(
-        '/specialist-support/calculation/:calculationReference/select-date-types',
-        genuineOverrideAccessRoutes.loadSelectDatesPage,
-      )
-      router.post(
-        '/specialist-support/calculation/:calculationReference/select-date-types',
-        genuineOverrideAccessRoutes.submitSelectDatesPage,
-      )
-      router.get(
-        '/specialist-support/calculation/:calculationReference/enter-date',
-        genuineOverrideAccessRoutes.loadEnterDatePage,
-      )
-      router.post(
-        '/specialist-support/calculation/:calculationReference/enter-date',
-        genuineOverrideAccessRoutes.submitEnterDatePage,
-      )
-      router.get(
-        '/specialist-support/calculation/:calculationReference/confirm-override',
-        genuineOverrideAccessRoutes.loadConfirmOverridePage,
-      )
-      router.post(
-        '/specialist-support/calculation/:calculationReference/confirm-override',
-        genuineOverrideAccessRoutes.submitConfirmOverridePage,
-      )
-      router.get(
-        '/specialist-support/calculation/:calculationReference/remove-date',
-        genuineOverrideAccessRoutes.loadRemoveDate,
-      )
-      router.post(
-        '/specialist-support/calculation/:calculationReference/remove-date',
-        genuineOverrideAccessRoutes.submitRemoveDate,
-      )
-      router.get(
-        '/specialist-support/calculation/:calculationReference/change-date',
-        genuineOverrideAccessRoutes.loadChangeDate,
-      )
-    }
-  }
-
   const compareRoutes = () => {
     router.get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
     router.get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation) // TODO remove this route as it was only for testing
@@ -316,7 +220,6 @@ export default function Index({
   otherRoutes()
   compareRoutes()
   approvedDatesRoutes()
-  specialistSupportRoutes()
   thingsToDoInterceptRouter()
   return router
 }

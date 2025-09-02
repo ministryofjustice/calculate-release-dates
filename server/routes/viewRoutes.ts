@@ -7,7 +7,7 @@ import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import { FullPageError } from '../types/FullPageError'
 import CalculationSummaryViewModel from '../models/calculation/CalculationSummaryViewModel'
 import SentenceTypes from '../models/SentenceTypes'
-import { DetailedDate, GenuineOverrideRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { DetailedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewRouteSentenceAndOffenceViewModel from '../models/ViewRouteSentenceAndOffenceViewModel'
 import { PrisonApiOffenderSentenceAndOffences } from '../@types/prisonApi/prisonClientTypes'
 import { longDateFormat } from '../utils/utils'
@@ -20,11 +20,6 @@ import {
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import ViewPastNomisCalculationPageViewModel from '../models/ViewPastNomisCalculationPageViewModel'
 import PrintNotificationSlipViewModel from '../models/PrintNotificationSlipViewModel'
-
-const overrideReasons = {
-  terror: 'of terrorism or terror-related offences',
-  warrantMismatch: 'the order of imprisonment/warrant doesn’t match trial record sheet',
-}
 
 export default class ViewRoutes {
   constructor(
@@ -169,11 +164,9 @@ export default class ViewRoutes {
         } as ErrorMessages,
         true,
         undefined,
-        null,
         detailedCalculationResults,
       )
     }
-    const override = await this.getOverride(detailedCalculationResults.context.calculationReference, token)
     const hasNone = detailedCalculationResults.dates.None !== undefined
     const approvedDates = detailedCalculationResults.approvedDates
       ? this.indexBy(detailedCalculationResults.approvedDates)
@@ -198,31 +191,8 @@ export default class ViewRoutes {
       null,
       false,
       approvedDates,
-      this.getOverrideReason(override),
       detailedCalculationResults,
     )
-  }
-
-  private getOverrideReason(override: GenuineOverrideRequest): string {
-    if (override && override.reason) {
-      const reason = overrideReasons[override.reason]
-      if (reason) {
-        return reason
-      }
-      return override.reason.replace('Other: ', '')
-    }
-    return undefined
-  }
-
-  private async getOverride(calculationReference: string, token: string): Promise<GenuineOverrideRequest> {
-    try {
-      return await this.calculateReleaseDatesService.getGenuineOverride(calculationReference, token)
-    } catch (error) {
-      if (error.data.status === 404) {
-        return Promise.resolve({} as never)
-      }
-      throw error
-    }
   }
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {

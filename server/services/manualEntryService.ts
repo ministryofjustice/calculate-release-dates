@@ -193,15 +193,13 @@ export default class ManualEntryService {
     return DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
   }
 
-  public async getConfirmationConfiguration(token: string, req: Request, nomsId: string, isSpecialistSupport = false) {
+  public async getConfirmationConfiguration(token: string, req: Request, nomsId: string) {
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     return req.session.selectedManualEntryDates[nomsId]
       .map((d: ManualEntrySelectedDate) => {
         const dateValue = this.dateString(d)
         const text = dateTypeDefinitions[d.dateType]
-        const items = isSpecialistSupport
-          ? this.getSpecialistSupportItems(req.params.calculationReference, d, text)
-          : this.getItems(nomsId, d, text)
+        const items = this.getItems(nomsId, d, text)
         return {
           key: {
             text,
@@ -242,21 +240,6 @@ export default class ManualEntryService {
       return items.filter(it => it.text !== 'Change')
     }
     return items
-  }
-
-  private getSpecialistSupportItems(calculationReference: string, d: ManualEntrySelectedDate, text: string) {
-    return [
-      {
-        href: `/specialist-support/calculation/${calculationReference}/change-date?dateType=${d.dateType}`,
-        text: 'Change',
-        visuallyHiddenText: `Change ${text}`,
-      },
-      {
-        href: `/specialist-support/calculation/${calculationReference}/remove-date?dateType=${d.dateType}`,
-        text: 'Remove',
-        visuallyHiddenText: `Remove ${text}`,
-      },
-    ]
   }
 
   public async fullStringLookup(token: string, dateType: string): Promise<string> {
