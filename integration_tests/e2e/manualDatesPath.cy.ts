@@ -8,6 +8,7 @@ import ManualDatesEnterDatePage from '../pages/manualDatesEnterDatePage'
 import ManualDatesConfirmationPage from '../pages/manualDatesConfirmationPage'
 import CalculationCompletePage from '../pages/calculationComplete'
 import ManualDatesRemoveDatePage from '../pages/manualDatesRemoveDate'
+import ManualDatesNoDatesConfirmationPage from '../pages/manualDatesNoDatesConfirmationPage'
 
 context('End to end user journeys entering and modifying approved dates', () => {
   beforeEach(() => {
@@ -100,6 +101,51 @@ context('End to end user journeys entering and modifying approved dates', () => 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
     calculationCompletePage.title().should('contain.text', 'Calculation complete')
+  })
+
+  it('Can submit no dates for indeterminate sentences', () => {
+    cy.task('stubHasSomeIndeterminateSentences')
+    cy.signIn()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.calculateReleaseDatesAction().click()
+
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.submitReason().click()
+
+    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+    checkInformationUnsupportedPage.manualEntryButton().click()
+
+    const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
+    manualEntryLandingPage.continue().click()
+
+    const selectDatesPage = Page.verifyOnPage(ManualEntrySelectDatesPage)
+    selectDatesPage.expectDateOffered(['Tariff', 'TERSED', 'ROTL', 'APD', 'PED', 'None'])
+    selectDatesPage.checkDate('PED')
+    selectDatesPage.continue().click()
+
+    const enterPEDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
+    enterPEDPage.checkIsFor('PED')
+    enterPEDPage.enterDate('PED', '09', '03', '2028')
+    enterPEDPage.continue().click()
+
+    const manualDatesConfirmationPage = Page.verifyOnPage(ManualDatesConfirmationPage)
+    manualDatesConfirmationPage.dateShouldHaveValue('PED', '09 March 2028')
+
+    const addAnotherDate = manualDatesConfirmationPage.addAnotherDatesLink()
+    addAnotherDate.click()
+
+    const selectDatesPageReturn = Page.verifyOnPage(ManualEntrySelectDatesPage)
+    selectDatesPageReturn.expectDateOffered(['Tariff', 'TERSED', 'ROTL', 'APD', 'PED', 'None'])
+    selectDatesPageReturn.checkDate('None')
+    selectDatesPageReturn.continue().click()
+
+    const confirmationPage = Page.verifyOnPage(ManualDatesNoDatesConfirmationPage)
+    confirmationPage.confirm()
+    confirmationPage.continue()
+
+    const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+    calculationCompletePage.title().should('contain.text', 'No release dates have been saved for')
   })
 
   it('Can add some manual dates when there are some indeterminate sentences', () => {

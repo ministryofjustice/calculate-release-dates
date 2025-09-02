@@ -20,4 +20,6 @@ export default class ManualDatesConfirmationPage extends Page {
   public removeReleaseDateLink = (type: string): PageElement => cy.get(`[data-qa=remove-manual-date-${type}]`)
 
   public submitToNomisButton = (): PageElement => cy.get('[data-qa=submit-to-nomis]')
+
+  public addAnotherDatesLink = (): PageElement => cy.get('[data-qa=add-another-release-date-link]')
 }

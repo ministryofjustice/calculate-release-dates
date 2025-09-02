@@ -448,12 +448,10 @@ export default class ManualEntryRoutes {
       return res.redirect(redirect)
     }
 
-    if (
-      req.body != null &&
-      req.body['no-date-selection'] === 'yes' &&
-      req.session.selectedManualEntryDates[nomsId].length === 1 &&
-      req.session.selectedManualEntryDates[nomsId][0].dateType === 'None'
-    ) {
+    if (req.body != null && req.body['no-date-selection'] === 'yes') {
+      req.session.selectedManualEntryDates[nomsId] = [
+        { dateType: 'None', dateText: 'None of the above dates apply', date: null },
+      ]
       return res.redirect(`/calculation/${nomsId}/manual-entry/save`)
     }
     if (req.body != null && req.body['no-date-selection'] === 'no') {
