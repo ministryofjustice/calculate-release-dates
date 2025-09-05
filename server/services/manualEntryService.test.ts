@@ -56,7 +56,7 @@ describe('manualEntryService', () => {
   })
 
   it('should provide relevant date config when there are no indeterminate sentences', async () => {
-    const { config } = await manualEntryService.verifySelectedDateType(token, req, 'A1234BC', false, true)
+    const { config } = await manualEntryService.verifySelectedDateType(token, req, 'A1234BC', false, true, [])
     expect(config.items.map(it => it.value)).toStrictEqual([
       'SED',
       'LED',
@@ -79,7 +79,7 @@ describe('manualEntryService', () => {
   })
 
   it('should provide relevant date config when there are indeterminate sentences', async () => {
-    const { config } = await manualEntryService.verifySelectedDateType(token, req, 'A1234BC', true, true)
+    const { config } = await manualEntryService.verifySelectedDateType(token, req, 'A1234BC', true, true, [])
     expect(config.items.map(it => it.value || it.divider)).toStrictEqual([
       'Tariff',
       'TERSED',

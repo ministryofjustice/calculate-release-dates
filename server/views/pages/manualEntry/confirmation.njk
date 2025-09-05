@@ -10,36 +10,92 @@
 
 {% block beforeContent %}
     {{ super() }}
+    {% set backlink = "/calculation/" + prisonerDetail.offenderNo + "/manual-entry" %}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backlink
+        }) }}
+    </nav>
 {% endblock %}
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Check the dates you have entered</h1>
+            <h1 class="govuk-heading-xl">{{ 'Confirm the dates are correct' if existingCalculation else 'Check the dates you have entered ' }}</h1>
             {{ govukSummaryList({
                 rows: rows
             }) }}
             <p class="govuk-body govuk-!-margin-bottom-8">
+            {% if existingCalculation == false %}
             <a href="/calculation/{{ prisonerDetail.offenderNo }}/manual-entry/select-dates?addExtra=true"
                class="govuk-link govuk-link--no-visited-state" data-qa="add-another-release-date-link">Add another release date</a>
             </p>
+            {% endif %}
         </div>
 
         <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-m">Confirm and save to NOMIS</h2>
-            <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is
-                correct. These dates will be saved in NOMIS as a manual calculation.</p>
-            {{ govukButton({
-                text: "Confirm and save to NOMIS",
-                href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/save",
-                attributes: { 'data-qa': 'submit-to-nomis' }
-            }) }}
-            {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
-            <a data-qa="cancel-link"
-                data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
-                data-module="govuk-button"
-                href="{{ cancelUrl }}">
-                Cancel
-            </a>
+            {% if existingCalculation %}
+                {% from "govuk/components/radios/macro.njk" import govukRadios %}
+                {% set formError = {
+                    text: "Please select either 'Yes' or 'No'"
+                } if confirmationError else null %}
+                <h2 class="govuk-heading-m">Confirm if the dates are still correct</h2>
+                <p>If the dates are correct, they will be saved in NOMIS.</p>
+
+                <form method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                    <div>
+                        {{ govukRadios({
+                            classes: "govuk-radios--inline",
+                            name: "confirm-dates",
+                            items: [
+                                {
+                                    value: "yes",
+                                    text: "Yes, all release dates are still correct"
+                                },
+                                {
+                                    value: "no",
+                                    text: "No, release dates are either missing or incorrect"
+                                }
+                            ],
+                            errorMessage: formError
+                        }) }}
+                    </div>
+                    <div>
+                        {{ govukButton({
+                            text: "Continue",
+                            type: submit,
+                            value: 'submit-date',
+                            preventDoubleClick: true,
+                            attributes: {  'data-qa': 'calculated-dates-confirm' }
+                        }) }}
+                        {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+                        <a data-qa="cancel-link"
+                           data-prevent-double-click="true"
+                           class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                           data-module="govuk-button"
+                           href="{{ cancelUrl }}">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            {% else %}
+                <h2 class="govuk-heading-m">Confirm and save to NOMIS</h2>
+                <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is
+                    correct. These dates will be saved in NOMIS as a manual calculation.</p>
+                {{ govukButton({
+                    text: "Confirm and save to NOMIS",
+                    href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/save",
+                    attributes: { 'data-qa': 'submit-to-nomis' }
+                }) }}
+                {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+                <a data-qa="cancel-link"
+                   data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                   data-module="govuk-button"
+                   href="{{ cancelUrl }}">
+                    Cancel
+                </a>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

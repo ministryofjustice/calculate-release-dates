@@ -6,6 +6,14 @@
 
 {% set pageTitle = applicationName + " - manual entry" %}
 {% set pageId = "manual-entry-start" %}
+{% set continueBtn %}
+    {% if existingManualJourney %}
+        /calculation/{{prisonerDetail.offenderNo}}/manual-entry/confirmation?existingCalculation=1
+    {% else %}
+        /calculation/{{prisonerDetail.offenderNo}}/manual-entry/select-dates
+    {% endif %}
+{% endset %}
+{% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -21,7 +29,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl" data-qa="manual-entry-title">
-                Enter the dates manually
+                {{ 'Review the manually calculated dates' if existingManualJourney else 'Enter the dates manually ' }}
             </h1>
             <p class="govuk-body" data-qa="manual-entry-hint">This calculation includes one or more reasons why dates
                 cannot be calculated by this service.</p>
@@ -58,7 +66,14 @@
                 {% endfor %}
             {% endif %} <p></p>
             <h2 class="govuk-heading-m">What you need to do</h2>
-            <p class="govuk-body"> Enter the dates from the paper calculation sheet into this service.</p>
+            <p class="govuk-body">
+                {% if existingManualJourney %}
+                    As no information has changed for this calculation, you need to confirm that the manually calculated release dates are correct.
+                {% else %}
+                    Enter the dates from the paper calculation sheet into this service.
+                {% endif %}
+            </p>
+
         </div>
     </div>
 
@@ -69,10 +84,9 @@
                 type: submit,
                 value: 'start-manual-calc',
                 preventDoubleClick: true,
-                href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/select-dates",
+                href: continueBtn,
                 attributes: {  'data-qa': 'manual-calc-start' }
             }) }}
-            {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
             <a data-qa="cancel-link"
                data-prevent-double-click="true"
                class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"

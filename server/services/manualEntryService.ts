@@ -4,6 +4,7 @@ import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService, { DateInputItem, EnteredDate, StorageResponseModel } from './dateValidationService'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import {
+  DetailedDate,
   ManualEntrySelectedDate,
   SubmittedDate,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -46,12 +47,33 @@ export default class ManualEntryService {
     // intentionally left blank
   }
 
+  public populateExistingDates(req: Request, nomsId: string, dates: DetailedDate[]) {
+    if (!req.session.selectedManualEntryDates[nomsId]) {
+      req.session.selectedManualEntryDates[nomsId] = new Array<ManualEntrySelectedDate>()
+    }
+    req.session.selectedManualEntryDates[nomsId] = dates
+      .filter(d => d.date)
+      .map(({ type, description, date }) => {
+        const { day, month, year } = DateTime.fromISO(date)
+        return {
+          dateType: type,
+          dateText: description,
+          date: {
+            day,
+            month,
+            year,
+          },
+        }
+      })
+  }
+
   public async verifySelectedDateType(
     token: string,
     req: Request,
     nomsId: string,
     hasIndeterminateSentences: boolean,
     firstLoad: boolean,
+    existingDateTypes: string[],
   ): Promise<{ error: boolean; config: DateSelectConfiguration }> {
     if (!req.session.selectedManualEntryDates) {
       req.session.selectedManualEntryDates = {}
@@ -66,10 +88,11 @@ export default class ManualEntryService {
         (req.body.dateSelect === undefined || req.body.dateSelect.length === 0))
     let config: DateSelectConfiguration
     if (hasIndeterminateSentences) {
-      config = await this.indeterminateConfig(token)
+      config = await this.indeterminateConfig(token, existingDateTypes)
     } else {
-      config = await this.determinateConfig(token)
+      config = await this.determinateConfig(token, existingDateTypes)
     }
+
     if (insufficientDatesSelected) {
       const mergedConfig = { ...config, ...errorMessage }
       this.enrichConfiguration(mergedConfig, req, nomsId)
@@ -193,13 +216,13 @@ export default class ManualEntryService {
     return DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
   }
 
-  public async getConfirmationConfiguration(token: string, req: Request, nomsId: string) {
+  public async getConfirmationConfiguration(token: string, req: Request, nomsId: string, allowActions: boolean) {
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     return req.session.selectedManualEntryDates[nomsId]
       .map((d: ManualEntrySelectedDate) => {
         const dateValue = this.dateString(d)
         const text = dateTypeDefinitions[d.dateType]
-        const items = this.getItems(nomsId, d, text)
+        const items = allowActions ? this.getItems(nomsId, d, text) : null
         return {
           key: {
             text,
@@ -273,7 +296,7 @@ export default class ManualEntryService {
     return date
   }
 
-  private async determinateConfig(token: string): Promise<DateSelectConfiguration> {
+  private async determinateConfig(token: string, existingTypes: string[]): Promise<DateSelectConfiguration> {
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     return {
       name: 'dateSelect',
@@ -292,101 +315,101 @@ export default class ManualEntryService {
           value: 'SED',
           text: dateTypeDefinitions.SED,
           checked: false,
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.SED) },
         },
         {
           value: 'LED',
           text: dateTypeDefinitions.LED,
           checked: false,
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.LED) },
         },
         {
           value: 'CRD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.CRD) },
           checked: false,
           text: dateTypeDefinitions.CRD,
         },
         {
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.HDCED) },
           checked: false,
           value: 'HDCED',
           text: dateTypeDefinitions.HDCED,
         },
         {
           value: 'TUSED',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.TUSED) },
           checked: false,
           text: dateTypeDefinitions.TUSED,
         },
         {
           value: 'PRRD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.PRRD) },
           checked: false,
           text: dateTypeDefinitions.PRRD,
         },
         {
           value: 'PED',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.PED) },
           checked: false,
           text: dateTypeDefinitions.PED,
         },
         {
           value: 'ROTL',
           checked: false,
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.ROTL) },
           text: dateTypeDefinitions.ROTL,
         },
         {
           value: 'ERSED',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.ERSED) },
           checked: false,
           text: dateTypeDefinitions.ERSED,
         },
         {
           value: 'ARD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.ARD) },
           checked: false,
           text: dateTypeDefinitions.ARD,
         },
         {
           value: 'HDCAD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.HDCAD) },
           checked: false,
           text: dateTypeDefinitions.HDCAD,
         },
         {
           value: 'MTD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.MTD) },
           checked: false,
           text: dateTypeDefinitions.MTD,
         },
         {
           value: 'ETD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.ETD) },
           checked: false,
           text: dateTypeDefinitions.ETD,
         },
         {
           value: 'LTD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.LTD) },
           checked: false,
           text: dateTypeDefinitions.LTD,
         },
         {
           value: 'APD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.APD) },
           checked: false,
           text: dateTypeDefinitions.APD,
         },
         {
           value: 'NPD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.NPD) },
           checked: false,
           text: dateTypeDefinitions.NPD,
         },
         {
           value: 'DPRRD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.DPRRD) },
           checked: false,
           text: dateTypeDefinitions.DPRRD,
         },
@@ -394,7 +417,7 @@ export default class ManualEntryService {
     } as DateSelectConfiguration
   }
 
-  private async indeterminateConfig(token: string): Promise<DateSelectConfiguration> {
+  private async indeterminateConfig(token: string, existingTypes: string[]): Promise<DateSelectConfiguration> {
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     return {
       name: 'dateSelect',
@@ -411,31 +434,31 @@ export default class ManualEntryService {
       items: [
         {
           value: 'Tariff',
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.Tariff) },
           checked: false,
-          attributes: {},
           text: dateTypeDefinitions.Tariff,
         },
         {
           value: 'TERSED',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.TERSED) },
           checked: false,
           text: dateTypeDefinitions.TERSED,
         },
         {
           value: 'ROTL',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.ROTL) },
           checked: false,
           text: dateTypeDefinitions.ROTL,
         },
         {
           value: 'APD',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.APD) },
           checked: false,
           text: dateTypeDefinitions.APD,
         },
         {
           value: 'PED',
-          attributes: {},
+          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.PED) },
           checked: false,
           text: dateTypeDefinitions.PED,
         },

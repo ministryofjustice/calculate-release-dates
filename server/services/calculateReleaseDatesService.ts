@@ -16,6 +16,7 @@ import {
   CalculationUserInputs,
   HistoricCalculation,
   LatestCalculation,
+  ManualEntrySelectedDate,
   NomisCalculationSummary,
   ReleaseDateCalculationBreakdown,
   ReleaseDatesAndCalculationContext,
@@ -436,6 +437,10 @@ export default class CalculateReleaseDatesService {
       prisonerId,
     )
     return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
+  }
+
+  async offenderHasPreviousManualCalculation(prisonerId: string, token: string): Promise<boolean> {
+    return new CalculateReleaseDatesApiClient(token).hasExistingManualCalculation(prisonerId)
   }
 
   async getCalculationHistory(prisonerId: string, token: string): Promise<HistoricCalculation[]> {
