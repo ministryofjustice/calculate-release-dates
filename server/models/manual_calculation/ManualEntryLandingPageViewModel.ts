@@ -12,6 +12,7 @@ export default class ManualEntryLandingPageViewModel extends PrisonerContextView
       unsupportedCalculationMessages: ValidationMessage[]
       unsupportedManualMessages: ValidationMessage[]
     },
+    public existingManualJourney = false,
   ) {
     super(prisonerDetail)
   }

@@ -100,6 +100,7 @@ export default function Index({
     router.get('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.enterDate)
     router.post('/calculation/:nomsId/manual-entry/enter-date', manualEntryAccessRoutes.submitDate)
     router.get('/calculation/:nomsId/manual-entry/confirmation', manualEntryAccessRoutes.loadConfirmation)
+    router.post('/calculation/:nomsId/manual-entry/confirmation', manualEntryAccessRoutes.loadConfirmationSubmit)
     router.get('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.loadRemoveDate)
     router.post('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.submitRemoveDate)
     router.get('/calculation/:nomsId/manual-entry/change-date', manualEntryAccessRoutes.loadChangeDate)

@@ -91,6 +91,7 @@ beforeEach(() => {
   sessionSetup = new SessionSetup()
   sessionSetup.sessionDoctor = req => {
     req.session.manualEntryRoutingForBookings = []
+    req.session.calculationReasonId = 1
   }
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
@@ -201,6 +202,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
 
     sessionSetup.sessionDoctor = req => {
+      req.session.calculationReasonId = 1
       req.session.manualEntryRoutingForBookings = ['A1234AA']
     }
 
@@ -226,6 +228,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
 
     sessionSetup.sessionDoctor = req => {
       req.session.manualEntryRoutingForBookings = ['A9999999']
+      req.session.calculationReasonId = 1
     }
 
     return request(app)
@@ -431,6 +434,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
+      req.session.calculationReasonId = 1
       req.session.selectedManualEntryDates.A1234AA = [
         {
           dateType: 'CRD',
@@ -464,6 +468,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
+      req.session.calculationReasonId = 1
       req.session.selectedManualEntryDates.A1234AA = [
         {
           dateType: 'CRD',
@@ -504,6 +509,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
+      req.session.calculationReasonId = 1
       req.session.selectedManualEntryDates.A1234AA = [
         {
           dateType: 'CRD',
@@ -544,6 +550,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
+      req.session.calculationReasonId = 1
       req.session.manualEntryRoutingForBookings = []
     }
 
@@ -623,6 +630,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
+      req.session.calculationReasonId = 1
       req.session.manualEntryRoutingForBookings = []
     }
     return request(app)
@@ -648,6 +656,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
+      req.session.calculationReasonId = 1
       req.session.selectedManualEntryDates.A1234AA = [
         {
           dateType: 'CRD',
@@ -693,6 +702,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('GET /calculation/:nomsId/manual-entry/save should redirect when no reasonId is within the session', () => {
+    sessionSetup.sessionDoctor = req => {
+      req.session.manualEntryRoutingForBookings = []
+    }
     manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
@@ -702,6 +714,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('GET /calculation/:nomsId/manual-entry/change-date should redirect when no reasonId is within the session', () => {
+    sessionSetup.sessionDoctor = req => {
+      req.session.manualEntryRoutingForBookings = []
+    }
     manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)

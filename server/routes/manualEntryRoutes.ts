@@ -16,6 +16,7 @@ import ManualEntrySelectDatesViewModel from '../models/manual_calculation/Manual
 import ManualEntryLandingPageViewModel from '../models/manual_calculation/ManualEntryLandingPageViewModel'
 import ManualEntryNoDatesConfirmationViewModel from '../models/manual_calculation/ManualEntryNoDatesConfirmationViewModel'
 import ManualEntryRemoteDateViewModel from '../models/manual_calculation/ManualEntryRemoteDateViewModel'
+import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 
 export default class ManualEntryRoutes {
   constructor(
@@ -30,6 +31,10 @@ export default class ManualEntryRoutes {
   public landingPage: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
+
+    if (req.session.calculationReasonId == null) {
+      return res.redirect(`/calculation/${nomsId}/reason`)
+    }
 
     const unsupportedSentenceOrCalculationMessages =
       await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType(nomsId, token)
@@ -55,13 +60,31 @@ export default class ManualEntryRoutes {
       token,
     )
 
+    const existingManualJourney = await this.calculateReleaseDatesService.offenderHasPreviousManualCalculation(
+      nomsId,
+      token,
+    )
+
+    if (existingManualJourney && !this.existingDatesInSession(req, nomsId)) {
+      if (req.session.selectedManualEntryDates == null) req.session.selectedManualEntryDates = {}
+      const crdAPIClient = new CalculateReleaseDatesApiClient(token)
+      const latestCalculation = await crdAPIClient.getLatestCalculationForPrisoner(nomsId)
+      this.manualEntryService.populateExistingDates(req, nomsId, latestCalculation.dates)
+    }
+
     return res.render(
       'pages/manualEntry/manualEntry',
-      new ManualEntryLandingPageViewModel(prisonerDetail, hasIndeterminateSentences, req.originalUrl, {
-        unsupportedSentenceMessages: unsupportedSentenceOrCalculationMessages.unsupportedSentenceMessages,
-        unsupportedCalculationMessages: unsupportedSentenceOrCalculationMessages.unsupportedCalculationMessages,
-        unsupportedManualMessages: unsupportedSentenceOrCalculationMessages.unsupportedManualMessages,
-      }),
+      new ManualEntryLandingPageViewModel(
+        prisonerDetail,
+        hasIndeterminateSentences,
+        req.originalUrl,
+        {
+          unsupportedSentenceMessages: unsupportedSentenceOrCalculationMessages.unsupportedSentenceMessages,
+          unsupportedCalculationMessages: unsupportedSentenceOrCalculationMessages.unsupportedCalculationMessages,
+          unsupportedManualMessages: unsupportedSentenceOrCalculationMessages.unsupportedManualMessages,
+        },
+        existingManualJourney,
+      ),
     )
   }
 
@@ -112,12 +135,17 @@ export default class ManualEntryRoutes {
       token,
     )
 
+    const existingDates = this.existingDatesInSession(req, nomsId)
+      ? req.session.selectedManualEntryDates[nomsId].map((d: ManualEntrySelectedDate) => d.dateType)
+      : []
+
     const { error, config } = await this.manualEntryService.verifySelectedDateType(
       token,
       req,
       nomsId,
       hasIndeterminateSentences,
       false,
+      existingDates,
     )
     if (error) {
       const insufficientDatesSelected = true
@@ -146,6 +174,10 @@ export default class ManualEntryRoutes {
       return res.redirect(redirect)
     }
 
+    const existingDates: string[] = this.existingDatesInSession(req, nomsId)
+      ? req.session.selectedManualEntryDates[nomsId].map(d => d.dateType)
+      : []
+
     if (!req.session.selectedManualEntryDates) {
       req.session.selectedManualEntryDates = {}
     }
@@ -160,6 +192,7 @@ export default class ManualEntryRoutes {
       nomsId,
       hasIndeterminateSentences,
       firstLoad,
+      existingDates,
     )
     return res.render(
       'pages/manualEntry/dateTypeSelection',
@@ -243,6 +276,11 @@ export default class ManualEntryRoutes {
   public loadConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
+    const { existingCalculation, confirmationError } = req.query
+
+    if (req.session.calculationReasonId == null) {
+      return res.redirect(`/calculation/${nomsId}/reason`)
+    }
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
 
@@ -256,11 +294,31 @@ export default class ManualEntryRoutes {
       return res.redirect(redirect)
     }
 
-    const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, nomsId)
+    const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, nomsId, !existingCalculation)
     return res.render(
       'pages/manualEntry/confirmation',
-      new ManualEntryConfirmationViewModel(prisonerDetail, rows, req.originalUrl),
+      new ManualEntryConfirmationViewModel(
+        prisonerDetail,
+        rows,
+        req.originalUrl,
+        !!existingCalculation,
+        !!confirmationError,
+      ),
     )
+  }
+
+  public loadConfirmationSubmit: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+
+    if (req.body == null || (req.body['confirm-dates'] !== 'yes' && req.body['confirm-dates'] !== 'no')) {
+      return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation?existingCalculation=1&confirmationError=1`)
+    }
+
+    if (req.body['confirm-dates'] === 'yes') {
+      return res.redirect(`/calculation/${nomsId}/manual-entry/save`)
+    }
+
+    return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }
 
   public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
@@ -462,6 +520,14 @@ export default class ManualEntryRoutes {
     return res.render(
       'pages/manualEntry/noDatesConfirmation',
       new ManualEntryNoDatesConfirmationViewModel(prisonerDetail, req.originalUrl, error),
+    )
+  }
+
+  private existingDatesInSession(req, nomsId: string): boolean {
+    return (
+      req.session.selectedManualEntryDates != null &&
+      req.session.selectedManualEntryDates[nomsId] != null &&
+      req.session.selectedManualEntryDates[nomsId].length > 0
     )
   }
 }
