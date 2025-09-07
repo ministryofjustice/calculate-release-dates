@@ -25,6 +25,7 @@ import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import AuditService from '../services/auditService'
+import ManualCalculationResponse from '../models/manual_calculation/ManualCalculationResponse'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -701,6 +702,130 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .expect('Location', '/calculation/A1234AA/reason')
   })
 
+  it('GET /calculation/:nomsId/manual-entry/save handles 412 error', async () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.storeManualCalculation.mockRejectedValue({ response: { status: 412 } })
+
+    sessionSetup.sessionDoctor = req => {
+      req.session.calculationReasonId = { A1234AA: 1 }
+      req.session.manualEntryRoutingForBookings = ['A1234AA']
+      req.session.selectedManualEntryDates = {
+        A1234AA: [
+          {
+            dateType: 'CRD',
+            dateText: 'CRD (Conditional release date)',
+            date: { day: 1, month: 1, year: 2020 },
+          },
+        ],
+      }
+    }
+
+    app = appWithAllRoutes({
+      services: { calculateReleaseDatesService, prisonerService, manualCalculationService, manualEntryService },
+      sessionSetup,
+    })
+
+    const agent = request.agent(app)
+
+    const res = await agent.get('/calculation/A1234AA/manual-entry/save').expect(302)
+    expect(res.headers.location).toBe('/calculation/A1234AA/manual-entry/confirmation')
+
+    const follow = await agent.get(res.headers.location).expect(200)
+    expect(follow.text).toContain(
+      'The booking data used for this calculation has changed. Go back to the Check NOMIS Information screen to review the changes.',
+    )
+  })
+
+  it('GET /calculation/:nomsId/manual-entry/save handles 423 locked error', async () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.storeManualCalculation.mockRejectedValue({ response: { status: 423 } })
+
+    sessionSetup.sessionDoctor = req => {
+      req.session.calculationReasonId = { A1234AA: 1 }
+      req.session.manualEntryRoutingForBookings = ['A1234AA']
+      req.session.selectedManualEntryDates = {
+        A1234AA: [
+          {
+            dateType: 'CRD',
+            dateText: 'CRD (Conditional release date)',
+            date: { day: 1, month: 1, year: 2020 },
+          },
+        ],
+      }
+    }
+
+    app = appWithAllRoutes({
+      services: { calculateReleaseDatesService, prisonerService, manualCalculationService, manualEntryService },
+      sessionSetup,
+    })
+
+    const agent = request.agent(app)
+
+    const res = await agent.get('/calculation/A1234AA/manual-entry/save').expect(302)
+    expect(res.headers.location).toBe('/calculation/A1234AA/manual-entry/confirmation')
+
+    const follow = await agent.get(res.headers.location).expect(200)
+    expect(follow.text).toContain(
+      'This person’s record is locked in NOMIS. If this record open in NOMIS, close the record then come back to this page.',
+    )
+  })
+
+  it('GET /calculation/:nomsId/manual-entry/save handles generic error', async () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.storeManualCalculation.mockRejectedValue(new Error('boom'))
+
+    sessionSetup.sessionDoctor = req => {
+      req.session.calculationReasonId = { A1234AA: 1 }
+      req.session.manualEntryRoutingForBookings = ['A1234AA']
+      req.session.selectedManualEntryDates = {
+        A1234AA: [
+          {
+            dateType: 'CRD',
+            dateText: 'CRD (Conditional release date)',
+            date: { day: 1, month: 1, year: 2020 },
+          },
+        ],
+      }
+    }
+
+    app = appWithAllRoutes({
+      services: { calculateReleaseDatesService, prisonerService, manualCalculationService, manualEntryService },
+      sessionSetup,
+    })
+
+    const agent = request.agent(app)
+
+    const res = await agent.get('/calculation/A1234AA/manual-entry/save').expect(302)
+    expect(res.headers.location).toBe('/calculation/A1234AA/manual-entry/confirmation')
+
+    const follow = await agent.get(res.headers.location).expect(200)
+    expect(follow.text).toContain('The calculation could not be saved in NOMIS.')
+  })
+
+  it('GET /calculation/:nomsId/manual-entry/save redirects to confirmation on success', async () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.storeManualCalculation.mockResolvedValue({} as unknown as ManualCalculationResponse)
+
+    sessionSetup.sessionDoctor = req => {
+      req.session.calculationReasonId = { A1234AA: 1 }
+      req.session.manualEntryRoutingForBookings = ['A1234AA']
+      req.session.selectedManualEntryDates = {
+        A1234AA: [
+          {
+            dateType: 'CRD',
+            dateText: 'CRD (Conditional release date)',
+            date: { day: 1, month: 1, year: 2020 },
+          },
+        ],
+      }
+    }
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/save')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/manual-entry/confirmation')
+  })
+
   it('GET /calculation/:nomsId/manual-entry/change-date should redirect when no reasonId is within the session', () => {
     manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -708,5 +833,39 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       .get('/calculation/A1234AA/manual-entry/change-date')
       .expect(302)
       .expect('Location', '/calculation/A1234AA/reason')
+  })
+
+  it('shows correct flash message for 423 locked', async () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.storeManualCalculation.mockRejectedValue({ response: { status: 423 } })
+
+    sessionSetup.sessionDoctor = req => {
+      req.session.calculationReasonId = { A1234AA: 1 }
+      req.session.manualEntryRoutingForBookings = ['A1234AA']
+      req.session.selectedManualEntryDates = {
+        A1234AA: [
+          {
+            dateType: 'CRD',
+            dateText: 'CRD (Conditional release date)',
+            date: { day: 1, month: 1, year: 2020 },
+          },
+        ],
+      }
+    }
+
+    app = appWithAllRoutes({
+      services: { calculateReleaseDatesService, prisonerService, manualCalculationService, manualEntryService },
+      sessionSetup,
+    })
+
+    const agent = request.agent(app)
+
+    const res = await agent.get('/calculation/A1234AA/manual-entry/save').expect(302)
+    expect(res.headers.location).toBe('/calculation/A1234AA/manual-entry/confirmation')
+
+    const follow = await agent.get(res.headers.location).expect(200)
+    expect(follow.text).toContain(
+      'This person’s record is locked in NOMIS. If this record open in NOMIS, close the record then come back to this page.',
+    )
   })
 })

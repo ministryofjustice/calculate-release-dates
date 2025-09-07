@@ -1,5 +1,6 @@
 import express, { Express } from 'express'
 import cookieSession from 'cookie-session'
+import type { Session, SessionData } from 'express-session'
 import { NotFound } from 'http-errors'
 
 import routes from '../index'
@@ -32,9 +33,36 @@ export const user: Express.User = {
   userRoles: ['ROLE'],
 }
 
-export const flashProvider = jest.fn()
+type FlashSession = Session &
+  Partial<SessionData> & {
+    flashBag?: Record<string, string[]>
+  }
 
-function appSetup(
+function flashImpl(this: express.Request, type?: string, msg?: string) {
+  const sess = (this.session ?? {}) as FlashSession
+
+  if (!sess.flashBag) {
+    sess.flashBag = {}
+  }
+  const bag = sess.flashBag
+
+  if (type && typeof msg !== 'undefined') {
+    ;(bag[type] ||= []).push(msg)
+    return bag[type].length
+  }
+
+  if (type) {
+    const out = bag[type] || []
+    delete bag[type]
+    return out
+  }
+
+  const all = { ...bag }
+  sess.flashBag = {}
+  return all
+}
+
+export function appSetup(
   services: Services,
   production: boolean,
   userSupplier: () => Express.User,
@@ -46,15 +74,17 @@ function appSetup(
 
   nunjucksSetup(app, testAppInfo)
   app.use(cookieSession({ keys: [''] }))
+
   app.use((req, res, next) => {
     req.user = userSupplier()
-    req.flash = flashProvider
+    req.flash = flashImpl.bind(req) as typeof req.flash
     res.locals = {
       user: { ...req.user },
     }
     sessionSetup.sessionDoctor(req)
     next()
   })
+
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
   app.use(setUpCCARDComponents())
