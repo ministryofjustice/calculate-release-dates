@@ -47,12 +47,6 @@ export default class ManualEntryRoutes {
       return res.redirect(redirect)
     }
 
-    const flags = req.session.manualEntryRoutingForBookings as string[]
-
-    if (!flags.includes(nomsId)) {
-      flags.push(nomsId)
-    }
-
     if (!req.session.selectedManualEntryDates) {
       req.session.selectedManualEntryDates = {}
     }
