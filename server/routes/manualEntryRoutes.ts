@@ -377,10 +377,17 @@ export default class ManualEntryRoutes {
     getManualEntrySnapshot(req, nomsId)
 
     try {
-      await this.manualCalculationService.storeManualCalculation(username, nomsId, req, token)
+      const response = await this.manualCalculationService.storeManualCalculation(username, nomsId, req, token)
 
       clearRoutingFlag(req, nomsId)
-      return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
+      const isNone =
+        req.session.selectedManualEntryDates[nomsId].length === 1 &&
+        req.session.selectedManualEntryDates[nomsId][0].dateType === 'None'
+
+      const baseUrl = `/calculation/${nomsId}/complete/${response.calculationRequestId}`
+      const fullUrl = isNone ? `${baseUrl}?noDates=true` : baseUrl
+
+      return res.redirect(fullUrl)
     } catch (error) {
       logger.error(error)
       clearRoutingFlag(req, nomsId)

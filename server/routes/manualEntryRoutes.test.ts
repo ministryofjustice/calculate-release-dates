@@ -802,9 +802,11 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     expect(follow.text).toContain('The calculation could not be saved in NOMIS.')
   })
 
-  it('GET /calculation/:nomsId/manual-entry/save redirects to confirmation on success', async () => {
+  it('GET /calculation/:nomsId/manual-entry/save redirects to complete/id on success', async () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    manualCalculationService.storeManualCalculation.mockResolvedValue({} as unknown as ManualCalculationResponse)
+    manualCalculationService.storeManualCalculation.mockResolvedValue({
+      calculationRequestId: 4321,
+    } as unknown as ManualCalculationResponse)
 
     sessionSetup.sessionDoctor = req => {
       req.session.calculationReasonId = { A1234AA: 1 }
@@ -823,7 +825,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     return request(app)
       .get('/calculation/A1234AA/manual-entry/save')
       .expect(302)
-      .expect('Location', '/calculation/A1234AA/manual-entry/confirmation')
+      .expect('Location', '/calculation/A1234AA/complete/4321')
   })
 
   it('GET /calculation/:nomsId/manual-entry/change-date should redirect when no reasonId is within the session', () => {
