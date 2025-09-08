@@ -36,6 +36,7 @@ export default class ManualEntryRoutes {
       await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType(nomsId, token)
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
@@ -44,6 +45,12 @@ export default class ManualEntryRoutes {
     )
     if (redirect) {
       return res.redirect(redirect)
+    }
+
+    const flags = req.session.manualEntryRoutingForBookings as string[]
+
+    if (!flags.includes(nomsId)) {
+      flags.push(nomsId)
     }
 
     if (!req.session.selectedManualEntryDates) {
