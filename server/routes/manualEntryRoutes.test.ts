@@ -766,7 +766,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
 
     const follow = await agent.get(res.headers.location).expect(200)
     expect(follow.text).toContain(
-      'This person’s record is locked in NOMIS. If this record open in NOMIS, close the record then come back to this page.',
+      'This person’s record is locked in NOMIS. If this record is open in NOMIS, close the record then come back to this page.',
     )
   })
 
@@ -867,7 +867,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
 
     const follow = await agent.get(res.headers.location).expect(200)
     expect(follow.text).toContain(
-      'This person’s record is locked in NOMIS. If this record open in NOMIS, close the record then come back to this page.',
+      'This person’s record is locked in NOMIS. If this record is open in NOMIS, close the record then come back to this page.',
     )
   })
 })

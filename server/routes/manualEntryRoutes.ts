@@ -412,7 +412,7 @@ export default class ManualEntryRoutes {
           JSON.stringify({
             messages: [
               {
-                text: 'This person’s record is locked in NOMIS. If this record open in NOMIS, close the record then come back to this page.',
+                text: 'This person’s record is locked in NOMIS. If this record is open in NOMIS, close the record then come back to this page.',
               },
             ],
             messageType: ErrorMessageType.LOCKED,
