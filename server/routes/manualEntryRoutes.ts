@@ -1,8 +1,9 @@
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import PrisonerService from '../services/prisonerService'
 import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
+import { getManualEntrySnapshot, clearRoutingFlag, statusOf, RequestWithSession } from './manualEntryHelpers'
 import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import {
@@ -35,6 +36,7 @@ export default class ManualEntryRoutes {
       await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType(nomsId, token)
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
@@ -69,22 +71,24 @@ export default class ManualEntryRoutes {
     nomsId: string,
     token: string,
     bookingId: number,
-    req: Request,
+    req: RequestWithSession,
     validationMessages?: ValidationMessage[],
-  ) {
-    if (
-      req.session.manualEntryRoutingForBookings === undefined ||
-      req.session.manualEntryRoutingForBookings.includes(nomsId) === false
-    ) {
+  ): Promise<string | null> {
+    const routingFlags: string[] = req.session.manualEntryRoutingForBookings ?? []
+
+    if (!routingFlags.includes(nomsId)) {
       const unsupportedSentenceOrCalculationMessages =
-        validationMessages ||
-        (await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token))
+        validationMessages ??
+        (await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token)) ??
+        []
+
       const hasRecallSentences = await this.manualCalculationService.hasRecallSentences(bookingId, token)
 
       if (unsupportedSentenceOrCalculationMessages.length === 0 && !hasRecallSentences) {
         return `/calculation/${nomsId}/check-information`
       }
     }
+
     return null
   }
 
@@ -240,7 +244,7 @@ export default class ManualEntryRoutes {
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }
 
-  public loadConfirmation: RequestHandler = async (req, res): Promise<void> => {
+  public loadConfirmation: RequestHandler = async (req, res) => {
     const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
 
@@ -252,15 +256,18 @@ export default class ManualEntryRoutes {
       prisonerDetail.bookingId,
       req,
     )
-    if (redirect) {
-      return res.redirect(redirect)
-    }
+    if (redirect) return res.redirect(redirect)
+
+    const serverErrors = req.flash('serverErrors')
+    const validationErrors = serverErrors?.[0] ? JSON.parse(serverErrors[0]) : null
 
     const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, nomsId)
-    return res.render(
-      'pages/manualEntry/confirmation',
-      new ManualEntryConfirmationViewModel(prisonerDetail, rows, req.originalUrl),
-    )
+    const model = new ManualEntryConfirmationViewModel(prisonerDetail, rows, req.originalUrl)
+
+    return res.render('pages/manualEntry/confirmation', {
+      ...model,
+      validationErrors,
+    })
   }
 
   public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
@@ -365,31 +372,50 @@ export default class ManualEntryRoutes {
       prisonerDetail.bookingId,
       req,
     )
-    if (redirect) {
-      return res.redirect(redirect)
-    }
+    if (redirect) return res.redirect(redirect)
+
+    getManualEntrySnapshot(req, nomsId)
 
     try {
       const response = await this.manualCalculationService.storeManualCalculation(username, nomsId, req, token)
+
+      clearRoutingFlag(req, nomsId)
       const isNone =
         req.session.selectedManualEntryDates[nomsId].length === 1 &&
         req.session.selectedManualEntryDates[nomsId][0].dateType === 'None'
+
       const baseUrl = `/calculation/${nomsId}/complete/${response.calculationRequestId}`
-      const fullUrl = isNone ? `${baseUrl}?noDates=true` : `${baseUrl}`
+      const fullUrl = isNone ? `${baseUrl}?noDates=true` : baseUrl
+
       return res.redirect(fullUrl)
     } catch (error) {
-      // TODO Move handling of validation errors from the api into the service layer
       logger.error(error)
-      if (error.status === 412) {
+      clearRoutingFlag(req, nomsId)
+
+      const s = statusOf(error)
+
+      if (s === 412) {
         req.flash(
           'serverErrors',
           JSON.stringify({
             messages: [
               {
-                text: 'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
+                text: 'The booking data used for this calculation has changed. Go back to the Check NOMIS Information screen to review the changes.',
                 href: `/calculation/${nomsId}/check-information`,
               },
             ],
+          } as ErrorMessages),
+        )
+      } else if (s === 423) {
+        req.flash(
+          'serverErrors',
+          JSON.stringify({
+            messages: [
+              {
+                text: 'This person’s record is locked in NOMIS. If this record is open in NOMIS, close the record then come back to this page.',
+              },
+            ],
+            messageType: ErrorMessageType.LOCKED,
           } as ErrorMessages),
         )
       } else {
@@ -399,13 +425,6 @@ export default class ManualEntryRoutes {
             messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
             messageType: ErrorMessageType.SAVE_DATES,
           } as ErrorMessages),
-        )
-      }
-      // Once the journey is completed clear down the session var that prevents the revalidation
-      if (req.session.manualEntryRoutingForBookings) {
-        req.session.manualEntryRoutingForBookings.splice(
-          req.session.manualEntryRoutingForBookings.findIndex(i => i === nomsId),
-          1,
         )
       }
       return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)

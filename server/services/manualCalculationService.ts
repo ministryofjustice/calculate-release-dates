@@ -4,6 +4,8 @@ import ManualCalculationResponse from '../models/manual_calculation/ManualCalcul
 import { ManualEntryRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import AuditService from './auditService'
 
+type RequestWithSession = Pick<Request, 'session'>
+
 export default class ManualCalculationService {
   constructor(private readonly auditService: AuditService) {}
 
@@ -18,7 +20,7 @@ export default class ManualCalculationService {
   async storeManualCalculation(
     userName: string,
     prisonerId: string,
-    req: Request,
+    req: RequestWithSession,
     token: string,
   ): Promise<ManualCalculationResponse> {
     if (req.session.calculationReasonId == null) {

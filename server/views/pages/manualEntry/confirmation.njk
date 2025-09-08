@@ -12,6 +12,8 @@
     {{ super() }}
 {% endblock %}
 {% block content %}
+    {% set validationErrors = validationErrors or model.validationErrors %}
+    {% include "../partials/customErrorBanner.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Check the dates you have entered</h1>
