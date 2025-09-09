@@ -18,6 +18,8 @@ declare module 'express-session' {
     HDCED?: { string?: string }
     HDCED_WEEKEND_ADJUSTED?: { string?: boolean }
     calculationReasonId?: { string?: number }
+    unchangedManualJourney?: boolean
+    manualJourneyDifferentDatesConfirmed?: boolean
     otherReasonDescription?: { string?: string }
     manualEntryValidationErrors?: ErrorMessages
     isAddDatesFlow?: boolean

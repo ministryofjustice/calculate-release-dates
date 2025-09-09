@@ -438,6 +438,10 @@ export default class CalculateReleaseDatesService {
     return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
   }
 
+  async offenderHasPreviousManualCalculation(prisonerId: string, token: string): Promise<boolean> {
+    return new CalculateReleaseDatesApiClient(token).hasExistingManualCalculation(prisonerId)
+  }
+
   async getCalculationHistory(prisonerId: string, token: string): Promise<HistoricCalculation[]> {
     return new CalculateReleaseDatesApiClient(token).getCalculationHistory(prisonerId)
   }

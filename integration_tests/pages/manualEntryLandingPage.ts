@@ -8,4 +8,8 @@ export default class ManualEntryLandingPage extends Page {
   public continue(): PageElement {
     return cy.get('[data-qa=manual-calc-start]')
   }
+
+  public mainContent(): PageElement {
+    return cy.get('[id=main-content]')
+  }
 }

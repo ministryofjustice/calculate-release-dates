@@ -337,4 +337,10 @@ export default class CalculateReleaseDatesApiClient {
       path: `/eligibility/${bookingId}/ersed`,
     }) as Promise<ErsedEligibility>
   }
+
+  hasExistingManualCalculation(prisonerId: string) {
+    return this.restClient.get({
+      path: `/manual-calculation/${prisonerId}/has-existing-calculation`,
+    }) as Promise<boolean>
+  }
 }

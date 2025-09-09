@@ -1265,4 +1265,17 @@ export default {
       },
     })
   },
+  stubExistingManualJourney: (flag: boolean): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/manual-calculation/A1234AB/has-existing-calculation',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: flag,
+      },
+    })
+  },
 }

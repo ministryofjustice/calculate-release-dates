@@ -6,6 +6,9 @@ export default class ManualEntryConfirmationViewModel extends PrisonerContextVie
     prisonerDetail: PrisonApiPrisoner,
     public rows: unknown,
     public pageCancelRedirectUrl?: string,
+    public existingCalculation: boolean = false,
+    public confirmationError: boolean = false,
+    public differentDatesConfirmed?: boolean,
   ) {
     super(prisonerDetail)
   }
