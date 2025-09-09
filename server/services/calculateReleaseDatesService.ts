@@ -16,7 +16,6 @@ import {
   CalculationUserInputs,
   HistoricCalculation,
   LatestCalculation,
-  ManualEntrySelectedDate,
   NomisCalculationSummary,
   ReleaseDateCalculationBreakdown,
   ReleaseDatesAndCalculationContext,
