@@ -30,6 +30,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubSaveManualEntry')
     cy.task('stubGetCalculationResults')
     cy.task('stubHasNoRecallSentences')
+    cy.task('stubExistingManualJourney', false)
     cy.task('stubManualEntryDateValidation')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetEligibility')
@@ -367,5 +368,90 @@ context('End to end user journeys entering and modifying approved dates', () => 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
     calculationCompletePage.title().should('contain.text', 'Calculation complete')
+  })
+
+  describe('Express Manual Journey', () => {
+    it('Confirming dates are unchanged creates new calculation using existing dates', () => {
+      cy.task('stubExistingManualJourney', true)
+      cy.signIn()
+
+      const landingPage = CCARDLandingPage.goTo('A1234AB')
+      landingPage.calculateReleaseDatesAction().click()
+
+      const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+      calculationReasonPage.radioByIndex(1).check()
+      calculationReasonPage.submitReason().click()
+
+      const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+      checkInformationUnsupportedPage.manualEntryButton().click()
+
+      const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
+      manualEntryLandingPage
+        .mainContent()
+        .should(
+          'contain.text',
+          'As no information has changed for this calculation, you need to confirm that the manually calculated release dates are correct.',
+        )
+
+      manualEntryLandingPage.continue().click()
+      const manualDatePage = Page.verifyOnPage(ManualDatesConfirmationPage)
+
+      manualDatePage.expressJourneyChangedDatesConfirmationExists()
+      manualDatePage.expressJourneyHasImmutableDates(false)
+      manualDatePage.expressJourneyConfirmNoChanges()
+      manualDatePage.expressJourneyConfirmChoice()
+
+      const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+
+      calculationCompletePage.title().should('contain.text', 'Calculation complete')
+    })
+
+    it('Confirming dates have changed shows edit and remove date options', () => {
+      cy.task('stubExistingManualJourney', true)
+      cy.signIn()
+
+      const landingPage = CCARDLandingPage.goTo('A1234AB')
+      landingPage.calculateReleaseDatesAction().click()
+
+      const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+      calculationReasonPage.radioByIndex(1).check()
+      calculationReasonPage.submitReason().click()
+
+      const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+      checkInformationUnsupportedPage.manualEntryButton().click()
+
+      const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
+      manualEntryLandingPage
+        .mainContent()
+        .should(
+          'contain.text',
+          'As no information has changed for this calculation, you need to confirm that the manually calculated release dates are correct.',
+        )
+
+      manualEntryLandingPage.continue().click()
+      const manualDatePage = Page.verifyOnPage(ManualDatesConfirmationPage)
+      manualDatePage.expressJourneyChangedDatesConfirmationExists()
+      manualDatePage.expressJourneyHasImmutableDates(false)
+      manualDatePage.expressJourneyConfirmChanges()
+      manualDatePage.expressJourneyConfirmChoice()
+
+      const manualDatePageWithEditableDates = Page.verifyOnPage(ManualDatesConfirmationPage)
+      manualDatePageWithEditableDates.expressJourneyHasImmutableDates(true)
+      manualDatePageWithEditableDates.expressJourneyShowsPaperCalculationTitle()
+
+      manualDatePageWithEditableDates.addAnotherDatesLink().should('exist')
+
+      manualDatePageWithEditableDates.editReleaseDateLink('SLED').should('exist')
+      manualDatePageWithEditableDates.removeReleaseDateLink('SLED').should('exist')
+      manualDatePageWithEditableDates.editReleaseDateLink('CRD').should('exist')
+      manualDatePageWithEditableDates.removeReleaseDateLink('CRD').should('exist')
+      manualDatePageWithEditableDates.editReleaseDateLink('HDCED').should('exist')
+      manualDatePageWithEditableDates.removeReleaseDateLink('HDCED').should('exist')
+
+      manualDatePageWithEditableDates.submitToNomisButton().click()
+      const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+
+      calculationCompletePage.title().should('contain.text', 'Calculation complete')
+    })
   })
 })

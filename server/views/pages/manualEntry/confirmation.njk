@@ -21,12 +21,20 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">{{ 'Confirm the dates are correct' if existingCalculation else 'Check the dates you have entered ' }}</h1>
+            <h1 class="govuk-heading-xl">
+                {% if existingCalculation and differentDatesConfirmed %}
+                    Enter the dates from your paper calculation
+                {% elif existingCalculation and differentDatesConfirmed == false %}
+                    Confirm the dates are correct
+                {% else %}
+                    Check the dates you have entered
+                {% endif %}
+            </h1>
             {{ govukSummaryList({
                 rows: rows
             }) }}
             <p class="govuk-body govuk-!-margin-bottom-8">
-            {% if existingCalculation == false %}
+            {% if existingCalculation == false or differentDatesConfirmed == true %}
             <a href="/calculation/{{ prisonerDetail.offenderNo }}/manual-entry/select-dates?addExtra=true"
                class="govuk-link govuk-link--no-visited-state" data-qa="add-another-release-date-link">Add another release date</a>
             </p>
@@ -34,7 +42,7 @@
         </div>
 
         <div class="govuk-grid-column-two-thirds">
-            {% if existingCalculation %}
+            {% if existingCalculation and differentDatesConfirmed !== true %}
                 {% from "govuk/components/radios/macro.njk" import govukRadios %}
                 {% set formError = {
                     text: "Please select either 'Yes' or 'No'"

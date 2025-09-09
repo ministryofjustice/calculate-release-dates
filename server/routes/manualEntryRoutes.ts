@@ -72,6 +72,9 @@ export default class ManualEntryRoutes {
       this.manualEntryService.populateExistingDates(req, nomsId, latestCalculation.dates)
     }
 
+    req.session.unchangedManualJourney = existingManualJourney
+    req.session.manualJourneyDifferentDatesConfirmed = false
+
     return res.render(
       'pages/manualEntry/manualEntry',
       new ManualEntryLandingPageViewModel(
@@ -276,7 +279,8 @@ export default class ManualEntryRoutes {
   public loadConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
-    const { existingCalculation, confirmationError } = req.query
+    const { confirmationError } = req.query
+    const { manualJourneyDifferentDatesConfirmed, unchangedManualJourney } = req.session
 
     if (req.session.calculationReasonId == null) {
       return res.redirect(`/calculation/${nomsId}/reason`)
@@ -294,29 +298,34 @@ export default class ManualEntryRoutes {
       return res.redirect(redirect)
     }
 
-    const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, nomsId, !existingCalculation)
-    return res.render(
-      'pages/manualEntry/confirmation',
-      new ManualEntryConfirmationViewModel(
-        prisonerDetail,
-        rows,
-        req.originalUrl,
-        !!existingCalculation,
-        !!confirmationError,
-      ),
+    const allowEditDates = !unchangedManualJourney || manualJourneyDifferentDatesConfirmed
+
+    const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, nomsId, allowEditDates)
+
+    const viewModel = new ManualEntryConfirmationViewModel(
+      prisonerDetail,
+      rows,
+      req.originalUrl,
+      Boolean(unchangedManualJourney),
+      Boolean(confirmationError),
+      manualJourneyDifferentDatesConfirmed,
     )
+
+    return res.render('pages/manualEntry/confirmation', viewModel)
   }
 
   public loadConfirmationSubmit: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
 
     if (req.body == null || (req.body['confirm-dates'] !== 'yes' && req.body['confirm-dates'] !== 'no')) {
-      return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation?existingCalculation=1&confirmationError=1`)
+      return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation?confirmationError=1`)
     }
 
     if (req.body['confirm-dates'] === 'yes') {
       return res.redirect(`/calculation/${nomsId}/manual-entry/save`)
     }
+
+    req.session.manualJourneyDifferentDatesConfirmed = true
 
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }

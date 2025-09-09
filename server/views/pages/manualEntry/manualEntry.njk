@@ -8,7 +8,7 @@
 {% set pageId = "manual-entry-start" %}
 {% set continueBtn %}
     {% if existingManualJourney %}
-        /calculation/{{prisonerDetail.offenderNo}}/manual-entry/confirmation?existingCalculation=1
+        /calculation/{{prisonerDetail.offenderNo}}/manual-entry/confirmation
     {% else %}
         /calculation/{{prisonerDetail.offenderNo}}/manual-entry/select-dates
     {% endif %}
