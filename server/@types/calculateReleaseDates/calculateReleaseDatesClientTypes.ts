@@ -35,3 +35,5 @@ export type SentenceAndOffenceWithReleaseArrangements =
 export type OffenderOffence = components['schemas']['OffenderOffence']
 export type SupportedValidationResponse = components['schemas']['SupportedValidationResponse']
 export type ErsedEligibility = components['schemas']['ErsedEligibility']
+export type AdjustmentDto = components['schemas']['AdjustmentDto']
+export type AnalysedAdjustment = components['schemas']['AnalysedAdjustment']

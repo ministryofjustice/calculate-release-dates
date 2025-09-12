@@ -125,6 +125,7 @@ describe('SentenceAndOffenceViewModel', () => {
         true,
         stubbedReturnToCustodyDate,
         null,
+        [],
       )
       expect(model.hasMultipleOffencesToASentence()).toStrictEqual(true)
       expect(model.getMultipleOffencesToASentence()).toStrictEqual([[1, 1]])
@@ -198,6 +199,7 @@ describe('SentenceAndOffenceViewModel', () => {
         true,
         stubbedReturnToCustodyDate,
         null,
+        [],
       )
       expect(model.hasMultipleOffencesToASentence()).toStrictEqual(false)
       expect(model.getMultipleOffencesToASentence()).toStrictEqual([])
