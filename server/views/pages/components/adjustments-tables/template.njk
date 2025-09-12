@@ -1,0 +1,27 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% if model.totalDeductions and model.totalDeductions > 0 %}
+    <h3 class="govuk-heading-m" data-qa="deductions-heading">Deductions</h3>
+    {% if model.remand and model.remand.rows.length > 0 %}
+        {{ govukTable({
+            caption: "Remand",
+            captionClasses: "govuk-table__caption--s",
+            head: [
+                {
+                    text: "Dates"
+                },
+                {
+                    text: "Offence"
+                },
+                {
+                    text: "Days"
+                }
+            ],
+            rows: model.remand.rows,
+            attributes: { "data-qa": "remand-table" }
+        }) }}
+    {% endif %}
+    {% if model.taggedBail and model.taggedBail.total > 0 %}
+        <h4 class="govuk-heading-s" data-qa="tagged-bail-heading">Tagged bail</h4>
+    {% endif %}
+{% endif %}
