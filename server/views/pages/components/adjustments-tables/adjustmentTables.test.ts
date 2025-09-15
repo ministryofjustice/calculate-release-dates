@@ -178,6 +178,7 @@ describe('Tests for adjustments tables component', () => {
     const content = nunjucks.render('test.njk', { model })
     const $ = cheerio.load(content)
     expect($('[data-qa=deductions-heading]')).toHaveLength(0)
+    expect($('[data-qa=total-deductions]')).toHaveLength(0)
   })
 
   it('Should show deductions section and remand table if there is remand present', () => {
@@ -229,6 +230,7 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
     expect($('[data-qa=rada-table]')).toHaveLength(0)
     expect($('[data-qa=special-remission-table]')).toHaveLength(0)
+    expect($('[data-qa=total-deductions]').text()).toStrictEqual('11')
   })
 
   it('Should show recall tag for remand adjustments where relevant', () => {
@@ -306,6 +308,7 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
     expect($('[data-qa=rada-table]')).toHaveLength(0)
     expect($('[data-qa=special-remission-table]')).toHaveLength(0)
+    expect($('[data-qa=total-deductions]').text()).toStrictEqual('11')
   })
 
   it('Should show recall tag for tagged bail where relevant', () => {
@@ -519,6 +522,7 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
     expect($('[data-qa=rada-table]')).toHaveLength(0)
     expect($('[data-qa=special-remission-table]')).toHaveLength(0)
+    expect($('[data-qa=total-deductions]').text()).toStrictEqual('11')
   })
 
   it('Should show recall tag for time spent in custody abroad adjustments where relevant', () => {
@@ -585,6 +589,7 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
     expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
     expect($('[data-qa=special-remission-table]')).toHaveLength(0)
+    expect($('[data-qa=total-deductions]').text()).toStrictEqual('11')
   })
 
   it('Should show deductions section and special remissions table if there are any present', () => {
@@ -639,5 +644,64 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
     expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
     expect($('[data-qa=rada-table]')).toHaveLength(0)
+    expect($('[data-qa=total-deductions]').text()).toStrictEqual('31')
+  })
+
+  it('Should show all deductions sections and sum the total', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aRemand,
+          id: 'remand-1',
+          days: 1,
+          remand: { chargeId: [123] },
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+        },
+        {
+          ...aTaggedBail,
+          id: 'tb-1',
+          days: 2,
+          taggedBail: { caseSequence: 1 },
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+          sentenceSequence: 1,
+        },
+        {
+          ...aCustodyAbroard,
+          id: 'ca-1',
+          days: 3,
+          timeSpentInCustodyAbroad: { chargeIds: [123, 456], documentationSource: 'COURT_WARRANT' },
+        },
+        {
+          ...aRADA,
+          id: 'rada-1',
+          days: 4,
+          fromDate: '2025-01-02',
+        },
+        {
+          ...aSpecialRemission,
+          id: 'sr-3',
+          days: 5,
+          specialRemission: { type: 'RELEASE_DATE_CALCULATED_TOO_EARLY' },
+        },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-1',
+          days: 10,
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+    expect($('[data-qa=remand-table]')).toHaveLength(1)
+    expect($('[data-qa=tagged-bail-table]')).toHaveLength(1)
+    expect($('[data-qa=custody-abroad-table]')).toHaveLength(1)
+    expect($('[data-qa=rada-table]')).toHaveLength(1)
+    expect($('[data-qa=special-remission-table]')).toHaveLength(1)
+    // sum of all deduction types except unused deductions
+    expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
   })
 })
