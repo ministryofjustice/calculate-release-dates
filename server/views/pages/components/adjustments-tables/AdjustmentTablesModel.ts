@@ -24,23 +24,41 @@ interface AdjustmentCell {
   classes?: string
 }
 
+interface UnusedDeductionsTracker {
+  remainingUnallocated: number
+}
+
 export function adjustmentsTablesFromAdjustmentDTOs(
   dtos: AnalysedAdjustment[] | AdjustmentDto[],
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentTablesModel {
   const remand = dtos.filter(it => it.adjustmentType === 'REMAND')
   const taggedBail = dtos.filter(it => it.adjustmentType === 'TAGGED_BAIL')
+  const unusedDeductionsTracker: UnusedDeductionsTracker = {
+    remainingUnallocated: dtos
+      .filter(it => it.adjustmentType === 'UNUSED_DEDUCTIONS')
+      .reduce((total, next) => total + next.days, 0),
+  }
   const totalDeductions = [...remand, ...taggedBail].reduce((total, next) => total + next.days, 0)
-
   return {
-    remand: toTable(remand, dto => toRemandRow(dto, sentencesAndOffences)),
-    taggedBail: toTable(taggedBail, dto => toTaggedBailRow(dto, sentencesAndOffences)),
+    remand: toTable(remand, dto => toRemandRow(dto, sentencesAndOffences), unusedDeductionsTracker),
+    taggedBail: toTable(taggedBail, dto => toTaggedBailRow(dto, sentencesAndOffences), unusedDeductionsTracker),
     totalDeductions,
   }
 }
 
-function toTable(dtos: AdjustmentDto[], cellFn: (dto: AdjustmentDto) => AdjustmentCell[]): AdjustmentTable {
+function toTable(
+  dtos: AdjustmentDto[],
+  cellFn: (dto: AdjustmentDto) => AdjustmentCell[],
+  unusedDeductionsTracker?: UnusedDeductionsTracker,
+): AdjustmentTable {
+  const tracker = unusedDeductionsTracker
   const totalDays = dtos.reduce((total, next) => total + next.days, 0)
+  let unusedDeductionsAllocation = null
+  if (tracker && tracker.remainingUnallocated > 0) {
+    unusedDeductionsAllocation = Math.min(totalDays, tracker.remainingUnallocated)
+    tracker.remainingUnallocated = Math.max(0, tracker.remainingUnallocated - unusedDeductionsAllocation)
+  }
   const rows = dtos.map(cellFn)
   rows.push([
     {
@@ -51,7 +69,7 @@ function toTable(dtos: AdjustmentDto[], cellFn: (dto: AdjustmentDto) => Adjustme
       text: '',
     },
     {
-      text: `${totalDays}`,
+      text: `${totalDays}${unusedDeductionsAllocation > 0 ? ` including ${unusedDeductionsAllocation} days of unused` : ''}`,
       classes: 'govuk-!-font-weight-bold',
     },
   ])

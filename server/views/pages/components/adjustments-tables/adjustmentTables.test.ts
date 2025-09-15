@@ -62,6 +62,12 @@ const aTaggedBail = {
   adjustmentTypeText: 'Tagged bail',
 } as AnalysedAdjustment
 
+const aUnusedDeduction = {
+  ...aDeduction,
+  adjustmentType: 'UNUSED_DEDUCTIONS',
+  adjustmentTypeText: 'Unused deductions',
+} as AnalysedAdjustment
+
 const sentencesAndOffences = [
   {
     terms: [
@@ -297,5 +303,140 @@ describe('Tests for adjustments tables component', () => {
     )
     expect(firstRowCells.eq(1).text()).toStrictEqual('Unknown')
     expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+  })
+
+  it('Unused deductions less than total days of remand should show only in remand', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aRemand,
+          id: 'remand-1',
+          days: 20,
+          remand: { chargeId: [123] },
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+        },
+        {
+          ...aTaggedBail,
+          id: 'tb-1',
+          days: 20,
+          taggedBail: { caseSequence: 2 },
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+          sentenceSequence: 3,
+        },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-1',
+          days: 5,
+        },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-2',
+          days: 5,
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+
+    const remandTable = $('[data-qa=remand-table]')
+    const remandRows = remandTable.find('tbody').find('tr')
+    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('20 including 10 days of unused')
+
+    const taggedBailTable = $('[data-qa=tagged-bail-table]')
+    const taggedBailRows = taggedBailTable.find('tbody').find('tr')
+    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('20')
+  })
+
+  it('Unused deductions equaling than total days of remand should show only in remand', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aRemand,
+          id: 'remand-1',
+          days: 10,
+          remand: { chargeId: [123] },
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+        },
+        {
+          ...aTaggedBail,
+          id: 'tb-1',
+          days: 20,
+          taggedBail: { caseSequence: 2 },
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+          sentenceSequence: 3,
+        },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-1',
+          days: 5,
+        },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-2',
+          days: 5,
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+
+    const remandTable = $('[data-qa=remand-table]')
+    const remandRows = remandTable.find('tbody').find('tr')
+    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days of unused')
+
+    const taggedBailTable = $('[data-qa=tagged-bail-table]')
+    const taggedBailRows = taggedBailTable.find('tbody').find('tr')
+    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('20')
+  })
+
+  it('Unused deductions more than total days of remand should show in remand and tagged bail', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aRemand,
+          id: 'remand-1',
+          days: 10,
+          remand: { chargeId: [123] },
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+        },
+        {
+          ...aTaggedBail,
+          id: 'tb-1',
+          days: 10,
+          taggedBail: { caseSequence: 2 },
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+          sentenceSequence: 3,
+        },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-1',
+          days: 10,
+        },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-2',
+          days: 5,
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+
+    const remandTable = $('[data-qa=remand-table]')
+    const remandRows = remandTable.find('tbody').find('tr')
+    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days of unused')
+
+    const taggedBailTable = $('[data-qa=tagged-bail-table]')
+    const taggedBailRows = taggedBailTable.find('tbody').find('tr')
+    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 5 days of unused')
   })
 })
