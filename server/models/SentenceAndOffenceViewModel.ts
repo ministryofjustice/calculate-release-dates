@@ -1,4 +1,6 @@
 import {
+  AdjustmentDto,
+  AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   CalculationUserInputs,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -12,6 +14,9 @@ import { groupBy, indexBy } from '../utils/utils'
 import AdjustmentsViewModel from './AdjustmentsViewModel'
 import CourtCaseTableViewModel from './CourtCaseTableViewModel'
 import SentenceTypes from './SentenceTypes'
+import AdjustmentTablesModel, {
+  adjustmentsTablesFromAdjustmentDTOs,
+} from '../views/pages/components/adjustments-tables/AdjustmentTablesModel'
 
 export default class SentenceAndOffenceViewModel {
   public adjustments: AdjustmentsViewModel
@@ -28,6 +33,8 @@ export default class SentenceAndOffenceViewModel {
 
   public displaySDSPlusBanner: boolean
 
+  public adjustmentsTablesModel: AdjustmentTablesModel
+
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
@@ -37,6 +44,7 @@ export default class SentenceAndOffenceViewModel {
     public ersedEligible: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
+    adjustmentsDtos?: AnalysedAdjustment[] | AdjustmentDto[],
   ) {
     this.adjustments = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
@@ -52,6 +60,7 @@ export default class SentenceAndOffenceViewModel {
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
     this.sentencesAndOffences = sentencesAndOffences
     this.displaySDSPlusBanner = sentencesAndOffences.some(sentence => sentence.isSDSPlus === true)
+    this.adjustmentsTablesModel = adjustmentsTablesFromAdjustmentDTOs(adjustmentsDtos ?? [], sentencesAndOffences)
   }
 
   public rowIsSdsPlus(sentence: AnalysedSentenceAndOffence): boolean {

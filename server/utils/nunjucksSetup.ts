@@ -90,12 +90,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('date', dateFilter)
 
-  njkEnv.addFilter('remandDate', (date, format) => {
-    if (!date) {
-      return 'Date Not Entered'
-    }
-    return dayjs(date).format(format)
-  })
+  njkEnv.addFilter('remandDate', remandDate)
 
   njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
 
@@ -206,6 +201,13 @@ export const pluraliseName = (name: string) => {
     return `${name}'`
   }
   return `${name}'s`
+}
+
+export const remandDate = (date: string, format: string) => {
+  if (!date) {
+    return 'Date Not Entered'
+  }
+  return dayjs(date).format(format)
 }
 
 export const formatSds40Exclusion = (exclusion: string) => {

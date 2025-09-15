@@ -6,6 +6,7 @@ import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import PrisonerService from './prisonerService'
 import UserInputService from './userInputService'
 import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import config from '../config'
 
 export default class CheckInformationService {
   constructor(
@@ -37,10 +38,13 @@ export default class CheckInformationService {
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonerId, token, caseloads, userRoles)
     nomsId = prisonerId
 
-    const [sentencesAndOffences, adjustmentDetails, ersedAvailable] = await Promise.all([
+    const [sentencesAndOffences, adjustmentDetails, ersedAvailable, analysedAdjustments] = await Promise.all([
       this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, token),
       this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(prisonerDetail.bookingId, token),
       this.calculateReleaseDatesService.getErsedEligibility(prisonerDetail.bookingId, token),
+      config.featureToggles.adjustmentsIntegrationEnabled
+        ? this.calculateReleaseDatesService.getAdjustmentsForPrisoner(prisonerDetail.offenderNo, token)
+        : Promise.resolve([]),
     ])
 
     const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
@@ -70,6 +74,7 @@ export default class CheckInformationService {
       ersedAvailable.isValid,
       returnToCustody,
       validationMessages,
+      analysedAdjustments,
     )
   }
 }

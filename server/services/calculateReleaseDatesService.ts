@@ -8,6 +8,7 @@ import {
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
+  AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   BookingCalculation,
   CalculationBreakdown,
@@ -105,6 +106,10 @@ export default class CalculateReleaseDatesService {
     token: string,
   ): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
     return new CalculateReleaseDatesApiClient(token).getAnalysedAdjustments(bookingId)
+  }
+
+  async getAdjustmentsForPrisoner(prisonerId: string, token: string): Promise<AnalysedAdjustment[]> {
+    return new CalculateReleaseDatesApiClient(token).getAdjustmentsForPrisoner(prisonerId)
   }
 
   async getBreakdown(

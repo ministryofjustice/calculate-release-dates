@@ -540,6 +540,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -635,6 +636,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -661,6 +663,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -691,6 +694,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -720,6 +724,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -746,6 +751,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -768,6 +774,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -796,6 +803,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -822,6 +830,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
 
@@ -867,7 +876,8 @@ describe('Check information routes tests', () => {
       {
         messages: [{ text: 'An error occurred with the nomis information' }],
         messageType: ErrorMessageType.VALIDATION,
-      } as never,
+      },
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -937,7 +947,8 @@ describe('Check information routes tests', () => {
         {
           messages: [{ text: 'Court case 1 count 1 must include an offence date' }],
           messageType: ErrorMessageType.VALIDATION,
-        } as never,
+        },
+        [],
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
 
@@ -974,6 +985,7 @@ describe('Check information routes tests', () => {
         true,
         stubbedReturnToCustodyDate,
         { messages: [] } as never,
+        [],
       )
 
       checkInformationService.checkInformation.mockResolvedValue(modelClearedErrors)
@@ -1031,6 +1043,7 @@ describe('Check information routes tests', () => {
         messages: [{ text: 'Court case 1 count 1 must include an offence date' }],
         messageType: ErrorMessageType.VALIDATION,
       } as never,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
 
@@ -1058,6 +1071,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       { messages: [] } as never,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -1081,7 +1095,9 @@ describe('Check information routes tests', () => {
       stubbedAdjustments,
       false,
       null,
+      null,
       { messages: [] } as never,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -1111,6 +1127,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -1165,6 +1182,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -1198,6 +1216,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -1232,6 +1251,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -1266,6 +1286,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -1438,6 +1459,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
+      [],
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
