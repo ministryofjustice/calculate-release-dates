@@ -1,49 +1,122 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
-
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">Adjustments</h2>
+    </div>
+</div>
 {% if model.totalDeductions and model.totalDeductions > 0 %}
-    <h3 class="govuk-heading-m" data-qa="deductions-heading">Deductions</h3>
-    {% if model.remand and model.remand.rows.length > 0 %}
-        {{ govukTable({
-            caption: "Remand",
-            captionClasses: "govuk-table__caption--s",
-            head: [
-                {
-                    text: "Dates",
-                    classes: "govuk-!-width-one-third"
-                },
-                {
-                    text: "Offence",
-                    classes: "govuk-!-width-one-third"
-                },
-                {
-                    text: "Days",
-                    classes: "govuk-!-width-one-third"
-                }
-            ],
-            rows: model.remand.rows,
-            attributes: { "data-qa": "remand-table" }
-        }) }}
-    {% endif %}
-    {% if model.taggedBail and model.taggedBail.rows.length > 0 %}
-        {{ govukTable({
-            caption: "Tagged bail",
-            captionClasses: "govuk-table__caption--s",
-            head: [
-                {
-                    text: "Court case",
-                    classes: "govuk-!-width-one-third"
-                },
-                {
-                    text: "Case reference",
-                    classes: "govuk-!-width-one-third"
-                },
-                {
-                    text: "Days",
-                    classes: "govuk-!-width-one-third"
-                }
-            ],
-            rows: model.taggedBail.rows,
-            attributes: { "data-qa": "tagged-bail-table" }
-        }) }}
-    {% endif %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h3 class="govuk-heading-m" data-qa="deductions-heading">Deductions</h3>
+        </div>
+        {% if model.remand and model.remand.rows.length > 0 %}
+            <div class="govuk-grid-column-full">
+                {{ govukTable({
+                    caption: "Remand",
+                    captionClasses: "govuk-table__caption--s",
+                    head: [
+                        {
+                            text: "Dates"
+                        },
+                        {
+                            text: "Offence"
+                        },
+                        {
+                            text: "Days",
+                            classes: "govuk-!-width-one-quarter"
+                        }
+                    ],
+                    rows: model.remand.rows,
+                    attributes: { "data-qa": "remand-table" }
+                }) }}
+            </div>
+        {% endif %}
+        {% if model.taggedBail and model.taggedBail.rows.length > 0 %}
+            <div class="govuk-grid-column-full">
+                {{ govukTable({
+                    caption: "Tagged bail",
+                    captionClasses: "govuk-table__caption--s",
+                    head: [
+                        {
+                            text: "Court case"
+                        },
+                        {
+                            text: "Case reference"
+                        },
+                        {
+                            text: "Days",
+                            classes: "govuk-!-width-one-quarter"
+                        }
+                    ],
+                    rows: model.taggedBail.rows,
+                    attributes: { "data-qa": "tagged-bail-table" }
+                }) }}
+            </div>
+        {% endif %}
+        {% if model.custodyAbroad and model.custodyAbroad.rows.length > 0 %}
+            <div class="govuk-grid-column-full">
+                {{ govukTable({
+                    caption: "Time spent in custody abroad",
+                    captionClasses: "govuk-table__caption--s",
+                    head: [
+                        {
+                            text: "Document type"
+                        },
+                        {
+                            text: "Offence"
+                        },
+                        {
+                            text: "Days",
+                            classes: "govuk-!-width-one-quarter"
+                        }
+                    ],
+                    rows: model.custodyAbroad.rows,
+                    attributes: { "data-qa": "custody-abroad-table" }
+                }) }}
+            </div>
+        {% endif %}
+        {% if model.rada and model.rada.rows.length > 0 %}
+            <div class="govuk-grid-column-full">
+                {{ govukTable({
+                    caption: "RADA",
+                    captionClasses: "govuk-table__caption--s",
+                    head: [
+                        {
+                            text: "Date of day restored"
+                        },
+                        {
+                            text: "Days",
+                            classes: "govuk-!-width-one-quarter"
+                        }
+                    ],
+                    rows: model.rada.rows,
+                    attributes: { "data-qa": "rada-table" }
+                }) }}
+            </div>
+        {% endif %}
+        {% if model.specialRemission and model.specialRemission.rows.length > 0 %}
+        <div class="govuk-grid-column-full">
+            {{ govukTable({
+                caption: "Special remission",
+                captionClasses: "govuk-table__caption--s",
+                head: [
+                    {
+                        text: "Type"
+                    },
+                    {
+                        text: "Days",
+                        classes: "govuk-!-width-one-quarter"
+                    }
+                ],
+                rows: model.specialRemission.rows,
+                attributes: { "data-qa": "special-remission-table" }
+            }) }}
+        </div>
+        {% endif %}
+        <div class="govuk-grid-column-full">
+            <p class="govuk-body govuk-grid-column-three-quarters section-total-heading">Total number of deductions</p>
+            <p class="govuk-body govuk-grid-column-one-quarter section-total-heading" data-qa="total-deductions">{{ model.totalDeductions }}</p>
+        </div>
+    </div>
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 {% endif %}

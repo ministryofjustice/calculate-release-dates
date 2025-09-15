@@ -4,14 +4,11 @@
 
 {% set nilIndicator = "0" %}
 <!-- Adjustments -->
-<div class="govuk-grid-row">
 
         {% if featureToggles.adjustmentsIntegrationEnabled and model.adjustmentsTablesModel %}
-            <div class="govuk-grid-column-full">
-                <h2 class="govuk-heading-l govuk-!-margin-top-6">Adjustments</h2>
-                {{ adjustmentsTables(model.adjustmentsTablesModel) }}
-            </div>
+            {{ adjustmentsTables(model.adjustmentsTablesModel) }}
         {% else %}
+        <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half">
                 <h2 class="govuk-heading-l govuk-!-margin-top-6">Adjustments</h2>
                 <div class="govuk-tabs govuk-!-margin-top-8" data-module="govuk-tabs">
@@ -31,5 +28,5 @@
                     {% include "./adjustmentDetails.njk" %}
                 </div>
             </div>
+        </div>
         {% endif %}
-</div>
