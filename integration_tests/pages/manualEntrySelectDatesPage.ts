@@ -6,8 +6,6 @@ export default class ManualEntrySelectDatesPage extends CommonSelectDatesToEnter
   }
 
   public backLinkExistsWithTitle(href: string) {
-    cy.contains('a', 'Back') // Finds <a> with exact text "Back"
-      .should('have.attr', 'href') // Asserts that href attribute exists
-      .and('include', href) // Replace with the expected href value
+    cy.contains('a', 'Back').should('have.attr', 'href').and('include', href)
   }
 }
