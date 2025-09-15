@@ -72,6 +72,13 @@ const aCustodyAbroard = {
   adjustmentTypeText: 'Time spent in custody abroad',
 } as AnalysedAdjustment
 
+const aRADA = {
+  ...aDeduction,
+  adjustmentType: 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED',
+  adjustmentTypeText: 'Restoration of additional days awarded',
+  fromDate: '2023-01-01',
+} as AnalysedAdjustment
+
 const aUnusedDeduction = {
   ...aDeduction,
   adjustmentType: 'UNUSED_DEDUCTIONS',
@@ -455,13 +462,13 @@ describe('Tests for adjustments tables component', () => {
       [
         {
           ...aCustodyAbroard,
-          id: 'remand-1',
+          id: 'ca-1',
           days: 1,
           timeSpentInCustodyAbroad: { chargeIds: [123, 456], documentationSource: 'COURT_WARRANT' },
         },
         {
           ...aCustodyAbroard,
-          id: 'remand-2',
+          id: 'ca-2',
           days: 10,
           timeSpentInCustodyAbroad: { chargeIds: [789], documentationSource: 'PPCS_LETTER' },
         },
@@ -497,7 +504,7 @@ describe('Tests for adjustments tables component', () => {
       [
         {
           ...aCustodyAbroard,
-          id: 'remand-1',
+          id: 'custody-abroad-1',
           days: 1,
           timeSpentInCustodyAbroad: { chargeIds: [246], documentationSource: 'COURT_WARRANT' },
         },
@@ -512,5 +519,44 @@ describe('Tests for adjustments tables component', () => {
     expect(firstRowCells.eq(1).html()).toStrictEqual(
       'Intent to supply controlled drugs<span class="moj-badge moj-badge--black">RECALL</span>',
     )
+  })
+
+  it('Should show deductions section and RADA table if there are any present', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aRADA,
+          id: 'rada-1',
+          days: 1,
+          fromDate: '2025-01-02',
+        },
+        {
+          ...aRADA,
+          id: 'rada-2',
+          days: 10,
+          fromDate: '2025-03-04',
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+    const radaTable = $('[data-qa=rada-table]')
+    expect(radaTable).toHaveLength(1)
+    const radaRows = radaTable.find('tbody').find('tr')
+    expect(radaRows).toHaveLength(3)
+
+    const firstRowCells = radaRows.eq(0).find('td')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('02 January 2025')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
+
+    const secondRowCells = radaRows.eq(1).find('td')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('04 March 2025')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('10')
+
+    const totalRow = radaRows.eq(2).find('td')
+    expect(totalRow.eq(0).text()).toStrictEqual('Total days')
+    expect(totalRow.eq(1).text()).toStrictEqual('11')
   })
 })

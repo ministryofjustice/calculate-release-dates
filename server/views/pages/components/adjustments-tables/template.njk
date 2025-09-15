@@ -68,4 +68,22 @@
             attributes: { "data-qa": "custody-abroad-table" }
         }) }}
     {% endif %}
+    {% if model.rada and model.rada.rows.length > 0 %}
+        {{ govukTable({
+            caption: "RADA",
+            captionClasses: "govuk-table__caption--s",
+            head: [
+                {
+                    text: "Date of day restored",
+                    classes: "govuk-!-width-one-half"
+                },
+                {
+                    text: "Days",
+                    classes: "govuk-!-width-one-half"
+                }
+            ],
+            rows: model.rada.rows,
+            attributes: { "data-qa": "rada-table" }
+        }) }}
+    {% endif %}
 {% endif %}
