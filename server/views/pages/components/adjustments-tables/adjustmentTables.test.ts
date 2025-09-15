@@ -79,6 +79,13 @@ const aRADA = {
   fromDate: '2023-01-01',
 } as AnalysedAdjustment
 
+const aSpecialRemission = {
+  ...aDeduction,
+  adjustmentType: 'SPECIAL_REMISSION',
+  adjustmentTypeText: 'Special remission',
+  specialRemission: { type: 'MERITORIOUS_CONDUCT' },
+} as AnalysedAdjustment
+
 const aUnusedDeduction = {
   ...aDeduction,
   adjustmentType: 'UNUSED_DEDUCTIONS',
@@ -217,6 +224,11 @@ describe('Tests for adjustments tables component', () => {
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
     expect(totalRow.eq(1).html()).toStrictEqual('')
     expect(totalRow.eq(2).text()).toStrictEqual('11')
+
+    expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
+    expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
+    expect($('[data-qa=rada-table]')).toHaveLength(0)
+    expect($('[data-qa=special-remission-table]')).toHaveLength(0)
   })
 
   it('Should show recall tag for remand adjustments where relevant', () => {
@@ -289,6 +301,11 @@ describe('Tests for adjustments tables component', () => {
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
     expect(totalRow.eq(1).text()).toStrictEqual('')
     expect(totalRow.eq(2).text()).toStrictEqual('11')
+
+    expect($('[data-qa=remand-table]')).toHaveLength(0)
+    expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
+    expect($('[data-qa=rada-table]')).toHaveLength(0)
+    expect($('[data-qa=special-remission-table]')).toHaveLength(0)
   })
 
   it('Should show recall tag for tagged bail where relevant', () => {
@@ -484,7 +501,7 @@ describe('Tests for adjustments tables component', () => {
     expect(custodyAbroadRows).toHaveLength(3)
 
     const firstRowCells = custodyAbroadRows.eq(0).find('td')
-    expect(firstRowCells.eq(0).text()).toStrictEqual('Sentencing warrant')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('Sentencing warrant from the court')
     expect(firstRowCells.eq(1).html()).toStrictEqual('Burglary<br>Attempt to solicit murder')
     expect(firstRowCells.eq(2).text()).toStrictEqual('1')
 
@@ -497,6 +514,11 @@ describe('Tests for adjustments tables component', () => {
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
     expect(totalRow.eq(1).html()).toStrictEqual('')
     expect(totalRow.eq(2).text()).toStrictEqual('11')
+
+    expect($('[data-qa=remand-table]')).toHaveLength(0)
+    expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
+    expect($('[data-qa=rada-table]')).toHaveLength(0)
+    expect($('[data-qa=special-remission-table]')).toHaveLength(0)
   })
 
   it('Should show recall tag for time spent in custody abroad adjustments where relevant', () => {
@@ -558,5 +580,64 @@ describe('Tests for adjustments tables component', () => {
     const totalRow = radaRows.eq(2).find('td')
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
     expect(totalRow.eq(1).text()).toStrictEqual('11')
+
+    expect($('[data-qa=remand-table]')).toHaveLength(0)
+    expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
+    expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
+    expect($('[data-qa=special-remission-table]')).toHaveLength(0)
+  })
+
+  it('Should show deductions section and special remissions table if there are any present', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aSpecialRemission,
+          id: 'sr-1',
+          days: 1,
+          specialRemission: { type: 'MERITORIOUS_CONDUCT' },
+        },
+        {
+          ...aSpecialRemission,
+          id: 'sr-2',
+          days: 10,
+          specialRemission: { type: 'RELEASE_IN_ERROR' },
+        },
+        {
+          ...aSpecialRemission,
+          id: 'sr-3',
+          days: 20,
+          specialRemission: { type: 'RELEASE_DATE_CALCULATED_TOO_EARLY' },
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+    const specialRemissionsTable = $('[data-qa=special-remission-table]')
+    expect(specialRemissionsTable).toHaveLength(1)
+    const srRows = specialRemissionsTable.find('tbody').find('tr')
+    expect(srRows).toHaveLength(4)
+
+    const firstRowCells = srRows.eq(0).find('td')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('Meritorious (excellent) conduct')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
+
+    const secondRowCells = srRows.eq(1).find('td')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('Release in error')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('10')
+
+    const thirdRowCells = srRows.eq(2).find('td')
+    expect(thirdRowCells.eq(0).text()).toStrictEqual('Release date calculated too early')
+    expect(thirdRowCells.eq(1).text()).toStrictEqual('20')
+
+    const totalRow = srRows.eq(3).find('td')
+    expect(totalRow.eq(0).text()).toStrictEqual('Total days')
+    expect(totalRow.eq(1).text()).toStrictEqual('31')
+
+    expect($('[data-qa=remand-table]')).toHaveLength(0)
+    expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
+    expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
+    expect($('[data-qa=rada-table]')).toHaveLength(0)
   })
 })

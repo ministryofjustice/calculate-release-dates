@@ -56,7 +56,7 @@
                     classes: "govuk-!-width-one-third"
                 },
                 {
-                    text: "Offence details",
+                    text: "Offence",
                     classes: "govuk-!-width-one-third"
                 },
                 {
@@ -84,6 +84,24 @@
             ],
             rows: model.rada.rows,
             attributes: { "data-qa": "rada-table" }
+        }) }}
+    {% endif %}
+    {% if model.specialRemission and model.specialRemission.rows.length > 0 %}
+        {{ govukTable({
+            caption: "Special remission",
+            captionClasses: "govuk-table__caption--s",
+            head: [
+                {
+                    text: "Type",
+                    classes: "govuk-!-width-one-half"
+                },
+                {
+                    text: "Days",
+                    classes: "govuk-!-width-one-half"
+                }
+            ],
+            rows: model.specialRemission.rows,
+            attributes: { "data-qa": "special-remission-table" }
         }) }}
     {% endif %}
 {% endif %}

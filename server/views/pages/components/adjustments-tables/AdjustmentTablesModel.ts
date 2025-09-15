@@ -9,10 +9,11 @@ import { remandDate } from '../../../../utils/nunjucksSetup'
 import SentenceTypes from '../../../../models/SentenceTypes'
 
 export default interface AdjustmentTablesModel {
-  remand: AdjustmentTable
-  taggedBail: AdjustmentTable
-  custodyAbroad: AdjustmentTable
-  rada: AdjustmentTable
+  remand?: AdjustmentTable
+  taggedBail?: AdjustmentTable
+  custodyAbroad?: AdjustmentTable
+  rada?: AdjustmentTable
+  specialRemission?: AdjustmentTable
   totalDeductions: number
 }
 
@@ -39,12 +40,13 @@ export function adjustmentsTablesFromAdjustmentDTOs(
   const taggedBail = dtos.filter(it => it.adjustmentType === 'TAGGED_BAIL')
   const custodyAbroad = dtos.filter(it => it.adjustmentType === 'CUSTODY_ABROAD')
   const rada = dtos.filter(it => it.adjustmentType === 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED')
+  const specialRemission = dtos.filter(it => it.adjustmentType === 'SPECIAL_REMISSION')
   const unusedDeductionsTracker: UnusedDeductionsTracker = {
     remainingUnallocated: dtos
       .filter(it => it.adjustmentType === 'UNUSED_DEDUCTIONS')
       .reduce((total, next) => total + next.days, 0),
   }
-  const totalDeductions = [...remand, ...taggedBail, ...custodyAbroad, ...rada].reduce(
+  const totalDeductions = [...remand, ...taggedBail, ...custodyAbroad, ...rada, ...specialRemission].reduce(
     (total, next) => total + next.days,
     0,
   )
@@ -53,6 +55,7 @@ export function adjustmentsTablesFromAdjustmentDTOs(
     taggedBail: toTable(taggedBail, dto => toTaggedBailRow(dto, sentencesAndOffences), 3, unusedDeductionsTracker),
     custodyAbroad: toTable(custodyAbroad, dto => toCustodyAbroadRow(dto, sentencesAndOffences), 3),
     rada: toTable(rada, dto => toRADARow(dto), 2),
+    specialRemission: toTable(specialRemission, dto => toSpecialRemissionRow(dto), 2),
     totalDeductions,
   }
 }
@@ -62,12 +65,9 @@ function toTable(
   cellFn: (dto: AdjustmentDto) => AdjustmentCell[],
   numberOfColumns: number,
   unusedDeductionsTracker?: UnusedDeductionsTracker,
-): AdjustmentTable {
-  if (dtos.length === 0) {
-    return {
-      rows: [],
-      total: 0,
-    }
+): AdjustmentTable | null {
+  if (!dtos || dtos.length === 0) {
+    return null
   }
   const tracker = unusedDeductionsTracker
   const totalDays = dtos.reduce((total, next) => total + next.days, 0)
@@ -152,7 +152,7 @@ function toCustodyAbroadRow(
 ): AdjustmentCell[] {
   let documentType = 'Unknown'
   if (dto.timeSpentInCustodyAbroad?.documentationSource === 'COURT_WARRANT') {
-    documentType = 'Sentencing warrant'
+    documentType = 'Sentencing warrant from the court'
   } else if (dto.timeSpentInCustodyAbroad?.documentationSource === 'PPCS_LETTER') {
     documentType = 'Letter from PPCS'
   }
@@ -182,6 +182,25 @@ function toRADARow(dto: AdjustmentDto): AdjustmentCell[] {
   return [
     {
       text: dayjs(dto.fromDate).format('DD MMMM YYYY'),
+    },
+    {
+      text: `${dto.days}`,
+    },
+  ]
+}
+
+function toSpecialRemissionRow(dto: AdjustmentDto): AdjustmentCell[] {
+  let documentType = 'Unknown'
+  if (dto.specialRemission?.type === 'MERITORIOUS_CONDUCT') {
+    documentType = 'Meritorious (excellent) conduct'
+  } else if (dto.specialRemission?.type === 'RELEASE_IN_ERROR') {
+    documentType = 'Release in error'
+  } else if (dto.specialRemission?.type === 'RELEASE_DATE_CALCULATED_TOO_EARLY') {
+    documentType = 'Release date calculated too early'
+  }
+  return [
+    {
+      text: documentType,
     },
     {
       text: `${dto.days}`,
