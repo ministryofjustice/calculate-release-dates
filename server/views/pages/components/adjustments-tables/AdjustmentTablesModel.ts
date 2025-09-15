@@ -10,6 +10,7 @@ import SentenceTypes from '../../../../models/SentenceTypes'
 export default interface AdjustmentTablesModel {
   remand: AdjustmentTable
   taggedBail: AdjustmentTable
+  custodyAbroad: AdjustmentTable
   totalDeductions: number
 }
 
@@ -34,15 +35,17 @@ export function adjustmentsTablesFromAdjustmentDTOs(
 ): AdjustmentTablesModel {
   const remand = dtos.filter(it => it.adjustmentType === 'REMAND')
   const taggedBail = dtos.filter(it => it.adjustmentType === 'TAGGED_BAIL')
+  const custodyAbroad = dtos.filter(it => it.adjustmentType === 'CUSTODY_ABROAD')
   const unusedDeductionsTracker: UnusedDeductionsTracker = {
     remainingUnallocated: dtos
       .filter(it => it.adjustmentType === 'UNUSED_DEDUCTIONS')
       .reduce((total, next) => total + next.days, 0),
   }
-  const totalDeductions = [...remand, ...taggedBail].reduce((total, next) => total + next.days, 0)
+  const totalDeductions = [...remand, ...taggedBail, ...custodyAbroad].reduce((total, next) => total + next.days, 0)
   return {
     remand: toTable(remand, dto => toRemandRow(dto, sentencesAndOffences), unusedDeductionsTracker),
     taggedBail: toTable(taggedBail, dto => toTaggedBailRow(dto, sentencesAndOffences), unusedDeductionsTracker),
+    custodyAbroad: toTable(custodyAbroad, dto => toCustodyAbroadRow(dto, sentencesAndOffences)),
     totalDeductions,
   }
 }
@@ -120,6 +123,38 @@ function toTaggedBailRow(
     },
     {
       text: sentenceAndOffence?.caseReference ?? 'Unknown',
+    },
+    {
+      text: `${dto.days}`,
+    },
+  ]
+}
+
+function toCustodyAbroadRow(
+  dto: AdjustmentDto,
+  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
+): AdjustmentCell[] {
+  let documentType = 'Unknown'
+  if (dto.timeSpentInCustodyAbroad?.documentationSource === 'COURT_WARRANT') {
+    documentType = 'Sentencing warrant'
+  } else if (dto.timeSpentInCustodyAbroad?.documentationSource === 'PPCS_LETTER') {
+    documentType = 'Letter from PPCS'
+  }
+  return [
+    {
+      text: documentType,
+    },
+    {
+      html: (
+        dto.timeSpentInCustodyAbroad?.chargeIds
+          ?.map(chargeId => findOffenceDetailsByChargeId(chargeId, sentencesAndOffences))
+          .filter(it => it) ?? []
+      )
+        .map(
+          sentenceAndOffence =>
+            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? '<span class="moj-badge moj-badge--black">RECALL</span>' : ''}`,
+        )
+        .join('<br>'),
     },
     {
       text: `${dto.days}`,

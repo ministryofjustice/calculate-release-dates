@@ -46,4 +46,26 @@
             attributes: { "data-qa": "tagged-bail-table" }
         }) }}
     {% endif %}
+    {% if model.custodyAbroad and model.custodyAbroad.rows.length > 0 %}
+        {{ govukTable({
+            caption: "Time spent in custody abroad",
+            captionClasses: "govuk-table__caption--s",
+            head: [
+                {
+                    text: "Document type",
+                    classes: "govuk-!-width-one-third"
+                },
+                {
+                    text: "Offence details",
+                    classes: "govuk-!-width-one-third"
+                },
+                {
+                    text: "Days",
+                    classes: "govuk-!-width-one-third"
+                }
+            ],
+            rows: model.custodyAbroad.rows,
+            attributes: { "data-qa": "custody-abroad-table" }
+        }) }}
+    {% endif %}
 {% endif %}

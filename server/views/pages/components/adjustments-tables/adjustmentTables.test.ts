@@ -62,6 +62,16 @@ const aTaggedBail = {
   adjustmentTypeText: 'Tagged bail',
 } as AnalysedAdjustment
 
+const aCustodyAbroard = {
+  ...aDeduction,
+  adjustmentType: 'CUSTODY_ABROAD',
+  timeSpentInCustodyAbroad: {
+    chargeIds: [],
+    documentationSource: 'COURT_WARRANT',
+  },
+  adjustmentTypeText: 'Time spent in custody abroad',
+} as AnalysedAdjustment
+
 const aUnusedDeduction = {
   ...aDeduction,
   adjustmentType: 'UNUSED_DEDUCTIONS',
@@ -438,5 +448,69 @@ describe('Tests for adjustments tables component', () => {
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
     expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 5 days of unused')
+  })
+
+  it('Should show deductions section and time spent in custody abroad table if there is any present', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aCustodyAbroard,
+          id: 'remand-1',
+          days: 1,
+          timeSpentInCustodyAbroad: { chargeIds: [123, 456], documentationSource: 'COURT_WARRANT' },
+        },
+        {
+          ...aCustodyAbroard,
+          id: 'remand-2',
+          days: 10,
+          timeSpentInCustodyAbroad: { chargeIds: [789], documentationSource: 'PPCS_LETTER' },
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+    const custodyAbroadTable = $('[data-qa=custody-abroad-table]')
+    expect(custodyAbroadTable).toHaveLength(1)
+    const custodyAbroadRows = custodyAbroadTable.find('tbody').find('tr')
+    expect(custodyAbroadRows).toHaveLength(3)
+
+    const firstRowCells = custodyAbroadRows.eq(0).find('td')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('Sentencing warrant')
+    expect(firstRowCells.eq(1).html()).toStrictEqual('Burglary<br>Attempt to solicit murder')
+    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+
+    const secondRowCells = custodyAbroadRows.eq(1).find('td')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('Letter from PPCS')
+    expect(secondRowCells.eq(1).html()).toStrictEqual('Failure to pay a fine')
+    expect(secondRowCells.eq(2).text()).toStrictEqual('10')
+
+    const totalRow = custodyAbroadRows.eq(2).find('td')
+    expect(totalRow.eq(0).text()).toStrictEqual('Total days')
+    expect(totalRow.eq(1).html()).toStrictEqual('')
+    expect(totalRow.eq(2).text()).toStrictEqual('11')
+  })
+
+  it('Should show recall tag for time spent in custody abroad adjustments where relevant', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aCustodyAbroard,
+          id: 'remand-1',
+          days: 1,
+          timeSpentInCustodyAbroad: { chargeIds: [246], documentationSource: 'COURT_WARRANT' },
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    const custodyAbroadTable = $('[data-qa=custody-abroad-table]')
+    const custodyAbroadRows = custodyAbroadTable.find('tbody').find('tr')
+    const firstRowCells = custodyAbroadRows.eq(0).find('td')
+    expect(firstRowCells.eq(1).html()).toStrictEqual(
+      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black">RECALL</span>',
+    )
   })
 })
