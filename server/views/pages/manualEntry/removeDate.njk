@@ -10,6 +10,10 @@
 
 {% block beforeContent %}
     {{ super() }}
+    {{ govukBackLink({
+        text: "Back",
+        href: "/calculation/" + prisonerDetail.offenderNo + "/manual-entry/confirmation"
+    }) }}
 {% endblock %}
 {% block content %}
     <div class="govuk-grid-row">

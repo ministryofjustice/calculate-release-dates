@@ -113,7 +113,8 @@ export default class ApprovedDatesRoutes {
     if (req.session.HDCED[nomsId]) {
       hdcedWeekendAdjusted = req.session.HDCED_WEEKEND_ADJUSTED[nomsId]
     }
-    const date = this.manualEntryService.getNextDateToEnter(req.session.selectedApprovedDates[nomsId])
+
+    const date = this.manualEntryService.getNextApprovedDateToEnter(req.session.selectedApprovedDates[nomsId])
     if (date) {
       return res.render(
         'pages/approvedDates/submitDate',
@@ -166,7 +167,8 @@ export default class ApprovedDatesRoutes {
   public loadChangeDate: RequestHandler = async (req, res): Promise<void> => {
     const { token } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
-    const { date } = await this.approvedDatesService.changeDate(token, req, nomsId)
+    const { manualEntrySelectedDate } = await this.approvedDatesService.changeDate(token, req, nomsId)
+    const { date } = manualEntrySelectedDate
     return res.redirect(
       `/calculation/${nomsId}/${calculationRequestId}/submit-dates?year=${date.year}&month=${date.month}&day=${date.day}`,
     )

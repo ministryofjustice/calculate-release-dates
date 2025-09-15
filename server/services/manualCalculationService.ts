@@ -3,6 +3,7 @@ import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClien
 import ManualCalculationResponse from '../models/manual_calculation/ManualCalculationResponse'
 import { ManualEntryRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import AuditService from './auditService'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 
 export default class ManualCalculationService {
   constructor(private readonly auditService: AuditService) {}
@@ -26,9 +27,12 @@ export default class ManualCalculationService {
       req.session.otherReasonDescription = {}
     }
     const reasonId = req.session.calculationReasonId[prisonerId]
+    const manualDates = req.session.selectedManualEntryDates[prisonerId].map(
+      (d: ManualJourneySelectedDate) => d.manualEntrySelectedDate,
+    )
     try {
       const calculation = await new CalculateReleaseDatesApiClient(token).storeManualCalculation(prisonerId, {
-        selectedManualEntryDates: req.session.selectedManualEntryDates[prisonerId],
+        selectedManualEntryDates: manualDates,
         reasonForCalculationId: reasonId,
         otherReasonDescription: req.session.otherReasonDescription[prisonerId],
       } as ManualEntryRequest)

@@ -8,6 +8,7 @@ export default class ManualEntrySelectDatesViewModel extends PrisonerContextView
     public config: DateSelectConfiguration,
     public pageCancelRedirectUrl?: string,
     public insufficientDatesSelected?: boolean,
+    public existingCalculation?: boolean,
   ) {
     super(prisonerDetail)
   }

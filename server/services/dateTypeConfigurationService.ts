@@ -1,37 +1,41 @@
-import {
-  DateTypeDefinition,
-  ManualEntrySelectedDate,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { DateTypeDefinition } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import releaseDateType from '../enumerations/releaseDateType'
 
 export default class DateTypeConfigurationService {
   public async configureViaBackend(
     token: string,
     dateList: string | string[],
-    sessionList: ManualEntrySelectedDate[],
-  ): Promise<ManualEntrySelectedDate[]> {
+    sessionList: ManualJourneySelectedDate[],
+  ): Promise<ManualJourneySelectedDate[]> {
+    let numberOfDates = sessionList.length
     const dateTypeDefinitions = await new CalculateReleaseDatesApiClient(token).getDateTypeDefinitions()
     const selectedDateTypes: string[] = Array.isArray(dateList) ? dateList : [dateList]
     return selectedDateTypes
-      .map((date: string) => {
-        if (date !== undefined) {
-          const existingDate = sessionList.find((d: ManualEntrySelectedDate) => d !== undefined && d.dateType === date)
-          if (existingDate) {
-            return {
-              dateType: date,
-              dateText: this.getDescription(dateTypeDefinitions, date),
-              date: existingDate.date,
-            } as ManualEntrySelectedDate
-          }
+      .filter(value => value !== undefined)
+      .map((date: string): ManualJourneySelectedDate => {
+        const existingDate = sessionList.find((d: ManualJourneySelectedDate) => d.dateType === date)
+        if (existingDate && existingDate.manualEntrySelectedDate) {
           return {
+            position: existingDate.position,
+            completed: false,
             dateType: date,
-            dateText: this.getDescription(dateTypeDefinitions, date),
-            date: undefined,
-          } as ManualEntrySelectedDate
+            manualEntrySelectedDate: existingDate.manualEntrySelectedDate,
+          }
         }
-        return null
+        numberOfDates += 1
+        return {
+          position: numberOfDates,
+          completed: false,
+          dateType: date,
+          manualEntrySelectedDate: {
+            date: undefined,
+            dateType: date as releaseDateType,
+            dateText: this.getDescription(dateTypeDefinitions, date),
+          },
+        }
       })
-      .filter(obj => obj !== null)
   }
 
   async dateTypeToDescriptionMapping(token: string): Promise<{ [key: string]: string }> {

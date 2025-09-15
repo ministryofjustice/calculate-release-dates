@@ -22,6 +22,16 @@ export default class CommonEnterDatePage extends Page {
     cy.get(`#${type}-year`).clear()
   }
 
+  public backLinkExistsWithTitle(href: string) {
+    cy.contains('a', 'Back') // Finds <a> with exact text "Back"
+      .should('have.attr', 'href') // Asserts that href attribute exists
+      .and('include', href) // Replace with the expected href value
+  }
+
+  public backButton(): PageElement {
+    return cy.get('.govuk-back-link')
+  }
+
   public continue(): PageElement {
     return cy.get('[data-qa=date-entry]')
   }

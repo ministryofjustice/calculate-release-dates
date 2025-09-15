@@ -2,6 +2,7 @@ import { Request } from 'express'
 import { DateSelectConfiguration } from './manualEntryService'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 
 const selectDatesError = {
   errorMessage: {
@@ -55,20 +56,23 @@ export default class ApprovedDatesService {
     return { error, config: null }
   }
 
-  public async changeDate(token: string, req: Request, nomsId: string): Promise<ManualEntrySelectedDate> {
-    const dateTypeToDescriptionMapping = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+  public async changeDate(token: string, req: Request, nomsId: string): Promise<ManualJourneySelectedDate> {
+    await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     const date = req.session.selectedApprovedDates[nomsId].find(
       (d: ManualEntrySelectedDate) => d.dateType === req.query.dateType,
     )
     req.session.selectedApprovedDates[nomsId] = req.session.selectedApprovedDates[nomsId].filter(
       (d: ManualEntrySelectedDate) => d.dateType !== req.query.dateType,
     )
-    req.session.selectedApprovedDates[nomsId].push({
-      dateType: req.query.dateType,
-      dateText: dateTypeToDescriptionMapping[<string>req.query.dateType],
-      date: undefined,
-    } as ManualEntrySelectedDate)
-    return date
+    const manualJourneySelectedDate: ManualJourneySelectedDate = {
+      position: 1,
+      dateType: date.dateType,
+      manualEntrySelectedDate: date,
+      completed: false,
+    }
+
+    req.session.selectedApprovedDates[nomsId].push(manualJourneySelectedDate)
+    return manualJourneySelectedDate
   }
 
   public removeDate(req: Request, nomsId: string) {
