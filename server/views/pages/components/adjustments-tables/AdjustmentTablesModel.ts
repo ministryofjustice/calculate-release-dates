@@ -1,11 +1,15 @@
 import {
   AdjustmentDto,
   AnalysedAdjustment,
+  AnalysedSentenceAndOffence,
+  SentenceAndOffenceWithReleaseArrangements,
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { remandDate } from '../../../../utils/nunjucksSetup'
+import SentenceTypes from '../../../../models/SentenceTypes'
 
 export default interface AdjustmentTablesModel {
   remand: AdjustmentTable
+  taggedBail: AdjustmentTable
   totalDeductions: number
 }
 
@@ -22,13 +26,15 @@ interface AdjustmentCell {
 
 export function adjustmentsTablesFromAdjustmentDTOs(
   dtos: AnalysedAdjustment[] | AdjustmentDto[],
-  offenceDetailsByChargeId: Map<number, { offenceDescription: string; isRecall: boolean }>,
+  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentTablesModel {
   const remand = dtos.filter(it => it.adjustmentType === 'REMAND')
   const taggedBail = dtos.filter(it => it.adjustmentType === 'TAGGED_BAIL')
   const totalDeductions = [...remand, ...taggedBail].reduce((total, next) => total + next.days, 0)
+
   return {
-    remand: toTable(remand, dto => toRemandRow(dto, offenceDetailsByChargeId)),
+    remand: toTable(remand, dto => toRemandRow(dto, sentencesAndOffences)),
+    taggedBail: toTable(taggedBail, dto => toTaggedBailRow(dto, sentencesAndOffences)),
     totalDeductions,
   }
 }
@@ -57,17 +63,21 @@ function toTable(dtos: AdjustmentDto[], cellFn: (dto: AdjustmentDto) => Adjustme
 
 function toRemandRow(
   dto: AdjustmentDto,
-  offenceDetailsByChargeId: Map<number, { offenceDescription: string; isRecall: boolean }>,
+  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentCell[] {
   return [
     {
       text: `From ${remandDate(dto.fromDate, 'DD MMMM YYYY')} to ${remandDate(dto.toDate, 'DD MMMM YYYY')}`,
     },
     {
-      html: (dto.remand?.chargeId?.map(charge => offenceDetailsByChargeId.get(charge)).filter(it => it) ?? [])
+      html: (
+        dto.remand?.chargeId
+          ?.map(chargeId => findOffenceDetailsByChargeId(chargeId, sentencesAndOffences))
+          .filter(it => it) ?? []
+      )
         .map(
-          offence =>
-            `${offence.offenceDescription}${offence.isRecall ? '<span class="moj-badge moj-badge--black">RECALL</span>' : ''}`,
+          sentenceAndOffence =>
+            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? '<span class="moj-badge moj-badge--black">RECALL</span>' : ''}`,
         )
         .join('<br>'),
     },
@@ -75,4 +85,44 @@ function toRemandRow(
       text: `${dto.days}`,
     },
   ]
+}
+
+function toTaggedBailRow(
+  dto: AdjustmentDto,
+  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
+): AdjustmentCell[] {
+  const sentenceAndOffence = findSentenceAndOffenceBySentenceSeqAndCaseSeq(
+    dto.sentenceSequence,
+    dto.taggedBail?.caseSequence,
+    sentencesAndOffences,
+  )
+  return [
+    {
+      html: `Court case ${sentenceAndOffence.caseSequence}${SentenceTypes.isRecall(sentenceAndOffence) ? '<span class="moj-badge moj-badge--black">RECALL</span>' : ''}`,
+    },
+    {
+      text: sentenceAndOffence?.caseReference ?? 'Unknown',
+    },
+    {
+      text: `${dto.days}`,
+    },
+  ]
+}
+
+function findOffenceDetailsByChargeId(
+  chargeId: number,
+  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
+): AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements | null {
+  return sentencesAndOffences.find(it => it.offence.offenderChargeId === chargeId)
+}
+
+function findSentenceAndOffenceBySentenceSeqAndCaseSeq(
+  sentenceSequence: number,
+  caseSequence: number,
+  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
+): AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements | null {
+  if (!sentenceSequence || !caseSequence) {
+    return null
+  }
+  return sentencesAndOffences.find(it => it.sentenceSequence === sentenceSequence && it.caseSequence === caseSequence)
 }

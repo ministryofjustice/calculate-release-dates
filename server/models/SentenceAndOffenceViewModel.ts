@@ -60,15 +60,7 @@ export default class SentenceAndOffenceViewModel {
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
     this.sentencesAndOffences = sentencesAndOffences
     this.displaySDSPlusBanner = sentencesAndOffences.some(sentence => sentence.isSDSPlus === true)
-    this.adjustmentsTablesModel = adjustmentsTablesFromAdjustmentDTOs(
-      adjustmentsDtos ?? [],
-      new Map(
-        sentencesAndOffences.map(it => [
-          it.offence.offenderChargeId,
-          { offenceDescription: it.offence.offenceDescription, isRecall: SentenceTypes.isRecall(it) },
-        ]),
-      ),
-    )
+    this.adjustmentsTablesModel = adjustmentsTablesFromAdjustmentDTOs(adjustmentsDtos ?? [], sentencesAndOffences)
   }
 
   public rowIsSdsPlus(sentence: AnalysedSentenceAndOffence): boolean {

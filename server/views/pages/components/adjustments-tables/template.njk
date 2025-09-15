@@ -8,20 +8,42 @@
             captionClasses: "govuk-table__caption--s",
             head: [
                 {
-                    text: "Dates"
+                    text: "Dates",
+                    classes: "govuk-!-width-one-third"
                 },
                 {
-                    text: "Offence"
+                    text: "Offence",
+                    classes: "govuk-!-width-one-third"
                 },
                 {
-                    text: "Days"
+                    text: "Days",
+                    classes: "govuk-!-width-one-third"
                 }
             ],
             rows: model.remand.rows,
             attributes: { "data-qa": "remand-table" }
         }) }}
     {% endif %}
-    {% if model.taggedBail and model.taggedBail.total > 0 %}
-        <h4 class="govuk-heading-s" data-qa="tagged-bail-heading">Tagged bail</h4>
+    {% if model.taggedBail and model.taggedBail.rows.length > 0 %}
+        {{ govukTable({
+            caption: "Tagged bail",
+            captionClasses: "govuk-table__caption--s",
+            head: [
+                {
+                    text: "Court case",
+                    classes: "govuk-!-width-one-third"
+                },
+                {
+                    text: "Case reference",
+                    classes: "govuk-!-width-one-third"
+                },
+                {
+                    text: "Days",
+                    classes: "govuk-!-width-one-third"
+                }
+            ],
+            rows: model.taggedBail.rows,
+            attributes: { "data-qa": "tagged-bail-table" }
+        }) }}
     {% endif %}
 {% endif %}
