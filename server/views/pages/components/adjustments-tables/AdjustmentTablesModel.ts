@@ -5,7 +5,6 @@ import {
   AnalysedSentenceAndOffence,
   SentenceAndOffenceWithReleaseArrangements,
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { remandDate } from '../../../../utils/nunjucksSetup'
 import SentenceTypes from '../../../../models/SentenceTypes'
 
 export default interface AdjustmentTablesModel {
@@ -15,6 +14,11 @@ export default interface AdjustmentTablesModel {
   rada?: AdjustmentTable
   specialRemission?: AdjustmentTable
   totalDeductions: number
+  ada?: AdjustmentTable
+  ual?: AdjustmentTable
+  lal?: AdjustmentTable
+  appealApplicant?: AdjustmentTable
+  totalAdditions: number
 }
 
 interface AdjustmentTable {
@@ -36,27 +40,79 @@ export function adjustmentsTablesFromAdjustmentDTOs(
   dtos: AnalysedAdjustment[] | AdjustmentDto[],
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentTablesModel {
-  const remand = dtos.filter(it => it.adjustmentType === 'REMAND')
-  const taggedBail = dtos.filter(it => it.adjustmentType === 'TAGGED_BAIL')
-  const custodyAbroad = dtos.filter(it => it.adjustmentType === 'CUSTODY_ABROAD')
-  const rada = dtos.filter(it => it.adjustmentType === 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED')
-  const specialRemission = dtos.filter(it => it.adjustmentType === 'SPECIAL_REMISSION')
   const unusedDeductionsTracker: UnusedDeductionsTracker = {
     remainingUnallocated: dtos
       .filter(it => it.adjustmentType === 'UNUSED_DEDUCTIONS')
       .reduce((total, next) => total + next.days, 0),
   }
-  const totalDeductions = [...remand, ...taggedBail, ...custodyAbroad, ...rada, ...specialRemission].reduce(
-    (total, next) => total + next.days,
-    0,
+  const remand = toTable(
+    dtos.filter(it => it.adjustmentType === 'REMAND'),
+    dto => toRemandRow(dto, sentencesAndOffences),
+    3,
+    unusedDeductionsTracker,
   )
+  const taggedBail = toTable(
+    dtos.filter(it => it.adjustmentType === 'TAGGED_BAIL'),
+    dto => toTaggedBailRow(dto, sentencesAndOffences),
+    3,
+    unusedDeductionsTracker,
+  )
+  const custodyAbroad = toTable(
+    dtos.filter(it => it.adjustmentType === 'CUSTODY_ABROAD'),
+    dto => toCustodyAbroadRow(dto, sentencesAndOffences),
+    3,
+  )
+  const rada = toTable(
+    dtos.filter(it => it.adjustmentType === 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED'),
+    dto => toRADARow(dto),
+    2,
+  )
+  const specialRemission = toTable(
+    dtos.filter(it => it.adjustmentType === 'SPECIAL_REMISSION'),
+    dto => toSpecialRemissionRow(dto),
+    2,
+  )
+  const totalDeductions =
+    (remand?.total ?? 0) +
+    (taggedBail?.total ?? 0) +
+    (custodyAbroad?.total ?? 0) +
+    (rada?.total ?? 0) +
+    (specialRemission?.total ?? 0)
+
+  const ada = toTable(
+    dtos.filter(it => it.adjustmentType === 'ADDITIONAL_DAYS_AWARDED'),
+    dto => toAdaRow(dto),
+    2,
+  )
+  const ual = toTable(
+    dtos.filter(it => it.adjustmentType === 'UNLAWFULLY_AT_LARGE'),
+    dto => toUALRow(dto),
+    3,
+  )
+  const lal = toTable(
+    dtos.filter(it => it.adjustmentType === 'LAWFULLY_AT_LARGE'),
+    dto => toLALRow(dto),
+    3,
+  )
+  const appealApplicant = toTable(
+    dtos.filter(it => it.adjustmentType === 'APPEAL_APPLICANT'),
+    dto => toAppealApplicantRow(dto, sentencesAndOffences),
+    3,
+  )
+
+  const totalAdditions = (ada?.total ?? 0) + (ual?.total ?? 0) + (lal?.total ?? 0) + (appealApplicant?.total ?? 0)
   return {
-    remand: toTable(remand, dto => toRemandRow(dto, sentencesAndOffences), 3, unusedDeductionsTracker),
-    taggedBail: toTable(taggedBail, dto => toTaggedBailRow(dto, sentencesAndOffences), 3, unusedDeductionsTracker),
-    custodyAbroad: toTable(custodyAbroad, dto => toCustodyAbroadRow(dto, sentencesAndOffences), 3),
-    rada: toTable(rada, dto => toRADARow(dto), 2),
-    specialRemission: toTable(specialRemission, dto => toSpecialRemissionRow(dto), 2),
+    remand,
+    taggedBail,
+    custodyAbroad,
+    rada,
+    specialRemission,
     totalDeductions,
+    ada,
+    ual,
+    lal,
+    appealApplicant,
+    totalAdditions,
   }
 }
 
@@ -70,7 +126,13 @@ function toTable(
     return null
   }
   const tracker = unusedDeductionsTracker
-  const totalDays = dtos.reduce((total, next) => total + next.days, 0)
+  const totalDays = dtos.reduce((total, next) => {
+    let addition = 0
+    if (next.adjustmentType !== 'LAWFULLY_AT_LARGE' || next.lawfullyAtLarge?.affectsDates === 'YES') {
+      addition = next.days
+    }
+    return total + addition
+  }, 0)
   let unusedDeductionsAllocation = null
   if (tracker && tracker.remainingUnallocated > 0) {
     unusedDeductionsAllocation = Math.min(totalDays, tracker.remainingUnallocated)
@@ -104,7 +166,7 @@ function toRemandRow(
 ): AdjustmentCell[] {
   return [
     {
-      text: `From ${remandDate(dto.fromDate, 'DD MMMM YYYY')} to ${remandDate(dto.toDate, 'DD MMMM YYYY')}`,
+      text: `From ${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}`,
     },
     {
       html: (
@@ -181,7 +243,7 @@ function toCustodyAbroadRow(
 function toRADARow(dto: AdjustmentDto): AdjustmentCell[] {
   return [
     {
-      text: dayjs(dto.fromDate).format('DD MMMM YYYY'),
+      text: formatDate(dto.fromDate),
     },
     {
       text: `${dto.days}`,
@@ -208,6 +270,89 @@ function toSpecialRemissionRow(dto: AdjustmentDto): AdjustmentCell[] {
   ]
 }
 
+function toAdaRow(dto: AdjustmentDto): AdjustmentCell[] {
+  return [
+    {
+      text: `Awarded ${dayjs(dto.fromDate).format('DD MMMM YYYY')}`,
+    },
+    {
+      text: `${dto.days}`,
+    },
+  ]
+}
+
+function toUALRow(dto: AdjustmentDto): AdjustmentCell[] {
+  let type = 'Unknown'
+  if (dto.unlawfullyAtLarge?.type === 'RECALL') {
+    type = 'Recall'
+  } else if (dto.unlawfullyAtLarge?.type === 'ESCAPE') {
+    type = 'Escape, including absconds and ROTL failures'
+  } else if (dto.unlawfullyAtLarge?.type === 'SENTENCED_IN_ABSENCE') {
+    type = 'Sentenced in absence'
+  } else if (dto.unlawfullyAtLarge?.type === 'RELEASE_IN_ERROR') {
+    type = 'Release in error'
+  } else if (dto.unlawfullyAtLarge?.type === 'IMMIGRATION_DETENTION') {
+    type = 'Immigration detention'
+  }
+  return [
+    {
+      text: `From ${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}`,
+    },
+    {
+      text: type,
+    },
+    {
+      text: `${dto.days}`,
+    },
+  ]
+}
+
+function toLALRow(dto: AdjustmentDto): AdjustmentCell[] {
+  let delayCaused = 'Unknown'
+  if (dto.lawfullyAtLarge?.affectsDates === 'YES') {
+    delayCaused = 'Yes'
+  } else if (dto.lawfullyAtLarge?.affectsDates === 'NO') {
+    delayCaused = 'No'
+  }
+  return [
+    {
+      text: `From ${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}`,
+    },
+    {
+      text: delayCaused,
+    },
+    {
+      text: `${dto.days}${dto.lawfullyAtLarge?.affectsDates === 'NO' ? ' (excluded)' : ''}`,
+    },
+  ]
+}
+
+function toAppealApplicantRow(
+  dto: AdjustmentDto,
+  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
+): AdjustmentCell[] {
+  return [
+    {
+      text: dto.timeSpentAsAnAppealApplicant?.courtOfAppealReferenceNumber ?? 'Unknown',
+    },
+    {
+      html: (
+        dto.timeSpentAsAnAppealApplicant?.chargeIds
+          ?.map(chargeId => findOffenceDetailsByChargeId(chargeId, sentencesAndOffences))
+          .filter(it => it) ?? []
+      )
+        .map(
+          sentenceAndOffence =>
+            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? '<span class="moj-badge moj-badge--black">RECALL</span>' : ''}`,
+        )
+        .join('<br>'),
+    },
+    {
+      text: `${dto.days}`,
+    },
+  ]
+}
+
 function findOffenceDetailsByChargeId(
   chargeId: number,
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
@@ -224,4 +369,11 @@ function findSentenceAndOffenceBySentenceSeqAndCaseSeq(
     return null
   }
   return sentencesAndOffences.find(it => it.sentenceSequence === sentenceSequence && it.caseSequence === caseSequence)
+}
+
+const formatDate = (date: string) => {
+  if (!date) {
+    return 'Date Not Entered'
+  }
+  return dayjs(date).format('DD MMMM YYYY')
 }
