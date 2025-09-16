@@ -25,6 +25,7 @@ import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import AuditService from '../services/auditService'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -433,14 +434,19 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       } as ValidationMessage,
     ])
     sessionSetup.sessionDoctor = req => {
-      req.session.selectedManualEntryDates = {}
+      req.session.selectedManualEntryDates = []
       req.session.calculationReasonId = 1
       req.session.selectedManualEntryDates.A1234AA = [
         {
+          position: 1,
           dateType: 'CRD',
-          dateText: 'CRD (Conditional release date)',
-          date: { day: 3, month: 3, year: 2017 },
-        } as ManualEntrySelectedDate,
+          completed: false,
+          manualEntrySelectedDate: {
+            dateType: 'CRD',
+            dateText: 'CRD (Conditional release date)',
+            date: { day: 3, month: 3, year: 2017 },
+          },
+        } as ManualJourneySelectedDate,
       ]
       req.session.manualEntryRoutingForBookings = []
     }
@@ -479,10 +485,15 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       req.session.manualEntryRoutingForBookings = []
     }
     jest.spyOn(manualEntryService, 'getNextDateToEnter').mockReturnValue({
+      position: 1,
       dateType: 'CRD',
-      dateText: 'CRD (Conditional release date)',
-      date: { day: 3, month: 3, year: 2017 },
-    } as ManualEntrySelectedDate)
+      completed: false,
+      manualEntrySelectedDate: {
+        dateType: 'CRD',
+        dateText: 'CRD (Conditional release date)',
+        date: { day: 3, month: 3, year: 2017 },
+      },
+    } as ManualJourneySelectedDate)
 
     return request(app)
       .get('/calculation/A1234AA/manual-entry/enter-date')
@@ -520,10 +531,15 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       req.session.manualEntryRoutingForBookings = []
     }
     jest.spyOn(manualEntryService, 'getNextDateToEnter').mockReturnValue({
+      position: 1,
       dateType: 'CRD',
-      dateText: 'CRD (Conditional release date)',
-      date: { day: 3, month: 3, year: 2017 },
-    } as ManualEntrySelectedDate)
+      completed: false,
+      manualEntrySelectedDate: {
+        dateType: 'CRD',
+        dateText: 'CRD (Conditional release date)',
+        date: { day: 3, month: 3, year: 2017 },
+      },
+    } as ManualJourneySelectedDate)
 
     return request(app)
       .get('/calculation/A1234AA/manual-entry/enter-date?year=2026&month=09&day=22')

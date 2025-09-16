@@ -21,6 +21,7 @@ import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import AuditService from '../services/auditService'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/auditService')
@@ -80,6 +81,10 @@ const expectedMiniProfile = {
 let fakeApi: nock.Scope
 beforeEach(() => {
   sessionSetup = new SessionSetup()
+  sessionSetup.sessionDoctor = req => {
+    req.session.manualEntryRoutingForBookings = []
+    req.session.calculationReasonId = 1
+  }
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
   fakeApi.get('/reference-data/date-type', '').reply(200, testDateTypeDefinitions)
@@ -294,7 +299,7 @@ describe('approvedDatesRoutes', () => {
         {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
-          date: { day: 3, month: 3, year: 2017 },
+          date: undefined,
         } as ManualEntrySelectedDate,
       ]
       req.session.HDCED = {}
@@ -303,10 +308,15 @@ describe('approvedDatesRoutes', () => {
       req.session.HDCED_WEEKEND_ADJUSTED[nomsId] = false
     }
     jest.spyOn(manualEntryService, 'getNextDateToEnter').mockReturnValue({
+      position: 1,
       dateType: 'CRD',
-      dateText: 'CRD (Conditional release date)',
-      date: { day: 3, month: 3, year: 2017 },
-    } as ManualEntrySelectedDate)
+      completed: false,
+      manualEntrySelectedDate: {
+        dateType: 'CRD',
+        dateText: 'CRD (Conditional release date)',
+        date: { day: 3, month: 3, year: 2017 },
+      },
+    } as ManualJourneySelectedDate)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('/calculation/A1234AA/123456/submit-dates')
@@ -330,7 +340,7 @@ describe('approvedDatesRoutes', () => {
         {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
-          date: { day: 3, month: 3, year: 2017 },
+          date: undefined,
         } as ManualEntrySelectedDate,
       ]
       req.session.HDCED = {}
@@ -339,10 +349,15 @@ describe('approvedDatesRoutes', () => {
       req.session.HDCED_WEEKEND_ADJUSTED[nomsId] = false
     }
     jest.spyOn(manualEntryService, 'getNextDateToEnter').mockReturnValue({
+      position: 1,
       dateType: 'CRD',
-      dateText: 'CRD (Conditional release date)',
-      date: { day: 3, month: 3, year: 2017 },
-    } as ManualEntrySelectedDate)
+      completed: false,
+      manualEntrySelectedDate: {
+        dateType: 'CRD',
+        dateText: 'CRD (Conditional release date)',
+        date: { day: 3, month: 3, year: 2017 },
+      },
+    } as ManualJourneySelectedDate)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('/calculation/A1234AA/123456/submit-dates?year=2029&month=09&day=23')

@@ -3,12 +3,9 @@ import { DateTime } from 'luxon'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService, { DateInputItem, EnteredDate, StorageResponseModel } from './dateValidationService'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
-import {
-  DetailedDate,
-  ManualEntrySelectedDate,
-  SubmittedDate,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { DetailedDate, ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { createSupportLink } from '../utils/utils'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 
 const order = {
   SED: 1,
@@ -49,19 +46,20 @@ export default class ManualEntryService {
 
   public populateExistingDates(req: Request, nomsId: string, dates: DetailedDate[]) {
     if (!req.session.selectedManualEntryDates[nomsId]) {
-      req.session.selectedManualEntryDates[nomsId] = new Array<ManualEntrySelectedDate>()
+      req.session.selectedManualEntryDates[nomsId] = new Array<ManualJourneySelectedDate>()
     }
     req.session.selectedManualEntryDates[nomsId] = dates
       .filter(d => d.date)
-      .map(({ type, description, date }) => {
+      .map(({ type, description, date }, i): ManualJourneySelectedDate => {
         const { day, month, year } = DateTime.fromISO(date)
         return {
+          position: i + 1,
+          completed: true,
           dateType: type,
-          dateText: description,
-          date: {
-            day,
-            month,
-            year,
+          manualEntrySelectedDate: {
+            dateType: type,
+            dateText: description,
+            date: { day, month, year },
           },
         }
       })
@@ -131,7 +129,7 @@ export default class ManualEntryService {
     for (const item of mergedConfig.items) {
       if (
         req.session.selectedManualEntryDates[nomsId] &&
-        req.session.selectedManualEntryDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === item.value)
+        req.session.selectedManualEntryDates[nomsId].some((d: ManualJourneySelectedDate) => d.dateType === item.value)
       ) {
         item.checked = true
         item.attributes = {
@@ -150,11 +148,21 @@ export default class ManualEntryService {
       req.body.dateSelect,
       req.session.selectedManualEntryDates[nomsId],
     )
-    // Do validation here
     req.session.selectedManualEntryDates[nomsId] = [...req.session.selectedManualEntryDates[nomsId], ...dates]
   }
 
-  public getNextDateToEnter(dates: ManualEntrySelectedDate[]): ManualEntrySelectedDate {
+  public getPendingDateByType(outstandingDates: ManualJourneySelectedDate[], dateType: string) {
+    if (!Array.isArray(outstandingDates) || outstandingDates.length === 0) {
+      return undefined
+    }
+
+    const manualDate = outstandingDates.find(
+      d => d.manualEntrySelectedDate.dateType === dateType && d.completed === false,
+    )
+    return manualDate || undefined
+  }
+
+  public getNextApprovedDateToEnter(dates: ManualEntrySelectedDate[]): ManualEntrySelectedDate {
     const hasDateToEnter = dates.some((d: ManualEntrySelectedDate) => d !== undefined && d.date === undefined)
     if (hasDateToEnter) {
       return dates.find((d: ManualEntrySelectedDate) => d !== undefined && d.date === undefined)
@@ -162,50 +170,93 @@ export default class ManualEntryService {
     return undefined
   }
 
-  public storeDate(dates: ManualEntrySelectedDate[], enteredDate: EnteredDate): StorageResponseModel {
-    if (enteredDate.dateType !== 'None') {
-      const allItems: DateInputItem[] = [
-        {
-          classes: 'govuk-input--width-2',
-          name: 'day',
-          value: enteredDate.day,
-        } as DateInputItem,
-        {
-          classes: 'govuk-input--width-2',
-          name: 'month',
-          value: enteredDate.month,
-        },
-        {
-          classes: 'govuk-input--width-4',
-          name: 'year',
-          value: enteredDate.year,
-        },
-      ]
-      if (enteredDate.day === '' && enteredDate.month === '' && enteredDate.year === '') {
-        const message = 'The date entered must include a day, month and a year.'
-        return this.dateValidationService.allErrored(dates, enteredDate, allItems, message)
-      }
-      const someErrors = this.dateValidationService.singleItemsErrored(dates, allItems, enteredDate)
-      if (someErrors) {
-        return someErrors
-      }
-      if (!this.dateValidationService.isDateValid(enteredDate)) {
-        return this.dateValidationService.allErrored(
-          dates,
-          enteredDate,
-          allItems,
-          'The date entered must be a real date',
-        )
-      }
-      const notWithinOneHundredYears = this.dateValidationService.notWithinOneHundredYears(dates, enteredDate, allItems)
-      if (notWithinOneHundredYears) {
-        return notWithinOneHundredYears
-      }
-      const date = dates.find((d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType)
-      date.date = enteredDate as unknown as SubmittedDate
-      return { success: true, isNone: false, date } as StorageResponseModel
+  public getNextDateToEnter(outstandingDates: ManualJourneySelectedDate[]): ManualJourneySelectedDate {
+    if (!Array.isArray(outstandingDates) || outstandingDates.length === 0) {
+      return undefined
     }
-    return { success: false, isNone: true } as StorageResponseModel
+
+    const nextDate = outstandingDates.sort(d => d.position).find(d => !d.completed && !d.manualEntrySelectedDate?.date)
+    return nextDate || undefined
+  }
+
+  public getPreviousDate(outstandingDates: ManualJourneySelectedDate[], currentDate: ManualJourneySelectedDate) {
+    if (!Array.isArray(outstandingDates) || outstandingDates.length === 0) {
+      return undefined
+    }
+
+    const previousDate = outstandingDates.find(d => d.position === currentDate.position - 1 && d.completed === false)
+    return previousDate ? previousDate.manualEntrySelectedDate : undefined
+  }
+
+  public getPreviousDateByType(outstandingDates: ManualJourneySelectedDate[], dateType: string) {
+    if (!Array.isArray(outstandingDates) || outstandingDates.length === 0) {
+      return undefined
+    }
+
+    const previousDate = outstandingDates.find(d => d.dateType === dateType)
+    return previousDate ? previousDate.manualEntrySelectedDate : undefined
+  }
+
+  public storeDate(manualDates: ManualJourneySelectedDate[], enteredDate: EnteredDate): StorageResponseModel {
+    if (enteredDate.dateType === 'None') {
+      return { success: false, date: undefined, enteredDate: undefined, items: [], message: '', isNone: true }
+    }
+
+    const allItems: DateInputItem[] = [
+      {
+        classes: 'govuk-input--width-2',
+        name: 'day',
+        value: enteredDate.day,
+      } as DateInputItem,
+      {
+        classes: 'govuk-input--width-2',
+        name: 'month',
+        value: enteredDate.month,
+      },
+      {
+        classes: 'govuk-input--width-4',
+        name: 'year',
+        value: enteredDate.year,
+      },
+    ]
+
+    if (enteredDate.day === '' && enteredDate.month === '' && enteredDate.year === '') {
+      const message = 'The date entered must include a day, month and a year.'
+      return this.dateValidationService.allErrored(manualDates, enteredDate, allItems, message)
+    }
+
+    const someErrors = this.dateValidationService.singleItemsErrored(manualDates, allItems, enteredDate)
+    if (someErrors) {
+      return someErrors
+    }
+
+    if (!this.dateValidationService.isDateValid(enteredDate)) {
+      return this.dateValidationService.allErrored(
+        manualDates,
+        enteredDate,
+        allItems,
+        'The date entered must be a real date',
+      )
+    }
+
+    const notWithinOneHundredYears = this.dateValidationService.notWithinOneHundredYears(
+      manualDates,
+      enteredDate,
+      allItems,
+    )
+    if (notWithinOneHundredYears) {
+      return notWithinOneHundredYears
+    }
+
+    const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
+    const manualEntry = manualDate.manualEntrySelectedDate
+    manualDate.manualEntrySelectedDate.date = {
+      day: Number(enteredDate.day),
+      month: Number(enteredDate.month),
+      year: Number(enteredDate.year),
+    }
+
+    return { enteredDate: undefined, items: [], message: undefined, success: true, isNone: false, date: manualEntry }
   }
 
   private dateString(selectedDate: ManualEntrySelectedDate): string {
@@ -219,10 +270,10 @@ export default class ManualEntryService {
   public async getConfirmationConfiguration(token: string, req: Request, nomsId: string, allowActions: boolean) {
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     return req.session.selectedManualEntryDates[nomsId]
-      .map((d: ManualEntrySelectedDate) => {
-        const dateValue = this.dateString(d)
+      .map((d: ManualJourneySelectedDate) => {
+        const dateValue = this.dateString(d.manualEntrySelectedDate)
         const text = dateTypeDefinitions[d.dateType]
-        const items = allowActions ? this.getItems(nomsId, d, text) : null
+        const items = allowActions ? this.getItems(nomsId, d.manualEntrySelectedDate, text) : null
         return {
           key: {
             text,
@@ -280,20 +331,12 @@ export default class ManualEntryService {
     return req.session.selectedManualEntryDates[nomsId].length
   }
 
-  public async changeDate(token: string, req: Request, nomsId: string): Promise<ManualEntrySelectedDate> {
-    const fullString = await this.fullStringLookup(token, <string>req.query.dateType)
-    const date = req.session.selectedManualEntryDates[nomsId].find(
-      (d: ManualEntrySelectedDate) => d.dateType === req.query.dateType,
+  public async changeDate(req: Request, nomsId: string): Promise<ManualEntrySelectedDate> {
+    const dateToAmend: ManualJourneySelectedDate = req.session.selectedManualEntryDates[nomsId].find(
+      d => d.dateType === req.query.dateType,
     )
-    req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
-      (d: ManualEntrySelectedDate) => d.dateType !== req.query.dateType,
-    )
-    req.session.selectedManualEntryDates[nomsId].push({
-      dateType: req.query.dateType,
-      dateText: fullString,
-      date: undefined,
-    } as ManualEntrySelectedDate)
-    return date
+    dateToAmend.completed = false
+    return dateToAmend.manualEntrySelectedDate
   }
 
   private async determinateConfig(token: string, existingTypes: string[]): Promise<DateSelectConfiguration> {

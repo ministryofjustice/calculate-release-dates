@@ -10,7 +10,9 @@
 
 {% block beforeContent %}
     {{ super() }}
-    {% set backlink = "/calculation/" + prisonerDetail.offenderNo + "/manual-entry" %}
+    {% set backlink %}
+        {% if existingCalculation %}/calculation/{{prisonerDetail.offenderNo}}/manual-entry/confirmation?reconfirm=1{% else %}/calculation/{{prisonerDetail.offenderNo}}/manual-entry{% endif %}
+    {% endset %}
     <nav>
         {{ govukBackLink({
             text: "Back",

@@ -448,7 +448,40 @@ context('End to end user journeys entering and modifying approved dates', () => 
       manualDatePageWithEditableDates.editReleaseDateLink('HDCED').should('exist')
       manualDatePageWithEditableDates.removeReleaseDateLink('HDCED').should('exist')
 
-      manualDatePageWithEditableDates.submitToNomisButton().click()
+      manualDatePageWithEditableDates.addAnotherReleaseDateLink().click()
+
+      const selectMoreDatesPage = Page.verifyOnPage(ManualEntrySelectDatesPage)
+      selectMoreDatesPage.backLinkExistsWithTitle('/calculation/A1234AB/manual-entry/confirmation')
+      selectMoreDatesPage.checkDate('SED')
+      selectMoreDatesPage.checkDate('LED')
+      selectMoreDatesPage.continue().click()
+
+      const enterSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
+      enterSedPage.checkIsFor('SED')
+      enterSedPage.enterDate('SED', '01', '06', '2026')
+      enterSedPage.continue().click()
+
+      const enterLedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
+      enterLedPage.backLinkExistsWithTitle('/calculation/A1234AB/manual-entry/enter-date?dateType=SED')
+      enterLedPage.backButton().click()
+
+      const enterSedReturnPage = Page.verifyOnPage(ManualDatesEnterDatePage)
+      enterSedReturnPage.checkIsFor('SED')
+      enterSedReturnPage.clearDate('SED')
+      enterSedReturnPage.enterDate('SED', '01', '06', '2028')
+      enterSedReturnPage.continue().click()
+
+      const enterLedReturnPage = Page.verifyOnPage(ManualDatesEnterDatePage)
+      enterLedReturnPage.backLinkExistsWithTitle('/calculation/A1234AB/manual-entry/enter-date?dateType=SED')
+      enterLedReturnPage.checkIsFor('LED')
+      enterLedReturnPage.enterDate('LED', '02', '02', '2030')
+      enterLedReturnPage.continue().click()
+
+      const manualDateReturnPageWithEditableDates = Page.verifyOnPage(ManualDatesConfirmationPage)
+      manualDateReturnPageWithEditableDates.dateShouldHaveValue('SED', '01 June 2028')
+      manualDateReturnPageWithEditableDates.dateShouldHaveValue('LED', '02 February 2030')
+      manualDateReturnPageWithEditableDates.submitToNomisButton().click()
+
       const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
       calculationCompletePage.title().should('contain.text', 'Calculation complete')

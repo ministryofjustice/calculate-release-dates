@@ -1,7 +1,7 @@
 import nock from 'nock'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
-import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../config'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 
 const dateTypeConfigurationService = new DateTypeConfigurationService()
 describe('dateTypeConfigurationService', () => {
@@ -29,48 +29,78 @@ describe('dateTypeConfigurationService', () => {
         ['CRD', 'ARD'],
         [
           {
+            position: 1,
             dateType: 'CRD',
-            dateText: 'CRD (Conditional release date)',
-            date: { day: 3, month: 3, year: 2017 },
-          } as ManualEntrySelectedDate,
+            completed: false,
+            manualEntrySelectedDate: {
+              dateType: 'CRD',
+              dateText: 'CRD (Conditional release date)',
+              date: { day: 3, month: 3, year: 2017 },
+            },
+          } as ManualJourneySelectedDate,
           {
+            position: 2,
             dateType: 'ARD',
-            dateText: 'ARD (Automatic release date)',
-            date: { day: 4, month: 4, year: 2018 },
-          } as ManualEntrySelectedDate,
+            completed: false,
+            manualEntrySelectedDate: {
+              dateType: 'ARD',
+              dateText: 'ARD (Automatic release date)',
+              date: { day: 4, month: 4, year: 2018 },
+            },
+          } as ManualJourneySelectedDate,
         ],
       )
       expect(configured).toEqual([
         {
+          position: 1,
           dateType: 'CRD',
-          dateText: 'CRD (Conditional release date)',
-          date: { day: 3, month: 3, year: 2017 },
-        } as ManualEntrySelectedDate,
+          completed: false,
+          manualEntrySelectedDate: {
+            dateType: 'CRD',
+            dateText: 'CRD (Conditional release date)',
+            date: { day: 3, month: 3, year: 2017 },
+          },
+        } as ManualJourneySelectedDate,
         {
+          position: 2,
           dateType: 'ARD',
-          dateText: 'ARD (Automatic release date)',
-          date: { day: 4, month: 4, year: 2018 },
-        } as ManualEntrySelectedDate,
+          completed: false,
+          manualEntrySelectedDate: {
+            dateType: 'ARD',
+            dateText: 'ARD (Automatic release date)',
+            date: { day: 4, month: 4, year: 2018 },
+          },
+        } as ManualJourneySelectedDate,
       ])
     })
     it('adds a new date type with an undefined date if not in list', async () => {
       const configured = await dateTypeConfigurationService.configureViaBackend('token', ['CRD'], [])
       expect(configured).toEqual([
         {
+          position: 1,
           dateType: 'CRD',
-          dateText: 'CRD (Conditional release date)',
-          date: undefined,
-        } as ManualEntrySelectedDate,
+          completed: false,
+          manualEntrySelectedDate: {
+            dateType: 'CRD',
+            dateText: 'CRD (Conditional release date)',
+            date: undefined,
+          },
+        } as ManualJourneySelectedDate,
       ])
     })
     it('should format None correctly', async () => {
       const configured = await dateTypeConfigurationService.configureViaBackend('token', ['None'], [])
       expect(configured).toEqual([
         {
+          position: 1,
           dateType: 'None',
-          dateText: 'None of the above dates apply',
-          date: undefined,
-        } as ManualEntrySelectedDate,
+          completed: false,
+          manualEntrySelectedDate: {
+            dateType: 'None',
+            dateText: 'None of the above dates apply',
+            date: undefined,
+          },
+        } as ManualJourneySelectedDate,
       ])
     })
     it('can load all dates as dictionary', async () => {

@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
 import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 
 export default class DateValidationService {
   public isDateValid(enteredDate: EnteredDate): boolean {
@@ -8,24 +9,33 @@ export default class DateValidationService {
   }
 
   public allErrored(
-    dates: ManualEntrySelectedDate[],
+    dates: ManualJourneySelectedDate[],
     enteredDate: EnteredDate,
     allItems: DateInputItem[],
     message: string,
   ) {
-    const date = dates.find((d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType)
+    const manualDate = dates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
+    const { manualEntrySelectedDate } = manualDate
     const items = allItems.map(it => {
       return { ...it, classes: `${it.classes} govuk-input--error` }
     })
-    return { message, date, enteredDate, success: false, items, isNone: false } as StorageResponseModel
+    return {
+      message,
+      date: manualEntrySelectedDate,
+      enteredDate,
+      success: false,
+      items,
+      isNone: false,
+    } as StorageResponseModel
   }
 
   public notWithinOneHundredYears(
-    dates: ManualEntrySelectedDate[],
+    dates: ManualJourneySelectedDate[],
     enteredDate: EnteredDate,
     allItems: DateInputItem[],
   ) {
-    const date = dates.find((d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType)
+    const manualDate = dates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
+    const { manualEntrySelectedDate } = manualDate
     const dateAsDate = DateTime.fromFormat(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`, 'yyyy-M-d')
     const now = DateTime.now()
     const oneHundredYearsBefore = now.minus({ years: 100 })
@@ -37,13 +47,20 @@ export default class DateValidationService {
       const items = allItems.map(it => {
         return { ...it, classes: `${it.classes} govuk-input--error` }
       })
-      return { message, date, enteredDate, success: false, items, isNone: false } as StorageResponseModel
+      return {
+        message,
+        date: manualEntrySelectedDate,
+        enteredDate,
+        success: false,
+        items,
+        isNone: false,
+      } as StorageResponseModel
     }
     return undefined
   }
 
   public singleItemsErrored(
-    dates: ManualEntrySelectedDate[],
+    dates: ManualJourneySelectedDate[],
     allItems: DateInputItem[],
     enteredDate: EnteredDate,
   ): StorageResponseModel {
@@ -76,9 +93,17 @@ export default class DateValidationService {
       })
       .filter(it => it !== undefined)
     if (i > 0) {
-      const date = dates.find((d: ManualEntrySelectedDate) => d.dateType === enteredDate.dateType)
+      const manualDate = dates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
+      const { manualEntrySelectedDate } = manualDate
       message += '.'
-      return { message, date, enteredDate, success: false, items, isNone: false } as StorageResponseModel
+      return {
+        message,
+        date: manualEntrySelectedDate,
+        enteredDate,
+        success: false,
+        items,
+        isNone: false,
+      } as StorageResponseModel
     }
     return undefined
   }
