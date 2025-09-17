@@ -319,7 +319,7 @@ describe('Tests for adjustments tables component', () => {
     const remandRows = remandTable.find('tbody').find('tr')
     const firstRowCells = remandRows.eq(0).find('td')
     expect(firstRowCells.eq(1).html()).toStrictEqual(
-      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black">RECALL</span>',
+      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
   })
 
@@ -402,7 +402,7 @@ describe('Tests for adjustments tables component', () => {
 
     const firstRowCells = taggedBailRows.eq(0).find('td')
     expect(firstRowCells.eq(0).html()).toStrictEqual(
-      'Court case 2<span class="moj-badge moj-badge--black">RECALL</span>',
+      'Court case 2<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
     expect(firstRowCells.eq(1).text()).toStrictEqual('Unknown')
     expect(firstRowCells.eq(2).text()).toStrictEqual('1')
@@ -609,7 +609,7 @@ describe('Tests for adjustments tables component', () => {
     const custodyAbroadRows = custodyAbroadTable.find('tbody').find('tr')
     const firstRowCells = custodyAbroadRows.eq(0).find('td')
     expect(firstRowCells.eq(1).html()).toStrictEqual(
-      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black">RECALL</span>',
+      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
   })
 
@@ -768,6 +768,58 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=rada-table]')).toHaveLength(1)
     expect($('[data-qa=special-remission-table]')).toHaveLength(1)
     // sum of all deduction types except unused deductions
+    expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
+  })
+
+  it('Should show all deductions with minimal details as loaded from a previous calc with old style adjustments', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aRemand,
+          id: 'remand-1',
+          days: 1,
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+        },
+        {
+          ...aTaggedBail,
+          id: 'tb-1',
+          days: 2,
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+        },
+        {
+          ...aCustodyAbroard,
+          id: 'ca-1',
+          days: 3,
+        },
+        {
+          ...aRADA,
+          id: 'rada-1',
+          days: 4,
+          fromDate: '2025-01-02',
+        },
+        {
+          ...aSpecialRemission,
+          id: 'sr-3',
+          days: 5,
+        },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-1',
+          days: 10,
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+    expect($('[data-qa=remand-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=tagged-bail-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=custody-abroad-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=rada-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=special-remission-table]').find('tbody').find('tr')).toHaveLength(2)
     expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
   })
 
@@ -1041,7 +1093,7 @@ describe('Tests for adjustments tables component', () => {
     const lalRows = lalTable.find('tbody').find('tr')
     const firstRowCells = lalRows.eq(0).find('td')
     expect(firstRowCells.eq(1).html()).toStrictEqual(
-      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black">RECALL</span>',
+      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
   })
 
@@ -1096,6 +1148,49 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=ada-table]')).toHaveLength(1)
     expect($('[data-qa=ual-table]')).toHaveLength(1)
     expect($('[data-qa=lal-table]')).toHaveLength(1)
+    expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
+  })
+
+  it('Should show all additions sections with minimal data as loaded from previous calculation with old style adjustments', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...anADA,
+          id: 'ada-1',
+          days: 1,
+          fromDate: '2025-01-02',
+        },
+        {
+          ...aUAL,
+          id: 'ual-1',
+          days: 2,
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+        {
+          ...aLAL,
+          id: 'lal-1',
+          days: 3,
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+        {
+          ...anAppealApplicant,
+          id: 'aa-1',
+          days: 4,
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    expect($('[data-qa=appeal-applicant-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=ada-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=ual-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=lal-table]').find('tbody').find('tr')).toHaveLength(2)
     expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
   })
 })

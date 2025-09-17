@@ -431,6 +431,92 @@ export default {
       },
     })
   },
+  stubAdjustmentsUsingAdjustmentsApi: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation/adjustments/([0-9]*)\\?adjustments\\-api=true`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            sentenceSequence: 1,
+            adjustmentType: 'REMAND',
+            days: 28,
+            fromDate: '2021-02-03',
+            toDate: '2021-03-08',
+            status: 'ACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            sentenceSequence: 1,
+            adjustmentType: 'TAGGED_BAIL',
+            days: 11,
+            status: 'ACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            sentenceSequence: 2,
+            adjustmentType: 'REMAND',
+            days: 13,
+            fromDate: '2021-01-03',
+            toDate: '2021-01-15',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            sentenceSequence: 2,
+            adjustmentType: 'TAGGED_BAIL',
+            days: 7,
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'UNLAWFULLY_AT_LARGE',
+            days: 29,
+            fromDate: '2021-06-01',
+            toDate: '2021-06-10',
+            status: 'ACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'UNLAWFULLY_AT_LARGE',
+            days: 10,
+            fromDate: '2021-08-01',
+            toDate: '2021-08-10',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'ADDITIONAL_DAYS_AWARDED',
+            days: 4,
+            fromDate: '2021-03-05',
+            toDate: '2021-03-08',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'ADDITIONAL_DAYS_AWARDED',
+            days: 5,
+            fromDate: '2021-07-06',
+            toDate: '2021-07-10',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED',
+            days: 3,
+            fromDate: '2021-07-08',
+            toDate: '2021-07-10',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+        ],
+      },
+    })
+  },
   stubSentencesAndOffences: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -679,6 +765,92 @@ export default {
             },
           ],
         },
+      },
+    })
+  },
+  stubGetAdjustmentsForPrisoner: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/adjustments/A1234AB',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            sentenceSequence: 1,
+            adjustmentType: 'REMAND',
+            days: 28,
+            fromDate: '2021-02-03',
+            toDate: '2021-03-08',
+            status: 'ACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            sentenceSequence: 1,
+            adjustmentType: 'TAGGED_BAIL',
+            days: 11,
+            status: 'ACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            sentenceSequence: 2,
+            adjustmentType: 'REMAND',
+            days: 13,
+            fromDate: '2021-01-03',
+            toDate: '2021-01-15',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            sentenceSequence: 2,
+            adjustmentType: 'TAGGED_BAIL',
+            days: 7,
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'UNLAWFULLY_AT_LARGE',
+            days: 29,
+            fromDate: '2021-06-01',
+            toDate: '2021-06-10',
+            status: 'ACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'UNLAWFULLY_AT_LARGE',
+            days: 10,
+            fromDate: '2021-08-01',
+            toDate: '2021-08-10',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'ADDITIONAL_DAYS_AWARDED',
+            days: 4,
+            fromDate: '2021-03-05',
+            toDate: '2021-03-08',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'ADDITIONAL_DAYS_AWARDED',
+            days: 5,
+            fromDate: '2021-07-06',
+            toDate: '2021-07-10',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+          {
+            adjustmentType: 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED',
+            days: 3,
+            fromDate: '2021-07-08',
+            toDate: '2021-07-10',
+            status: 'INACTIVE',
+            analysisResult: 'SAME',
+          },
+        ],
       },
     })
   },

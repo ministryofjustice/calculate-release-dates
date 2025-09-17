@@ -28,7 +28,9 @@ context('End to end happy path of user journey', () => {
     cy.task('stubGetPreviousWorkingDay')
     cy.task('stubValidate')
     cy.task('stubAdjustments')
+    cy.task('stubAdjustmentsUsingAdjustmentsApi')
     cy.task('stubGetAnalyzedSentenceAdjustments')
+    cy.task('stubGetAdjustmentsForPrisoner')
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
     cy.task('stubLatestCalculation')
@@ -172,6 +174,8 @@ context('End to end happy path of user journey', () => {
 
     const checkInformationPage = Page.verifyOnPage(ViewSentencesAndOffencesPage)
     checkInformationPage.offenceTitle('123').should('have.text', '123 - Doing a crime')
+    checkInformationPage.remandTable().should('contain.text', 'Remand')
+    checkInformationPage.remandTable().should('contain.text', '28')
     checkInformationPage.loadCalculationSummary().click()
 
     const calculationSummaryPage = Page.verifyOnPage(ViewCalculationSummary)
