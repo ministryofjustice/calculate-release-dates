@@ -11,6 +11,7 @@ context('Check nomis information', () => {
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetAnalyzedSentencesAndOffences')
     cy.task('stubGetAnalyzedSentenceAdjustments')
+    cy.task('stubGetAdjustmentsForPrisoner')
     cy.task('stubGetUserCaseloads')
     cy.task('stubSupportedValidationNoMessages')
     cy.task('stubComponents')
@@ -38,12 +39,10 @@ context('Check nomis information', () => {
     checkInformationPage.sentenceCards(2).contains('2 years')
     checkInformationPage.sentenceCards(2).contains('Consecutive to court case 1 NOMIS line number 1')
 
-    checkInformationPage.adjustmentSummary().should('contain.text', 'Remand')
-    checkInformationPage.adjustmentSummary().should('contain.text', '28')
     checkInformationPage.caseNumber(2).contains('ABC234')
 
-    checkInformationPage.adjustmentDetailedTabLink().click()
-    checkInformationPage.adjustmentDetailed().should('contain.text', 'From 03 February 2021 to 08 March 2021')
+    checkInformationPage.remandTable().should('contain.text', 'Remand')
+    checkInformationPage.remandTable().should('contain.text', '28')
 
     calculationReasonPage.hasMissingOffenceDates(false)
     calculationReasonPage.hasMissingOffenceTerms(false)

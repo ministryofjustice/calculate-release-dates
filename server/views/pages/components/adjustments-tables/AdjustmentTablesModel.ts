@@ -36,6 +36,8 @@ interface UnusedDeductionsTracker {
   remainingUnallocated: number
 }
 
+const recallBadge = '<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>'
+
 export function adjustmentsTablesFromAdjustmentDTOs(
   dtos: AnalysedAdjustment[] | AdjustmentDto[],
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
@@ -164,19 +166,20 @@ function toRemandRow(
   dto: AdjustmentDto,
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentCell[] {
+  const sentenceAndOffencesForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
+    dto.remand?.chargeId,
+    dto.sentenceSequence,
+    sentencesAndOffences,
+  )
   return [
     {
       text: `From ${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}`,
     },
     {
-      html: (
-        dto.remand?.chargeId
-          ?.map(chargeId => findOffenceDetailsByChargeId(chargeId, sentencesAndOffences))
-          .filter(it => it) ?? []
-      )
+      html: sentenceAndOffencesForAdjustment
         .map(
           sentenceAndOffence =>
-            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? '<span class="moj-badge moj-badge--black">RECALL</span>' : ''}`,
+            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
         )
         .join('<br>'),
     },
@@ -190,14 +193,10 @@ function toTaggedBailRow(
   dto: AdjustmentDto,
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentCell[] {
-  const sentenceAndOffence = findSentenceAndOffenceBySentenceSeqAndCaseSeq(
-    dto.sentenceSequence,
-    dto.taggedBail?.caseSequence,
-    sentencesAndOffences,
-  )
+  const sentenceAndOffence = findSentenceAndOffenceBySentenceSequence(dto.sentenceSequence, sentencesAndOffences)
   return [
     {
-      html: `Court case ${sentenceAndOffence.caseSequence}${SentenceTypes.isRecall(sentenceAndOffence) ? '<span class="moj-badge moj-badge--black">RECALL</span>' : ''}`,
+      html: `Court case ${sentenceAndOffence.caseSequence}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
     },
     {
       text: sentenceAndOffence?.caseReference ?? 'Unknown',
@@ -206,6 +205,24 @@ function toTaggedBailRow(
       text: `${dto.days}`,
     },
   ]
+}
+
+function findSentenceAndOffencesByChargeIdsOrSentenceSequence(
+  chargeIds: number[] | undefined,
+  sentenceSequence: number | undefined,
+  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
+) {
+  if (chargeIds) {
+    return (
+      chargeIds?.map(chargeId => findSentenceAndOffenceByChargeId(chargeId, sentencesAndOffences)).filter(it => it) ??
+      []
+    )
+  }
+  if (sentenceSequence) {
+    const found = findSentenceAndOffenceBySentenceSequence(sentenceSequence, sentencesAndOffences)
+    if (found) return [found]
+  }
+  return []
 }
 
 function toCustodyAbroadRow(
@@ -218,19 +235,20 @@ function toCustodyAbroadRow(
   } else if (dto.timeSpentInCustodyAbroad?.documentationSource === 'PPCS_LETTER') {
     documentType = 'Letter from PPCS'
   }
+  const sentenceAndOffencesForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
+    dto.timeSpentInCustodyAbroad?.chargeIds,
+    dto.sentenceSequence,
+    sentencesAndOffences,
+  )
   return [
     {
       text: documentType,
     },
     {
-      html: (
-        dto.timeSpentInCustodyAbroad?.chargeIds
-          ?.map(chargeId => findOffenceDetailsByChargeId(chargeId, sentencesAndOffences))
-          .filter(it => it) ?? []
-      )
+      html: sentenceAndOffencesForAdjustment
         .map(
           sentenceAndOffence =>
-            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? '<span class="moj-badge moj-badge--black">RECALL</span>' : ''}`,
+            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
         )
         .join('<br>'),
     },
@@ -331,19 +349,20 @@ function toAppealApplicantRow(
   dto: AdjustmentDto,
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentCell[] {
+  const sentenceAndOffencesForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
+    dto.timeSpentAsAnAppealApplicant?.chargeIds,
+    dto.sentenceSequence,
+    sentencesAndOffences,
+  )
   return [
     {
       text: dto.timeSpentAsAnAppealApplicant?.courtOfAppealReferenceNumber ?? 'Unknown',
     },
     {
-      html: (
-        dto.timeSpentAsAnAppealApplicant?.chargeIds
-          ?.map(chargeId => findOffenceDetailsByChargeId(chargeId, sentencesAndOffences))
-          .filter(it => it) ?? []
-      )
+      html: sentenceAndOffencesForAdjustment
         .map(
           sentenceAndOffence =>
-            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? '<span class="moj-badge moj-badge--black">RECALL</span>' : ''}`,
+            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
         )
         .join('<br>'),
     },
@@ -353,22 +372,21 @@ function toAppealApplicantRow(
   ]
 }
 
-function findOffenceDetailsByChargeId(
+function findSentenceAndOffenceByChargeId(
   chargeId: number,
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements | null {
   return sentencesAndOffences.find(it => it.offence.offenderChargeId === chargeId)
 }
 
-function findSentenceAndOffenceBySentenceSeqAndCaseSeq(
+function findSentenceAndOffenceBySentenceSequence(
   sentenceSequence: number,
-  caseSequence: number,
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements | null {
-  if (!sentenceSequence || !caseSequence) {
+  if (!sentenceSequence) {
     return null
   }
-  return sentencesAndOffences.find(it => it.sentenceSequence === sentenceSequence && it.caseSequence === caseSequence)
+  return sentencesAndOffences.find(it => it.sentenceSequence === sentenceSequence)
 }
 
 const formatDate = (date: string) => {

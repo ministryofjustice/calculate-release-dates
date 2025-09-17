@@ -1,4 +1,6 @@
 import {
+  AdjustmentDto,
+  AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   CalculationReason,
   CalculationSentenceUserInput,
@@ -17,6 +19,9 @@ import { groupBy, indexBy } from '../utils/utils'
 import SentenceTypes from './SentenceTypes'
 import ViewRouteAdjustmentsViewModel from './ViewRouteAdjustmentsViewModel'
 import ViewRouteCourtCaseTableViewModel from './ViewRouteCourtCaseTableViewModel'
+import AdjustmentTablesModel, {
+  adjustmentsTablesFromAdjustmentDTOs,
+} from '../views/pages/components/adjustments-tables/AdjustmentTablesModel'
 
 export default class ViewRouteSentenceAndOffenceViewModel {
   public adjustments: ViewRouteAdjustmentsViewModel
@@ -31,6 +36,8 @@ export default class ViewRouteSentenceAndOffenceViewModel {
 
   public sentencesAndOffences: PrisonApiOffenderSentenceAndOffences[]
 
+  public adjustmentsTablesModel: AdjustmentTablesModel
+
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
@@ -41,6 +48,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     public validationErrors?: ErrorMessages,
     public calculationReason?: CalculationReason,
     public calculationDate?: string,
+    adjustmentsDtos?: AnalysedAdjustment[] | AdjustmentDto[],
   ) {
     this.adjustments = new ViewRouteAdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
@@ -55,6 +63,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     this.offenceCount = sentencesAndOffences.length
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
     this.sentencesAndOffences = sentencesAndOffences
+    this.adjustmentsTablesModel = adjustmentsTablesFromAdjustmentDTOs(adjustmentsDtos ?? [], sentencesAndOffences)
   }
 
   public rowIsSdsPlus(sentence: AnalysedSentenceAndOffence, offence: OffenderOffence): boolean {

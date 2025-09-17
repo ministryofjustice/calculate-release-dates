@@ -1,7 +1,7 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from './testutils/appSetup'
+import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import {
@@ -16,6 +16,7 @@ import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import UserInputService from '../services/userInputService'
 import {
+  AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   CalculationSentenceUserInput,
   CalculationUserInputs,
@@ -405,6 +406,25 @@ const stubbedAdjustments = {
     },
   ],
 } as AnalysedPrisonApiBookingAndSentenceAdjustments
+
+const stubbedAdjustmentsForPrisoner = [
+  {
+    sentenceSequence: 1,
+    adjustmentType: 'UNUSED_REMAND',
+    days: 2,
+    fromDate: '2021-02-01',
+    toDate: '2021-02-02',
+    status: 'ACTIVE',
+  },
+  {
+    adjustmentType: 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED',
+    days: 2,
+    fromDate: '2021-03-07',
+    toDate: '2021-03-08',
+    status: 'ACTIVE',
+  },
+] as AnalysedAdjustment[]
+
 const sentencesAndOffencesWithExclusions = [
   {
     terms: [
@@ -540,7 +560,7 @@ describe('Check information routes tests', () => {
       true,
       stubbedReturnToCustodyDate,
       null,
-      [],
+      stubbedAdjustmentsForPrisoner,
     )
     checkInformationService.checkInformation.mockResolvedValue(model)
     return request(app)
@@ -563,9 +583,6 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('Court case 2')
         expect(res.text).toContain('Consecutive to court case 1 NOMIS line number 1')
         expect(res.text).toContain('href="/calculation/A1234AA/reason"')
-        expect(res.text).toContain('Restore additional days awarded (RADA)')
-        expect(res.text).toContain('2')
-        expect(res.text).toContain('Detailed')
         expect(res.text).toContain('CASE001')
         expect(res.text).toContain('Court 1')
         expect(res.text).toContain('Return to custody')
@@ -583,13 +600,12 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('LR - EDS LASPO Discretionary Release')
         expect(res.text).not.toContain('987654')
         expect(res.text).toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
-        expect(res.text).toContain('Unused deductions')
-        expect(res.text).not.toContain('Unused remand')
 
         const $ = cheerio.load(res.text)
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/check-information',
         )
+        expect($('[data-qa=rada-table]')).toHaveLength(1)
         // All but 1 sentences are flagged as 'NEW'
         expect($('.govuk-tag.govuk-tag--moj-blue:contains("NEW")')).toHaveLength(10)
         expect($('.new-sentence-card')).toHaveLength(10)
@@ -812,51 +828,11 @@ describe('Check information routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('[data-qa=no-detail-adjust-text]').text()).toStrictEqual('There are no detailed adjustments.')
-        expect(res.text).toContain('Detailed')
+        expect($('[data-qa=additions-heading]')).toHaveLength(0)
+        expect($('[data-qa=deductions-heading]')).toHaveLength(0)
       })
   })
 
-  it('GET /calculation/:nomsId/check-information should return detail about the prisoner user has access to adjustments', () => {
-    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
-    userInputService.isCalculationReasonSet.mockReturnValue(true)
-
-    const model = new SentenceAndOffenceViewModel(
-      stubbedPrisonerData,
-      stubbedUserInput,
-      stubbedSentencesAndOffences,
-      stubbedAdjustments,
-      false,
-      true,
-      stubbedReturnToCustodyDate,
-      null,
-      [],
-    )
-    checkInformationService.checkInformation.mockResolvedValue(model)
-
-    app = appWithAllRoutes({
-      services: {
-        userService,
-        prisonerService,
-        calculateReleaseDatesService,
-        userInputService,
-        checkInformationService,
-      },
-      userSupplier: () => {
-        return { ...user }
-      },
-    })
-    return request(app)
-      .get('/calculation/A1234AA/check-information')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('[data-qa=unused-deductions-total-days]').text()).toContain('2')
-        expect(res.text).toContain('Unused deductions')
-        expect(res.text).not.toContain('Unused remand')
-      })
-  })
   it('GET /calculation/:nomsId/check-information should display errors when they exist', () => {
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     userInputService.isCalculationReasonSet.mockReturnValue(true)
