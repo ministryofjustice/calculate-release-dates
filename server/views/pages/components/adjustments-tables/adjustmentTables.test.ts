@@ -402,10 +402,10 @@ describe('Tests for adjustments tables component', () => {
     expect(taggedBailRows).toHaveLength(2)
 
     const firstRowCells = taggedBailRows.eq(0).find('td')
-    expect(firstRowCells.eq(0).html()).toStrictEqual(
-      'Court case 2<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
+    expect(firstRowCells.eq(0).text()).toStrictEqual('Court case 2')
+    expect(firstRowCells.eq(1).html()).toStrictEqual(
+      'Unknown<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
-    expect(firstRowCells.eq(1).text()).toStrictEqual('Unknown')
     expect(firstRowCells.eq(2).text()).toStrictEqual('1')
   })
 
@@ -453,7 +453,7 @@ describe('Tests for adjustments tables component', () => {
 
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
-    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('20 including 10 days of unused')
+    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('20 including 10 days unused')
 
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
@@ -498,7 +498,7 @@ describe('Tests for adjustments tables component', () => {
 
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
-    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days of unused')
+    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days unused')
 
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
@@ -543,11 +543,11 @@ describe('Tests for adjustments tables component', () => {
 
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
-    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days of unused')
+    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days unused')
 
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
-    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 5 days of unused')
+    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 5 days unused')
   })
 
   it('Should show deductions section and time spent in custody abroad table if there is any present', () => {
