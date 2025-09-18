@@ -37,3 +37,5 @@ export type SupportedValidationResponse = components['schemas']['SupportedValida
 export type ErsedEligibility = components['schemas']['ErsedEligibility']
 export type AdjustmentDto = components['schemas']['AdjustmentDto']
 export type AnalysedAdjustment = components['schemas']['AnalysedAdjustment']
+export type AdjustmentStatus = components['schemas']['AnalysedAdjustment']['status']
+export type AdjustmentType = components['schemas']['AnalysedAdjustment']['adjustmentType']
