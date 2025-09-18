@@ -146,7 +146,7 @@ function toTable(
     })
   }
   totalsRow.push({
-    text: `${totalDays}${unusedDeductionsAllocation > 0 ? ` including ${unusedDeductionsAllocation} days of unused` : ''}`,
+    text: `${totalDays}${unusedDeductionsAllocation > 0 ? ` including ${unusedDeductionsAllocation} days unused` : ''}`,
     classes: 'govuk-!-font-weight-bold',
   })
   rows.push(totalsRow)
@@ -190,10 +190,10 @@ function toTaggedBailRow(
   const sentenceAndOffence = findSentenceAndOffenceBySentenceSequence(dto.sentenceSequence, sentencesAndOffences)
   return [
     {
-      html: `Court case ${sentenceAndOffence.caseSequence}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
+      html: `Court case ${sentenceAndOffence.caseSequence}`,
     },
     {
-      text: sentenceAndOffence?.caseReference ?? 'Unknown',
+      html: `${sentenceAndOffence?.caseReference ?? 'Unknown'}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
     },
     {
       text: `${dto.days}`,
