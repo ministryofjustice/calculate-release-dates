@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import {
   AdjustmentDto,
+  AdjustmentType,
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   SentenceAndOffenceWithReleaseArrangements,
@@ -43,34 +44,35 @@ export function adjustmentsTablesFromAdjustmentDTOs(
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentTablesModel {
   const unusedDeductionsTracker: UnusedDeductionsTracker = {
-    remainingUnallocated: dtos
-      .filter(it => it.adjustmentType === 'UNUSED_DEDUCTIONS')
-      .reduce((total, next) => total + next.days, 0),
+    remainingUnallocated: activeAdjustmentsOfType('UNUSED_DEDUCTIONS', dtos).reduce(
+      (total, next) => total + next.days,
+      0,
+    ),
   }
   const remand = toTable(
-    dtos.filter(it => it.adjustmentType === 'REMAND'),
+    activeAdjustmentsOfType('REMAND', dtos),
     dto => toRemandRow(dto, sentencesAndOffences),
     3,
     unusedDeductionsTracker,
   )
   const taggedBail = toTable(
-    dtos.filter(it => it.adjustmentType === 'TAGGED_BAIL'),
+    activeAdjustmentsOfType('TAGGED_BAIL', dtos),
     dto => toTaggedBailRow(dto, sentencesAndOffences),
     3,
     unusedDeductionsTracker,
   )
   const custodyAbroad = toTable(
-    dtos.filter(it => it.adjustmentType === 'CUSTODY_ABROAD'),
+    activeAdjustmentsOfType('CUSTODY_ABROAD', dtos),
     dto => toCustodyAbroadRow(dto, sentencesAndOffences),
     3,
   )
   const rada = toTable(
-    dtos.filter(it => it.adjustmentType === 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED'),
+    activeAdjustmentsOfType('RESTORATION_OF_ADDITIONAL_DAYS_AWARDED', dtos),
     dto => toRADARow(dto),
     2,
   )
   const specialRemission = toTable(
-    dtos.filter(it => it.adjustmentType === 'SPECIAL_REMISSION'),
+    activeAdjustmentsOfType('SPECIAL_REMISSION', dtos),
     dto => toSpecialRemissionRow(dto),
     2,
   )
@@ -81,23 +83,11 @@ export function adjustmentsTablesFromAdjustmentDTOs(
     (rada?.total ?? 0) +
     (specialRemission?.total ?? 0)
 
-  const ada = toTable(
-    dtos.filter(it => it.adjustmentType === 'ADDITIONAL_DAYS_AWARDED'),
-    dto => toAdaRow(dto),
-    2,
-  )
-  const ual = toTable(
-    dtos.filter(it => it.adjustmentType === 'UNLAWFULLY_AT_LARGE'),
-    dto => toUALRow(dto),
-    3,
-  )
-  const lal = toTable(
-    dtos.filter(it => it.adjustmentType === 'LAWFULLY_AT_LARGE'),
-    dto => toLALRow(dto),
-    3,
-  )
+  const ada = toTable(activeAdjustmentsOfType('ADDITIONAL_DAYS_AWARDED', dtos), dto => toAdaRow(dto), 2)
+  const ual = toTable(activeAdjustmentsOfType('UNLAWFULLY_AT_LARGE', dtos), dto => toUALRow(dto), 3)
+  const lal = toTable(activeAdjustmentsOfType('LAWFULLY_AT_LARGE', dtos), dto => toLALRow(dto), 3)
   const appealApplicant = toTable(
-    dtos.filter(it => it.adjustmentType === 'APPEAL_APPLICANT'),
+    activeAdjustmentsOfType('APPEAL_APPLICANT', dtos),
     dto => toAppealApplicantRow(dto, sentencesAndOffences),
     3,
   )
@@ -116,6 +106,10 @@ export function adjustmentsTablesFromAdjustmentDTOs(
     appealApplicant,
     totalAdditions,
   }
+}
+
+function activeAdjustmentsOfType(type: AdjustmentType, dtos: AnalysedAdjustment[] | AdjustmentDto[]): AdjustmentDto[] {
+  return dtos.filter(adjustment => adjustment.adjustmentType === type && adjustment.status === 'ACTIVE')
 }
 
 function toTable(

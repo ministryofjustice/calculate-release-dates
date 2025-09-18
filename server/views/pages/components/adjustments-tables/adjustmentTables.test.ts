@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio'
 import dateFilter from 'nunjucks-date-filter'
 import AdjustmentTablesModel, { adjustmentsTablesFromAdjustmentDTOs } from './AdjustmentTablesModel'
 import {
+  AdjustmentStatus,
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -438,6 +439,12 @@ describe('Tests for adjustments tables component', () => {
           id: 'ud-2',
           days: 5,
         },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-3',
+          days: 5,
+          status: 'INACTIVE', // should never get one but should also be ignored
+        },
       ],
       sentencesAndOffences,
     )
@@ -823,6 +830,108 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
   })
 
+  it.each(['INACTIVE', 'DELETED', 'INACTIVE_WHEN_DELETED'])(
+    'should not show deduction adjustments that have a status other than active (%s)',
+    (nonActiveStatus: AdjustmentStatus) => {
+      const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+        [
+          {
+            ...aRemand,
+            id: 'remand-1',
+            days: 1,
+            toDate: '2023-02-01',
+            fromDate: '2022-12-25',
+            status: 'ACTIVE',
+          },
+          {
+            ...aRemand,
+            id: 'remand-2',
+            days: 10,
+            toDate: '2023-02-01',
+            fromDate: '2022-12-25',
+            status: nonActiveStatus,
+          },
+          {
+            ...aTaggedBail,
+            id: 'tb-1',
+            days: 2,
+            toDate: '2023-02-01',
+            fromDate: '2022-12-25',
+            status: 'ACTIVE',
+          },
+          {
+            ...aTaggedBail,
+            id: 'tb-2',
+            days: 20,
+            toDate: '2023-02-01',
+            fromDate: '2022-12-25',
+            status: nonActiveStatus,
+          },
+          {
+            ...aCustodyAbroard,
+            id: 'ca-1',
+            days: 3,
+            status: 'ACTIVE',
+          },
+          {
+            ...aCustodyAbroard,
+            id: 'ca-2',
+            days: 30,
+            status: nonActiveStatus,
+          },
+          {
+            ...aRADA,
+            id: 'rada-1',
+            days: 4,
+            fromDate: '2025-01-02',
+            status: 'ACTIVE',
+          },
+          {
+            ...aRADA,
+            id: 'rada-2',
+            days: 40,
+            fromDate: '2025-01-02',
+            status: nonActiveStatus,
+          },
+          {
+            ...aSpecialRemission,
+            id: 'sr-1',
+            days: 5,
+            status: 'ACTIVE',
+          },
+          {
+            ...aSpecialRemission,
+            id: 'sr-2',
+            days: 50,
+            status: nonActiveStatus,
+          },
+          {
+            ...aUnusedDeduction,
+            id: 'ud-1',
+            days: 10,
+            status: 'ACTIVE',
+          },
+          {
+            ...aUnusedDeduction,
+            id: 'ud-2',
+            days: 100,
+            status: nonActiveStatus,
+          },
+        ],
+        sentencesAndOffences,
+      )
+      const content = nunjucks.render('test.njk', { model })
+      const $ = cheerio.load(content)
+      expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+      expect($('[data-qa=remand-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=tagged-bail-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=custody-abroad-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=rada-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=special-remission-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
+    },
+  )
+
   it('Should show additions section and ADA table if there are any present', () => {
     const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
       [
@@ -1193,4 +1302,85 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=lal-table]').find('tbody').find('tr')).toHaveLength(2)
     expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
   })
+
+  it.each(['INACTIVE', 'DELETED', 'INACTIVE_WHEN_DELETED'])(
+    'Should only show additions with active status',
+    (nonActiveStatus: AdjustmentStatus) => {
+      const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+        [
+          {
+            ...anADA,
+            id: 'ada-1',
+            days: 1,
+            fromDate: '2025-01-02',
+            status: 'ACTIVE',
+          },
+          {
+            ...anADA,
+            id: 'ada-2',
+            days: 10,
+            fromDate: '2025-01-02',
+            status: nonActiveStatus,
+          },
+          {
+            ...aUAL,
+            id: 'ual-1',
+            days: 2,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: 'ACTIVE',
+          },
+          {
+            ...aUAL,
+            id: 'ual-2',
+            days: 20,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: nonActiveStatus,
+          },
+          {
+            ...aLAL,
+            id: 'lal-1',
+            days: 3,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: 'ACTIVE',
+          },
+          {
+            ...aLAL,
+            id: 'lal-2',
+            days: 30,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: nonActiveStatus,
+          },
+          {
+            ...anAppealApplicant,
+            id: 'aa-1',
+            days: 4,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: 'ACTIVE',
+          },
+          {
+            ...anAppealApplicant,
+            id: 'aa-2',
+            days: 40,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: nonActiveStatus,
+          },
+        ],
+        sentencesAndOffences,
+      )
+      const content = nunjucks.render('test.njk', { model })
+      const $ = cheerio.load(content)
+      expect($('[data-qa=additions-heading]')).toHaveLength(1)
+      expect($('[data-qa=appeal-applicant-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=ada-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=ual-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=lal-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
+    },
+  )
 })
