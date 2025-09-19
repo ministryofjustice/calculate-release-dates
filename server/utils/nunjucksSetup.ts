@@ -15,6 +15,7 @@ import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
 import { FieldValidationError } from '../types/FieldValidationError'
+import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
 
 // TODO the use of nunjucks-date-filter is raising a deprecation warning, some dates are in this format 12/12/2030 ->
 // Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable
@@ -151,6 +152,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('hmppsFormatDate', hmppsFormatDate)
   njkEnv.addFilter('formatSds40Exclusion', formatSds40Exclusion)
   njkEnv.addFilter('validPreCalcHints', validPreCalcHints)
+  njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
+  njkEnv.addFilter('findError', findError)
 }
 
 const getReleaseDateType = (dates: { [key: string]: unknown }): string => {

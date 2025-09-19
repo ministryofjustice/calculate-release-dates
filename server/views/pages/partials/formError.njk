@@ -1,11 +1,13 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% if validationErrors.length > 0 %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+{% set errorSummaryList = validationErrors | buildErrorSummaryList %}
 
+{% if errorSummaryList.length > 0 %}
+    <div class="govuk-grid-row govuk-!-static-margin-bottom-8 govuk-!-margin-top-6">
+        <div class="govuk-grid-column-two-thirds">
             {{ govukErrorSummary({
                 titleText: "There is a problem",
-                errorList: validationErrors
+                errorList: (errorSummaryList | customErrorOrderBuilder(customErrorOrder)) if customErrorOrder else errorSummaryList,
+                classes: 'govuk-!-margin-bottom-0'
             }) }}
         </div>
     </div>

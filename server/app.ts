@@ -23,6 +23,7 @@ import AuthorisedRoles from './enumerations/authorisedRoles'
 import routes from './routes'
 import type { Services } from './services'
 import setUpCCARDComponents from './middleware/setUpCCARDComponents'
+import populateValidationErrors from './middleware/populateValidationErrors'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -45,6 +46,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCurrentUser(services))
   app.use(setUpFrontendComponents(services))
   app.use(setUpCCARDComponents())
+  app.use(populateValidationErrors())
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
