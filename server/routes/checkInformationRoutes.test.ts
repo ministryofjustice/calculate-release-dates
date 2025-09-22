@@ -550,6 +550,7 @@ describe('Check access tests', () => {
 
 describe('Check information routes tests', () => {
   it('GET /calculation/:nomsId/check-information should return detail about the prisoner with the EDS card view', () => {
+    config.featureToggles.showRevocationDate = true
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
     userInputService.isCalculationReasonSet.mockReturnValue(true)
 
