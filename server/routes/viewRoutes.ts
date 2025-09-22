@@ -20,6 +20,7 @@ import {
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import ViewPastNomisCalculationPageViewModel from '../models/ViewPastNomisCalculationPageViewModel'
 import PrintNotificationSlipViewModel from '../models/PrintNotificationSlipViewModel'
+import config from '../config'
 
 export default class ViewRoutes {
   constructor(
@@ -67,6 +68,9 @@ export default class ViewRoutes {
         calculationRequestId,
         token,
       )
+      const adjustmentDtos = config.featureToggles.adjustmentsIntegrationEnabled
+        ? await this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, token)
+        : []
       const calculationUserInputs = await this.viewReleaseDatesService.getCalculationUserInputs(
         calculationRequestId,
         token,
@@ -96,6 +100,7 @@ export default class ViewRoutes {
             detailedCalculationResults.context.calculationDate === undefined
               ? undefined
               : longDateFormat(detailedCalculationResults.context.calculationDate),
+            adjustmentDtos,
           ),
           calculationRequestId,
           nomsId,
@@ -237,12 +242,16 @@ export default class ViewRoutes {
 
     await this.prisonerService.checkPrisonerAccess(nomsId, token, caseloads, userRoles)
 
-    const [prisonerDetail, sentencesAndOffences, adjustmentDetails, releaseDateAndCalcContext] = await Promise.all([
-      this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, caseloads, token),
-      this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token),
-      this.viewReleaseDatesService.getBookingAndSentenceAdjustments(calculationRequestId, token),
-      this.calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, token),
-    ])
+    const [prisonerDetail, sentencesAndOffences, adjustmentDetails, releaseDateAndCalcContext, adjustmentsDtos] =
+      await Promise.all([
+        this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, caseloads, token),
+        this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token),
+        this.viewReleaseDatesService.getBookingAndSentenceAdjustments(calculationRequestId, token),
+        this.calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, token),
+        config.featureToggles.adjustmentsIntegrationEnabled
+          ? this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, token)
+          : Promise.resolve([]),
+      ])
 
     const hasDTOSentence = sentencesAndOffences.some(sentence => SentenceTypes.isSentenceDto(sentence))
     const hasOnlyDTOSentences = sentencesAndOffences.every(sentence => SentenceTypes.isSentenceDto(sentence))
@@ -258,7 +267,18 @@ export default class ViewRoutes {
     res.render(
       'pages/printNotification/printNotificationSlip',
       new PrintNotificationSlipViewModel(
-        new ViewRouteSentenceAndOffenceViewModel(prisonerDetail, null, sentencesAndOffences, adjustmentDetails, null),
+        new ViewRouteSentenceAndOffenceViewModel(
+          prisonerDetail,
+          null,
+          sentencesAndOffences,
+          adjustmentDetails,
+          null,
+          null,
+          null,
+          null,
+          null,
+          adjustmentsDtos,
+        ),
         calculationRequestId,
         nomsId,
         releaseDateAndCalcContext.calculation.calculationDate,

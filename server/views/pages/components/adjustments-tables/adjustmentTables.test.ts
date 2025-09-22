@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio'
 import dateFilter from 'nunjucks-date-filter'
 import AdjustmentTablesModel, { adjustmentsTablesFromAdjustmentDTOs } from './AdjustmentTablesModel'
 import {
+  AdjustmentStatus,
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -13,8 +14,7 @@ const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/components/',
 ])
 njkEnv.addFilter('date', dateFilter)
-
-const aDeduction = {
+const anAdjustment = {
   analysisResult: 'SAME',
   bookingId: 123458,
   person: 'A3752DZ',
@@ -38,6 +38,16 @@ const aDeduction = {
   createdDate: '2024-03-27T12:24:50.36377',
   effectiveDays: 1,
   source: 'DPS',
+}
+
+const aDeduction = {
+  ...anAdjustment,
+  adjustmentArithmeticType: 'DEDUCTION',
+}
+
+const anAddition = {
+  ...anAdjustment,
+  adjustmentArithmeticType: 'ADDITION',
 }
 
 const aRemand = {
@@ -90,6 +100,41 @@ const aUnusedDeduction = {
   ...aDeduction,
   adjustmentType: 'UNUSED_DEDUCTIONS',
   adjustmentTypeText: 'Unused deductions',
+} as AnalysedAdjustment
+
+const anADA = {
+  ...anAddition,
+  adjustmentType: 'ADDITIONAL_DAYS_AWARDED',
+  adjustmentTypeText: 'Additional days awarded',
+  additionalDaysAwarded: { adjudicationId: ['1'], prospective: false },
+  fromDate: '2023-01-01',
+} as AnalysedAdjustment
+
+const aUAL = {
+  ...anAddition,
+  adjustmentType: 'UNLAWFULLY_AT_LARGE',
+  adjustmentTypeText: 'Unlawfully at large',
+  unlawfullyAtLarge: { type: 'RECALL' },
+  fromDate: '2023-01-01',
+  toDate: '2023-03-03',
+} as AnalysedAdjustment
+
+const aLAL = {
+  ...anAddition,
+  adjustmentType: 'LAWFULLY_AT_LARGE',
+  adjustmentTypeText: 'Lawfully at large',
+  lawfullyAtLarge: { affectsDates: 'YES' },
+  fromDate: '2023-01-01',
+  toDate: '2023-03-03',
+} as AnalysedAdjustment
+
+const anAppealApplicant = {
+  ...anAddition,
+  adjustmentType: 'APPEAL_APPLICANT',
+  adjustmentTypeText: 'Time spent as an appeal applicant not to count',
+  timeSpentAsAnAppealApplicant: { chargeIds: [789456], courtOfAppealReferenceNumber: 'FOO' },
+  fromDate: '2023-01-01',
+  toDate: '2023-03-03',
 } as AnalysedAdjustment
 
 const sentencesAndOffences = [
@@ -174,11 +219,33 @@ const sentencesAndOffences = [
 
 describe('Tests for adjustments tables component', () => {
   it('If there are no deductions then hide the deductions section', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs([anADA], sentencesAndOffences)
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=deductions-heading]')).toHaveLength(0)
+    expect($('[data-qa=total-deductions]')).toHaveLength(0)
+    expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    expect($('[data-qa=total-additions]')).toHaveLength(1)
+  })
+
+  it('If there are no additions then hide the additions section', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs([aRADA], sentencesAndOffences)
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+    expect($('[data-qa=total-deductions]')).toHaveLength(1)
+    expect($('[data-qa=additions-heading]')).toHaveLength(0)
+    expect($('[data-qa=total-additions]')).toHaveLength(0)
+  })
+
+  it('If there are no deductions or additions then hide both sections', () => {
     const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs([], sentencesAndOffences)
     const content = nunjucks.render('test.njk', { model })
     const $ = cheerio.load(content)
     expect($('[data-qa=deductions-heading]')).toHaveLength(0)
     expect($('[data-qa=total-deductions]')).toHaveLength(0)
+    expect($('[data-qa=additions]')).toHaveLength(0)
+    expect($('[data-qa=total-additions]')).toHaveLength(0)
   })
 
   it('Should show deductions section and remand table if there is remand present', () => {
@@ -253,7 +320,7 @@ describe('Tests for adjustments tables component', () => {
     const remandRows = remandTable.find('tbody').find('tr')
     const firstRowCells = remandRows.eq(0).find('td')
     expect(firstRowCells.eq(1).html()).toStrictEqual(
-      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black">RECALL</span>',
+      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
   })
 
@@ -335,10 +402,10 @@ describe('Tests for adjustments tables component', () => {
     expect(taggedBailRows).toHaveLength(2)
 
     const firstRowCells = taggedBailRows.eq(0).find('td')
-    expect(firstRowCells.eq(0).html()).toStrictEqual(
-      'Court case 2<span class="moj-badge moj-badge--black">RECALL</span>',
+    expect(firstRowCells.eq(0).text()).toStrictEqual('Court case 2')
+    expect(firstRowCells.eq(1).html()).toStrictEqual(
+      'Unknown<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
-    expect(firstRowCells.eq(1).text()).toStrictEqual('Unknown')
     expect(firstRowCells.eq(2).text()).toStrictEqual('1')
   })
 
@@ -372,6 +439,12 @@ describe('Tests for adjustments tables component', () => {
           id: 'ud-2',
           days: 5,
         },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-3',
+          days: 5,
+          status: 'INACTIVE', // should never get one but should also be ignored
+        },
       ],
       sentencesAndOffences,
     )
@@ -380,7 +453,7 @@ describe('Tests for adjustments tables component', () => {
 
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
-    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('20 including 10 days of unused')
+    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('20 including 10 days unused')
 
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
@@ -425,7 +498,7 @@ describe('Tests for adjustments tables component', () => {
 
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
-    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days of unused')
+    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days unused')
 
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
@@ -470,11 +543,11 @@ describe('Tests for adjustments tables component', () => {
 
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
-    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days of unused')
+    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days unused')
 
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
-    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 5 days of unused')
+    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 5 days unused')
   })
 
   it('Should show deductions section and time spent in custody abroad table if there is any present', () => {
@@ -543,7 +616,7 @@ describe('Tests for adjustments tables component', () => {
     const custodyAbroadRows = custodyAbroadTable.find('tbody').find('tr')
     const firstRowCells = custodyAbroadRows.eq(0).find('td')
     expect(firstRowCells.eq(1).html()).toStrictEqual(
-      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black">RECALL</span>',
+      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
   })
 
@@ -704,4 +777,610 @@ describe('Tests for adjustments tables component', () => {
     // sum of all deduction types except unused deductions
     expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
   })
+
+  it('Should show all deductions with minimal details as loaded from a previous calc with old style adjustments', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aRemand,
+          id: 'remand-1',
+          days: 1,
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+        },
+        {
+          ...aTaggedBail,
+          id: 'tb-1',
+          days: 2,
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+        },
+        {
+          ...aCustodyAbroard,
+          id: 'ca-1',
+          days: 3,
+        },
+        {
+          ...aRADA,
+          id: 'rada-1',
+          days: 4,
+          fromDate: '2025-01-02',
+        },
+        {
+          ...aSpecialRemission,
+          id: 'sr-3',
+          days: 5,
+        },
+        {
+          ...aUnusedDeduction,
+          id: 'ud-1',
+          days: 10,
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+    expect($('[data-qa=remand-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=tagged-bail-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=custody-abroad-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=rada-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=special-remission-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
+  })
+
+  it.each(['INACTIVE', 'DELETED', 'INACTIVE_WHEN_DELETED'])(
+    'should not show deduction adjustments that have a status other than active (%s)',
+    (nonActiveStatus: AdjustmentStatus) => {
+      const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+        [
+          {
+            ...aRemand,
+            id: 'remand-1',
+            days: 1,
+            toDate: '2023-02-01',
+            fromDate: '2022-12-25',
+            status: 'ACTIVE',
+          },
+          {
+            ...aRemand,
+            id: 'remand-2',
+            days: 10,
+            toDate: '2023-02-01',
+            fromDate: '2022-12-25',
+            status: nonActiveStatus,
+          },
+          {
+            ...aTaggedBail,
+            id: 'tb-1',
+            days: 2,
+            toDate: '2023-02-01',
+            fromDate: '2022-12-25',
+            status: 'ACTIVE',
+          },
+          {
+            ...aTaggedBail,
+            id: 'tb-2',
+            days: 20,
+            toDate: '2023-02-01',
+            fromDate: '2022-12-25',
+            status: nonActiveStatus,
+          },
+          {
+            ...aCustodyAbroard,
+            id: 'ca-1',
+            days: 3,
+            status: 'ACTIVE',
+          },
+          {
+            ...aCustodyAbroard,
+            id: 'ca-2',
+            days: 30,
+            status: nonActiveStatus,
+          },
+          {
+            ...aRADA,
+            id: 'rada-1',
+            days: 4,
+            fromDate: '2025-01-02',
+            status: 'ACTIVE',
+          },
+          {
+            ...aRADA,
+            id: 'rada-2',
+            days: 40,
+            fromDate: '2025-01-02',
+            status: nonActiveStatus,
+          },
+          {
+            ...aSpecialRemission,
+            id: 'sr-1',
+            days: 5,
+            status: 'ACTIVE',
+          },
+          {
+            ...aSpecialRemission,
+            id: 'sr-2',
+            days: 50,
+            status: nonActiveStatus,
+          },
+          {
+            ...aUnusedDeduction,
+            id: 'ud-1',
+            days: 10,
+            status: 'ACTIVE',
+          },
+          {
+            ...aUnusedDeduction,
+            id: 'ud-2',
+            days: 100,
+            status: nonActiveStatus,
+          },
+        ],
+        sentencesAndOffences,
+      )
+      const content = nunjucks.render('test.njk', { model })
+      const $ = cheerio.load(content)
+      expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+      expect($('[data-qa=remand-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=tagged-bail-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=custody-abroad-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=rada-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=special-remission-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
+    },
+  )
+
+  it('Should show additions section and ADA table if there are any present', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...anADA,
+          id: 'ada-1',
+          days: 1,
+          fromDate: '2025-01-02',
+        },
+        {
+          ...anADA,
+          id: 'ada-2',
+          days: 10,
+          fromDate: '2025-03-04',
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    const adaTable = $('[data-qa=ada-table]')
+    expect(adaTable).toHaveLength(1)
+    const adaRows = adaTable.find('tbody').find('tr')
+    expect(adaRows).toHaveLength(3)
+
+    const firstRowCells = adaRows.eq(0).find('td')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('Awarded 02 January 2025')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
+
+    const secondRowCells = adaRows.eq(1).find('td')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('Awarded 04 March 2025')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('10')
+
+    const totalRow = adaRows.eq(2).find('td')
+    expect(totalRow.eq(0).text()).toStrictEqual('Total days')
+    expect(totalRow.eq(1).text()).toStrictEqual('11')
+
+    expect($('[data-qa=ual-table]')).toHaveLength(0)
+    expect($('[data-qa=lal-table]')).toHaveLength(0)
+    expect($('[data-qa=appeal-applicant-table]')).toHaveLength(0)
+    expect($('[data-qa=total-additions]').text()).toStrictEqual('11')
+  })
+
+  it('Should show additions section and UAL table if there are any present', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aUAL,
+          id: 'ual-1',
+          days: 1,
+          unlawfullyAtLarge: { type: 'RECALL' },
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+        {
+          ...aUAL,
+          id: 'ual-2',
+          days: 2,
+          unlawfullyAtLarge: { type: 'RELEASE_IN_ERROR' },
+          fromDate: '2025-02-04',
+          toDate: '2025-03-09',
+        },
+        {
+          ...aUAL,
+          id: 'ual-3',
+          days: 3,
+          unlawfullyAtLarge: { type: 'ESCAPE' },
+          fromDate: '2025-11-01',
+          toDate: '2025-11-04',
+        },
+        {
+          ...aUAL,
+          id: 'ual-4',
+          days: 4,
+          unlawfullyAtLarge: { type: 'IMMIGRATION_DETENTION' },
+          fromDate: '2025-11-25',
+          toDate: '2025-11-29',
+        },
+        {
+          ...aUAL,
+          id: 'ual-5',
+          days: 5,
+          unlawfullyAtLarge: { type: 'SENTENCED_IN_ABSENCE' },
+          fromDate: '2025-12-30',
+          toDate: '2026-01-04',
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    const ualTable = $('[data-qa=ual-table]')
+    expect(ualTable).toHaveLength(1)
+    const ualRows = ualTable.find('tbody').find('tr')
+    expect(ualRows).toHaveLength(6)
+
+    const firstRowCells = ualRows.eq(0).find('td')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('From 02 January 2025 to 05 January 2025')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('Recall')
+    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+
+    const secondRowCells = ualRows.eq(1).find('td')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('From 04 February 2025 to 09 March 2025')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('Release in error')
+    expect(secondRowCells.eq(2).text()).toStrictEqual('2')
+
+    const thirdRowCells = ualRows.eq(2).find('td')
+    expect(thirdRowCells.eq(0).text()).toStrictEqual('From 01 November 2025 to 04 November 2025')
+    expect(thirdRowCells.eq(1).text()).toStrictEqual('Escape, including absconds and ROTL failures')
+    expect(thirdRowCells.eq(2).text()).toStrictEqual('3')
+
+    const fourthRowCells = ualRows.eq(3).find('td')
+    expect(fourthRowCells.eq(0).text()).toStrictEqual('From 25 November 2025 to 29 November 2025')
+    expect(fourthRowCells.eq(1).text()).toStrictEqual('Immigration detention')
+    expect(fourthRowCells.eq(2).text()).toStrictEqual('4')
+
+    const fifthRowCells = ualRows.eq(4).find('td')
+    expect(fifthRowCells.eq(0).text()).toStrictEqual('From 30 December 2025 to 04 January 2026')
+    expect(fifthRowCells.eq(1).text()).toStrictEqual('Sentenced in absence')
+    expect(fifthRowCells.eq(2).text()).toStrictEqual('5')
+
+    const totalRow = ualRows.eq(5).find('td')
+    expect(totalRow.eq(0).text()).toStrictEqual('Total days')
+    expect(totalRow.eq(1).text()).toStrictEqual('')
+    expect(totalRow.eq(2).text()).toStrictEqual('15')
+
+    expect($('[data-qa=ada-table]')).toHaveLength(0)
+    expect($('[data-qa=lal-table]')).toHaveLength(0)
+    expect($('[data-qa=appeal-applicant-table]')).toHaveLength(0)
+    expect($('[data-qa=total-additions]').text()).toStrictEqual('15')
+  })
+
+  it('Should show additions section and LAL table if there are any present', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aLAL,
+          id: 'lal-1',
+          days: 1,
+          lawfullyAtLarge: { affectsDates: 'YES' },
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+        {
+          ...aLAL,
+          id: 'lal-2',
+          days: 2,
+          lawfullyAtLarge: { affectsDates: 'NO' },
+          fromDate: '2025-02-04',
+          toDate: '2025-03-09',
+        },
+        {
+          ...aLAL,
+          id: 'lal-3',
+          days: 3,
+          lawfullyAtLarge: { affectsDates: 'YES' },
+          fromDate: '2025-11-01',
+          toDate: '2025-11-04',
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    const lalTable = $('[data-qa=lal-table]')
+    expect(lalTable).toHaveLength(1)
+    const lalRows = lalTable.find('tbody').find('tr')
+    expect(lalRows).toHaveLength(4)
+
+    const firstRowCells = lalRows.eq(0).find('td')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('From 02 January 2025 to 05 January 2025')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('Yes')
+    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+
+    const secondRowCells = lalRows.eq(1).find('td')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('From 04 February 2025 to 09 March 2025')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('No')
+    expect(secondRowCells.eq(2).text()).toStrictEqual('2 (excluded)')
+
+    const thirdRowCells = lalRows.eq(2).find('td')
+    expect(thirdRowCells.eq(0).text()).toStrictEqual('From 01 November 2025 to 04 November 2025')
+    expect(thirdRowCells.eq(1).text()).toStrictEqual('Yes')
+    expect(thirdRowCells.eq(2).text()).toStrictEqual('3')
+
+    const totalRow = lalRows.eq(3).find('td')
+    expect(totalRow.eq(0).text()).toStrictEqual('Total days')
+    expect(totalRow.eq(1).text()).toStrictEqual('')
+    expect(totalRow.eq(2).text()).toStrictEqual('4')
+
+    expect($('[data-qa=ada-table]')).toHaveLength(0)
+    expect($('[data-qa=ual-table]')).toHaveLength(0)
+    expect($('[data-qa=appeal-applicant-table]')).toHaveLength(0)
+    expect($('[data-qa=total-additions]').text()).toStrictEqual('4')
+  })
+
+  it('Should show additions section and appeal applicant table if there are any present', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...anAppealApplicant,
+          id: 'aa-1',
+          days: 1,
+          timeSpentAsAnAppealApplicant: { chargeIds: [123, 456], courtOfAppealReferenceNumber: 'COARN1' },
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+        {
+          ...anAppealApplicant,
+          id: 'aa-2',
+          days: 2,
+          timeSpentAsAnAppealApplicant: { chargeIds: [789] },
+          fromDate: '2025-02-04',
+          toDate: '2025-03-09',
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    const lalTable = $('[data-qa=appeal-applicant-table]')
+    expect(lalTable).toHaveLength(1)
+    const lalRows = lalTable.find('tbody').find('tr')
+    expect(lalRows).toHaveLength(3)
+
+    const firstRowCells = lalRows.eq(0).find('td')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('COARN1')
+    expect(firstRowCells.eq(1).html()).toStrictEqual('Burglary<br>Attempt to solicit murder')
+    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+
+    const secondRowCells = lalRows.eq(1).find('td')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('Unknown')
+    expect(secondRowCells.eq(1).html()).toStrictEqual('Failure to pay a fine')
+    expect(secondRowCells.eq(2).text()).toStrictEqual('2')
+
+    const totalRow = lalRows.eq(2).find('td')
+    expect(totalRow.eq(0).text()).toStrictEqual('Total days')
+    expect(totalRow.eq(1).text()).toStrictEqual('')
+    expect(totalRow.eq(2).text()).toStrictEqual('3')
+
+    expect($('[data-qa=ada-table]')).toHaveLength(0)
+    expect($('[data-qa=ual-table]')).toHaveLength(0)
+    expect($('[data-qa=lal-table]')).toHaveLength(0)
+    expect($('[data-qa=total-additions]').text()).toStrictEqual('3')
+  })
+
+  it('Should show recall tag for appeal applicant table if relevant', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...anAppealApplicant,
+          id: 'aa-1',
+          days: 1,
+          timeSpentAsAnAppealApplicant: { chargeIds: [246], courtOfAppealReferenceNumber: 'COARN1' },
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    const lalTable = $('[data-qa=appeal-applicant-table]')
+    const lalRows = lalTable.find('tbody').find('tr')
+    const firstRowCells = lalRows.eq(0).find('td')
+    expect(firstRowCells.eq(1).html()).toStrictEqual(
+      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
+    )
+  })
+
+  it('Should show all additions sections with the correct total additions excluding LAL that does not count', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...anADA,
+          id: 'ada-1',
+          days: 1,
+          fromDate: '2025-01-02',
+        },
+        {
+          ...aUAL,
+          id: 'ual-1',
+          days: 2,
+          unlawfullyAtLarge: { type: 'RECALL' },
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+        {
+          ...aLAL,
+          id: 'lal-1',
+          days: 3,
+          lawfullyAtLarge: { affectsDates: 'YES' },
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+        {
+          ...aLAL,
+          id: 'lal-2',
+          days: 50, // excluded from total
+          lawfullyAtLarge: { affectsDates: 'NO' },
+          fromDate: '2025-02-04',
+          toDate: '2025-03-09',
+        },
+        {
+          ...anAppealApplicant,
+          id: 'aa-1',
+          days: 4,
+          timeSpentAsAnAppealApplicant: { chargeIds: [123, 456], courtOfAppealReferenceNumber: 'COARN1' },
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    expect($('[data-qa=appeal-applicant-table]')).toHaveLength(1)
+    expect($('[data-qa=ada-table]')).toHaveLength(1)
+    expect($('[data-qa=ual-table]')).toHaveLength(1)
+    expect($('[data-qa=lal-table]')).toHaveLength(1)
+    expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
+  })
+
+  it('Should show all additions sections with minimal data as loaded from previous calculation with old style adjustments', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...anADA,
+          id: 'ada-1',
+          days: 1,
+          fromDate: '2025-01-02',
+        },
+        {
+          ...aUAL,
+          id: 'ual-1',
+          days: 2,
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+        {
+          ...aLAL,
+          id: 'lal-1',
+          days: 3,
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+        {
+          ...anAppealApplicant,
+          id: 'aa-1',
+          days: 4,
+          fromDate: '2025-01-02',
+          toDate: '2025-01-05',
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    expect($('[data-qa=appeal-applicant-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=ada-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=ual-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=lal-table]').find('tbody').find('tr')).toHaveLength(2)
+    expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
+  })
+
+  it.each(['INACTIVE', 'DELETED', 'INACTIVE_WHEN_DELETED'])(
+    'Should only show additions with active status',
+    (nonActiveStatus: AdjustmentStatus) => {
+      const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+        [
+          {
+            ...anADA,
+            id: 'ada-1',
+            days: 1,
+            fromDate: '2025-01-02',
+            status: 'ACTIVE',
+          },
+          {
+            ...anADA,
+            id: 'ada-2',
+            days: 10,
+            fromDate: '2025-01-02',
+            status: nonActiveStatus,
+          },
+          {
+            ...aUAL,
+            id: 'ual-1',
+            days: 2,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: 'ACTIVE',
+          },
+          {
+            ...aUAL,
+            id: 'ual-2',
+            days: 20,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: nonActiveStatus,
+          },
+          {
+            ...aLAL,
+            id: 'lal-1',
+            days: 3,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: 'ACTIVE',
+          },
+          {
+            ...aLAL,
+            id: 'lal-2',
+            days: 30,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: nonActiveStatus,
+          },
+          {
+            ...anAppealApplicant,
+            id: 'aa-1',
+            days: 4,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: 'ACTIVE',
+          },
+          {
+            ...anAppealApplicant,
+            id: 'aa-2',
+            days: 40,
+            fromDate: '2025-01-02',
+            toDate: '2025-01-05',
+            status: nonActiveStatus,
+          },
+        ],
+        sentencesAndOffences,
+      )
+      const content = nunjucks.render('test.njk', { model })
+      const $ = cheerio.load(content)
+      expect($('[data-qa=additions-heading]')).toHaveLength(1)
+      expect($('[data-qa=appeal-applicant-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=ada-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=ual-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=lal-table]').find('tbody').find('tr')).toHaveLength(2)
+      expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
+    },
+  )
 })
