@@ -52,6 +52,14 @@
                                         <th scope="row" class="govuk-table__header sentence-table-header">Sentence date</th>
                                         <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
                                     </tr>
+                                    {% if sentenceModel.isRecall() %}
+                                        <tr class="govuk-table__row govuk-body-s">
+                                            <th scope="row" class="govuk-table__header sentence-table-header">Revocation date</th>
+                                            <td class="govuk-table__cell">
+                                                {{ params.revocationDate | date('DD MMMM YYYY') }}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
                                     {% if sentenceModel.isFixedTermRecall() %}
                                         <tr class="govuk-table__row govuk-body-s">
                                             <th scope="row" class="govuk-table__header sentence-table-header">Return to custody</th>

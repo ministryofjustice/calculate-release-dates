@@ -1733,6 +1733,7 @@ export interface components {
         | 'TERRORISM_T3'
         | 'MURDER_T3'
         | 'NO'
+      revocationDates: string[]
     }
     OffenderOffence: {
       /** Format: int64 */

@@ -49,6 +49,10 @@ export default class ViewRouteSentenceRowViewModel {
     return SentenceTypes.isSentenceAfine(this.sentencesAndOffence)
   }
 
+  public isRecall(): boolean {
+    return SentenceTypes.isRecall(this.sentencesAndOffence)
+  }
+
   public hasCustodialAndLicenseTerms(): boolean {
     return this.isEds() || this.isSopc() || this.isEdsRecall() || this.isSopcRecall()
   }
