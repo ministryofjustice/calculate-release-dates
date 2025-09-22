@@ -11,6 +11,7 @@ import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
 import ThingsToDoInterceptRoutes from './thingsToDoInterceptRoutes'
+import GenuineOverridesRoutes from './genuine-overrides/genuineOverridesRoutes'
 
 export default function Index({
   prisonerService,
@@ -210,6 +211,10 @@ export default function Index({
     router.get('/calculation/:nomsId/things-to-do-before-calculation', thingsToDoInterceptRoutes.thingsToDoIntercept)
   }
 
+  const genuineOverridesRoutes = () => {
+    router.use('/', GenuineOverridesRoutes(calculateReleaseDatesService, prisonerService))
+  }
+
   indexRoutes()
   calculationRoutes()
   reasonRoutes()
@@ -221,5 +226,6 @@ export default function Index({
   compareRoutes()
   approvedDatesRoutes()
   thingsToDoInterceptRouter()
+  genuineOverridesRoutes()
   return router
 }

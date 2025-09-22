@@ -4,6 +4,54 @@
  */
 
 export interface paths {
+  '/queue-admin/retry-dlq/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryDlq']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/retry-all-dlqs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryAllDlqs']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['purgeQueue']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/validation/{prisonerId}/full-validation': {
     parameters: {
       query?: never
@@ -497,6 +545,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getDlqMessages']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/non-friday-release/{date}': {
     parameters: {
       query?: never
@@ -509,6 +573,26 @@ export interface paths {
      * @description Finds the non friday release day, adjusting for weekends and bank holidays
      */
     get: operations['nonFridayReleaseDay']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/manual-calculation/{prisonerId}/has-existing-calculation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Check if booking has existing up to date manual calculation
+     * @description Only applies where the last calculation performed was manual, using the same sentence data as the current booking
+     */
+    get: operations['hasExistingCalculation']
     put?: never
     post?: never
     delete?: never
@@ -569,6 +653,22 @@ export interface paths {
      * @description This endpoint will return a list of calculations performed for a given prisoner
      */
     get: operations['getCalculationResults']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/genuine-override-reasons/': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getGenuineOverrideReasons']
     put?: never
     post?: never
     delete?: never
@@ -1073,6 +1173,14 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
     CalculationSentenceUserInput: {
       /** Format: int32 */
       sentenceSequence: number
@@ -1177,6 +1285,7 @@ export interface components {
         | 'CONCURRENT_CONSECUTIVE_SENTENCES_NOTIFICATION'
         | 'CONSECUTIVE_SENTENCE_WITH_MULTIPLE_OFFENCES'
         | 'BROKEN_CONSECUTIVE_CHAINS'
+        | 'RECALL_MISSING_REVOCATION_DATE'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1449,7 +1558,8 @@ export interface components {
       /** Format: date-time */
       calculatedAt: string
       calculatedByUsername: string
-      comparisonStatus: components['schemas']['ComparisonStatus']
+      /** @enum {string} */
+      comparisonStatus: 'SETUP' | 'PROCESSING' | 'COMPLETED' | 'ERROR'
       /** Format: int64 */
       numberOfPeopleExpected: number
       /** Format: int64 */
@@ -1458,11 +1568,6 @@ export interface components {
       numberOfPeopleComparisonFailedFor: number
       /** Format: int64 */
       numberOfMismatches: number
-    }
-    ComparisonStatus: {
-      /** Format: int32 */
-      id: number
-      name: string
     }
     CreateComparisonDiscrepancyRequest: {
       /**
@@ -1628,6 +1733,7 @@ export interface components {
         | 'TERRORISM_T3'
         | 'MURDER_T3'
         | 'NO'
+      revocationDates: string[]
     }
     OffenderOffence: {
       /** Format: int64 */
@@ -1654,6 +1760,19 @@ export interface components {
     DateTypeDefinition: {
       type: string
       description: string
+    }
+    DlqMessage: {
+      body: {
+        [key: string]: unknown
+      }
+      messageId: string
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
     NonFridayReleaseDay: {
       /** Format: date */
@@ -1687,6 +1806,13 @@ export interface components {
       calculationReason?: string
       /** Format: int64 */
       offenderSentCalculationId?: number
+    }
+    GenuineOverrideReasonResponse: {
+      code: string
+      description: string
+      /** Format: int32 */
+      displayOrder: number
+      requiresFurtherDetail: boolean
     }
     ErsedEligibility: {
       isValid: boolean
@@ -1843,6 +1969,7 @@ export interface components {
         | 'ERSED_ADJUSTED_TO_CONCURRENT_TERM'
         | 'ERSED_BEFORE_SENTENCE_DATE'
         | 'ERSED_ADJUSTED_TO_MTD'
+        | 'ERSED_ADJUSTED_TO_ERS30_COMMENCEMENT'
         | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_1_COMMENCEMENT'
         | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_2_COMMENCEMENT'
         | 'SDS_STANDARD_RELEASE_APPLIES'
@@ -2343,6 +2470,70 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  retryDlq: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        queueName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
   validate: {
     parameters: {
       query?: {
@@ -3626,6 +3817,30 @@ export interface operations {
       }
     }
   }
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
+        }
+      }
+    }
+  }
   nonFridayReleaseDay: {
     parameters: {
       query?: never
@@ -3666,6 +3881,28 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['NonFridayReleaseDay']
+        }
+      }
+    }
+  }
+  hasExistingCalculation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': boolean
         }
       }
     }
@@ -3807,6 +4044,44 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HistoricCalculation'][]
+        }
+      }
+    }
+  }
+  getGenuineOverrideReasons: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns list of reasons */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideReasonResponse'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideReasonResponse'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideReasonResponse'][]
         }
       }
     }

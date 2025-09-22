@@ -1,9 +1,8 @@
 import { CalculationUserInputs } from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
 import type { UserDetails } from '../../services/userService'
 import { ErrorMessages } from '../../types/ErrorMessages'
+import { GenuineOverrideInputs } from '../../models/genuine-override/genuineOverrideInputs'
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
-
-export default {}
 
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -22,9 +21,11 @@ declare module 'express-session' {
     manualEntryValidationErrors?: ErrorMessages
     isAddDatesFlow?: boolean
     manualEntryRoutingForBookings?: [string]
+    genuineOverrideInputs: Record<string, GenuineOverrideInputs>
   }
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export declare global {
   namespace Express {
     interface User extends Partial<UserDetails> {
@@ -41,6 +42,8 @@ export declare global {
 
     interface Locals {
       user: Express.User
+      validationErrors?: fieldErrors
+      formResponses?: { [key: string]: string }
     }
   }
 }

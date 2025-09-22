@@ -228,6 +228,7 @@ const stubbedSentencesAndOffences = [
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
     hasAnSDSEarlyReleaseExclusion: 'NO',
+    revocationDates: ['2022-02-14', '2022-04-02'],
   } as AnalysedSentenceAndOffence,
   {
     sentenceSequence: 3,
@@ -256,6 +257,7 @@ const stubbedSentencesAndOffences = [
     sentenceAndOffenceAnalysis: 'NEW',
     isSDSPlus: false,
     hasAnSDSEarlyReleaseExclusion: 'NO',
+    revocationDates: ['2022-02-14', '2022-04-02'],
   } as AnalysedSentenceAndOffence,
   {
     sentenceSequence: 4,
@@ -585,6 +587,8 @@ describe('Check information routes tests', () => {
         expect(res.text).toContain('href="/calculation/A1234AA/reason"')
         expect(res.text).toContain('CASE001')
         expect(res.text).toContain('Court 1')
+        expect(res.text).toContain('Revocation date')
+        expect(res.text).toContain('02 April 2022')
         expect(res.text).toContain('Return to custody')
         expect(res.text).toContain('12 April 2022')
         expect(res.text).toContain('SDS+')

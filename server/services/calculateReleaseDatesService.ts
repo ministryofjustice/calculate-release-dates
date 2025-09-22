@@ -15,6 +15,7 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
+  GenuineOverrideReason,
   HistoricCalculation,
   LatestCalculation,
   NomisCalculationSummary,
@@ -357,6 +358,10 @@ export default class CalculateReleaseDatesService {
 
   public async getCalculationReasons(token: string): Promise<CalculationReason[]> {
     return new CalculateReleaseDatesApiClient(token).getCalculationReasons()
+  }
+
+  public async getGenuineOverrideReasons(token: string): Promise<GenuineOverrideReason[]> {
+    return new CalculateReleaseDatesApiClient(token).getGenuineOverrideReasons()
   }
 
   async confirmCalculation(

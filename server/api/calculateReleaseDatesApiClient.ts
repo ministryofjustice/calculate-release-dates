@@ -18,6 +18,7 @@ import {
   DateTypeDefinition,
   DetailedCalculationResults,
   ErsedEligibility,
+  GenuineOverrideReason,
   HistoricCalculation,
   LatestCalculation,
   ManualEntryRequest,
@@ -102,6 +103,10 @@ export default class CalculateReleaseDatesApiClient {
 
   getCalculationReasons(): Promise<CalculationReason[]> {
     return this.restClient.get({ path: `/calculation-reasons/` }) as Promise<CalculationReason[]>
+  }
+
+  getGenuineOverrideReasons(): Promise<GenuineOverrideReason[]> {
+    return this.restClient.get({ path: `/genuine-override-reasons/` }) as Promise<GenuineOverrideReason[]>
   }
 
   validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessage[]> {
