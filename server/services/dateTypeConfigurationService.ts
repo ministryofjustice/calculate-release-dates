@@ -9,22 +9,23 @@ export default class DateTypeConfigurationService {
     dateList: string | string[],
     sessionList: ManualJourneySelectedDate[],
   ): Promise<ManualJourneySelectedDate[]> {
-    let numberOfDates = sessionList.length
     const dateTypeDefinitions = await new CalculateReleaseDatesApiClient(token).getDateTypeDefinitions()
     const selectedDateTypes: string[] = Array.isArray(dateList) ? dateList : [dateList]
+    const newSessionList = sessionList.filter((d: ManualJourneySelectedDate) => selectedDateTypes.includes(d.dateType))
+    let numberOfDates = 0
     return selectedDateTypes
       .filter(value => value !== undefined)
       .map((date: string): ManualJourneySelectedDate => {
-        const existingDate = sessionList.find((d: ManualJourneySelectedDate) => d.dateType === date)
+        const existingDate = newSessionList.find((d: ManualJourneySelectedDate) => d.dateType === date)
+        numberOfDates += 1
         if (existingDate && existingDate.manualEntrySelectedDate) {
           return {
-            position: existingDate.position,
+            position: numberOfDates,
             completed: false,
             dateType: date,
             manualEntrySelectedDate: existingDate.manualEntrySelectedDate,
           }
         }
-        numberOfDates += 1
         return {
           position: numberOfDates,
           completed: false,
@@ -44,11 +45,11 @@ export default class DateTypeConfigurationService {
     })
   }
 
-  private getDescription(dateTypeDefinitions: DateTypeDefinition[], date: string) {
+  getDescription(dateTypeDefinitions: DateTypeDefinition[], date: string) {
     return this.fromDefinitionToDescription(dateTypeDefinitions.find((dtd: DateTypeDefinition) => dtd.type === date))
   }
 
-  private fromDefinitionToDescription(def: DateTypeDefinition) {
+  fromDefinitionToDescription(def: DateTypeDefinition) {
     if (def.type === 'None') {
       return def.description
     }

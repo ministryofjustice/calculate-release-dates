@@ -1,7 +1,6 @@
 // eslint-disable-next-line
 import { HTTPError } from 'superagent' // eslint thinks this is unused.
 import {
-  AdjustmentDto,
   BookingCalculation,
   CalculationUserInputs,
   SentenceAndOffenceWithReleaseArrangements,
@@ -23,10 +22,6 @@ export default class ViewReleaseDatesService {
     token: string,
   ): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
     return new CalculateReleaseDatesApiClient(token).getBookingAndSentenceAdjustments(calculationId)
-  }
-
-  async getAdjustmentsDtosForCalculation(calculationId: number, token: string): Promise<AdjustmentDto[]> {
-    return new CalculateReleaseDatesApiClient(token).getAdjustmentsDtosForCalculation(calculationId)
   }
 
   async getSentencesAndOffences(

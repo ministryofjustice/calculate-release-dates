@@ -103,7 +103,6 @@ export default function Index({
     router.post('/calculation/:nomsId/manual-entry/confirmation', manualEntryAccessRoutes.loadConfirmationSubmit)
     router.get('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.loadRemoveDate)
     router.post('/calculation/:nomsId/manual-entry/remove-date', manualEntryAccessRoutes.submitRemoveDate)
-    router.get('/calculation/:nomsId/manual-entry/change-date', manualEntryAccessRoutes.loadChangeDate)
     router.get('/calculation/:nomsId/manual-entry/save', manualEntryAccessRoutes.save)
     router.get('/calculation/:nomsId/manual-entry/no-dates-confirmation', manualEntryAccessRoutes.noDatesConfirmation)
     router.post(
@@ -137,10 +136,10 @@ export default function Index({
       '/calculation/:nomsId/:calculationRequestId/confirmation',
       calculationAccessRoutes.submitCalculationSummary,
     )
-    router.get('/calculation/:nomsId/:calculationRequestId/change', approvedDatesAccessRoutes.loadChangeDate)
     router.get('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.loadRemoveDate)
     router.post('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.submitRemoveDate)
   }
+
   const calculationRoutes = () => {
     router.get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
     router.post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)

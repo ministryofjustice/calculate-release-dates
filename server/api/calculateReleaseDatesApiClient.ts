@@ -1,7 +1,6 @@
 import config, { ApiConfig } from '../config'
 import RestClient from '../data/restClient'
 import {
-  AdjustmentDto,
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   BookingCalculation,
@@ -132,13 +131,6 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/calculation/adjustments/${calculationId}`,
     }) as Promise<AnalysedPrisonApiBookingAndSentenceAdjustments>
-  }
-
-  getAdjustmentsDtosForCalculation(calculationId: number): Promise<AdjustmentDto[]> {
-    return this.restClient.get({
-      path: `/calculation/adjustments/${calculationId}`,
-      query: { 'adjustments-api': true },
-    }) as Promise<AdjustmentDto[]>
   }
 
   getLatestCalculation(prisonerId: string, bookingId: number): Promise<BookingCalculation> {
