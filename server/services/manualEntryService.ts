@@ -9,7 +9,7 @@ import { ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 
-const order = {
+export const dateTypeOrder = {
   SED: 1,
   LED: 2,
   CRD: 3,
@@ -352,7 +352,7 @@ export default class ManualEntryService {
   }
 
   private getOrder(dateType: string) {
-    return order[dateType]
+    return dateTypeOrder[dateType]
   }
 
   private getItems(nomsId: string, d: ManualEntrySelectedDate, text: string) {

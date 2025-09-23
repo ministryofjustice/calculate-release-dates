@@ -131,7 +131,7 @@ describe('SelectGenuineOverrideReasonController', () => {
         .type('form')
         .send({ reason: 'OTHER', reasonFurtherDetail: 'Foo' })
         .expect(302)
-        .expect('Location', `/calculation/${prisonerNumber}/select-dates-to-override/${calculationRequestId}`)
+        .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({ reason: 'OTHER', reasonFurtherDetail: 'Foo' })
     })

@@ -60,6 +60,7 @@ export const services = () => {
     comparisonService,
     courtCasesReleaseDatesService,
     auditService,
+    dateTypeConfigurationService,
   }
 }
 
