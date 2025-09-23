@@ -7,10 +7,13 @@ import { SchemaFactory, validate } from '../../middleware/validationMiddleware'
 import { selectGenuineOverrideReasonSchemaFactory } from './select-genuine-override-reason/selectGenuineOverrideReasonSchemas'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import PrisonerService from '../../services/prisonerService'
+import ReviewDatesForGenuineOverrideController from './review-dates/reviewDatesForGenuineOverrideController'
+import DateTypeConfigurationService from '../../services/dateTypeConfigurationService'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
   prisonerService: PrisonerService,
+  dateTypeConfigurationService: DateTypeConfigurationService,
 ) => {
   const router = Router({ mergeParams: true })
   const route = <P extends { [key: string]: string }>({
@@ -36,6 +39,15 @@ const GenuineOverridesRoutes = (
     path: '/calculation/:nomsId/select-reason-for-override/:calculationRequestId',
     controller: new SelectGenuineOverrideReasonController(calculateReleaseDatesService, prisonerService),
     validateToSchema: selectGenuineOverrideReasonSchemaFactory,
+  })
+
+  route({
+    path: '/calculation/:nomsId/review-dates-for-override/:calculationRequestId',
+    controller: new ReviewDatesForGenuineOverrideController(
+      calculateReleaseDatesService,
+      prisonerService,
+      dateTypeConfigurationService,
+    ),
   })
 
   return router

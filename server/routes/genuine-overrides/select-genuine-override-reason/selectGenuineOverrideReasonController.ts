@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { Controller } from '../../controller'
 import GenuineOverrideUrls from '../genuineOverrideUrls'
-import genuineOverrideInputsForPrisoner from '../genuineOverrideUtils'
+import { genuineOverrideInputsForPrisoner } from '../genuineOverrideUtils'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import GenuineOverrideSelectReasonViewModel from '../../../models/genuine-override/GenuineOverrideSelectReasonViewModel'
 import PrisonerService from '../../../services/prisonerService'
@@ -27,7 +27,7 @@ export default class SelectGenuineOverrideReasonController implements Controller
       .getGenuineOverrideReasons(res.locals.user.token)
       .then(unsortedReasons => unsortedReasons.sort((a, b) => a.displayOrder - b.displayOrder))
 
-    res.render(
+    return res.render(
       'pages/genuineOverrides/selectGenuineOverrideReason',
       new GenuineOverrideSelectReasonViewModel(
         prisonerDetail,
@@ -49,6 +49,6 @@ export default class SelectGenuineOverrideReasonController implements Controller
     const { reason, reasonFurtherDetail } = req.body
     genuineOverrideInputs.reason = reason
     genuineOverrideInputs.reasonFurtherDetail = reasonFurtherDetail
-    res.redirect(GenuineOverrideUrls.selectDatesToOverride(nomsId, calculationRequestId))
+    return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
   }
 }

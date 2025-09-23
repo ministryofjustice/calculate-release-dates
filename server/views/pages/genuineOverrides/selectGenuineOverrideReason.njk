@@ -38,7 +38,7 @@
                         errorMessage: validationErrors | findError('reasonFurtherDetail'),
                         value: reasonFurtherDetail,
                         label: {
-                            text: "Please enter the reason for this override"
+                            text: "Enter the reason this calculation is incorrect"
                         }
                     }) }}
                 {% endset %}
@@ -69,7 +69,7 @@
                         ), radios) %}
                     {% endif %}
                 {% endfor %}
-
+                <span class="govuk-caption-xl">Calculate release dates</span>
                 {{ govukRadios({
                     name: 'reason',
                     fieldset: {

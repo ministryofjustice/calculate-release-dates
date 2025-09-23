@@ -25,6 +25,7 @@ export default function Index({
   checkInformationService,
   comparisonService,
   courtCasesReleaseDatesService,
+  dateTypeConfigurationService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -212,7 +213,7 @@ export default function Index({
   }
 
   const genuineOverridesRoutes = () => {
-    router.use('/', GenuineOverridesRoutes(calculateReleaseDatesService, prisonerService))
+    router.use('/', GenuineOverridesRoutes(calculateReleaseDatesService, prisonerService, dateTypeConfigurationService))
   }
 
   indexRoutes()
