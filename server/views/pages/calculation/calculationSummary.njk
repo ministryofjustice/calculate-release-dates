@@ -35,26 +35,30 @@
                 {% if isAddDatesFlow %}
                     {% set buttonHref = "/calculation/" + model.prisonerDetail.offenderNo + "/" + model.calculationRequestId + "/select-approved-dates" %}
                 {% endif %}
-
-                {{ govukButton({
-                    text: "Confirm and continue",
-                    value: 'approved-dates-question',
-                    preventDoubleClick: true,
-                    href: buttonHref,
-                    attributes: { 'data-qa': 'submit-to-nomis' }
-                }) }}
-                    <a data-qa="cancel-link"
-                        data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
-                        data-module="govuk-button"
-                        href="{{ cancelUrl }}">
-                        Cancel
-                </a>
+                <form method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                    <input type="hidden" name="agreeWithDates" value="YES"/>
+                    {{ govukButton({
+                        text: "Confirm and continue",
+                        value: 'approved-dates-question',
+                        preventDoubleClick: true,
+                        href: buttonHref,
+                        attributes: { 'data-qa': 'submit-to-nomis' }
+                    }) }}
+                        <a data-qa="cancel-link"
+                            data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                            data-module="govuk-button"
+                            href="{{ cancelUrl }}">
+                            Cancel
+                    </a>
+                </form>
             {% else %}
                 <h3 class="govuk-heading-m govuk-!-margin-top-4">Confirm and save to NOMIS</h3>
                 <p class="govuk-body">By continuing, you are confirming that, to the best of your knowledge, the
                     information is correct. The calculation will be saved in NOMIS.</p>
                 <form method="post">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                    <input type="hidden" name="agreeWithDates" value="YES"/>
 
                     {{ govukButton({
                         text: "Confirm and save to NOMIS",

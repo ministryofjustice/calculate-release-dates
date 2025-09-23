@@ -14,7 +14,7 @@ jest.mock('../../../services/calculateReleaseDatesService')
 jest.mock('../../../services/prisonerService')
 jest.mock('../../../services/dateTypeConfigurationService')
 
-describe('SelectGenuineOverrideReasonController', () => {
+describe('ReviewDatesForGenuineOverrideController', () => {
   let app: Express
   const sessionSetup = new SessionSetup()
 

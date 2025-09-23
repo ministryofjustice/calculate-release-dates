@@ -12,6 +12,9 @@ import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
 import ThingsToDoInterceptRoutes from './thingsToDoInterceptRoutes'
 import GenuineOverridesRoutes from './genuine-overrides/genuineOverridesRoutes'
+import CalculationSummaryController from './calculation-summary/calculationSummaryController'
+import { validate } from '../middleware/validationMiddleware'
+import { calculationSummarySchema } from './calculation-summary/calculationSummarySchema'
 
 export default function Index({
   prisonerService,
@@ -29,12 +32,7 @@ export default function Index({
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
-  const calculationAccessRoutes = new CalculationRoutes(
-    calculateReleaseDatesService,
-    prisonerService,
-    userInputService,
-    userPermissionsService,
-  )
+  const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService, userInputService)
   const checkInformationAccessRoutes = new CheckInformationRoutes(
     calculateReleaseDatesService,
     prisonerService,
@@ -113,6 +111,8 @@ export default function Index({
     )
   }
 
+  const calculationSummaryController = new CalculationSummaryController(calculateReleaseDatesService, prisonerService)
+
   const approvedDatesRoutes = () => {
     router.get(
       '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
@@ -122,7 +122,7 @@ export default function Index({
       '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
       approvedDatesAccessRoutes.submitApprovedDatesQuestion,
     )
-    router.get('/calculation/:nomsId/:calculationRequestId/store', calculationAccessRoutes.submitCalculationSummary)
+    router.get('/calculation/:nomsId/:calculationRequestId/store', calculationSummaryController.POST)
     router.get(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
       approvedDatesAccessRoutes.selectApprovedDateTypes,
@@ -133,18 +133,19 @@ export default function Index({
     )
     router.get('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.loadSubmitDates)
     router.post('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.storeSubmitDates)
-    router.get('/calculation/:nomsId/:calculationRequestId/confirmation', calculationAccessRoutes.calculationSummary)
-    router.post(
-      '/calculation/:nomsId/:calculationRequestId/confirmation',
-      calculationAccessRoutes.submitCalculationSummary,
-    )
+    router.get('/calculation/:nomsId/:calculationRequestId/confirmation', calculationSummaryController.GET)
+    router.post('/calculation/:nomsId/:calculationRequestId/confirmation', calculationSummaryController.POST)
     router.get('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.loadRemoveDate)
     router.post('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.submitRemoveDate)
   }
 
   const calculationRoutes = () => {
-    router.get('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.calculationSummary)
-    router.post('/calculation/:nomsId/summary/:calculationRequestId', calculationAccessRoutes.submitCalculationSummary)
+    router.get('/calculation/:nomsId/summary/:calculationRequestId', calculationSummaryController.GET)
+    router.post(
+      '/calculation/:nomsId/summary/:calculationRequestId',
+      validate(calculationSummarySchema),
+      calculationSummaryController.POST,
+    )
     router.get(
       '/calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip',
       viewAccessRoutes.printNotificationSlip,
