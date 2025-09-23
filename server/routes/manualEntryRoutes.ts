@@ -133,6 +133,7 @@ export default class ManualEntryRoutes {
     if (!req.session.selectedManualEntryDates) {
       req.session.selectedManualEntryDates = {}
     }
+
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
       token,
@@ -157,8 +158,12 @@ export default class ManualEntryRoutes {
         new ManualEntrySelectDatesViewModel(prisonerDetail, config, req.originalUrl, insufficientDatesSelected),
       )
     }
+
     await this.manualEntryService.addManuallyCalculatedDateTypes(token, req, nomsId)
-    return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
+    const firstManualDates = req.session.selectedManualEntryDates[nomsId].find(
+      (d: ManualJourneySelectedDate) => !d.completed,
+    )
+    return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date?dateType=${firstManualDates.dateType}`)
   }
 
   public dateSelection: RequestHandler = async (req, res): Promise<void> => {
@@ -167,6 +172,10 @@ export default class ManualEntryRoutes {
     const { unchangedManualJourney } = req.session
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+
+    if (!req.session.selectedManualEntryDates) {
+      req.session.selectedManualEntryDates = {}
+    }
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
@@ -179,12 +188,11 @@ export default class ManualEntryRoutes {
     }
 
     const existingDates: string[] = this.existingDatesInSession(req, nomsId)
-      ? req.session.selectedManualEntryDates[nomsId].map(d => d.dateType)
+      ? req.session.selectedManualEntryDates[nomsId]
+          .filter(d => d.completed === true)
+          .map((d: ManualJourneySelectedDate) => d.dateType)
       : []
 
-    if (!req.session.selectedManualEntryDates) {
-      req.session.selectedManualEntryDates = {}
-    }
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
       token,
@@ -207,7 +215,7 @@ export default class ManualEntryRoutes {
   public enterDate: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
-    const { dateType } = req.query
+    const { dateType } = req.query as Record<string, string>
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
 
@@ -228,7 +236,7 @@ export default class ManualEntryRoutes {
     }
 
     const nextDate =
-      (typeof dateType === 'string' && this.manualEntryService.getPendingDateByType(manualDates, dateType)) ||
+      (typeof dateType === 'string' && this.manualEntryService.getDateByType(manualDates, dateType)) ||
       this.manualEntryService.getNextDateToEnter(manualDates)
 
     if (nextDate && nextDate.dateType !== 'None') {
@@ -237,9 +245,7 @@ export default class ManualEntryRoutes {
         nextDate,
       )
 
-      const backlink = previousDate
-        ? `/calculation/${nomsId}/manual-entry/enter-date?dateType=${previousDate.dateType}`
-        : `/calculation/${prisonerDetail.offenderNo}/manual-entry/confirmation`
+      const backlink = this.getEnterDatesBackLink(req, nomsId, previousDate)
 
       return res.render(
         'pages/manualEntry/dateEntry',
@@ -261,6 +267,7 @@ export default class ManualEntryRoutes {
   public submitDate: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token, userRoles } = res.locals.user
     const { nomsId } = req.params
+    const { dateType } = req.query as Record<string, string>
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
 
@@ -283,9 +290,7 @@ export default class ManualEntryRoutes {
         date?.dateType,
       )
 
-      const backlink = previousDate
-        ? `/calculation/${nomsId}/manual-entry/enter-date?dateType=${previousDate.dateType}`
-        : `/calculation/${prisonerDetail.offenderNo}/manual-entry/confirmation`
+      const backlink = this.getEnterDatesBackLink(req, nomsId, previousDate)
 
       return res.render(
         'pages/manualEntry/dateEntry',
@@ -301,9 +306,16 @@ export default class ManualEntryRoutes {
       )
     }
 
-    if (success && this.manualEntryService.getNextDateToEnter(req.session.selectedManualEntryDates[nomsId])) {
+    if (success && this.manualEntryService.getNextDateToEnter(req.session.selectedManualEntryDates[nomsId], dateType)) {
       return res.redirect(`/calculation/${nomsId}/manual-entry/enter-date`)
     }
+
+    req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].map(
+      (d: ManualJourneySelectedDate) => ({
+        ...d,
+        completed: true,
+      }),
+    )
 
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }
@@ -325,9 +337,7 @@ export default class ManualEntryRoutes {
 
     const newManualDates: ManualJourneySelectedDate[] = req.session.selectedManualEntryDates[nomsId] ?? []
 
-    req.session.selectedManualEntryDates[nomsId] = newManualDates
-      .filter(d => d.completed === true || d.manualEntrySelectedDate.date)
-      .map((d, i) => ({ ...d, completed: true, position: i + 1 }))
+    req.session.selectedManualEntryDates[nomsId] = newManualDates.filter(d => d.completed === true)
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
@@ -429,32 +439,6 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/manual-entry/select-dates`)
     }
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
-  }
-
-  public loadChangeDate: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
-    const { nomsId } = req.params
-
-    if (req.session.calculationReasonId == null) {
-      return res.redirect(`/calculation/${nomsId}/reason`)
-    }
-
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
-
-    const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
-      nomsId,
-      token,
-      prisonerDetail.bookingId,
-      req,
-    )
-    if (redirect) {
-      return res.redirect(redirect)
-    }
-
-    const { date } = await this.manualEntryService.changeDate(req, nomsId)
-    return res.redirect(
-      `/calculation/${nomsId}/manual-entry/enter-date?year=${date.year}&month=${date.month}&day=${date.day}&dateType=${req.query.dateType}`,
-    )
   }
 
   public save: RequestHandler = async (req, res): Promise<void> => {
@@ -588,5 +572,21 @@ export default class ManualEntryRoutes {
       req.session.selectedManualEntryDates[nomsId] != null &&
       req.session.selectedManualEntryDates[nomsId].length > 0
     )
+  }
+
+  private getEnterDatesBackLink(req, nomsId: string, previousDate?: ManualEntrySelectedDate) {
+    const numberOfDates = req.session.selectedManualEntryDates[nomsId].filter(
+      (d: ManualJourneySelectedDate) => d.completed === false,
+    ).length
+
+    if (!previousDate && numberOfDates) {
+      return `/calculation/${nomsId}/manual-entry/select-dates`
+    }
+
+    if (previousDate) {
+      return `/calculation/${nomsId}/manual-entry/enter-date?dateType=${previousDate.dateType}`
+    }
+
+    return `/calculation/${nomsId}/manual-entry/confirmation`
   }
 }

@@ -1,7 +1,4 @@
-import {
-  CalculationUserInputs,
-  ManualEntrySelectedDate,
-} from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { CalculationUserInputs } from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
 import type { UserDetails } from '../../services/userService'
 import { ErrorMessages } from '../../types/ErrorMessages'
 import { GenuineOverrideInputs } from '../../models/genuine-override/genuineOverrideInputs'
@@ -14,7 +11,7 @@ declare module 'express-session' {
     nowInMinutes: number
     userInputs?: { string?: CalculationUserInputs }
     selectedManualEntryDates?: { string?: ManualJourneySelectedDate[] }
-    selectedApprovedDates?: { string?: ManualEntrySelectedDate[] }
+    selectedApprovedDates?: { string?: ManualJourneySelectedDate[] }
     HDCED?: { string?: string }
     HDCED_WEEKEND_ADJUSTED?: { string?: boolean }
     calculationReasonId?: { string?: number }

@@ -566,6 +566,13 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
+      req.session.selectedManualEntryDates.A1234AA = [
+        {
+          dateType: 'CRD',
+          dateText: 'CRD (Conditional release date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
       req.session.calculationReasonId = 1
       req.session.manualEntryRoutingForBookings = []
     }
@@ -691,12 +698,12 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/remove-date?dateType=CRD',
         )
-        expect(res.text).toContain('Are you sure you want to remove the CRD (Conditional release date)?')
+        expect(res.text).toContain('Are you sure you want to delete the CRD (Conditional release date)?')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
-  it('POST /calculation/:nomsId/manual-entry/remove-date should show the remove date page with mini profile if no confirmation option selected', () => {
+  it('POST /calculation/:nomsId/manual-entry/remove-date should show the delete date page with mini profile if no confirmation option selected', () => {
     manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
@@ -725,18 +732,6 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
       .get('/calculation/A1234AA/manual-entry/save')
-      .expect(302)
-      .expect('Location', '/calculation/A1234AA/reason')
-  })
-
-  it('GET /calculation/:nomsId/manual-entry/change-date should redirect when no reasonId is within the session', () => {
-    sessionSetup.sessionDoctor = req => {
-      req.session.manualEntryRoutingForBookings = []
-    }
-    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    return request(app)
-      .get('/calculation/A1234AA/manual-entry/change-date')
       .expect(302)
       .expect('Location', '/calculation/A1234AA/reason')
   })

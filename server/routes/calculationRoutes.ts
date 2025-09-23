@@ -19,6 +19,7 @@ import {
 import UserPermissionsService from '../services/userPermissionsService'
 import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
 import ConcurrentConsecutiveSentence from '../models/ConcurrentConsecutiveSentencesModel'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 
 export default class CalculationRoutes {
   constructor(
@@ -36,13 +37,6 @@ export default class CalculationRoutes {
     const { callbackUrl } = req.query as Record<string, string>
     await this.prisonerService.checkPrisonerAccess(nomsId, token, caseloads, userRoles)
     const calculationRequestId = Number(req.params.calculationRequestId)
-    if (
-      req.session.selectedApprovedDates &&
-      req.session.selectedApprovedDates[nomsId] &&
-      req.session.selectedApprovedDates[nomsId].some((date: ManualEntrySelectedDate) => date.date === undefined)
-    ) {
-      req.session.selectedApprovedDates[nomsId] = []
-    }
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       token,
@@ -62,6 +56,9 @@ export default class CalculationRoutes {
       req.session.selectedApprovedDates[nomsId] &&
       req.session.selectedApprovedDates[nomsId].length > 0
     ) {
+      req.session.selectedApprovedDates[nomsId] = req.session.selectedApprovedDates[nomsId].filter(
+        d => d.completed === true,
+      )
       approvedDates = this.indexBy(req.session.selectedApprovedDates[nomsId])
     }
     if (!req.session.HDCED) {
@@ -115,10 +112,10 @@ export default class CalculationRoutes {
     )
   }
 
-  private indexBy(dates: ManualEntrySelectedDate[]) {
+  private indexBy(dates: ManualJourneySelectedDate[]) {
     const result = {}
     dates.forEach(date => {
-      const dateString = `${date.date.year}-${date.date.month}-${date.date.day}`
+      const dateString = `${date.manualEntrySelectedDate.date.year}-${date.manualEntrySelectedDate.date.month}-${date.manualEntrySelectedDate.date.day}`
       result[date.dateType] = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('cccc, dd LLLL yyyy')
     })
     return result
@@ -192,10 +189,13 @@ export default class CalculationRoutes {
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const breakdownHtml = await this.getBreakdownFragment(calculationRequestId, token)
-    const approvedDates =
+
+    const approvedDates: ManualJourneySelectedDate[] =
       req.session.selectedApprovedDates != null && req.session.selectedApprovedDates[nomsId] != null
         ? req.session.selectedApprovedDates[nomsId]
         : []
+
+    const newApprovedDates: ManualEntrySelectedDate[] = approvedDates.map(d => d.manualEntrySelectedDate)
     try {
       const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
         username,
@@ -206,7 +206,7 @@ export default class CalculationRoutes {
           calculationFragments: {
             breakdownHtml,
           },
-          approvedDates,
+          approvedDates: newApprovedDates,
           isSpecialistSupport: false,
         },
       )

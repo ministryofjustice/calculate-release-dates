@@ -221,7 +221,7 @@ describe('approvedDatesRoutes', () => {
       .type('form')
       .send({ dateSelect: 'APD' })
       .expect(302)
-      .expect('Location', '/calculation/A1234AA/123456/submit-dates')
+      .expect('Location', '/calculation/A1234AA/123456/submit-dates?dateType=APD')
       .expect(res => {
         expect(res.text).not.toContain('Select at least one release date.')
       })
@@ -263,7 +263,7 @@ describe('approvedDatesRoutes', () => {
       .get(`/calculation/${nomsId}/123456/remove?dateType=CRD`)
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('Are you sure you want to remove the CRD?')
+        expect(res.text).toContain('Are you sure you want to delete the CRD?')
         expectMiniProfile(res.text, expectedMiniProfile)
         const $ = cheerio.load(res.text)
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
@@ -285,7 +285,7 @@ describe('approvedDatesRoutes', () => {
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/remove?dateType=CRD',
         )
         const questionTitle = $('.govuk-fieldset__legend--xl').first()
-        expect(questionTitle.text().trim()).toStrictEqual('Are you sure you want to remove the CRD?')
+        expect(questionTitle.text().trim()).toStrictEqual('Are you sure you want to delete the CRD?')
         expect(res.text).toContain('You must select either &#39;Yes&#39; or &#39;No&#39;')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
@@ -379,10 +379,15 @@ describe('approvedDatesRoutes', () => {
       req.session.selectedApprovedDates = {}
       req.session.selectedApprovedDates[nomsId] = [
         {
+          position: 1,
           dateType: 'CRD',
-          dateText: 'CRD (Conditional release date)',
-          date: { day: 3, month: 3, year: 2017 },
-        } as ManualEntrySelectedDate,
+          completed: false,
+          manualEntrySelectedDate: {
+            dateType: 'CRD',
+            dateText: 'CRD (Conditional release date)',
+            date: { day: 3, month: 3, year: 2017 },
+          },
+        } as ManualJourneySelectedDate,
       ]
     }
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -393,13 +398,13 @@ describe('approvedDatesRoutes', () => {
     } as StorageResponseModel)
 
     return request(app)
-      .post('/calculation/A1234AA/123456/submit-dates')
+      .post('/calculation/A1234AA/123456/submit-dates?dateType=CRD')
       .expect(200)
       .expect(res => {
         expectMiniProfile(res.text, expectedMiniProfile)
         const $ = cheerio.load(res.text)
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
-          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/submit-dates',
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/submit-dates?dateType=CRD',
         )
       })
   })

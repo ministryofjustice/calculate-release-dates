@@ -112,13 +112,13 @@ describe('Tests for actions card component', () => {
     const content = nunjucks.render('test.njk', { approvedSummaryDatesCardModel })
     const $ = cheerio.load(content)
     expect($('[data-qa=change-approved-SLED-link]').first().attr('href')).toStrictEqual(
-      '/calculation/NOM/123/change?dateType=SLED',
+      '/calculation/NOM/123/submit-dates?dateType=SLED',
     )
     expect($('[data-qa=remove-approved-SLED-link]').first().attr('href')).toStrictEqual(
       '/calculation/NOM/123/remove?dateType=SLED',
     )
     expect($('[data-qa=change-approved-ABC-link]').first().attr('href')).toStrictEqual(
-      '/calculation/NOM/123/change?dateType=ABC',
+      '/calculation/NOM/123/submit-dates?dateType=ABC',
     )
     expect($('[data-qa=remove-approved-ABC-link]').first().attr('href')).toStrictEqual(
       '/calculation/NOM/123/remove?dateType=ABC',
