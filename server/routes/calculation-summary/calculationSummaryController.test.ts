@@ -13,10 +13,12 @@ import { pedAdjustedByCrdAndBeforePrrdBreakdown } from '../../services/breakdown
 import {
   BookingCalculation,
   CalculationBreakdown,
+  ManualEntrySelectedDate,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../../config'
 import { ResultsWithBreakdownAndAdjustments } from '../../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ReleaseDateWithAdjustments from '../../@types/calculateReleaseDates/releaseDateWithAdjustments'
+import { ManualJourneySelectedDate } from '../../types/ManualJourney'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -30,6 +32,7 @@ describe('CalculationSummaryController', () => {
   ) as jest.Mocked<CalculateReleaseDatesService>
   const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 
+  let approvedDates: { string?: ManualJourneySelectedDate[] }
   const prisonerNumber = 'A1234BC'
   const stubbedPrisonerData = {
     offenderNo: prisonerNumber,
@@ -327,6 +330,12 @@ describe('CalculationSummaryController', () => {
 
   beforeEach(() => {
     config.featureToggles.showBreakdown = true
+    approvedDates = {}
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedApprovedDates = approvedDates
+      req.session.isAddDatesFlow = false
+    }
+
     app = appWithAllRoutes({
       services: {
         calculateReleaseDatesService,
@@ -418,10 +427,6 @@ describe('CalculationSummaryController', () => {
           const $ = cheerio.load(res.text)
           expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
             `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=/calculation/${prisonerNumber}/summary/123456`,
-          )
-          const submitToNomis = $('[data-qa=submit-to-nomis]').first()
-          expect(submitToNomis.attr('href')).toStrictEqual(
-            `/calculation/${prisonerNumber}/123456/approved-dates-question`,
           )
         })
     })
@@ -703,7 +708,8 @@ describe('CalculationSummaryController', () => {
           expect(res.redirect).toBeTruthy()
         })
     })
-    it('POST /calculation/:nomsId/summary/:calculationRequestId should submit release dates', () => {
+
+    it('POST /calculation/:nomsId/summary/:calculationRequestId should save release dates if some approved dates have already been selected', async () => {
       calculateReleaseDatesService.confirmCalculation.mockResolvedValue({
         dates: {},
         calculationRequestId: 654321,
@@ -714,12 +720,50 @@ describe('CalculationSummaryController', () => {
         calculationStatus: 'PRELIMINARY',
         calculationType: 'CALCULATED',
       })
-      return request(app)
+      approvedDates[prisonerNumber] = [
+        {
+          dateType: 'APD',
+          dateText: 'APD (Approved parole date)',
+          date: { day: 3, month: 3, year: 2017 },
+        } as ManualEntrySelectedDate,
+      ]
+      await request(app)
         .post(`/calculation/${prisonerNumber}/summary/123456`)
         .type('form')
         .send({ agreeWithDates: 'YES' })
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/complete/654321`)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+        })
+      expect(calculateReleaseDatesService.confirmCalculation).toHaveBeenCalled()
+    })
+
+    it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect to approved dates have not been selected yet', () => {
+      approvedDates[prisonerNumber] = []
+      return request(app)
+        .post(`/calculation/${prisonerNumber}/summary/123456`)
+        .type('form')
+        .send({ agreeWithDates: 'YES' })
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/123456/approved-dates-question`)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+        })
+    })
+
+    it('POST /calculation/:nomsId/summary/:calculationRequestId should go straight to approved dates selection if there are no dates and we are in the approved dates flow', () => {
+      sessionSetup.sessionDoctor = req => {
+        req.session.selectedApprovedDates = approvedDates
+        req.session.isAddDatesFlow = true
+      }
+
+      return request(app)
+        .post(`/calculation/${prisonerNumber}/summary/123456`)
+        .type('form')
+        .send({ agreeWithDates: 'YES' })
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/123456/select-approved-dates`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
         })

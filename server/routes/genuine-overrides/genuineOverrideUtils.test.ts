@@ -1,8 +1,17 @@
 import { SessionData } from 'express-session'
 import { Request } from 'express'
-import { genuineOverrideInputsForPrisoner, sortDatesForGenuineOverride } from './genuineOverrideUtils'
+import {
+  genuineOverrideInputsForPrisoner,
+  hasGenuineOverridesAccess,
+  sortDatesForGenuineOverride,
+} from './genuineOverrideUtils'
+import config from '../../config'
+import AuthorisedRoles from '../../enumerations/authorisedRoles'
 
 describe('genuineOverrideUtils', () => {
+  afterEach(() => {
+    config.featureToggles.genuineOverridesEnabled = false
+  })
   describe('genuineOverrideInputsForPrisoner', () => {
     it('should initialise global list of genuine override inputs if there are none', () => {
       const req = { session: {} as Partial<SessionData> } as Request
@@ -52,6 +61,20 @@ describe('genuineOverrideUtils', () => {
         { type: 'HDCED', date: '2021-10-03' },
         { type: 'ERSED', date: '2020-02-03' },
       ])
+    })
+  })
+  describe('hasGenuineOverridesAccess', () => {
+    it('should allow genuine overrides if the user has role and feature toggle is enabled', () => {
+      config.featureToggles.genuineOverridesEnabled = true
+      expect(hasGenuineOverridesAccess([AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW])).toStrictEqual(true)
+    })
+    it('should not allow genuine overrides if the user has role but the feature toggle is disabled', () => {
+      config.featureToggles.genuineOverridesEnabled = false
+      expect(hasGenuineOverridesAccess([AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW])).toStrictEqual(false)
+    })
+    it('should not allow genuine overrides if the feature toggle is enabled but the user does not have the role', () => {
+      config.featureToggles.genuineOverridesEnabled = true
+      expect(hasGenuineOverridesAccess([])).toStrictEqual(false)
     })
   })
 })

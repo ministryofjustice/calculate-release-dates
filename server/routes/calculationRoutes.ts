@@ -12,6 +12,7 @@ import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from 
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
 import ConcurrentConsecutiveSentence from '../models/ConcurrentConsecutiveSentencesModel'
+import { hasGenuineOverridesAccess } from './genuine-overrides/genuineOverrideUtils'
 
 export default class CalculationRoutes {
   constructor(
@@ -72,6 +73,7 @@ export default class CalculationRoutes {
       false,
       approvedDates,
       detailedCalculationResults,
+      hasGenuineOverridesAccess(userRoles),
     )
     res.render(
       'pages/calculation/printCalculationSummary',
