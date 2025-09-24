@@ -434,20 +434,21 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       } as ValidationMessage,
     ])
     sessionSetup.sessionDoctor = req => {
-      req.session.selectedManualEntryDates = []
-      req.session.calculationReasonId = 1
-      req.session.selectedManualEntryDates.A1234AA = [
-        {
-          position: 1,
-          dateType: 'CRD',
-          completed: false,
-          manualEntrySelectedDate: {
+      req.session.selectedManualEntryDates = {
+        A1234AA: [
+          {
+            position: 1,
             dateType: 'CRD',
-            dateText: 'CRD (Conditional release date)',
-            date: { day: 3, month: 3, year: 2017 },
-          },
-        } as ManualJourneySelectedDate,
-      ]
+            completed: true,
+            manualEntrySelectedDate: {
+              dateType: 'CRD',
+              dateText: 'CRD (Conditional release date)',
+              date: { day: 3, month: 3, year: 2017 },
+            },
+          } as ManualJourneySelectedDate,
+        ],
+      }
+      req.session.calculationReasonId = 1
       req.session.manualEntryRoutingForBookings = []
     }
 
@@ -462,6 +463,26 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/confirmation',
         )
       })
+  })
+
+  it('GET /calculation/:nomsId/manual-entry/confirmation redirects to select dates page if no dates are present', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = []
+      req.session.calculationReasonId = 1
+      req.session.manualEntryRoutingForBookings = []
+    }
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/confirmation')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/manual-entry/select-dates')
   })
 
   it('GET /calculation/:nomsId/manual-entry/enter-date shows enter date page with mini profile and correct heading', () => {

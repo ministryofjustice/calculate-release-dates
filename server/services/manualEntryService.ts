@@ -327,7 +327,12 @@ export default class ManualEntryService {
     return DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
   }
 
-  public async getConfirmationConfiguration(token: string, req: Request, nomsId: string, allowActions: boolean) {
+  public async getConfirmationConfiguration(
+    token: string,
+    req: Request,
+    nomsId: string,
+    allowActions: boolean,
+  ): Promise<ManualJourneySelectedDate[]> {
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     return req.session.selectedManualEntryDates[nomsId]
       .map((d: ManualJourneySelectedDate) => {

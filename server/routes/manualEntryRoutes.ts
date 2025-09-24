@@ -353,6 +353,10 @@ export default class ManualEntryRoutes {
 
     const rows = await this.manualEntryService.getConfirmationConfiguration(token, req, nomsId, allowEditDates)
 
+    if (rows.length === 0) {
+      return res.redirect(`/calculation/${nomsId}/manual-entry/select-dates`)
+    }
+
     const viewModel = new ManualEntryConfirmationViewModel(
       prisonerDetail,
       rows,
