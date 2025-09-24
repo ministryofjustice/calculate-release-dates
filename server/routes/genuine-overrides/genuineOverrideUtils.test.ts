@@ -20,7 +20,11 @@ describe('genuineOverrideUtils', () => {
       const req = {
         session: {
           genuineOverrideInputs: {
-            A1234BC: { dates: [{ type: 'FOO', date: '2020-01-02' }], reason: 'OTHER', reasonFurtherDetail: 'Foo' },
+            A1234BC: {
+              dates: [{ type: 'FOO', date: '2020-01-02' }],
+              reason: 'OTHER',
+              reasonFurtherDetail: 'Foo',
+            },
           },
         } as Partial<SessionData>,
       } as Request
