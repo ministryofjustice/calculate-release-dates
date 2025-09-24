@@ -70,7 +70,12 @@ export default function Index({
     manualEntryService,
   )
 
-  const approvedDatesAccessRoutes = new ApprovedDatesRoutes(prisonerService, approvedDatesService, manualEntryService)
+  const approvedDatesAccessRoutes = new ApprovedDatesRoutes(
+    prisonerService,
+    approvedDatesService,
+    manualEntryService,
+    calculateReleaseDatesService,
+  )
   const thingsToDoInterceptRoutes = new ThingsToDoInterceptRoutes(prisonerService, courtCasesReleaseDatesService)
 
   const indexRoutes = () => {
@@ -122,7 +127,6 @@ export default function Index({
       '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
       approvedDatesAccessRoutes.submitApprovedDatesQuestion,
     )
-    router.get('/calculation/:nomsId/:calculationRequestId/store', calculationSummaryController.POST)
     router.get(
       '/calculation/:nomsId/:calculationRequestId/select-approved-dates',
       approvedDatesAccessRoutes.selectApprovedDateTypes,
@@ -134,7 +138,11 @@ export default function Index({
     router.get('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.loadSubmitDates)
     router.post('/calculation/:nomsId/:calculationRequestId/submit-dates', approvedDatesAccessRoutes.storeSubmitDates)
     router.get('/calculation/:nomsId/:calculationRequestId/confirmation', calculationSummaryController.GET)
-    router.post('/calculation/:nomsId/:calculationRequestId/confirmation', calculationSummaryController.POST)
+    router.post(
+      '/calculation/:nomsId/:calculationRequestId/confirmation',
+      validate(calculationSummarySchema),
+      calculationSummaryController.POST,
+    )
     router.get('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.loadRemoveDate)
     router.post('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.submitRemoveDate)
   }

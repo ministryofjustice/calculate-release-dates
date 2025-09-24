@@ -10,12 +10,15 @@ import RemoveApprovedDateViewModel from '../models/RemoveApprovedDateViewModel'
 import SelectApprovedDatesViewModel from '../models/SelectApprovedDatesViewModel'
 import ApprovedDatesSubmitDateViewModel from '../models/ApprovedDatesSubmitDateViewModel'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import saveCalculation from './saveCalculationHelper'
+import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 export default class ApprovedDatesRoutes {
   constructor(
     private readonly prisonerService: PrisonerService,
     private readonly approvedDatesService: ApprovedDatesService,
     private readonly manualEntryService: ManualEntryService,
+    private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
   ) {
     // intentionally left blank
   }
@@ -39,7 +42,12 @@ export default class ApprovedDatesRoutes {
       return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/select-approved-dates`)
     }
     if (hasApprovedDates === 'no') {
-      return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/store`)
+      return saveCalculation(
+        req,
+        res,
+        this.calculateReleaseDatesService,
+        `/calculation/${nomsId}/summary/${calculationRequestId}`,
+      )
     }
     const error = !hasApprovedDates
     return res.render(

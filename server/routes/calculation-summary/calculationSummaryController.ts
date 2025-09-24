@@ -12,11 +12,8 @@ import {
   ApprovedDateActionConfig,
   approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
 } from '../../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
-import { ManualEntrySelectedDate } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
-import { ErrorMessages, ErrorMessageType } from '../../types/ErrorMessages'
-import logger from '../../../logger'
-import { nunjucksEnv } from '../../utils/nunjucksSetup'
+import saveCalculation from '../saveCalculationHelper'
 
 export default class CalculationSummaryController implements Controller {
   constructor(
@@ -44,11 +41,7 @@ export default class CalculationSummaryController implements Controller {
       validationErrors = JSON.parse(serverErrors[0])
     }
     let approvedDates
-    if (
-      req.session.selectedApprovedDates &&
-      req.session.selectedApprovedDates[nomsId] &&
-      req.session.selectedApprovedDates[nomsId].length > 0
-    ) {
+    if (this.hasBeenAskedApprovedDatesQuestion(req, nomsId)) {
       req.session.selectedApprovedDates[nomsId] = req.session.selectedApprovedDates[nomsId].filter(
         d => d.completed === true,
       )
@@ -109,58 +102,31 @@ export default class CalculationSummaryController implements Controller {
     req: Request<{ nomsId: string; calculationRequestId: string }, unknown, CalculationSummaryForm>,
     res: Response,
   ): Promise<void> => {
-    const { token, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const breakdownHtml = await this.getBreakdownFragment(calculationRequestId, token)
-
-    const approvedDates: ManualJourneySelectedDate[] =
-      req.session.selectedApprovedDates != null && req.session.selectedApprovedDates[nomsId] != null
-        ? req.session.selectedApprovedDates[nomsId]
-        : []
-
-    const newApprovedDates: ManualEntrySelectedDate[] = approvedDates.map(d => d.manualEntrySelectedDate)
-    try {
-      const bookingCalculation = await this.calculateReleaseDatesService.confirmCalculation(
-        username,
-        nomsId,
-        calculationRequestId,
-        token,
-        {
-          calculationFragments: {
-            breakdownHtml,
-          },
-          approvedDates: newApprovedDates,
-          isSpecialistSupport: false,
-        },
-      )
-      res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
-    } catch (error) {
-      // TODO Move handling of validation errors from the api into the service layer
-      logger.error(error)
-      if (error.status === 412) {
-        req.flash(
-          'serverErrors',
-          JSON.stringify({
-            messages: [
-              {
-                text: 'The booking data that was used for this calculation has changed, go back to the Check NOMIS Information screen to see the changes',
-                href: `/calculation/${nomsId}/check-information`,
-              },
-            ],
-          } as ErrorMessages),
-        )
+    if (!this.hasBeenAskedApprovedDatesQuestion(req, nomsId)) {
+      if (req.session.isAddDatesFlow) {
+        res.redirect(`/calculation/${nomsId}/${calculationRequestId}/select-approved-dates`)
       } else {
-        req.flash(
-          'serverErrors',
-          JSON.stringify({
-            messages: [{ text: 'The calculation could not be saved in NOMIS.' }],
-            messageType: ErrorMessageType.SAVE_DATES,
-          } as ErrorMessages),
-        )
+        res.redirect(`/calculation/${nomsId}/${calculationRequestId}/approved-dates-question`)
       }
-      res.redirect(`/calculation/${nomsId}/summary/${calculationRequestId}`)
+      return
     }
+
+    await saveCalculation(
+      req,
+      res,
+      this.calculateReleaseDatesService,
+      `/calculation/${nomsId}/summary/${calculationRequestId}`,
+    )
+  }
+
+  private hasBeenAskedApprovedDatesQuestion(req: Request, nomsId: string) {
+    return (
+      req.session.selectedApprovedDates &&
+      req.session.selectedApprovedDates[nomsId] &&
+      req.session.selectedApprovedDates[nomsId].length > 0
+    )
   }
 
   private indexBy(dates: ManualJourneySelectedDate[]) {
@@ -170,14 +136,5 @@ export default class CalculationSummaryController implements Controller {
       result[date.dateType] = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('cccc, dd LLLL yyyy')
     })
     return result
-  }
-
-  private async getBreakdownFragment(calculationRequestId: number, token: string): Promise<string> {
-    return nunjucksEnv().render('pages/fragments/breakdownFragment.njk', {
-      model: {
-        ...(await this.calculateReleaseDatesService.getBreakdown(calculationRequestId, token)),
-        showBreakdown: () => true,
-      },
-    })
   }
 }

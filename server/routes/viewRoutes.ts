@@ -21,6 +21,7 @@ import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '..
 import ViewPastNomisCalculationPageViewModel from '../models/ViewPastNomisCalculationPageViewModel'
 import PrintNotificationSlipViewModel from '../models/PrintNotificationSlipViewModel'
 import config from '../config'
+import { hasGenuineOverridesAccess } from './genuine-overrides/genuineOverrideUtils'
 
 export default class ViewRoutes {
   constructor(
@@ -170,6 +171,7 @@ export default class ViewRoutes {
         true,
         undefined,
         detailedCalculationResults,
+        hasGenuineOverridesAccess(userRoles),
       )
     }
     const hasNone = detailedCalculationResults.dates.None !== undefined
@@ -197,6 +199,7 @@ export default class ViewRoutes {
       false,
       approvedDates,
       detailedCalculationResults,
+      hasGenuineOverridesAccess(userRoles),
     )
   }
 

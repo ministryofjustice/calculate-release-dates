@@ -93,7 +93,7 @@ beforeEach(() => {
     messageType: null,
   })
   app = appWithAllRoutes({
-    services: { prisonerService, approvedDatesService, manualEntryService },
+    services: { prisonerService, approvedDatesService, manualEntryService, calculateReleaseDatesService },
     sessionSetup,
   })
 })
@@ -173,18 +173,30 @@ describe('approvedDatesRoutes', () => {
         )
       })
   })
-  it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question selecting no redirects you to confirm', () => {
+  it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question selecting no saves the results', async () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    return request(app)
+    calculateReleaseDatesService.confirmCalculation.mockResolvedValue({
+      dates: {},
+      calculationRequestId: 654321,
+      effectiveSentenceLength: null,
+      prisonerId: 'A1234AA',
+      calculationReference: 'ABC123',
+      bookingId: 123,
+      calculationStatus: 'PRELIMINARY',
+      calculationType: 'CALCULATED',
+    })
+    await request(app)
       .post('/calculation/A1234AA/123456/approved-dates-question')
       .type('form')
       .send({ approvedDatesQuestion: 'no' })
       .expect(302)
-      .expect('Location', '/calculation/A1234AA/123456/store')
+      .expect('Location', '/calculation/A1234AA/complete/654321')
       .expect(res => {
         expect(res.redirect).toBeTruthy()
       })
+    expect(calculateReleaseDatesService.confirmCalculation).toHaveBeenCalled()
   })
+
   it('POST /calculation/:nomsId/:calculationRequestId/approved-dates-question selecting yes redirects you to select approved dates', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
