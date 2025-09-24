@@ -41,5 +41,11 @@ export default class CalculationSummaryPage extends CalculationSummaryCommon {
     return cy.get(`[data-qa=remove-approved-${type}-link]`)
   }
 
+  public agreeWithDatesRadio(option: string): PageElement {
+    return cy.get(`[data-qa=agree-with-dates-${option}]`)
+  }
+
   public submitToNomisButton = (): PageElement => cy.get('[data-qa=submit-to-nomis]')
+
+  public continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 }
