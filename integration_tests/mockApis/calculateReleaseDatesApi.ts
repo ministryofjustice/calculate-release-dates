@@ -949,6 +949,32 @@ export default {
       },
     })
   },
+  stubGetGenuineOverrideReasons: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/genuine-override-reasons/`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            code: 'TERRORISM',
+            description: 'Terrorism',
+            requiresFurtherDetail: false,
+            displayOrder: 0,
+          },
+          {
+            code: 'OTHER',
+            description: 'The reason is not on this list',
+            requiresFurtherDetail: true,
+            displayOrder: 1,
+          },
+        ],
+      },
+    })
+  },
   stubGetCalculationHistory: (): SuperAgentRequest => {
     return stubFor({
       request: {

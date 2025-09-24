@@ -4,6 +4,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitle = applicationName + " - calculation summary" %}
 {% set pageId = "calculation-summary" %}
@@ -21,23 +22,58 @@
 {% endblock %}
 
 {% block content %}
+    {% include '../partials/formError.njk' %}
+    {% set formValidationErrors = validationErrors %}
     {% set validationErrors = model.validationErrors %}
     {% include "../partials/calculationSummary/summarySection.njk" %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
             {% if not model.approvedDates %}
+                {% if not model.hasGenuineOverridesAccess %}
                 <h3 class="govuk-heading-m govuk-!-margin-top-4">Confirm the dates are correct</h3>
                 <p class="govuk-body">By continuing you are confirming that, to the best of your knowledge, the calculation is correct.</p>
+                {% endif %}
                 <form method="post">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-                    <input type="hidden" name="agreeWithDates" value="YES"/>
-                    {{ govukButton({
-                        text: "Confirm and continue",
-                        value: 'approved-dates-question',
-                        preventDoubleClick: true,
-                        attributes: { 'data-qa': 'submit-to-nomis' }
-                    }) }}
+                    {% if model.hasGenuineOverridesAccess %}
+                        {{ govukRadios({
+                            name: 'agreeWithDates',
+                            fieldset: {
+                                legend: {
+                                    text: "Do you agree with the release dates?",
+                                    isPageHeading: false,
+                                    classes: "govuk-fieldset__legend--l"
+                                }
+                            },
+                            errorMessage: formValidationErrors | findError('agreeWithDates'),
+                            items: [
+                                {
+                                    value: 'YES',
+                                    text: 'Yes, the release dates are correct',
+                                    attributes: {'data-qa': 'agree-with-dates-YES'}
+                                },
+                                {
+                                    value: 'NO',
+                                    text: 'No, the release dates are not correct',
+                                    attributes: {'data-qa': 'agree-with-dates-NO'}
+                                }
+                            ]
+                        }) }}
+                        {{ govukButton({
+                            text: "Continue",
+                            preventDoubleClick: true,
+                            attributes: { 'data-qa': 'continue-button' }
+                        }) }}
+                    {% else %}
+                        <input type="hidden" name="agreeWithDates" value="YES"/>
+                        {{ govukButton({
+                            text: "Confirm and continue",
+                            value: 'approved-dates-question',
+                            preventDoubleClick: true,
+                            attributes: { 'data-qa': 'submit-to-nomis' }
+                        }) }}
+                    {% endif %}
                         <a data-qa="cancel-link"
                             data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
                             data-module="govuk-button"
