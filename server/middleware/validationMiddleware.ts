@@ -106,3 +106,13 @@ export const makeErrorMap = (messages: {
 
 export const customErrorOrderBuilder = (errorSummaryList: { href: string }[], order: string[]) =>
   order.map(key => errorSummaryList.find(error => error.href === `#${key}`)).filter(Boolean)
+
+export const arrayOrUndefined = (val: string | string[] | undefined): string[] | undefined => {
+  if (val === undefined) {
+    return undefined
+  }
+  if (Array.isArray(val)) {
+    return val
+  }
+  return [val]
+}

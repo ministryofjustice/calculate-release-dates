@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
 import PrisonerContextViewModel from '../PrisonerContextViewModel'
 import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
-import { GenuineOverrideDate } from './genuineOverrideInputs'
 import GenuineOverrideUrls from '../../routes/genuine-overrides/genuineOverrideUrls'
+import { EnteredGenuineOverrideDate } from './genuineOverrideInputs'
 
 export default class ReviewDatesForGenuineOverrideViewModel extends PrisonerContextViewModel {
   public dateRows: {
@@ -16,7 +16,7 @@ export default class ReviewDatesForGenuineOverrideViewModel extends PrisonerCont
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     calculationRequestId: number,
-    dates: GenuineOverrideDate[],
+    dates: EnteredGenuineOverrideDate[],
     dateTypeDefinitions: { [p: string]: string },
     public backLink: string,
     public pageCancelRedirectUrl: string,
@@ -43,7 +43,7 @@ export default class ReviewDatesForGenuineOverrideViewModel extends PrisonerCont
     })
   }
 
-  private formatDate(date: GenuineOverrideDate) {
+  private formatDate(date: EnteredGenuineOverrideDate) {
     if (date.type === 'None') {
       return ''
     }
