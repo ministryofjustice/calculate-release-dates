@@ -22,30 +22,30 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
-    if (!genuineOverrideInputs.dates) {
+    if (!genuineOverrideInputs.datesToSave) {
       const calculationResults = await this.calculateReleaseDatesService.getCalculationResults(
         Number(calculationRequestId),
         token,
       )
-      genuineOverrideInputs.dates = []
+      genuineOverrideInputs.datesToSave = []
       for (const [type, date] of Object.entries(calculationResults.dates)) {
         // exclude ESED and any other hidden date types.
         if (filteredListOfDates.indexOf(type) >= 0) {
-          genuineOverrideInputs.dates.push({ type, date })
+          genuineOverrideInputs.datesToSave.push({ type, date })
         }
       }
-      sortDatesForGenuineOverride(genuineOverrideInputs.dates)
     }
-    if (genuineOverrideInputs.dates?.length === 0) {
+    if (genuineOverrideInputs.datesToSave?.length === 0) {
       return res.redirect(GenuineOverrideUrls.selectDatesToAdd(nomsId, calculationRequestId))
     }
+    sortDatesForGenuineOverride(genuineOverrideInputs.datesToSave)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     return res.render(
       'pages/genuineOverrides/reviewDatesForGenuineOverride',
       new ReviewDatesForGenuineOverrideViewModel(
         prisonerDetail,
         Number(calculationRequestId),
-        genuineOverrideInputs.dates,
+        genuineOverrideInputs.datesToSave,
         dateTypeDefinitions,
         GenuineOverrideUrls.selectReasonForOverride(nomsId, calculationRequestId),
         GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId),

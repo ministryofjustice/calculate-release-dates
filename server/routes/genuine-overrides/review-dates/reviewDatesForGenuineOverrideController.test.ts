@@ -195,7 +195,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
     })
 
     it('should load dates from session after initial load and maintain order', async () => {
-      genuineOverrideInputs.dates = [
+      genuineOverrideInputs.datesToSave = [
         { type: 'SED', date: '2021-02-03' },
         { type: 'CRD', date: '2021-02-04' },
         { type: 'HDCED', date: '2021-10-03' },

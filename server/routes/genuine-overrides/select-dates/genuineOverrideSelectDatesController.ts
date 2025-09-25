@@ -1,0 +1,65 @@
+import { Request, Response } from 'express'
+import { Controller } from '../../controller'
+import GenuineOverrideUrls from '../genuineOverrideUrls'
+import PrisonerService from '../../../services/prisonerService'
+import { GenuineOverrideSelectDatesForm } from './genuineOverrideSelectDatesSchema'
+import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
+import GenuineOverrideSelectDatesViewModel from '../../../models/genuine-override/GenuineOverrideSelectDatesViewModel'
+import { determinateDateTypesForManualEntry, SelectedDateCheckBox } from '../../../services/manualEntryService'
+import { genuineOverrideInputsForPrisoner } from '../genuineOverrideUtils'
+
+export default class GenuineOverrideSelectDatesController implements Controller {
+  constructor(
+    private readonly dateTypeConfigurationService: DateTypeConfigurationService,
+    private readonly prisonerService: PrisonerService,
+  ) {}
+
+  GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
+    const { nomsId, calculationRequestId } = req.params
+    const { caseloads, token, userRoles } = res.locals.user
+
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
+    const checkboxes: SelectedDateCheckBox[] = determinateDateTypesForManualEntry.map(dateType => {
+      const hasExistingDate = genuineOverrideInputs.datesToSave?.find(it => it.type === dateType) !== undefined
+      return {
+        value: dateType,
+        text: dateTypeDefinitions[dateType],
+        checked: hasExistingDate,
+        attributes: hasExistingDate
+          ? { disabled: true, 'data-qa': `checkbox-${dateType}` }
+          : { 'data-qa': `checkbox-${dateType}` },
+      }
+    })
+
+    return res.render(
+      'pages/genuineOverrides/dateTypeSelection',
+      new GenuineOverrideSelectDatesViewModel(
+        prisonerDetail,
+        checkboxes,
+        GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId),
+        GenuineOverrideUrls.selectDatesToAdd(nomsId, calculationRequestId),
+      ),
+    )
+  }
+
+  POST = async (
+    req: Request<{ nomsId: string; calculationRequestId: string }, unknown, GenuineOverrideSelectDatesForm>,
+    res: Response,
+  ): Promise<void> => {
+    const { nomsId, calculationRequestId } = req.params
+    const { dateType } = req.body
+    const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
+    const alreadyAddedDateTypes = genuineOverrideInputs.datesToSave?.map(it => it.type) ?? []
+    genuineOverrideInputs.datesBeingAdded = dateType
+      .filter(requestedDateType => !alreadyAddedDateTypes.includes(requestedDateType))
+      .map(type => ({ type }))
+    // if they just submitted without selecting any new dates take them back to review dates
+    if (!genuineOverrideInputs.datesBeingAdded || genuineOverrideInputs.datesBeingAdded.length === 0) {
+      return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
+    }
+    const firstDateType = genuineOverrideInputs.datesBeingAdded[0].type
+    return res.redirect(GenuineOverrideUrls.enterNewDate(nomsId, calculationRequestId, firstDateType))
+  }
+}

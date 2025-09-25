@@ -1,10 +1,16 @@
 export interface GenuineOverrideInputs {
-  dates?: GenuineOverrideDate[]
+  datesToSave?: EnteredGenuineOverrideDate[]
+  datesBeingAdded?: NewGenuineOverrideDate[]
   reason?: string
   reasonFurtherDetail?: string
 }
 
-export interface GenuineOverrideDate {
+export interface EnteredGenuineOverrideDate {
   type: string
   date: string
+}
+
+export interface NewGenuineOverrideDate {
+  type: string
+  date?: string
 }

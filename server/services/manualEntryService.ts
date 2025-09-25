@@ -32,6 +32,26 @@ export const dateTypeOrder = {
   None: 30,
 }
 
+export const determinateDateTypesForManualEntry = [
+  'SED',
+  'LED',
+  'CRD',
+  'HDCED',
+  'TUSED',
+  'PRRD',
+  'PED',
+  'ROTL',
+  'ERSED',
+  'ARD',
+  'HDCAD',
+  'MTD',
+  'ETD',
+  'LTD',
+  'APD',
+  'NPD',
+  'DPRRD',
+]
+
 const errorMessage = {
   errorMessage: {
     text: 'Select at least one release date.',
@@ -410,110 +430,14 @@ export default class ManualEntryService {
       hint: {
         text: 'Select all that apply to the manual calculation.',
       },
-      items: [
-        {
-          value: 'SED',
-          text: dateTypeDefinitions.SED,
+      items: determinateDateTypesForManualEntry.map(dateType => {
+        return {
+          value: dateType,
+          text: dateTypeDefinitions[dateType],
           checked: false,
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.SED) },
-        },
-        {
-          value: 'LED',
-          text: dateTypeDefinitions.LED,
-          checked: false,
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.LED) },
-        },
-        {
-          value: 'CRD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.CRD) },
-          checked: false,
-          text: dateTypeDefinitions.CRD,
-        },
-        {
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.HDCED) },
-          checked: false,
-          value: 'HDCED',
-          text: dateTypeDefinitions.HDCED,
-        },
-        {
-          value: 'TUSED',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.TUSED) },
-          checked: false,
-          text: dateTypeDefinitions.TUSED,
-        },
-        {
-          value: 'PRRD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.PRRD) },
-          checked: false,
-          text: dateTypeDefinitions.PRRD,
-        },
-        {
-          value: 'PED',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.PED) },
-          checked: false,
-          text: dateTypeDefinitions.PED,
-        },
-        {
-          value: 'ROTL',
-          checked: false,
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.ROTL) },
-          text: dateTypeDefinitions.ROTL,
-        },
-        {
-          value: 'ERSED',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.ERSED) },
-          checked: false,
-          text: dateTypeDefinitions.ERSED,
-        },
-        {
-          value: 'ARD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.ARD) },
-          checked: false,
-          text: dateTypeDefinitions.ARD,
-        },
-        {
-          value: 'HDCAD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.HDCAD) },
-          checked: false,
-          text: dateTypeDefinitions.HDCAD,
-        },
-        {
-          value: 'MTD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.MTD) },
-          checked: false,
-          text: dateTypeDefinitions.MTD,
-        },
-        {
-          value: 'ETD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.ETD) },
-          checked: false,
-          text: dateTypeDefinitions.ETD,
-        },
-        {
-          value: 'LTD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.LTD) },
-          checked: false,
-          text: dateTypeDefinitions.LTD,
-        },
-        {
-          value: 'APD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.APD) },
-          checked: false,
-          text: dateTypeDefinitions.APD,
-        },
-        {
-          value: 'NPD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.NPD) },
-          checked: false,
-          text: dateTypeDefinitions.NPD,
-        },
-        {
-          value: 'DPRRD',
-          attributes: { disabled: existingTypes.includes(dateTypeDefinitions.DPRRD) },
-          checked: false,
-          text: dateTypeDefinitions.DPRRD,
-        },
-      ],
+          attributes: { disabled: existingTypes.includes(dateType) },
+        }
+      }),
     } as DateSelectConfiguration
   }
 
@@ -582,14 +506,16 @@ export interface DateSelectConfiguration {
   name: string
   fieldset: { legend: { classes: string; text: string; isPageHeading: boolean } }
   errorMessage: { text?: string; html?: string }
-  items: {
-    divider?: string
-    checked?: boolean
-    attributes?: { disabled?: boolean }
-    behaviour?: string
-    text?: string
-    value?: string
-  }[]
+  items: SelectedDateCheckBox[]
+}
+
+export interface SelectedDateCheckBox {
+  divider?: string
+  checked?: boolean
+  attributes?: { disabled?: boolean }
+  behaviour?: string
+  text?: string
+  value?: string
 }
 
 export interface DateRow {

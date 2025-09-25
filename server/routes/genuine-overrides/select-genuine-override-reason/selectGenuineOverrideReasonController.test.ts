@@ -125,7 +125,7 @@ describe('SelectGenuineOverrideReasonController', () => {
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({})
     })
-    it('should return to input page with errors set if there was nothing selected', async () => {
+    it('should pass to review dates page if a reason was selected correctly', async () => {
       await request(app) //
         .post(pageUrl)
         .type('form')

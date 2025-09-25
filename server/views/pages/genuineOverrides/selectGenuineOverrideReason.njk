@@ -49,6 +49,11 @@
                     {% if reason.code === 'OTHER' %}
                         {% set radios = (radios.push(
                             {
+                                divider: 'or'
+                            }
+                        ), radios) %}
+                        {% set radios = (radios.push(
+                            {
                                 value: reason.code,
                                 text: reason.description,
                                 conditional: {
