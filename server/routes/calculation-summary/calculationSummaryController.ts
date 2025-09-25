@@ -14,6 +14,8 @@ import {
 } from '../../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
 import saveCalculation from '../saveCalculationHelper'
+import GenuineOverrideUrls from '../genuine-overrides/genuineOverrideUrls'
+import { hasGenuineOverridesAccess } from '../genuine-overrides/genuineOverrideUtils'
 
 export default class CalculationSummaryController implements Controller {
   constructor(
@@ -82,6 +84,7 @@ export default class CalculationSummaryController implements Controller {
       false,
       approvedDates,
       detailedCalculationResults,
+      hasGenuineOverridesAccess(userRoles),
     )
     return res.render(
       'pages/calculation/calculationSummary',
@@ -103,7 +106,13 @@ export default class CalculationSummaryController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId } = req.params
+    const { agreeWithDates } = req.body
     const calculationRequestId = Number(req.params.calculationRequestId)
+
+    if (agreeWithDates === 'NO') {
+      res.redirect(GenuineOverrideUrls.selectReasonForOverride(nomsId, calculationRequestId))
+      return
+    }
     if (!this.hasBeenAskedApprovedDatesQuestion(req, nomsId)) {
       if (req.session.isAddDatesFlow) {
         res.redirect(`/calculation/${nomsId}/${calculationRequestId}/select-approved-dates`)

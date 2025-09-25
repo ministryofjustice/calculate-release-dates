@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import MockDate from 'mockdate'
 import { HttpError } from 'http-errors'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
-import { appWithAllRoutes } from '../testutils/appSetup'
+import { appWithAllRoutes, user } from '../testutils/appSetup'
 import SessionSetup from '../testutils/sessionSetup'
 import PrisonerService from '../../services/prisonerService'
 import { PrisonAPIAssignedLivingUnit, PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
@@ -19,6 +19,7 @@ import config from '../../config'
 import { ResultsWithBreakdownAndAdjustments } from '../../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ReleaseDateWithAdjustments from '../../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
+import AuthorisedRoles from '../../enumerations/authorisedRoles'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -328,9 +329,12 @@ describe('CalculationSummaryController', () => {
     status: 'Serving Life Imprisonment',
   }
 
+  let userRoles: string[]
+
   beforeEach(() => {
     config.featureToggles.showBreakdown = true
     approvedDates = {}
+    userRoles = user.userRoles
     sessionSetup.sessionDoctor = req => {
       req.session.selectedApprovedDates = approvedDates
       req.session.isAddDatesFlow = false
@@ -342,6 +346,9 @@ describe('CalculationSummaryController', () => {
         prisonerService,
       },
       sessionSetup,
+      userSupplier: () => {
+        return { ...user, userRoles }
+      },
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
   })
@@ -673,6 +680,28 @@ describe('CalculationSummaryController', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).toContain('Confirm and continue')
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=agree-with-dates-YES]')).toHaveLength(0)
+          expect($('[data-qa=agree-with-dates-NO]')).toHaveLength(0)
+        })
+    })
+    it('GET /calculation/:nomsId/summary continue button with options to agree with date if user has roles', async () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: { ...stubbedResultsWithBreakdownAndAdjustments.context, prisonerId: 'A1234AA' },
+      })
+      userRoles.push(AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW)
+
+      return request(app)
+        .get('/calculation/A1234AA/summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=continue-button]').text().trim()).toStrictEqual('Continue')
+          expect($('[data-qa=agree-with-dates-YES]')).toHaveLength(1)
+          expect($('[data-qa=agree-with-dates-NO]')).toHaveLength(1)
         })
     })
     it('GET /calculation/:nomsId/summary/:calculationRequestId should not display tranche label', () => {
@@ -747,6 +776,19 @@ describe('CalculationSummaryController', () => {
         .send({ agreeWithDates: 'YES' })
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/123456/approved-dates-question`)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+        })
+    })
+
+    it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect to genuine overrides if user disagrees with dates', () => {
+      approvedDates[prisonerNumber] = []
+      return request(app)
+        .post(`/calculation/${prisonerNumber}/summary/123456`)
+        .type('form')
+        .send({ agreeWithDates: 'NO' })
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/select-reason-for-override/123456`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
         })
