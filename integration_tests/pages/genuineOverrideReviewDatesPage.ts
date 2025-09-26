@@ -5,6 +5,19 @@ export default class GenuineOverrideReviewDatesPage extends Page {
     super('genuine-override-review-dates')
   }
 
+  public expectDates(expected: string[]) {
+    cy.get('.govuk-summary-list__key').spread((...$lis) => {
+      expect($lis).to.have.lengthOf(expected.length)
+      expected.forEach((val, index) => {
+        expect($lis[index]).to.contain(val)
+      })
+    })
+  }
+
+  public addDatesLink(): PageElement {
+    return cy.get('[data-qa=add-dates-link]')
+  }
+
   public continueButton(): PageElement {
     return cy.get('[data-qa=confirm-and-save]')
   }

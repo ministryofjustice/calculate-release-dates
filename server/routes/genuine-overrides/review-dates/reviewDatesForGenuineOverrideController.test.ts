@@ -194,6 +194,32 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       expect(calculateReleaseDatesService.getCalculationResults).toHaveBeenCalledTimes(1)
     })
 
+    it('should decompose SLED into SED and LED', async () => {
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue({
+        dates: {
+          SLED: '2021-10-03',
+        },
+        calculationRequestId: 123456,
+        effectiveSentenceLength: null,
+        prisonerId: 'A1234AB',
+        calculationStatus: 'CONFIRMED',
+        calculationReference: 'ABC123',
+        calculationType: 'CALCULATED',
+        bookingId: 123,
+        approvedDates: {},
+      } as BookingCalculation)
+
+      const response = await request(app).get(pageUrl)
+
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      const headings = $('dt')
+      expect(headings).toHaveLength(2)
+      expect(headings.eq(0).text().trim()).toStrictEqual('LED (Licence expiry date)')
+      expect(headings.eq(1).text().trim()).toStrictEqual('SED (Sentence expiry date)')
+      expect(calculateReleaseDatesService.getCalculationResults).toHaveBeenCalledTimes(1)
+    })
+
     it('should load dates from session after initial load and maintain order', async () => {
       genuineOverrideInputs.datesToSave = [
         { type: 'SED', date: '2021-02-03' },

@@ -11,6 +11,8 @@ import ReviewDatesForGenuineOverrideController from './review-dates/reviewDatesF
 import DateTypeConfigurationService from '../../services/dateTypeConfigurationService'
 import GenuineOverrideSelectDatesController from './select-dates/genuineOverrideSelectDatesController'
 import { genuineOverrideSelectDatesSchema } from './select-dates/genuineOverrideSelectDatesSchema'
+import AddGenuineOverrideDateController from './add-date/addGenuineOverrideDateController'
+import { releaseDateSchema } from '../common-schemas/releaseDateSchemas'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
@@ -56,6 +58,12 @@ const GenuineOverridesRoutes = (
     path: '/calculation/:nomsId/override/select-dates/:calculationRequestId',
     controller: new GenuineOverrideSelectDatesController(dateTypeConfigurationService, prisonerService),
     validateToSchema: genuineOverrideSelectDatesSchema,
+  })
+
+  route({
+    path: '/calculation/:nomsId/override/:dateType/add/:calculationRequestId',
+    controller: new AddGenuineOverrideDateController(dateTypeConfigurationService, prisonerService),
+    validateToSchema: releaseDateSchema,
   })
 
   return router

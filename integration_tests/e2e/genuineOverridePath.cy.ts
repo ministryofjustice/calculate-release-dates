@@ -10,6 +10,8 @@ import ApprovedDatesEnterDatePage from '../pages/approvedDatesEnterDate'
 import AuthorisedRoles from '../../server/enumerations/authorisedRoles'
 import GenuineOverrideReasonPage from '../pages/genuineOverrideReasonPage'
 import GenuineOverrideReviewDatesPage from '../pages/genuineOverrideReviewDatesPage'
+import GenuineOverridesSelectDatesToEnterPage from '../pages/genuineOverridesSelectDatesToEnterPage'
+import GenuineOverrideEnterDatePage from '../pages/genuineOverrideEnterDatePage'
 
 context('End to end user journeys for a user with genuine overrides access', () => {
   beforeEach(() => {
@@ -90,7 +92,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     calculationCompletePage.title().should('contain.text', 'Calculation complete')
   })
 
-  it('Can override existing dates if not agreeing with the calculated dates', () => {
+  it('Can add dates if not agreeing with the calculated dates', () => {
     cy.signIn()
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
@@ -110,7 +112,63 @@ context('End to end user journeys for a user with genuine overrides access', () 
     genuineOverrideReasonPage.radioByCode('TERRORISM').check()
     genuineOverrideReasonPage.continueButton().click()
 
-    Page.verifyOnPage(GenuineOverrideReviewDatesPage)
+    const initialReviewPage = Page.verifyOnPage(GenuineOverrideReviewDatesPage)
+    initialReviewPage.expectDates(['LED', 'SED', 'CRD', 'HDCED'])
+    initialReviewPage.addDatesLink().click()
+
+    const selectDatesPage = Page.verifyOnPage(GenuineOverridesSelectDatesToEnterPage)
+    selectDatesPage.expectDateOffered([
+      'SED',
+      'LED',
+      'CRD',
+      'HDCED',
+      'TUSED',
+      'PRRD',
+      'PED',
+      'ROTL',
+      'ERSED',
+      'ARD',
+      'HDCAD',
+      'MTD',
+      'ETD',
+      'LTD',
+      'APD',
+      'NPD',
+      'DPRRD',
+    ])
+    selectDatesPage.expectDateToBeUnavailable('SED')
+    selectDatesPage.expectDateToBeUnavailable('LED')
+    selectDatesPage.expectDateToBeUnavailable('CRD')
+    selectDatesPage.expectDateToBeUnavailable('HDCED')
+    selectDatesPage.checkDate('TUSED')
+    selectDatesPage.checkDate('ERSED')
+    selectDatesPage.continue('continue-button').click()
+
+    const enterTusedPage = Page.verifyOnPage(GenuineOverrideEnterDatePage)
+    enterTusedPage.checkIsFor('TUSED (Top up supervision expiry date)')
+    enterTusedPage.enterDate('01', '02', '2025')
+    enterTusedPage.continue().click()
+
+    const enterErsedPage = Page.verifyOnPage(GenuineOverrideEnterDatePage)
+    enterErsedPage.checkIsFor('ERSED (Early removal scheme eligibility date)')
+    enterErsedPage.backButton().click()
+
+    enterTusedPage.checkIsFor('TUSED (Top up supervision expiry date)')
+    enterTusedPage.backButton().click()
+
+    const selectDatesPageRevisited = Page.verifyOnPage(GenuineOverridesSelectDatesToEnterPage)
+    selectDatesPageRevisited.uncheckDate('ERSED')
+    selectDatesPageRevisited.uncheckDate('TUSED')
+    selectDatesPageRevisited.checkDate('HDCAD')
+    selectDatesPageRevisited.continue('continue-button').click()
+
+    const enterHdcadPage = Page.verifyOnPage(GenuineOverrideEnterDatePage)
+    enterHdcadPage.checkIsFor('HDCAD (Home detention curfew approved date)')
+    enterHdcadPage.enterDate('01', '02', '2025')
+    enterHdcadPage.continue().click()
+
+    const afterAddReviewPage = Page.verifyOnPage(GenuineOverrideReviewDatesPage)
+    afterAddReviewPage.expectDates(['LED', 'SED', 'CRD', 'HDCED', 'HDCAD'])
     // TODO wip journey
   })
 })
