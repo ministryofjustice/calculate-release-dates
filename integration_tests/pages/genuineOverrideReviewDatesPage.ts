@@ -14,6 +14,10 @@ export default class GenuineOverrideReviewDatesPage extends Page {
     })
   }
 
+  public expectDate(type: string, date: string) {
+    cy.get(`.${type}-date-value`).should('contain.text', date)
+  }
+
   public addDatesLink(): PageElement {
     return cy.get('[data-qa=add-dates-link]')
   }

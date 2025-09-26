@@ -169,6 +169,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
 
     const afterAddReviewPage = Page.verifyOnPage(GenuineOverrideReviewDatesPage)
     afterAddReviewPage.expectDates(['LED', 'SED', 'CRD', 'HDCED', 'HDCAD'])
+    afterAddReviewPage.expectDate('HDCED', '29 September 2025')
     // TODO wip journey
   })
 })

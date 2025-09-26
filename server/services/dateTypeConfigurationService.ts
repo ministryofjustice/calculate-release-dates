@@ -39,20 +39,33 @@ export default class DateTypeConfigurationService {
       })
   }
 
-  async dateTypeToDescriptionMapping(token: string): Promise<{ [key: string]: string }> {
+  async dateTypeToDescriptionMapping(
+    token: string,
+    format: 'COMBINED' | 'DESCRIPTION_ONLY' = 'COMBINED',
+  ): Promise<{ [key: string]: string }> {
     return new CalculateReleaseDatesApiClient(token).getDateTypeDefinitions().then((defs: DateTypeDefinition[]) => {
-      return Object.fromEntries(defs.map(def => [def.type, this.fromDefinitionToDescription(def)]))
+      return Object.fromEntries(defs.map(def => [def.type, this.fromDefinitionToDescription(def, format)]))
     })
   }
 
-  getDescription(dateTypeDefinitions: DateTypeDefinition[], date: string) {
-    return this.fromDefinitionToDescription(dateTypeDefinitions.find((dtd: DateTypeDefinition) => dtd.type === date))
+  getDescription(
+    dateTypeDefinitions: DateTypeDefinition[],
+    date: string,
+    format: 'COMBINED' | 'DESCRIPTION_ONLY' = 'COMBINED',
+  ) {
+    return this.fromDefinitionToDescription(
+      dateTypeDefinitions.find((dtd: DateTypeDefinition) => dtd.type === date),
+      format,
+    )
   }
 
-  fromDefinitionToDescription(def: DateTypeDefinition) {
+  fromDefinitionToDescription(def: DateTypeDefinition, format: 'COMBINED' | 'DESCRIPTION_ONLY' = 'COMBINED') {
     if (def.type === 'None') {
       return def.description
     }
-    return `${def.type} (${def.description})`
+    if (format === 'COMBINED') {
+      return `${def.type} (${def.description})`
+    }
+    return def.description
   }
 }

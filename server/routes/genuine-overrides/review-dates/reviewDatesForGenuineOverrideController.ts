@@ -45,7 +45,10 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
       return res.redirect(GenuineOverrideUrls.selectDatesToAdd(nomsId, calculationRequestId))
     }
     sortDatesForGenuineOverride(genuineOverrideInputs.datesToSave)
-    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(
+      token,
+      'DESCRIPTION_ONLY',
+    )
     return res.render(
       'pages/genuineOverrides/reviewDatesForGenuineOverride',
       new ReviewDatesForGenuineOverrideViewModel(
