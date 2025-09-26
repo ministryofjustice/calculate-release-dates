@@ -11,6 +11,14 @@ export default class CommonSelectDatesToEnterPage extends Page {
       .should('deep.equal', expected)
   }
 
+  public expectDateToBeUnavailable(type: string) {
+    cy.get(`[data-qa=checkbox-${type}]`).should('be.checked').should('be.disabled')
+  }
+
+  public uncheckDate(type: string) {
+    cy.get(`[data-qa=checkbox-${type}]`).uncheck()
+  }
+
   public checkDate(type: string) {
     cy.get('.govuk-checkboxes__input').then($els =>
       Cypress._.each($els, e => {
@@ -21,7 +29,7 @@ export default class CommonSelectDatesToEnterPage extends Page {
     )
   }
 
-  public continue(): PageElement {
-    return cy.get('[data-qa=manual-entry]')
+  public continue(buttonDataQa: string = 'manual-entry'): PageElement {
+    return cy.get(`[data-qa=${buttonDataQa}]`)
   }
 }

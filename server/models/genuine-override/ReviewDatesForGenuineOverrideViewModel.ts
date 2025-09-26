@@ -6,8 +6,8 @@ import { EnteredGenuineOverrideDate } from './genuineOverrideInputs'
 
 export default class ReviewDatesForGenuineOverrideViewModel extends PrisonerContextViewModel {
   public dateRows: {
-    key: { text: string }
-    value: { text: string }
+    key: { html: string }
+    value: { text: string; classes: string }
     actions?: { items: { text: string; href: string }[] }
   }[]
 
@@ -25,13 +25,15 @@ export default class ReviewDatesForGenuineOverrideViewModel extends PrisonerCont
     this.addLink = GenuineOverrideUrls.selectDatesToAdd(prisonerDetail.offenderNo, calculationRequestId)
     this.dateRows = dates.map(date => {
       return {
-        key: { text: dateTypeDefinitions[date.type] },
-        value: { text: this.formatDate(date) },
+        key: {
+          html: `<span class="govuk-!-font-size-24">${date.type}</span><br/><span class="govuk-hint">${dateTypeDefinitions[date.type]}</span>`,
+        },
+        value: { text: this.formatDate(date), classes: `${date.type}-date-value` },
         actions: {
           items: [
             {
               text: 'Edit',
-              href: GenuineOverrideUrls.overrideDate(prisonerDetail.offenderNo, calculationRequestId, date.type),
+              href: GenuineOverrideUrls.editDate(prisonerDetail.offenderNo, calculationRequestId, date.type),
             },
             {
               text: 'Delete',

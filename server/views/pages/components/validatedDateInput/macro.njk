@@ -1,0 +1,65 @@
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% macro validatedDateInput(opts) %}
+  {% set id = opts.id %}
+  {% set name = opts.name %}
+  {% set title = opts.title %}
+  {% set hintText = opts.hintText %}
+
+  {% set day = opts.day %}
+  {% set month = opts.month %}
+  {% set year = opts.year %}
+
+  {% if opts.validationErrors %}
+    {% set dayError = opts.validationErrors['day'] if opts.validationErrors['day'] else '' %}
+    {% set monthError = opts.validationErrors['month'] if opts.validationErrors['month'] else '' %}
+    {% set yearError = opts.validationErrors['year']  if opts.validationErrors['year'] else '' %}
+  {% endif %}
+
+  {% macro joinErrors(errors) %}
+    {% if errors %}{% for error in errors %}{% if error and error.length > 0 %}{{ error }}{% endif %}{% endfor %}{% endif %}
+  {% endmacro %}
+
+  {{ govukDateInput({
+    id: id,
+    name: name or id,
+    fieldset: {
+      legend: {
+        text: title.text,
+        isPageHeading: title.isPageHeading,
+        classes: title.classes
+      }
+    } if title else undefined,
+    hint: {
+      text: hintText
+    } if hintText else undeinfed,
+    errorMessage: {
+      html: '<span id="day-error" class="govuk-error-message">' + joinErrors(dayError) + '</span>
+                            <span id="month-error" class="govuk-error-message">' + joinErrors(monthError) + '</span>
+                            <span id="year-error" class="govuk-error-message">' + joinErrors(yearError) + '</span>'
+    } if dayError or monthError or yearError,
+    items: [
+      {
+        id: 'day',
+        label: 'Day',
+        name: "day",
+        classes: 'govuk-input--width-2' + (' govuk-input--error' if dayError),
+        value: day
+      },
+      {
+        id: 'month',
+        label: 'Month',
+        name: "month",
+        classes: 'govuk-input--width-2' + (' govuk-input--error' if monthError),
+        value: month
+      },
+      {
+        id: 'year',
+        label: 'Year',
+        name: "year",
+        classes: 'govuk-input--width-4' + (' govuk-input--error' if yearError),
+        value: year
+      }
+    ]
+  }) }}
+{% endmacro %}
