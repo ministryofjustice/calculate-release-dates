@@ -7,7 +7,7 @@ export default class GenuineOverrideUrls {
     return `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`
   }
 
-  static overrideDate = (prisonerNumber: string, calculationRequestId: string | number, type: string) => {
+  static editDate = (prisonerNumber: string, calculationRequestId: string | number, type: string) => {
     return `/calculation/${prisonerNumber}/override/${type}/edit/${calculationRequestId}`
   }
 

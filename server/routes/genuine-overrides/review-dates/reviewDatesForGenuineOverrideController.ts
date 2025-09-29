@@ -31,7 +31,13 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
       for (const [type, date] of Object.entries(calculationResults.dates)) {
         // exclude ESED and any other hidden date types.
         if (filteredListOfDates.indexOf(type) >= 0) {
-          genuineOverrideInputs.datesToSave.push({ type, date })
+          if (type === 'SLED') {
+            // decompose SLED into SED and LED to allow users to override them to be different dates
+            genuineOverrideInputs.datesToSave.push({ type: 'SED', date })
+            genuineOverrideInputs.datesToSave.push({ type: 'LED', date })
+          } else {
+            genuineOverrideInputs.datesToSave.push({ type, date })
+          }
         }
       }
     }
@@ -39,7 +45,10 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
       return res.redirect(GenuineOverrideUrls.selectDatesToAdd(nomsId, calculationRequestId))
     }
     sortDatesForGenuineOverride(genuineOverrideInputs.datesToSave)
-    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(
+      token,
+      'DESCRIPTION_ONLY',
+    )
     return res.render(
       'pages/genuineOverrides/reviewDatesForGenuineOverride',
       new ReviewDatesForGenuineOverrideViewModel(

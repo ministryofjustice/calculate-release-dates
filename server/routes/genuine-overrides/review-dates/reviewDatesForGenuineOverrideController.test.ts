@@ -35,29 +35,29 @@ describe('ReviewDatesForGenuineOverrideController', () => {
   const pageUrl = `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`
 
   const mockDateConfigs = {
-    CRD: 'CRD (Conditional release date)',
-    LED: 'LED (Licence expiry date)',
-    SED: 'SED (Sentence expiry date)',
-    NPD: 'NPD (Non-parole date)',
-    ARD: 'ARD (Automatic release date)',
-    TUSED: 'TUSED (Top up supervision expiry date)',
-    PED: 'PED (Parole eligibility date)',
-    SLED: 'SLED (Sentence and licence expiry date)',
-    HDCED: 'HDCED (Home detention curfew eligibility date)',
-    NCRD: 'NCRD (Notional conditional release date)',
-    ETD: 'ETD (Early transfer date)',
-    MTD: 'MTD (Mid transfer date)',
-    LTD: 'LTD (Late transfer date)',
-    DPRRD: 'DPRRD (Detention and training order post recall release date)',
-    PRRD: 'PRRD (Post recall release date)',
-    ESED: 'ESED (Effective sentence end date)',
-    ERSED: 'ERSED (Early removal scheme eligibility date)',
-    TERSED: 'TERSED (Tariff-expired removal scheme eligibility date)',
-    APD: 'APD (Approved parole date)',
-    HDCAD: 'HDCAD (Home detention curfew approved date)',
-    None: 'None (None of the above dates apply)',
-    Tariff: 'Tariff (known as the Tariff expiry date)',
-    ROTL: 'ROTL (Release on temporary licence)',
+    CRD: 'Conditional release date',
+    LED: 'Licence expiry date',
+    SED: 'Sentence expiry date',
+    NPD: 'Non-parole date',
+    ARD: 'Automatic release date',
+    TUSED: 'Top up supervision expiry date',
+    PED: 'Parole eligibility date',
+    SLED: 'Sentence and licence expiry date',
+    HDCED: 'Home detention curfew eligibility date',
+    NCRD: 'Notional conditional release date',
+    ETD: 'Early transfer date',
+    MTD: 'Mid transfer date',
+    LTD: 'Late transfer date',
+    DPRRD: 'Detention and training order post recall release date',
+    PRRD: 'Post recall release date',
+    ESED: 'Effective sentence end date',
+    ERSED: 'Early removal scheme eligibility date',
+    TERSED: 'Tariff-expired removal scheme eligibility date',
+    APD: 'Approved parole date',
+    HDCAD: 'Home detention curfew approved date',
+    None: 'None of the above dates apply',
+    Tariff: 'known as the Tariff expiry date',
+    ROTL: 'Release on temporary licence',
   }
 
   beforeEach(() => {
@@ -138,13 +138,21 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       const $ = cheerio.load(response.text)
       const headings = $('dt')
       expect(headings).toHaveLength(4)
-      expect(headings.eq(0).text().trim()).toStrictEqual('SED (Sentence expiry date)')
-      expect(headings.eq(1).text().trim()).toStrictEqual('CRD (Conditional release date)')
-      expect(headings.eq(2).text().trim()).toStrictEqual('HDCED (Home detention curfew eligibility date)')
-      expect(headings.eq(3).text().trim()).toStrictEqual('ERSED (Early removal scheme eligibility date)')
+      expect(headings.eq(0).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">SED</span><br><span class="govuk-hint">Sentence expiry date</span>',
+      )
+      expect(headings.eq(1).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">CRD</span><br><span class="govuk-hint">Conditional release date</span>',
+      )
+      expect(headings.eq(2).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">HDCED</span><br><span class="govuk-hint">Home detention curfew eligibility date</span>',
+      )
+      expect(headings.eq(3).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">ERSED</span><br><span class="govuk-hint">Early removal scheme eligibility date</span>',
+      )
 
-      const sedHeading = $('dt:contains("SED (Sentence expiry date)")')
-      expect(sedHeading.next().text().trim()).toStrictEqual('03 February 2021')
+      const sedHeading = $('dt:contains("SED")')
+      expect(sedHeading.next().html().trim()).toStrictEqual('03 February 2021')
       const sedLinks = sedHeading.next().next().find('a')
       expect(sedLinks.eq(0).text()).toStrictEqual('Edit')
       expect(sedLinks.eq(0).attr('href')).toStrictEqual(
@@ -155,7 +163,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         `/calculation/${prisonerNumber}/override/SED/delete/${calculationRequestId}`,
       )
 
-      const crdHeading = $('dt:contains("CRD (Conditional release date)")')
+      const crdHeading = $('dt:contains("CRD")')
       expect(crdHeading.next().text().trim()).toStrictEqual('04 February 2021')
       const crdLinks = crdHeading.next().next().find('a')
       expect(crdLinks.eq(0).text()).toStrictEqual('Edit')
@@ -167,7 +175,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         `/calculation/${prisonerNumber}/override/CRD/delete/${calculationRequestId}`,
       )
 
-      const hdcedHeading = $('dt:contains("HDCED (Home detention curfew eligibility date)")')
+      const hdcedHeading = $('dt:contains("HDCED")')
       expect(hdcedHeading.next().text().trim()).toStrictEqual('03 October 2021')
       const hdcedLinks = hdcedHeading.next().next().find('a')
       expect(hdcedLinks.eq(0).text()).toStrictEqual('Edit')
@@ -179,7 +187,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         `/calculation/${prisonerNumber}/override/HDCED/delete/${calculationRequestId}`,
       )
 
-      const ersedHeading = $('dt:contains("ERSED (Early removal scheme eligibility date)")')
+      const ersedHeading = $('dt:contains("ERSED")')
       expect(ersedHeading.next().text().trim()).toStrictEqual('03 February 2020')
       const ersedLinks = ersedHeading.next().next().find('a')
       expect(ersedLinks.eq(0).text()).toStrictEqual('Edit')
@@ -191,6 +199,36 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         `/calculation/${prisonerNumber}/override/ERSED/delete/${calculationRequestId}`,
       )
 
+      expect(calculateReleaseDatesService.getCalculationResults).toHaveBeenCalledTimes(1)
+    })
+
+    it('should decompose SLED into SED and LED', async () => {
+      calculateReleaseDatesService.getCalculationResults.mockResolvedValue({
+        dates: {
+          SLED: '2021-10-03',
+        },
+        calculationRequestId: 123456,
+        effectiveSentenceLength: null,
+        prisonerId: 'A1234AB',
+        calculationStatus: 'CONFIRMED',
+        calculationReference: 'ABC123',
+        calculationType: 'CALCULATED',
+        bookingId: 123,
+        approvedDates: {},
+      } as BookingCalculation)
+
+      const response = await request(app).get(pageUrl)
+
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      const headings = $('dt')
+      expect(headings).toHaveLength(2)
+      expect(headings.eq(0).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">LED</span><br><span class="govuk-hint">Licence expiry date</span>',
+      )
+      expect(headings.eq(1).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">SED</span><br><span class="govuk-hint">Sentence expiry date</span>',
+      )
       expect(calculateReleaseDatesService.getCalculationResults).toHaveBeenCalledTimes(1)
     })
 
@@ -208,10 +246,18 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       const $ = cheerio.load(response.text)
       const headings = $('dt')
       expect(headings).toHaveLength(4)
-      expect(headings.eq(0).text().trim()).toStrictEqual('SED (Sentence expiry date)')
-      expect(headings.eq(1).text().trim()).toStrictEqual('CRD (Conditional release date)')
-      expect(headings.eq(2).text().trim()).toStrictEqual('HDCED (Home detention curfew eligibility date)')
-      expect(headings.eq(3).text().trim()).toStrictEqual('ERSED (Early removal scheme eligibility date)')
+      expect(headings.eq(0).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">SED</span><br><span class="govuk-hint">Sentence expiry date</span>',
+      )
+      expect(headings.eq(1).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">CRD</span><br><span class="govuk-hint">Conditional release date</span>',
+      )
+      expect(headings.eq(2).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">HDCED</span><br><span class="govuk-hint">Home detention curfew eligibility date</span>',
+      )
+      expect(headings.eq(3).html().trim()).toStrictEqual(
+        '<span class="govuk-!-font-size-24">ERSED</span><br><span class="govuk-hint">Early removal scheme eligibility date</span>',
+      )
 
       expect(calculateReleaseDatesService.getCalculationResults).not.toHaveBeenCalled()
     })

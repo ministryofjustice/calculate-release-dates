@@ -12,5 +12,7 @@ export interface EnteredGenuineOverrideDate {
 
 export interface NewGenuineOverrideDate {
   type: string
-  date?: string
+  day?: number
+  month?: number
+  year?: number
 }

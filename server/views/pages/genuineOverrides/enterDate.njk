@@ -1,11 +1,10 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "../components/validatedDateInput/macro.njk" import validatedDateInput %}
 
-{% set pageTitle = applicationName + " - Select the dates you need to enter" %}
-{% set pageId = "genuine-override-select-dates" %}
+{% set pageTitle = applicationName + " - Enter the date" %}
+{% set pageId = "genuine-override-enter-dates" %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -24,19 +23,18 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
                 <span class="govuk-caption-xl">Calculate release dates</span>
-                {{ govukCheckboxes({
-                    name: "dateType",
-                    fieldset: {
-                        legend: {
-                            text: "Select the dates you need to enter",
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--xl"
-                        }
+                {{ validatedDateInput({
+                    id: "releaseDate",
+                    title: {
+                        text: 'Enter the ' + description,
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
                     },
-                    hint: {
-                        text: "Select all that apply to the manual calculation."
-                    },
-                    items: checkboxes
+                    validationErrors: validationErrors,
+                    hintText: "For example, 17 2 2025.",
+                    day: day,
+                    month: month,
+                    year: year
                 }) }}
 
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
