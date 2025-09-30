@@ -225,6 +225,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         hasAnSDSEarlyReleaseExclusion: 'NO',
         isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
         isSDSPlusOffenceInPeriod: false,
+        revocationDates: [],
       },
       {
         bookingId: 1,
@@ -257,6 +258,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         hasAnSDSEarlyReleaseExclusion: 'NO',
         isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
         isSDSPlusOffenceInPeriod: false,
+        revocationDates: [],
       },
       {
         bookingId: 1,
@@ -288,6 +290,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         hasAnSDSEarlyReleaseExclusion: 'NO',
         isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
         isSDSPlusOffenceInPeriod: false,
+        revocationDates: [],
       },
       {
         bookingId: 1,
@@ -320,6 +323,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         hasAnSDSEarlyReleaseExclusion: 'NO',
         isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
         isSDSPlusOffenceInPeriod: false,
+        revocationDates: [],
       },
       {
         bookingId: 1,
@@ -352,6 +356,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
         hasAnSDSEarlyReleaseExclusion: 'NO',
         isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
         isSDSPlusOffenceInPeriod: false,
+        revocationDates: [],
       },
     ],
   },

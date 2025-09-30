@@ -1,10 +1,8 @@
 import PrisonerContextViewModel from './PrisonerContextViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
-import {
-  ManualEntrySelectedDate,
-  SubmittedDate,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { SubmittedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { EnteredDate } from '../services/dateValidationService'
+import { ManualEntrySelectedDate } from '../types/ManualJourney'
 
 export default class ApprovedDatesSubmitDateViewModel extends PrisonerContextViewModel {
   constructor(

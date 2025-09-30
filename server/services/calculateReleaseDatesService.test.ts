@@ -736,6 +736,7 @@ describe('Calculate release dates service tests', () => {
             hasAnSDSEarlyReleaseExclusion: 'NO',
             isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
             isSDSPlusOffenceInPeriod: false,
+            revocationDates: [],
           },
           {
             bookingId: 1,
@@ -768,6 +769,7 @@ describe('Calculate release dates service tests', () => {
             hasAnSDSEarlyReleaseExclusion: 'NO',
             isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
             isSDSPlusOffenceInPeriod: false,
+            revocationDates: [],
           },
           {
             bookingId: 1,
@@ -799,6 +801,7 @@ describe('Calculate release dates service tests', () => {
             hasAnSDSEarlyReleaseExclusion: 'NO',
             isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
             isSDSPlusOffenceInPeriod: false,
+            revocationDates: [],
           },
           {
             bookingId: 1,
@@ -831,6 +834,7 @@ describe('Calculate release dates service tests', () => {
             hasAnSDSEarlyReleaseExclusion: 'NO',
             isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
             isSDSPlusOffenceInPeriod: false,
+            revocationDates: [],
           },
           {
             bookingId: 1,
@@ -863,6 +867,7 @@ describe('Calculate release dates service tests', () => {
             hasAnSDSEarlyReleaseExclusion: 'NO',
             isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
             isSDSPlusOffenceInPeriod: false,
+            revocationDates: [],
           },
         ],
       },

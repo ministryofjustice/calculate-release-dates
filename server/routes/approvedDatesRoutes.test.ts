@@ -14,14 +14,13 @@ import DateTypeConfigurationService from '../services/dateTypeConfigurationServi
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import ManualEntryService from '../services/manualEntryService'
 import SessionSetup from './testutils/sessionSetup'
-import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { StorageResponseModel } from '../services/dateValidationService'
 import config from '../config'
 import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import AuditService from '../services/auditService'
-import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/auditService')

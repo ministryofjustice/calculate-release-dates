@@ -5,10 +5,7 @@ import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
 import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
-import {
-  ManualEntrySelectedDate,
-  ValidationMessage,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualEntryConfirmationViewModel from '../models/manual_calculation/ManualEntryConfirmationViewModel'
 import ManualEntryDateEntryViewModel from '../models/manual_calculation/ManualEntryDateEntryViewModel'
 import ManualEntrySelectDatesViewModel from '../models/manual_calculation/ManualEntrySelectDatesViewModel'
@@ -16,7 +13,7 @@ import ManualEntryLandingPageViewModel from '../models/manual_calculation/Manual
 import ManualEntryNoDatesConfirmationViewModel from '../models/manual_calculation/ManualEntryNoDatesConfirmationViewModel'
 import ManualEntryRemoteDateViewModel from '../models/manual_calculation/ManualEntryRemoteDateViewModel'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
-import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 
 export default class ManualEntryRoutes {
   constructor(

@@ -13,12 +13,11 @@ import { pedAdjustedByCrdAndBeforePrrdBreakdown } from '../../services/breakdown
 import {
   BookingCalculation,
   CalculationBreakdown,
-  ManualEntrySelectedDate,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../../config'
 import { ResultsWithBreakdownAndAdjustments } from '../../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ReleaseDateWithAdjustments from '../../@types/calculateReleaseDates/releaseDateWithAdjustments'
-import { ManualJourneySelectedDate } from '../../types/ManualJourney'
+import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../../types/ManualJourney'
 import AuthorisedRoles from '../../enumerations/authorisedRoles'
 
 jest.mock('../../services/calculateReleaseDatesService')
@@ -187,6 +186,7 @@ describe('CalculationSummaryController', () => {
           hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
           isSDSPlusOffenceInPeriod: false,
+          revocationDates: [],
         },
         {
           bookingId: 1,
@@ -219,6 +219,7 @@ describe('CalculationSummaryController', () => {
           hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
           isSDSPlusOffenceInPeriod: false,
+          revocationDates: [],
         },
         {
           bookingId: 1,
@@ -250,6 +251,7 @@ describe('CalculationSummaryController', () => {
           hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
           isSDSPlusOffenceInPeriod: false,
+          revocationDates: [],
         },
         {
           bookingId: 1,
@@ -282,6 +284,7 @@ describe('CalculationSummaryController', () => {
           hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
           isSDSPlusOffenceInPeriod: false,
+          revocationDates: [],
         },
         {
           bookingId: 1,
@@ -314,6 +317,7 @@ describe('CalculationSummaryController', () => {
           hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
           isSDSPlusOffenceInPeriod: false,
+          revocationDates: [],
         },
       ],
     },
@@ -475,6 +479,7 @@ describe('CalculationSummaryController', () => {
               hasAnSDSEarlyReleaseExclusion: 'NO',
               isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
               isSDSPlusOffenceInPeriod: false,
+              revocationDates: [],
             },
           ],
         },
