@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import CalculationCompletePage from '../pages/calculationComplete'
 import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
@@ -169,7 +170,16 @@ context('End to end user journeys for a user with genuine overrides access', () 
 
     const afterAddReviewPage = Page.verifyOnPage(GenuineOverrideReviewDatesPage)
     afterAddReviewPage.expectDates(['LED', 'SED', 'CRD', 'HDCED', 'HDCAD'])
-    afterAddReviewPage.expectDate('HDCED', '29 September 2025')
+    afterAddReviewPage.expectDate('HDCAD', '01 February 2025')
+
+    // stubGetCalculationResults returns an HDCED 3 days in the future and a CRD 7 days in the future
+    const expectedCrd = dayjs().add(7, 'day')
+    afterAddReviewPage.expectDate('CRD', expectedCrd.format('DD MMMM YYYY'))
+    const expectedHdced = dayjs().add(3, 'day')
+    afterAddReviewPage.expectDate('HDCED', expectedHdced.format('DD MMMM YYYY'))
+
+    afterAddReviewPage.expectDate('LED', '05 November 2018')
+    afterAddReviewPage.expectDate('SED', '05 November 2018')
     // TODO wip journey
   })
 })

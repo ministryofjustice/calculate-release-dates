@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon'
-import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 
 export default class DateValidationService {
   public isDateValid(enteredDate: EnteredDate): boolean {
