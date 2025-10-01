@@ -7,6 +7,11 @@ import PrisonerService from '../../../services/prisonerService'
 import ReviewDatesForGenuineOverrideViewModel from '../../../models/genuine-override/ReviewDatesForGenuineOverrideViewModel'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import { filteredListOfDates } from '../../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import {
+  GenuineOverrideRequest,
+  GenuineOverrideRequestReasonCode,
+  ManualEntrySelectedDateType,
+} from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ReviewDatesForGenuineOverrideController implements Controller {
   constructor(
@@ -22,7 +27,7 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
-    if (!genuineOverrideInputs.datesToSave) {
+    if (genuineOverrideInputs.state === 'NEW') {
       const calculationResults = await this.calculateReleaseDatesService.getCalculationResults(
         Number(calculationRequestId),
         token,
@@ -40,6 +45,7 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
           }
         }
       }
+      genuineOverrideInputs.state = 'INITIALISED_DATES'
     }
     if (genuineOverrideInputs.datesToSave?.length === 0) {
       return res.redirect(GenuineOverrideUrls.selectDatesToAdd(nomsId, calculationRequestId))
@@ -64,7 +70,23 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
 
   POST = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    // TODO save
-    return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
+    const { token, username } = res.locals.user
+    const inputs = genuineOverrideInputsForPrisoner(req, nomsId)
+    const request: GenuineOverrideRequest = {
+      reason: inputs.reason as GenuineOverrideRequestReasonCode,
+      reasonFurtherDetail: inputs.reasonFurtherDetail,
+      dates: inputs.datesToSave.map(date => ({
+        dateType: date.type as ManualEntrySelectedDateType,
+        date: date.date,
+      })),
+    }
+    const response = await this.calculateReleaseDatesService.createGenuineOverrideForCalculation(
+      username,
+      nomsId,
+      Number(calculationRequestId),
+      token,
+      request,
+    )
+    return res.redirect(`/calculation/${nomsId}/complete/${response.newCalculationRequestId}`)
   }
 }

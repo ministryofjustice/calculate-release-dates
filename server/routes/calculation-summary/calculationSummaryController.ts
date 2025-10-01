@@ -110,6 +110,9 @@ export default class CalculationSummaryController implements Controller {
     const calculationRequestId = Number(req.params.calculationRequestId)
 
     if (agreeWithDates === 'NO') {
+      if (req.session.genuineOverrideInputs) {
+        delete req.session.genuineOverrideInputs[nomsId]
+      }
       res.redirect(GenuineOverrideUrls.selectReasonForOverride(nomsId, calculationRequestId))
       return
     }

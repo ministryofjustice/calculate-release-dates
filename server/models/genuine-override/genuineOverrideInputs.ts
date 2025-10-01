@@ -1,4 +1,5 @@
 export interface GenuineOverrideInputs {
+  state: 'NEW' | 'INITIALISED_DATES'
   datesToSave?: EnteredGenuineOverrideDate[]
   datesBeingAdded?: NewGenuineOverrideDate[]
   reason?: string

@@ -18,13 +18,13 @@ describe('genuineOverrideUtils', () => {
     it('should initialise global list of genuine override inputs if there are none', () => {
       const req = { session: {} as Partial<SessionData> } as Request
       const inputs = genuineOverrideInputsForPrisoner(req, 'A1234BC')
-      expect(inputs).toStrictEqual({})
+      expect(inputs).toStrictEqual({ state: 'NEW' })
     })
 
     it('should initialise properties for prisoner if there are none', () => {
       const req = { session: { genuineOverrideInputs: {} } as Partial<SessionData> } as Request
       const inputs = genuineOverrideInputsForPrisoner(req, 'A1234BC')
-      expect(inputs).toStrictEqual({})
+      expect(inputs).toStrictEqual({ state: 'NEW' })
     })
 
     it('should get existing properties for prisoner if there are some', () => {
@@ -32,6 +32,7 @@ describe('genuineOverrideUtils', () => {
         session: {
           genuineOverrideInputs: {
             A1234BC: {
+              state: 'INITIALISED_DATES',
               dates: [{ type: 'FOO', date: '2020-01-02' }],
               reason: 'OTHER',
               reasonFurtherDetail: 'Foo',
@@ -41,6 +42,7 @@ describe('genuineOverrideUtils', () => {
       } as Request
       const inputs = genuineOverrideInputsForPrisoner(req, 'A1234BC')
       expect(inputs).toStrictEqual({
+        state: 'INITIALISED_DATES',
         dates: [{ type: 'FOO', date: '2020-01-02' }],
         reason: 'OTHER',
         reasonFurtherDetail: 'Foo',

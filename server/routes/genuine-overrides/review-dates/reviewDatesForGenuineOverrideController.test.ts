@@ -61,7 +61,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
   }
 
   beforeEach(() => {
-    genuineOverrideInputs = {}
+    genuineOverrideInputs = { state: 'NEW' }
     sessionSetup.sessionDoctor = req => {
       req.session.genuineOverrideInputs = {}
       req.session.genuineOverrideInputs[prisonerNumber] = genuineOverrideInputs
@@ -200,6 +200,27 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       )
 
       expect(calculateReleaseDatesService.getCalculationResults).toHaveBeenCalledTimes(1)
+      expect(genuineOverrideInputs).toStrictEqual({
+        state: 'INITIALISED_DATES',
+        datesToSave: [
+          {
+            date: '2021-02-03',
+            type: 'SED',
+          },
+          {
+            date: '2021-02-04',
+            type: 'CRD',
+          },
+          {
+            date: '2021-10-03',
+            type: 'HDCED',
+          },
+          {
+            date: '2020-02-03',
+            type: 'ERSED',
+          },
+        ],
+      })
     })
 
     it('should decompose SLED into SED and LED', async () => {
@@ -230,6 +251,19 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         '<span class="govuk-!-font-size-24">SED</span><br><span class="govuk-hint">Sentence expiry date</span>',
       )
       expect(calculateReleaseDatesService.getCalculationResults).toHaveBeenCalledTimes(1)
+      expect(genuineOverrideInputs).toStrictEqual({
+        state: 'INITIALISED_DATES',
+        datesToSave: [
+          {
+            type: 'LED',
+            date: '2021-10-03',
+          },
+          {
+            type: 'SED',
+            date: '2021-10-03',
+          },
+        ],
+      })
     })
 
     it('should load dates from session after initial load and maintain order', async () => {
@@ -239,6 +273,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         { type: 'HDCED', date: '2021-10-03' },
         { type: 'ERSED', date: '2020-02-03' },
       ]
+      genuineOverrideInputs.state = 'INITIALISED_DATES'
 
       const response = await request(app).get(pageUrl)
 
@@ -260,6 +295,59 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       )
 
       expect(calculateReleaseDatesService.getCalculationResults).not.toHaveBeenCalled()
+    })
+
+    it('should redirect to select dates screen if all dates have been removed', async () => {
+      genuineOverrideInputs.datesToSave = []
+      genuineOverrideInputs.state = 'INITIALISED_DATES'
+
+      await request(app)
+        .get(pageUrl)
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/override/select-dates/${calculationRequestId}`)
+    })
+  })
+
+  describe('POST', () => {
+    it('should create a genuine override and redirect to calculation complete', async () => {
+      const newCalculationRequestId = 2468972456
+      calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
+        newCalculationRequestId,
+        originalCalculationRequestId: calculationRequestId,
+      })
+      genuineOverrideInputs.datesToSave = [
+        { type: 'SED', date: '2021-02-03' },
+        { type: 'CRD', date: '2021-02-04' },
+        { type: 'HDCED', date: '2021-10-03' },
+        { type: 'ERSED', date: '2020-02-03' },
+      ]
+      genuineOverrideInputs.state = 'INITIALISED_DATES'
+      genuineOverrideInputs.reason = 'OTHER'
+      genuineOverrideInputs.reasonFurtherDetail = 'Some more details'
+
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({ day: '28', month: '2', year: '2025' })
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/complete/${newCalculationRequestId}`)
+
+      expect(calculateReleaseDatesService.createGenuineOverrideForCalculation).toHaveBeenCalledWith(
+        'user1',
+        prisonerNumber,
+        Number(calculationRequestId),
+        'token',
+        {
+          dates: [
+            { dateType: 'SED', date: '2021-02-03' },
+            { dateType: 'CRD', date: '2021-02-04' },
+            { dateType: 'HDCED', date: '2021-10-03' },
+            { dateType: 'ERSED', date: '2020-02-03' },
+          ],
+          reason: 'OTHER',
+          reasonFurtherDetail: 'Some more details',
+        },
+      )
     })
   })
 })

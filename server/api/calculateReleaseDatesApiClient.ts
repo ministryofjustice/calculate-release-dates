@@ -19,7 +19,9 @@ import {
   DateTypeDefinition,
   DetailedCalculationResults,
   ErsedEligibility,
+  GenuineOverrideCreatedResponse,
   GenuineOverrideReason,
+  GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
   ManualEntryRequest,
@@ -96,6 +98,16 @@ export default class CalculateReleaseDatesApiClient {
       path: `/calculation/confirm/${calculationRequestId}`,
       data: body,
     }) as Promise<BookingCalculation>
+  }
+
+  createGenuineOverrideForCalculation(
+    calculationRequestId: number,
+    body: GenuineOverrideRequest,
+  ): Promise<GenuineOverrideCreatedResponse> {
+    return this.restClient.post({
+      path: `/calculation/genuine-override/${calculationRequestId}`,
+      data: body,
+    }) as Promise<GenuineOverrideCreatedResponse>
   }
 
   getNextWorkingDay(date: string): Promise<WorkingDay> {

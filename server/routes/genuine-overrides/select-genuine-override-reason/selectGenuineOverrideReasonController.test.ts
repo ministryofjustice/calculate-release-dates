@@ -31,7 +31,7 @@ describe('SelectGenuineOverrideReasonController', () => {
   const pageUrl = `/calculation/${prisonerNumber}/select-reason-for-override/${calculationRequestId}`
 
   beforeEach(() => {
-    genuineOverrideInputs = {}
+    genuineOverrideInputs = { state: 'NEW' }
     sessionSetup.sessionDoctor = req => {
       req.session.genuineOverrideInputs = {}
       req.session.genuineOverrideInputs[prisonerNumber] = genuineOverrideInputs
@@ -123,7 +123,7 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect('Location', `${pageUrl}#`)
 
       // should not have set anything on inputs
-      expect(genuineOverrideInputs).toStrictEqual({})
+      expect(genuineOverrideInputs).toStrictEqual({ state: 'NEW' })
     })
     it('should pass to review dates page if a reason was selected correctly', async () => {
       await request(app) //
@@ -133,7 +133,7 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
 
-      expect(genuineOverrideInputs).toStrictEqual({ reason: 'OTHER', reasonFurtherDetail: 'Foo' })
+      expect(genuineOverrideInputs).toStrictEqual({ state: 'NEW', reason: 'OTHER', reasonFurtherDetail: 'Foo' })
     })
   })
 })

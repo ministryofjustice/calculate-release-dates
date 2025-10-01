@@ -77,4 +77,24 @@ export default class AuditService {
       JSON.stringify({ error: exception.message }),
     )
   }
+
+  public async publishGenuineOverride(
+    user: string,
+    prisonerNumber: string,
+    originalCalculationRequestId: number,
+    overrideCalculationRequestId: number,
+  ) {
+    const details = JSON.stringify({ prisonerNumber, originalCalculationRequestId, overrideCalculationRequestId })
+    await this.sendAuditMessage(AuditAction.GENUINE_OVERRIDE_CREATED, user, prisonerNumber, details)
+  }
+
+  public async publishGenuineOverrideFailed(
+    user: string,
+    prisonerNumber: string,
+    originalCalculationRequestId: number,
+    exception: Error,
+  ) {
+    const details = JSON.stringify({ originalCalculationRequestId, error: exception.message })
+    await this.sendAuditMessage(AuditAction.GENUINE_OVERRIDE_FAILED, user, prisonerNumber, details)
+  }
 }

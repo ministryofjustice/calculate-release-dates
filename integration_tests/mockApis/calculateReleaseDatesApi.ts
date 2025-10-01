@@ -1476,4 +1476,20 @@ export default {
       },
     })
   },
+  stubCreateGenuineOverride: (opts: { originalCalcId: number; newCalcId: number }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: `/calculate-release-dates/calculation/genuine-override/${opts.originalCalcId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          originalCalculationRequestId: opts.originalCalcId,
+          newCalculationRequestId: opts.newCalcId,
+        },
+      },
+    })
+  },
 }

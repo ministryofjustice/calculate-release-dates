@@ -11,7 +11,7 @@ const genuineOverrideInputsForPrisoner = (req: Request, prisonerNumber: string):
     session.genuineOverrideInputs = {}
   }
   if (!session.genuineOverrideInputs[prisonerNumber]) {
-    session.genuineOverrideInputs[prisonerNumber] = {}
+    session.genuineOverrideInputs[prisonerNumber] = { state: 'NEW' }
   }
   return session.genuineOverrideInputs[prisonerNumber]
 }
