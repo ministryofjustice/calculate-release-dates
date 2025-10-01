@@ -12,3 +12,6 @@ Cypress.Commands.add('verifyLastAPICall', (matching: string | object, expected: 
 Cypress.Commands.add('verifyAPIWasCalled', (matching: string | object, expected: number) => {
   return cy.wrap(getAPICallCountMatching(matching)).should('eq', expected)
 })
+
+// ensure .should('eql', thing) displays the full diff
+chai.config.truncateThreshold = 0

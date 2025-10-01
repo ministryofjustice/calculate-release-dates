@@ -9,6 +9,10 @@ export default class GenuineOverrideReasonPage extends Page {
     return cy.get(`[data-qa=reasonRadio-${code}]`)
   }
 
+  public reasonFurtherDetail(): PageElement {
+    return cy.get(`#reason-further-detail`)
+  }
+
   public continueButton(): PageElement {
     return cy.get('[data-qa=submitGenuineOverrideReason]')
   }
