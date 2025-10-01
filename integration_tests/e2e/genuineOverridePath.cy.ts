@@ -13,6 +13,7 @@ import GenuineOverrideReasonPage from '../pages/genuineOverrideReasonPage'
 import GenuineOverrideReviewDatesPage from '../pages/genuineOverrideReviewDatesPage'
 import GenuineOverridesSelectDatesToEnterPage from '../pages/genuineOverridesSelectDatesToEnterPage'
 import GenuineOverrideEnterDatePage from '../pages/genuineOverrideEnterDatePage'
+import GenuineOverrideRemoveDatePage from '../pages/genuineOverrideRemoveDatePage'
 
 context('End to end user journeys for a user with genuine overrides access', () => {
   beforeEach(() => {
@@ -201,6 +202,182 @@ context('End to end user journeys for a user with genuine overrides access', () 
           { dateType: 'HDCAD', date: '2025-02-01' },
         ],
         reason: 'TERRORISM',
+      },
+    )
+  })
+
+  it('Can edit dates if not agreeing with the calculated dates', () => {
+    cy.signIn()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.calculateReleaseDatesAction().click()
+
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.submitReason().click()
+
+    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
+    checkInformationPage.calculateButton().click()
+
+    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
+    calculationSummaryPage.agreeWithDatesRadio('NO').check()
+    calculationSummaryPage.continueButton().click()
+
+    const genuineOverrideReasonPage = Page.verifyOnPage(GenuineOverrideReasonPage)
+    genuineOverrideReasonPage.radioByCode('OTHER').check()
+    genuineOverrideReasonPage.reasonFurtherDetail().type('Some more details')
+    genuineOverrideReasonPage.continueButton().click()
+
+    const expectedCrd = dayjs().add(7, 'day')
+    const expectedHdced = dayjs().add(3, 'day')
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .expectDates(['LED', 'SED', 'CRD', 'HDCED'])
+      .expectDate('CRD', expectedCrd.format('DD MMMM YYYY'))
+      .expectDate('HDCED', expectedHdced.format('DD MMMM YYYY'))
+      .expectDate('LED', '05 November 2018')
+      .expectDate('SED', '05 November 2018')
+      .editDateLink('HDCED')
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideEnterDatePage) //
+      .checkIsFor('HDCED (Home detention curfew eligibility date)')
+      .hasDate(expectedHdced.date().toString(), (expectedHdced.month() + 1).toString(), expectedHdced.year().toString())
+      .clearDate()
+      .enterDate('01', '02', '2025')
+      .continue()
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .editDateLink('HDCED')
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideEnterDatePage) //
+      .checkIsFor('HDCED (Home detention curfew eligibility date)')
+      .backButton()
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .expectDates(['LED', 'SED', 'CRD', 'HDCED'])
+      .expectDate('CRD', expectedCrd.format('DD MMMM YYYY'))
+      .expectDate('HDCED', '01 February 2025')
+      .expectDate('LED', '05 November 2018')
+      .expectDate('SED', '05 November 2018')
+      .continueButton()
+      .click()
+
+    Page.verifyOnPage(CalculationCompletePage) //
+      .title()
+      .should('contain.text', 'Calculation complete')
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/calculate-release-dates/calculation/genuine-override/123`,
+      },
+      {
+        dates: [
+          { dateType: 'LED', date: '2018-11-05' },
+          { dateType: 'SED', date: '2018-11-05' },
+          { dateType: 'CRD', date: expectedCrd.format('YYYY-MM-DD') },
+          { dateType: 'HDCED', date: '2025-02-01' },
+        ],
+        reason: 'OTHER',
+        reasonFurtherDetail: 'Some more details',
+      },
+    )
+  })
+
+  it('Can delete dates if not agreeing with the calculated dates', () => {
+    cy.signIn()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.calculateReleaseDatesAction().click()
+
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.submitReason().click()
+
+    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
+    checkInformationPage.calculateButton().click()
+
+    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
+    calculationSummaryPage.agreeWithDatesRadio('NO').check()
+    calculationSummaryPage.continueButton().click()
+
+    const genuineOverrideReasonPage = Page.verifyOnPage(GenuineOverrideReasonPage)
+    genuineOverrideReasonPage.radioByCode('OTHER').check()
+    genuineOverrideReasonPage.reasonFurtherDetail().type('Some more details')
+    genuineOverrideReasonPage.continueButton().click()
+
+    const expectedCrd = dayjs().add(7, 'day')
+    const expectedHdced = dayjs().add(3, 'day')
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .expectDates(['LED', 'SED', 'CRD', 'HDCED'])
+      .expectDate('CRD', expectedCrd.format('DD MMMM YYYY'))
+      .expectDate('HDCED', expectedHdced.format('DD MMMM YYYY'))
+      .expectDate('LED', '05 November 2018')
+      .expectDate('SED', '05 November 2018')
+      .deleteDateLink('HDCED')
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideRemoveDatePage) //
+      .checkIsFor('HDCED (Home detention curfew eligibility date)')
+      .selectRadio('YES')
+      .continue()
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .expectDates(['LED', 'SED', 'CRD'])
+      .expectDate('CRD', expectedCrd.format('DD MMMM YYYY'))
+      .expectDate('LED', '05 November 2018')
+      .expectDate('SED', '05 November 2018')
+      .deleteDateLink('CRD')
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideRemoveDatePage) //
+      .checkIsFor('CRD (Conditional release date)')
+      .selectRadio('NO')
+      .continue()
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .expectDates(['LED', 'SED', 'CRD'])
+      .expectDate('CRD', expectedCrd.format('DD MMMM YYYY'))
+      .expectDate('LED', '05 November 2018')
+      .expectDate('SED', '05 November 2018')
+      .deleteDateLink('CRD')
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideRemoveDatePage) //
+      .checkIsFor('CRD (Conditional release date)')
+      .backButton()
+      .click()
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .expectDates(['LED', 'SED', 'CRD'])
+      .expectDate('CRD', expectedCrd.format('DD MMMM YYYY'))
+      .expectDate('LED', '05 November 2018')
+      .expectDate('SED', '05 November 2018')
+      .continueButton()
+      .click()
+
+    Page.verifyOnPage(CalculationCompletePage) //
+      .title()
+      .should('contain.text', 'Calculation complete')
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/calculate-release-dates/calculation/genuine-override/123`,
+      },
+      {
+        dates: [
+          { dateType: 'LED', date: '2018-11-05' },
+          { dateType: 'SED', date: '2018-11-05' },
+          { dateType: 'CRD', date: expectedCrd.format('YYYY-MM-DD') },
+        ],
+        reason: 'OTHER',
+        reasonFurtherDetail: 'Some more details',
       },
     )
   })

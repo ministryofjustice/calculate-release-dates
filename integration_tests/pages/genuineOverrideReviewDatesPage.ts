@@ -24,6 +24,14 @@ export default class GenuineOverrideReviewDatesPage extends Page {
     return cy.get('[data-qa=add-dates-link]')
   }
 
+  public editDateLink(type: string): PageElement {
+    return cy.get(`[data-qa=edit-${type}-link]`)
+  }
+
+  public deleteDateLink(type: string): PageElement {
+    return cy.get(`[data-qa=delete-${type}-link]`)
+  }
+
   public continueButton(): PageElement {
     return cy.get('[data-qa=confirm-and-save]')
   }

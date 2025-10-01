@@ -8,7 +8,7 @@ export default class ReviewDatesForGenuineOverrideViewModel extends PrisonerCont
   public dateRows: {
     key: { html: string }
     value: { text: string; classes: string }
-    actions?: { items: { text: string; href: string }[] }
+    actions?: { items: { text: string; href: string; attributes?: { 'data-qa': string } }[] }
   }[]
 
   public addLink: string
@@ -34,10 +34,12 @@ export default class ReviewDatesForGenuineOverrideViewModel extends PrisonerCont
             {
               text: 'Edit',
               href: GenuineOverrideUrls.editDate(prisonerDetail.offenderNo, calculationRequestId, date.type),
+              attributes: { 'data-qa': `edit-${date.type}-link` },
             },
             {
               text: 'Delete',
               href: GenuineOverrideUrls.deleteDate(prisonerDetail.offenderNo, calculationRequestId, date.type),
+              attributes: { 'data-qa': `delete-${date.type}-link` },
             },
           ],
         },
