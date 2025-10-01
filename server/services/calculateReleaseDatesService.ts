@@ -15,7 +15,9 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
+  GenuineOverrideCreatedResponse,
   GenuineOverrideReason,
+  GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
   NomisCalculationSummary,
@@ -382,6 +384,31 @@ export default class CalculateReleaseDatesService {
       return calculation
     } catch (error) {
       await this.auditService.publishSentenceCalculationFailure(userName, nomsId, error)
+      throw error
+    }
+  }
+
+  async createGenuineOverrideForCalculation(
+    userName: string,
+    nomsId: string,
+    calculationRequestId: number,
+    token: string,
+    body: GenuineOverrideRequest,
+  ): Promise<GenuineOverrideCreatedResponse> {
+    try {
+      const calculation = await new CalculateReleaseDatesApiClient(token).createGenuineOverrideForCalculation(
+        calculationRequestId,
+        body,
+      )
+      await this.auditService.publishGenuineOverride(
+        userName,
+        nomsId,
+        calculation.originalCalculationRequestId,
+        calculation.newCalculationRequestId,
+      )
+      return calculation
+    } catch (error) {
+      await this.auditService.publishGenuineOverrideFailed(userName, nomsId, calculationRequestId, error)
       throw error
     }
   }

@@ -52,6 +52,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetEligibility')
     cy.task('stubGetGenuineOverrideReasons')
+    cy.task('stubCreateGenuineOverride', { originalCalcId: 123, newCalcId: 456 })
   })
 
   it('Ask for approved dates if happy with calculated dates', () => {
@@ -168,18 +169,39 @@ context('End to end user journeys for a user with genuine overrides access', () 
     enterHdcadPage.enterDate('01', '02', '2025')
     enterHdcadPage.continue().click()
 
-    const afterAddReviewPage = Page.verifyOnPage(GenuineOverrideReviewDatesPage)
-    afterAddReviewPage.expectDates(['LED', 'SED', 'CRD', 'HDCED', 'HDCAD'])
-    afterAddReviewPage.expectDate('HDCAD', '01 February 2025')
-
     // stubGetCalculationResults returns an HDCED 3 days in the future and a CRD 7 days in the future
     const expectedCrd = dayjs().add(7, 'day')
-    afterAddReviewPage.expectDate('CRD', expectedCrd.format('DD MMMM YYYY'))
     const expectedHdced = dayjs().add(3, 'day')
-    afterAddReviewPage.expectDate('HDCED', expectedHdced.format('DD MMMM YYYY'))
 
-    afterAddReviewPage.expectDate('LED', '05 November 2018')
-    afterAddReviewPage.expectDate('SED', '05 November 2018')
-    // TODO wip journey
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .expectDates(['LED', 'SED', 'CRD', 'HDCED', 'HDCAD'])
+      .expectDate('CRD', expectedCrd.format('DD MMMM YYYY'))
+      .expectDate('HDCED', expectedHdced.format('DD MMMM YYYY'))
+      .expectDate('HDCAD', '01 February 2025')
+      .expectDate('LED', '05 November 2018')
+      .expectDate('SED', '05 November 2018')
+      .continueButton()
+      .click()
+
+    Page.verifyOnPage(CalculationCompletePage) //
+      .title()
+      .should('contain.text', 'Calculation complete')
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/calculate-release-dates/calculation/genuine-override/123`,
+      },
+      {
+        dates: [
+          { dateType: 'LED', date: '2018-11-05' },
+          { dateType: 'SED', date: '2018-11-05' },
+          { dateType: 'CRD', date: expectedCrd.format('YYYY-MM-DD') },
+          { dateType: 'HDCED', date: expectedHdced.format('YYYY-MM-DD') },
+          { dateType: 'HDCAD', date: '2025-02-01' },
+        ],
+        reason: 'TERRORISM',
+      },
+    )
   })
 })

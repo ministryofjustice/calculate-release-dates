@@ -55,7 +55,7 @@ describe('AddGenuineOverrideDateController', () => {
   }
 
   beforeEach(() => {
-    genuineOverrideInputs = {}
+    genuineOverrideInputs = { state: 'INITIALISED_DATES' }
     sessionSetup.sessionDoctor = req => {
       req.session.genuineOverrideInputs = {}
       req.session.genuineOverrideInputs[prisonerNumber] = genuineOverrideInputs
@@ -157,7 +157,7 @@ describe('AddGenuineOverrideDateController', () => {
         .expect(302)
         .expect('Location', `${pageUrl}#`)
 
-      expect(genuineOverrideInputs).toStrictEqual({ datesToSave: [originalHdced] })
+      expect(genuineOverrideInputs).toStrictEqual({ state: 'INITIALISED_DATES', datesToSave: [originalHdced] })
     })
 
     it('should return the review page with updated dates if valid ', async () => {
@@ -171,6 +171,7 @@ describe('AddGenuineOverrideDateController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({
+        state: 'INITIALISED_DATES',
         datesToSave: [{ type: 'HDCED', date: '2025-02-28' }],
       })
     })

@@ -3,6 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import MockDate from 'mockdate'
 import { HttpError } from 'http-errors'
+import { SessionData } from 'express-session'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import { appWithAllRoutes, user } from '../testutils/appSetup'
 import SessionSetup from '../testutils/sessionSetup'
@@ -786,8 +787,16 @@ describe('CalculationSummaryController', () => {
         })
     })
 
-    it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect to genuine overrides if user disagrees with dates', () => {
-      approvedDates[prisonerNumber] = []
+    it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect to genuine overrides if user disagrees with dates and wipe existing genuine override inputs', () => {
+      let currentSession: SessionData
+      sessionSetup.sessionDoctor = req => {
+        currentSession = req.session
+        req.session.genuineOverrideInputs = {}
+        req.session.genuineOverrideInputs[prisonerNumber] = {
+          state: 'INITIALISED_DATES',
+          datesToSave: [{ type: 'CRD', date: '2020-01-02' }],
+        }
+      }
       return request(app)
         .post(`/calculation/${prisonerNumber}/summary/123456`)
         .type('form')
@@ -796,6 +805,25 @@ describe('CalculationSummaryController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/select-reason-for-override/123456`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
+          expect(currentSession.genuineOverrideInputs[prisonerNumber]).toBeUndefined()
+        })
+    })
+
+    it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect to genuine overrides if user disagrees with dates with no existing data', () => {
+      let currentSession: SessionData
+      sessionSetup.sessionDoctor = req => {
+        currentSession = req.session
+        delete req.session.genuineOverrideInputs
+      }
+      return request(app)
+        .post(`/calculation/${prisonerNumber}/summary/123456`)
+        .type('form')
+        .send({ agreeWithDates: 'NO' })
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/select-reason-for-override/123456`)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(currentSession.genuineOverrideInputs?.[prisonerNumber]).toBeUndefined()
         })
     })
 

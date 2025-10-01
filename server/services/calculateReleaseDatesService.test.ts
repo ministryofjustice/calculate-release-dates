@@ -10,6 +10,7 @@ import {
   BookingCalculation,
   CalculationBreakdown,
   DetailedCalculationResults,
+  GenuineOverrideCreatedResponse,
   LatestCalculation,
   ValidationMessage,
   WorkingDay,
@@ -160,10 +161,10 @@ const token = 'token'
 describe('Calculate release dates service tests', () => {
   let calculateReleaseDatesService: CalculateReleaseDatesService
   let fakeApi: nock.Scope
+  const auditService = new AuditService() as jest.Mocked<AuditService>
   beforeEach(() => {
-    const auditService = new AuditService()
-    auditService.publishSentenceCalculation = jest.fn().mockImplementation(() => Promise.resolve())
-    auditService.publishSentenceCalculationFailure = jest.fn().mockImplementation(() => Promise.resolve())
+    auditService.publishSentenceCalculation.mockResolvedValue()
+    auditService.publishSentenceCalculationFailure.mockResolvedValue()
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.calculateReleaseDates.url)
     calculateReleaseDatesService = new CalculateReleaseDatesService(auditService)
@@ -1007,5 +1008,61 @@ describe('Calculate release dates service tests', () => {
         ],
       })
     })
+  })
+
+  it('Test creating a genuine override successfully audits it', async () => {
+    const response: GenuineOverrideCreatedResponse = {
+      newCalculationRequestId: 564658897564,
+      originalCalculationRequestId: calculationRequestId,
+    }
+    auditService.publishGenuineOverride.mockResolvedValue()
+    fakeApi.post(`/calculation/genuine-override/${calculationRequestId}`).reply(200, response)
+
+    const result = await calculateReleaseDatesService.createGenuineOverrideForCalculation(
+      userName,
+      nomsId,
+      calculationRequestId,
+      token,
+      {
+        dates: [],
+        reason: 'OTHER',
+        reasonFurtherDetail: 'Foo',
+      },
+    )
+
+    expect(result).toEqual(response)
+    expect(auditService.publishGenuineOverride).toHaveBeenCalledWith(
+      'USERNAME',
+      'A1234AB',
+      calculationRequestId,
+      564658897564,
+    )
+  })
+
+  it('Test creating a genuine override fails is audited', async () => {
+    auditService.publishGenuineOverrideFailed.mockResolvedValue()
+    fakeApi.post(`/calculation/genuine-override/${calculationRequestId}`).reply(500)
+
+    try {
+      await calculateReleaseDatesService.createGenuineOverrideForCalculation(
+        userName,
+        nomsId,
+        calculationRequestId,
+        token,
+        {
+          dates: [],
+          reason: 'OTHER',
+          reasonFurtherDetail: 'Foo',
+        },
+      )
+      fail('Should have blown up')
+    } catch (error) {
+      expect(auditService.publishGenuineOverrideFailed).toHaveBeenCalledWith(
+        'USERNAME',
+        'A1234AB',
+        calculationRequestId,
+        error,
+      )
+    }
   })
 })

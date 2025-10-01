@@ -57,6 +57,7 @@ describe('SelectGenuineOverrideReasonController', () => {
 
   beforeEach(() => {
     genuineOverrideInputs = {
+      state: 'INITIALISED_DATES',
       reason: 'TERRORISM',
       datesToSave: [
         { type: 'SLED', date: '2032-06-15' },
@@ -127,6 +128,7 @@ describe('SelectGenuineOverrideReasonController', () => {
 
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({
+        state: 'INITIALISED_DATES',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
@@ -145,6 +147,7 @@ describe('SelectGenuineOverrideReasonController', () => {
 
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({
+        state: 'INITIALISED_DATES',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
@@ -163,6 +166,7 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/override/HDCED/add/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({
+        state: 'INITIALISED_DATES',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
@@ -181,6 +185,7 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/override/HDCED/add/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({
+        state: 'INITIALISED_DATES',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
