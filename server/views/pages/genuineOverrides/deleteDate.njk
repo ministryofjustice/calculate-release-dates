@@ -6,17 +6,6 @@
 {% set pageTitle = applicationName + " - Delete the date" %}
 {% set pageId = "genuine-override-delete-date" %}
 
-{% block beforeContent %}
-    {{ super() }}
-    <nav>
-        {{ govukBackLink({
-            text: "Back",
-            href: backLink,
-            attributes: {"data-qa": "back-link"}
-        }) }}
-    </nav>
-{% endblock %}
-
 {% block content %}
     {% include '../partials/formError.njk' %}
     <div class="govuk-grid-row">
@@ -28,7 +17,7 @@
                     name: "confirmDeleteDate",
                     fieldset: {
                         legend: {
-                            text: "Are you sure you want to remove " + description + "?",
+                            text: "Are you sure you want to delete " + description + "?",
                             isPageHeading: true,
                             classes: "govuk-fieldset__legend--xl"
                         }

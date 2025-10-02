@@ -31,7 +31,22 @@ describe('selectGenuineOverrideReasonSchemaFactory', () => {
     expect(result.success).toStrictEqual(false)
     const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
     expect(deduplicatedFieldErrors).toStrictEqual({
-      reasonFurtherDetail: ['Please enter the reason for this override'],
+      reasonFurtherDetail: ['Enter the reason this calculation is incorrect'],
+    })
+  })
+
+  it('should reject further detail if more than 120 chars', async () => {
+    // Given
+    const form = { reason: 'OTHER', reasonFurtherDetail: 'x'.padStart(121, 'x') }
+
+    // When
+    const result = await doValidate(form)
+
+    // Then
+    expect(result.success).toStrictEqual(false)
+    const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
+    expect(deduplicatedFieldErrors).toStrictEqual({
+      reasonFurtherDetail: ['The reason this calculation is incorrect must be 120 characters or less'],
     })
   })
 
