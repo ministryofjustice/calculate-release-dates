@@ -103,7 +103,7 @@ describe('SelectGenuineOverrideReasonController', () => {
       )
     })
 
-    it('should show list of dates with the ones already added being disabled', async () => {
+    it('should show list of dates with the ones already added being disabled ', async () => {
       const response = await request(app).get(pageUrl)
 
       expect(response.status).toEqual(200)
@@ -119,6 +119,20 @@ describe('SelectGenuineOverrideReasonController', () => {
           expect(radio.attr('disabled')).toBeUndefined()
         }
       })
+    })
+
+    it('should show list of dates with the ones already added being disabled and pending ones just ticked but not disabled', async () => {
+      genuineOverrideInputs.datesToSave = [{ type: 'CRD', date: '2021-02-03' }]
+      genuineOverrideInputs.datesBeingAdded = [{ type: 'HDCED' }]
+      const response = await request(app).get(pageUrl)
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      const crdRadio = $(`[data-qa=checkbox-CRD]`)
+      expect(crdRadio.attr('checked')).toStrictEqual('checked')
+      expect(crdRadio.attr('disabled')).toStrictEqual('disabled')
+      const hdcedRadio = $(`[data-qa=checkbox-HDCED]`)
+      expect(hdcedRadio.attr('checked')).toStrictEqual('checked')
+      expect(hdcedRadio.attr('disabled')).toBeUndefined()
     })
 
     it('should redirect to auth error if the user does not have required role', async () => {
