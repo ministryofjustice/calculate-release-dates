@@ -16,6 +16,7 @@ import { releaseDateSchema } from '../common-schemas/releaseDateSchemas'
 import EditGenuineOverrideDateController from './edit-date/editGenuineOverrideDateController'
 import DeleteGenuineOverrideDateController from './delete-date/deleteGenuineOverrideDateController'
 import { deleteGenuineOverrideDateSchema } from './delete-date/deleteGenuineOverrideSchema'
+import requireGenuineOverrideAccess from '../../middleware/requireGenuineOverrideAccess'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
@@ -32,12 +33,12 @@ const GenuineOverridesRoutes = (
     controller: Controller
     validateToSchema?: z.ZodTypeAny | SchemaFactory<P>
   }) => {
-    router.get(path, asyncMiddleware(controller.GET))
+    router.get(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.GET))
     if (controller.POST) {
       if (validateToSchema) {
-        router.post(path, validate(validateToSchema), asyncMiddleware(controller.POST))
+        router.post(path, requireGenuineOverrideAccess(), validate(validateToSchema), asyncMiddleware(controller.POST))
       } else {
-        router.post(path, asyncMiddleware(controller.POST))
+        router.post(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.POST))
       }
     }
   }

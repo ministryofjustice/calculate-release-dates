@@ -22,12 +22,13 @@ export default class GenuineOverrideSelectDatesController implements Controller 
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const checkboxes: SelectedDateCheckBox[] = determinateDateTypesForManualEntry.map(dateType => {
-      const hasExistingDate = genuineOverrideInputs.datesToSave?.find(it => it.type === dateType) !== undefined
+      const hasEnteredDate = genuineOverrideInputs.datesToSave?.find(it => it.type === dateType) !== undefined
+      const hasPendingDate = genuineOverrideInputs.datesBeingAdded?.find(it => it.type === dateType) !== undefined
       return {
         value: dateType,
         text: dateTypeDefinitions[dateType],
-        checked: hasExistingDate,
-        attributes: hasExistingDate
+        checked: hasEnteredDate || hasPendingDate,
+        attributes: hasEnteredDate
           ? { disabled: true, 'data-qa': `checkbox-${dateType}` }
           : { 'data-qa': `checkbox-${dateType}` },
       }

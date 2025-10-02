@@ -1,13 +1,14 @@
 import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes } from '../../testutils/appSetup'
+import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
 import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import { determinateDateTypesForManualEntry } from '../../../services/manualEntryService'
+import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 
 jest.mock('../../../services/prisonerService')
 jest.mock('../../../services/dateTypeConfigurationService')
@@ -28,7 +29,7 @@ describe('SelectGenuineOverrideReasonController', () => {
     lastName: 'Nobody',
   } as PrisonApiPrisoner
   const pageUrl = `/calculation/${prisonerNumber}/override/select-dates/${calculationRequestId}`
-
+  let currentUser: Express.User
   const mockDateConfigs = {
     CRD: 'CRD (Conditional release date)',
     LED: 'LED (Licence expiry date)',
@@ -68,13 +69,17 @@ describe('SelectGenuineOverrideReasonController', () => {
       req.session.genuineOverrideInputs = {}
       req.session.genuineOverrideInputs[prisonerNumber] = genuineOverrideInputs
     }
-
+    currentUser = {
+      ...user,
+      userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW],
+    }
     app = appWithAllRoutes({
       services: {
         prisonerService,
         dateTypeConfigurationService,
       },
       sessionSetup,
+      userSupplier: () => currentUser,
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(mockDateConfigs)
@@ -98,7 +103,7 @@ describe('SelectGenuineOverrideReasonController', () => {
       )
     })
 
-    it('should show list of dates with the ones already added being disabled', async () => {
+    it('should show list of dates with the ones already added being disabled ', async () => {
       const response = await request(app).get(pageUrl)
 
       expect(response.status).toEqual(200)
@@ -114,6 +119,25 @@ describe('SelectGenuineOverrideReasonController', () => {
           expect(radio.attr('disabled')).toBeUndefined()
         }
       })
+    })
+
+    it('should show list of dates with the ones already added being disabled and pending ones just ticked but not disabled', async () => {
+      genuineOverrideInputs.datesToSave = [{ type: 'CRD', date: '2021-02-03' }]
+      genuineOverrideInputs.datesBeingAdded = [{ type: 'HDCED' }]
+      const response = await request(app).get(pageUrl)
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      const crdRadio = $(`[data-qa=checkbox-CRD]`)
+      expect(crdRadio.attr('checked')).toStrictEqual('checked')
+      expect(crdRadio.attr('disabled')).toStrictEqual('disabled')
+      const hdcedRadio = $(`[data-qa=checkbox-HDCED]`)
+      expect(hdcedRadio.attr('checked')).toStrictEqual('checked')
+      expect(hdcedRadio.attr('disabled')).toBeUndefined()
+    })
+
+    it('should redirect to auth error if the user does not have required role', async () => {
+      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
+      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
     })
   })
 
@@ -193,6 +217,16 @@ describe('SelectGenuineOverrideReasonController', () => {
         ],
         datesBeingAdded: [{ type: 'HDCED' }],
       })
+    })
+
+    it('should redirect to auth error if the user does not have required role', async () => {
+      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({ dateType: 'HDCED' })
+        .expect(302)
+        .expect('Location', '/authError')
     })
   })
 })
