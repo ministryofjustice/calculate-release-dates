@@ -5,7 +5,6 @@ export default class GenuineOverrideDeleteDateViewModel extends PrisonerContextV
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     public description: string,
-    public backLink: string,
     public pageCancelRedirectUrl: string,
   ) {
     super(prisonerDetail)

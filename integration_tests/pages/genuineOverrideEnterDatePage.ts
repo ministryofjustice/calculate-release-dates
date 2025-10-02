@@ -1,4 +1,4 @@
-import Page, { PageElement } from './page'
+import Page from './page'
 
 export default class GenuineOverrideEnterDatePage extends Page {
   constructor() {
@@ -32,11 +32,13 @@ export default class GenuineOverrideEnterDatePage extends Page {
     return this
   }
 
-  public backButton(): PageElement {
-    return cy.get('.govuk-back-link')
+  public clickBack(): GenuineOverrideEnterDatePage {
+    cy.get('.govuk-back-link').click()
+    return this
   }
 
-  public continue(): PageElement {
-    return cy.get('[data-qa=continue-button]')
+  public clickContinue(): GenuineOverrideEnterDatePage {
+    cy.get('[data-qa=continue-button]').click()
+    return this
   }
 }

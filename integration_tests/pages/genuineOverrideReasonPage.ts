@@ -1,23 +1,27 @@
-import Page, { PageElement } from './page'
+import Page from './page'
 
 export default class GenuineOverrideReasonPage extends Page {
   constructor() {
     super('genuine-override-reason')
   }
 
-  public radioByCode(code: string): PageElement {
-    return cy.get(`[data-qa=reasonRadio-${code}]`)
+  public selectRadio(code: string): GenuineOverrideReasonPage {
+    cy.get(`[data-qa=reasonRadio-${code}]`).check()
+    return this
   }
 
-  public reasonFurtherDetail(): PageElement {
-    return cy.get(`#reason-further-detail`)
+  public enterReasonFurtherDetail(furtherDetail: string): GenuineOverrideReasonPage {
+    cy.get(`#reason-further-detail`).type(furtherDetail)
+    return this
   }
 
-  public continueButton(): PageElement {
-    return cy.get('[data-qa=submitGenuineOverrideReason]')
+  public clickContinue(): GenuineOverrideReasonPage {
+    cy.get('[data-qa=submitGenuineOverrideReason]').click()
+    return this
   }
 
-  public cancel(): PageElement {
-    return cy.get('[data-qa=cancel-link]')
+  public clickCancel(): GenuineOverrideReasonPage {
+    cy.get('[data-qa=cancel-link]').click()
+    return this
   }
 }

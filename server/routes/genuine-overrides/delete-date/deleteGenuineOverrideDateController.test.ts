@@ -87,9 +87,8 @@ describe('DeleteGenuineOverrideDateController', () => {
 
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
-      expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
-        `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`,
-      )
+      // no back link as NO takes you back to the interstitial page anyway
+      expect($('[data-qa=back-link]')).toHaveLength(0)
       expect($('[data-qa=cancel-link]').attr('href')).toStrictEqual(
         `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=${pageUrl}`,
       )

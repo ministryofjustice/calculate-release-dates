@@ -43,7 +43,6 @@ export default class DeleteGenuineOverrideDateController implements Controller {
       new GenuineOverrideDeleteDateViewModel(
         prisonerDetail,
         description,
-        GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId),
         GenuineOverrideUrls.deleteDate(nomsId, calculationRequestId, dateType),
       ),
     )

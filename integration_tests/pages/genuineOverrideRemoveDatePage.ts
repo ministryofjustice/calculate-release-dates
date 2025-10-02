@@ -6,7 +6,7 @@ export default class GenuineOverrideRemoveDatePage extends Page {
   }
 
   public checkIsFor(fullDateString: string): GenuineOverrideRemoveDatePage {
-    const expected = `Are you sure you want to remove ${fullDateString}`
+    const expected = `Are you sure you want to delete ${fullDateString}`
     cy.get('.govuk-fieldset__heading').should('contain.text', expected)
     return this
   }
@@ -14,10 +14,6 @@ export default class GenuineOverrideRemoveDatePage extends Page {
   public selectRadio(option: string): GenuineOverrideRemoveDatePage {
     cy.get(`[data-qa=confirm-remove-date-${option}]`).click()
     return this
-  }
-
-  public backButton(): PageElement {
-    return cy.get('.govuk-back-link')
   }
 
   public continue(): PageElement {
