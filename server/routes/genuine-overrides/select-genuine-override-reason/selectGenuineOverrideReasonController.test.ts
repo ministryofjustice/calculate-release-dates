@@ -2,11 +2,12 @@ import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
-import { appWithAllRoutes, flashProvider } from '../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
 import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
+import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 
 jest.mock('../../../services/calculateReleaseDatesService')
 jest.mock('../../../services/prisonerService')
@@ -29,8 +30,13 @@ describe('SelectGenuineOverrideReasonController', () => {
     lastName: 'Nobody',
   } as PrisonApiPrisoner
   const pageUrl = `/calculation/${prisonerNumber}/select-reason-for-override/${calculationRequestId}`
+  let currentUser: Express.User
 
   beforeEach(() => {
+    currentUser = {
+      ...user,
+      userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW],
+    }
     genuineOverrideInputs = { state: 'NEW' }
     sessionSetup.sessionDoctor = req => {
       req.session.genuineOverrideInputs = {}
@@ -43,6 +49,7 @@ describe('SelectGenuineOverrideReasonController', () => {
         prisonerService,
       },
       sessionSetup,
+      userSupplier: () => currentUser,
     })
     calculateReleaseDatesService.getGenuineOverrideReasons.mockResolvedValue([
       { code: 'OTHER', description: 'Other', displayOrder: 1, requiresFurtherDetail: true },
@@ -67,6 +74,11 @@ describe('SelectGenuineOverrideReasonController', () => {
       expect($('[data-qa=cancel-link]').attr('href')).toStrictEqual(
         `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=${pageUrl}`,
       )
+    })
+
+    it('should redirect to auth error if the user does not have required role', async () => {
+      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
+      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
     })
 
     it('should render options in display order from back end', async () => {
@@ -134,6 +146,16 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({ state: 'NEW', reason: 'OTHER', reasonFurtherDetail: 'Foo' })
+    })
+
+    it('should give an auth error if the user does not have permission', async () => {
+      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({ reason: 'OTHER', reasonFurtherDetail: 'Foo' })
+        .expect(302)
+        .expect('Location', '/authError')
     })
   })
 })

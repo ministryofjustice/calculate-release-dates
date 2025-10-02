@@ -1,12 +1,13 @@
 import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes } from '../../testutils/appSetup'
+import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
 import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
+import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 
 jest.mock('../../../services/dateTypeConfigurationService')
 jest.mock('../../../services/prisonerService')
@@ -27,7 +28,7 @@ describe('DeleteGenuineOverrideDateController', () => {
     lastName: 'Nobody',
   } as PrisonApiPrisoner
   const pageUrl = `/calculation/${prisonerNumber}/override/HDCED/delete/${calculationRequestId}`
-
+  let currentUser: Express.User
   const mockDateConfigs = {
     CRD: 'CRD (Conditional release date)',
     LED: 'LED (Licence expiry date)',
@@ -60,13 +61,17 @@ describe('DeleteGenuineOverrideDateController', () => {
       req.session.genuineOverrideInputs = {}
       req.session.genuineOverrideInputs[prisonerNumber] = genuineOverrideInputs
     }
-
+    currentUser = {
+      ...user,
+      userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW],
+    }
     app = appWithAllRoutes({
       services: {
         dateTypeConfigurationService,
         prisonerService,
       },
       sessionSetup,
+      userSupplier: () => currentUser,
     })
     dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(mockDateConfigs)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -101,6 +106,11 @@ describe('DeleteGenuineOverrideDateController', () => {
         .get(pageUrl)
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
+    })
+
+    it('should redirect to auth error if the user does not have required role', async () => {
+      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
+      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
     })
   })
 
@@ -164,6 +174,16 @@ describe('DeleteGenuineOverrideDateController', () => {
           { type: 'TUSED', date: '2025-09-15' },
         ],
       })
+    })
+
+    it('should redirect to auth error if the user does not have required role', async () => {
+      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({ confirmDeleteDate: 'NO' })
+        .expect(302)
+        .expect('Location', '/authError')
     })
   })
 })

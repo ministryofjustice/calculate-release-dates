@@ -2,13 +2,14 @@ import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
-import { appWithAllRoutes } from '../../testutils/appSetup'
+import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
 import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import { BookingCalculation } from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 
 jest.mock('../../../services/calculateReleaseDatesService')
 jest.mock('../../../services/prisonerService')
@@ -59,14 +60,17 @@ describe('ReviewDatesForGenuineOverrideController', () => {
     Tariff: 'known as the Tariff expiry date',
     ROTL: 'Release on temporary licence',
   }
-
+  let currentUser: Express.User
   beforeEach(() => {
     genuineOverrideInputs = { state: 'NEW' }
     sessionSetup.sessionDoctor = req => {
       req.session.genuineOverrideInputs = {}
       req.session.genuineOverrideInputs[prisonerNumber] = genuineOverrideInputs
     }
-
+    currentUser = {
+      ...user,
+      userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW],
+    }
     app = appWithAllRoutes({
       services: {
         calculateReleaseDatesService,
@@ -74,6 +78,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         dateTypeConfigurationService,
       },
       sessionSetup,
+      userSupplier: () => currentUser,
     })
 
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -306,6 +311,11 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/override/select-dates/${calculationRequestId}`)
     })
+
+    it('should redirect to auth error if the user does not have required role', async () => {
+      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
+      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
+    })
   })
 
   describe('POST', () => {
@@ -348,6 +358,16 @@ describe('ReviewDatesForGenuineOverrideController', () => {
           reasonFurtherDetail: 'Some more details',
         },
       )
+    })
+
+    it('should redirect to auth error if the user does not have required role', async () => {
+      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({ day: '28', month: '2', year: '2025' })
+        .expect(302)
+        .expect('Location', '/authError')
     })
   })
 })
