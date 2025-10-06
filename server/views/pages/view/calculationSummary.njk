@@ -33,6 +33,7 @@
             <h1 class="govuk-heading-xl">Calculation details</h1>
 
             {% set isManualCalc = (model.calculationType != null) and (model.calculationType.startsWith("MANUAL")) %}
+            {% set isGenuineOverride = (model.calculationType != null) and (model.calculationType === "GENUINE_OVERRIDE") %}
 
             {% if model.calculationReason.isOther %}
                 {% set reason = "Other (" + model.otherReasonDescription + ")" %}
@@ -45,7 +46,17 @@
                 {% if model.calculationSource === 'NOMIS' %}
                     {% set source = "NOMIS" %}
                 {% elseif isManualCalc %}
-                    {% set source = "Paper calculation <br/><span class=\"govuk-!-font-size-16 govuk-hint\">Entered in the Calculate release dates service</span>" | safe %}
+                    {% set source %}
+                        Paper calculation
+                        <br>
+                        <span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>
+                    {% endset %}
+                {% elseif isGenuineOverride %}
+                    {% set source %}
+                        User Override
+                        <br>
+                        <span class="govuk-!-font-size-16 govuk-hint">{{ model.genuineOverrideReasonDescription }}</span>
+                    {% endset %}
                 {% endif %}
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
@@ -80,7 +91,8 @@
                                 classes: "custom-summary-list__key"
                             },
                             value: {
-                                text: source
+                                html: source,
+                                classes: "summary-source-value"
                             }
                         }]
                 }) }}

@@ -49,6 +49,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     public calculationReason?: CalculationReason,
     public calculationDate?: string,
     adjustmentsDtos?: AnalysedAdjustment[] | AdjustmentDto[],
+    public genuineOverrideReasonDescription?: string,
   ) {
     this.adjustments = new ViewRouteAdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
