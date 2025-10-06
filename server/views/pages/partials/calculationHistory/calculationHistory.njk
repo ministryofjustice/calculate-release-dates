@@ -1,9 +1,12 @@
 {% macro addCalculationRow(calculation, rowNum) %}
+    {% set calculationType = calculation.calculationType %}
     {% if calculation.calculationSource === 'NOMIS' %}
         {% set source = "NOMIS" %}
     {% else %}
-        {% if calculation.calculationType.startsWith("MANUAL") %}
+        {% if calculationType.startsWith("MANUAL") %}
             {% set source = "Paper calculation" %}
+        {% elseif calculationType === 'GENUINE_OVERRIDE' %}
+            {% set source = "User Override" %}
         {% else %}
             {% set source = "Calculate release dates service" %}
         {% endif %}
@@ -32,6 +35,8 @@
         <td class="govuk-table__cell">{{ source }}
             {% if source === 'Paper calculation' %}
                 <br/><span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>
+            {% elseif calculationType === 'GENUINE_OVERRIDE' %}
+                <br/><span class="govuk-!-font-size-16 govuk-hint">{{ calculation.genuineOverrideReasonDescription }}</span>
             {% endif %}
         </td>
     </tr>

@@ -1020,6 +1020,35 @@ describe('View journey routes tests', () => {
           expect(res.text).not.toContain('SDS+')
         })
     })
+    it('GET /view/:calculationRequestId/sentences-and-offences should show details if the calculation is a genuine override', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue(stubbedUserInput)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: {
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
+          calculationType: 'GENUINE_OVERRIDE',
+          genuineOverrideReasonCode: 'OTHER',
+          genuineOverrideReasonDescription: 'Some details about the GO',
+        },
+      })
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect(
+            $('.summary-source-value')
+              .text()
+              .trim()
+              .split('\n')
+              .map(it => it.trim()),
+          ).toStrictEqual(['User Override', '', 'Some details about the GO'])
+        })
+    })
   })
 
   describe('View calculation tests', () => {
@@ -1345,6 +1374,32 @@ describe('View journey routes tests', () => {
         expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
         expect(res.text).toMatch(/Dates for/)
         expectMiniProfile(res.text, expectedMiniProfile)
+      })
+  })
+  it('GET /view/:nomsId/calculation-summary/:calculationRequestId should show genuine override details', () => {
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+      ...stubbedResultsWithBreakdownAndAdjustments,
+      context: {
+        ...stubbedResultsWithBreakdownAndAdjustments.context,
+        calculationType: 'GENUINE_OVERRIDE',
+        genuineOverrideReasonCode: 'OTHER',
+        genuineOverrideReasonDescription: 'Some details about the GO',
+      },
+    })
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/view/A1234AA/calculation-summary/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect(
+          $('.summary-source-value')
+            .text()
+            .trim()
+            .split('\n')
+            .map(it => it.trim()),
+        ).toStrictEqual(['User Override', '', 'Some details about the GO'])
       })
   })
   describe('Print Notification slip', () => {
