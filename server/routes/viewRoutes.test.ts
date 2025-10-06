@@ -1049,6 +1049,28 @@ describe('View journey routes tests', () => {
           ).toStrictEqual(['User Override', '', 'Some details about the GO'])
         })
     })
+
+    it('GET /view/:calculationRequestId/sentences-and-offences should show details if the calculation reason is OTHER', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue(stubbedUserInput)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: {
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
+          calculationReason: { id: 2, displayName: 'Other', isOther: true },
+          otherReasonDescription: 'Another reason for calculation',
+        },
+      })
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Other (Another reason for calculation)')
+        })
+    })
   })
 
   describe('View calculation tests', () => {
