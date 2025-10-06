@@ -1196,6 +1196,9 @@ export interface components {
         | 'FTR_TYPE_28_DAYS_SENTENCE_LT_12_MONTHS'
         | 'FTR_TYPE_28_DAYS_AGGREGATE_LT_12_MONTHS'
         | 'FTR_TYPE_48_DAYS_OVERLAPPING_SENTENCE'
+        | 'FTR_RTC_DATE_IN_FUTURE'
+        | 'FTR_RTC_DATE_BEFORE_SENTENCE_DATE'
+        | 'FTR_RTC_DATE_BEFORE_REVOCATION_DATE'
         | 'LASPO_AR_SENTENCE_TYPE_INCORRECT'
         | 'MORE_THAN_ONE_IMPRISONMENT_TERM'
         | 'MORE_THAN_ONE_LICENCE_TERM'
@@ -1380,9 +1383,27 @@ export interface components {
       /** @enum {string} */
       historicalTusedSource?: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
       /** @enum {string} */
-      sdsEarlyReleaseAllocatedTranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
+      sdsEarlyReleaseAllocatedTranche?:
+        | 'TRANCHE_0'
+        | 'TRANCHE_1'
+        | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_1'
+        | 'FTR_56_TRANCHE_2'
+        | 'FTR_56_TRANCHE_3'
+        | 'FTR_56_TRANCHE_4'
+        | 'FTR_56_TRANCHE_5'
+        | 'FTR_56_TRANCHE_6'
       /** @enum {string} */
-      sdsEarlyReleaseTranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
+      sdsEarlyReleaseTranche?:
+        | 'TRANCHE_0'
+        | 'TRANCHE_1'
+        | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_1'
+        | 'FTR_56_TRANCHE_2'
+        | 'FTR_56_TRANCHE_3'
+        | 'FTR_56_TRANCHE_4'
+        | 'FTR_56_TRANCHE_5'
+        | 'FTR_56_TRANCHE_6'
     }
     CalculationFragments: {
       breakdownHtml: string
@@ -1485,7 +1506,6 @@ export interface components {
        */
       comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
     }
-    /** @description Criteria used in the comparison */
     JsonNode: Record<string, never>
     Comparison: {
       comparisonShortReference: string
@@ -1654,7 +1674,7 @@ export interface components {
         | 'ERS_BREACH'
         | 'COURT_OF_APPEAL'
         | 'OTHER'
-      reasonFurtherDetail: string
+      reasonFurtherDetail?: string
     }
     GenuineOverrideCreatedResponse: {
       /** Format: int64 */
@@ -1792,6 +1812,17 @@ export interface components {
       calculationReason?: string
       /** Format: int64 */
       offenderSentCalculationId?: number
+      /** @enum {string} */
+      genuineOverrideReasonCode?:
+        | 'ORDER_OF_IMPRISONMENT_OR_WARRANT_DOES_NOT_MATCH_TRIAL_RECORD'
+        | 'TERRORISM'
+        | 'POWER_TO_DETAIN'
+        | 'CROSS_BORDER_SECTION_RELEASE_DATE'
+        | 'ADD_RELEASE_DATE_FROM_ANOTHER_BOOKING'
+        | 'ERS_BREACH'
+        | 'COURT_OF_APPEAL'
+        | 'OTHER'
+      genuineOverrideReasonDescription?: string
     }
     GenuineOverrideReasonResponse: {
       code: string
@@ -1962,6 +1993,7 @@ export interface components {
         | 'SDS_EARLY_RELEASE_APPLIES'
         | 'ADJUSTED_AFTER_TRANCHE_COMMENCEMENT'
         | 'BOTUS_LATEST_TUSED_USED'
+        | 'BOTUS_LATEST_TUSED_USED_POST_REPEAL'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
@@ -2106,6 +2138,17 @@ export interface components {
         | 'MANUAL_INDETERMINATE'
         | 'CALCULATED_WITH_APPROVED_DATES'
         | 'GENUINE_OVERRIDE'
+      /** @enum {string} */
+      genuineOverrideReasonCode?:
+        | 'ORDER_OF_IMPRISONMENT_OR_WARRANT_DOES_NOT_MATCH_TRIAL_RECORD'
+        | 'TERRORISM'
+        | 'POWER_TO_DETAIN'
+        | 'CROSS_BORDER_SECTION_RELEASE_DATE'
+        | 'ADD_RELEASE_DATE_FROM_ANOTHER_BOOKING'
+        | 'ERS_BREACH'
+        | 'COURT_OF_APPEAL'
+        | 'OTHER'
+      genuineOverrideReasonDescription?: string
     }
     ReleaseDatesAndCalculationContext: {
       calculation: components['schemas']['CalculationContext']
@@ -2300,7 +2343,16 @@ export interface components {
         | 'BREAKDOWN_CHANGED_SINCE_LAST_CALCULATION'
         | 'UNSUPPORTED_CALCULATION_BREAKDOWN'
       /** @enum {string} */
-      tranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
+      tranche?:
+        | 'TRANCHE_0'
+        | 'TRANCHE_1'
+        | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_1'
+        | 'FTR_56_TRANCHE_2'
+        | 'FTR_56_TRANCHE_3'
+        | 'FTR_56_TRANCHE_4'
+        | 'FTR_56_TRANCHE_5'
+        | 'FTR_56_TRANCHE_6'
     }
     ExternalSentenceId: {
       /** Format: int32 */

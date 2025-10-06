@@ -396,4 +396,74 @@ describe('Start routes tests', () => {
         expect(res.text).toContain('href="/calculation/ASD123/check-information?hasErrors=true')
       })
   })
+
+  it('GET ?prisonId=123 if latest calc is a genuine override', () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+
+    const calculationHistoryWithGenuineOverride = [
+      {
+        offenderNo: 'GU32342',
+        calculationDate: '2024-03-05',
+        calculationSource: 'CRDS',
+        commentText: 'a calculation',
+        calculationType: 'GENUINE_OVERRIDE',
+        establishment: 'Kirkham (HMP)',
+        calculationRequestId: 90328,
+        calculationReason: 'New Sentence',
+        genuineOverrideReasonCode: 'OTHER',
+        genuineOverrideReasonDescription: 'Some details about the GO',
+      },
+    ] as HistoricCalculation[]
+
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistoryWithGenuineOverride)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: latestCalcCardActionForPrisoner,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
+        const calculationHistoryHeadings = $('[data-qa=calculation-history-table-headings] th')
+          .map((i, element) => $(element).text())
+          .get()
+        expect(calculationHistoryHeadings).toStrictEqual([
+          'Calculation date',
+          'Calculation reason',
+          'Establishment',
+          'Source',
+        ])
+        const calculationHistoryRow1 = $('[data-qa=calculation-history-table-data-1] td')
+          .map((i, element) =>
+            $(element)
+              .text()
+              .trim()
+              .split('\n')
+              .map(it => it.trim()),
+          )
+          .get()
+        expect(calculationHistoryRow1).toStrictEqual([
+          '05 March 2024',
+          'New Sentence',
+          'Kirkham (HMP)',
+          'User Override',
+          '',
+          'Some details about the GO',
+        ])
+        expect(
+          $('[data-qa=calculation-summary-source]')
+            .first()
+            .text()
+            .trim()
+            .split('\n')
+            .map(it => it.trim()),
+        ).toStrictEqual(['User Override', '', 'Some details about the GO'])
+      })
+  })
 })

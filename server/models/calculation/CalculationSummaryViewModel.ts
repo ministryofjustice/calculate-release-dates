@@ -30,6 +30,7 @@ export default class CalculationSummaryViewModel {
     public approvedDates?: { [key: string]: string },
     public detailedCalculationResults?: DetailedCalculationResults,
     public hasGenuineOverridesAccess?: boolean,
+    public genuineOverrideReasonDescription?: string,
   ) {
     // intentionally left blank
   }

@@ -29,12 +29,23 @@
             {% endif %}
 
             {% set isManualCalc = (model.calculationType != null) and (model.calculationType.startsWith("MANUAL")) %}
+            {% set isGenuineOverride = (model.calculationType != null) and (model.calculationType === "GENUINE_OVERRIDE") %}
 
             {% set source = "Calculate release dates service" %}
             {% if model.calculationSource === 'NOMIS' %}
                 {% set source = "NOMIS" %}
             {% elseif isManualCalc %}
-                {% set source = "Paper calculation <br/><span class=\"govuk-!-font-size-16 govuk-hint\">Entered in the Calculate release dates service</span>" | safe %}
+                {% set source %}
+                    Paper calculation
+                    <br>
+                    <span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>
+                {% endset %}
+            {% elseif isGenuineOverride %}
+                {% set source %}
+                    User Override
+                    <br>
+                    <span class="govuk-!-font-size-16 govuk-hint">{{ model.genuineOverrideReasonDescription }}</span>
+                {% endset %}
             {% endif %}
 
             {% if model.calculationReason|length %}
@@ -74,7 +85,8 @@
                             classes: "custom-summary-list__key"
                         },
                         value: {
-                            text: source
+                            html: source,
+                            classes: 'summary-source-value'
                         }
                         }]
                 }) }}
