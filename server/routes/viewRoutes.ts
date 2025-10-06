@@ -98,10 +98,12 @@ export default class ViewRoutes {
             returnToCustody,
             null,
             detailedCalculationResults.context.calculationReason,
+            detailedCalculationResults.context.otherReasonDescription,
             detailedCalculationResults.context.calculationDate === undefined
               ? undefined
               : longDateFormat(detailedCalculationResults.context.calculationDate),
             adjustmentDtos,
+            detailedCalculationResults.context.genuineOverrideReasonDescription,
           ),
           calculationRequestId,
           nomsId,
@@ -152,7 +154,7 @@ export default class ViewRoutes {
         null,
         false,
         true,
-        null,
+        detailedCalculationResults.context.calculationType,
         detailedCalculationResults.context.calculationReference,
         hasErsed,
         null,
@@ -172,6 +174,7 @@ export default class ViewRoutes {
         undefined,
         detailedCalculationResults,
         hasGenuineOverridesAccess(userRoles),
+        detailedCalculationResults.context.genuineOverrideReasonDescription,
       )
     }
     const hasNone = detailedCalculationResults.dates.None !== undefined
@@ -200,6 +203,7 @@ export default class ViewRoutes {
       approvedDates,
       detailedCalculationResults,
       hasGenuineOverridesAccess(userRoles),
+      detailedCalculationResults.context.genuineOverrideReasonDescription,
     )
   }
 
@@ -280,7 +284,9 @@ export default class ViewRoutes {
           null,
           null,
           null,
+          null,
           adjustmentsDtos,
+          null,
         ),
         calculationRequestId,
         nomsId,

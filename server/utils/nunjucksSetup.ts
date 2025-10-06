@@ -10,12 +10,15 @@ import {
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import dateFilter from 'nunjucks-date-filter'
 import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { hmppsDesignSystemsEnvironmentName, initialiseName, createSupportLink, validPreCalcHints } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
 import { FieldValidationError } from '../types/FieldValidationError'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
+
+dayjs.extend(customParseFormat)
 
 // TODO the use of nunjucks-date-filter is raising a deprecation warning, some dates are in this format 12/12/2030 ->
 // Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable

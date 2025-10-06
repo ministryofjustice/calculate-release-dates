@@ -10,10 +10,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import {
-  ManualEntrySelectedDate,
-  ValidationMessage,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
@@ -25,7 +22,7 @@ import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import AuditService from '../services/auditService'
-import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -434,20 +431,21 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       } as ValidationMessage,
     ])
     sessionSetup.sessionDoctor = req => {
-      req.session.selectedManualEntryDates = []
-      req.session.calculationReasonId = 1
-      req.session.selectedManualEntryDates.A1234AA = [
-        {
-          position: 1,
-          dateType: 'CRD',
-          completed: false,
-          manualEntrySelectedDate: {
+      req.session.selectedManualEntryDates = {
+        A1234AA: [
+          {
+            position: 1,
             dateType: 'CRD',
-            dateText: 'CRD (Conditional release date)',
-            date: { day: 3, month: 3, year: 2017 },
-          },
-        } as ManualJourneySelectedDate,
-      ]
+            completed: true,
+            manualEntrySelectedDate: {
+              dateType: 'CRD',
+              dateText: 'CRD (Conditional release date)',
+              date: { day: 3, month: 3, year: 2017 },
+            },
+          } as ManualJourneySelectedDate,
+        ],
+      }
+      req.session.calculationReasonId = 1
       req.session.manualEntryRoutingForBookings = []
     }
 
@@ -462,6 +460,26 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/confirmation',
         )
       })
+  })
+
+  it('GET /calculation/:nomsId/manual-entry/confirmation redirects to select dates page if no dates are present', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = []
+      req.session.calculationReasonId = 1
+      req.session.manualEntryRoutingForBookings = []
+    }
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/confirmation')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/manual-entry/select-dates')
   })
 
   it('GET /calculation/:nomsId/manual-entry/enter-date shows enter date page with mini profile and correct heading', () => {

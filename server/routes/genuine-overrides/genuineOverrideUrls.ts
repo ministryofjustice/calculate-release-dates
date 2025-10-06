@@ -7,7 +7,7 @@ export default class GenuineOverrideUrls {
     return `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`
   }
 
-  static overrideDate = (prisonerNumber: string, calculationRequestId: string | number, type: string) => {
+  static editDate = (prisonerNumber: string, calculationRequestId: string | number, type: string) => {
     return `/calculation/${prisonerNumber}/override/${type}/edit/${calculationRequestId}`
   }
 
@@ -15,7 +15,11 @@ export default class GenuineOverrideUrls {
     return `/calculation/${prisonerNumber}/override/${type}/delete/${calculationRequestId}`
   }
 
+  static enterNewDate = (prisonerNumber: string, calculationRequestId: string | number, type: string) => {
+    return `/calculation/${prisonerNumber}/override/${type}/add/${calculationRequestId}`
+  }
+
   static selectDatesToAdd = (prisonerNumber: string, calculationRequestId: string | number) => {
-    return `/calculation/${prisonerNumber}/override/add/${calculationRequestId}`
+    return `/calculation/${prisonerNumber}/override/select-dates/${calculationRequestId}`
   }
 }

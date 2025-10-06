@@ -7,6 +7,11 @@ import PrisonerService from '../../../services/prisonerService'
 import ReviewDatesForGenuineOverrideViewModel from '../../../models/genuine-override/ReviewDatesForGenuineOverrideViewModel'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import { filteredListOfDates } from '../../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import {
+  GenuineOverrideRequest,
+  GenuineOverrideRequestReasonCode,
+  ManualEntrySelectedDateType,
+} from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ReviewDatesForGenuineOverrideController implements Controller {
   constructor(
@@ -22,30 +27,40 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
-    if (!genuineOverrideInputs.dates) {
+    if (genuineOverrideInputs.state === 'NEW') {
       const calculationResults = await this.calculateReleaseDatesService.getCalculationResults(
         Number(calculationRequestId),
         token,
       )
-      genuineOverrideInputs.dates = []
+      genuineOverrideInputs.datesToSave = []
       for (const [type, date] of Object.entries(calculationResults.dates)) {
         // exclude ESED and any other hidden date types.
         if (filteredListOfDates.indexOf(type) >= 0) {
-          genuineOverrideInputs.dates.push({ type, date })
+          if (type === 'SLED') {
+            // decompose SLED into SED and LED to allow users to override them to be different dates
+            genuineOverrideInputs.datesToSave.push({ type: 'SED', date })
+            genuineOverrideInputs.datesToSave.push({ type: 'LED', date })
+          } else {
+            genuineOverrideInputs.datesToSave.push({ type, date })
+          }
         }
       }
-      sortDatesForGenuineOverride(genuineOverrideInputs.dates)
+      genuineOverrideInputs.state = 'INITIALISED_DATES'
     }
-    if (genuineOverrideInputs.dates?.length === 0) {
+    if (genuineOverrideInputs.datesToSave?.length === 0) {
       return res.redirect(GenuineOverrideUrls.selectDatesToAdd(nomsId, calculationRequestId))
     }
-    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    sortDatesForGenuineOverride(genuineOverrideInputs.datesToSave)
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(
+      token,
+      'DESCRIPTION_ONLY',
+    )
     return res.render(
       'pages/genuineOverrides/reviewDatesForGenuineOverride',
       new ReviewDatesForGenuineOverrideViewModel(
         prisonerDetail,
         Number(calculationRequestId),
-        genuineOverrideInputs.dates,
+        genuineOverrideInputs.datesToSave,
         dateTypeDefinitions,
         GenuineOverrideUrls.selectReasonForOverride(nomsId, calculationRequestId),
         GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId),
@@ -55,7 +70,23 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
 
   POST = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    // TODO save
-    return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
+    const { token, username } = res.locals.user
+    const inputs = genuineOverrideInputsForPrisoner(req, nomsId)
+    const request: GenuineOverrideRequest = {
+      reason: inputs.reason as GenuineOverrideRequestReasonCode,
+      reasonFurtherDetail: inputs.reasonFurtherDetail,
+      dates: inputs.datesToSave.map(date => ({
+        dateType: date.type as ManualEntrySelectedDateType,
+        date: date.date,
+      })),
+    }
+    const response = await this.calculateReleaseDatesService.createGenuineOverrideForCalculation(
+      username,
+      nomsId,
+      Number(calculationRequestId),
+      token,
+      request,
+    )
+    return res.redirect(`/calculation/${nomsId}/complete/${response.newCalculationRequestId}`)
   }
 }

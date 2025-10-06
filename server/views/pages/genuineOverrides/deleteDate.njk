@@ -1,0 +1,56 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Delete the date" %}
+{% set pageId = "genuine-override-delete-date" %}
+
+{% block content %}
+    {% include '../partials/formError.njk' %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+                <span class="govuk-caption-xl">Calculate release dates</span>
+                {{ govukRadios({
+                    classes: "govuk-radios--inline",
+                    name: "confirmDeleteDate",
+                    fieldset: {
+                        legend: {
+                            text: "Are you sure you want to delete " + description + "?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--xl"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "YES",
+                            text: "Yes, remove " + description,
+                            attributes: {'data-qa': 'confirm-remove-date-YES'}
+                        },
+                        {
+                            value: "NO",
+                            text: "No, go back to release dates",
+                            attributes: {'data-qa': 'confirm-remove-date-NO'}
+                        }
+                    ],
+                    errorMessage: validationErrors | findError('confirmDeleteDate')
+                }) }}
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+                {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+                <a data-qa="cancel-link"
+                    data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                    data-module="govuk-button"
+                    href="{{ cancelUrl }}">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

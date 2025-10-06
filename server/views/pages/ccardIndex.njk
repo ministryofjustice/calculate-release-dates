@@ -40,15 +40,19 @@
                         {% set latestCalc = calculationHistory[0] %}
 
                         {% set calculationDate = latestCalc.calculationDate %}
+                        {% set calculationType = latestCalc.calculationType %}
                         {% set source = "Calculate release dates service" %}
                         {% if latestCalc.calculationSource === 'NOMIS' %}
                             {% set source = "NOMIS" %}
-                        {% elseif latestCalc.calculationType and latestCalc.calculationType.startsWith("MANUAL") %}
+                        {% elseif latestCalc.calculationType and calculationType.startsWith("MANUAL") %}
                             {% set source = "Paper calculation" %}
+                        {% elseif latestCalc.calculationType and calculationType === 'GENUINE_OVERRIDE' %}
+                            {% set source = "User Override" %}
                         {% endif %}
 
                         {% set establishment = latestCalc.establishment or "Not entered" %}
                         {% set reason = latestCalc.calculationReason or "Not entered" %}
+                        {% set genuineOverrideReasonDescription = latestCalc.genuineOverrideReasonDescription %}
 
                         {% include "./partials/calculationSummary/summary.njk" %}
                         {% include "./partials/calculationSummary/minimalCalculationCard.njk" %}

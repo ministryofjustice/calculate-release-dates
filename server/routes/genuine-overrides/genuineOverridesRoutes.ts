@@ -9,6 +9,14 @@ import CalculateReleaseDatesService from '../../services/calculateReleaseDatesSe
 import PrisonerService from '../../services/prisonerService'
 import ReviewDatesForGenuineOverrideController from './review-dates/reviewDatesForGenuineOverrideController'
 import DateTypeConfigurationService from '../../services/dateTypeConfigurationService'
+import GenuineOverrideSelectDatesController from './select-dates/genuineOverrideSelectDatesController'
+import { genuineOverrideSelectDatesSchema } from './select-dates/genuineOverrideSelectDatesSchema'
+import AddGenuineOverrideDateController from './add-date/addGenuineOverrideDateController'
+import { releaseDateSchema } from '../common-schemas/releaseDateSchemas'
+import EditGenuineOverrideDateController from './edit-date/editGenuineOverrideDateController'
+import DeleteGenuineOverrideDateController from './delete-date/deleteGenuineOverrideDateController'
+import { deleteGenuineOverrideDateSchema } from './delete-date/deleteGenuineOverrideSchema'
+import requireGenuineOverrideAccess from '../../middleware/requireGenuineOverrideAccess'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
@@ -25,12 +33,12 @@ const GenuineOverridesRoutes = (
     controller: Controller
     validateToSchema?: z.ZodTypeAny | SchemaFactory<P>
   }) => {
-    router.get(path, asyncMiddleware(controller.GET))
+    router.get(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.GET))
     if (controller.POST) {
       if (validateToSchema) {
-        router.post(path, validate(validateToSchema), asyncMiddleware(controller.POST))
+        router.post(path, requireGenuineOverrideAccess(), validate(validateToSchema), asyncMiddleware(controller.POST))
       } else {
-        router.post(path, asyncMiddleware(controller.POST))
+        router.post(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.POST))
       }
     }
   }
@@ -48,6 +56,30 @@ const GenuineOverridesRoutes = (
       prisonerService,
       dateTypeConfigurationService,
     ),
+  })
+
+  route({
+    path: '/calculation/:nomsId/override/select-dates/:calculationRequestId',
+    controller: new GenuineOverrideSelectDatesController(dateTypeConfigurationService, prisonerService),
+    validateToSchema: genuineOverrideSelectDatesSchema,
+  })
+
+  route({
+    path: '/calculation/:nomsId/override/:dateType/add/:calculationRequestId',
+    controller: new AddGenuineOverrideDateController(dateTypeConfigurationService, prisonerService),
+    validateToSchema: releaseDateSchema,
+  })
+
+  route({
+    path: '/calculation/:nomsId/override/:dateType/edit/:calculationRequestId',
+    controller: new EditGenuineOverrideDateController(dateTypeConfigurationService, prisonerService),
+    validateToSchema: releaseDateSchema,
+  })
+
+  route({
+    path: '/calculation/:nomsId/override/:dateType/delete/:calculationRequestId',
+    controller: new DeleteGenuineOverrideDateController(dateTypeConfigurationService, prisonerService),
+    validateToSchema: deleteGenuineOverrideDateSchema,
   })
 
   return router

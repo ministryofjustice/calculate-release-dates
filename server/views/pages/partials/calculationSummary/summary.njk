@@ -33,6 +33,8 @@
             {% if source === 'Paper calculation' %}
                 <br/>
                 <span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>
+            {% elseif calculationType === 'GENUINE_OVERRIDE' %}
+                <br/> <span class="govuk-!-font-size-16 govuk-hint">{{ genuineOverrideReasonDescription }}</span>
             {% endif %}
         </dd>
     </div>

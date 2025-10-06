@@ -89,46 +89,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/specialist-support/genuine-override': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Store a genuine override
-     * @description This endpoint will return a response model which indicates the success of storing a genuine override
-     */
-    post: operations['storeGenuineOverride']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/specialist-support/genuine-override/calculation': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Store a genuine override
-     * @description This endpoint will return a response model which indicates the success of storing a genuine override
-     */
-    post: operations['storeGenuineOverrideDates']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/record-a-recall/{prisonerId}': {
     parameters: {
       query?: never
@@ -345,6 +305,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/calculation/genuine-override/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Override the dates for a given calculation
+     * @description Replace the calculated dates with a dates that may have been added, removed or modified by OMU
+     */
+    post: operations['storeGenuineOverrideForCalculation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/calculation/confirm/{calculationRequestId}': {
     parameters: {
       query?: never
@@ -477,26 +457,6 @@ export interface paths {
      * @description Provides a list of things-to-do for a specified prisoner based on their ID.
      */
     get: operations['getThingsToDo']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/specialist-support/genuine-override/calculation/{calculationReference}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get a genuine override
-     * @description This endpoint will return a response model which returns a genuine override
-     */
-    get: operations['getGenuineOverride']
     put?: never
     post?: never
     delete?: never
@@ -1236,6 +1196,9 @@ export interface components {
         | 'FTR_TYPE_28_DAYS_SENTENCE_LT_12_MONTHS'
         | 'FTR_TYPE_28_DAYS_AGGREGATE_LT_12_MONTHS'
         | 'FTR_TYPE_48_DAYS_OVERLAPPING_SENTENCE'
+        | 'FTR_RTC_DATE_IN_FUTURE'
+        | 'FTR_RTC_DATE_BEFORE_SENTENCE_DATE'
+        | 'FTR_RTC_DATE_BEFORE_REVOCATION_DATE'
         | 'LASPO_AR_SENTENCE_TYPE_INCORRECT'
         | 'MORE_THAN_ONE_IMPRISONMENT_TERM'
         | 'MORE_THAN_ONE_LICENCE_TERM'
@@ -1388,70 +1351,6 @@ export interface components {
       unusedDeductions?: number
       validationMessages: components['schemas']['ValidationMessage'][]
     }
-    GenuineOverrideRequest: {
-      reason: string
-      originalCalculationRequest: string
-      savedCalculation?: string
-      isOverridden: boolean
-    }
-    GenuineOverrideResponse: {
-      reason: string
-      originalCalculationRequest: string
-      savedCalculation: string
-      isOverridden: boolean
-    }
-    GenuineOverrideDateRequest: {
-      manualEntryRequest: components['schemas']['ManualEntryRequest']
-      originalCalculationReference: string
-    }
-    ManualEntryRequest: {
-      selectedManualEntryDates: components['schemas']['ManualEntrySelectedDate'][]
-      /** Format: int64 */
-      reasonForCalculationId: number
-      otherReasonDescription?: string
-    }
-    ManualEntrySelectedDate: {
-      /** @enum {string} */
-      dateType:
-        | 'CRD'
-        | 'LED'
-        | 'SED'
-        | 'NPD'
-        | 'ARD'
-        | 'TUSED'
-        | 'PED'
-        | 'SLED'
-        | 'HDCED'
-        | 'NCRD'
-        | 'ETD'
-        | 'MTD'
-        | 'LTD'
-        | 'DPRRD'
-        | 'PRRD'
-        | 'ESED'
-        | 'ERSED'
-        | 'TERSED'
-        | 'APD'
-        | 'HDCAD'
-        | 'None'
-        | 'Tariff'
-        | 'ROTL'
-        | 'HDCED4PLUS'
-      dateText: string
-      date?: components['schemas']['SubmittedDate']
-    }
-    SubmittedDate: {
-      /** Format: int32 */
-      day: number
-      /** Format: int32 */
-      month: number
-      /** Format: int32 */
-      year: number
-    }
-    GenuineOverrideDateResponse: {
-      calculationReference: string
-      originalCalculationReference: string
-    }
     CalculatedReleaseDates: {
       dates: {
         [key: string]: string
@@ -1462,7 +1361,7 @@ export interface components {
       bookingId: number
       prisonerId: string
       /** @enum {string} */
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL' | 'BULK'
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL' | 'BULK' | 'OVERRIDDEN'
       calculationFragments?: components['schemas']['CalculationFragments']
       effectiveSentenceLength?: string
       /** @enum {string} */
@@ -1471,8 +1370,7 @@ export interface components {
         | 'MANUAL_DETERMINATE'
         | 'MANUAL_INDETERMINATE'
         | 'CALCULATED_WITH_APPROVED_DATES'
-        | 'MANUAL_OVERRIDE'
-        | 'CALCULATED_BY_SPECIALIST_SUPPORT'
+        | 'GENUINE_OVERRIDE'
       approvedDates?: {
         [key: string]: string
       }
@@ -1485,9 +1383,27 @@ export interface components {
       /** @enum {string} */
       historicalTusedSource?: 'CRDS' | 'CRDS_OVERRIDDEN' | 'NOMIS' | 'NOMIS_OVERRIDDEN'
       /** @enum {string} */
-      sdsEarlyReleaseAllocatedTranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
+      sdsEarlyReleaseAllocatedTranche?:
+        | 'TRANCHE_0'
+        | 'TRANCHE_1'
+        | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_1'
+        | 'FTR_56_TRANCHE_2'
+        | 'FTR_56_TRANCHE_3'
+        | 'FTR_56_TRANCHE_4'
+        | 'FTR_56_TRANCHE_5'
+        | 'FTR_56_TRANCHE_6'
       /** @enum {string} */
-      sdsEarlyReleaseTranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
+      sdsEarlyReleaseTranche?:
+        | 'TRANCHE_0'
+        | 'TRANCHE_1'
+        | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_1'
+        | 'FTR_56_TRANCHE_2'
+        | 'FTR_56_TRANCHE_3'
+        | 'FTR_56_TRANCHE_4'
+        | 'FTR_56_TRANCHE_5'
+        | 'FTR_56_TRANCHE_6'
     }
     CalculationFragments: {
       breakdownHtml: string
@@ -1529,6 +1445,49 @@ export interface components {
       custodialLengthMatches: boolean
       licenceLengthMatches?: boolean
     }
+    ManualEntryRequest: {
+      selectedManualEntryDates: components['schemas']['ManuallyEnteredDate'][]
+      /** Format: int64 */
+      reasonForCalculationId: number
+      otherReasonDescription?: string
+    }
+    ManuallyEnteredDate: {
+      /** @enum {string} */
+      dateType:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
+      date?: components['schemas']['SubmittedDate']
+    }
+    SubmittedDate: {
+      /** Format: int32 */
+      day: number
+      /** Format: int32 */
+      month: number
+      /** Format: int32 */
+      year: number
+    }
     ManualCalculationResponse: {
       enteredDates?: {
         [key: string]: string
@@ -1547,7 +1506,6 @@ export interface components {
        */
       comparisonType: 'ESTABLISHMENT_FULL' | 'MANUAL'
     }
-    /** @description Criteria used in the comparison */
     JsonNode: Record<string, never>
     Comparison: {
       comparisonShortReference: string
@@ -1674,10 +1632,59 @@ export interface components {
       postRecallReleaseDate?: string
       validationMessages: components['schemas']['ValidationMessage'][]
     }
+    GenuineOverrideDate: {
+      /** @enum {string} */
+      dateType:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
+      /** Format: date */
+      date: string
+    }
+    GenuineOverrideRequest: {
+      dates: components['schemas']['GenuineOverrideDate'][]
+      /** @enum {string} */
+      reason:
+        | 'ORDER_OF_IMPRISONMENT_OR_WARRANT_DOES_NOT_MATCH_TRIAL_RECORD'
+        | 'TERRORISM'
+        | 'POWER_TO_DETAIN'
+        | 'CROSS_BORDER_SECTION_RELEASE_DATE'
+        | 'ADD_RELEASE_DATE_FROM_ANOTHER_BOOKING'
+        | 'ERS_BREACH'
+        | 'COURT_OF_APPEAL'
+        | 'OTHER'
+      reasonFurtherDetail?: string
+    }
+    GenuineOverrideCreatedResponse: {
+      /** Format: int64 */
+      newCalculationRequestId: number
+      /** Format: int64 */
+      originalCalculationRequestId: number
+    }
     SubmitCalculationRequest: {
       calculationFragments: components['schemas']['CalculationFragments']
-      approvedDates?: components['schemas']['ManualEntrySelectedDate'][]
-      isSpecialistSupport?: boolean
+      approvedDates?: components['schemas']['ManuallyEnteredDate'][]
     }
     WorkingDay: {
       /** Format: date */
@@ -1798,14 +1805,24 @@ export interface components {
         | 'MANUAL_DETERMINATE'
         | 'MANUAL_INDETERMINATE'
         | 'CALCULATED_WITH_APPROVED_DATES'
-        | 'MANUAL_OVERRIDE'
-        | 'CALCULATED_BY_SPECIALIST_SUPPORT'
+        | 'GENUINE_OVERRIDE'
       establishment?: string
       /** Format: int64 */
       calculationRequestId?: number
       calculationReason?: string
       /** Format: int64 */
       offenderSentCalculationId?: number
+      /** @enum {string} */
+      genuineOverrideReasonCode?:
+        | 'ORDER_OF_IMPRISONMENT_OR_WARRANT_DOES_NOT_MATCH_TRIAL_RECORD'
+        | 'TERRORISM'
+        | 'POWER_TO_DETAIN'
+        | 'CROSS_BORDER_SECTION_RELEASE_DATE'
+        | 'ADD_RELEASE_DATE_FROM_ANOTHER_BOOKING'
+        | 'ERS_BREACH'
+        | 'COURT_OF_APPEAL'
+        | 'OTHER'
+      genuineOverrideReasonDescription?: string
     }
     GenuineOverrideReasonResponse: {
       code: string
@@ -1976,6 +1993,7 @@ export interface components {
         | 'SDS_EARLY_RELEASE_APPLIES'
         | 'ADJUSTED_AFTER_TRANCHE_COMMENCEMENT'
         | 'BOTUS_LATEST_TUSED_USED'
+        | 'BOTUS_LATEST_TUSED_USED_POST_REPEAL'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
@@ -2019,6 +2037,7 @@ export interface components {
       caseReference?: string
       courtDescription?: string
       fineAmount?: number
+      revocationDates: string[]
       isSDSPlus: boolean
       isSDSPlusEligibleSentenceTypeLengthAndOffence: boolean
       isSDSPlusOffenceInPeriod: boolean
@@ -2105,7 +2124,7 @@ export interface components {
       bookingId: number
       prisonerId: string
       /** @enum {string} */
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL' | 'BULK'
+      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL' | 'BULK' | 'OVERRIDDEN'
       /** Format: uuid */
       calculationReference: string
       calculationReason?: components['schemas']['CalculationReason']
@@ -2118,8 +2137,18 @@ export interface components {
         | 'MANUAL_DETERMINATE'
         | 'MANUAL_INDETERMINATE'
         | 'CALCULATED_WITH_APPROVED_DATES'
-        | 'MANUAL_OVERRIDE'
-        | 'CALCULATED_BY_SPECIALIST_SUPPORT'
+        | 'GENUINE_OVERRIDE'
+      /** @enum {string} */
+      genuineOverrideReasonCode?:
+        | 'ORDER_OF_IMPRISONMENT_OR_WARRANT_DOES_NOT_MATCH_TRIAL_RECORD'
+        | 'TERRORISM'
+        | 'POWER_TO_DETAIN'
+        | 'CROSS_BORDER_SECTION_RELEASE_DATE'
+        | 'ADD_RELEASE_DATE_FROM_ANOTHER_BOOKING'
+        | 'ERS_BREACH'
+        | 'COURT_OF_APPEAL'
+        | 'OTHER'
+      genuineOverrideReasonDescription?: string
     }
     ReleaseDatesAndCalculationContext: {
       calculation: components['schemas']['CalculationContext']
@@ -2314,7 +2343,16 @@ export interface components {
         | 'BREAKDOWN_CHANGED_SINCE_LAST_CALCULATION'
         | 'UNSUPPORTED_CALCULATION_BREAKDOWN'
       /** @enum {string} */
-      tranche?: 'TRANCHE_0' | 'TRANCHE_1' | 'TRANCHE_2'
+      tranche?:
+        | 'TRANCHE_0'
+        | 'TRANCHE_1'
+        | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_1'
+        | 'FTR_56_TRANCHE_2'
+        | 'FTR_56_TRANCHE_3'
+        | 'FTR_56_TRANCHE_4'
+        | 'FTR_56_TRANCHE_5'
+        | 'FTR_56_TRANCHE_6'
     }
     ExternalSentenceId: {
       /** Format: int32 */
@@ -2629,90 +2667,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['UnusedDeductionCalculationResponse']
-        }
-      }
-    }
-  }
-  storeGenuineOverride: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['GenuineOverrideRequest']
-      }
-    }
-    responses: {
-      /** @description Returns a GenuineOverrideResponse */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-    }
-  }
-  storeGenuineOverrideDates: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['GenuineOverrideDateRequest']
-      }
-    }
-    responses: {
-      /** @description Returns a GenuineOverrideResponse */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideDateResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideDateResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideDateResponse']
         }
       }
     }
@@ -3377,6 +3331,59 @@ export interface operations {
       }
     }
   }
+  storeGenuineOverrideForCalculation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        calculationRequestId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GenuineOverrideRequest']
+      }
+    }
+    responses: {
+      /** @description Dates were successfully overridden */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
+        }
+      }
+      /** @description Couldn't find the requested calculation or it's in an invalid state */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
+        }
+      }
+    }
+  }
   confirmCalculation: {
     parameters: {
       query?: never
@@ -3695,55 +3702,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ThingsToDo']
-        }
-      }
-    }
-  }
-  getGenuineOverride: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        calculationReference: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Returns a GenuineOverrideResponse */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
-        }
-      }
-      /** @description Not Found, a genuine override doesn't exist for the calculation reference */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideResponse']
         }
       }
     }

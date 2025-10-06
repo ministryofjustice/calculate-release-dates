@@ -3,8 +3,7 @@ import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
-import { ManualJourneySelectedDate } from '../types/ManualJourney'
-import { ManualEntrySelectedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 
 const saveCalculation = async (
   req: Request,
@@ -33,7 +32,6 @@ const saveCalculation = async (
           breakdownHtml,
         },
         approvedDates: newApprovedDates,
-        isSpecialistSupport: false,
       },
     )
     res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
