@@ -98,6 +98,7 @@ export default class ViewRoutes {
             returnToCustody,
             null,
             detailedCalculationResults.context.calculationReason,
+            detailedCalculationResults.context.otherReasonDescription,
             detailedCalculationResults.context.calculationDate === undefined
               ? undefined
               : longDateFormat(detailedCalculationResults.context.calculationDate),
@@ -278,6 +279,7 @@ export default class ViewRoutes {
           null,
           sentencesAndOffences,
           adjustmentDetails,
+          null,
           null,
           null,
           null,

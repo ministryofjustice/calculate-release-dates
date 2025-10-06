@@ -47,6 +47,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
     public calculationReason?: CalculationReason,
+    public otherReasonDescription?: string,
     public calculationDate?: string,
     adjustmentsDtos?: AnalysedAdjustment[] | AdjustmentDto[],
     public genuineOverrideReasonDescription?: string,
