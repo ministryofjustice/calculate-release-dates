@@ -20,9 +20,9 @@ export const releaseDateSchema = createSchema({
 })
   .superRefine((val, ctx) => {
     if (!val.day && !val.month && !val.year) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: DATE_IS_REQUIRED_MESSAGE, path: ['day'] })
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
+      ctx.addIssue({ code: 'custom', message: DATE_IS_REQUIRED_MESSAGE, path: ['day'] })
+      ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
+      ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
     } else {
       const missing: string[] = []
       if (!val.day) {
@@ -36,16 +36,16 @@ export const releaseDateSchema = createSchema({
       }
       if (missing.length === 1) {
         const field = missing[0]!
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: SINGLE_FIELD_MISSING_ERROR(field), path: [field] })
+        ctx.addIssue({ code: 'custom', message: SINGLE_FIELD_MISSING_ERROR(field), path: [field] })
       } else if (missing.length === 2) {
         const fieldOne = missing[0]!
         const fieldTwo = missing[1]!
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message: TWO_FIELDS_MISSING_ERROR(fieldOne, fieldTwo),
           path: [fieldOne],
         })
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: [fieldTwo] })
+        ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: [fieldTwo] })
       } else if (val.year && val.year.length >= 4) {
         const isValid = dayjs(
           `${val.year}-${val.month?.padStart(2, '0')}-${val.day?.padStart(2, '0')}`,
@@ -53,13 +53,13 @@ export const releaseDateSchema = createSchema({
           true,
         ).isValid()
         if (!isValid) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: REAL_DATE_ERROR, path: ['day'] })
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
+          ctx.addIssue({ code: 'custom', message: REAL_DATE_ERROR, path: ['day'] })
+          ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
+          ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
         }
       }
       if (val.year && val.year.length < 4) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: YEAR_ERROR, path: ['year'] })
+        ctx.addIssue({ code: 'custom', message: YEAR_ERROR, path: ['year'] })
       }
     }
   })

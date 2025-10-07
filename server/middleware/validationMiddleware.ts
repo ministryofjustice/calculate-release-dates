@@ -1,6 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
 import { z, ZodError } from 'zod'
 
+// Set a custom locale with no default error message for custom errors to prevent defaulting to "Invalid input"
+z.config({
+  localeError: issue => {
+    if (issue.code === 'custom') {
+      return ''
+    }
+    return z.locales.en().localeError(issue)
+  },
+})
+
 export type fieldErrors = {
   [field: string | number | symbol]: string[] | undefined
 }
@@ -41,7 +51,6 @@ export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeA
       return next()
     }
     req.flash('formResponses', JSON.stringify(req.body))
-
     const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
 
     req.flash('validationErrors', JSON.stringify(deduplicatedFieldErrors))
@@ -50,62 +59,18 @@ export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeA
   }
 }
 
-export const createSchema = <T = object>(shape: T) => zodAlwaysRefine(zObjectStrict(shape))
+export const createSchema = <T = object>(shape: T) => zObjectStrict(shape)
 
 const zObjectStrict = <T = object>(shape: T) => z.object({ _csrf: z.string().optional(), ...shape }).strict()
 
-/*
- * Ensure that all parts of the schema get tried and can fail before exiting schema checks - this ensures we don't have to
- * have complicated schemas if we want to both ensure the order of fields and have all the schema validation run
- * more info regarding this issue and workaround on: https://github.com/colinhacks/zod/issues/479#issuecomment-2067278879
- */
-const zodAlwaysRefine = <T extends z.ZodTypeAny>(zodType: T) =>
-  z.any().transform((val, ctx) => {
-    const res = zodType.safeParse(val)
-    if (!res.success) res.error.issues.forEach(ctx.addIssue)
-    return res.data || val
-  }) as unknown as T
-
-const pathArrayToString = (previous: string | number, next: string | number): string | number => {
-  if (!previous) {
-    return next.toString()
-  }
-  if (typeof next === 'number') {
-    return `${previous}[${next.toString()}]`
-  }
-  return `${previous}.${next.toString()}`
+export const deduplicateFieldErrors = <Output>(errors: ZodError<Output>) => {
+  return Object.fromEntries(
+    Object.entries(z.flattenError(errors).fieldErrors).map(([key, value]) => [
+      key,
+      Array.isArray(value) ? [...new Set(value)] : [],
+    ]),
+  )
 }
-
-export const deduplicateFieldErrors = (error: ZodError) => {
-  const flattened: Record<string, Set<string>> = {}
-  error.issues.forEach(issue => {
-    // only field issues have a path
-    if (issue.path.length > 0) {
-      const path = issue.path.reduce(pathArrayToString)
-      if (!flattened[path]) {
-        flattened[path] = new Set([])
-      }
-      flattened[path]!.add(issue.message)
-    }
-  })
-  return Object.fromEntries(Object.entries(flattened).map(([key, value]) => [key, [...value]]))
-}
-
-// Handy way to override default messaging with access to the value, e.g., for regex errors
-export const makeErrorMap = (messages: {
-  [Code in z.ZodIssueCode]?: (value: unknown) => string
-}): { errorMap: z.ZodErrorMap } => {
-  return {
-    errorMap: (issue, ctx) => {
-      return {
-        message: messages[issue.code]?.(ctx.data) || ctx.defaultError,
-      }
-    },
-  }
-}
-
-export const customErrorOrderBuilder = (errorSummaryList: { href: string }[], order: string[]) =>
-  order.map(key => errorSummaryList.find(error => error.href === `#${key}`)).filter(Boolean)
 
 export const arrayOrUndefined = (val: string | string[] | undefined): string[] | undefined => {
   if (val === undefined) {
