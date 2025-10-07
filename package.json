@@ -104,7 +104,7 @@
   "dependencies": {
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.10",
     "@microsoft/applicationinsights-web": "^3.3.10",
-    "@ministryofjustice/frontend": "^5.2.1",
+    "@ministryofjustice/frontend": "^6.0.0",
     "@ministryofjustice/hmpps-audit-client": "^1.1.1",
     "@ministryofjustice/hmpps-court-cases-release-dates-design": "^4.14.2",
     "accessible-autocomplete": "^3.0.1",
