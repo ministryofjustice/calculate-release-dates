@@ -460,6 +460,45 @@ describe('Calculate release dates service tests', () => {
       })
     })
 
+    it('Test for consecutive concurrent calculation', async () => {
+      fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, [
+        {
+          code: 'CONCURRENT_CONSECUTIVE_SENTENCES_DURATION',
+          message: '10 years 9 months 8 weeks 7 days',
+          type: 'CONCURRENT_CONSECUTIVE',
+        } as ValidationMessage,
+      ])
+
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
+
+      expect(result).toEqual({
+        messages: [{ text: '10 years 9 months 8 weeks 7 days' }],
+        messageType: 'CONCURRENT_CONSECUTIVE',
+      })
+    })
+
+    it('Test for consecutive concurrent calculation with other validation', async () => {
+      fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, [
+        {
+          code: 'CONCURRENT_CONSECUTIVE_SENTENCES_DURATION',
+          message: '10 years 9 months 8 weeks 7 days',
+          type: 'CONCURRENT_CONSECUTIVE',
+        } as ValidationMessage,
+        {
+          code: 'OFFENCE_MISSING_DATE',
+          message: 'The validation failed',
+          type: 'VALIDATION',
+        } as ValidationMessage,
+      ])
+
+      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
+
+      expect(result).toEqual({
+        messages: [{ text: 'The validation failed' }],
+        messageType: 'VALIDATION',
+      })
+    })
+
     it('Gets calculation history', async () => {
       const history = [
         {

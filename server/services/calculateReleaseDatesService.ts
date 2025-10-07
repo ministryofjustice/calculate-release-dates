@@ -451,15 +451,13 @@ export default class CalculateReleaseDatesService {
       }
     }
 
-    const messages = validationMessages
-      .filter(v => v.type !== 'CONCURRENT_CONSECUTIVE')
-      .map(m => {
-        return { text: m.message } as ErrorMessage
-      })
+    const messages = validationMessages.filter(v => v.type !== 'CONCURRENT_CONSECUTIVE')
 
     return {
-      messageType: ErrorMessageType[validationMessages[0].type],
-      messages,
+      messageType: ErrorMessageType[messages[0].type],
+      messages: messages.map(m => {
+        return { text: m.message } as ErrorMessage
+      }),
     }
   }
 

@@ -56,7 +56,11 @@
                                         <tr class="govuk-table__row govuk-body-s">
                                             <th scope="row" class="govuk-table__header sentence-table-header">Revocation date</th>
                                             <td class="govuk-table__cell">
-                                                {{ params.revocationDate | date('DD MMMM YYYY') }}
+                                               {% if params.revocationDate %}
+                                                    {{ params.revocationDate | date('DD MMMM YYYY') }}
+                                                {% else %}
+                                                    Not entered 
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endif %}
