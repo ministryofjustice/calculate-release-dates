@@ -20,55 +20,56 @@ export default class StartRoutes {
 
   public startPage: RequestHandler = async (req, res): Promise<void> => {
     const { prisonId } = req.query as Record<string, string>
+
+    if (!prisonId) {
+      return res.redirect(config.apis.digitalPrisonServices.ui_url)
+    }
+
     const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
-    if (prisonId) {
-      const { caseloads, token, userRoles } = res.locals.user
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, token, caseloads, userRoles)
-      const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
-      const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
-        prisonerDetail.bookingId,
-        token,
-      )
+    const { caseloads, token, userRoles } = res.locals.user
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, token, caseloads, userRoles)
+    const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
+    const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
+      prisonerDetail.bookingId,
+      token,
+    )
 
-      const latestCalculationCardOrError = await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(
-        prisonId,
-        token,
-        hasIndeterminateSentence,
-      )
+    const latestCalculationCardOrError = await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(
+      prisonId,
+      token,
+      hasIndeterminateSentence,
+    )
 
-      const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(prisonId, token)
+    const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(prisonId, token)
 
-      if (latestCalculationCardOrError instanceof FullPageError) {
-        return res.render(
-          'pages/ccardIndexError',
-          indexErrorViewModelForPrisoner(
-            latestCalculationCardOrError,
-            prisonerDetail,
-            calculationHistory,
-            prisonId,
-            allowBulkLoad,
-            serviceDefinitions,
-          ),
-        )
-      }
-
-      const { latestCalcCard, latestCalcCardAction } = latestCalculationCardOrError
+    if (latestCalculationCardOrError instanceof FullPageError) {
       return res.render(
-        'pages/ccardIndex',
-        indexViewModelForPrisoner(
+        'pages/ccardIndexError',
+        indexErrorViewModelForPrisoner(
+          latestCalculationCardOrError,
           prisonerDetail,
           calculationHistory,
           prisonId,
           allowBulkLoad,
-          latestCalcCard,
-          latestCalcCardAction,
-          !hasIndeterminateSentence,
           serviceDefinitions,
         ),
       )
     }
 
-    return res.redirect('/search/prisoners')
+    const { latestCalcCard, latestCalcCardAction } = latestCalculationCardOrError
+    return res.render(
+      'pages/ccardIndex',
+      indexViewModelForPrisoner(
+        prisonerDetail,
+        calculationHistory,
+        prisonId,
+        allowBulkLoad,
+        latestCalcCard,
+        latestCalcCardAction,
+        !hasIndeterminateSentence,
+        serviceDefinitions,
+      ),
+    )
   }
 
   public supportedSentences: RequestHandler = async (req, res): Promise<void> => {

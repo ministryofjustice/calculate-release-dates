@@ -2,7 +2,6 @@ import CalculationCompletePage from '../pages/calculationComplete'
 import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
-import PrisonerSearchPage from '../pages/prisonerSearch'
 import ViewCalculationSummary from '../pages/viewCalculationSummary'
 import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
@@ -15,7 +14,6 @@ context('End to end happy path of user journey', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubManageUser')
-    cy.task('stubPrisonerSearch')
     cy.task('stubGetUserCaseloads')
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetSentencesAndOffences')
@@ -46,15 +44,11 @@ context('End to end happy path of user journey', () => {
   })
 
   it('Standalone user journey', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+    CCARDLandingPage.goTo('A1234AB')
 
-    const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
-    prisonerSearchPage.searchForFirstName('Marvin')
-    prisonerSearchPage.prisonerLinkFor('A1234AB').click()
-
-    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
-    ccardLandingPage.hasMiniProfile()
-    ccardLandingPage.calculateReleaseDatesAction().click()
+    const landingPage = CCARDLandingPage.verifyOnPage(CCARDLandingPage)
+    landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByIndex(1).check()
@@ -78,7 +72,8 @@ context('End to end happy path of user journey', () => {
   })
 
   it('DPS user journey with selecting no in cancel question', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
@@ -110,8 +105,10 @@ context('End to end happy path of user journey', () => {
   })
 
   it('DPS user journey with selecting yes in cancel question', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+
     const landingPage = CCARDLandingPage.goTo('A1234AB')
+
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -134,13 +131,9 @@ context('End to end happy path of user journey', () => {
   })
 
   it('View journey', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
 
-    const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
-    prisonerSearchPage.searchForFirstName('Marvin')
-    prisonerSearchPage.prisonerLinkFor('A1234AB').click()
-
-    const landingPage = Page.verifyOnPage(CCARDLandingPage)
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
 
     landingPage
       .latestCalculationDate()

@@ -23,7 +23,7 @@ context('Calculation summary', () => {
   })
 
   it('Visit Calculation summary page', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
     calculationSummaryPage.submitToNomisButton().should('exist')
     calculationSummaryPage.sledDate().should('contain.text', 'Monday, 05 November 2018')
@@ -72,7 +72,7 @@ context('Calculation summary', () => {
   })
 
   it('Error when NOMIS data has changed', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     const approvedDatesQuestionPage = ApprovedDatesQuestionPage.goTo('A1234AB', '98')
     approvedDatesQuestionPage.no().click()
     approvedDatesQuestionPage.continue().click()
@@ -86,7 +86,7 @@ context('Calculation summary', () => {
     redirectedView.errorSummary().find('a').should('have.attr', 'href', '/calculation/A1234AB/check-information')
   })
   it('Error when server error', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     const approvedDatesQuestionPage = ApprovedDatesQuestionPage.goTo('A1234AB', '99')
     approvedDatesQuestionPage.no().click()
     approvedDatesQuestionPage.continue().click()
@@ -95,14 +95,14 @@ context('Calculation summary', () => {
   })
 
   it('Error when calc id doesnt match prisoner id', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     CalculationSummaryPage.visit('NOT_MATCHING', '97', false)
     const errorPage = Page.verifyOnPage(ErrorPage)
     errorPage.heading().contains('The details for this person cannot be found')
   })
 
   it('Calculation summary page is accessible', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     CalculationSummaryPage.goTo('A1234AB', '123')
     cy.injectAxe()
     cy.checkA11y()

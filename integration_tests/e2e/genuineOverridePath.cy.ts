@@ -27,7 +27,6 @@ context('End to end user journeys for a user with genuine overrides access', () 
       AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW,
     ])
     cy.task('stubManageUser')
-    cy.task('stubPrisonerSearch')
     cy.task('stubGetUserCaseloads')
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetSentencesAndOffences')
@@ -61,7 +60,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
   })
 
   it('Ask for approved dates if happy with calculated dates', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
@@ -100,7 +99,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
   })
 
   it('Can add dates if not agreeing with the calculated dates', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
@@ -211,7 +210,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
   })
 
   it('Can edit dates if not agreeing with the calculated dates', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
@@ -287,7 +286,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
   })
 
   it('Can delete dates if not agreeing with the calculated dates', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
