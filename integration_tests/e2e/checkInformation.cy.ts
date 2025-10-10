@@ -20,7 +20,7 @@ context('Check nomis information', () => {
   })
 
   it('Visit check nomis information page', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
 
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -50,7 +50,7 @@ context('Check nomis information', () => {
   })
 
   it('Check nomis information page is accessible', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByIndex(1).check()
@@ -64,7 +64,7 @@ context('Check nomis information', () => {
 
   it('Check nomis information page displays missing offence dates if missing within Nomis', () => {
     cy.task('stubSupportedValidationNoOffenceDates')
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByIndex(1).check()
@@ -75,7 +75,7 @@ context('Check nomis information', () => {
 
   it('Check nomis information page displays missing offence terms if missing within Nomis', () => {
     cy.task('stubSupportedValidationNoOffenceTerms')
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByIndex(1).check()
@@ -86,7 +86,7 @@ context('Check nomis information', () => {
 
   it('Check nomis information page displays missing offence licence terms if missing within Nomis', () => {
     cy.task('stubSupportedValidationNoOffenceLicenceTerms')
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByIndex(1).check()

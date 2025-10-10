@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes } from './testutils/appSetup'
+import config from '../config'
 
 let app: Express
 
@@ -14,11 +15,6 @@ afterEach(() => {
 
 describe('GET /', () => {
   it('should render index page', () => {
-    return request(app)
-      .get('/')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Calculate release dates')
-      })
+    request(app).get('/').expect(302).expect('Location', config.apis.digitalPrisonServices.ui_url)
   })
 })

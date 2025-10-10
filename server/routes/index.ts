@@ -2,7 +2,6 @@ import { Router } from 'express'
 import { Services } from '../services'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
-import SearchRoutes from './searchRoutes'
 import StartRoutes from './startRoutes'
 import CheckInformationRoutes from './checkInformationRoutes'
 import ViewRoutes from './viewRoutes'
@@ -15,6 +14,7 @@ import GenuineOverridesRoutes from './genuine-overrides/genuineOverridesRoutes'
 import CalculationSummaryController from './calculation-summary/calculationSummaryController'
 import { validate } from '../middleware/validationMiddleware'
 import { calculationSummarySchema } from './calculation-summary/calculationSummarySchema'
+import config from '../config'
 
 export default function Index({
   prisonerService,
@@ -39,7 +39,6 @@ export default function Index({
     userInputService,
     checkInformationService,
   )
-  const searchAccessRoutes = new SearchRoutes(prisonerService)
 
   const compareAccessRoutes = new CompareRoutes(
     calculateReleaseDatesService,
@@ -174,10 +173,6 @@ export default function Index({
     router.post('/calculation/:nomsId/reason', calculationQuestionRoutes.submitCalculationReason)
   }
 
-  const searchRoutes = () => {
-    router.get('/search/prisoners', searchAccessRoutes.searchCalculatePrisoners)
-  }
-
   const viewRoutes = () => {
     router.get('/view/:nomsId/latest', viewAccessRoutes.startViewJourney)
     router.get('/view/:nomsId/sentences-and-offences/:calculationRequestId', viewAccessRoutes.sentencesAndOffences)
@@ -230,12 +225,16 @@ export default function Index({
   reasonRoutes()
   checkInformationRoutes()
   manualEntryRoutes()
-  searchRoutes()
   viewRoutes()
   otherRoutes()
   compareRoutes()
   approvedDatesRoutes()
   thingsToDoInterceptRouter()
   genuineOverridesRoutes()
+
+  router.get('/search/prisoners', (_req, res) => {
+    res.redirect(config.apis.digitalPrisonServices.ui_url)
+  })
+
   return router
 }
