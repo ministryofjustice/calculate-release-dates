@@ -20,6 +20,6 @@ afterEach(() => {
 
 describe('DEPRECATED: GET Search routes for /search/prisoners', () => {
   it('Should redirect to DPS', () => {
-    request(app).get('/').expect(302).expect('Location', config.apis.digitalPrisonServices.ui_url)
+    return request(app).get('/').expect(302).expect('Location', config.apis.digitalPrisonServices.ui_url)
   })
 })

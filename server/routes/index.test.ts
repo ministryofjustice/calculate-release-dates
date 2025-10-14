@@ -15,6 +15,6 @@ afterEach(() => {
 
 describe('GET /', () => {
   it('should render index page', () => {
-    request(app).get('/').expect(302).expect('Location', config.apis.digitalPrisonServices.ui_url)
+    return request(app).get('/').expect(302).expect('Location', config.apis.digitalPrisonServices.ui_url)
   })
 })
