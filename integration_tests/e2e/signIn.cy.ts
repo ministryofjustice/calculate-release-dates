@@ -24,6 +24,7 @@ context('Sign In', () => {
     cy.task('stubHasNoIndeterminateSentences')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetEligibility')
+    cy.task('stubOffenderImage', 'A1234AB')
   })
 
   it('Unauthenticated user directed to auth', () => {
@@ -74,11 +75,11 @@ context('Sign In', () => {
     cy.request('/?prisonId=A1234AB').its('body').should('contain', 'Sign in')
 
     cy.task('stubVerifyToken', true)
-    cy.task('stubManageUser', 'bobby brown')
+    cy.task('stubManageUser', 'bass matrix')
     cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
 
     const landingPage = CCARDLandingPage.goTo('A1234AB')
-    landingPage.headerUserName().contains('B. Brown')
+    landingPage.headerUserName().contains('B. Matrix')
   })
 
   it('common components header is displayed', () => {
