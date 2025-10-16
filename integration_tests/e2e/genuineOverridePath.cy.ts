@@ -195,7 +195,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/calculate-release-dates/calculation/genuine-override/123`,
+        urlPath: `/calculate-release-dates/genuine-override/calculation/123`,
       },
       {
         dates: [
@@ -271,7 +271,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/calculate-release-dates/calculation/genuine-override/123`,
+        urlPath: `/calculate-release-dates/genuine-override/calculation/123`,
       },
       {
         dates: [
@@ -351,7 +351,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/calculate-release-dates/calculation/genuine-override/123`,
+        urlPath: `/calculate-release-dates/genuine-override/calculation/123`,
       },
       {
         dates: [
