@@ -1,7 +1,7 @@
 import { getAPICallCountMatching, getLastAPICallMatching } from '../mockApis/wiremock'
 
-Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
-  cy.request('/')
+Cypress.Commands.add('signIn', (options = { failOnStatusCode: true, returnUrl: '/' }) => {
+  cy.request(options.returnUrl)
   return cy.task('getSignInUrl').then((url: string) => cy.visit(url, options))
 })
 

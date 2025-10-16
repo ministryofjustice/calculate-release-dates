@@ -13,12 +13,12 @@ context('Calculation complete', () => {
   })
 
   it('Visit Calculation complete page', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     CalculationCompletePage.goTo('A1234AB', '123')
   })
 
   it('Calculation complete page is accessible', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     CalculationCompletePage.goTo('A1234AB', '123')
     cy.injectAxe()
     cy.checkA11y()

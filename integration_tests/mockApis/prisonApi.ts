@@ -137,4 +137,21 @@ export default {
       },
     })
   },
+
+  stubOffenderImage: (prisonerId: string): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/prison-api/api/bookings/offenderNo/${prisonerId}/image/data`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'image/png' },
+        body: Buffer.from(
+          '/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjI',
+          'base64',
+        ).toString('binary'),
+      },
+    })
+  },
 }
