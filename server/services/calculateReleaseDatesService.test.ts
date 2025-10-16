@@ -1055,7 +1055,7 @@ describe('Calculate release dates service tests', () => {
       originalCalculationRequestId: calculationRequestId,
     }
     auditService.publishGenuineOverride.mockResolvedValue()
-    fakeApi.post(`/calculation/genuine-override/${calculationRequestId}`).reply(200, response)
+    fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(200, response)
 
     const result = await calculateReleaseDatesService.createGenuineOverrideForCalculation(
       userName,
@@ -1080,7 +1080,7 @@ describe('Calculate release dates service tests', () => {
 
   it('Test creating a genuine override fails is audited', async () => {
     auditService.publishGenuineOverrideFailed.mockResolvedValue()
-    fakeApi.post(`/calculation/genuine-override/${calculationRequestId}`).reply(500)
+    fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(500)
 
     try {
       await calculateReleaseDatesService.createGenuineOverrideForCalculation(

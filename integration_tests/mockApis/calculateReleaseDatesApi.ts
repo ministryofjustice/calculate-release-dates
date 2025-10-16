@@ -953,7 +953,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/calculate-release-dates/genuine-override-reasons/`,
+        urlPattern: `/calculate-release-dates/genuine-override/reasons/`,
       },
       response: {
         status: 200,
@@ -1480,7 +1480,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: `/calculate-release-dates/calculation/genuine-override/${opts.originalCalcId}`,
+        urlPattern: `/calculate-release-dates/genuine-override/calculation/${opts.originalCalcId}`,
       },
       response: {
         status: 200,
