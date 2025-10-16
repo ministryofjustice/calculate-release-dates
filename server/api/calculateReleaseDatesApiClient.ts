@@ -105,7 +105,7 @@ export default class CalculateReleaseDatesApiClient {
     body: GenuineOverrideRequest,
   ): Promise<GenuineOverrideCreatedResponse> {
     return this.restClient.post({
-      path: `/calculation/genuine-override/${calculationRequestId}`,
+      path: `/genuine-override/calculation/${calculationRequestId}`,
       data: body,
     }) as Promise<GenuineOverrideCreatedResponse>
   }
@@ -119,7 +119,7 @@ export default class CalculateReleaseDatesApiClient {
   }
 
   getGenuineOverrideReasons(): Promise<GenuineOverrideReason[]> {
-    return this.restClient.get({ path: `/genuine-override-reasons/` }) as Promise<GenuineOverrideReason[]>
+    return this.restClient.get({ path: `/genuine-override/reasons/` }) as Promise<GenuineOverrideReason[]>
   }
 
   validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessage[]> {
