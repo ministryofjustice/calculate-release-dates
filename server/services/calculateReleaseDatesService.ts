@@ -16,6 +16,7 @@ import {
   CalculationRequestModel,
   CalculationUserInputs,
   GenuineOverrideCreatedResponse,
+  GenuineOverrideInputResponse,
   GenuineOverrideReason,
   GenuineOverrideRequest,
   HistoricCalculation,
@@ -599,5 +600,9 @@ export default class CalculateReleaseDatesService {
 
   async hasIndeterminateSentences(bookingId: number, token: string): Promise<boolean> {
     return new CalculateReleaseDatesApiClient(token).hasIndeterminateSentences(bookingId)
+  }
+
+  async getGenuineOverrideInputs(calculationRequestId: number, token: string): Promise<GenuineOverrideInputResponse> {
+    return new CalculateReleaseDatesApiClient(token).getGenuineOverrideInputs(calculationRequestId)
   }
 }

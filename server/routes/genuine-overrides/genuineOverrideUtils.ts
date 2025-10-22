@@ -7,11 +7,8 @@ import GenuineOverrideUrls from './genuineOverrideUrls'
 
 const genuineOverrideInputsForPrisoner = (req: Request, prisonerNumber: string): GenuineOverrideInputs => {
   const { session } = req
-  if (!session.genuineOverrideInputs) {
-    session.genuineOverrideInputs = {}
-  }
-  if (!session.genuineOverrideInputs[prisonerNumber]) {
-    session.genuineOverrideInputs[prisonerNumber] = { state: 'NEW' }
+  if (!session.genuineOverrideInputs || !session.genuineOverrideInputs[prisonerNumber]) {
+    throw Error(`No session state found for genuine override for prisoner ${prisonerNumber}. Session may have expired`)
   }
   return session.genuineOverrideInputs[prisonerNumber]
 }

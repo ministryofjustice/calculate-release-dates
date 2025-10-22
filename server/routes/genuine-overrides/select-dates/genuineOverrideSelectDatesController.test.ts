@@ -9,6 +9,7 @@ import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import { determinateDateTypesForManualEntry } from '../../../services/manualEntryService'
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
+import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
 
 jest.mock('../../../services/prisonerService')
 jest.mock('../../../services/dateTypeConfigurationService')
@@ -30,35 +31,10 @@ describe('SelectGenuineOverrideReasonController', () => {
   } as PrisonApiPrisoner
   const pageUrl = `/calculation/${prisonerNumber}/override/select-dates/${calculationRequestId}`
   let currentUser: Express.User
-  const mockDateConfigs = {
-    CRD: 'CRD (Conditional release date)',
-    LED: 'LED (Licence expiry date)',
-    SED: 'SED (Sentence expiry date)',
-    NPD: 'NPD (Non-parole date)',
-    ARD: 'ARD (Automatic release date)',
-    TUSED: 'TUSED (Top up supervision expiry date)',
-    PED: 'PED (Parole eligibility date)',
-    SLED: 'SLED (Sentence and licence expiry date)',
-    HDCED: 'HDCED (Home detention curfew eligibility date)',
-    NCRD: 'NCRD (Notional conditional release date)',
-    ETD: 'ETD (Early transfer date)',
-    MTD: 'MTD (Mid transfer date)',
-    LTD: 'LTD (Late transfer date)',
-    DPRRD: 'DPRRD (Detention and training order post recall release date)',
-    PRRD: 'PRRD (Post recall release date)',
-    ESED: 'ESED (Effective sentence end date)',
-    ERSED: 'ERSED (Early removal scheme eligibility date)',
-    TERSED: 'TERSED (Tariff-expired removal scheme eligibility date)',
-    APD: 'APD (Approved parole date)',
-    HDCAD: 'HDCAD (Home detention curfew approved date)',
-    None: 'None (None of the above dates apply)',
-    Tariff: 'Tariff (known as the Tariff expiry date)',
-    ROTL: 'ROTL (Release on temporary licence)',
-  }
 
   beforeEach(() => {
     genuineOverrideInputs = {
-      state: 'INITIALISED_DATES',
+      mode: 'STANDARD',
       reason: 'TERRORISM',
       datesToSave: [
         { type: 'SLED', date: '2032-06-15' },
@@ -82,7 +58,7 @@ describe('SelectGenuineOverrideReasonController', () => {
       userSupplier: () => currentUser,
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(mockDateConfigs)
+    dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(testDateTypeToDescriptions)
   })
 
   afterEach(() => {
@@ -152,7 +128,7 @@ describe('SelectGenuineOverrideReasonController', () => {
 
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
@@ -171,7 +147,7 @@ describe('SelectGenuineOverrideReasonController', () => {
 
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
@@ -190,7 +166,7 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/override/HDCED/add/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
@@ -209,7 +185,7 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/override/HDCED/add/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
