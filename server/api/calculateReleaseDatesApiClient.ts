@@ -20,6 +20,7 @@ import {
   DetailedCalculationResults,
   ErsedEligibility,
   GenuineOverrideCreatedResponse,
+  GenuineOverrideInputResponse,
   GenuineOverrideReason,
   GenuineOverrideRequest,
   HistoricCalculation,
@@ -119,7 +120,7 @@ export default class CalculateReleaseDatesApiClient {
   }
 
   getGenuineOverrideReasons(): Promise<GenuineOverrideReason[]> {
-    return this.restClient.get({ path: `/genuine-override/reasons/` }) as Promise<GenuineOverrideReason[]>
+    return this.restClient.get({ path: `/genuine-override/reasons` }) as Promise<GenuineOverrideReason[]>
   }
 
   validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessage[]> {
@@ -374,5 +375,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/manual-calculation/${prisonerId}/has-existing-calculation`,
     }) as Promise<boolean>
+  }
+
+  getGenuineOverrideInputs(calculationRequestId: number): Promise<GenuineOverrideInputResponse> {
+    return this.restClient.get({
+      path: `/genuine-override/calculation/${calculationRequestId}/inputs`,
+    }) as Promise<GenuineOverrideInputResponse>
   }
 }

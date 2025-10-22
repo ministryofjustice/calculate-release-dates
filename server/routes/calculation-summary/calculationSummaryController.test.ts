@@ -802,7 +802,7 @@ describe('CalculationSummaryController', () => {
         .type('form')
         .send({ agreeWithDates: 'NO' })
         .expect(302)
-        .expect('Location', `/calculation/${prisonerNumber}/select-reason-for-override/123456`)
+        .expect('Location', `/calculation/${prisonerNumber}/start-genuine-override/123456`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(currentSession.genuineOverrideInputs[prisonerNumber]).toBeUndefined()
@@ -820,7 +820,7 @@ describe('CalculationSummaryController', () => {
         .type('form')
         .send({ agreeWithDates: 'NO' })
         .expect(302)
-        .expect('Location', `/calculation/${prisonerNumber}/select-reason-for-override/123456`)
+        .expect('Location', `/calculation/${prisonerNumber}/start-genuine-override/123456`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(currentSession.genuineOverrideInputs?.[prisonerNumber]).toBeUndefined()

@@ -58,9 +58,8 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.task('stubGetEligibility')
     cy.task('stubGetGenuineOverrideReasons')
     cy.task('stubCreateGenuineOverride', { originalCalcId: 123, newCalcId: 456 })
-  })
+    cy.task('stubGetGenuineOverrideInputStandardMode')
 
-  it('Ask for approved dates if happy with calculated dates', () => {
     cy.signIn()
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
@@ -71,7 +70,9 @@ context('End to end user journeys for a user with genuine overrides access', () 
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
+  })
 
+  it('Ask for approved dates if happy with calculated dates', () => {
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
     calculationSummaryPage.agreeWithDatesRadio('YES').check()
     calculationSummaryPage.continueButton().click()
@@ -100,17 +101,6 @@ context('End to end user journeys for a user with genuine overrides access', () 
   })
 
   it('Can add dates if not agreeing with the calculated dates', () => {
-    cy.signIn()
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
-    landingPage.calculateReleaseDatesAction().click()
-
-    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
-    calculationReasonPage.submitReason().click()
-
-    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
-    checkInformationPage.calculateButton().click()
-
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
     calculationSummaryPage.agreeWithDatesRadio('NO').check()
     calculationSummaryPage.continueButton().click()
@@ -211,17 +201,6 @@ context('End to end user journeys for a user with genuine overrides access', () 
   })
 
   it('Can edit dates if not agreeing with the calculated dates', () => {
-    cy.signIn()
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
-    landingPage.calculateReleaseDatesAction().click()
-
-    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
-    calculationReasonPage.submitReason().click()
-
-    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
-    checkInformationPage.calculateButton().click()
-
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
     calculationSummaryPage.agreeWithDatesRadio('NO').check()
     calculationSummaryPage.continueButton().click()
@@ -287,17 +266,6 @@ context('End to end user journeys for a user with genuine overrides access', () 
   })
 
   it('Can delete dates if not agreeing with the calculated dates', () => {
-    cy.signIn()
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
-    landingPage.calculateReleaseDatesAction().click()
-
-    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
-    calculationReasonPage.submitReason().click()
-
-    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
-    checkInformationPage.calculateButton().click()
-
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
     calculationSummaryPage.agreeWithDatesRadio('NO').check()
     calculationSummaryPage.continueButton().click()
@@ -363,5 +331,23 @@ context('End to end user journeys for a user with genuine overrides access', () 
         reasonFurtherDetail: 'Some more details',
       },
     )
+  })
+
+  it('Back buttons work as expected', () => {
+    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
+    calculationSummaryPage.agreeWithDatesRadio('NO').check()
+    calculationSummaryPage.continueButton().click()
+
+    Page.verifyOnPage(GenuineOverrideReasonPage) //
+      .selectRadio('TERRORISM')
+      .clickContinue()
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .clickBack()
+
+    Page.verifyOnPage(GenuineOverrideReasonPage) //
+      .clickBack()
+
+    Page.verifyOnPage(CalculationSummaryPage)
   })
 })

@@ -7,6 +7,9 @@ import {
   SentenceAndOffenceWithReleaseArrangements,
   ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { components } from '../../server/@types/calculateReleaseDates'
+
+type PreviousOverride = components['schemas']['PreviousGenuineOverride']
 
 export default {
   stubCalculatePreliminaryReleaseDates: (): SuperAgentRequest => {
@@ -953,7 +956,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/calculate-release-dates/genuine-override/reasons/`,
+        urlPattern: `/calculate-release-dates/genuine-override/reasons`,
       },
       response: {
         status: 200,
@@ -972,6 +975,47 @@ export default {
             displayOrder: 1,
           },
         ],
+      },
+    })
+  },
+  stubGetGenuineOverrideInputStandardMode: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/genuine-override/calculation/([0-9]*)/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          mode: 'STANDARD',
+          calculatedDates: [
+            { dateType: 'SLED', date: '2018-11-05' },
+            { dateType: 'CRD', date: dayjs().add(7, 'day').format('YYYY-MM-DD') },
+            { dateType: 'HDCED', date: dayjs().add(3, 'day').format('YYYY-MM-DD') },
+          ],
+        },
+      },
+    })
+  },
+  stubGetGenuineOverrideInputExpressMode: (previousOverride: PreviousOverride): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/genuine-override/calculation/([0-9]*)/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          mode: 'EXPRESS',
+          calculatedDates: [
+            { dateType: 'SLED', date: '2018-11-05' },
+            { dateType: 'CRD', date: dayjs().add(7, 'day').format('YYYY-MM-DD') },
+            { dateType: 'HDCED', date: dayjs().add(3, 'day').format('YYYY-MM-DD') },
+          ],
+          previousOverrideForExpressGenuineOverride: previousOverride,
+        },
       },
     })
   },
