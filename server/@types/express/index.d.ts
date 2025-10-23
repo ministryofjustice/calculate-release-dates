@@ -43,7 +43,6 @@ export declare global {
     interface Locals {
       user: Express.User
       validationErrors?: fieldErrors
-      formResponses?: { [key: string]: string }
     }
   }
 }

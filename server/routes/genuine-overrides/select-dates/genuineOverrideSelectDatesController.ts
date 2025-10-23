@@ -7,11 +7,17 @@ import DateTypeConfigurationService from '../../../services/dateTypeConfiguratio
 import GenuineOverrideSelectDatesViewModel from '../../../models/genuine-override/GenuineOverrideSelectDatesViewModel'
 import { determinateDateTypesForManualEntry, SelectedDateCheckBox } from '../../../services/manualEntryService'
 import { genuineOverrideInputsForPrisoner } from '../genuineOverrideUtils'
+import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
+import {
+  convertValidationMessagesToErrorMessagesForPath,
+  redirectToInputWithErrors,
+} from '../../../middleware/validationMiddleware'
 
 export default class GenuineOverrideSelectDatesController implements Controller {
   constructor(
     private readonly dateTypeConfigurationService: DateTypeConfigurationService,
     private readonly prisonerService: PrisonerService,
+    private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
   ) {}
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
@@ -21,9 +27,11 @@ export default class GenuineOverrideSelectDatesController implements Controller 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
+    const pendingDateTypes: string[] =
+      res.locals.formResponses?.dateType ?? genuineOverrideInputs.datesBeingAdded?.map(it => it.type) ?? []
     const checkboxes: SelectedDateCheckBox[] = determinateDateTypesForManualEntry.map(dateType => {
       const hasEnteredDate = genuineOverrideInputs.datesToSave?.find(it => it.type === dateType) !== undefined
-      const hasPendingDate = genuineOverrideInputs.datesBeingAdded?.find(it => it.type === dateType) !== undefined
+      const hasPendingDate = pendingDateTypes?.find(it => it === dateType) !== undefined
       return {
         value: dateType,
         text: dateTypeDefinitions[dateType],
@@ -51,15 +59,28 @@ export default class GenuineOverrideSelectDatesController implements Controller 
   ): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
     const { dateType } = req.body
+    const { token } = res.locals.user
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const alreadyAddedDateTypes = genuineOverrideInputs.datesToSave?.map(it => it.type) ?? []
-    genuineOverrideInputs.datesBeingAdded = dateType
+    const newDatesToAdd = dateType
       .filter(requestedDateType => !alreadyAddedDateTypes.includes(requestedDateType))
       .map(type => ({ type }))
     // if they just submitted without selecting any new dates take them back to review dates
-    if (!genuineOverrideInputs.datesBeingAdded || genuineOverrideInputs.datesBeingAdded.length === 0) {
+    if (!newDatesToAdd || newDatesToAdd.length === 0) {
       return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
     }
+    const validationMessages = await this.calculateReleaseDatesService.validateDatesForGenuineOverride(token, [
+      ...genuineOverrideInputs.datesToSave.map(it => it.type),
+      ...newDatesToAdd.map(it => it.type),
+    ])
+    if (validationMessages.length) {
+      return redirectToInputWithErrors(
+        req,
+        res,
+        convertValidationMessagesToErrorMessagesForPath('dateType', validationMessages),
+      )
+    }
+    genuineOverrideInputs.datesBeingAdded = newDatesToAdd
     const firstDateType = genuineOverrideInputs.datesBeingAdded[0].type
     return res.redirect(GenuineOverrideUrls.enterNewDate(nomsId, calculationRequestId, firstDateType))
   }

@@ -84,7 +84,11 @@ const GenuineOverridesRoutes = (
 
   route({
     path: '/calculation/:nomsId/override/select-dates/:calculationRequestId',
-    controller: new GenuineOverrideSelectDatesController(dateTypeConfigurationService, prisonerService),
+    controller: new GenuineOverrideSelectDatesController(
+      dateTypeConfigurationService,
+      prisonerService,
+      calculateReleaseDatesService,
+    ),
     validateToSchema: genuineOverrideSelectDatesSchema,
   })
 
