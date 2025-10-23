@@ -602,6 +602,19 @@ export default {
       },
     })
   },
+  stubManualEntryDateValidationWithErrors: (validationMessages: ValidationMessage[]): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/validation/manual-entry-dates-validation\\?releaseDates=([A-Za-z|,]*)',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: validationMessages,
+      },
+    })
+  },
   stubSupportedValidationNoMessages: (): SuperAgentRequest => {
     return stubFor({
       request: {
