@@ -12,6 +12,10 @@ import {
 } from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ReviewDatesFromPreviousGenuineOverrideViewModel from '../../../models/genuine-override/ReviewDatesFromPreviousGenuineOverrideViewModel'
 import { ReviewDatesFromPreviousOverrideSummaryForm } from './reviewDatesFromPreviousOverrideSummarySchema'
+import {
+  convertValidationMessagesToErrorMessagesForPath,
+  redirectToInputWithErrors,
+} from '../../../middleware/validationMiddleware'
 
 export default class ReviewDatesFromPreviousGenuineOverrideController implements Controller {
   constructor(
@@ -58,7 +62,6 @@ export default class ReviewDatesFromPreviousGenuineOverrideController implements
     const { token, username } = res.locals.user
     const { stillCorrect } = req.body
 
-    let redirectUrl: string
     if (stillCorrect === 'YES') {
       const inputs = genuineOverrideInputsForPrisoner(req, nomsId)
       const request: GenuineOverrideRequest = {
@@ -76,11 +79,15 @@ export default class ReviewDatesFromPreviousGenuineOverrideController implements
         token,
         request,
       )
-      redirectUrl = `/calculation/${nomsId}/complete/${response.newCalculationRequestId}`
-    } else {
-      redirectUrl = GenuineOverrideUrls.selectReasonForOverride(nomsId, calculationRequestId)
+      if (!response.success) {
+        return redirectToInputWithErrors(
+          req,
+          res,
+          convertValidationMessagesToErrorMessagesForPath('datesToSave', response.validationMessages),
+        )
+      }
+      return res.redirect(`/calculation/${nomsId}/complete/${response.newCalculationRequestId}`)
     }
-
-    return res.redirect(redirectUrl)
+    return res.redirect(GenuineOverrideUrls.selectReasonForOverride(nomsId, calculationRequestId))
   }
 }

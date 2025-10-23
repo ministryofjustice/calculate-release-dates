@@ -1520,7 +1520,7 @@ export default {
       },
     })
   },
-  stubCreateGenuineOverride: (opts: { originalCalcId: number; newCalcId: number }): SuperAgentRequest => {
+  stubCreateGenuineOverrideSuccessfully: (opts: { originalCalcId: number; newCalcId: number }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
@@ -1530,8 +1530,28 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
+          success: true,
           originalCalculationRequestId: opts.originalCalcId,
           newCalculationRequestId: opts.newCalcId,
+        },
+      },
+    })
+  },
+  stubCreateGenuineOverrideFailsWithValidationError: (opts: {
+    originalCalcId: number
+    validationMessages: ValidationMessage[]
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: `/calculate-release-dates/genuine-override/calculation/${opts.originalCalcId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          success: false,
+          validationMessages: opts.validationMessages,
         },
       },
     })

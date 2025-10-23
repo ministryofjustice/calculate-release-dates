@@ -109,6 +109,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/record-a-recall/{prisonerId}/decision': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Calculate release dates for a prisoner - used explicitly by the record-a-recall service, this does not publish to NOMIS
+     * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a transitory calculation that will not be published to NOMIS
+     */
+    post: operations['makeRecallDecision']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/overall-sentence-length': {
     parameters: {
       query?: never
@@ -477,6 +497,26 @@ export interface paths {
      * @description Returns the date types and their definitions
      */
     get: operations['getDateTypeDefinitions']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/record-a-recall/{prisonerId}/validate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Calculate release dates for a prisoner - used explicitly by the record-a-recall service, this does not publish to NOMIS
+     * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a transitory calculation that will not be published to NOMIS
+     */
+    get: operations['validate_1']
     put?: never
     post?: never
     delete?: never
@@ -1425,6 +1465,41 @@ export interface components {
       validationMessages: components['schemas']['ValidationMessage'][]
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
     }
+    RecordARecallRequest: {
+      /** Format: date */
+      revocationDate: string
+    }
+    RecallSentenceCalculation: {
+      /** Format: date */
+      conditionalReleaseDate: string
+      /** Format: date */
+      actualReleaseDate: string
+      /** Format: date */
+      licenseExpiry: string
+    }
+    RecallableSentence: {
+      /** Format: int32 */
+      sentenceSequence: number
+      /** Format: int64 */
+      bookingId: number
+      /** Format: uuid */
+      uuid: string
+      sentenceCalculation: components['schemas']['RecallSentenceCalculation']
+    }
+    RecordARecallDecisionResult: {
+      /** @enum {string} */
+      decision:
+        | 'CRITICAL_ERRORS'
+        | 'AUTOMATED'
+        | 'NO_RECALLABLE_SENTENCES_FOUND'
+        | 'VALIDATION'
+        | 'CONFLICTING_ADJUSTMENTS'
+      validationMessages: components['schemas']['ValidationMessage'][]
+      recallableSentences: components['schemas']['RecallableSentence'][]
+      eligibleRecallTypes: ('LR' | 'FTR_14' | 'FTR_28' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC')[]
+      /** Format: int64 */
+      calculationRequestId?: number
+    }
     OverallSentenceLength: {
       /** Format: int64 */
       years: number
@@ -1547,10 +1622,12 @@ export interface components {
       reasonFurtherDetail?: string
     }
     GenuineOverrideCreatedResponse: {
+      success: boolean
       /** Format: int64 */
-      newCalculationRequestId: number
+      newCalculationRequestId?: number
       /** Format: int64 */
-      originalCalculationRequestId: number
+      originalCalculationRequestId?: number
+      validationMessages?: components['schemas']['ValidationMessage'][]
     }
     ComparisonInput: {
       /** @description Criteria used in the comparison */
@@ -1770,6 +1847,12 @@ export interface components {
     DateTypeDefinition: {
       type: string
       description: string
+    }
+    RecordARecallValidationResult: {
+      criticalValidationMessages: components['schemas']['ValidationMessage'][]
+      otherValidationMessages: components['schemas']['ValidationMessage'][]
+      /** Format: date */
+      earliestSentenceDate: string
     }
     DlqMessage: {
       body: {
@@ -2746,6 +2829,63 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['RecordARecallResult']
+        }
+      }
+    }
+  }
+  makeRecallDecision: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RecordARecallRequest']
+      }
+    }
+    responses: {
+      /** @description Returns calculated dates */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallDecisionResult']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallDecisionResult']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallDecisionResult']
+        }
+      }
+      /** @description Unprocessable request, the existing data cannot be used to perform a calculation */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallDecisionResult']
         }
       }
     }
@@ -3758,6 +3898,59 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['DateTypeDefinition'][]
+        }
+      }
+    }
+  }
+  validate_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns calculated dates */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallValidationResult']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallValidationResult']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallValidationResult']
+        }
+      }
+      /** @description Unprocessable request, the existing data cannot be used to perform a calculation */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallValidationResult']
         }
       }
     }

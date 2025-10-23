@@ -19,8 +19,8 @@ import { deleteGenuineOverrideDateSchema } from './delete-date/deleteGenuineOver
 import requireGenuineOverrideAccess from '../../middleware/requireGenuineOverrideAccess'
 import StartGenuineOverrideController from './start/startGenuineOverrideController'
 import GenuineOverrideExpressInterceptController from './express-intercept/genuineOverrideExpressInterceptController'
-import ReviewDatesFromPreviousGenuineOverrideController from './review-express-dates/reviewDatesFromPreviousGenuineOverrideController'
-import { reviewDatesFromPreviousOverrideSummarySchema } from './review-express-dates/reviewDatesFromPreviousOverrideSummarySchema'
+import ReviewDatesFromPreviousGenuineOverrideController from './review-previous-override/reviewDatesFromPreviousGenuineOverrideController'
+import { reviewDatesFromPreviousOverrideSummarySchema } from './review-previous-override/reviewDatesFromPreviousOverrideSummarySchema'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
