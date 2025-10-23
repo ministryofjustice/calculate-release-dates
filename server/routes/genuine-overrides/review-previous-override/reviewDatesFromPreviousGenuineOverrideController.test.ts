@@ -2,7 +2,7 @@ import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
-import { appWithAllRoutes, user } from '../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
 import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
@@ -146,6 +146,7 @@ describe('ReviewDatesFromPreviousGenuineOverrideController', () => {
     it('should create a genuine override using previous override and redirect to calculation complete if they agree the dates are correct', async () => {
       const newCalculationRequestId = 2468972456
       calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
+        success: true,
         newCalculationRequestId,
         originalCalculationRequestId: calculationRequestId,
       })
@@ -194,6 +195,38 @@ describe('ReviewDatesFromPreviousGenuineOverrideController', () => {
           reasonFurtherDetail: null,
         },
       )
+    })
+
+    it('should return validation errors saving the genuine override', async () => {
+      calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
+        success: false,
+        validationMessages: [
+          { code: 'DATES_MISSING_REQUIRED_TYPE', message: 'Error 1', type: 'VALIDATION', arguments: [] },
+          { code: 'DATES_PAIRINGS_INVALID', message: 'Error 2', type: 'VALIDATION', arguments: [] },
+        ],
+      })
+      genuineOverrideInputs.previousOverride = {
+        calculationRequestId: 455646548789,
+        reason: 'A',
+        reasonFurtherDetail: null,
+        dates: [
+          { type: 'SED', date: '2031-02-03' },
+          { type: 'CRD', date: '2031-02-04' },
+        ],
+      }
+
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({ stillCorrect: 'YES' })
+        .expect(302)
+        .expect('Location', `${pageUrl}#`)
+
+      expect(flashProvider).toHaveBeenCalledWith(
+        'validationErrors',
+        JSON.stringify({ datesToSave: ['Error 1', 'Error 2'] }),
+      )
+      expect(flashProvider).toHaveBeenCalledWith('formResponses', JSON.stringify({ stillCorrect: 'YES' }))
     })
 
     it('should continue to creating a new override if they select no', async () => {

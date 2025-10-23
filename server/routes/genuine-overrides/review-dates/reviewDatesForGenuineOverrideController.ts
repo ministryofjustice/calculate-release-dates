@@ -11,6 +11,10 @@ import {
   GenuineOverrideRequestReasonCode,
   ManualEntrySelectedDateType,
 } from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  convertValidationMessagesToErrorMessagesForPath,
+  redirectToInputWithErrors,
+} from '../../../middleware/validationMiddleware'
 
 export default class ReviewDatesForGenuineOverrideController implements Controller {
   constructor(
@@ -65,6 +69,13 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
       token,
       request,
     )
+    if (!response.success) {
+      return redirectToInputWithErrors(
+        req,
+        res,
+        convertValidationMessagesToErrorMessagesForPath('datesToSave', response.validationMessages),
+      )
+    }
     return res.redirect(`/calculation/${nomsId}/complete/${response.newCalculationRequestId}`)
   }
 }

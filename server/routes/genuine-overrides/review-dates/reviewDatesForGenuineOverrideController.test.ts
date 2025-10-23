@@ -2,7 +2,7 @@ import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
-import { appWithAllRoutes, user } from '../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
 import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
@@ -198,9 +198,10 @@ describe('ReviewDatesForGenuineOverrideController', () => {
   })
 
   describe('POST', () => {
-    it('should create a genuine override and redirect to calculation complete', async () => {
+    it('should create a genuine override and redirect to calculation complete if successful', async () => {
       const newCalculationRequestId = 2468972456
       calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
+        success: true,
         newCalculationRequestId,
         originalCalculationRequestId: calculationRequestId,
       })
@@ -217,7 +218,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       await request(app) //
         .post(pageUrl)
         .type('form')
-        .send({ day: '28', month: '2', year: '2025' })
+        .send({})
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/complete/${newCalculationRequestId}`)
 
@@ -239,12 +240,41 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       )
     })
 
+    it('should redirect to input with errors if saving genuine override was not successful', async () => {
+      calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
+        success: false,
+        validationMessages: [
+          { code: 'DATES_MISSING_REQUIRED_TYPE', message: 'Error 1', type: 'VALIDATION', arguments: [] },
+          { code: 'DATES_PAIRINGS_INVALID', message: 'Error 2', type: 'VALIDATION', arguments: [] },
+        ],
+      })
+      genuineOverrideInputs.datesToSave = [
+        { type: 'SED', date: '2021-02-03' },
+        { type: 'CRD', date: '2021-02-04' },
+      ]
+      genuineOverrideInputs.mode = 'STANDARD'
+      genuineOverrideInputs.reason = 'OTHER'
+      genuineOverrideInputs.reasonFurtherDetail = 'Some more details'
+
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({})
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}#`)
+
+      expect(flashProvider).toHaveBeenCalledWith(
+        'validationErrors',
+        JSON.stringify({ datesToSave: ['Error 1', 'Error 2'] }),
+      )
+    })
+
     it('should redirect to auth error if the user does not have required role', async () => {
       currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
       await request(app) //
         .post(pageUrl)
         .type('form')
-        .send({ day: '28', month: '2', year: '2025' })
+        .send({})
         .expect(302)
         .expect('Location', '/authError')
     })

@@ -57,7 +57,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetEligibility')
     cy.task('stubGetGenuineOverrideReasons')
-    cy.task('stubCreateGenuineOverride', { originalCalcId: 123, newCalcId: 456 })
+    cy.task('stubCreateGenuineOverrideSuccessfully', { originalCalcId: 123, newCalcId: 456 })
     cy.task('stubGetGenuineOverrideInputStandardMode')
 
     cy.signIn()
@@ -331,6 +331,50 @@ context('End to end user journeys for a user with genuine overrides access', () 
         reasonFurtherDetail: 'Some more details',
       },
     )
+  })
+
+  it('Can handle validation errors from the server on submit', () => {
+    cy.task('stubCreateGenuineOverrideFailsWithValidationError', {
+      originalCalcId: 123,
+      validationMessages: [
+        { code: 'DATES_MISSING_REQUIRED_TYPE', message: 'Error 1', type: 'VALIDATION', arguments: [] },
+        { code: 'DATES_PAIRINGS_INVALID', message: 'Error 2', type: 'VALIDATION', arguments: [] },
+      ],
+    })
+    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
+    calculationSummaryPage.agreeWithDatesRadio('NO').check()
+    calculationSummaryPage.continueButton().click()
+
+    Page.verifyOnPage(GenuineOverrideReasonPage) //
+      .selectRadio('TERRORISM')
+      .clickContinue()
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .continueButton()
+      .click()
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/calculate-release-dates/genuine-override/calculation/123`,
+      },
+      {
+        dates: [
+          { dateType: 'LED', date: '2018-11-05' },
+          { dateType: 'SED', date: '2018-11-05' },
+          { dateType: 'CRD', date: defaultCrd.format('YYYY-MM-DD') },
+          { dateType: 'HDCED', date: defaultHdced.format('YYYY-MM-DD') },
+        ],
+        reason: 'TERRORISM',
+      },
+    )
+
+    const reviewDatesPage = Page.verifyOnPage(GenuineOverrideReviewDatesPage)
+    reviewDatesPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(2)
+      expect($lis[0]).to.contain('Error 1')
+      expect($lis[1]).to.contain('Error 2')
+    })
   })
 
   it('Back buttons work as expected', () => {

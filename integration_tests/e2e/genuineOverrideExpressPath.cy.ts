@@ -54,7 +54,7 @@ context(
       cy.task('stubGetServiceDefinitions')
       cy.task('stubGetEligibility')
       cy.task('stubGetGenuineOverrideReasons')
-      cy.task('stubCreateGenuineOverride', { originalCalcId: 123, newCalcId: 456 })
+      cy.task('stubCreateGenuineOverrideSuccessfully', { originalCalcId: 123, newCalcId: 456 })
 
       cy.signIn()
       const landingPage = CCARDLandingPage.goTo('A1234AB')

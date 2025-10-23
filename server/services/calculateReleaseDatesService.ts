@@ -397,17 +397,24 @@ export default class CalculateReleaseDatesService {
     body: GenuineOverrideRequest,
   ): Promise<GenuineOverrideCreatedResponse> {
     try {
-      const calculation = await new CalculateReleaseDatesApiClient(token).createGenuineOverrideForCalculation(
-        calculationRequestId,
-        body,
-      )
-      await this.auditService.publishGenuineOverride(
-        userName,
-        nomsId,
-        calculation.originalCalculationRequestId,
-        calculation.newCalculationRequestId,
-      )
-      return calculation
+      const genuineOverrideResponse = await new CalculateReleaseDatesApiClient(token)
+        .createGenuineOverrideForCalculation(calculationRequestId, body)
+        .catch(error => {
+          if (error.status === 400) {
+            logger.info(`Received 400 on creating genuine override. Date selection was invalid.`)
+            return error.data
+          }
+          throw error
+        })
+      if (genuineOverrideResponse.success) {
+        await this.auditService.publishGenuineOverride(
+          userName,
+          nomsId,
+          genuineOverrideResponse.originalCalculationRequestId,
+          genuineOverrideResponse.newCalculationRequestId,
+        )
+      }
+      return genuineOverrideResponse
     } catch (error) {
       await this.auditService.publishGenuineOverrideFailed(userName, nomsId, calculationRequestId, error)
       throw error

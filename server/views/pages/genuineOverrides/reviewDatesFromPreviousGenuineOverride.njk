@@ -24,6 +24,7 @@
 {% endblock %}
 
 {% block content %}
+    {% include '../partials/formError.njk' %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-xl">Calculate release dates</span>
@@ -33,7 +34,8 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             {{ govukSummaryList({
-                rows: dateRows
+                rows: dateRows,
+                attributes: { id: 'datesToSave' }
             }) }}
         </div>
     </div>
