@@ -59,6 +59,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.task('stubGetGenuineOverrideReasons')
     cy.task('stubCreateGenuineOverrideSuccessfully', { originalCalcId: 123, newCalcId: 456 })
     cy.task('stubGetGenuineOverrideInputStandardMode')
+    cy.task('stubManualEntryDateValidation')
 
     cy.signIn()
     const landingPage = CCARDLandingPage.goTo('A1234AB')
@@ -370,6 +371,33 @@ context('End to end user journeys for a user with genuine overrides access', () 
     )
 
     const reviewDatesPage = Page.verifyOnPage(GenuineOverrideReviewDatesPage)
+    reviewDatesPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(2)
+      expect($lis[0]).to.contain('Error 1')
+      expect($lis[1]).to.contain('Error 2')
+    })
+  })
+
+  it('Can handle validation errors from the server on selecting dates', () => {
+    cy.task('stubManualEntryDateValidationWithErrors', [
+      { code: 'DATES_MISSING_REQUIRED_TYPE', message: 'Error 1', type: 'VALIDATION', arguments: [] },
+      { code: 'DATES_PAIRINGS_INVALID', message: 'Error 2', type: 'VALIDATION', arguments: [] },
+    ])
+    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
+    calculationSummaryPage.agreeWithDatesRadio('NO').check()
+    calculationSummaryPage.continueButton().click()
+
+    Page.verifyOnPage(GenuineOverrideReasonPage) //
+      .selectRadio('TERRORISM')
+      .clickContinue()
+
+    Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
+      .addDatesLink()
+      .click()
+
+    const reviewDatesPage = Page.verifyOnPage(GenuineOverridesSelectDatesToEnterPage)
+    reviewDatesPage.checkDate('ERSED')
+    reviewDatesPage.continue('continue-button').click()
     reviewDatesPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(2)
       expect($lis[0]).to.contain('Error 1')
