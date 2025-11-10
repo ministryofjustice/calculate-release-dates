@@ -597,12 +597,8 @@ export default class CalculateReleaseDatesService {
     }
   }
 
-  async getNomisCalculationSummary(
-    offenderSentCalcId: number,
-    bookingId: number,
-    token: string,
-  ): Promise<NomisCalculationSummary> {
-    return new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId, bookingId)
+  async getNomisCalculationSummary(offenderSentCalcId: number, token: string): Promise<NomisCalculationSummary> {
+    return new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
   }
 
   async getReleaseDatesForACalcReqId(calcRequestId: number, token: string): Promise<ReleaseDatesAndCalculationContext> {
