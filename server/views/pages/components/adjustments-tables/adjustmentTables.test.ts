@@ -223,9 +223,7 @@ describe('Tests for adjustments tables component', () => {
     const content = nunjucks.render('test.njk', { model })
     const $ = cheerio.load(content)
     expect($('[data-qa=deductions-heading]')).toHaveLength(0)
-    expect($('[data-qa=total-deductions]')).toHaveLength(0)
     expect($('[data-qa=additions-heading]')).toHaveLength(1)
-    expect($('[data-qa=total-additions]')).toHaveLength(1)
   })
 
   it('If there are no additions then hide the additions section', () => {
@@ -233,9 +231,7 @@ describe('Tests for adjustments tables component', () => {
     const content = nunjucks.render('test.njk', { model })
     const $ = cheerio.load(content)
     expect($('[data-qa=deductions-heading]')).toHaveLength(1)
-    expect($('[data-qa=total-deductions]')).toHaveLength(1)
     expect($('[data-qa=additions-heading]')).toHaveLength(0)
-    expect($('[data-qa=total-additions]')).toHaveLength(0)
   })
 
   it('If there are no deductions or additions then hide both sections', () => {
@@ -243,9 +239,7 @@ describe('Tests for adjustments tables component', () => {
     const content = nunjucks.render('test.njk', { model })
     const $ = cheerio.load(content)
     expect($('[data-qa=deductions-heading]')).toHaveLength(0)
-    expect($('[data-qa=total-deductions]')).toHaveLength(0)
     expect($('[data-qa=additions]')).toHaveLength(0)
-    expect($('[data-qa=total-additions]')).toHaveLength(0)
   })
 
   it('Should show deductions section and remand table if there is remand present', () => {
@@ -279,25 +273,21 @@ describe('Tests for adjustments tables component', () => {
     expect(remandRows).toHaveLength(3)
 
     const firstRowCells = remandRows.eq(0).find('td')
-    expect(firstRowCells.eq(0).text()).toStrictEqual('From 25 December 2022 to 01 February 2023')
-    expect(firstRowCells.eq(1).html()).toStrictEqual('Burglary<br>Attempt to solicit murder')
-    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('25/12/2022 to 01/02/2023')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
 
     const secondRowCells = remandRows.eq(1).find('td')
-    expect(secondRowCells.eq(0).text()).toStrictEqual('From 06 May 2024 to 07 June 2024')
-    expect(secondRowCells.eq(1).html()).toStrictEqual('Failure to pay a fine')
-    expect(secondRowCells.eq(2).text()).toStrictEqual('10')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('06/05/2024 to 07/06/2024')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('10')
 
     const totalRow = remandRows.eq(2).find('td')
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
-    expect(totalRow.eq(1).html()).toStrictEqual('')
-    expect(totalRow.eq(2).text()).toStrictEqual('11')
+    expect(totalRow.eq(1).text()).toStrictEqual('11')
 
     expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
     expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
     expect($('[data-qa=rada-table]')).toHaveLength(0)
     expect($('[data-qa=special-remission-table]')).toHaveLength(0)
-    expect($('[data-qa=total-deductions]').text()).toStrictEqual('11')
   })
 
   it('Should show recall tag for remand adjustments where relevant', () => {
@@ -319,8 +309,8 @@ describe('Tests for adjustments tables component', () => {
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
     const firstRowCells = remandRows.eq(0).find('td')
-    expect(firstRowCells.eq(1).html()).toStrictEqual(
-      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
+    expect(firstRowCells.eq(0).html()).toStrictEqual(
+      '25/12/2022 to 01/02/2023<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
   })
 
@@ -358,24 +348,20 @@ describe('Tests for adjustments tables component', () => {
 
     const firstRowCells = taggedBailRows.eq(0).find('td')
     expect(firstRowCells.eq(0).html()).toStrictEqual('Court case 1')
-    expect(firstRowCells.eq(1).text()).toStrictEqual('CASE001')
-    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
 
     const secondRowCells = taggedBailRows.eq(1).find('td')
     expect(secondRowCells.eq(0).html()).toStrictEqual('Court case 2')
-    expect(secondRowCells.eq(1).text()).toStrictEqual('Unknown')
-    expect(secondRowCells.eq(2).text()).toStrictEqual('10')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('10')
 
     const totalRow = taggedBailRows.eq(2).find('td')
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
-    expect(totalRow.eq(1).text()).toStrictEqual('')
-    expect(totalRow.eq(2).text()).toStrictEqual('11')
+    expect(totalRow.eq(1).text()).toStrictEqual('11')
 
     expect($('[data-qa=remand-table]')).toHaveLength(0)
     expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
     expect($('[data-qa=rada-table]')).toHaveLength(0)
     expect($('[data-qa=special-remission-table]')).toHaveLength(0)
-    expect($('[data-qa=total-deductions]').text()).toStrictEqual('11')
   })
 
   it('Should show recall tag for tagged bail where relevant', () => {
@@ -402,11 +388,10 @@ describe('Tests for adjustments tables component', () => {
     expect(taggedBailRows).toHaveLength(2)
 
     const firstRowCells = taggedBailRows.eq(0).find('td')
-    expect(firstRowCells.eq(0).text()).toStrictEqual('Court case 2')
-    expect(firstRowCells.eq(1).html()).toStrictEqual(
-      'Unknown<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
+    expect(firstRowCells.eq(0).html()).toStrictEqual(
+      'Court case 2<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
-    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
   })
 
   it('Unused deductions less than total days of remand should show only in remand', () => {
@@ -453,11 +438,11 @@ describe('Tests for adjustments tables component', () => {
 
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
-    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('20 including 10 days unused')
+    expect(remandRows.eq(1).find('td').eq(1).text()).toStrictEqual('20 including 10 days unused')
 
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
-    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('20')
+    expect(taggedBailRows.eq(1).find('td').eq(1).text()).toStrictEqual('20')
   })
 
   it('Unused deductions equaling than total days of remand should show only in remand', () => {
@@ -498,11 +483,11 @@ describe('Tests for adjustments tables component', () => {
 
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
-    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days unused')
+    expect(remandRows.eq(1).find('td').eq(1).text()).toStrictEqual('10 including 10 days unused')
 
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
-    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('20')
+    expect(taggedBailRows.eq(1).find('td').eq(1).text()).toStrictEqual('20')
   })
 
   it('Unused deductions more than total days of remand should show in remand and tagged bail', () => {
@@ -543,11 +528,11 @@ describe('Tests for adjustments tables component', () => {
 
     const remandTable = $('[data-qa=remand-table]')
     const remandRows = remandTable.find('tbody').find('tr')
-    expect(remandRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 10 days unused')
+    expect(remandRows.eq(1).find('td').eq(1).text()).toStrictEqual('10 including 10 days unused')
 
     const taggedBailTable = $('[data-qa=tagged-bail-table]')
     const taggedBailRows = taggedBailTable.find('tbody').find('tr')
-    expect(taggedBailRows.eq(1).find('td').eq(2).text()).toStrictEqual('10 including 5 days unused')
+    expect(taggedBailRows.eq(1).find('td').eq(1).text()).toStrictEqual('10 including 5 days unused')
   })
 
   it('Should show deductions section and time spent in custody abroad table if there is any present', () => {
@@ -578,24 +563,20 @@ describe('Tests for adjustments tables component', () => {
 
     const firstRowCells = custodyAbroadRows.eq(0).find('td')
     expect(firstRowCells.eq(0).text()).toStrictEqual('Sentencing warrant from the court')
-    expect(firstRowCells.eq(1).html()).toStrictEqual('Burglary<br>Attempt to solicit murder')
-    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
 
     const secondRowCells = custodyAbroadRows.eq(1).find('td')
     expect(secondRowCells.eq(0).text()).toStrictEqual('Letter from PPCS')
-    expect(secondRowCells.eq(1).html()).toStrictEqual('Failure to pay a fine')
-    expect(secondRowCells.eq(2).text()).toStrictEqual('10')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('10')
 
     const totalRow = custodyAbroadRows.eq(2).find('td')
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
-    expect(totalRow.eq(1).html()).toStrictEqual('')
-    expect(totalRow.eq(2).text()).toStrictEqual('11')
+    expect(totalRow.eq(1).text()).toStrictEqual('11')
 
     expect($('[data-qa=remand-table]')).toHaveLength(0)
     expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
     expect($('[data-qa=rada-table]')).toHaveLength(0)
     expect($('[data-qa=special-remission-table]')).toHaveLength(0)
-    expect($('[data-qa=total-deductions]').text()).toStrictEqual('11')
   })
 
   it('Should show recall tag for time spent in custody abroad adjustments where relevant', () => {
@@ -615,8 +596,8 @@ describe('Tests for adjustments tables component', () => {
     const custodyAbroadTable = $('[data-qa=custody-abroad-table]')
     const custodyAbroadRows = custodyAbroadTable.find('tbody').find('tr')
     const firstRowCells = custodyAbroadRows.eq(0).find('td')
-    expect(firstRowCells.eq(1).html()).toStrictEqual(
-      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
+    expect(firstRowCells.eq(0).html()).toStrictEqual(
+      'Sentencing warrant from the court<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
   })
 
@@ -647,11 +628,11 @@ describe('Tests for adjustments tables component', () => {
     expect(radaRows).toHaveLength(3)
 
     const firstRowCells = radaRows.eq(0).find('td')
-    expect(firstRowCells.eq(0).text()).toStrictEqual('02 January 2025')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('02/01/2025')
     expect(firstRowCells.eq(1).text()).toStrictEqual('1')
 
     const secondRowCells = radaRows.eq(1).find('td')
-    expect(secondRowCells.eq(0).text()).toStrictEqual('04 March 2025')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('04/03/2025')
     expect(secondRowCells.eq(1).text()).toStrictEqual('10')
 
     const totalRow = radaRows.eq(2).find('td')
@@ -662,7 +643,6 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
     expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
     expect($('[data-qa=special-remission-table]')).toHaveLength(0)
-    expect($('[data-qa=total-deductions]').text()).toStrictEqual('11')
   })
 
   it('Should show deductions section and special remissions table if there are any present', () => {
@@ -717,10 +697,9 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=tagged-bail-table]')).toHaveLength(0)
     expect($('[data-qa=custody-abroad-table]')).toHaveLength(0)
     expect($('[data-qa=rada-table]')).toHaveLength(0)
-    expect($('[data-qa=total-deductions]').text()).toStrictEqual('31')
   })
 
-  it('Should show all deductions sections and sum the total', () => {
+  it('Should show all deductions sections', () => {
     const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
       [
         {
@@ -774,8 +753,6 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=custody-abroad-table]')).toHaveLength(1)
     expect($('[data-qa=rada-table]')).toHaveLength(1)
     expect($('[data-qa=special-remission-table]')).toHaveLength(1)
-    // sum of all deduction types except unused deductions
-    expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
   })
 
   it('Should show all deductions with minimal details as loaded from a previous calc with old style adjustments', () => {
@@ -827,7 +804,6 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=custody-abroad-table]').find('tbody').find('tr')).toHaveLength(2)
     expect($('[data-qa=rada-table]').find('tbody').find('tr')).toHaveLength(2)
     expect($('[data-qa=special-remission-table]').find('tbody').find('tr')).toHaveLength(2)
-    expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
   })
 
   it.each(['INACTIVE', 'DELETED', 'INACTIVE_WHEN_DELETED'])(
@@ -928,7 +904,6 @@ describe('Tests for adjustments tables component', () => {
       expect($('[data-qa=custody-abroad-table]').find('tbody').find('tr')).toHaveLength(2)
       expect($('[data-qa=rada-table]').find('tbody').find('tr')).toHaveLength(2)
       expect($('[data-qa=special-remission-table]').find('tbody').find('tr')).toHaveLength(2)
-      expect($('[data-qa=total-deductions]').text()).toStrictEqual('15')
     },
   )
 
@@ -973,7 +948,6 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=ual-table]')).toHaveLength(0)
     expect($('[data-qa=lal-table]')).toHaveLength(0)
     expect($('[data-qa=appeal-applicant-table]')).toHaveLength(0)
-    expect($('[data-qa=total-additions]').text()).toStrictEqual('11')
   })
 
   it('Should show additions section and UAL table if there are any present', () => {
@@ -1031,39 +1005,38 @@ describe('Tests for adjustments tables component', () => {
     expect(ualRows).toHaveLength(6)
 
     const firstRowCells = ualRows.eq(0).find('td')
-    expect(firstRowCells.eq(0).text()).toStrictEqual('From 02 January 2025 to 05 January 2025')
-    expect(firstRowCells.eq(1).text()).toStrictEqual('Recall')
-    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('02/01/2025 to 05/01/2025')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
+    expect(firstRowCells.eq(2).text()).toStrictEqual('Recall')
 
     const secondRowCells = ualRows.eq(1).find('td')
-    expect(secondRowCells.eq(0).text()).toStrictEqual('From 04 February 2025 to 09 March 2025')
-    expect(secondRowCells.eq(1).text()).toStrictEqual('Release in error')
-    expect(secondRowCells.eq(2).text()).toStrictEqual('2')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('04/02/2025 to 09/03/2025')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('2')
+    expect(secondRowCells.eq(2).text()).toStrictEqual('Release in error')
 
     const thirdRowCells = ualRows.eq(2).find('td')
-    expect(thirdRowCells.eq(0).text()).toStrictEqual('From 01 November 2025 to 04 November 2025')
-    expect(thirdRowCells.eq(1).text()).toStrictEqual('Escape, including absconds and ROTL failures')
-    expect(thirdRowCells.eq(2).text()).toStrictEqual('3')
+    expect(thirdRowCells.eq(0).text()).toStrictEqual('01/11/2025 to 04/11/2025')
+    expect(thirdRowCells.eq(1).text()).toStrictEqual('3')
+    expect(thirdRowCells.eq(2).text()).toStrictEqual('Escape, including absconds and ROTL failures')
 
     const fourthRowCells = ualRows.eq(3).find('td')
-    expect(fourthRowCells.eq(0).text()).toStrictEqual('From 25 November 2025 to 29 November 2025')
-    expect(fourthRowCells.eq(1).text()).toStrictEqual('Immigration detention')
-    expect(fourthRowCells.eq(2).text()).toStrictEqual('4')
+    expect(fourthRowCells.eq(0).text()).toStrictEqual('25/11/2025 to 29/11/2025')
+    expect(fourthRowCells.eq(1).text()).toStrictEqual('4')
+    expect(fourthRowCells.eq(2).text()).toStrictEqual('Immigration detention')
 
     const fifthRowCells = ualRows.eq(4).find('td')
-    expect(fifthRowCells.eq(0).text()).toStrictEqual('From 30 December 2025 to 04 January 2026')
-    expect(fifthRowCells.eq(1).text()).toStrictEqual('Sentenced in absence')
-    expect(fifthRowCells.eq(2).text()).toStrictEqual('5')
+    expect(fifthRowCells.eq(0).text()).toStrictEqual('30/12/2025 to 04/01/2026')
+    expect(fifthRowCells.eq(1).text()).toStrictEqual('5')
+    expect(fifthRowCells.eq(2).text()).toStrictEqual('Sentenced in absence')
 
     const totalRow = ualRows.eq(5).find('td')
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
-    expect(totalRow.eq(1).text()).toStrictEqual('')
-    expect(totalRow.eq(2).text()).toStrictEqual('15')
+    expect(totalRow.eq(1).text()).toStrictEqual('15')
+    expect(totalRow.eq(2).text()).toStrictEqual('')
 
     expect($('[data-qa=ada-table]')).toHaveLength(0)
     expect($('[data-qa=lal-table]')).toHaveLength(0)
     expect($('[data-qa=appeal-applicant-table]')).toHaveLength(0)
-    expect($('[data-qa=total-additions]').text()).toStrictEqual('15')
   })
 
   it('Should show additions section and LAL table if there are any present', () => {
@@ -1105,29 +1078,28 @@ describe('Tests for adjustments tables component', () => {
     expect(lalRows).toHaveLength(4)
 
     const firstRowCells = lalRows.eq(0).find('td')
-    expect(firstRowCells.eq(0).text()).toStrictEqual('From 02 January 2025 to 05 January 2025')
-    expect(firstRowCells.eq(1).text()).toStrictEqual('Yes')
-    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('02/01/2025 to 05/01/2025')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
+    expect(firstRowCells.eq(2).text()).toStrictEqual('Yes')
 
     const secondRowCells = lalRows.eq(1).find('td')
-    expect(secondRowCells.eq(0).text()).toStrictEqual('From 04 February 2025 to 09 March 2025')
-    expect(secondRowCells.eq(1).text()).toStrictEqual('No')
-    expect(secondRowCells.eq(2).text()).toStrictEqual('2 (excluded)')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('04/02/2025 to 09/03/2025')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('2 (excluded)')
+    expect(secondRowCells.eq(2).text()).toStrictEqual('No')
 
     const thirdRowCells = lalRows.eq(2).find('td')
-    expect(thirdRowCells.eq(0).text()).toStrictEqual('From 01 November 2025 to 04 November 2025')
-    expect(thirdRowCells.eq(1).text()).toStrictEqual('Yes')
-    expect(thirdRowCells.eq(2).text()).toStrictEqual('3')
+    expect(thirdRowCells.eq(0).text()).toStrictEqual('01/11/2025 to 04/11/2025')
+    expect(thirdRowCells.eq(1).text()).toStrictEqual('3')
+    expect(thirdRowCells.eq(2).text()).toStrictEqual('Yes')
 
     const totalRow = lalRows.eq(3).find('td')
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
-    expect(totalRow.eq(1).text()).toStrictEqual('')
-    expect(totalRow.eq(2).text()).toStrictEqual('4')
+    expect(totalRow.eq(1).text()).toStrictEqual('4')
+    expect(totalRow.eq(2).text()).toStrictEqual('')
 
     expect($('[data-qa=ada-table]')).toHaveLength(0)
     expect($('[data-qa=ual-table]')).toHaveLength(0)
     expect($('[data-qa=appeal-applicant-table]')).toHaveLength(0)
-    expect($('[data-qa=total-additions]').text()).toStrictEqual('4')
   })
 
   it('Should show additions section and appeal applicant table if there are any present', () => {
@@ -1162,23 +1134,19 @@ describe('Tests for adjustments tables component', () => {
 
     const firstRowCells = lalRows.eq(0).find('td')
     expect(firstRowCells.eq(0).text()).toStrictEqual('COARN1')
-    expect(firstRowCells.eq(1).html()).toStrictEqual('Burglary<br>Attempt to solicit murder')
-    expect(firstRowCells.eq(2).text()).toStrictEqual('1')
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
 
     const secondRowCells = lalRows.eq(1).find('td')
     expect(secondRowCells.eq(0).text()).toStrictEqual('Unknown')
-    expect(secondRowCells.eq(1).html()).toStrictEqual('Failure to pay a fine')
-    expect(secondRowCells.eq(2).text()).toStrictEqual('2')
+    expect(secondRowCells.eq(1).text()).toStrictEqual('2')
 
     const totalRow = lalRows.eq(2).find('td')
     expect(totalRow.eq(0).text()).toStrictEqual('Total days')
-    expect(totalRow.eq(1).text()).toStrictEqual('')
-    expect(totalRow.eq(2).text()).toStrictEqual('3')
+    expect(totalRow.eq(1).text()).toStrictEqual('3')
 
     expect($('[data-qa=ada-table]')).toHaveLength(0)
     expect($('[data-qa=ual-table]')).toHaveLength(0)
     expect($('[data-qa=lal-table]')).toHaveLength(0)
-    expect($('[data-qa=total-additions]').text()).toStrictEqual('3')
   })
 
   it('Should show recall tag for appeal applicant table if relevant', () => {
@@ -1201,8 +1169,8 @@ describe('Tests for adjustments tables component', () => {
     const lalTable = $('[data-qa=appeal-applicant-table]')
     const lalRows = lalTable.find('tbody').find('tr')
     const firstRowCells = lalRows.eq(0).find('td')
-    expect(firstRowCells.eq(1).html()).toStrictEqual(
-      'Intent to supply controlled drugs<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
+    expect(firstRowCells.eq(0).html()).toStrictEqual(
+      'COARN1<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
   })
 
@@ -1257,7 +1225,6 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=ada-table]')).toHaveLength(1)
     expect($('[data-qa=ual-table]')).toHaveLength(1)
     expect($('[data-qa=lal-table]')).toHaveLength(1)
-    expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
   })
 
   it('Should show all additions sections with minimal data as loaded from previous calculation with old style adjustments', () => {
@@ -1300,7 +1267,6 @@ describe('Tests for adjustments tables component', () => {
     expect($('[data-qa=ada-table]').find('tbody').find('tr')).toHaveLength(2)
     expect($('[data-qa=ual-table]').find('tbody').find('tr')).toHaveLength(2)
     expect($('[data-qa=lal-table]').find('tbody').find('tr')).toHaveLength(2)
-    expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
   })
 
   it.each(['INACTIVE', 'DELETED', 'INACTIVE_WHEN_DELETED'])(
@@ -1380,7 +1346,6 @@ describe('Tests for adjustments tables component', () => {
       expect($('[data-qa=ada-table]').find('tbody').find('tr')).toHaveLength(2)
       expect($('[data-qa=ual-table]').find('tbody').find('tr')).toHaveLength(2)
       expect($('[data-qa=lal-table]').find('tbody').find('tr')).toHaveLength(2)
-      expect($('[data-qa=total-additions]').text()).toStrictEqual('10')
     },
   )
 })
