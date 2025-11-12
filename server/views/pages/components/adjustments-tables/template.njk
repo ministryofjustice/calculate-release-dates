@@ -198,3 +198,10 @@
             </div>
         {% endif %}
 {% endif %}
+{% if model.totalDeductions === 0 and model.totalAdditions === 0 %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p data-qa="no-active-adjustments-hint" class="govuk-body govuk-!-margin-bottom-7">There are no active adjustments.</p>
+        </div>
+    </div>
+{% endif %}
