@@ -224,6 +224,7 @@ describe('Tests for adjustments tables component', () => {
     const $ = cheerio.load(content)
     expect($('[data-qa=deductions-heading]')).toHaveLength(0)
     expect($('[data-qa=additions-heading]')).toHaveLength(1)
+    expect($('[data-qa=no-active-adjustments-hint]')).toHaveLength(0)
   })
 
   it('If there are no additions then hide the additions section', () => {
@@ -232,14 +233,16 @@ describe('Tests for adjustments tables component', () => {
     const $ = cheerio.load(content)
     expect($('[data-qa=deductions-heading]')).toHaveLength(1)
     expect($('[data-qa=additions-heading]')).toHaveLength(0)
+    expect($('[data-qa=no-active-adjustments-hint]')).toHaveLength(0)
   })
 
-  it('If there are no deductions or additions then hide both sections', () => {
+  it('If there are no deductions or additions then hide both sections and show the no active adjustments hint', () => {
     const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs([], sentencesAndOffences)
     const content = nunjucks.render('test.njk', { model })
     const $ = cheerio.load(content)
     expect($('[data-qa=deductions-heading]')).toHaveLength(0)
     expect($('[data-qa=additions]')).toHaveLength(0)
+    expect($('[data-qa=no-active-adjustments-hint]').text().trim()).toStrictEqual('There are no active adjustments.')
   })
 
   it('Should show deductions section and remand table if there is remand present', () => {
