@@ -937,11 +937,11 @@ describe('Tests for adjustments tables component', () => {
     expect(adaRows).toHaveLength(3)
 
     const firstRowCells = adaRows.eq(0).find('td')
-    expect(firstRowCells.eq(0).text()).toStrictEqual('Awarded 02 January 2025')
+    expect(firstRowCells.eq(0).text()).toStrictEqual('02/01/2025')
     expect(firstRowCells.eq(1).text()).toStrictEqual('1')
 
     const secondRowCells = adaRows.eq(1).find('td')
-    expect(secondRowCells.eq(0).text()).toStrictEqual('Awarded 04 March 2025')
+    expect(secondRowCells.eq(0).text()).toStrictEqual('04/03/2025')
     expect(secondRowCells.eq(1).text()).toStrictEqual('10')
 
     const totalRow = adaRows.eq(2).find('td')

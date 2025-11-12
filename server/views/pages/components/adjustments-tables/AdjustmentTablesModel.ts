@@ -266,7 +266,7 @@ function toSpecialRemissionRow(dto: AdjustmentDto): AdjustmentCell[] {
 function toAdaRow(dto: AdjustmentDto): AdjustmentCell[] {
   return [
     {
-      text: `Awarded ${dayjs(dto.fromDate).format('DD MMMM YYYY')}`,
+      text: formatDate(dto.fromDate),
     },
     {
       text: `${dto.days}`,
