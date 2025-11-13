@@ -20,12 +20,7 @@
                             classes: "adjustments-table-first-column"
                         },
                         {
-                            text: "Offence",
-                            classes: "adjustments-table-second-column"
-                        },
-                        {
-                            text: "Days",
-                            classes: "govuk-!-width-one-quarter"
+                            text: "Days"
                         }
                     ],
                     rows: model.remand.rows,
@@ -44,12 +39,7 @@
                             classes: "adjustments-table-first-column"
                         },
                         {
-                            text: "Case reference",
-                            classes: "adjustments-table-second-column"
-                        },
-                        {
-                            text: "Days",
-                            classes: "govuk-!-width-one-quarter"
+                            text: "Days"
                         }
                     ],
                     rows: model.taggedBail.rows,
@@ -68,12 +58,7 @@
                             classes: "adjustments-table-first-column"
                         },
                         {
-                            text: "Offence",
-                            classes: "adjustments-table-second-column"
-                        },
-                        {
-                            text: "Days",
-                            classes: "govuk-!-width-one-quarter"
+                            text: "Days"
                         }
                     ],
                     rows: model.custodyAbroad.rows,
@@ -84,15 +69,15 @@
         {% if model.rada and model.rada.rows.length > 0 %}
             <div class="govuk-grid-column-full">
                 {{ govukTable({
-                    caption: "Restoration of additional days awarded (RADA)",
+                    caption: "RADA (Restoration of additional days awarded)",
                     captionClasses: "govuk-table__caption--s",
                     head: [
                         {
-                            text: "Date of day restored"
+                            text: "Date of days restored",
+                            classes: "adjustments-table-first-column"
                         },
                         {
-                            text: "Days",
-                            classes: "govuk-!-width-one-quarter"
+                            text: "Days"
                         }
                     ],
                     rows: model.rada.rows,
@@ -107,11 +92,11 @@
                 captionClasses: "govuk-table__caption--s",
                 head: [
                     {
-                        text: "Type"
+                        text: "Type",
+                        classes: "adjustments-table-first-column"
                     },
                     {
-                        text: "Days",
-                        classes: "govuk-!-width-one-quarter"
+                        text: "Days"
                     }
                 ],
                 rows: model.specialRemission.rows,
@@ -119,12 +104,7 @@
             }) }}
         </div>
         {% endif %}
-        <div class="govuk-grid-column-full">
-            <p class="govuk-body govuk-grid-column-three-quarters section-total-heading">Total number of deductions</p>
-            <p class="govuk-body govuk-grid-column-one-quarter section-total-heading" data-qa="total-deductions">{{ model.totalDeductions }}</p>
-        </div>
     </div>
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 {% endif %}
 {% if model.totalAdditions and model.totalAdditions > 0 %}
     <div class="govuk-grid-row">
@@ -134,15 +114,15 @@
         {% if model.ada and model.ada.rows.length > 0 %}
             <div class="govuk-grid-column-full">
                 {{ govukTable({
-                    caption: "Additional days awarded (ADA)",
+                    caption: "ADA (Additional days awarded)",
                     captionClasses: "govuk-table__caption--s",
                     head: [
                         {
-                            text: "Dates"
+                            text: "Charge proved date",
+                            classes: "adjustments-table-first-column"
                         },
                         {
-                            text: "Days",
-                            classes: "govuk-!-width-one-quarter"
+                            text: "Days"
                         }
                     ],
                     rows: model.ada.rows,
@@ -153,7 +133,7 @@
         {% if model.ual and model.ual.rows.length > 0 %}
             <div class="govuk-grid-column-full">
                 {{ govukTable({
-                    caption: "Unlawfully at large (UAL)",
+                    caption: "UAL (Unlawfully at large)",
                     captionClasses: "govuk-table__caption--s",
                     head: [
                         {
@@ -161,12 +141,12 @@
                             classes: "adjustments-table-first-column"
                         },
                         {
-                            text: "Type",
-                            classes: "adjustments-table-second-column"
-                        },
-                        {
                             text: "Days",
                             classes: "govuk-!-width-one-quarter"
+                        },
+                        {
+                            text: "Type",
+                            classes: "adjustments-table-second-column"
                         }
                     ],
                     rows: model.ual.rows,
@@ -185,12 +165,12 @@
                             classes: "adjustments-table-first-column"
                         },
                         {
-                            text: "Delay caused to release date",
-                            classes: "adjustments-table-second-column"
-                        },
-                        {
                             text: "Days",
                             classes: "govuk-!-width-one-quarter"
+                        },
+                        {
+                            text: "Delay release dates",
+                            classes: "adjustments-table-second-column"
                         }
                     ],
                     rows: model.lal.rows,
@@ -209,12 +189,7 @@
                             classes: "adjustments-table-first-column"
                         },
                         {
-                            text: "Offence",
-                            classes: "adjustments-table-second-column"
-                        },
-                        {
-                            text: "Days",
-                            classes: "govuk-!-width-one-quarter"
+                            text: "Days"
                         }
                     ],
                     rows: model.appealApplicant.rows,
@@ -222,10 +197,11 @@
                 }) }}
             </div>
         {% endif %}
-        <div class="govuk-grid-column-full">
-            <p class="govuk-body govuk-grid-column-three-quarters section-total-heading">Total number of additions</p>
-            <p class="govuk-body govuk-grid-column-one-quarter section-total-heading" data-qa="total-additions">{{ model.totalAdditions }}</p>
+{% endif %}
+{% if model.totalDeductions === 0 and model.totalAdditions === 0 %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p data-qa="no-active-adjustments-hint" class="govuk-body govuk-!-margin-bottom-7">There are no active adjustments.</p>
         </div>
     </div>
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 {% endif %}
