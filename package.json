@@ -144,7 +144,7 @@
     "@eslint/compat": "^1.4.1",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
-    "@ministryofjustice/eslint-config-hmpps": "^0.0.5",
+    "@ministryofjustice/eslint-config-hmpps": "^1.0.1",
     "@ministryofjustice/hmpps-precommit-hooks": "^1.0.2",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
