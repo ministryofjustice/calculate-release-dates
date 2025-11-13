@@ -6,12 +6,15 @@ import CalculateReleaseDatesService from '../../../services/calculateReleaseDate
 import PrisonerService from '../../../services/prisonerService'
 import ReviewDatesForGenuineOverrideViewModel from '../../../models/genuine-override/ReviewDatesForGenuineOverrideViewModel'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
-import { filteredListOfDates } from '../../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import {
   GenuineOverrideRequest,
   GenuineOverrideRequestReasonCode,
   ManualEntrySelectedDateType,
 } from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  convertValidationMessagesToErrorMessagesForPath,
+  redirectToInputWithErrors,
+} from '../../../middleware/validationMiddleware'
 
 export default class ReviewDatesForGenuineOverrideController implements Controller {
   constructor(
@@ -26,27 +29,6 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
-
-    if (genuineOverrideInputs.state === 'NEW') {
-      const calculationResults = await this.calculateReleaseDatesService.getCalculationResults(
-        Number(calculationRequestId),
-        token,
-      )
-      genuineOverrideInputs.datesToSave = []
-      for (const [type, date] of Object.entries(calculationResults.dates)) {
-        // exclude ESED and any other hidden date types.
-        if (filteredListOfDates.indexOf(type) >= 0) {
-          if (type === 'SLED') {
-            // decompose SLED into SED and LED to allow users to override them to be different dates
-            genuineOverrideInputs.datesToSave.push({ type: 'SED', date })
-            genuineOverrideInputs.datesToSave.push({ type: 'LED', date })
-          } else {
-            genuineOverrideInputs.datesToSave.push({ type, date })
-          }
-        }
-      }
-      genuineOverrideInputs.state = 'INITIALISED_DATES'
-    }
     if (genuineOverrideInputs.datesToSave?.length === 0) {
       return res.redirect(GenuineOverrideUrls.selectDatesToAdd(nomsId, calculationRequestId))
     }
@@ -87,6 +69,13 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
       token,
       request,
     )
+    if (!response.success) {
+      return redirectToInputWithErrors(
+        req,
+        res,
+        convertValidationMessagesToErrorMessagesForPath('datesToSave', response.validationMessages),
+      )
+    }
     return res.redirect(`/calculation/${nomsId}/complete/${response.newCalculationRequestId}`)
   }
 }

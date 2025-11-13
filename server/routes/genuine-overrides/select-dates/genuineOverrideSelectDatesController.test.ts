@@ -9,9 +9,12 @@ import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import { determinateDateTypesForManualEntry } from '../../../services/manualEntryService'
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
+import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
+import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 
 jest.mock('../../../services/prisonerService')
 jest.mock('../../../services/dateTypeConfigurationService')
+jest.mock('../../../services/calculateReleaseDatesService')
 
 describe('SelectGenuineOverrideReasonController', () => {
   let app: Express
@@ -19,6 +22,9 @@ describe('SelectGenuineOverrideReasonController', () => {
 
   const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
   const dateTypeConfigurationService = new DateTypeConfigurationService() as jest.Mocked<DateTypeConfigurationService>
+  const calculateReleaseDatesService = new CalculateReleaseDatesService(
+    null,
+  ) as jest.Mocked<CalculateReleaseDatesService>
 
   let genuineOverrideInputs: GenuineOverrideInputs
   const prisonerNumber = 'A1234BC'
@@ -30,35 +36,10 @@ describe('SelectGenuineOverrideReasonController', () => {
   } as PrisonApiPrisoner
   const pageUrl = `/calculation/${prisonerNumber}/override/select-dates/${calculationRequestId}`
   let currentUser: Express.User
-  const mockDateConfigs = {
-    CRD: 'CRD (Conditional release date)',
-    LED: 'LED (Licence expiry date)',
-    SED: 'SED (Sentence expiry date)',
-    NPD: 'NPD (Non-parole date)',
-    ARD: 'ARD (Automatic release date)',
-    TUSED: 'TUSED (Top up supervision expiry date)',
-    PED: 'PED (Parole eligibility date)',
-    SLED: 'SLED (Sentence and licence expiry date)',
-    HDCED: 'HDCED (Home detention curfew eligibility date)',
-    NCRD: 'NCRD (Notional conditional release date)',
-    ETD: 'ETD (Early transfer date)',
-    MTD: 'MTD (Mid transfer date)',
-    LTD: 'LTD (Late transfer date)',
-    DPRRD: 'DPRRD (Detention and training order post recall release date)',
-    PRRD: 'PRRD (Post recall release date)',
-    ESED: 'ESED (Effective sentence end date)',
-    ERSED: 'ERSED (Early removal scheme eligibility date)',
-    TERSED: 'TERSED (Tariff-expired removal scheme eligibility date)',
-    APD: 'APD (Approved parole date)',
-    HDCAD: 'HDCAD (Home detention curfew approved date)',
-    None: 'None (None of the above dates apply)',
-    Tariff: 'Tariff (known as the Tariff expiry date)',
-    ROTL: 'ROTL (Release on temporary licence)',
-  }
 
   beforeEach(() => {
     genuineOverrideInputs = {
-      state: 'INITIALISED_DATES',
+      mode: 'STANDARD',
       reason: 'TERRORISM',
       datesToSave: [
         { type: 'SLED', date: '2032-06-15' },
@@ -77,12 +58,13 @@ describe('SelectGenuineOverrideReasonController', () => {
       services: {
         prisonerService,
         dateTypeConfigurationService,
+        calculateReleaseDatesService,
       },
       sessionSetup,
       userSupplier: () => currentUser,
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(mockDateConfigs)
+    dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(testDateTypeToDescriptions)
   })
 
   afterEach(() => {
@@ -152,7 +134,7 @@ describe('SelectGenuineOverrideReasonController', () => {
 
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
@@ -162,6 +144,7 @@ describe('SelectGenuineOverrideReasonController', () => {
     })
 
     it('should return to review dates if no new date types were selected', async () => {
+      calculateReleaseDatesService.validateDatesForGenuineOverride.mockResolvedValue([])
       await request(app) //
         .post(pageUrl)
         .type('form')
@@ -171,17 +154,17 @@ describe('SelectGenuineOverrideReasonController', () => {
 
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
           { type: 'CRD', date: '2025-06-15' },
         ],
-        datesBeingAdded: [],
       })
     })
 
     it('should go to the first selected reason page and persist adding dates to the genuine override inputs', async () => {
+      calculateReleaseDatesService.validateDatesForGenuineOverride.mockResolvedValue([])
       await request(app) //
         .post(pageUrl)
         .type('form')
@@ -190,7 +173,7 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/override/HDCED/add/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
@@ -201,6 +184,7 @@ describe('SelectGenuineOverrideReasonController', () => {
     })
 
     it('should handle only one date being added', async () => {
+      calculateReleaseDatesService.validateDatesForGenuineOverride.mockResolvedValue([])
       await request(app) //
         .post(pageUrl)
         .type('form')
@@ -209,13 +193,40 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/override/HDCED/add/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         reason: 'TERRORISM',
         datesToSave: [
           { type: 'SLED', date: '2032-06-15' },
           { type: 'CRD', date: '2025-06-15' },
         ],
         datesBeingAdded: [{ type: 'HDCED' }],
+      })
+    })
+
+    it('should return to input page if backend validation of dates fails', async () => {
+      calculateReleaseDatesService.validateDatesForGenuineOverride.mockResolvedValue([
+        { code: 'DATES_MISSING_REQUIRED_TYPE', message: 'Error 1', type: 'VALIDATION', arguments: [] },
+        { code: 'DATES_PAIRINGS_INVALID', message: 'Error 2', type: 'VALIDATION', arguments: [] },
+      ])
+      genuineOverrideInputs.datesToSave = [
+        { type: 'SLED', date: '2032-06-15' },
+        { type: 'CRD', date: '2025-06-15' },
+      ]
+
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({ dateType: ['HDCED', 'TUSED'] })
+        .expect(302)
+        .expect('Location', `${pageUrl}#`)
+
+      expect(genuineOverrideInputs).toStrictEqual({
+        mode: 'STANDARD',
+        reason: 'TERRORISM',
+        datesToSave: [
+          { type: 'SLED', date: '2032-06-15' },
+          { type: 'CRD', date: '2025-06-15' },
+        ],
       })
     })
 

@@ -15,16 +15,28 @@ describe('genuineOverrideUtils', () => {
     config.featureToggles.genuineOverridesEnabled = false
   })
   describe('genuineOverrideInputsForPrisoner', () => {
-    it('should initialise global list of genuine override inputs if there are none', () => {
+    it('should blow up if the inputs have not been initialised at all', () => {
       const req = { session: {} as Partial<SessionData> } as Request
-      const inputs = genuineOverrideInputsForPrisoner(req, 'A1234BC')
-      expect(inputs).toStrictEqual({ state: 'NEW' })
+      try {
+        genuineOverrideInputsForPrisoner(req, 'A1234BC')
+        fail('Should have blown up')
+      } catch (e) {
+        expect(e.message).toStrictEqual(
+          'No session state found for genuine override for prisoner A1234BC. Session may have expired',
+        )
+      }
     })
 
-    it('should initialise properties for prisoner if there are none', () => {
+    it('should blow up if the inputs for the prisoner have not been initialised', () => {
       const req = { session: { genuineOverrideInputs: {} } as Partial<SessionData> } as Request
-      const inputs = genuineOverrideInputsForPrisoner(req, 'A1234BC')
-      expect(inputs).toStrictEqual({ state: 'NEW' })
+      try {
+        genuineOverrideInputsForPrisoner(req, 'A1234BC')
+        fail('Should have blown up')
+      } catch (e) {
+        expect(e.message).toStrictEqual(
+          'No session state found for genuine override for prisoner A1234BC. Session may have expired',
+        )
+      }
     })
 
     it('should get existing properties for prisoner if there are some', () => {
@@ -32,8 +44,8 @@ describe('genuineOverrideUtils', () => {
         session: {
           genuineOverrideInputs: {
             A1234BC: {
-              state: 'INITIALISED_DATES',
-              dates: [{ type: 'FOO', date: '2020-01-02' }],
+              mode: 'STANDARD',
+              datesToSave: [{ type: 'FOO', date: '2020-01-02' }],
               reason: 'OTHER',
               reasonFurtherDetail: 'Foo',
             },
@@ -42,8 +54,8 @@ describe('genuineOverrideUtils', () => {
       } as Request
       const inputs = genuineOverrideInputsForPrisoner(req, 'A1234BC')
       expect(inputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
-        dates: [{ type: 'FOO', date: '2020-01-02' }],
+        mode: 'STANDARD',
+        datesToSave: [{ type: 'FOO', date: '2020-01-02' }],
         reason: 'OTHER',
         reasonFurtherDetail: 'Foo',
       })

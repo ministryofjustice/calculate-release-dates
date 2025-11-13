@@ -1,9 +1,15 @@
 export interface GenuineOverrideInputs {
-  state: 'NEW' | 'INITIALISED_DATES'
-  datesToSave?: EnteredGenuineOverrideDate[]
+  mode: 'STANDARD' | 'EXPRESS'
+  datesToSave: EnteredGenuineOverrideDate[]
   datesBeingAdded?: NewGenuineOverrideDate[]
   reason?: string
   reasonFurtherDetail?: string
+  previousOverride?: {
+    calculationRequestId: number
+    reason: string
+    reasonFurtherDetail?: string
+    dates: EnteredGenuineOverrideDate[]
+  }
 }
 
 export interface EnteredGenuineOverrideDate {

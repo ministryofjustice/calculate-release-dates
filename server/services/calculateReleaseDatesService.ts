@@ -16,6 +16,7 @@ import {
   CalculationRequestModel,
   CalculationUserInputs,
   GenuineOverrideCreatedResponse,
+  GenuineOverrideInputResponse,
   GenuineOverrideReason,
   GenuineOverrideRequest,
   HistoricCalculation,
@@ -396,17 +397,24 @@ export default class CalculateReleaseDatesService {
     body: GenuineOverrideRequest,
   ): Promise<GenuineOverrideCreatedResponse> {
     try {
-      const calculation = await new CalculateReleaseDatesApiClient(token).createGenuineOverrideForCalculation(
-        calculationRequestId,
-        body,
-      )
-      await this.auditService.publishGenuineOverride(
-        userName,
-        nomsId,
-        calculation.originalCalculationRequestId,
-        calculation.newCalculationRequestId,
-      )
-      return calculation
+      const genuineOverrideResponse = await new CalculateReleaseDatesApiClient(token)
+        .createGenuineOverrideForCalculation(calculationRequestId, body)
+        .catch(error => {
+          if (error.status === 400) {
+            logger.info(`Received 400 on creating genuine override. Date selection was invalid.`)
+            return error.data
+          }
+          throw error
+        })
+      if (genuineOverrideResponse.success) {
+        await this.auditService.publishGenuineOverride(
+          userName,
+          nomsId,
+          genuineOverrideResponse.originalCalculationRequestId,
+          genuineOverrideResponse.newCalculationRequestId,
+        )
+      }
+      return genuineOverrideResponse
     } catch (error) {
       await this.auditService.publishGenuineOverrideFailed(userName, nomsId, calculationRequestId, error)
       throw error
@@ -464,6 +472,10 @@ export default class CalculateReleaseDatesService {
   async validateDatesForManualEntry(token: string, dateTypes: string[]): Promise<ErrorMessages> {
     const validationMessages = await new CalculateReleaseDatesApiClient(token).getManualEntryDateValidation(dateTypes)
     return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
+  }
+
+  async validateDatesForGenuineOverride(token: string, dateTypes: string[]): Promise<ValidationMessage[]> {
+    return new CalculateReleaseDatesApiClient(token).getManualEntryDateValidation(dateTypes)
   }
 
   async validateBookingForManualEntry(prisonerId: string, token: string): Promise<ErrorMessages> {
@@ -585,12 +597,8 @@ export default class CalculateReleaseDatesService {
     }
   }
 
-  async getNomisCalculationSummary(
-    offenderSentCalcId: number,
-    bookingId: number,
-    token: string,
-  ): Promise<NomisCalculationSummary> {
-    return new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId, bookingId)
+  async getNomisCalculationSummary(offenderSentCalcId: number, token: string): Promise<NomisCalculationSummary> {
+    return new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
   }
 
   async getReleaseDatesForACalcReqId(calcRequestId: number, token: string): Promise<ReleaseDatesAndCalculationContext> {
@@ -599,5 +607,9 @@ export default class CalculateReleaseDatesService {
 
   async hasIndeterminateSentences(bookingId: number, token: string): Promise<boolean> {
     return new CalculateReleaseDatesApiClient(token).hasIndeterminateSentences(bookingId)
+  }
+
+  async getGenuineOverrideInputs(calculationRequestId: number, token: string): Promise<GenuineOverrideInputResponse> {
+    return new CalculateReleaseDatesApiClient(token).getGenuineOverrideInputs(calculationRequestId)
   }
 }

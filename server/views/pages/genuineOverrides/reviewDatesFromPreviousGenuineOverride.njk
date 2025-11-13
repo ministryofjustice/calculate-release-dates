@@ -7,9 +7,10 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Update the release dates to match the paper calculation" %}
-{% set pageId = "genuine-override-review-dates" %}
+{% set pageTitle = applicationName + " - Confirm the dates are correct" %}
+{% set pageId = "genuine-override-review-previous-override" %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -27,7 +28,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-xl">Calculate release dates</span>
-            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Update the release dates to match the paper calculation</h1>
+            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Confirm the dates are correct</h1>
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -40,21 +41,31 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{ addLink }}" data-qa="add-dates-link">Add another release date</a></p>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-m">Confirm and save to NOMIS</h2>
-            <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is
-                correct. These dates will be saved in NOMIS as a manual calculation.</p>
+            <h2 class="govuk-heading-m">Confirm if these dates are still correct</h2>
+            <p class="govuk-body">If the dates are correct, they will be saved to NOMIS.</p>
             <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukRadios({
+                    name: 'stillCorrect',
+                    errorMessage: formValidationErrors | findError('stillCorrect'),
+                    items: [
+                        {
+                            value: 'YES',
+                            text: 'Yes, all the release dates are still correct',
+                            attributes: {'data-qa': 'still-correct-dates-YES'}
+                        },
+                        {
+                            value: 'NO',
+                            text: 'No, release dates are either missing or incorrect',
+                            attributes: {'data-qa': 'still-correct-dates-NO'}
+                        }
+                    ]
+                }) }}
                 {{ govukButton({
-                    text: "Confirm and save",
+                    text: "Continue",
                     type: submit,
                     preventDoubleClick: true,
-                    attributes: {  'data-qa': 'confirm-and-save' }
+                    attributes: {  'data-qa': 'continue' }
                 }) }}
                 {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
                 <a data-qa="cancel-link"

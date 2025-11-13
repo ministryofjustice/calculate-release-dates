@@ -19,4 +19,9 @@ export default class GenuineOverrideRemoveDatePage extends Page {
   public continue(): PageElement {
     return cy.get('[data-qa=continue-button]')
   }
+
+  public clickCancel(): GenuineOverrideRemoveDatePage {
+    cy.get('[data-qa=cancel-link]').click()
+    return this
+  }
 }

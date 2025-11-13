@@ -27,6 +27,11 @@ export default class SelectGenuineOverrideReasonController implements Controller
       .getGenuineOverrideReasons(res.locals.user.token)
       .then(unsortedReasons => unsortedReasons.sort((a, b) => a.displayOrder - b.displayOrder))
 
+    const backLink =
+      genuineOverrideInputs.mode === 'STANDARD'
+        ? `/calculation/${nomsId}/summary/${calculationRequestId}`
+        : GenuineOverrideUrls.reviewDateFromPreviousOverride(nomsId, calculationRequestId)
+
     return res.render(
       'pages/genuineOverrides/selectGenuineOverrideReason',
       new GenuineOverrideSelectReasonViewModel(
@@ -34,7 +39,7 @@ export default class SelectGenuineOverrideReasonController implements Controller
         reasons,
         reason,
         reasonFurtherDetail,
-        `/calculation/${nomsId}/summary/${calculationRequestId}`,
+        backLink,
         GenuineOverrideUrls.selectReasonForOverride(nomsId, calculationRequestId),
       ),
     )

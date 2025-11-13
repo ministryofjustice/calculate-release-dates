@@ -52,19 +52,19 @@ export function adjustmentsTablesFromAdjustmentDTOs(
   const remand = toTable(
     activeAdjustmentsOfType('REMAND', dtos),
     dto => toRemandRow(dto, sentencesAndOffences),
-    3,
+    2,
     unusedDeductionsTracker,
   )
   const taggedBail = toTable(
     activeAdjustmentsOfType('TAGGED_BAIL', dtos),
     dto => toTaggedBailRow(dto, sentencesAndOffences),
-    3,
+    2,
     unusedDeductionsTracker,
   )
   const custodyAbroad = toTable(
     activeAdjustmentsOfType('CUSTODY_ABROAD', dtos),
     dto => toCustodyAbroadRow(dto, sentencesAndOffences),
-    3,
+    2,
   )
   const rada = toTable(
     activeAdjustmentsOfType('RESTORATION_OF_ADDITIONAL_DAYS_AWARDED', dtos),
@@ -89,7 +89,7 @@ export function adjustmentsTablesFromAdjustmentDTOs(
   const appealApplicant = toTable(
     activeAdjustmentsOfType('APPEAL_APPLICANT', dtos),
     dto => toAppealApplicantRow(dto, sentencesAndOffences),
-    3,
+    2,
   )
 
   const totalAdditions = (ada?.total ?? 0) + (ual?.total ?? 0) + (lal?.total ?? 0) + (appealApplicant?.total ?? 0)
@@ -140,15 +140,15 @@ function toTable(
     text: 'Total days',
     classes: 'govuk-!-font-weight-bold',
   })
-  for (let i = 2; i < numberOfColumns; i += 1) {
-    totalsRow.push({
-      text: '',
-    })
-  }
   totalsRow.push({
     text: `${totalDays}${unusedDeductionsAllocation > 0 ? ` including ${unusedDeductionsAllocation} days unused` : ''}`,
     classes: 'govuk-!-font-weight-bold',
   })
+  for (let i = 2; i <= numberOfColumns; i += 1) {
+    totalsRow.push({
+      text: '',
+    })
+  }
   rows.push(totalsRow)
   return {
     rows,
@@ -160,22 +160,14 @@ function toRemandRow(
   dto: AdjustmentDto,
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentCell[] {
-  const sentenceAndOffencesForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
+  const anyRecallSentenceForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
     dto.remand?.chargeId,
     dto.sentenceSequence,
     sentencesAndOffences,
-  )
+  ).find(sentenceAndOffence => SentenceTypes.isRecall(sentenceAndOffence))
   return [
     {
-      text: `From ${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}`,
-    },
-    {
-      html: sentenceAndOffencesForAdjustment
-        .map(
-          sentenceAndOffence =>
-            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
-        )
-        .join('<br>'),
+      html: `${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}${anyRecallSentenceForAdjustment ? recallBadge : ''}`,
     },
     {
       text: `${dto.days}`,
@@ -190,10 +182,7 @@ function toTaggedBailRow(
   const sentenceAndOffence = findSentenceAndOffenceBySentenceSequence(dto.sentenceSequence, sentencesAndOffences)
   return [
     {
-      html: `Court case ${sentenceAndOffence.caseSequence}`,
-    },
-    {
-      html: `${sentenceAndOffence?.caseReference ?? 'Unknown'}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
+      html: `Court case ${sentenceAndOffence.caseSequence}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
     },
     {
       text: `${dto.days}`,
@@ -229,22 +218,14 @@ function toCustodyAbroadRow(
   } else if (dto.timeSpentInCustodyAbroad?.documentationSource === 'PPCS_LETTER') {
     documentType = 'Letter from PPCS'
   }
-  const sentenceAndOffencesForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
+  const anyRecallSentenceForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
     dto.timeSpentInCustodyAbroad?.chargeIds,
     dto.sentenceSequence,
     sentencesAndOffences,
-  )
+  ).find(sentenceAndOffence => SentenceTypes.isRecall(sentenceAndOffence))
   return [
     {
-      text: documentType,
-    },
-    {
-      html: sentenceAndOffencesForAdjustment
-        .map(
-          sentenceAndOffence =>
-            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
-        )
-        .join('<br>'),
+      html: `${documentType}${anyRecallSentenceForAdjustment ? recallBadge : ''}`,
     },
     {
       text: `${dto.days}`,
@@ -285,7 +266,7 @@ function toSpecialRemissionRow(dto: AdjustmentDto): AdjustmentCell[] {
 function toAdaRow(dto: AdjustmentDto): AdjustmentCell[] {
   return [
     {
-      text: `Awarded ${dayjs(dto.fromDate).format('DD MMMM YYYY')}`,
+      text: formatDate(dto.fromDate),
     },
     {
       text: `${dto.days}`,
@@ -308,13 +289,13 @@ function toUALRow(dto: AdjustmentDto): AdjustmentCell[] {
   }
   return [
     {
-      text: `From ${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}`,
-    },
-    {
-      text: type,
+      text: `${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}`,
     },
     {
       text: `${dto.days}`,
+    },
+    {
+      text: type,
     },
   ]
 }
@@ -328,13 +309,13 @@ function toLALRow(dto: AdjustmentDto): AdjustmentCell[] {
   }
   return [
     {
-      text: `From ${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}`,
-    },
-    {
-      text: delayCaused,
+      text: `${formatDate(dto.fromDate)} to ${formatDate(dto.toDate)}`,
     },
     {
       text: `${dto.days}${dto.lawfullyAtLarge?.affectsDates === 'NO' ? ' (excluded)' : ''}`,
+    },
+    {
+      text: delayCaused,
     },
   ]
 }
@@ -343,22 +324,14 @@ function toAppealApplicantRow(
   dto: AdjustmentDto,
   sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
 ): AdjustmentCell[] {
-  const sentenceAndOffencesForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
+  const anyRecallSentenceForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
     dto.timeSpentAsAnAppealApplicant?.chargeIds,
     dto.sentenceSequence,
     sentencesAndOffences,
-  )
+  ).find(sentenceAndOffence => SentenceTypes.isRecall(sentenceAndOffence))
   return [
     {
-      text: dto.timeSpentAsAnAppealApplicant?.courtOfAppealReferenceNumber ?? 'Unknown',
-    },
-    {
-      html: sentenceAndOffencesForAdjustment
-        .map(
-          sentenceAndOffence =>
-            `${sentenceAndOffence.offence.offenceDescription}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
-        )
-        .join('<br>'),
+      html: `${dto.timeSpentAsAnAppealApplicant?.courtOfAppealReferenceNumber ?? 'Unknown'}${anyRecallSentenceForAdjustment ? recallBadge : ''}`,
     },
     {
       text: `${dto.days}`,
@@ -387,5 +360,5 @@ const formatDate = (date: string) => {
   if (!date) {
     return 'Date Not Entered'
   }
-  return dayjs(date).format('DD MMMM YYYY')
+  return dayjs(date).format('DD/MM/YYYY')
 }

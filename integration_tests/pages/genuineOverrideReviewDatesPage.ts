@@ -39,4 +39,9 @@ export default class GenuineOverrideReviewDatesPage extends Page {
   public cancel(): PageElement {
     return cy.get('[data-qa=cancel-link]')
   }
+
+  public clickBack(): GenuineOverrideReviewDatesPage {
+    cy.get('.govuk-back-link').click()
+    return this
+  }
 }

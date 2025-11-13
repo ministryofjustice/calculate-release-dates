@@ -171,6 +171,7 @@ describe('Calculate release dates service tests', () => {
   })
   afterEach(() => {
     nock.cleanAll()
+    jest.resetAllMocks()
   })
 
   describe('Test GET releases date using a calculation request id', () => {
@@ -192,21 +193,15 @@ describe('Calculate release dates service tests', () => {
 
   describe('Test nomis calculation summary', () => {
     it('asserting successful scenario', async () => {
-      const bookingId = 123456
-      fakeApi
-        .get(`/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`)
-        .reply(200, nomisCalculationSummary)
-      const result = await calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, bookingId, token)
+      fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`).reply(200, nomisCalculationSummary)
+      const result = await calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, token)
       expect(result).toEqual(nomisCalculationSummary)
     })
     it('asserting fail scenario', async () => {
-      const bookingId = 123456
-      fakeApi
-        .get(`/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`)
-        .reply(404)
-      await expect(
-        calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, bookingId, token),
-      ).rejects.toThrow('Not Found')
+      fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`).reply(404)
+      await expect(calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, token)).rejects.toThrow(
+        'Not Found',
+      )
     })
   })
 
@@ -1049,13 +1044,14 @@ describe('Calculate release dates service tests', () => {
     })
   })
 
-  it('Test creating a genuine override successfully audits it', async () => {
+  it('creating a genuine override successfully audits it', async () => {
     const response: GenuineOverrideCreatedResponse = {
+      success: true,
       newCalculationRequestId: 564658897564,
       originalCalculationRequestId: calculationRequestId,
     }
     auditService.publishGenuineOverride.mockResolvedValue()
-    fakeApi.post(`/calculation/genuine-override/${calculationRequestId}`).reply(200, response)
+    fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(200, response)
 
     const result = await calculateReleaseDatesService.createGenuineOverrideForCalculation(
       userName,
@@ -1078,9 +1074,36 @@ describe('Calculate release dates service tests', () => {
     )
   })
 
-  it('Test creating a genuine override fails is audited', async () => {
+  it('creating a genuine override fails with validation error is not audited but we return the validation messages', async () => {
     auditService.publishGenuineOverrideFailed.mockResolvedValue()
-    fakeApi.post(`/calculation/genuine-override/${calculationRequestId}`).reply(500)
+    const response: GenuineOverrideCreatedResponse = {
+      success: false,
+      validationMessages: [
+        { code: 'DATES_MISSING_REQUIRED_TYPE', message: 'Error 1', type: 'VALIDATION', arguments: [] },
+        { code: 'DATES_PAIRINGS_INVALID', message: 'Error 2', type: 'VALIDATION', arguments: [] },
+      ],
+    }
+    fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(400, response)
+
+    const result = await calculateReleaseDatesService.createGenuineOverrideForCalculation(
+      userName,
+      nomsId,
+      calculationRequestId,
+      token,
+      {
+        dates: [],
+        reason: 'OTHER',
+        reasonFurtherDetail: 'Foo',
+      },
+    )
+    expect(result).toEqual(response)
+    expect(auditService.publishGenuineOverride).not.toHaveBeenCalled()
+    expect(auditService.publishGenuineOverrideFailed).not.toHaveBeenCalled()
+  })
+
+  it('creating a genuine override fails with unknown error is audited', async () => {
+    auditService.publishGenuineOverrideFailed.mockResolvedValue()
+    fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(500)
 
     try {
       await calculateReleaseDatesService.createGenuineOverrideForCalculation(

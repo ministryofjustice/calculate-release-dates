@@ -20,6 +20,7 @@ import {
   DetailedCalculationResults,
   ErsedEligibility,
   GenuineOverrideCreatedResponse,
+  GenuineOverrideInputResponse,
   GenuineOverrideReason,
   GenuineOverrideRequest,
   HistoricCalculation,
@@ -105,7 +106,7 @@ export default class CalculateReleaseDatesApiClient {
     body: GenuineOverrideRequest,
   ): Promise<GenuineOverrideCreatedResponse> {
     return this.restClient.post({
-      path: `/calculation/genuine-override/${calculationRequestId}`,
+      path: `/genuine-override/calculation/${calculationRequestId}`,
       data: body,
     }) as Promise<GenuineOverrideCreatedResponse>
   }
@@ -119,7 +120,7 @@ export default class CalculateReleaseDatesApiClient {
   }
 
   getGenuineOverrideReasons(): Promise<GenuineOverrideReason[]> {
-    return this.restClient.get({ path: `/genuine-override-reasons/` }) as Promise<GenuineOverrideReason[]>
+    return this.restClient.get({ path: `/genuine-override/reasons` }) as Promise<GenuineOverrideReason[]>
   }
 
   validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessage[]> {
@@ -346,9 +347,9 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<DateTypeDefinition[]>
   }
 
-  getNomisCalculationSummary(offenderSentCalcId: number, bookingId: number): Promise<NomisCalculationSummary> {
+  getNomisCalculationSummary(offenderSentCalcId: number): Promise<NomisCalculationSummary> {
     return this.restClient.get({
-      path: `/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`,
+      path: `/calculation/nomis-calculation-summary/${offenderSentCalcId}`,
     }) as Promise<NomisCalculationSummary>
   }
 
@@ -374,5 +375,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/manual-calculation/${prisonerId}/has-existing-calculation`,
     }) as Promise<boolean>
+  }
+
+  getGenuineOverrideInputs(calculationRequestId: number): Promise<GenuineOverrideInputResponse> {
+    return this.restClient.get({
+      path: `/genuine-override/calculation/${calculationRequestId}/inputs`,
+    }) as Promise<GenuineOverrideInputResponse>
   }
 }

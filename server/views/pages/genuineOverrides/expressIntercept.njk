@@ -8,8 +8,8 @@
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set pageTitle = applicationName + " - Update the release dates to match the paper calculation" %}
-{% set pageId = "genuine-override-review-dates" %}
+{% set pageTitle = applicationName + " - Review the manually calculated dates" %}
+{% set pageId = "genuine-override-express-intercept" %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -23,38 +23,34 @@
 {% endblock %}
 
 {% block content %}
-    {% include '../partials/formError.njk' %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-xl">Calculate release dates</span>
-            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Update the release dates to match the paper calculation</h1>
+            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Review the manually calculated dates</h1>
         </div>
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            {{ govukSummaryList({
-                rows: dateRows,
-                attributes: { id: 'datesToSave' }
-            }) }}
+            <p class="govuk-body">These dates were entered manually because the dates calculated by this service were overridden.</p>
         </div>
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{ addLink }}" data-qa="add-dates-link">Add another release date</a></p>
+            <h2 class="govuk-heading-m">The reason the dates were entered manually was:</h2>
+            <p class="govuk-body" data-qa="previous-reason">{{ reason }}</p>
         </div>
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-m">Confirm and save to NOMIS</h2>
-            <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is
-                correct. These dates will be saved in NOMIS as a manual calculation.</p>
+            <h2 class="govuk-heading-m">What you need to do</h2>
+            <p class="govuk-body">As no information has changed for this calculation, you need to confirm that the manually calculated release dates are correct.</p>
             <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
                 {{ govukButton({
-                    text: "Confirm and save",
+                    text: "Continue",
                     type: submit,
                     preventDoubleClick: true,
-                    attributes: {  'data-qa': 'confirm-and-save' }
+                    attributes: {  'data-qa': 'continue' }
                 }) }}
                 {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
                 <a data-qa="cancel-link"

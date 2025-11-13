@@ -109,6 +109,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/record-a-recall/{prisonerId}/decision': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Calculate release dates for a prisoner - used explicitly by the record-a-recall service, this does not publish to NOMIS
+     * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a transitory calculation that will not be published to NOMIS
+     */
+    post: operations['makeRecallDecision']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/overall-sentence-length': {
     parameters: {
       query?: never
@@ -143,6 +163,26 @@ export interface paths {
      * @description This endpoint will return a response model which indicates the success of storing a manual calculation
      */
     post: operations['storeManualCalculation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/genuine-override/calculation/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Override the dates for a given calculation
+     * @description Replace the calculated dates with a dates that may have been added, removed or modified by OMU
+     */
+    post: operations['storeGenuineOverrideForCalculation']
     delete?: never
     options?: never
     head?: never
@@ -265,26 +305,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/calculation/{prisonerId}/test': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Calculate release dates for a prisoner - test calculation, this does not publish to NOMIS
-     * @description This endpoint will calculate release dates based on a prisoners latest booking, this can includeinactive bookings of historic prisoners. Endpoint is used to test calculations against NOMIS.
-     */
-    post: operations['testCalculation']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/calculation/relevant-remand/{prisonerId}': {
     parameters: {
       query?: never
@@ -299,26 +319,6 @@ export interface paths {
      * @description This endpoint calculates the release date of an intersecting sentence, this is needed by therelevant remand tool in order to work out remand periods.
      */
     post: operations['relevantRemandCalculation']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/calculation/genuine-override/{calculationRequestId}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Override the dates for a given calculation
-     * @description Replace the calculated dates with a dates that may have been added, removed or modified by OMU
-     */
-    post: operations['storeGenuineOverrideForCalculation']
     delete?: never
     options?: never
     head?: never
@@ -505,6 +505,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/record-a-recall/{prisonerId}/validate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Calculate release dates for a prisoner - used explicitly by the record-a-recall service, this does not publish to NOMIS
+     * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a transitory calculation that will not be published to NOMIS
+     */
+    get: operations['validate_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/queue-admin/get-dlq-messages/{dlqName}': {
     parameters: {
       query?: never
@@ -621,14 +641,38 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/genuine-override-reasons/': {
+  '/genuine-override/reasons': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
+    /**
+     * Get the reasons for overriding dates
+     * @description Get the reasons for overriding dates along with descriptions and whether further detail is required
+     */
     get: operations['getGenuineOverrideReasons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/genuine-override/calculation/{calculationRequestId}/inputs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the inputs for a genuine override based on a preliminary calculation
+     * @description Get the mode (standard or express) for a genuine override on this calculation as well as the calculated dates and a previous overrides details if this override can be express
+     */
+    get: operations['getInputsForGenuineOverrideForCalculation']
     put?: never
     post?: never
     delete?: never
@@ -1249,6 +1293,9 @@ export interface components {
         | 'CONSECUTIVE_SENTENCE_WITH_MULTIPLE_OFFENCES'
         | 'BROKEN_CONSECUTIVE_CHAINS'
         | 'RECALL_MISSING_REVOCATION_DATE'
+        | 'COURT_MARTIAL_WITH_SDS_PLUS'
+        | 'CONSECUTIVE_TO_SENTENCE_IMPOSED_AFTER'
+        | 'REVOCATION_DATE_IN_THE_FUTURE'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1418,6 +1465,41 @@ export interface components {
       validationMessages: components['schemas']['ValidationMessage'][]
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
     }
+    RecordARecallRequest: {
+      /** Format: date */
+      revocationDate: string
+    }
+    RecallSentenceCalculation: {
+      /** Format: date */
+      conditionalReleaseDate: string
+      /** Format: date */
+      actualReleaseDate: string
+      /** Format: date */
+      licenseExpiry: string
+    }
+    RecallableSentence: {
+      /** Format: int32 */
+      sentenceSequence: number
+      /** Format: int64 */
+      bookingId: number
+      /** Format: uuid */
+      uuid: string
+      sentenceCalculation: components['schemas']['RecallSentenceCalculation']
+    }
+    RecordARecallDecisionResult: {
+      /** @enum {string} */
+      decision:
+        | 'CRITICAL_ERRORS'
+        | 'AUTOMATED'
+        | 'NO_RECALLABLE_SENTENCES_FOUND'
+        | 'VALIDATION'
+        | 'CONFLICTING_ADJUSTMENTS'
+      validationMessages: components['schemas']['ValidationMessage'][]
+      recallableSentences: components['schemas']['RecallableSentence'][]
+      eligibleRecallTypes: ('LR' | 'FTR_14' | 'FTR_28' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC')[]
+      /** Format: int64 */
+      calculationRequestId?: number
+    }
     OverallSentenceLength: {
       /** Format: int64 */
       years: number
@@ -1494,6 +1576,58 @@ export interface components {
       }
       /** Format: int64 */
       calculationRequestId: number
+    }
+    GenuineOverrideDate: {
+      /** @enum {string} */
+      dateType:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
+      /** Format: date */
+      date: string
+    }
+    GenuineOverrideRequest: {
+      dates: components['schemas']['GenuineOverrideDate'][]
+      /** @enum {string} */
+      reason:
+        | 'ORDER_OF_IMPRISONMENT_OR_WARRANT_DOES_NOT_MATCH_TRIAL_RECORD'
+        | 'TERRORISM'
+        | 'POWER_TO_DETAIN'
+        | 'CROSS_BORDER_SECTION_RELEASE_DATE'
+        | 'ADD_RELEASE_DATE_FROM_ANOTHER_BOOKING'
+        | 'ERS_BREACH'
+        | 'COURT_OF_APPEAL'
+        | 'OTHER'
+      reasonFurtherDetail?: string
+    }
+    GenuineOverrideCreatedResponse: {
+      success: boolean
+      /** Format: int64 */
+      newCalculationRequestId?: number
+      /** Format: int64 */
+      originalCalculationRequestId?: number
+      validationMessages?: components['schemas']['ValidationMessage'][]
     }
     ComparisonInput: {
       /** @description Criteria used in the comparison */
@@ -1595,10 +1729,6 @@ export interface components {
       calculationReasonId: number
       otherReasonDescription?: string
     }
-    CalculationResults: {
-      calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
-      validationMessages: components['schemas']['ValidationMessage'][]
-    }
     RelevantRemand: {
       /** Format: date */
       from: string
@@ -1631,56 +1761,6 @@ export interface components {
       /** Format: date */
       postRecallReleaseDate?: string
       validationMessages: components['schemas']['ValidationMessage'][]
-    }
-    GenuineOverrideDate: {
-      /** @enum {string} */
-      dateType:
-        | 'CRD'
-        | 'LED'
-        | 'SED'
-        | 'NPD'
-        | 'ARD'
-        | 'TUSED'
-        | 'PED'
-        | 'SLED'
-        | 'HDCED'
-        | 'NCRD'
-        | 'ETD'
-        | 'MTD'
-        | 'LTD'
-        | 'DPRRD'
-        | 'PRRD'
-        | 'ESED'
-        | 'ERSED'
-        | 'TERSED'
-        | 'APD'
-        | 'HDCAD'
-        | 'None'
-        | 'Tariff'
-        | 'ROTL'
-        | 'HDCED4PLUS'
-      /** Format: date */
-      date: string
-    }
-    GenuineOverrideRequest: {
-      dates: components['schemas']['GenuineOverrideDate'][]
-      /** @enum {string} */
-      reason:
-        | 'ORDER_OF_IMPRISONMENT_OR_WARRANT_DOES_NOT_MATCH_TRIAL_RECORD'
-        | 'TERRORISM'
-        | 'POWER_TO_DETAIN'
-        | 'CROSS_BORDER_SECTION_RELEASE_DATE'
-        | 'ADD_RELEASE_DATE_FROM_ANOTHER_BOOKING'
-        | 'ERS_BREACH'
-        | 'COURT_OF_APPEAL'
-        | 'OTHER'
-      reasonFurtherDetail?: string
-    }
-    GenuineOverrideCreatedResponse: {
-      /** Format: int64 */
-      newCalculationRequestId: number
-      /** Format: int64 */
-      originalCalculationRequestId: number
     }
     SubmitCalculationRequest: {
       calculationFragments: components['schemas']['CalculationFragments']
@@ -1768,6 +1848,12 @@ export interface components {
       type: string
       description: string
     }
+    RecordARecallValidationResult: {
+      criticalValidationMessages: components['schemas']['ValidationMessage'][]
+      otherValidationMessages: components['schemas']['ValidationMessage'][]
+      /** Format: date */
+      earliestSentenceDate: string
+    }
     DlqMessage: {
       body: {
         [key: string]: unknown
@@ -1830,6 +1916,28 @@ export interface components {
       /** Format: int32 */
       displayOrder: number
       requiresFurtherDetail: boolean
+    }
+    GenuineOverrideInputResponse: {
+      /** @enum {string} */
+      mode: 'STANDARD' | 'EXPRESS'
+      calculatedDates: components['schemas']['GenuineOverrideDate'][]
+      previousOverrideForExpressGenuineOverride?: components['schemas']['PreviousGenuineOverride']
+    }
+    PreviousGenuineOverride: {
+      /** Format: int64 */
+      calculationRequestId: number
+      dates: components['schemas']['GenuineOverrideDate'][]
+      /** @enum {string} */
+      reason:
+        | 'ORDER_OF_IMPRISONMENT_OR_WARRANT_DOES_NOT_MATCH_TRIAL_RECORD'
+        | 'TERRORISM'
+        | 'POWER_TO_DETAIN'
+        | 'CROSS_BORDER_SECTION_RELEASE_DATE'
+        | 'ADD_RELEASE_DATE_FROM_ANOTHER_BOOKING'
+        | 'ERS_BREACH'
+        | 'COURT_OF_APPEAL'
+        | 'OTHER'
+      reasonFurtherDetail?: string
     }
     ErsedEligibility: {
       isValid: boolean
@@ -2036,6 +2144,7 @@ export interface components {
       offence: components['schemas']['OffenderOffence']
       caseReference?: string
       courtDescription?: string
+      courtTypeCode?: string
       fineAmount?: number
       revocationDates: string[]
       isSDSPlus: boolean
@@ -2724,6 +2833,63 @@ export interface operations {
       }
     }
   }
+  makeRecallDecision: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RecordARecallRequest']
+      }
+    }
+    responses: {
+      /** @description Returns calculated dates */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallDecisionResult']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallDecisionResult']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallDecisionResult']
+        }
+      }
+      /** @description Unprocessable request, the existing data cannot be used to perform a calculation */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallDecisionResult']
+        }
+      }
+    }
+  }
   compareOverallSentenceLength: {
     parameters: {
       query?: never
@@ -2806,6 +2972,68 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ManualCalculationResponse']
+        }
+      }
+    }
+  }
+  storeGenuineOverrideForCalculation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        calculationRequestId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GenuineOverrideRequest']
+      }
+    }
+    responses: {
+      /** @description Dates were successfully overridden */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
+        }
+      }
+      /** @description If the supplied dates are invalid */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
+        }
+      }
+      /** @description Couldn't find the requested calculation or it's in an invalid state */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
         }
       }
     }
@@ -3235,54 +3463,6 @@ export interface operations {
       }
     }
   }
-  testCalculation: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /**
-         * @description The prisoners ID (aka nomsId)
-         * @example A1234AB
-         */
-        prisonerId: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CalculationRequestModel']
-      }
-    }
-    responses: {
-      /** @description Returns calculated dates */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['CalculationResults']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['CalculationResults']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['CalculationResults']
-        }
-      }
-    }
-  }
   relevantRemandCalculation: {
     parameters: {
       query?: never
@@ -3327,59 +3507,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['RelevantRemandCalculationResult']
-        }
-      }
-    }
-  }
-  storeGenuineOverrideForCalculation: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        calculationRequestId: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['GenuineOverrideRequest']
-      }
-    }
-    responses: {
-      /** @description Dates were successfully overridden */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
-        }
-      }
-      /** @description Couldn't find the requested calculation or it's in an invalid state */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GenuineOverrideCreatedResponse']
         }
       }
     }
@@ -3775,6 +3902,59 @@ export interface operations {
       }
     }
   }
+  validate_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns calculated dates */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallValidationResult']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallValidationResult']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallValidationResult']
+        }
+      }
+      /** @description Unprocessable request, the existing data cannot be used to perform a calculation */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RecordARecallValidationResult']
+        }
+      }
+    }
+  }
   getDlqMessages: {
     parameters: {
       query?: {
@@ -4040,6 +4220,55 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['GenuineOverrideReasonResponse'][]
+        }
+      }
+    }
+  }
+  getInputsForGenuineOverrideForCalculation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        calculationRequestId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The inputs for doing a genuine override on a calculation */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideInputResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideInputResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideInputResponse']
+        }
+      }
+      /** @description Couldn't find the requested calculation or it's in an invalid state */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenuineOverrideInputResponse']
         }
       }
     }

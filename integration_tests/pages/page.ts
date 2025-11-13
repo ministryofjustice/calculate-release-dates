@@ -26,6 +26,10 @@ export default abstract class Page {
 
   errorSummary = (): PageElement => cy.get('.govuk-error-summary')
 
+  get errorSummaryItems(): PageElement {
+    return this.errorSummary().find('.govuk-error-summary__list a')
+  }
+
   hasMissingOffenceDates(flag: boolean): PageElement {
     const check = flag ? 'exist' : 'not.exist'
     return cy

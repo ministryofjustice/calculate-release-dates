@@ -17,6 +17,10 @@ import EditGenuineOverrideDateController from './edit-date/editGenuineOverrideDa
 import DeleteGenuineOverrideDateController from './delete-date/deleteGenuineOverrideDateController'
 import { deleteGenuineOverrideDateSchema } from './delete-date/deleteGenuineOverrideSchema'
 import requireGenuineOverrideAccess from '../../middleware/requireGenuineOverrideAccess'
+import StartGenuineOverrideController from './start/startGenuineOverrideController'
+import GenuineOverrideExpressInterceptController from './express-intercept/genuineOverrideExpressInterceptController'
+import ReviewDatesFromPreviousGenuineOverrideController from './review-previous-override/reviewDatesFromPreviousGenuineOverrideController'
+import { reviewDatesFromPreviousOverrideSummarySchema } from './review-previous-override/reviewDatesFromPreviousOverrideSummarySchema'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
@@ -44,6 +48,26 @@ const GenuineOverridesRoutes = (
   }
 
   route({
+    path: '/calculation/:nomsId/start-genuine-override/:calculationRequestId',
+    controller: new StartGenuineOverrideController(calculateReleaseDatesService),
+  })
+
+  route({
+    path: '/calculation/:nomsId/express-override-intercept/:calculationRequestId',
+    controller: new GenuineOverrideExpressInterceptController(calculateReleaseDatesService, prisonerService),
+  })
+
+  route({
+    path: '/calculation/:nomsId/review-dates-from-previous-override/:calculationRequestId',
+    controller: new ReviewDatesFromPreviousGenuineOverrideController(
+      calculateReleaseDatesService,
+      prisonerService,
+      dateTypeConfigurationService,
+    ),
+    validateToSchema: reviewDatesFromPreviousOverrideSummarySchema,
+  })
+
+  route({
     path: '/calculation/:nomsId/select-reason-for-override/:calculationRequestId',
     controller: new SelectGenuineOverrideReasonController(calculateReleaseDatesService, prisonerService),
     validateToSchema: selectGenuineOverrideReasonSchemaFactory,
@@ -60,7 +84,11 @@ const GenuineOverridesRoutes = (
 
   route({
     path: '/calculation/:nomsId/override/select-dates/:calculationRequestId',
-    controller: new GenuineOverrideSelectDatesController(dateTypeConfigurationService, prisonerService),
+    controller: new GenuineOverrideSelectDatesController(
+      dateTypeConfigurationService,
+      prisonerService,
+      calculateReleaseDatesService,
+    ),
     validateToSchema: genuineOverrideSelectDatesSchema,
   })
 

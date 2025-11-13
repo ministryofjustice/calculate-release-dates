@@ -4,4 +4,14 @@ export default class GenuineOverridesSelectDatesToEnterPage extends CommonSelect
   constructor() {
     super('genuine-override-select-dates')
   }
+
+  public clickCancel(): GenuineOverridesSelectDatesToEnterPage {
+    cy.get('[data-qa=cancel-link]').click()
+    return this
+  }
+
+  public clickBack(): GenuineOverridesSelectDatesToEnterPage {
+    cy.get('.govuk-back-link').click()
+    return this
+  }
 }

@@ -8,6 +8,7 @@ import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
+import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
 
 jest.mock('../../../services/dateTypeConfigurationService')
 jest.mock('../../../services/prisonerService')
@@ -29,34 +30,9 @@ describe('DeleteGenuineOverrideDateController', () => {
   } as PrisonApiPrisoner
   const pageUrl = `/calculation/${prisonerNumber}/override/HDCED/delete/${calculationRequestId}`
   let currentUser: Express.User
-  const mockDateConfigs = {
-    CRD: 'CRD (Conditional release date)',
-    LED: 'LED (Licence expiry date)',
-    SED: 'SED (Sentence expiry date)',
-    NPD: 'NPD (Non-parole date)',
-    ARD: 'ARD (Automatic release date)',
-    TUSED: 'TUSED (Top up supervision expiry date)',
-    PED: 'PED (Parole eligibility date)',
-    SLED: 'SLED (Sentence and licence expiry date)',
-    HDCED: 'HDCED (Home detention curfew eligibility date)',
-    NCRD: 'NCRD (Notional conditional release date)',
-    ETD: 'ETD (Early transfer date)',
-    MTD: 'MTD (Mid transfer date)',
-    LTD: 'LTD (Late transfer date)',
-    DPRRD: 'DPRRD (Detention and training order post recall release date)',
-    PRRD: 'PRRD (Post recall release date)',
-    ESED: 'ESED (Effective sentence end date)',
-    ERSED: 'ERSED (Early removal scheme eligibility date)',
-    TERSED: 'TERSED (Tariff-expired removal scheme eligibility date)',
-    APD: 'APD (Approved parole date)',
-    HDCAD: 'HDCAD (Home detention curfew approved date)',
-    None: 'None (None of the above dates apply)',
-    Tariff: 'Tariff (known as the Tariff expiry date)',
-    ROTL: 'ROTL (Release on temporary licence)',
-  }
 
   beforeEach(() => {
-    genuineOverrideInputs = { state: 'INITIALISED_DATES' }
+    genuineOverrideInputs = { mode: 'STANDARD', datesToSave: [] }
     sessionSetup.sessionDoctor = req => {
       req.session.genuineOverrideInputs = {}
       req.session.genuineOverrideInputs[prisonerNumber] = genuineOverrideInputs
@@ -73,7 +49,7 @@ describe('DeleteGenuineOverrideDateController', () => {
       sessionSetup,
       userSupplier: () => currentUser,
     })
-    dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(mockDateConfigs)
+    dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(testDateTypeToDescriptions)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
   })
 
@@ -126,7 +102,7 @@ describe('DeleteGenuineOverrideDateController', () => {
         .expect(302)
         .expect('Location', `${pageUrl}#`)
 
-      expect(genuineOverrideInputs).toStrictEqual({ state: 'INITIALISED_DATES', datesToSave: [originalHdced] })
+      expect(genuineOverrideInputs).toStrictEqual({ mode: 'STANDARD', datesToSave: [originalHdced] })
     })
 
     it('should delete the date and return the review page if YES was selected ', async () => {
@@ -144,7 +120,7 @@ describe('DeleteGenuineOverrideDateController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         datesToSave: [
           { type: 'CRD', date: '2011-11-12' },
           { type: 'TUSED', date: '2025-09-15' },
@@ -167,7 +143,7 @@ describe('DeleteGenuineOverrideDateController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
 
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         datesToSave: [
           { type: 'CRD', date: '2011-11-12' },
           { type: 'HDCED', date: '2010-10-11' },
