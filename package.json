@@ -141,7 +141,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.4.1",
+    "@eslint/compat": "^2.0.0",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.1",
