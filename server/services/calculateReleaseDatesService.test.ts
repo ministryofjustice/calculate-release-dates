@@ -193,21 +193,15 @@ describe('Calculate release dates service tests', () => {
 
   describe('Test nomis calculation summary', () => {
     it('asserting successful scenario', async () => {
-      const bookingId = 123456
-      fakeApi
-        .get(`/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`)
-        .reply(200, nomisCalculationSummary)
-      const result = await calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, bookingId, token)
+      fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`).reply(200, nomisCalculationSummary)
+      const result = await calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, token)
       expect(result).toEqual(nomisCalculationSummary)
     })
     it('asserting fail scenario', async () => {
-      const bookingId = 123456
-      fakeApi
-        .get(`/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`)
-        .reply(404)
-      await expect(
-        calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, bookingId, token),
-      ).rejects.toThrow('Not Found')
+      fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`).reply(404)
+      await expect(calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, token)).rejects.toThrow(
+        'Not Found',
+      )
     })
   })
 
