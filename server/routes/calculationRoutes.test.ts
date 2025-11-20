@@ -159,6 +159,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
     calculationType: stubbedCalculationResults.calculationType,
     calculationReason: stubbedCalculationResults.calculationReason,
     otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+    usePreviouslyRecordedSLEDIfFound: false,
   },
   dates: {
     CRD: {
