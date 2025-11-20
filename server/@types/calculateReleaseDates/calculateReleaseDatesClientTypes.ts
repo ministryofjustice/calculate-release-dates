@@ -46,3 +46,4 @@ export type GenuineOverrideReason = components['schemas']['GenuineOverrideReason
 export type GenuineOverrideInputResponse = components['schemas']['GenuineOverrideInputResponse']
 export type GenuineOverrideDate = components['schemas']['GenuineOverrideDate']
 export type PreviousOverride = components['schemas']['PreviousGenuineOverride']
+export type PreviouslyRecordedSLED = components['schemas']['PreviouslyRecordedSLED']

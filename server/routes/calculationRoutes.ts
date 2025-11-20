@@ -11,7 +11,6 @@ import CalculationSummaryPageViewModel from '../models/calculation/CalculationSu
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
-import ConcurrentConsecutiveSentence from '../models/ConcurrentConsecutiveSentencesModel'
 import { hasGenuineOverridesAccess } from './genuine-overrides/genuineOverrideUtils'
 
 export default class CalculationRoutes {
@@ -142,50 +141,6 @@ export default class CalculationRoutes {
     res.render(
       'pages/calculation/calculationComplete',
       new CalculationCompleteViewModel(prisonerDetail, calculationRequestId, noDates, hasIndeterminateSentence),
-    )
-  }
-
-  public concurrentConsecutive: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
-    const { nomsId } = req.params
-    const { duration } = req.query as Record<string, string>
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
-
-    if (req.session.calculationReasonId == null || duration == null) {
-      return res.redirect(`/calculation/${nomsId}/check-information`)
-    }
-
-    return res.render(
-      'pages/calculation/consecutiveConcurrentSentences',
-      new ConcurrentConsecutiveSentence(
-        prisonerDetail,
-        duration,
-        `/calculation/${nomsId}/cancelCalculation?redirectUrl=/calculation/${nomsId}/check-information`,
-        `/calculation/${nomsId}/check-information/`,
-      ),
-    )
-  }
-
-  public confirmConcurrentConsecutive: RequestHandler = async (req, res): Promise<void> => {
-    const { token } = res.locals.user
-    const { nomsId } = req.params
-    const { sentenceDuration } = req.body
-
-    const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-    const calculationRequestModel = await this.calculateReleaseDatesService.getCalculationRequestModel(
-      req,
-      userInputs,
-      nomsId,
-    )
-
-    const preliminaryRequest = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
-      nomsId,
-      calculationRequestModel,
-      token,
-    )
-
-    res.redirect(
-      `summary/${preliminaryRequest.calculationRequestId}?callbackUrl=/calculation/${nomsId}/concurrent-consecutive?duration=${sentenceDuration}`,
     )
   }
 }

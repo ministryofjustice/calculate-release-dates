@@ -139,11 +139,7 @@ export default class CalculateReleaseDatesService {
     }
   }
 
-  async getCalculationRequestModel(
-    req: Request,
-    userInputs: CalculationUserInputs,
-    nomsId: string,
-  ): Promise<CalculationRequestModel> {
+  getCalculationRequestModel(req: Request, userInputs: CalculationUserInputs, nomsId: string): CalculationRequestModel {
     return {
       calculationUserInputs: userInputs,
       calculationReasonId: req.session.calculationReasonId[nomsId],

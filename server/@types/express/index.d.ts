@@ -22,6 +22,7 @@ declare module 'express-session' {
     isAddDatesFlow?: boolean
     manualEntryRoutingForBookings?: [string]
     genuineOverrideInputs: Record<string, GenuineOverrideInputs>
+    siblingCalculationWithPreviouslyRecordedSLED?: { number?: number }
   }
 }
 

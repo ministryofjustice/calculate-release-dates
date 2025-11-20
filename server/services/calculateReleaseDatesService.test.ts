@@ -707,6 +707,7 @@ describe('Calculate release dates service tests', () => {
         calculationType: 'CALCULATED',
         calculationReason: { id: 1, isOther: true, displayName: 'Other' },
         otherReasonDescription: 'Test',
+        usePreviouslyRecordedSLEDIfFound: false,
       },
       dates: {
         CRD: {
