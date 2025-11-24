@@ -30,6 +30,7 @@ describe('CalculationSummaryViewModel', () => {
             bookingId: 1234,
             calculationStatus: 'CONFIRMED',
             calculationType: 'CALCULATED',
+            usePreviouslyRecordedSLEDIfFound: false,
           },
           calculationOriginalData: {},
           calculationBreakdown: undefined,

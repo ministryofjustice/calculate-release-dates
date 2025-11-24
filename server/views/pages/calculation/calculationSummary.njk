@@ -15,7 +15,8 @@
         {% if not model.approvedDates %}
             {{ govukBackLink({
                 text: "Back",
-                href: "/calculation/" + model.prisonerDetail.offenderNo + "/check-information"
+                href: backLink,
+                attributes: {"data-qa": "back-link"}
             }) }}
         {% endif %}
     </nav>

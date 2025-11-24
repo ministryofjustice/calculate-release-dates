@@ -48,4 +48,9 @@ export default class CalculationSummaryPage extends CalculationSummaryCommon {
   public submitToNomisButton = (): PageElement => cy.get('[data-qa=submit-to-nomis]')
 
   public continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
+
+  public clickBack(): CalculationSummaryPage {
+    cy.get('.govuk-back-link').click()
+    return this
+  }
 }

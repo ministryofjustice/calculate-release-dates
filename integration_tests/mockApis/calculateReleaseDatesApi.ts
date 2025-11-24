@@ -4,6 +4,7 @@ import { stubFor } from './wiremock'
 import {
   DetailedCalculationResults,
   LatestCalculation,
+  PreviouslyRecordedSLED,
   SentenceAndOffenceWithReleaseArrangements,
   ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -12,7 +13,10 @@ import { components } from '../../server/@types/calculateReleaseDates'
 type PreviousOverride = components['schemas']['PreviousGenuineOverride']
 
 export default {
-  stubCalculatePreliminaryReleaseDates: (): SuperAgentRequest => {
+  stubCalculatePreliminaryReleaseDates: (opts: {
+    calculationRequestId?: number
+    usedPreviouslyRecordedSLED?: PreviouslyRecordedSLED
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
@@ -23,14 +27,15 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           dates: {
-            SLED: '2018-11-05',
+            SLED: opts?.usedPreviouslyRecordedSLED?.previouslyRecordedSLEDDate ?? '2018-11-05',
             CRD: '2017-05-07',
             HDCED: '2016-12-24',
           },
-          calculationRequestId: 123,
+          calculationRequestId: opts?.calculationRequestId ?? 123,
           prisonerId: 'A1234AB',
           bookingId: 1234,
           calculationStatus: 'PRELIMINARY',
+          usedPreviouslyRecordedSLED: opts?.usedPreviouslyRecordedSLED,
         },
       },
     })
@@ -1056,7 +1061,7 @@ export default {
       },
     })
   },
-  stubGetDetailedCalculationResults: (): SuperAgentRequest => {
+  stubGetDetailedCalculationResults: (previouslyRecordedSLED?: PreviouslyRecordedSLED): SuperAgentRequest => {
     const breakdown = {
       showSds40Hints: false,
       concurrentSentences: [
@@ -1266,7 +1271,12 @@ export default {
     ]
     const detailedResults: DetailedCalculationResults = {
       dates: {
-        SLED: { date: '2018-11-05', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        SLED: {
+          date: previouslyRecordedSLED?.previouslyRecordedSLEDDate ?? '2018-11-05',
+          type: 'SLED',
+          description: 'Sentence and licence expiry date',
+          hints: [],
+        },
         CRD: {
           date: dayjs().add(7, 'day').format('YYYY-MM-DD'),
           type: 'CRD',
@@ -1287,6 +1297,7 @@ export default {
         bookingId: 1234,
         calculationStatus: 'CONFIRMED',
         calculationType: 'CALCULATED',
+        usePreviouslyRecordedSLEDIfFound: !!previouslyRecordedSLED,
       },
       calculationOriginalData: {
         prisonerDetails,
@@ -1294,6 +1305,7 @@ export default {
       },
       calculationBreakdown: breakdown,
       approvedDates: {},
+      usedPreviouslyRecordedSLED: previouslyRecordedSLED,
     }
 
     return stubFor({
