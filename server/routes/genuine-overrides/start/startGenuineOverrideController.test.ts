@@ -140,14 +140,14 @@ describe('StartGenuineOverrideController', () => {
       })
     })
 
-    it('should split previous calculation SLED in SED and LED if express override', async () => {
+    it('should split previous calculation SLED into SED and LED if express override', async () => {
       calculateReleaseDatesService.getGenuineOverrideInputs.mockResolvedValue({
         mode: 'EXPRESS',
         calculatedDates: [{ dateType: 'SLED', date: '2021-10-03' }],
         previousOverrideForExpressGenuineOverride: {
           calculationRequestId: 1234865879,
           dates: [{ dateType: 'SLED', date: '2025-11-11' }],
-          reason: 'TERRORISM',
+          reason: 'AGGRAVATING_FACTOR_OFFENCE',
         },
       })
 
@@ -164,7 +164,7 @@ describe('StartGenuineOverrideController', () => {
         ],
         previousOverride: {
           calculationRequestId: 1234865879,
-          reason: 'TERRORISM',
+          reason: 'AGGRAVATING_FACTOR_OFFENCE',
           reasonFurtherDetail: undefined,
           dates: [
             { type: 'LED', date: '2025-11-11' },

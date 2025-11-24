@@ -121,6 +121,7 @@ describe('CalculationSummaryController', () => {
       calculationType: stubbedCalculationResults.calculationType,
       calculationReason: stubbedCalculationResults.calculationReason,
       otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+      usePreviouslyRecordedSLEDIfFound: false,
     },
     dates: {
       CRD: {
@@ -377,8 +378,54 @@ describe('CalculationSummaryController', () => {
           expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
             `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=/calculation/${prisonerNumber}/123456/confirmation`,
           )
+          expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+            `/calculation/${prisonerNumber}/check-information`,
+          )
           const submitToNomis = $('[data-qa=submit-to-nomis]').first()
           expect(submitToNomis.length).toStrictEqual(1)
+        })
+    })
+
+    it(`Back link should go to previously recorded SLED if we came from there having selected no to using it`, () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
+      sessionSetup.sessionDoctor = req => {
+        req.session.siblingCalculationWithPreviouslyRecordedSLED = { 123456: 777888999 }
+      }
+      return request(app)
+        .get(`/calculation/${prisonerNumber}/123456/confirmation`)
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+            `/calculation/${prisonerNumber}/previously-recorded-sled-intercept/777888999`,
+          )
+        })
+    })
+
+    it(`Back link should go to previously recorded SLED if we came from there having selected yes to using it`, () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        usedPreviouslyRecordedSLED: {
+          previouslyRecordedSLEDDate: '2020-01-02',
+          calculatedDate: '2019-03-15',
+          previouslyRecordedSLEDCalculationRequestId: 132456789,
+        },
+      })
+      sessionSetup.sessionDoctor = req => {
+        req.session.siblingCalculationWithPreviouslyRecordedSLED = {}
+      }
+      return request(app)
+        .get(`/calculation/${prisonerNumber}/123456/confirmation`)
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+            `/calculation/${prisonerNumber}/previously-recorded-sled-intercept/123456`,
+          )
         })
     })
 

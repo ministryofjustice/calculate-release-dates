@@ -16,6 +16,7 @@ import { ManualJourneySelectedDate } from '../../types/ManualJourney'
 import saveCalculation from '../saveCalculationHelper'
 import GenuineOverrideUrls from '../genuine-overrides/genuineOverrideUrls'
 import { hasGenuineOverridesAccess } from '../genuine-overrides/genuineOverrideUtils'
+import { getSiblingCalculationWithPreviouslyRecordedSLED } from '../../utils/previouslyRecordedSledUtils'
 
 export default class CalculationSummaryController implements Controller {
   constructor(
@@ -86,6 +87,18 @@ export default class CalculationSummaryController implements Controller {
       detailedCalculationResults,
       hasGenuineOverridesAccess(userRoles),
     )
+    const siblingCalculationWithoutPreviouslyRecordedSLED = getSiblingCalculationWithPreviouslyRecordedSLED(
+      req,
+      calculationRequestId,
+    )
+    let backLink: string
+    if (detailedCalculationResults.usedPreviouslyRecordedSLED) {
+      backLink = `/calculation/${nomsId}/previously-recorded-sled-intercept/${calculationRequestId}`
+    } else if (siblingCalculationWithoutPreviouslyRecordedSLED) {
+      backLink = `/calculation/${nomsId}/previously-recorded-sled-intercept/${siblingCalculationWithoutPreviouslyRecordedSLED}`
+    } else {
+      backLink = `/calculation/${nomsId}/check-information`
+    }
     return res.render(
       'pages/calculation/calculationSummary',
       new CalculationSummaryPageViewModel(
@@ -97,6 +110,7 @@ export default class CalculationSummaryController implements Controller {
         } as ApprovedDateActionConfig),
         req.session.isAddDatesFlow,
         callbackUrl || req.originalUrl,
+        backLink,
       ),
     )
   }

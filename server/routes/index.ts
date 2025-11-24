@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { z } from 'zod'
 import { Services } from '../services'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
@@ -13,8 +14,15 @@ import ApprovedDatesRoutes from './approvedDatesRoutes'
 import ThingsToDoInterceptRoutes from './thingsToDoInterceptRoutes'
 import GenuineOverridesRoutes from './genuine-overrides/genuineOverridesRoutes'
 import CalculationSummaryController from './calculation-summary/calculationSummaryController'
-import { validate } from '../middleware/validationMiddleware'
+import { SchemaFactory, validate } from '../middleware/validationMiddleware'
 import { calculationSummarySchema } from './calculation-summary/calculationSummarySchema'
+import CheckInformationController from './check-information/checkInformationController'
+import { Controller } from './controller'
+import asyncMiddleware from '../middleware/asyncMiddleware'
+import { checkInformationSchema } from './check-information/checkInformationSchema'
+import MultipleConsecutiveToInterceptController from './multiple-consecutive-to-intercept/multipleConsecutiveToInterceptController'
+import PreviouslyRecordedSledInterceptController from './previously-recorded-sled-intercept/previouslyRecordedSledInterceptController'
+import { previouslyRecordedSledSchema } from './previously-recorded-sled-intercept/previouslyRecordedSledSchema'
 
 export default function Index({
   prisonerService,
@@ -31,7 +39,24 @@ export default function Index({
   dateTypeConfigurationService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
-
+  const route = <P extends { [key: string]: string }>({
+    path,
+    controller,
+    validateToSchema,
+  }: {
+    path: string
+    controller: Controller
+    validateToSchema?: z.ZodTypeAny | SchemaFactory<P>
+  }) => {
+    router.get(path, asyncMiddleware(controller.GET))
+    if (controller.POST) {
+      if (validateToSchema) {
+        router.post(path, validate(validateToSchema), asyncMiddleware(controller.POST))
+      } else {
+        router.post(path, asyncMiddleware(controller.POST))
+      }
+    }
+  }
   const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService, userInputService)
   const checkInformationAccessRoutes = new CheckInformationRoutes(
     calculateReleaseDatesService,
@@ -85,9 +110,18 @@ export default function Index({
     router.get('/accessibility', startRoutes.accessibility)
   }
 
+  const checkInformationController = new CheckInformationController(
+    calculateReleaseDatesService,
+    prisonerService,
+    checkInformationService,
+    userInputService,
+  )
   const checkInformationRoutes = () => {
-    router.get('/calculation/:nomsId/check-information', checkInformationAccessRoutes.checkInformation)
-    router.post('/calculation/:nomsId/check-information', checkInformationAccessRoutes.submitCheckInformation)
+    route({
+      path: '/calculation/:nomsId/check-information',
+      controller: checkInformationController,
+      validateToSchema: checkInformationSchema,
+    })
   }
 
   const manualEntryRoutes = () => {
@@ -165,8 +199,23 @@ export default function Index({
     router.get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
     router.get('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.askCancelQuestion)
     router.post('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.submitCancelQuestion)
-    router.get('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.concurrentConsecutive)
-    router.post('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.confirmConcurrentConsecutive)
+    route({
+      path: '/calculation/:nomsId/concurrent-consecutive',
+      controller: new MultipleConsecutiveToInterceptController(
+        calculateReleaseDatesService,
+        prisonerService,
+        userInputService,
+      ),
+    })
+    route({
+      path: '/calculation/:nomsId/previously-recorded-sled-intercept/:calculationRequestId',
+      controller: new PreviouslyRecordedSledInterceptController(
+        calculateReleaseDatesService,
+        prisonerService,
+        userInputService,
+      ),
+      validateToSchema: previouslyRecordedSledSchema,
+    })
   }
 
   const reasonRoutes = () => {

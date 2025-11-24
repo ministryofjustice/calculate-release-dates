@@ -307,6 +307,7 @@ const stubbedReleaseDatesUsingCalcReqId: ReleaseDatesAndCalculationContext = {
     otherReasonDescription: '',
     calculationDate: '2020-06-01',
     calculationType: 'CALCULATED',
+    usePreviouslyRecordedSLEDIfFound: false,
   },
   dates: [
     {
@@ -341,6 +342,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
     calculationType: stubbedCalculationResults.calculationType,
     calculationReason: stubbedCalculationResults.calculationReason,
     otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+    usePreviouslyRecordedSLEDIfFound: false,
   },
   dates: {
     CRD: {
@@ -1011,6 +1013,7 @@ describe('View journey routes tests', () => {
         calculateErsed: false,
         useOffenceIndicators: false,
         sentenceCalculationUserInputs: [],
+        usePreviouslyRecordedSLEDIfFound: false,
       })
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')
@@ -1126,6 +1129,7 @@ describe('View journey routes tests', () => {
           calculationType: 'MANUAL_DETERMINATE',
           calculationReason: stubbedCalculationResults.calculationReason,
           otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+          usePreviouslyRecordedSLEDIfFound: false,
         },
       })
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -1688,6 +1692,7 @@ describe('View journey routes tests', () => {
           otherReasonDescription: '',
           calculationDate: '2020-06-01',
           calculationType: 'CALCULATED',
+          usePreviouslyRecordedSLEDIfFound: false,
         },
         dates: [
           {
@@ -1856,6 +1861,7 @@ describe('View journey routes tests', () => {
           otherReasonDescription: '',
           calculationDate: '2020-06-01',
           calculationType: 'CALCULATED',
+          usePreviouslyRecordedSLEDIfFound: false,
         },
         dates: [],
       }
@@ -1960,6 +1966,7 @@ describe('View journey routes tests', () => {
           otherReasonDescription: '',
           calculationDate: '2020-06-01',
           calculationType: 'CALCULATED',
+          usePreviouslyRecordedSLEDIfFound: false,
         },
         dates: [
           {
