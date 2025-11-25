@@ -124,7 +124,7 @@
     "express-session": "^1.18.2",
     "govuk-frontend": "^5.13.0",
     "helmet": "^8.1.0",
-    "http-errors": "^2.0.0",
+    "http-errors": "^2.0.1",
     "jwt-decode": "^4.0.0",
     "luxon": "^3.7.2",
     "nocache": "^4.0.0",
