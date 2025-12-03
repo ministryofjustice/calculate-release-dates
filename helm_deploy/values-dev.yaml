@@ -32,6 +32,7 @@ generic-service:
     SHOW_CRDS_INTERCEPT: "true"
     GENUINE_OVERRIDES_ENABLED: "true"
     THING_TO_DO_INTERCEPT_ENABLED: "true"
+    USE_NEW_APPROVED_DATES_FLOW: "true"
 
   # Switches off the allow list in the DEV env only.
   allowlist: null

@@ -144,6 +144,7 @@ export default {
     genuineOverridesEnabled: get('GENUINE_OVERRIDES_ENABLED', false) === 'true',
     thingsToDoIntercept: get('THING_TO_DO_INTERCEPT_ENABLED', false) === 'true',
     adjustmentsIntegrationEnabled: get('ADJUSTMENTS_INTEGRATION_ENABLED', false) === 'true',
+    useNewApprovedDatesFlow: get('USE_NEW_APPROVED_DATES_FLOW', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
