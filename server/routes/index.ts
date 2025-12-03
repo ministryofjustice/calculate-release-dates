@@ -23,6 +23,7 @@ import { checkInformationSchema } from './check-information/checkInformationSche
 import MultipleConsecutiveToInterceptController from './multiple-consecutive-to-intercept/multipleConsecutiveToInterceptController'
 import PreviouslyRecordedSledInterceptController from './previously-recorded-sled-intercept/previouslyRecordedSledInterceptController'
 import { previouslyRecordedSledSchema } from './previously-recorded-sled-intercept/previouslyRecordedSledSchema'
+import StandaloneApprovedDatesRoutes from './approved-dates/approvedDatesRoutes'
 
 export default function Index({
   prisonerService,
@@ -153,6 +154,7 @@ export default function Index({
   const calculationSummaryController = new CalculationSummaryController(calculateReleaseDatesService, prisonerService)
 
   const approvedDatesRoutes = () => {
+    // routes integrated into the regular calculation journey
     router.get(
       '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
       approvedDatesAccessRoutes.askApprovedDatesQuestion,
@@ -179,6 +181,9 @@ export default function Index({
     )
     router.get('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.loadRemoveDate)
     router.post('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.submitRemoveDate)
+
+    // routes for standalone journey
+    router.use('/', StandaloneApprovedDatesRoutes(calculateReleaseDatesService))
   }
 
   const calculationRoutes = () => {

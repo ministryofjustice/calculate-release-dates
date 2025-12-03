@@ -3,6 +3,7 @@ import type { UserDetails } from '../../services/userService'
 import { ErrorMessages } from '../../types/ErrorMessages'
 import { GenuineOverrideInputs } from '../../models/genuine-override/genuineOverrideInputs'
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
+import { ApprovedDatesJourney } from '../journeys'
 
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -23,6 +24,7 @@ declare module 'express-session' {
     manualEntryRoutingForBookings?: [string]
     genuineOverrideInputs: Record<string, GenuineOverrideInputs>
     siblingCalculationWithPreviouslyRecordedSLED?: { number?: number }
+    approvedDatesJourneys: Record<string, ApprovedDatesJourney>
   }
 }
 

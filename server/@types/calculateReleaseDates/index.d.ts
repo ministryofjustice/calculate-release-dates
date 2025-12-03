@@ -1113,6 +1113,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/approved-dates/{prisonerId}/inputs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the inputs required for adding approved dates for a prisoner
+     * @description Checks whether approved dates can be added or whether a full calculation is required. If approved dates can be added, a preliminary calculation is created.If there are previously entered approved dates that are still relevant those are also returned
+     */
+    get: operations['getInputsForGenuineOverrideForCalculation_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/adjustments/{prisonerId}': {
     parameters: {
       query?: never
@@ -1211,6 +1231,7 @@ export interface components {
         | 'FTR_TYPE_28_DAYS_SENTENCE_LT_12_MONTHS'
         | 'FTR_TYPE_28_DAYS_AGGREGATE_LT_12_MONTHS'
         | 'FTR_TYPE_48_DAYS_OVERLAPPING_SENTENCE'
+        | 'FTR_TYPE_56_UNSUPPORTED_RECALL'
         | 'FTR_RTC_DATE_IN_FUTURE'
         | 'FTR_RTC_DATE_BEFORE_SENTENCE_DATE'
         | 'FTR_RTC_DATE_BEFORE_REVOCATION_DATE'
@@ -1247,10 +1268,10 @@ export interface components {
         | 'BOTUS_CONSECUTIVE_OR_CONCURRENT_TO_OTHER_SENTENCE'
         | 'UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE'
         | 'UNSUPPORTED_SDS40_CONSECUTIVE_SDS_BETWEEN_TRANCHE_COMMENCEMENTS'
-        | 'UNSUPPORTED_OFFENCE_ENCOURAGING_OR_ASSISTING'
-        | 'UNSUPPORTED_GENERIC_CONSPIRACY_OFFENCE'
-        | 'UNSUPPORTED_BREACH_97'
-        | 'UNSUPPORTED_SUSPENDED_OFFENCE'
+        | 'INCORRECT_OFFENCE_ENCOURAGING_OR_ASSISTING'
+        | 'INCORRECT_OFFENCE_GENERIC_CONSPIRACY'
+        | 'INCORRECT_OFFENCE_BREACH_97'
+        | 'INCORRECT_SUSPENDED_OFFENCE'
         | 'FTR_NO_RETURN_TO_CUSTODY_DATE'
         | 'NO_SENTENCES'
         | 'UNABLE_TO_DETERMINE_SHPO_RELEASE_PROVISIONS'
@@ -1274,7 +1295,7 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE'
         | 'UNSUPPORTED_CALCULATION'
         | 'VALIDATION'
-        | 'UNSUPPORTED_OFFENCE'
+        | 'INCORRECT_OFFENCE'
         | 'SUSPENDED_OFFENCE'
         | 'MANUAL_ENTRY_JOURNEY_REQUIRED'
         | 'CONCURRENT_CONSECUTIVE'
@@ -1380,7 +1401,7 @@ export interface components {
       expiredSentences: components['schemas']['RecallableSentence'][]
       ineligibleSentences: components['schemas']['RecallableSentence'][]
       sentencesBeforeInitialRelease: components['schemas']['RecallableSentence'][]
-      eligibleRecallTypes: ('LR' | 'FTR_14' | 'FTR_28' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC')[]
+      unexpectedRecallTypes: ('LR' | 'FTR_14' | 'FTR_28' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC')[]
     }
     RecallSentenceCalculation: {
       /** Format: date */
@@ -1410,22 +1431,6 @@ export interface components {
       validationMessages: components['schemas']['ValidationMessage'][]
       conflictingAdjustments: string[]
       automatedCalculationData?: components['schemas']['AutomatedCalculationData']
-      /**
-       * Format: int64
-       * @deprecated
-       * @description Remove ths property after frontend uses new object
-       */
-      calculationRequestId?: number
-      /**
-       * @deprecated
-       * @description Remove ths property after frontend uses new object
-       */
-      recallableSentences: components['schemas']['RecallableSentence'][]
-      /**
-       * @deprecated
-       * @description Remove ths property after frontend uses new object
-       */
-      eligibleRecallTypes: ('LR' | 'FTR_14' | 'FTR_28' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC')[]
     }
     OverallSentenceLength: {
       /** Format: int64 */
@@ -1668,12 +1673,7 @@ export interface components {
       calculationFragments?: components['schemas']['CalculationFragments']
       effectiveSentenceLength?: string
       /** @enum {string} */
-      calculationType:
-        | 'CALCULATED'
-        | 'MANUAL_DETERMINATE'
-        | 'MANUAL_INDETERMINATE'
-        | 'CALCULATED_WITH_APPROVED_DATES'
-        | 'GENUINE_OVERRIDE'
+      calculationType: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE'
       approvedDates?: {
         [key: string]: string
       }
@@ -1892,12 +1892,7 @@ export interface components {
       calculationViewConfiguration?: components['schemas']['CalculationViewConfiguration']
       commentText?: string
       /** @enum {string} */
-      calculationType?:
-        | 'CALCULATED'
-        | 'MANUAL_DETERMINATE'
-        | 'MANUAL_INDETERMINATE'
-        | 'CALCULATED_WITH_APPROVED_DATES'
-        | 'GENUINE_OVERRIDE'
+      calculationType?: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE'
       establishment?: string
       /** Format: int64 */
       calculationRequestId?: number
@@ -2105,6 +2100,7 @@ export interface components {
         | 'ADJUSTED_AFTER_TRANCHE_COMMENCEMENT'
         | 'BOTUS_LATEST_TUSED_USED'
         | 'BOTUS_LATEST_TUSED_USED_POST_REPEAL'
+        | 'PREVIOUSLY_RECORDED_SLED_USED'
       )[]
       /** @description Adjustments details associated that are specifically added as part of a rule */
       rulesWithExtraAdjustments: {
@@ -2244,12 +2240,7 @@ export interface components {
       /** Format: date */
       calculationDate?: string
       /** @enum {string} */
-      calculationType:
-        | 'CALCULATED'
-        | 'MANUAL_DETERMINATE'
-        | 'MANUAL_INDETERMINATE'
-        | 'CALCULATED_WITH_APPROVED_DATES'
-        | 'GENUINE_OVERRIDE'
+      calculationType: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE'
       /** @enum {string} */
       genuineOverrideReasonCode?:
         | 'TRIAL_RECORD_OR_BREAKDOWN_DOES_NOT_MATCH_OVERALL_SENTENCE_LENGTH'
@@ -2557,6 +2548,56 @@ export interface components {
         | 'TIME_SPENT_AS_AN_APPEAL_APPLICANT'
       /** @enum {string} */
       analysisResult: 'NEW' | 'SAME'
+    }
+    ApprovedDate: {
+      /** @enum {string} */
+      dateType:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
+      /** Format: date */
+      date: string
+    }
+    ApprovedDatesInputResponse: {
+      /** @description Whether the user can add approved dates for this prisoner */
+      approvedDatesAvailable: boolean
+      /**
+       * @description If approved dates cannot be added, the reason why
+       * @enum {string}
+       */
+      unavailableReason?:
+        | 'NO_PREVIOUS_CALCULATION'
+        | 'INPUTS_CHANGED_SINCE_LAST_CALCULATION'
+        | 'PREVIOUS_CALCULATION_MANUAL'
+        | 'PREVIOUS_CALCULATION_GENUINE_OVERRIDE'
+        | 'VALIDATION_FAILED'
+        | 'CALCULATION_FAILED'
+        | 'DATES_HAVE_CHANGED'
+      /** @description The results of preliminary calculation if approved dates can be added */
+      calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates']
+      /** @description Previous approved dates for this prisoner if any are found */
+      previousApprovedDates: components['schemas']['ApprovedDate'][]
     }
     AnalysedAdjustment: {
       /** @enum {string} */
@@ -5351,6 +5392,55 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['AnalysedBookingAndSentenceAdjustments']
+        }
+      }
+    }
+  }
+  getInputsForGenuineOverrideForCalculation_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The inputs required for adding approved dates for a prisoner */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ApprovedDatesInputResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ApprovedDatesInputResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ApprovedDatesInputResponse']
+        }
+      }
+      /** @description Couldn't find the requested prisoner */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ApprovedDatesInputResponse']
         }
       }
     }
