@@ -13,7 +13,7 @@ describe('CalculationSummaryViewModel', () => {
         'CALCULATED',
         'Abc',
         false,
-        { id: 1, displayName: 'Other', isOther: true },
+        { id: 1, displayName: 'Other', isOther: true, useForApprovedDates: false },
         '',
         '2024-01-01',
         undefined,

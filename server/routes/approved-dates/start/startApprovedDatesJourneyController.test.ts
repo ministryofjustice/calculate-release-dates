@@ -6,6 +6,10 @@ import { ApprovedDatesJourney } from '../../../@types/journeys'
 import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import SessionSetup from '../../testutils/sessionSetup'
+import {
+  ApprovedDatesInputResponse,
+  CalculatedReleaseDates,
+} from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 let app: Express
 let session: Partial<SessionData>
@@ -42,8 +46,16 @@ afterEach(() => {
 })
 
 describe('GET /approved-dates/:nomsId/start', () => {
-  it('should create the journey and redirect to review dates page', async () => {
+  it('should create the journey and redirect to review dates page if adding approved dates is available', async () => {
     // Given
+    const inputs: ApprovedDatesInputResponse = {
+      approvedDatesAvailable: true,
+      calculatedReleaseDates: {
+        calculationRequestId: 946,
+      } as unknown as CalculatedReleaseDates,
+      previousApprovedDates: [],
+    }
+    calculateReleaseDatesService.getApprovedDatesInputs.mockResolvedValue(inputs)
 
     // When
     const response = await request(app).get(`/approved-dates/${nomsId}/start`)
@@ -57,6 +69,37 @@ describe('GET /approved-dates/:nomsId/start', () => {
     )
   })
 
+  it('should redirect to full calculation journey with approved dates reason set for the prisoner if approved dates in unavailable', async () => {
+    // Given
+    const stubbedCalculationReasons = [
+      { id: 1, isOther: false, displayName: '2 day check', useForApprovedDates: false },
+      {
+        id: 123456,
+        isOther: false,
+        displayName: 'Recording a non-calculated date (including HDCAD, APD or ROTL)',
+        useForApprovedDates: true,
+      },
+      { id: 3, isOther: true, displayName: 'Other', useForApprovedDates: false },
+    ]
+
+    const inputs: ApprovedDatesInputResponse = {
+      approvedDatesAvailable: false,
+      unavailableReason: 'INPUTS_CHANGED_SINCE_LAST_CALCULATION',
+      previousApprovedDates: [],
+    }
+    calculateReleaseDatesService.getApprovedDatesInputs.mockResolvedValue(inputs)
+    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+
+    // When
+    const response = await request(app).get(`/approved-dates/${nomsId}/start`)
+
+    // Then
+    expect(response.status).toEqual(302)
+    expect(session.approvedDatesJourneys).toBeUndefined()
+    expect(response.headers.location).toStrictEqual(`/calculation/${nomsId}/check-information`)
+    expect(session.calculationReasonId[nomsId]).toStrictEqual(123456)
+  })
+
   it('should not remove any existing journeys in the session', async () => {
     // Given
     const existingUuid = v4()
@@ -66,8 +109,17 @@ describe('GET /approved-dates/:nomsId/start', () => {
         lastTouched: new Date().toISOString(),
         nomsId,
         preliminaryCalculationRequestId: 99,
+        datesToSave: [],
+        datesBeingAdded: [],
       },
     ]
+    calculateReleaseDatesService.getApprovedDatesInputs.mockResolvedValue({
+      approvedDatesAvailable: true,
+      calculatedReleaseDates: {
+        calculationRequestId: 946,
+      } as unknown as CalculatedReleaseDates,
+      previousApprovedDates: [],
+    })
 
     // When
     const response = await request(app).get(`/approved-dates/${nomsId}/start`)
@@ -91,32 +143,49 @@ describe('GET /approved-dates/:nomsId/start', () => {
         lastTouched: new Date(2024, 1, 1, 11, 30).toISOString(),
         nomsId,
         preliminaryCalculationRequestId: 101,
+        datesToSave: [],
+        datesBeingAdded: [],
       },
       {
         id: 'middle-aged',
         lastTouched: new Date(2024, 1, 1, 12, 30).toISOString(),
         nomsId,
         preliminaryCalculationRequestId: 102,
+        datesToSave: [],
+        datesBeingAdded: [],
       },
       {
         id: 'youngest',
         lastTouched: new Date(2024, 1, 1, 14, 30).toISOString(),
         nomsId,
         preliminaryCalculationRequestId: 103,
+        datesToSave: [],
+        datesBeingAdded: [],
       },
       {
         id: 'oldest',
         lastTouched: new Date(2024, 1, 1, 10, 30).toISOString(),
         nomsId,
         preliminaryCalculationRequestId: 104,
+        datesToSave: [],
+        datesBeingAdded: [],
       },
       {
         id: 'young',
         lastTouched: new Date(2024, 1, 1, 13, 30).toISOString(),
         nomsId,
         preliminaryCalculationRequestId: 105,
+        datesToSave: [],
+        datesBeingAdded: [],
       },
     ]
+    calculateReleaseDatesService.getApprovedDatesInputs.mockResolvedValue({
+      approvedDatesAvailable: true,
+      calculatedReleaseDates: {
+        calculationRequestId: 946,
+      } as unknown as CalculatedReleaseDates,
+      previousApprovedDates: [],
+    })
 
     // When
     const response = await request(app).get(`/approved-dates/${nomsId}/start`)

@@ -30,6 +30,8 @@ describe('journeyMiddleware', () => {
         lastTouched: lastTouchedBeforeCall.toISOString(),
         nomsId,
         preliminaryCalculationRequestId: 1234,
+        datesToSave: [],
+        datesBeingAdded: [],
       }
       ensureInApprovedDatesJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)

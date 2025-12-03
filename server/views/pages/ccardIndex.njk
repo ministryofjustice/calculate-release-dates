@@ -89,8 +89,9 @@
         ] %}
 
         {% if hasNoIndeterminateSentence %}
+            {% set addDatesUrl = '/approved-dates/' + prisonerDetail.offenderNo + '/start' if featureToggles.useNewApprovedDatesFlow else '/calculation/' + prisonerDetail.offenderNo + '/reason?isAddDatesFlow=true' %}
             {% set _ = actions.push({
-                href: '/calculation/' + prisonerDetail.offenderNo + '/reason?isAddDatesFlow=true',
+                href: addDatesUrl,
                 title: 'Add APD, HDCAD or ROTL dates',
                 dataQa: 'calc-release-dates-for-adding-dates-link'
             }) %}

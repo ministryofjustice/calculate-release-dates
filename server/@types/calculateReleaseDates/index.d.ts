@@ -1305,8 +1305,6 @@ export interface components {
       prospective: boolean
     }
     AdjustmentDto: {
-      /** Format: int64 */
-      bookingId: number
       person: string
       /** @enum {string} */
       adjustmentType:
@@ -1322,6 +1320,8 @@ export interface components {
         | 'APPEAL_APPLICANT'
       /** Format: uuid */
       id?: string
+      /** Format: int64 */
+      bookingId?: number
       /** Format: date */
       toDate?: string
       /** Format: date */
@@ -1338,6 +1338,8 @@ export interface components {
       timeSpentAsAnAppealApplicant?: components['schemas']['TimeSpentAsAnAppealApplicantDto']
       /** Format: int32 */
       sentenceSequence?: number
+      /** Format: uuid */
+      recallId?: string
       adjustmentTypeText?: string
       /** @enum {string} */
       adjustmentArithmeticType?: 'ADDITION' | 'DEDUCTION' | 'NONE'
@@ -1393,6 +1395,8 @@ export interface components {
     RecordARecallRequest: {
       /** Format: date */
       revocationDate: string
+      /** Format: uuid */
+      recallId?: string
     }
     AutomatedCalculationData: {
       /** Format: int64 */
@@ -1717,6 +1721,7 @@ export interface components {
       id: number
       isOther: boolean
       displayName: string
+      useForApprovedDates: boolean
     }
     PreviouslyRecordedSLED: {
       /**
@@ -2602,8 +2607,6 @@ export interface components {
     AnalysedAdjustment: {
       /** @enum {string} */
       analysisResult: 'NEW' | 'SAME'
-      /** Format: int64 */
-      bookingId: number
       person: string
       /** @enum {string} */
       adjustmentType:
@@ -2619,6 +2622,8 @@ export interface components {
         | 'APPEAL_APPLICANT'
       /** Format: uuid */
       id?: string
+      /** Format: int64 */
+      bookingId?: number
       /** Format: date */
       toDate?: string
       /** Format: date */
@@ -2635,6 +2640,8 @@ export interface components {
       timeSpentAsAnAppealApplicant?: components['schemas']['TimeSpentAsAnAppealApplicantDto']
       /** Format: int32 */
       sentenceSequence?: number
+      /** Format: uuid */
+      recallId?: string
       adjustmentTypeText?: string
       /** @enum {string} */
       adjustmentArithmeticType?: 'ADDITION' | 'DEDUCTION' | 'NONE'

@@ -4,10 +4,10 @@ import * as cheerio from 'cheerio'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
-import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
+import { GenuineOverrideInputs } from '../../../@types/journeys'
 
 jest.mock('../../../services/calculateReleaseDatesService')
 jest.mock('../../../services/prisonerService')

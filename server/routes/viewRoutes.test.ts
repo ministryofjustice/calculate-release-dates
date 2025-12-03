@@ -231,7 +231,7 @@ const stubbedCalculationResults = {
   calculationStatus: 'CONFIRMED',
   calculationType: 'CALCULATED',
   approvedDates: {},
-  calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false },
+  calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false, useForApprovedDates: false },
 } as BookingCalculation
 
 const stubbedCalculationBreakdown: CalculationBreakdown = {
@@ -303,6 +303,7 @@ const stubbedReleaseDatesUsingCalcReqId: ReleaseDatesAndCalculationContext = {
       id: 8,
       isOther: false,
       displayName: 'A calculation reason',
+      useForApprovedDates: false,
     },
     otherReasonDescription: '',
     calculationDate: '2020-06-01',
@@ -1062,7 +1063,7 @@ describe('View journey routes tests', () => {
         ...stubbedResultsWithBreakdownAndAdjustments,
         context: {
           ...stubbedResultsWithBreakdownAndAdjustments.context,
-          calculationReason: { id: 2, displayName: 'Other', isOther: true },
+          calculationReason: { id: 2, displayName: 'Other', isOther: true, useForApprovedDates: false },
           otherReasonDescription: 'Another reason for calculation',
         },
       })
@@ -1200,7 +1201,7 @@ describe('View journey routes tests', () => {
         context: {
           ...stubbedResultsWithBreakdownAndAdjustments.context,
           calculationDate: '2024-01-13',
-          calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false },
+          calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false, useForApprovedDates: false },
         },
       })
 
@@ -1241,7 +1242,7 @@ describe('View journey routes tests', () => {
         context: {
           ...stubbedResultsWithBreakdownAndAdjustments.context,
           calculationDate: '2024-01-19',
-          calculationReason: { id: 2, displayName: 'Other', isOther: true },
+          calculationReason: { id: 2, displayName: 'Other', isOther: true, useForApprovedDates: false },
           otherReasonDescription: 'Another reason for calculation',
         },
       })
@@ -1688,6 +1689,7 @@ describe('View journey routes tests', () => {
             id: 8,
             isOther: false,
             displayName: 'A calculation reason',
+            useForApprovedDates: false,
           },
           otherReasonDescription: '',
           calculationDate: '2020-06-01',
@@ -1857,6 +1859,7 @@ describe('View journey routes tests', () => {
             id: 8,
             isOther: false,
             displayName: 'A calculation reason',
+            useForApprovedDates: false,
           },
           otherReasonDescription: '',
           calculationDate: '2020-06-01',
@@ -1962,6 +1965,7 @@ describe('View journey routes tests', () => {
             id: 8,
             isOther: false,
             displayName: 'A calculation reason',
+            useForApprovedDates: false,
           },
           otherReasonDescription: '',
           calculationDate: '2020-06-01',

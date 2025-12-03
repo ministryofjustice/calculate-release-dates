@@ -1,9 +1,9 @@
 import { Request } from 'express'
-import { GenuineOverrideInputs, NewGenuineOverrideDate } from '../../models/genuine-override/genuineOverrideInputs'
 import { filteredListOfDates } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import config from '../../config'
 import AuthorisedRoles from '../../enumerations/authorisedRoles'
 import GenuineOverrideUrls from './genuineOverrideUrls'
+import { GenuineOverrideInputs, NewDate } from '../../@types/journeys'
 
 const genuineOverrideInputsForPrisoner = (req: Request, prisonerNumber: string): GenuineOverrideInputs => {
   const { session } = req
@@ -27,7 +27,7 @@ const getGenuineOverridePreviousDateUrl = (
   prisonerNumber: string,
   calculationRequestId: string | number,
   currentDateType: string,
-  datesBeingAdded: NewGenuineOverrideDate[],
+  datesBeingAdded: NewDate[],
 ): string => {
   const currentIndex = datesBeingAdded.findIndex(it => it.type === currentDateType)
   const previous = currentIndex - 1
@@ -41,7 +41,7 @@ const getGenuineOverrideNextAction = (
   prisonerNumber: string,
   calculationRequestId: string | number,
   currentDateType: string,
-  datesBeingAdded: NewGenuineOverrideDate[],
+  datesBeingAdded: NewDate[],
 ): {
   action: 'NEXT_DATE' | 'SAVE_ALL_DATES'
   url: string
