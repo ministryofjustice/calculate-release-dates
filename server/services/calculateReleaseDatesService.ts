@@ -10,6 +10,7 @@ import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClien
 import {
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
+  ApprovedDatesInputResponse,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
@@ -607,5 +608,9 @@ export default class CalculateReleaseDatesService {
 
   async getGenuineOverrideInputs(calculationRequestId: number, token: string): Promise<GenuineOverrideInputResponse> {
     return new CalculateReleaseDatesApiClient(token).getGenuineOverrideInputs(calculationRequestId)
+  }
+
+  async getApprovedDatesInputs(prisonerId: string, token: string): Promise<ApprovedDatesInputResponse> {
+    return new CalculateReleaseDatesApiClient(token).getApprovedDatesInputs(prisonerId)
   }
 }

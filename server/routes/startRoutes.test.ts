@@ -27,6 +27,7 @@ import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesSer
 import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
 import AuditService from '../services/auditService'
 import { CalculationCard } from '../types/CalculationCard'
+import config from '../config'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
@@ -171,6 +172,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   jest.resetAllMocks()
+  config.featureToggles.useNewApprovedDatesFlow = true
 })
 
 describe('Check access tests', () => {
@@ -225,7 +227,32 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('should render correct links for prisoner with no Indeterminate sentences', async () => {
+  it('should render correct links for prisoner with no Indeterminate sentences and new add dates flow', async () => {
+    config.featureToggles.useNewApprovedDatesFlow = true
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction: CalculationCard = {
+      latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: null,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
+    await request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
+        expect($('.govuk-link').first().attr('href')).toStrictEqual('/view/GU32342/nomis-calculation-summary/123456')
+        expect(addDatesFlowLink.attr('href')).toStrictEqual('/approved-dates/A1234AA/start')
+        expect(addDatesFlowLink.text()).toStrictEqual('Add APD, HDCAD or ROTL dates')
+      })
+  })
+
+  it('should render correct links for prisoner with no Indeterminate sentences and old approved dates flow', async () => {
+    config.featureToggles.useNewApprovedDatesFlow = false
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
     const cardAndAction: CalculationCard = {
       latestCalcCard: latestCalcCardForPrisoner,

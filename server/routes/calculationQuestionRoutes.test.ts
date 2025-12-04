@@ -149,9 +149,9 @@ const serviceDefinitionsOnlyAdjustmentsThingsToDo = {
 } as CcrdServiceDefinitions
 
 const stubbedCalculationReasons = [
-  { id: 9, isOther: false, displayName: '2 day check' },
-  { id: 10, isOther: false, displayName: 'Appeal decision' },
-  { id: 11, isOther: true, displayName: 'Other' },
+  { id: 9, isOther: false, displayName: '2 day check', useForApprovedDates: false },
+  { id: 10, isOther: false, displayName: 'Appeal decision', useForApprovedDates: false },
+  { id: 11, isOther: true, displayName: 'Other', useForApprovedDates: false },
 ]
 
 beforeEach(() => {

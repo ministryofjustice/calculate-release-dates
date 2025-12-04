@@ -6,4 +6,8 @@ export default class ApprovedDatesUrls {
   static reviewCalculatedDates = (prisonerNumber: string, journeyId: string) => {
     return `/approved-dates/${prisonerNumber}/review-calculated-dates/${journeyId}`
   }
+
+  static reviewApprovedDates(prisonerNumber: string, journeyId: string) {
+    return `/approved-dates/${prisonerNumber}/review-approved-dates/${journeyId}`
+  }
 }

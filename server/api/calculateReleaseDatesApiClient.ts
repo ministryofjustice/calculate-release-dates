@@ -4,6 +4,7 @@ import {
   AdjustmentDto,
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
+  ApprovedDatesInputResponse,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
@@ -375,5 +376,11 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/genuine-override/calculation/${calculationRequestId}/inputs`,
     }) as Promise<GenuineOverrideInputResponse>
+  }
+
+  getApprovedDatesInputs(prisonerId: string): Promise<ApprovedDatesInputResponse> {
+    return this.restClient.get({
+      path: `/approved-dates/${prisonerId}/inputs`,
+    }) as Promise<ApprovedDatesInputResponse>
   }
 }

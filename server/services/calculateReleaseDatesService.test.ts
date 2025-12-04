@@ -705,7 +705,7 @@ describe('Calculate release dates service tests', () => {
         calculationStatus: 'CONFIRMED',
         calculationReference: 'UUID',
         calculationType: 'CALCULATED',
-        calculationReason: { id: 1, isOther: true, displayName: 'Other' },
+        calculationReason: { id: 1, isOther: true, displayName: 'Other', useForApprovedDates: false },
         otherReasonDescription: 'Test',
         usePreviouslyRecordedSLEDIfFound: false,
       },

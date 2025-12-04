@@ -1,0 +1,63 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " - Confirm the calculated dates are correct" %}
+{% set pageId = "approved-dates-review-calculated-dates" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backLink,
+            attributes: {"data-qa": "back-link"}
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">Add APD, HDCAD and ROTL dates</span>
+            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Confirm the calculated dates are correct</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukSummaryList({
+                rows: dateRows,
+                attributes: { id: 'calculatedDates' }
+            }) }}
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">What to do if the dates are wrong</h2>
+            <p class="govuk-body">If something is wrong with the dates, check the sentence and offence information is correct, then calculate release dates again.</p>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Confirm and continue",
+                    type: submit,
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'confirm-and-continue' }
+                }) }}
+                {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+                <a data-qa="cancel-link"
+                   data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                   data-module="govuk-button"
+                   href="{{ cancelUrl }}">
+                    Cancel
+                </a>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

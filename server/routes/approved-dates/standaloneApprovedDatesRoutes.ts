@@ -6,8 +6,15 @@ import { SchemaFactory, validate } from '../../middleware/validationMiddleware'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import StartApprovedDatesJourneyController from './start/startApprovedDatesJourneyController'
 import ensureInApprovedDatesJourney from '../../middleware/approvedDatesMiddleware'
+import ReviewCalculatedDatesBeforeAddingApprovedDatesController from './review-calculated-dates/reviewCalculatedDatesBeforeAddingApprovedDatesController'
+import PrisonerService from '../../services/prisonerService'
+import DateTypeConfigurationService from '../../services/dateTypeConfigurationService'
 
-const StandaloneApprovedDatesRoutes = (calculateReleaseDatesService: CalculateReleaseDatesService) => {
+const StandaloneApprovedDatesRoutes = (
+  calculateReleaseDatesService: CalculateReleaseDatesService,
+  prisonerService: PrisonerService,
+  dateTypeConfigurationService: DateTypeConfigurationService,
+) => {
   const router = Router({ mergeParams: true })
   const route = <P extends { [key: string]: string }>({
     path,
@@ -35,7 +42,11 @@ const StandaloneApprovedDatesRoutes = (calculateReleaseDatesService: CalculateRe
 
   route({
     path: '/approved-dates/:nomsId/review-calculated-dates/:journeyId',
-    controller: new StartApprovedDatesJourneyController(calculateReleaseDatesService),
+    controller: new ReviewCalculatedDatesBeforeAddingApprovedDatesController(
+      calculateReleaseDatesService,
+      prisonerService,
+      dateTypeConfigurationService,
+    ),
   })
 
   return router

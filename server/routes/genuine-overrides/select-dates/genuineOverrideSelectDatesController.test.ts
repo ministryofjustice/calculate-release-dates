@@ -3,7 +3,6 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
-import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
@@ -11,6 +10,7 @@ import { determinateDateTypesForManualEntry } from '../../../services/manualEntr
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
+import { GenuineOverrideInputs } from '../../../@types/journeys'
 
 jest.mock('../../../services/prisonerService')
 jest.mock('../../../services/dateTypeConfigurationService')
