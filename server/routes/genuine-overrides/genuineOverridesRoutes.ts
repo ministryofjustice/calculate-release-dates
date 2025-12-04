@@ -10,7 +10,6 @@ import PrisonerService from '../../services/prisonerService'
 import ReviewDatesForGenuineOverrideController from './review-dates/reviewDatesForGenuineOverrideController'
 import DateTypeConfigurationService from '../../services/dateTypeConfigurationService'
 import GenuineOverrideSelectDatesController from './select-dates/genuineOverrideSelectDatesController'
-import { genuineOverrideSelectDatesSchema } from './select-dates/genuineOverrideSelectDatesSchema'
 import AddGenuineOverrideDateController from './add-date/addGenuineOverrideDateController'
 import { releaseDateSchema } from '../common-schemas/releaseDateSchemas'
 import EditGenuineOverrideDateController from './edit-date/editGenuineOverrideDateController'
@@ -21,6 +20,7 @@ import StartGenuineOverrideController from './start/startGenuineOverrideControll
 import GenuineOverrideExpressInterceptController from './express-intercept/genuineOverrideExpressInterceptController'
 import ReviewDatesFromPreviousGenuineOverrideController from './review-previous-override/reviewDatesFromPreviousGenuineOverrideController'
 import { reviewDatesFromPreviousOverrideSummarySchema } from './review-previous-override/reviewDatesFromPreviousOverrideSummarySchema'
+import { selectDatesSchema } from '../common-schemas/selectDatesSchema'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
@@ -89,7 +89,7 @@ const GenuineOverridesRoutes = (
       prisonerService,
       calculateReleaseDatesService,
     ),
-    validateToSchema: genuineOverrideSelectDatesSchema,
+    validateToSchema: selectDatesSchema,
   })
 
   route({

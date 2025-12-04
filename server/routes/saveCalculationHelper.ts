@@ -76,4 +76,4 @@ const getBreakdownFragment = async (
   })
 }
 
-export default saveCalculation
+export { saveCalculation, getBreakdownFragment }

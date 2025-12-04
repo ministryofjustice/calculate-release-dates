@@ -9,6 +9,11 @@ import ensureInApprovedDatesJourney from '../../middleware/approvedDatesMiddlewa
 import ReviewCalculatedDatesBeforeAddingApprovedDatesController from './review-calculated-dates/reviewCalculatedDatesBeforeAddingApprovedDatesController'
 import PrisonerService from '../../services/prisonerService'
 import DateTypeConfigurationService from '../../services/dateTypeConfigurationService'
+import ReviewApprovedDatesController from './review-dates/reviewApprovedDatesController'
+import SelectApprovedDatesController from './select-dates/selectApprovedDatesController'
+import { selectDatesSchema } from '../common-schemas/selectDatesSchema'
+import { releaseDateSchema } from '../common-schemas/releaseDateSchemas'
+import AddApprovedDateController from './add-date/addApprovedDateController'
 
 const StandaloneApprovedDatesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
@@ -47,6 +52,27 @@ const StandaloneApprovedDatesRoutes = (
       prisonerService,
       dateTypeConfigurationService,
     ),
+  })
+
+  route({
+    path: '/approved-dates/:nomsId/review-approved-dates/:journeyId',
+    controller: new ReviewApprovedDatesController(
+      calculateReleaseDatesService,
+      prisonerService,
+      dateTypeConfigurationService,
+    ),
+  })
+
+  route({
+    path: '/approved-dates/:nomsId/select-dates/:journeyId',
+    controller: new SelectApprovedDatesController(dateTypeConfigurationService, prisonerService),
+    validateToSchema: selectDatesSchema,
+  })
+
+  route({
+    path: '/approved-dates/:nomsId/:dateType/add/:journeyId',
+    controller: new AddApprovedDateController(dateTypeConfigurationService, prisonerService),
+    validateToSchema: releaseDateSchema,
   })
 
   return router

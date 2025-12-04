@@ -1,5 +1,4 @@
 import { Request } from 'express'
-import { filteredListOfDates } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import config from '../../config'
 import AuthorisedRoles from '../../enumerations/authorisedRoles'
 import GenuineOverrideUrls from './genuineOverrideUrls'
@@ -11,10 +10,6 @@ const genuineOverrideInputsForPrisoner = (req: Request, prisonerNumber: string):
     throw Error(`No session state found for genuine override for prisoner ${prisonerNumber}. Session may have expired`)
   }
   return session.genuineOverrideInputs[prisonerNumber]
-}
-
-const sortDatesForGenuineOverride = (dates: { type: string }[]): { type: string }[] => {
-  return dates.sort((a, b) => filteredListOfDates.indexOf(a.type) - filteredListOfDates.indexOf(b.type))
 }
 
 const hasGenuineOverridesAccess = (roles: string[]): boolean => {
@@ -62,7 +57,6 @@ const getGenuineOverrideNextAction = (
 
 export {
   genuineOverrideInputsForPrisoner,
-  sortDatesForGenuineOverride,
   hasGenuineOverridesAccess,
   getGenuineOverridePreviousDateUrl,
   getGenuineOverrideNextAction,

@@ -26,7 +26,7 @@ export default class ReviewCalculatedDatesBeforeAddingApprovedDatesController im
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
 
     return res.render(
-      'pages/approvedDates/reviewCalculatedDatesBeforeAddingApprovedDates.njk',
+      'pages/approvedDates/standalone/reviewCalculatedDatesBeforeAddingApprovedDates.njk',
       new ReviewCalculatedDatesBeforeAddingApprovedDatesViewModel(
         prisonerDetail,
         detailedCalculationResults,

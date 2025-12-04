@@ -13,7 +13,7 @@ import {
   approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
 } from '../../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
-import saveCalculation from '../saveCalculationHelper'
+import { saveCalculation } from '../saveCalculationHelper'
 import GenuineOverrideUrls from '../genuine-overrides/genuineOverrideUrls'
 import { hasGenuineOverridesAccess } from '../genuine-overrides/genuineOverrideUtils'
 import { getSiblingCalculationWithPreviouslyRecordedSLED } from '../../utils/previouslyRecordedSledUtils'

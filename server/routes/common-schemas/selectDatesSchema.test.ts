@@ -1,7 +1,7 @@
-import { deduplicateFieldErrors } from '../../../middleware/validationMiddleware'
-import { genuineOverrideSelectDatesSchema } from './genuineOverrideSelectDatesSchema'
+import { deduplicateFieldErrors } from '../../middleware/validationMiddleware'
+import { selectDatesSchema } from './selectDatesSchema'
 
-describe('genuineOverrideSelectDatesSchema', () => {
+describe('selectDatesSchema', () => {
   type Form = {
     dateType?: string[] | string
   }
@@ -60,6 +60,6 @@ describe('genuineOverrideSelectDatesSchema', () => {
   })
 
   const doValidate = async (form: Form) => {
-    return genuineOverrideSelectDatesSchema.safeParse(form)
+    return selectDatesSchema.safeParse(form)
   }
 })
