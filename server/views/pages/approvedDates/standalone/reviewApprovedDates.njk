@@ -1,0 +1,70 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " - Add and review dates" %}
+{% set pageId = "review-approved-dates" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backLink,
+            attributes: {"data-qa": "back-link"}
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% include '../../partials/formError.njk' %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">Add APD, HDCAD and ROTL dates</span>
+            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Add and review dates</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukSummaryList({
+                rows: dateRows,
+                attributes: { id: 'datesToSave' }
+            }) }}
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{ addLink }}" data-qa="add-dates-link">Add another release date</a></p>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">Confirm and save to NOMIS</h2>
+            <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is
+                correct. These dates will be saved in NOMIS as a manual calculation.</p>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Confirm and save",
+                    type: submit,
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'confirm-and-save' }
+                }) }}
+                {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+                <a data-qa="cancel-link"
+                   data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                   data-module="govuk-button"
+                   href="{{ cancelUrl }}">
+                    Cancel
+                </a>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

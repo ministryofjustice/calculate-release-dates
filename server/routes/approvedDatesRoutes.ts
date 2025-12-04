@@ -9,7 +9,7 @@ import RemoveApprovedDateViewModel from '../models/RemoveApprovedDateViewModel'
 import SelectApprovedDatesViewModel from '../models/SelectApprovedDatesViewModel'
 import ApprovedDatesSubmitDateViewModel from '../models/ApprovedDatesSubmitDateViewModel'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
-import saveCalculation from './saveCalculationHelper'
+import { saveCalculation } from './saveCalculationHelper'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 export default class ApprovedDatesRoutes {

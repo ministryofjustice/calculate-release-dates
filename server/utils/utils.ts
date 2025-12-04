@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { DesignSystemEnvironment } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import config from '../config'
+import { filteredListOfDates } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -131,4 +132,16 @@ export const maxOf = <A, B>(all: A[], map: (a: A) => B): B => {
     }
   })
   return max
+}
+
+export const sortDisplayableDates = (dates: { type: string }[]): { type: string }[] => {
+  return dates.sort((a, b) => filteredListOfDates.indexOf(a.type) - filteredListOfDates.indexOf(b.type))
+}
+
+export const dateToDayMonthYear = (date: string): { day: number; month: number; year: number } => {
+  const parsedDate = dayjs(date)
+  const day = parsedDate.date()
+  const month = parsedDate.month() + 1 // months are 0 indexed in JS
+  const year = parsedDate.year()
+  return { day, month, year }
 }
