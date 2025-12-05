@@ -2,6 +2,7 @@ import { SuperAgentRequest } from 'superagent'
 import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
 import {
+  ApprovedDate,
   DetailedCalculationResults,
   LatestCalculation,
   PreviouslyRecordedSLED,
@@ -1577,6 +1578,36 @@ export default {
         jsonBody: {
           success: false,
           validationMessages: opts.validationMessages,
+        },
+      },
+    })
+  },
+  stubAvailableApprovedDatesInputs: (opts: {
+    calculationRequestId?: number
+    previousApprovedDates?: ApprovedDate[]
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/approved-dates/A1234AB/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          approvedDatesAvailable: true,
+          calculatedReleaseDates: {
+            dates: {
+              SLED: '2018-11-05',
+              CRD: '2017-05-07',
+              HDCED: '2016-12-24',
+            },
+            calculationRequestId: opts?.calculationRequestId ?? 123,
+            prisonerId: 'A1234AB',
+            bookingId: 1234,
+            calculationStatus: 'PRELIMINARY',
+          },
+          previousApprovedDates: opts?.previousApprovedDates ?? [],
         },
       },
     })

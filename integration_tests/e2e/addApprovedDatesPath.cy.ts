@@ -1,12 +1,11 @@
 import CalculationCompletePage from '../pages/calculationComplete'
-import CalculationSummaryPage from '../pages/calculationSummary'
-import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
-import CalculationReasonPage from '../pages/reasonForCalculation'
 import CCARDLandingPage from '../pages/CCARDLandingPage'
-import ApprovedDatesSelectDatesToEnterPage from '../pages/approvedDatesSelectDatesToEnter'
-import ApprovedDatesEnterDatePage from '../pages/approvedDatesEnterDate'
-import ApprovedDatesRemoveDatePage from '../pages/approvedDatesRemoveDate'
+import StandaloneApprovedDatesReviewCalculatedDatesPage from '../pages/standaloneApprovedDatesReviewCalculatedDatesPage'
+import StandaloneApprovedDatesSelectDatesToEnterPage from '../pages/standaloneApprovedDatesSelectDatesToEnterPage'
+import StandaloneEnterApprovedDatePage from '../pages/standaloneEnterApprovedDatePage'
+import StandaloneReviewApprovedDatesPage from '../pages/standaloneReviewApprovedDatesPage'
+import StandaloneRemoveApprovedDatePage from '../pages/standaloneRemoveApprovedDatePage'
 
 context('End to end user journeys entering and modifying approved dates through dedicated link', () => {
   beforeEach(() => {
@@ -44,143 +43,199 @@ context('End to end user journeys entering and modifying approved dates through 
     cy.task('stubGetEligibility')
   })
 
-  it('Can add all dates', () => {
+  it('Can add all dates if approved dates is available', () => {
+    cy.task('stubAvailableApprovedDatesInputs')
+
     cy.signIn()
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.addReleaseDatesAction().click()
 
-    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
-    calculationReasonPage.submitReason().click()
+    Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
+      .clickContinue()
 
-    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
-    checkInformationPage.calculateButton().click()
-
-    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
-
-    const selectApprovedDatesTypesPage = Page.verifyOnPage(ApprovedDatesSelectDatesToEnterPage)
+    const selectApprovedDatesTypesPage = Page.verifyOnPage(StandaloneApprovedDatesSelectDatesToEnterPage)
     selectApprovedDatesTypesPage.expectDateOffered(['APD', 'HDCAD', 'ROTL'])
     selectApprovedDatesTypesPage.checkDate('APD')
     selectApprovedDatesTypesPage.checkDate('HDCAD')
     selectApprovedDatesTypesPage.checkDate('ROTL')
-    selectApprovedDatesTypesPage.continue().click()
+    selectApprovedDatesTypesPage.continue('continue-button').click()
 
-    const enterApdPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterApdPage.checkIsFor('APD')
-    enterApdPage.enterDate('APD', '01', '06', '2026')
-    enterApdPage.continue().click()
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('APD')
+      .enterDate('01', '06', '2026')
+      .clickContinue()
 
-    const enterHdcadPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterHdcadPage.checkIsFor('HDCAD')
-    enterHdcadPage.enterDate('HDCAD', '20', '11', '2027')
-    enterHdcadPage.continue().click()
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('HDCAD')
+      .enterDate('20', '11', '2027')
+      .clickContinue()
 
-    const enterRotlPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterRotlPage.checkIsFor('ROTL')
-    enterRotlPage.enterDate('ROTL', '30', '12', '2028')
-    enterRotlPage.continue().click()
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('ROTL')
+      .enterDate('30', '12', '2028')
+      .clickContinue()
 
-    const calculationSummaryPageAfterApprovedDates = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPageAfterApprovedDates.dateShouldHaveValue('APD', 'Monday, 01 June 2026')
-    calculationSummaryPageAfterApprovedDates.dateShouldHaveValue('HDCAD', 'Saturday, 20 November 2027')
-    calculationSummaryPageAfterApprovedDates.dateShouldHaveValue('ROTL', 'Saturday, 30 December 2028')
-    calculationSummaryPageAfterApprovedDates.submitToNomisButton().click()
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '01 June 2026')
+      .expectDate('HDCAD', '20 November 2027')
+      .expectDate('ROTL', '30 December 2028')
+      .continueButton()
+      .click()
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
-
     calculationCompletePage.title().should('contain.text', 'Calculation complete')
+
+    cy.verifyLastAPICallDeepProperty(
+      { method: 'POST', urlPath: `/calculate-release-dates/calculation/confirm/123` },
+      'approvedDates',
+      [
+        { dateType: 'ROTL', date: { day: 30, month: 12, year: 2028 } },
+        { dateType: 'HDCAD', date: { day: 20, month: 11, year: 2027 } },
+        { dateType: 'APD', date: { day: 1, month: 6, year: 2026 } },
+      ],
+    )
   })
 
-  it('Can edit a date', () => {
+  it('Can add all dates and edit them if approved dates is available', () => {
+    cy.task('stubAvailableApprovedDatesInputs')
+
     cy.signIn()
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.addReleaseDatesAction().click()
 
-    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
-    calculationReasonPage.submitReason().click()
+    Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
+      .clickContinue()
 
-    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
-    checkInformationPage.calculateButton().click()
-
-    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
-
-    const selectApprovedDatesTypesPage = Page.verifyOnPage(ApprovedDatesSelectDatesToEnterPage)
-    selectApprovedDatesTypesPage.expectDateOffered(['APD', 'HDCAD', 'ROTL'])
-    selectApprovedDatesTypesPage.checkDate('APD')
-    selectApprovedDatesTypesPage.continue().click()
-
-    const enterApdPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterApdPage.checkIsFor('APD')
-    enterApdPage.enterDate('APD', '01', '06', '2026')
-    enterApdPage.continue().click()
-
-    const calculationSummaryPageAfterApprovedDates = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPageAfterApprovedDates.dateShouldHaveValue('APD', 'Monday, 01 June 2026')
-    calculationSummaryPageAfterApprovedDates.changeDateLink('APD').click()
-
-    const editApdPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    editApdPage.checkIsFor('APD')
-    editApdPage.clearDate('APD')
-    editApdPage.enterDate('APD', '01', '06', '2027')
-    editApdPage.continue().click()
-
-    const calculationSummaryPageAfterEditApd = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPageAfterEditApd.dateShouldHaveValue('APD', 'Tuesday, 01 June 2027')
-    calculationSummaryPageAfterEditApd.submitToNomisButton().click()
-
-    const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
-    calculationCompletePage.title().should('contain.text', 'Calculation complete')
-  })
-
-  it('Can remove a date', () => {
-    cy.signIn()
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
-    landingPage.addReleaseDatesAction().click()
-
-    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
-    calculationReasonPage.submitReason().click()
-
-    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
-    checkInformationPage.calculateButton().click()
-
-    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
-
-    const selectApprovedDatesTypesPage = Page.verifyOnPage(ApprovedDatesSelectDatesToEnterPage)
+    const selectApprovedDatesTypesPage = Page.verifyOnPage(StandaloneApprovedDatesSelectDatesToEnterPage)
     selectApprovedDatesTypesPage.expectDateOffered(['APD', 'HDCAD', 'ROTL'])
     selectApprovedDatesTypesPage.checkDate('APD')
     selectApprovedDatesTypesPage.checkDate('HDCAD')
-    selectApprovedDatesTypesPage.continue().click()
+    selectApprovedDatesTypesPage.checkDate('ROTL')
+    selectApprovedDatesTypesPage.continue('continue-button').click()
 
-    const enterApdPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterApdPage.checkIsFor('APD')
-    enterApdPage.enterDate('APD', '01', '06', '2026')
-    enterApdPage.continue().click()
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('APD')
+      .enterDate('01', '06', '2026')
+      .clickContinue()
 
-    const enterHdcadPage = Page.verifyOnPage(ApprovedDatesEnterDatePage)
-    enterHdcadPage.checkIsFor('HDCAD')
-    enterHdcadPage.enterDate('HDCAD', '20', '11', '2027')
-    enterHdcadPage.continue().click()
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('HDCAD')
+      .enterDate('20', '11', '2027')
+      .clickContinue()
 
-    const calculationSummaryPageAfterApprovedDates = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPageAfterApprovedDates.dateShouldHaveValue('APD', 'Monday, 01 June 2026')
-    calculationSummaryPageAfterApprovedDates.dateShouldHaveValue('HDCAD', 'Saturday, 20 November 2027')
-    calculationSummaryPageAfterApprovedDates.removeDateLink('APD').click()
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('ROTL')
+      .enterDate('30', '12', '2028')
+      .clickContinue()
 
-    const removeApdPage = Page.verifyOnPage(ApprovedDatesRemoveDatePage)
-    removeApdPage.yes().click()
-    removeApdPage.continue().click()
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '01 June 2026')
+      .expectDate('HDCAD', '20 November 2027')
+      .expectDate('ROTL', '30 December 2028')
+      .editDateLink('APD')
+      .click()
 
-    const calculationSummaryPageAfterRemoveApd = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPageAfterRemoveApd.dateShouldNotBePresent('APD')
-    calculationSummaryPageAfterRemoveApd.dateShouldHaveValue('HDCAD', 'Saturday, 20 November 2027')
-    calculationSummaryPageAfterRemoveApd.submitToNomisButton().click()
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('APD')
+      .clearDate()
+      .enterDate('15', '07', '2025')
+      .clickContinue()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '15 July 2025')
+      .expectDate('HDCAD', '20 November 2027')
+      .expectDate('ROTL', '30 December 2028')
+      .continueButton()
+      .click()
 
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
     calculationCompletePage.title().should('contain.text', 'Calculation complete')
+
+    cy.verifyLastAPICallDeepProperty(
+      { method: 'POST', urlPath: `/calculate-release-dates/calculation/confirm/123` },
+      'approvedDates',
+      [
+        { dateType: 'ROTL', date: { day: 30, month: 12, year: 2028 } },
+        { dateType: 'HDCAD', date: { day: 20, month: 11, year: 2027 } },
+        { dateType: 'APD', date: { day: 15, month: 7, year: 2025 } },
+      ],
+    )
+  })
+
+  it('Can add all dates and removed them if approved dates is available', () => {
+    cy.task('stubAvailableApprovedDatesInputs')
+
+    cy.signIn()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.addReleaseDatesAction().click()
+
+    Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
+      .clickContinue()
+
+    const selectApprovedDatesTypesPage = Page.verifyOnPage(StandaloneApprovedDatesSelectDatesToEnterPage)
+    selectApprovedDatesTypesPage.expectDateOffered(['APD', 'HDCAD', 'ROTL'])
+    selectApprovedDatesTypesPage.checkDate('APD')
+    selectApprovedDatesTypesPage.checkDate('HDCAD')
+    selectApprovedDatesTypesPage.checkDate('ROTL')
+    selectApprovedDatesTypesPage.continue('continue-button').click()
+
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('APD')
+      .enterDate('01', '06', '2026')
+      .clickContinue()
+
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('HDCAD')
+      .enterDate('20', '11', '2027')
+      .clickContinue()
+
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('ROTL')
+      .enterDate('30', '12', '2028')
+      .clickContinue()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '01 June 2026')
+      .expectDate('HDCAD', '20 November 2027')
+      .expectDate('ROTL', '30 December 2028')
+      .deleteDateLink('APD')
+      .click()
+
+    Page.verifyOnPage(StandaloneRemoveApprovedDatePage) //
+      .checkIsFor('APD')
+      .selectRadio('NO')
+      .continue()
+      .click()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '01 June 2026')
+      .expectDate('HDCAD', '20 November 2027')
+      .expectDate('ROTL', '30 December 2028')
+      .deleteDateLink('HDCAD')
+      .click()
+
+    Page.verifyOnPage(StandaloneRemoveApprovedDatePage) //
+      .checkIsFor('HDCAD')
+      .selectRadio('YES')
+      .continue()
+      .click()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '01 June 2026')
+      .expectDate('ROTL', '30 December 2028')
+      .continueButton()
+      .click()
+
+    const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
+
+    cy.verifyLastAPICallDeepProperty(
+      { method: 'POST', urlPath: `/calculate-release-dates/calculation/confirm/123` },
+      'approvedDates',
+      [
+        { dateType: 'ROTL', date: { day: 30, month: 12, year: 2028 } },
+        { dateType: 'APD', date: { day: 1, month: 6, year: 2026 } },
+      ],
+    )
   })
 })
