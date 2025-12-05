@@ -14,6 +14,9 @@ import SelectApprovedDatesController from './select-dates/selectApprovedDatesCon
 import { selectDatesSchema } from '../common-schemas/selectDatesSchema'
 import { releaseDateSchema } from '../common-schemas/releaseDateSchemas'
 import AddApprovedDateController from './add-date/addApprovedDateController'
+import EditApprovedDateController from './edit-date/editApprovedDateController'
+import DeleteApprovedDateController from './delete-date/deleteApprovedDateController'
+import { deleteDateSchema } from '../common-schemas/deleteDateSchema'
 
 const StandaloneApprovedDatesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
@@ -73,6 +76,18 @@ const StandaloneApprovedDatesRoutes = (
     path: '/approved-dates/:nomsId/:dateType/add/:journeyId',
     controller: new AddApprovedDateController(dateTypeConfigurationService, prisonerService),
     validateToSchema: releaseDateSchema,
+  })
+
+  route({
+    path: '/approved-dates/:nomsId/:dateType/edit/:journeyId',
+    controller: new EditApprovedDateController(dateTypeConfigurationService, prisonerService),
+    validateToSchema: releaseDateSchema,
+  })
+
+  route({
+    path: '/approved-dates/:nomsId/:dateType/delete/:journeyId',
+    controller: new DeleteApprovedDateController(dateTypeConfigurationService, prisonerService),
+    validateToSchema: deleteDateSchema,
   })
 
   return router
