@@ -9,6 +9,13 @@ Cypress.Commands.add('verifyLastAPICall', (matching: string | object, expected: 
   return cy.wrap(getLastAPICallMatching(matching)).should('eql', expected)
 })
 
+Cypress.Commands.add(
+  'verifyLastAPICallDeepProperty',
+  (matching: string | object, deepProperty: string, expected: object) => {
+    return cy.wrap(getLastAPICallMatching(matching)).should('have.deep.property', deepProperty, expected)
+  },
+)
+
 Cypress.Commands.add('verifyAPIWasCalled', (matching: string | object, expected: number) => {
   return cy.wrap(getAPICallCountMatching(matching)).should('eq', expected)
 })
