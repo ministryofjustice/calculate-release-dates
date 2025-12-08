@@ -28,7 +28,7 @@ export default class StartApprovedDatesJourney implements Controller {
       lastTouched: new Date().toISOString(),
       nomsId,
       preliminaryCalculationRequestId: inputs.calculatedReleaseDates.calculationRequestId,
-      datesToSave: [],
+      datesToSave: inputs.previousApprovedDates.map(it => ({ type: it.dateType, date: it.date })),
       datesBeingAdded: [],
     }
     if (!req.session.approvedDatesJourneys) {
