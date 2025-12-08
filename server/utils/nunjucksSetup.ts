@@ -156,7 +156,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatSds40Exclusion', formatSds40Exclusion)
   njkEnv.addFilter('validPreCalcHints', validPreCalcHints)
   njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
-  njkEnv.addFilter('formatRevocationDate', formatRevocationDate)
+  njkEnv.addFilter('latestRevocationDate', latestRevocationDate)
   njkEnv.addFilter('findError', findError)
 }
 
@@ -227,4 +227,4 @@ export const formatSds40Exclusion = (exclusion: string) => {
   return isTrancheThree ? `${title} (for prisoners in custody on or after the 16th Dec 2024)` : title
 }
 
-export const formatRevocationDate = (dates: string[]) => maxOf(dates, revocationDate => new Date(revocationDate))
+export const latestRevocationDate = (dates: string[]) => maxOf(dates, revocationDate => new Date(revocationDate))

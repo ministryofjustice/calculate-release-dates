@@ -1,6 +1,6 @@
 import express from 'express'
 import { ApplicationInfo } from '../applicationInfo'
-import nunjucksSetup, { formatSds40Exclusion, pluraliseName } from './nunjucksSetup'
+import nunjucksSetup, { formatSds40Exclusion, latestRevocationDate, pluraliseName } from './nunjucksSetup'
 
 describe('nunjucksSetup', () => {
   describe('design systems params', () => {
@@ -63,6 +63,19 @@ describe('nunjucksSetup', () => {
       expect(formatSds40Exclusion('MURDER_T3')).toStrictEqual(
         'Murder (for prisoners in custody on or after the 16th Dec 2024)',
       )
+    })
+  })
+  describe('latestRevocationDate', () => {
+    it('returns the latest date from a list of ISO date strings', () => {
+      const dates = ['2023-01-01', '2024-05-10', '2022-12-31']
+      expect(latestRevocationDate(dates)).toEqual(new Date('2024-05-10'))
+    })
+    it('returns the latest date from a list with different formats', () => {
+      const dates = ['2023/01/01', '2024-05-10', '2022-12-31']
+      expect(latestRevocationDate(dates)).toEqual(new Date('2024-05-10'))
+    })
+    it('returns null for an empty array', () => {
+      expect(latestRevocationDate([])).toBe(null)
     })
   })
 })

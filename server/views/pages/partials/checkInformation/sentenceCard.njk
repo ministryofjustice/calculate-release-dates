@@ -57,7 +57,7 @@
                                             <th scope="row" class="govuk-table__header sentence-table-header">Revocation date</th>
                                             <td class="govuk-table__cell">
                                                 {% if sentence.revocationDates and sentence.revocationDates.length > 0 %}
-                                                    {{ sentence.revocationDates | formatRevocationDate | date('DD MMMM YYYY')  }}
+                                                    {{ sentence.revocationDates | latestRevocationDate | date('DD MMMM YYYY')  }}
                                                 {% else %}
                                                     Not entered 
                                                 {% endif %}
