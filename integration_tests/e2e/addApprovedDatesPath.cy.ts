@@ -162,7 +162,7 @@ context('End to end user journeys entering and modifying approved dates through 
     )
   })
 
-  it('Can add all dates and removed them if approved dates is available', () => {
+  it('Can add all dates and remove them if approved dates is available', () => {
     cy.task('stubAvailableApprovedDatesInputs')
 
     cy.signIn()
@@ -235,6 +235,66 @@ context('End to end user journeys entering and modifying approved dates through 
       [
         { dateType: 'ROTL', date: { day: 30, month: 12, year: 2028 } },
         { dateType: 'APD', date: { day: 1, month: 6, year: 2026 } },
+      ],
+    )
+  })
+
+  it('When there were previous approved dates go straight to the review dates page rather than selecting dates to add', () => {
+    cy.task('stubAvailableApprovedDatesInputs', {
+      previousApprovedDates: [
+        { dateType: 'ROTL', date: '2029-01-03' },
+        { dateType: 'APD', date: '2030-02-20' },
+        { dateType: 'HDCAD', date: '2025-06-15' },
+      ],
+    })
+
+    cy.signIn()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.addReleaseDatesAction().click()
+
+    Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
+      .clickContinue()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '20 February 2030')
+      .expectDate('HDCAD', '15 June 2025')
+      .expectDate('ROTL', '03 January 2029')
+      .deleteDateLink('HDCAD')
+      .click()
+
+    Page.verifyOnPage(StandaloneRemoveApprovedDatePage) //
+      .checkIsFor('HDCAD')
+      .selectRadio('YES')
+      .continue()
+      .click()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '20 February 2030')
+      .expectDate('ROTL', '03 January 2029')
+      .editDateLink('ROTL')
+      .click()
+
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('ROTL')
+      .clearDate()
+      .enterDate('16', '07', '2035')
+      .clickContinue()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '20 February 2030')
+      .expectDate('ROTL', '16 July 2035')
+      .continueButton()
+      .click()
+
+    const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
+
+    cy.verifyLastAPICallDeepProperty(
+      { method: 'POST', urlPath: `/calculate-release-dates/calculation/confirm/123` },
+      'approvedDates',
+      [
+        { dateType: 'ROTL', date: { day: 16, month: 7, year: 2035 } },
+        { dateType: 'APD', date: { day: 20, month: 2, year: 2030 } },
       ],
     )
   })
