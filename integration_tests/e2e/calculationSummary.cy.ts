@@ -71,6 +71,18 @@ context('Calculation summary', () => {
     calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '13 May 2017 minus 6 days')
   })
 
+  it('Visit Calculation summary page with FTR56 Tranche notification', () => {
+    cy.task('stubGetDetailedCalculationResults', {
+      previouslyRecordedSLED: null,
+      releaseTranche: 'FTR_56_TRANCHE_3',
+    })
+    cy.signIn()
+    const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
+    calculationSummaryPage
+      .frt56TrancheNotification()
+      .should('contain.text', 'This person is in Tranche 3 of the fixed-term recalls legislation change.')
+  })
+
   it('Error when NOMIS data has changed', () => {
     cy.signIn()
     const approvedDatesQuestionPage = ApprovedDatesQuestionPage.goTo('A1234AB', '98')

@@ -12,6 +12,16 @@ import {
 import { components } from '../../server/@types/calculateReleaseDates'
 
 type PreviousOverride = components['schemas']['PreviousGenuineOverride']
+type EarlyReleaseTranche =
+  | 'TRANCHE_0'
+  | 'TRANCHE_1'
+  | 'TRANCHE_2'
+  | 'FTR_56_TRANCHE_1'
+  | 'FTR_56_TRANCHE_2'
+  | 'FTR_56_TRANCHE_3'
+  | 'FTR_56_TRANCHE_4'
+  | 'FTR_56_TRANCHE_5'
+  | 'FTR_56_TRANCHE_6'
 
 export default {
   stubCalculatePreliminaryReleaseDates: (opts: {
@@ -1062,7 +1072,11 @@ export default {
       },
     })
   },
-  stubGetDetailedCalculationResults: (previouslyRecordedSLED?: PreviouslyRecordedSLED): SuperAgentRequest => {
+  stubGetDetailedCalculationResults: (args?: {
+    previouslyRecordedSLED?: PreviouslyRecordedSLED
+    releaseTranche?: EarlyReleaseTranche
+  }): SuperAgentRequest => {
+    const { previouslyRecordedSLED, releaseTranche } = args || {}
     const breakdown = {
       showSds40Hints: false,
       concurrentSentences: [
@@ -1307,6 +1321,10 @@ export default {
       calculationBreakdown: breakdown,
       approvedDates: {},
       usedPreviouslyRecordedSLED: previouslyRecordedSLED,
+    }
+
+    if (releaseTranche) {
+      detailedResults.tranche = releaseTranche
     }
 
     return stubFor({
