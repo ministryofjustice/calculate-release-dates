@@ -970,12 +970,20 @@ export default {
           {
             id: 1,
             displayName: 'A reason',
-            isOther: 'false',
+            isOther: false,
+            useForApprovedDates: false,
+          },
+          {
+            id: 99,
+            displayName: 'Add dates',
+            isOther: false,
+            useForApprovedDates: true,
           },
           {
             id: 2,
             displayName: 'Other',
-            isOther: 'true',
+            isOther: true,
+            useForApprovedDates: false,
           },
         ],
       },
@@ -1626,6 +1634,25 @@ export default {
             calculationStatus: 'PRELIMINARY',
           },
           previousApprovedDates: opts?.previousApprovedDates ?? [],
+        },
+      },
+    })
+  },
+  stubUnavailableApprovedDatesInputs: (opts: {
+    calculationRequestId?: number
+    unavailableReason?: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/approved-dates/A1234AB/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          approvedDatesAvailable: false,
+          unavailableReason: opts?.unavailableReason ?? 'INPUTS_CHANGED_SINCE_LAST_CALCULATION',
         },
       },
     })

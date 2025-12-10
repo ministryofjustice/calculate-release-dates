@@ -343,7 +343,8 @@ describe('CalculationSummaryController', () => {
     userRoles = user.userRoles
     sessionSetup.sessionDoctor = req => {
       req.session.selectedApprovedDates = approvedDates
-      req.session.isAddDatesFlow = false
+      req.session.isAddDatesFlow = {}
+      req.session.isAddDatesFlow[prisonerNumber] = false
     }
 
     app = appWithAllRoutes({
@@ -877,7 +878,8 @@ describe('CalculationSummaryController', () => {
     it('POST /calculation/:nomsId/summary/:calculationRequestId should go straight to approved dates selection if there are no dates and we are in the approved dates flow', () => {
       sessionSetup.sessionDoctor = req => {
         req.session.selectedApprovedDates = approvedDates
-        req.session.isAddDatesFlow = true
+        req.session.isAddDatesFlow = {}
+        req.session.isAddDatesFlow[prisonerNumber] = true
       }
 
       return request(app)

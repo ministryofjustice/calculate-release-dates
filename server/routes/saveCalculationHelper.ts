@@ -3,7 +3,8 @@ import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
-import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManuallyEnteredDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 const saveCalculation = async (
   req: Request,
@@ -20,7 +21,12 @@ const saveCalculation = async (
       ? req.session.selectedApprovedDates[nomsId]
       : []
 
-  const newApprovedDates: ManualEntrySelectedDate[] = approvedDates.map(d => d.manualEntrySelectedDate)
+  const newApprovedDates: ManuallyEnteredDate[] = approvedDates
+    .filter(d => d.manualEntrySelectedDate)
+    .map(d => ({
+      dateType: d.manualEntrySelectedDate.dateType,
+      date: d.manualEntrySelectedDate.date,
+    }))
   try {
     const bookingCalculation = await calculateReleaseDatesService.confirmCalculation(
       username,
