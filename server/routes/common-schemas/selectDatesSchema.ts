@@ -1,13 +1,8 @@
 import { z } from 'zod'
-import { arrayOrUndefined, createSchema } from '../../middleware/validationMiddleware'
-
-const AT_LEAST_ONE_DATE_REQUIRED = 'You must select at least one date'
+import { safeArray, createSchema } from '../../middleware/validationMiddleware'
 
 export const selectDatesSchema = createSchema({
-  dateType: z.preprocess(
-    arrayOrUndefined,
-    z.array(z.string(), { message: AT_LEAST_ONE_DATE_REQUIRED }).min(1, { message: AT_LEAST_ONE_DATE_REQUIRED }),
-  ),
+  dateType: z.preprocess(safeArray, z.array(z.string())),
 })
 
 export type SelectDatesForm = z.infer<typeof selectDatesSchema>

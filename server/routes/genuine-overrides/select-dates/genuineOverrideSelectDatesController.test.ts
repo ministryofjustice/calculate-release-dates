@@ -124,13 +124,13 @@ describe('SelectGenuineOverrideReasonController', () => {
   })
 
   describe('POST', () => {
-    it('should return to input page with errors set if there was nothing selected', async () => {
+    it('should return to review dates if no dates were selected at all', async () => {
       await request(app) //
         .post(pageUrl)
         .type('form')
         .send({})
         .expect(302)
-        .expect('Location', `${pageUrl}#`)
+        .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
 
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({
