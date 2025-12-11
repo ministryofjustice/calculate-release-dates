@@ -113,14 +113,14 @@ describe('SelectApprovedDatesController', () => {
   })
 
   describe('POST', () => {
-    it('should return to input page with errors set if there was nothing selected', async () => {
+    it('should return to review dates if no date types at all were selected', async () => {
       journey.datesToSave = [{ type: 'APD', date: '2025-01-02' }]
       await request(app) //
         .post(pageUrl)
         .type('form')
         .send({})
         .expect(302)
-        .expect('Location', `${pageUrl}#`)
+        .expect('Location', `/approved-dates/${prisonerNumber}/review-approved-dates/${journeyId}`)
 
       // should not have set anything on inputs
       expect(journey).toStrictEqual({
