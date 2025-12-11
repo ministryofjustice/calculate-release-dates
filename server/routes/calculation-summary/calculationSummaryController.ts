@@ -108,7 +108,7 @@ export default class CalculationSummaryController implements Controller {
           nomsId,
           calculationRequestId,
         } as ApprovedDateActionConfig),
-        req.session.isAddDatesFlow,
+        req.session.isAddDatesFlow?.[nomsId],
         callbackUrl || req.originalUrl,
         backLink,
       ),
@@ -131,7 +131,7 @@ export default class CalculationSummaryController implements Controller {
       return
     }
     if (!this.hasBeenAskedApprovedDatesQuestion(req, nomsId)) {
-      if (req.session.isAddDatesFlow) {
+      if (req.session.isAddDatesFlow[nomsId]) {
         res.redirect(`/calculation/${nomsId}/${calculationRequestId}/select-approved-dates`)
       } else {
         res.redirect(`/calculation/${nomsId}/${calculationRequestId}/approved-dates-question`)

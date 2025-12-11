@@ -7,7 +7,6 @@ import SearchRoutes from './searchRoutes'
 import StartRoutes from './startRoutes'
 import CheckInformationRoutes from './checkInformationRoutes'
 import ViewRoutes from './viewRoutes'
-import CalculationQuestionRoutes from './calculationQuestionRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
@@ -24,6 +23,8 @@ import MultipleConsecutiveToInterceptController from './multiple-consecutive-to-
 import PreviouslyRecordedSledInterceptController from './previously-recorded-sled-intercept/previouslyRecordedSledInterceptController'
 import { previouslyRecordedSledSchema } from './previously-recorded-sled-intercept/previouslyRecordedSledSchema'
 import StandaloneApprovedDatesRoutes from './approved-dates/standaloneApprovedDatesRoutes'
+import CalculationReasonController from './calculation-reason/calculationReasonController'
+import { calculationReasonSchemaFactory } from './calculation-reason/calculationReasonSchemaFactory'
 
 export default function Index({
   prisonerService,
@@ -82,12 +83,6 @@ export default function Index({
     courtCasesReleaseDatesService,
   )
   const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
-
-  const calculationQuestionRoutes = new CalculationQuestionRoutes(
-    calculateReleaseDatesService,
-    prisonerService,
-    courtCasesReleaseDatesService,
-  )
 
   const manualEntryAccessRoutes = new ManualEntryRoutes(
     calculateReleaseDatesService,
@@ -227,8 +222,15 @@ export default function Index({
   }
 
   const reasonRoutes = () => {
-    router.get('/calculation/:nomsId/reason', calculationQuestionRoutes.selectCalculationReason)
-    router.post('/calculation/:nomsId/reason', calculationQuestionRoutes.submitCalculationReason)
+    route({
+      path: '/calculation/:nomsId/reason',
+      controller: new CalculationReasonController(
+        calculateReleaseDatesService,
+        prisonerService,
+        courtCasesReleaseDatesService,
+      ),
+      validateToSchema: calculationReasonSchemaFactory,
+    })
   }
 
   const searchRoutes = () => {
