@@ -12,18 +12,16 @@ export default class ReviewApprovedDatesViewModel extends PrisonerContextViewMod
     actions?: { items: { text: string; href: string; attributes?: { 'data-qa': string } }[] }
   }[]
 
-  public addLink: string
-
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     journeyId: string,
     dates: EnteredDate[],
     dateTypeDefinitions: { [p: string]: string },
+    public addLink: string,
     public backLink: string,
     public pageCancelRedirectUrl: string,
   ) {
     super(prisonerDetail)
-    this.addLink = ApprovedDatesUrls.selectDatesToAdd(prisonerDetail.offenderNo, journeyId)
     this.dateRows = dates.map(date => {
       return {
         key: {
