@@ -38,16 +38,17 @@
             }) }}
         </div>
     </div>
+    {% if addLink %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{ addLink }}" data-qa="add-dates-link">Add another release date</a></p>
         </div>
     </div>
+    {% endif %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h2 class="govuk-heading-m">Confirm and save to NOMIS</h2>
-            <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is
-                correct. These dates will be saved in NOMIS as a manual calculation.</p>
+            <p class="govuk-body">By saving this calculation you are confirming that, to the best of your knowledge, it is correct.</p>
             <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
                 {{ govukButton({

@@ -13,6 +13,7 @@ import ApprovedDatesUrls from '../approvedDateUrls'
 import { dateToDayMonthYear, sortDisplayableDates } from '../../../utils/utils'
 import ReviewApprovedDatesViewModel from '../../../models/approved-dates/ReviewApprovedDatesViewModel'
 import { getBreakdownFragment } from '../../saveCalculationHelper'
+import { approvedDateTypes } from '../approvedDatesUtils'
 
 export default class ReviewApprovedDatesController implements Controller {
   constructor(
@@ -35,6 +36,10 @@ export default class ReviewApprovedDatesController implements Controller {
       token,
       'DESCRIPTION_ONLY',
     )
+    let addLink: string
+    if (journey.datesToSave.length < approvedDateTypes.length) {
+      addLink = ApprovedDatesUrls.selectDatesToAdd(prisonerDetail.offenderNo, journeyId)
+    }
     return res.render(
       'pages/approvedDates/standalone/reviewApprovedDates',
       new ReviewApprovedDatesViewModel(
@@ -42,6 +47,7 @@ export default class ReviewApprovedDatesController implements Controller {
         journeyId,
         journey.datesToSave,
         dateTypeDefinitions,
+        addLink,
         ApprovedDatesUrls.reviewCalculatedDates(nomsId, journeyId),
         ApprovedDatesUrls.reviewApprovedDates(nomsId, journeyId),
       ),

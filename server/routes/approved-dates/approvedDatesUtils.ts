@@ -38,4 +38,6 @@ const getApprovedDatesNextAction = (
   }
 }
 
-export { getApprovedDatePreviousDateUrl, getApprovedDatesNextAction }
+const approvedDateTypes = ['APD', 'HDCAD', 'ROTL']
+
+export { getApprovedDatePreviousDateUrl, getApprovedDatesNextAction, approvedDateTypes }
