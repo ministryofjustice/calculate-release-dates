@@ -110,24 +110,12 @@ describe('GET /approved-dates/:nomsId/start', () => {
 
   it('should redirect to full calculation journey with approved dates reason set for the prisoner if approved dates in unavailable', async () => {
     // Given
-    const stubbedCalculationReasons = [
-      { id: 1, isOther: false, displayName: '2 day check', useForApprovedDates: false },
-      {
-        id: 123456,
-        isOther: false,
-        displayName: 'Recording a non-calculated date (including HDCAD, APD or ROTL)',
-        useForApprovedDates: true,
-      },
-      { id: 3, isOther: true, displayName: 'Other', useForApprovedDates: false },
-    ]
-
     const inputs: ApprovedDatesInputResponse = {
       approvedDatesAvailable: false,
       unavailableReason: 'INPUTS_CHANGED_SINCE_LAST_CALCULATION',
       previousApprovedDates: [],
     }
     calculateReleaseDatesService.getApprovedDatesInputs.mockResolvedValue(inputs)
-    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
 
     // When
     const response = await request(app).get(`/approved-dates/${nomsId}/start`)
@@ -135,8 +123,7 @@ describe('GET /approved-dates/:nomsId/start', () => {
     // Then
     expect(response.status).toEqual(302)
     expect(session.approvedDatesJourneys).toBeUndefined()
-    expect(response.headers.location).toStrictEqual(`/calculation/${nomsId}/check-information`)
-    expect(session.calculationReasonId[nomsId]).toStrictEqual(123456)
+    expect(response.headers.location).toStrictEqual(`/calculation/${nomsId}/reason?isAddDatesFlow=true`)
   })
 
   it('should not remove any existing journeys in the session', async () => {
