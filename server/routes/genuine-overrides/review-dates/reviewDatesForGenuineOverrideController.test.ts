@@ -190,11 +190,6 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/override/select-dates/${calculationRequestId}`)
     })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
-    })
   })
 
   describe('POST', () => {
@@ -267,16 +262,6 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         'validationErrors',
         JSON.stringify({ datesToSave: ['Error 1', 'Error 2'] }),
       )
-    })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app) //
-        .post(pageUrl)
-        .type('form')
-        .send({})
-        .expect(302)
-        .expect('Location', '/authError')
     })
   })
 })

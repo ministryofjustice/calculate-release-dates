@@ -314,7 +314,8 @@ context('End to end user journeys entering and modifying approved dates through 
     checkInformationPage.calculateButton().click()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const selectApprovedDatesTypesPage = Page.verifyOnPage(ApprovedDatesSelectDatesToEnterPage)
     selectApprovedDatesTypesPage.expectDateOffered(['APD', 'HDCAD', 'ROTL'])

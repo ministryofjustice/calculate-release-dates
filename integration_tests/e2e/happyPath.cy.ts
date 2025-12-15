@@ -66,7 +66,8 @@ context('End to end happy path of user journey', () => {
     checkInformationPage.hasMiniProfile()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.no().click()
@@ -90,7 +91,8 @@ context('End to end happy path of user journey', () => {
     checkInformationPage.calculateButton().click()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.no().click()
@@ -122,7 +124,8 @@ context('End to end happy path of user journey', () => {
     checkInformationPage.calculateButton().click()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.no().click()

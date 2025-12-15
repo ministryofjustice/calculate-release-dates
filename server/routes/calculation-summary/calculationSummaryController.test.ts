@@ -382,7 +382,7 @@ describe('CalculationSummaryController', () => {
           expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
             `/calculation/${prisonerNumber}/check-information`,
           )
-          const submitToNomis = $('[data-qa=submit-to-nomis]').first()
+          const submitToNomis = $('[data-qa=continue-button]').first()
           expect(submitToNomis.length).toStrictEqual(1)
         })
     })
@@ -722,18 +722,34 @@ describe('CalculationSummaryController', () => {
           expect(res.text).not.toContain('From 6 June, the policy for calculating HDCED has changed')
         })
     })
-    it('GET /calculation/:nomsId/summary should return confirm and continue button if approved dates on', () => {
+    it('GET /calculation/:nomsId/summary should return confirm and save to NOMIS button if approved dates has been asked or added', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
         ...stubbedResultsWithBreakdownAndAdjustments,
-        context: { ...stubbedResultsWithBreakdownAndAdjustments.context, prisonerId: 'A1234AA' },
+        context: { ...stubbedResultsWithBreakdownAndAdjustments.context, prisonerId: prisonerNumber },
       })
+      approvedDates[prisonerNumber] = [
+        {
+          position: 0,
+          dateType: 'APD',
+          completed: true,
+          manualEntrySelectedDate: {
+            dateType: 'APD',
+            dateText: 'APD (Approved parole date)',
+            date: { day: 3, month: 3, year: 2017 },
+          } as ManualEntrySelectedDate,
+        },
+      ]
+      sessionSetup.sessionDoctor = req => {
+        req.session.selectedApprovedDates = approvedDates
+      }
+
       return request(app)
-        .get('/calculation/A1234AA/summary/123456')
+        .get(`/calculation/${prisonerNumber}/summary/123456`)
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).toContain('Confirm and continue')
+          expect(res.text).toContain('Confirm and save to NOMIS')
           const $ = cheerio.load(res.text)
           expect($('[data-qa=agree-with-dates-YES]')).toHaveLength(0)
           expect($('[data-qa=agree-with-dates-NO]')).toHaveLength(0)

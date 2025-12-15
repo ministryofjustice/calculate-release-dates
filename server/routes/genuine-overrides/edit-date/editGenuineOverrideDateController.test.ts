@@ -124,11 +124,6 @@ describe('AddGenuineOverrideDateController', () => {
       expect($('#month').val()).toStrictEqual('12')
       expect($('#year').val()).toStrictEqual('2015')
     })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
-    })
   })
 
   describe('POST', () => {
@@ -160,16 +155,6 @@ describe('AddGenuineOverrideDateController', () => {
         mode: 'STANDARD',
         datesToSave: [{ type: 'HDCED', date: '2025-02-28' }],
       })
-    })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app) //
-        .post(pageUrl)
-        .type('form')
-        .send({ day: '28', month: '2', year: '2025' })
-        .expect(302)
-        .expect('Location', '/authError')
     })
   })
 })

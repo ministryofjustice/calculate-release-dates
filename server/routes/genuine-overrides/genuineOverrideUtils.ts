@@ -1,6 +1,5 @@
 import { Request } from 'express'
 import config from '../../config'
-import AuthorisedRoles from '../../enumerations/authorisedRoles'
 import GenuineOverrideUrls from './genuineOverrideUrls'
 import { GenuineOverrideInputs, NewDate } from '../../@types/journeys'
 
@@ -12,10 +11,8 @@ const genuineOverrideInputsForPrisoner = (req: Request, prisonerNumber: string):
   return session.genuineOverrideInputs[prisonerNumber]
 }
 
-const hasGenuineOverridesAccess = (roles: string[]): boolean => {
-  return (
-    config.featureToggles.genuineOverridesEnabled && roles.includes(AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW)
-  )
+const hasGenuineOverridesAccess = (): boolean => {
+  return config.featureToggles.genuineOverridesEnabled
 }
 
 const getGenuineOverridePreviousDateUrl = (
