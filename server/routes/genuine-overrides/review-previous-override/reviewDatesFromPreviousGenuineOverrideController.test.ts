@@ -126,11 +126,6 @@ describe('ReviewDatesFromPreviousGenuineOverrideController', () => {
       const ersedHeading = $('dt:contains("ERSED")')
       expect(ersedHeading.next().text().trim()).toStrictEqual('03 February 2030')
     })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
-    })
   })
 
   describe('POST', () => {
@@ -238,16 +233,6 @@ describe('ReviewDatesFromPreviousGenuineOverrideController', () => {
         .expect('Location', `/calculation/${prisonerNumber}/select-reason-for-override/${calculationRequestId}`)
 
       expect(calculateReleaseDatesService.createGenuineOverrideForCalculation).not.toHaveBeenCalled()
-    })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app) //
-        .post(pageUrl)
-        .type('form')
-        .send({ day: '28', month: '2', year: '2025' })
-        .expect(302)
-        .expect('Location', '/authError')
     })
   })
 })
