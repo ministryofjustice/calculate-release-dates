@@ -1321,6 +1321,8 @@ export default {
         calculationStatus: 'CONFIRMED',
         calculationType: 'CALCULATED',
         usePreviouslyRecordedSLEDIfFound: !!previouslyRecordedSLED,
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
       },
       calculationOriginalData: {
         prisonerDetails,

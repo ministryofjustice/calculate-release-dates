@@ -31,6 +31,8 @@ export default class CalculationSummaryViewModel {
     public detailedCalculationResults?: DetailedCalculationResults,
     public hasGenuineOverridesAccess?: boolean,
     public genuineOverrideReasonDescription?: string,
+    public calculatedByDisplayName?: string,
+    public calculatedAtPrisonDescription?: string,
   ) {
     // intentionally left blank
   }
