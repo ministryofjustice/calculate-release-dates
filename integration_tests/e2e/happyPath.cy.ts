@@ -160,10 +160,10 @@ context('End to end happy path of user journey', () => {
       })
 
     landingPage
-      .latestCalculationEstablishment()
+      .latestCalculationCalculatedBy()
       .invoke('text')
       .then(text => {
-        expect(text.trim()).to.equal('Kirkham (HMP)')
+        expect(text.trim()).to.equal('User One at Kirkham (HMP)')
       })
 
     landingPage
