@@ -50,6 +50,7 @@ const pastNomisCalculation = {
     locationDescription: 'Inside - Leeds HMP',
   },
   comment: null,
+  calculatedByDisplayName: 'Bob Smith',
   releaseDates: [
     {
       type: 'HDCED',
@@ -309,6 +310,8 @@ const stubbedReleaseDatesUsingCalcReqId: ReleaseDatesAndCalculationContext = {
     calculationDate: '2020-06-01',
     calculationType: 'CALCULATED',
     usePreviouslyRecordedSLEDIfFound: false,
+    calculatedByUsername: 'user1',
+    calculatedByDisplayName: 'User One',
   },
   dates: [
     {
@@ -344,6 +347,8 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
     calculationReason: stubbedCalculationResults.calculationReason,
     otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
     usePreviouslyRecordedSLEDIfFound: false,
+    calculatedByUsername: 'user1',
+    calculatedByDisplayName: 'User One',
   },
   dates: {
     CRD: {
@@ -574,11 +579,11 @@ describe('View journey routes tests', () => {
           expect($('[data-qa=calculation-title]').text()).toStrictEqual('Calculation details')
           expect($('[data-qa=calculation-date]').text()).toStrictEqual('01 January 2022')
           expect($('[data-qa=calculation-reason]').text()).toStrictEqual('Some reason')
-          expect($('[data-qa=calculation-location-description]').text()).toStrictEqual('Not entered')
+          expect($('[data-qa=calculated-by]').text()).toStrictEqual('Bob Smith')
           expect($('[data-qa=calculation-source]').text().trim()).toStrictEqual('NOMIS')
           expect($('[data-qa=calculation-date-title]').text()).toStrictEqual('Date of calculation')
           expect($('[data-qa=calculation-reason-title]').text()).toStrictEqual('Reason')
-          expect($('[data-qa=calculation-establishment-title]').text()).toStrictEqual('Establishment')
+          expect($('[data-qa=calculated-by-title]').text()).toStrictEqual('Calculated by')
           expect($('[data-qa=calculation-source-title]').text()).toStrictEqual('Source')
           expect($('[data-qa=HDCED-date]').text().trim()).toContain('Sunday, 12 May 2024')
           expect($('[data-qa=HDCED-short-name]').text().trim()).toContain('HDCED')
@@ -648,9 +653,13 @@ describe('View journey routes tests', () => {
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue(stubbedUserInput)
-      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-        stubbedResultsWithBreakdownAndAdjustments,
-      )
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: {
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
+          calculatedAtPrisonDescription: 'Kirkham (HMP)',
+        },
+      })
       return request(app)
         .get('/view/A1234AA/sentences-and-offences/123456')
         .expect(200)
@@ -665,6 +674,10 @@ describe('View journey routes tests', () => {
             '/view/A1234AA/sentences-and-offences/123456',
           )
           expect($('[data-qa=sentAndOff-title]').text()).toStrictEqual('Calculation details')
+          expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('01 June 2020')
+          expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('A calculation reason')
+          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('User One at Kirkham (HMP)')
+          expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
           expect(res.text).toContain('A1234AA')
           expect(res.text).toContain('Anon')
           expect(res.text).toContain('Nobody')
@@ -688,6 +701,30 @@ describe('View journey routes tests', () => {
           expectMiniProfile(res.text, expectedMiniProfile)
         })
     })
+
+    it('GET /view/:calculationRequestId/sentences-and-offences should handle no establishment', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue(stubbedUserInput)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: { ...stubbedResultsWithBreakdownAndAdjustments.context, calculatedAtPrisonDescription: undefined },
+      })
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=sentAndOff-title]').text()).toStrictEqual('Calculation details')
+          expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('01 June 2020')
+          expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('A calculation reason')
+          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('User One')
+          expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
+        })
+    })
+
     it('GET /view/:calculationRequestId/sentences-and-offences should return SDS+ badge if sentence is marked as SDS+', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
@@ -1131,6 +1168,8 @@ describe('View journey routes tests', () => {
           calculationReason: stubbedCalculationResults.calculationReason,
           otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
           usePreviouslyRecordedSLEDIfFound: false,
+          calculatedByUsername: 'user1',
+          calculatedByDisplayName: 'User One',
         },
       })
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -1215,6 +1254,80 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('13 January 2024')
         })
     })
+
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the calculation meta data if name and establishment present', () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: {
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
+          calculationDate: '2024-01-13',
+          calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false, useForApprovedDates: false },
+          calculatedByDisplayName: 'User One',
+          calculatedAtPrisonDescription: 'Kirkham (HMP)',
+        },
+      })
+
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('13 January 2024')
+          expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('A calculation reason')
+          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('User One at Kirkham (HMP)')
+          expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
+        })
+    })
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the calculation meta data if name but no establishment present', () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: {
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
+          calculationDate: '2024-01-13',
+          calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false, useForApprovedDates: false },
+          calculatedByDisplayName: 'User One',
+          calculatedAtPrisonDescription: undefined,
+        },
+      })
+
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('13 January 2024')
+          expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('A calculation reason')
+          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('User One')
+          expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
+        })
+    })
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the calculation meta data if no name but there is an establishment present', () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: {
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
+          calculationDate: '2024-01-13',
+          calculationReason: { id: 1, displayName: 'A calculation reason', isOther: false, useForApprovedDates: false },
+          calculatedByDisplayName: undefined,
+          calculatedAtPrisonDescription: 'Kirkham (HMP)',
+        },
+      })
+
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('13 January 2024')
+          expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('A calculation reason')
+          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Kirkham (HMP)')
+          expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
+        })
+    })
+
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display a back to view sentence and offences link', () => {
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
         stubbedResultsWithBreakdownAndAdjustments,
@@ -1695,6 +1808,8 @@ describe('View journey routes tests', () => {
           calculationDate: '2020-06-01',
           calculationType: 'CALCULATED',
           usePreviouslyRecordedSLEDIfFound: false,
+          calculatedByUsername: 'user1',
+          calculatedByDisplayName: 'User One',
         },
         dates: [
           {
@@ -1865,6 +1980,8 @@ describe('View journey routes tests', () => {
           calculationDate: '2020-06-01',
           calculationType: 'CALCULATED',
           usePreviouslyRecordedSLEDIfFound: false,
+          calculatedByUsername: 'user1',
+          calculatedByDisplayName: 'User One',
         },
         dates: [],
       }
@@ -1971,6 +2088,8 @@ describe('View journey routes tests', () => {
           calculationDate: '2020-06-01',
           calculationType: 'CALCULATED',
           usePreviouslyRecordedSLEDIfFound: false,
+          calculatedByUsername: 'user1',
+          calculatedByDisplayName: 'User One',
         },
         dates: [
           {

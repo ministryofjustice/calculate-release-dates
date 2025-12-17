@@ -104,6 +104,8 @@ export default class ViewRoutes {
               : longDateFormat(detailedCalculationResults.context.calculationDate),
             adjustmentDtos,
             detailedCalculationResults.context.genuineOverrideReasonDescription,
+            detailedCalculationResults.context.calculatedByDisplayName,
+            detailedCalculationResults.context.calculatedAtPrisonDescription,
           ),
           calculationRequestId,
           nomsId,
@@ -175,6 +177,8 @@ export default class ViewRoutes {
         detailedCalculationResults,
         hasGenuineOverridesAccess(),
         detailedCalculationResults.context.genuineOverrideReasonDescription,
+        detailedCalculationResults.context.calculatedByDisplayName,
+        detailedCalculationResults.context.calculatedAtPrisonDescription,
       )
     }
     const hasNone = detailedCalculationResults.dates.None !== undefined
@@ -204,6 +208,8 @@ export default class ViewRoutes {
       detailedCalculationResults,
       hasGenuineOverridesAccess(),
       detailedCalculationResults.context.genuineOverrideReasonDescription,
+      detailedCalculationResults.context.calculatedByDisplayName,
+      detailedCalculationResults.context.calculatedAtPrisonDescription,
     )
   }
 
@@ -287,6 +293,8 @@ export default class ViewRoutes {
           null,
           adjustmentsDtos,
           null,
+          null,
+          null,
         ),
         calculationRequestId,
         nomsId,
@@ -318,6 +326,7 @@ export default class ViewRoutes {
         pastNomisCalculation.reason,
         'NOMIS',
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(pastNomisCalculation, false),
+        pastNomisCalculation.calculatedByDisplayName,
       ),
     )
   }

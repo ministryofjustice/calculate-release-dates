@@ -31,6 +31,8 @@ describe('CalculationSummaryViewModel', () => {
             calculationStatus: 'CONFIRMED',
             calculationType: 'CALCULATED',
             usePreviouslyRecordedSLEDIfFound: false,
+            calculatedByUsername: 'user1',
+            calculatedByDisplayName: 'User One',
           },
           calculationOriginalData: {},
           calculationBreakdown: undefined,

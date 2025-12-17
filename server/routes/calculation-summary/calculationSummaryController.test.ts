@@ -122,6 +122,8 @@ describe('CalculationSummaryController', () => {
       calculationReason: stubbedCalculationResults.calculationReason,
       otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
       usePreviouslyRecordedSLEDIfFound: false,
+      calculatedByUsername: 'user1',
+      calculatedByDisplayName: 'User One',
     },
     dates: {
       CRD: {

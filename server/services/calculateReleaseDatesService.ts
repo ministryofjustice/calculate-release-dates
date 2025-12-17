@@ -540,10 +540,12 @@ export default class CalculateReleaseDatesService {
         return {
           latestCalcCard,
           latestCalcCardAction: action,
+          calculation: latestCalc,
         }
       })
       .catch(error => {
-        if (!isDataError(error)) return { latestCalcCard: undefined, latestCalcCardAction: undefined }
+        if (!isDataError(error))
+          return { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
         const dataError = getMissingPrisonDataError(error.data.userMessage)
 
         switch (dataError) {
@@ -554,7 +556,7 @@ export default class CalculateReleaseDatesService {
           case FullPageErrorType.NO_LICENCE_TERM_CODE:
             return FullPageError.noLicenceTermPage()
           default:
-            return { latestCalcCard: undefined, latestCalcCardAction: undefined }
+            return { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
         }
       })
   }

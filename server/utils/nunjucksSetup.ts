@@ -11,7 +11,14 @@ import {
 import dateFilter from 'nunjucks-date-filter'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { hmppsDesignSystemsEnvironmentName, initialiseName, createSupportLink, validPreCalcHints, maxOf } from './utils'
+import {
+  hmppsDesignSystemsEnvironmentName,
+  initialiseName,
+  createSupportLink,
+  validPreCalcHints,
+  maxOf,
+  capitaliseName,
+} from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
@@ -87,6 +94,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('createSupportLink', createSupportLink)
 
   njkEnv.addFilter('initialiseName', initialiseName)
+  njkEnv.addFilter('capitaliseName', capitaliseName)
 
   njkEnv.addFilter('formatListAsString', (list?: string[]) => {
     return list ? `[${list.map(i => `'${i}'`).join(',')}]` : '[]'

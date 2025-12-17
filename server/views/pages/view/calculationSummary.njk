@@ -58,6 +58,7 @@
                         <span class="govuk-!-font-size-16 govuk-hint">{{ model.genuineOverrideReasonDescription }}</span>
                     {% endset %}
                 {% endif %}
+                {% set calculatedByText %}{{ model.calculatedByDisplayName }}{% if model.calculatedByDisplayName and model.calculatedAtPrisonDescription %} at {% endif %}{{ model.calculatedAtPrisonDescription }}{% endset %}
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
                     rows: [
@@ -79,11 +80,11 @@
                             }
                         },{
                             key: {
-                                text: "Establishment",
+                                text: "Calculated by",
                                 classes: "custom-summary-list__key"
                             },
                             value: {
-                                text: model.prisonerDetail.locationDescription
+                                text: calculatedByText
                             }
                         },{
                             key: {
