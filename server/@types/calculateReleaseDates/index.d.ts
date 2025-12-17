@@ -1913,8 +1913,8 @@ export interface components {
         | 'AGGRAVATING_FACTOR_OFFENCE'
         | 'OTHER'
       genuineOverrideReasonDescription?: string
-      calculatedByUsername?: string
-      calculatedByDisplayName?: string
+      calculatedByUsername: string
+      calculatedByDisplayName: string
     }
     GenuineOverrideReasonResponse: {
       code: string
@@ -2221,8 +2221,8 @@ export interface components {
       /** @enum {string} */
       source: 'NOMIS' | 'CRDS'
       dates: components['schemas']['DetailedDate'][]
-      calculatedByUsername?: string
-      calculatedByDisplayName?: string
+      calculatedByUsername: string
+      calculatedByDisplayName: string
     }
     ReleaseDateHint: {
       text: string
@@ -2371,8 +2371,8 @@ export interface components {
       calculatedAt: string
       comment?: string
       releaseDates: components['schemas']['DetailedDate'][]
-      calculatedByUsername?: string
-      calculatedByDisplayName?: string
+      calculatedByUsername: string
+      calculatedByDisplayName: string
     }
     /** @description Calculation breakdown details */
     CalculationBreakdown: {

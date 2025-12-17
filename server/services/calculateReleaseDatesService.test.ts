@@ -524,6 +524,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -561,6 +563,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -602,6 +606,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -642,6 +648,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
