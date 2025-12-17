@@ -104,11 +104,6 @@ describe('GenuineOverrideExpressInterceptController', () => {
       const $ = cheerio.load(response.text)
       expect($('[data-qa=previous-reason]').text().trim()).toStrictEqual('Some further detail')
     })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
-    })
   })
 
   describe('POST', () => {
@@ -122,16 +117,6 @@ describe('GenuineOverrideExpressInterceptController', () => {
           'Location',
           `/calculation/${prisonerNumber}/review-dates-from-previous-override/${calculationRequestId}`,
         )
-    })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app) //
-        .post(pageUrl)
-        .type('form')
-        .send({})
-        .expect(302)
-        .expect('Location', '/authError')
     })
   })
 })

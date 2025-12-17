@@ -5,8 +5,7 @@ import { hasGenuineOverridesAccess } from '../routes/genuine-overrides/genuineOv
 
 export default function requireGenuineOverrideAccess(): RequestHandler {
   return (req, res, next) => {
-    const { userRoles } = res.locals.user
-    if (!hasGenuineOverridesAccess(userRoles ?? [])) {
+    if (!hasGenuineOverridesAccess()) {
       logger.error('User is not authorised to access genuine overrides')
       return res.redirect('/authError')
     }

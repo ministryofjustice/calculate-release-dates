@@ -85,7 +85,7 @@ export default class CalculationSummaryController implements Controller {
       false,
       approvedDates,
       detailedCalculationResults,
-      hasGenuineOverridesAccess(userRoles),
+      hasGenuineOverridesAccess(),
     )
     const siblingCalculationWithoutPreviouslyRecordedSLED = getSiblingCalculationWithPreviouslyRecordedSLED(
       req,

@@ -72,7 +72,7 @@ export default class CalculationRoutes {
       false,
       approvedDates,
       detailedCalculationResults,
-      hasGenuineOverridesAccess(userRoles),
+      hasGenuineOverridesAccess(),
     )
     res.render(
       'pages/calculation/printCalculationSummary',

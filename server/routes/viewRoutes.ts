@@ -173,7 +173,7 @@ export default class ViewRoutes {
         true,
         undefined,
         detailedCalculationResults,
-        hasGenuineOverridesAccess(userRoles),
+        hasGenuineOverridesAccess(),
         detailedCalculationResults.context.genuineOverrideReasonDescription,
       )
     }
@@ -202,7 +202,7 @@ export default class ViewRoutes {
       false,
       approvedDates,
       detailedCalculationResults,
-      hasGenuineOverridesAccess(userRoles),
+      hasGenuineOverridesAccess(),
       detailedCalculationResults.context.genuineOverrideReasonDescription,
     )
   }
