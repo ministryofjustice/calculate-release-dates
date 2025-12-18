@@ -1582,6 +1582,17 @@ describe('View journey routes tests', () => {
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
+      viewReleaseDatesService.getAdjustmentsDtosForCalculation.mockResolvedValue([
+        {
+          person: 'A1234AA',
+          sentenceSequence: 1,
+          adjustmentType: 'REMAND',
+          days: 28,
+          fromDate: '2021-02-03',
+          toDate: '2021-03-08',
+          status: 'ACTIVE',
+        },
+      ])
       return request(app)
         .get('/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=view')
         .expect(200)
@@ -1615,24 +1626,9 @@ describe('View journey routes tests', () => {
           const sentence22Date = $('[data-qa=sentence-2-2-date]').first()
           const sentence22Length = $('[data-qa=sentence-2-2-length]').first()
           const adjustTitle = $('[data-qa=adjust-title]').first()
-          const adjustDesc = $('[data-qa=adjust-desc]').first()
-          const adjustColType = $('[data-qa=adjust-col-type]').first()
-          const adjustColFrom = $('[data-qa=adjust-col-from]').first()
-          const adjustColTo = $('[data-qa=adjust-col-to]').first()
-          const adjustColDays = $('[data-qa=adjust-col-days]').first()
-          const ulalName = $('[data-qa="Unlawfully at large-name"]').first()
-          const ulalFrom = $('[data-qa="Unlawfully at large-from"]').first()
-          const ulalTo = $('[data-qa="Unlawfully at large-to"]').first()
-          const ulalDays = $('[data-qa="Unlawfully at large-days"]').first()
-          const remandName = $('[data-qa=Remand-name]').first()
-          const remandFrom = $('[data-qa=Remand-from]').first()
-          const remandTo = $('[data-qa=Remand-to]').first()
-          const remandDays = $('[data-qa=Remand-days]').first()
-          const appealCustody = $('[data-qa=appeal-custody]').first()
-          const appealBail = $('[data-qa=appeal-bail]').first()
+          const remandTable = $('[data-qa=remand-table]').first()
           const offenderSlipLink = $('[data-qa="slip-offender-copy"]').first()
           const establishmentSlipLink = $('[data-qa="slip-establishment-copy"]').first()
-          const daysInUnusedRemand = $('[data-qa=days-in-unusedRemand]').first()
           const offenderHDCED = $('[data-qa="offender-hdced-text"]').first()
           const calcReasonTitle = $('[data-qa="calculation-reason-title"]')
           const calcReason = $('[data-qa="calculation-reason"]')
@@ -1673,27 +1669,8 @@ describe('View journey routes tests', () => {
           expect(sentence22Length.text().trim()).toContain('years')
           expect(sentence22Length.text().trim()).toContain('consecutive to court case 1 NOMIS line number 1')
           expect(adjustTitle.text()).toContain('Adjustments')
-          expect(adjustDesc.text()).toContain('This calculation includes the following adjustments to sentences.')
-          expect(adjustColType.text()).toContain('Adjustment type')
-          expect(adjustColFrom.text()).toStrictEqual('Date from (if applicable)')
-          expect(adjustColTo.text()).toStrictEqual('Date to (if applicable)')
-          expect(adjustColDays.text()).toContain('Days')
-          expect(ulalName.text()).toContain('Unlawfully at large')
-          expect(ulalFrom.text()).toContain('07 March 2021')
-          expect(ulalTo.text()).toContain('08 March 2021')
-          expect(ulalDays.text()).toContain('2 days added')
-          expect(remandName.text()).toContain('Remand')
-          expect(remandFrom.text()).toContain('01 February 2021')
-          expect(remandTo.text()).toContain('02 February 2021')
-          expect(remandDays.text()).toContain('2 days deducted')
-          expect(daysInUnusedRemand.length).toStrictEqual(0)
+          expect(remandTable).toHaveLength(1)
           expect(offenderHDCED.length).toStrictEqual(0)
-          expect(appealCustody.text()).toContain(
-            'Days spent in custody pending appeal to count (must be completed manually):',
-          )
-          expect(appealBail.text()).toContain(
-            'Days spent on bail pending appeal not to count (must be completed manually):',
-          )
           expect(calcReasonTitle.text()).toContain('Calculation reason')
           expect(calcReason.text()).toContain('A calculation reason')
         })
@@ -1842,48 +1819,6 @@ describe('View journey routes tests', () => {
         })
     })
 
-    it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should generate correct unused remand', () => {
-      const stubbedAdjustmentsTB = {
-        sentenceAdjustments: [
-          {
-            sentenceSequence: 1,
-            type: 'TAGGED_BAIL',
-            numberOfDays: 2,
-            active: true,
-          },
-          {
-            sentenceSequence: 2,
-            type: 'UNUSED_REMAND',
-            numberOfDays: 2,
-            active: true,
-          },
-        ],
-        bookingAdjustments: [],
-      } as AnalysedPrisonApiBookingAndSentenceAdjustments
-      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
-      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustmentsTB)
-      calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
-      return request(app)
-        .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          const $ = cheerio.load(res.text)
-          const daysInUnusedRemand = $('[data-qa=days-in-unusedRemand]').first()
-          const taggedBailFrom = $('[data-qa="Tagged bail-from"]').first()
-          const taggedBailTo = $('[data-qa="Tagged bail-to"]').first()
-          const unusedRemandFrom = $('[data-qa="Unused remand-from"]').first()
-          const unusedTo = $('[data-qa="Unused remand-to"]').first()
-
-          expect(daysInUnusedRemand.text()).toStrictEqual('There are 2 days of unused deductions.')
-          expect(taggedBailFrom.text()).toStrictEqual('')
-          expect(unusedRemandFrom.text()).toStrictEqual('')
-          expect(taggedBailTo.text()).toStrictEqual('')
-          expect(unusedTo.text()).toStrictEqual('')
-        })
-    })
-
     it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=calculation should terms - singular', () => {
       const stubbedSentencesAndOffencesLocal = [
         {
@@ -2000,13 +1935,15 @@ describe('View journey routes tests', () => {
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
       viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedNoAdjustments)
       calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedNoReleaseDates)
+      viewReleaseDatesService.getAdjustmentsDtosForCalculation.mockResolvedValue([])
+
       return request(app)
         .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=calculation&pageType=offender')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
-          const noAdjustments = $('[data-qa=adjust-desc-no]').first()
+          const noAdjustments = $('[data-qa=no-active-adjustments-hint]').first()
           const prisonTitle = $('[data-qa=prison-name]').first()
           const prisonerCell = $('[data-qa=prisoner-cell]').first()
           const dtoTitle = $('[data-qa=dto-title]').first()
@@ -2014,7 +1951,7 @@ describe('View journey routes tests', () => {
           const pageTitleCaption = $('[data-qa="page-title-caption"]').first()
 
           expect(pageTitleCaption.text()).toStrictEqual("[Anon Bloggs' copy]")
-          expect(noAdjustments.text()).toStrictEqual('There are no adjustments.')
+          expect(noAdjustments.text()).toStrictEqual('There are no active adjustments.')
           expect(prisonTitle.text()).toContain('No agency name available')
           expect(prisonerCell.text()).toContain('No Cell Number available')
           expect(dtoTitle.length).toStrictEqual(0)
