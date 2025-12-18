@@ -6,6 +6,11 @@
 <!-- Adjustments -->
 
         {% if featureToggles.adjustmentsIntegrationEnabled and model.adjustmentsTablesModel %}
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <h2 class="govuk-heading-l govuk-!-margin-top-6">Adjustments</h2>
+                </div>
+            </div>
             {{ adjustmentsTables(model.adjustmentsTablesModel) }}
         {% else %}
         <div class="govuk-grid-row">
