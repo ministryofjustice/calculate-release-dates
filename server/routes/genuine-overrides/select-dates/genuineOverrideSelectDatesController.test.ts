@@ -3,7 +3,6 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
-import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
@@ -11,6 +10,7 @@ import { determinateDateTypesForManualEntry } from '../../../services/manualEntr
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
+import { GenuineOverrideInputs } from '../../../@types/journeys'
 
 jest.mock('../../../services/prisonerService')
 jest.mock('../../../services/dateTypeConfigurationService')
@@ -116,21 +116,16 @@ describe('SelectGenuineOverrideReasonController', () => {
       expect(hdcedRadio.attr('checked')).toStrictEqual('checked')
       expect(hdcedRadio.attr('disabled')).toBeUndefined()
     })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
-    })
   })
 
   describe('POST', () => {
-    it('should return to input page with errors set if there was nothing selected', async () => {
+    it('should return to review dates if no dates were selected at all', async () => {
       await request(app) //
         .post(pageUrl)
         .type('form')
         .send({})
         .expect(302)
-        .expect('Location', `${pageUrl}#`)
+        .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
 
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({
@@ -228,16 +223,6 @@ describe('SelectGenuineOverrideReasonController', () => {
           { type: 'CRD', date: '2025-06-15' },
         ],
       })
-    })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app) //
-        .post(pageUrl)
-        .type('form')
-        .send({ dateType: 'HDCED' })
-        .expect(302)
-        .expect('Location', '/authError')
     })
   })
 })

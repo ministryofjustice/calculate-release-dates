@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import { Controller } from '../../controller'
 import GenuineOverrideUrls from '../genuineOverrideUrls'
 import PrisonerService from '../../../services/prisonerService'
-import { GenuineOverrideSelectDatesForm } from './genuineOverrideSelectDatesSchema'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import GenuineOverrideSelectDatesViewModel from '../../../models/genuine-override/GenuineOverrideSelectDatesViewModel'
 import { determinateDateTypesForManualEntry, SelectedDateCheckBox } from '../../../services/manualEntryService'
@@ -12,6 +11,7 @@ import {
   convertValidationMessagesToErrorMessagesForPath,
   redirectToInputWithErrors,
 } from '../../../middleware/validationMiddleware'
+import { SelectDatesForm } from '../../common-schemas/selectDatesSchema'
 
 export default class GenuineOverrideSelectDatesController implements Controller {
   constructor(
@@ -54,7 +54,7 @@ export default class GenuineOverrideSelectDatesController implements Controller 
   }
 
   POST = async (
-    req: Request<{ nomsId: string; calculationRequestId: string }, unknown, GenuineOverrideSelectDatesForm>,
+    req: Request<{ nomsId: string; calculationRequestId: string }, unknown, SelectDatesForm>,
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params

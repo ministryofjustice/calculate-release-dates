@@ -482,7 +482,8 @@ describe('CheckInformationController', () => {
   beforeEach(() => {
     config.featureToggles.showBreakdown = true
     sessionSetup.sessionDoctor = req => {
-      req.session.isAddDatesFlow = false
+      req.session.isAddDatesFlow = {}
+      req.session.isAddDatesFlow.A1234AA = false
     }
 
     app = appWithAllRoutes({

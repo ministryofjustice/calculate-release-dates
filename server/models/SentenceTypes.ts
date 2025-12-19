@@ -18,6 +18,7 @@ export default class SentenceTypes {
     '14FTRHDC_ORA',
     'FTR',
     'FTR_ORA',
+    'FTR_56ORA',
     'FTR_SCH15',
     'FTRSCH15_ORA',
     'FTRSCH18',

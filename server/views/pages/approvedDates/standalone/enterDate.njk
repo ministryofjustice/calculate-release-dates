@@ -1,0 +1,57 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "../../components/validatedDateInput/macro.njk" import validatedDateInput %}
+
+{% set pageTitle = applicationName + " - Enter the date" %}
+{% set pageId = "enter-approved-date" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backLink,
+            attributes: {"data-qa": "back-link"}
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% include '../../partials/formError.njk' %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+                <span class="govuk-caption-xl">Add APD, HDCAD and ROTL dates</span>
+                {{ validatedDateInput({
+                    id: "releaseDate",
+                    title: {
+                        text: 'Enter the ' + description,
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
+                    },
+                    validationErrors: validationErrors,
+                    hintText: "For example, 17 2 2025.",
+                    day: day,
+                    month: month,
+                    year: year
+                }) }}
+
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+                {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+                <a data-qa="cancel-link"
+                    data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                    data-module="govuk-button"
+                    href="{{ cancelUrl }}">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -5,10 +5,8 @@ import {
   getGenuineOverrideNextAction,
   getGenuineOverridePreviousDateUrl,
   hasGenuineOverridesAccess,
-  sortDatesForGenuineOverride,
 } from './genuineOverrideUtils'
 import config from '../../config'
-import AuthorisedRoles from '../../enumerations/authorisedRoles'
 
 describe('genuineOverrideUtils', () => {
   afterEach(() => {
@@ -61,36 +59,15 @@ describe('genuineOverrideUtils', () => {
       })
     })
   })
-  describe('sort dates', () => {
-    it('should sort dates based on filtered list', () => {
-      const dates = [
-        { type: 'HDCED', date: '2021-10-03' },
-        { type: 'SED', date: '2021-02-03' },
-        { type: 'ERSED', date: '2020-02-03' },
-        { type: 'CRD', date: '2021-02-04' },
-      ]
-      const result = sortDatesForGenuineOverride(dates)
-      expect(dates).toStrictEqual(result)
-      expect(dates).toStrictEqual([
-        { type: 'SED', date: '2021-02-03' },
-        { type: 'CRD', date: '2021-02-04' },
-        { type: 'HDCED', date: '2021-10-03' },
-        { type: 'ERSED', date: '2020-02-03' },
-      ])
-    })
-  })
+
   describe('hasGenuineOverridesAccess', () => {
-    it('should allow genuine overrides if the user has role and feature toggle is enabled', () => {
+    it('should allow genuine overrides if the feature toggle is enabled', () => {
       config.featureToggles.genuineOverridesEnabled = true
-      expect(hasGenuineOverridesAccess([AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW])).toStrictEqual(true)
+      expect(hasGenuineOverridesAccess()).toStrictEqual(true)
     })
-    it('should not allow genuine overrides if the user has role but the feature toggle is disabled', () => {
+    it('should not allow genuine overrides if the feature toggle is disabled', () => {
       config.featureToggles.genuineOverridesEnabled = false
-      expect(hasGenuineOverridesAccess([AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW])).toStrictEqual(false)
-    })
-    it('should not allow genuine overrides if the feature toggle is enabled but the user does not have the role', () => {
-      config.featureToggles.genuineOverridesEnabled = true
-      expect(hasGenuineOverridesAccess([])).toStrictEqual(false)
+      expect(hasGenuineOverridesAccess()).toStrictEqual(false)
     })
   })
   describe('getGenuineOverridePreviousDateUrl', () => {

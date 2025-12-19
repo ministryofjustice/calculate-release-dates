@@ -1,9 +1,7 @@
 import { Request } from 'express'
-import { GenuineOverrideInputs, NewGenuineOverrideDate } from '../../models/genuine-override/genuineOverrideInputs'
-import { filteredListOfDates } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import config from '../../config'
-import AuthorisedRoles from '../../enumerations/authorisedRoles'
 import GenuineOverrideUrls from './genuineOverrideUrls'
+import { GenuineOverrideInputs, NewDate } from '../../@types/journeys'
 
 const genuineOverrideInputsForPrisoner = (req: Request, prisonerNumber: string): GenuineOverrideInputs => {
   const { session } = req
@@ -13,21 +11,15 @@ const genuineOverrideInputsForPrisoner = (req: Request, prisonerNumber: string):
   return session.genuineOverrideInputs[prisonerNumber]
 }
 
-const sortDatesForGenuineOverride = (dates: { type: string }[]): { type: string }[] => {
-  return dates.sort((a, b) => filteredListOfDates.indexOf(a.type) - filteredListOfDates.indexOf(b.type))
-}
-
-const hasGenuineOverridesAccess = (roles: string[]): boolean => {
-  return (
-    config.featureToggles.genuineOverridesEnabled && roles.includes(AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW)
-  )
+const hasGenuineOverridesAccess = (): boolean => {
+  return config.featureToggles.genuineOverridesEnabled
 }
 
 const getGenuineOverridePreviousDateUrl = (
   prisonerNumber: string,
   calculationRequestId: string | number,
   currentDateType: string,
-  datesBeingAdded: NewGenuineOverrideDate[],
+  datesBeingAdded: NewDate[],
 ): string => {
   const currentIndex = datesBeingAdded.findIndex(it => it.type === currentDateType)
   const previous = currentIndex - 1
@@ -41,7 +33,7 @@ const getGenuineOverrideNextAction = (
   prisonerNumber: string,
   calculationRequestId: string | number,
   currentDateType: string,
-  datesBeingAdded: NewGenuineOverrideDate[],
+  datesBeingAdded: NewDate[],
 ): {
   action: 'NEXT_DATE' | 'SAVE_ALL_DATES'
   url: string
@@ -62,7 +54,6 @@ const getGenuineOverrideNextAction = (
 
 export {
   genuineOverrideInputsForPrisoner,
-  sortDatesForGenuineOverride,
   hasGenuineOverridesAccess,
   getGenuineOverridePreviousDateUrl,
   getGenuineOverrideNextAction,

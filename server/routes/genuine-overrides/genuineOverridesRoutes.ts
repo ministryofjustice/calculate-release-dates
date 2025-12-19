@@ -10,17 +10,17 @@ import PrisonerService from '../../services/prisonerService'
 import ReviewDatesForGenuineOverrideController from './review-dates/reviewDatesForGenuineOverrideController'
 import DateTypeConfigurationService from '../../services/dateTypeConfigurationService'
 import GenuineOverrideSelectDatesController from './select-dates/genuineOverrideSelectDatesController'
-import { genuineOverrideSelectDatesSchema } from './select-dates/genuineOverrideSelectDatesSchema'
 import AddGenuineOverrideDateController from './add-date/addGenuineOverrideDateController'
 import { releaseDateSchema } from '../common-schemas/releaseDateSchemas'
 import EditGenuineOverrideDateController from './edit-date/editGenuineOverrideDateController'
 import DeleteGenuineOverrideDateController from './delete-date/deleteGenuineOverrideDateController'
-import { deleteGenuineOverrideDateSchema } from './delete-date/deleteGenuineOverrideSchema'
 import requireGenuineOverrideAccess from '../../middleware/requireGenuineOverrideAccess'
 import StartGenuineOverrideController from './start/startGenuineOverrideController'
 import GenuineOverrideExpressInterceptController from './express-intercept/genuineOverrideExpressInterceptController'
 import ReviewDatesFromPreviousGenuineOverrideController from './review-previous-override/reviewDatesFromPreviousGenuineOverrideController'
 import { reviewDatesFromPreviousOverrideSummarySchema } from './review-previous-override/reviewDatesFromPreviousOverrideSummarySchema'
+import { selectDatesSchema } from '../common-schemas/selectDatesSchema'
+import { deleteDateSchema } from '../common-schemas/deleteDateSchema'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
@@ -89,7 +89,7 @@ const GenuineOverridesRoutes = (
       prisonerService,
       calculateReleaseDatesService,
     ),
-    validateToSchema: genuineOverrideSelectDatesSchema,
+    validateToSchema: selectDatesSchema,
   })
 
   route({
@@ -107,7 +107,7 @@ const GenuineOverridesRoutes = (
   route({
     path: '/calculation/:nomsId/override/:dateType/delete/:calculationRequestId',
     controller: new DeleteGenuineOverrideDateController(dateTypeConfigurationService, prisonerService),
-    validateToSchema: deleteGenuineOverrideDateSchema,
+    validateToSchema: deleteDateSchema,
   })
 
   return router

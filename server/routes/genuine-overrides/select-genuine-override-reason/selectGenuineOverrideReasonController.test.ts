@@ -4,10 +4,10 @@ import * as cheerio from 'cheerio'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
-import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
+import { GenuineOverrideInputs } from '../../../@types/journeys'
 
 jest.mock('../../../services/calculateReleaseDatesService')
 jest.mock('../../../services/prisonerService')
@@ -91,11 +91,6 @@ describe('SelectGenuineOverrideReasonController', () => {
       )
     })
 
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
-    })
-
     it('should render options in display order from back end', async () => {
       const response = await request(app).get(pageUrl)
 
@@ -169,16 +164,6 @@ describe('SelectGenuineOverrideReasonController', () => {
         reason: 'OTHER',
         reasonFurtherDetail: 'Foo',
       })
-    })
-
-    it('should give an auth error if the user does not have permission', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app) //
-        .post(pageUrl)
-        .type('form')
-        .send({ reason: 'OTHER', reasonFurtherDetail: 'Foo' })
-        .expect(302)
-        .expect('Location', '/authError')
     })
   })
 })
