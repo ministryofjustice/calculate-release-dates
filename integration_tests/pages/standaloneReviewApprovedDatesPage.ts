@@ -20,6 +20,11 @@ export default class StandaloneReviewApprovedDatesPage extends Page {
     return this
   }
 
+  public expectNoDatesWarning(): StandaloneReviewApprovedDatesPage {
+    cy.get(`[data-qa=no-dates-warning]`).should('contain.text', 'No APD, HDCAD or ROTL dates have been added.')
+    return this
+  }
+
   public addDatesLink(): PageElement {
     return cy.get('[data-qa=add-dates-link]')
   }

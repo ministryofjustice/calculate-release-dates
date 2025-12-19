@@ -372,4 +372,87 @@ context('End to end user journeys entering and modifying approved dates through 
       ],
     )
   })
+
+  it('Can submit with no approved dates', () => {
+    cy.task('stubAvailableApprovedDatesInputs')
+
+    cy.signIn()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.addReleaseDatesAction().click()
+
+    Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
+      .clickContinue()
+
+    const selectApprovedDatesTypesPage = Page.verifyOnPage(StandaloneApprovedDatesSelectDatesToEnterPage)
+    selectApprovedDatesTypesPage.expectDateOffered(['APD', 'HDCAD', 'ROTL'])
+    selectApprovedDatesTypesPage.continue('continue-button').click()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectNoDatesWarning()
+      .continueButton()
+      .click()
+
+    const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
+
+    cy.verifyLastAPICallDeepProperty(
+      { method: 'POST', urlPath: `/calculate-release-dates/calculation/confirm/123` },
+      'approvedDates',
+      [],
+    )
+  })
+
+  it('Can add additional dates after originally selecting none', () => {
+    cy.task('stubAvailableApprovedDatesInputs')
+
+    cy.signIn()
+    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    landingPage.addReleaseDatesAction().click()
+
+    Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
+      .clickContinue()
+
+    const selectBeforeReviewDates = Page.verifyOnPage(StandaloneApprovedDatesSelectDatesToEnterPage)
+    selectBeforeReviewDates.expectDateOffered(['APD', 'HDCAD', 'ROTL'])
+    selectBeforeReviewDates.continue('continue-button').click()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectNoDatesWarning()
+      .addDatesLink()
+      .click()
+
+    const selectApprovedDatesTypesPage = Page.verifyOnPage(StandaloneApprovedDatesSelectDatesToEnterPage)
+    selectApprovedDatesTypesPage.expectDateOffered(['APD', 'HDCAD', 'ROTL'])
+    selectApprovedDatesTypesPage.checkDate('APD')
+    selectApprovedDatesTypesPage.checkDate('ROTL')
+    selectApprovedDatesTypesPage.continue('continue-button').click()
+
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('APD')
+      .enterDate('01', '06', '2026')
+      .clickContinue()
+
+    Page.verifyOnPage(StandaloneEnterApprovedDatePage) //
+      .checkIsFor('ROTL')
+      .enterDate('30', '12', '2028')
+      .clickContinue()
+
+    Page.verifyOnPage(StandaloneReviewApprovedDatesPage) //
+      .expectDate('APD', '01 June 2026')
+      .expectDate('ROTL', '30 December 2028')
+      .continueButton()
+      .click()
+
+    const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
+
+    cy.verifyLastAPICallDeepProperty(
+      { method: 'POST', urlPath: `/calculate-release-dates/calculation/confirm/123` },
+      'approvedDates',
+      [
+        { dateType: 'ROTL', date: { day: 30, month: 12, year: 2028 } },
+        { dateType: 'APD', date: { day: 1, month: 6, year: 2026 } },
+      ],
+    )
+  })
 })

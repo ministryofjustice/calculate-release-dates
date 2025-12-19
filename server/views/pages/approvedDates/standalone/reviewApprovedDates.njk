@@ -32,10 +32,14 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            {% if dateRows and dateRows.length > 0 %}
             {{ govukSummaryList({
                 rows: dateRows,
                 attributes: { id: 'datesToSave' }
             }) }}
+            {% else %}
+                <div class="govuk-inset-text govuk-!-margin-top-0" data-qa="no-dates-warning">No APD, HDCAD or ROTL dates have been added.</div>
+            {% endif %}
         </div>
     </div>
     {% if addLink %}
