@@ -66,7 +66,7 @@ context('End to end user journey with previously recorded SLED found', () => {
       calculationRequestId: 123,
       usedPreviouslyRecordedSLED: previouslyRecordedSLED,
     })
-    cy.task('stubGetDetailedCalculationResults', previouslyRecordedSLED)
+    cy.task('stubGetDetailedCalculationResults', { previouslyRecordedSLED })
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
@@ -90,7 +90,7 @@ context('End to end user journey with previously recorded SLED found', () => {
     const calculationSummaryPageAfterSelectingNo = CalculationSummaryPage.goTo('A1234AB', '456')
     calculationSummaryPageAfterSelectingNo.sledDate().should('contain.text', 'Monday, 05 November 2018')
 
-    cy.task('stubGetDetailedCalculationResults', previouslyRecordedSLED)
+    cy.task('stubGetDetailedCalculationResults', { previouslyRecordedSLED })
     calculationSummaryPageAfterSelectingNo.clickBack()
 
     Page.verifyOnPage(PreviouslyRecordedSledInterceptPage).clickBack()

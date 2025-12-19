@@ -524,6 +524,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -549,6 +551,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction,
+        calculation: latestCalc,
       })
     })
     it('Should get latest calc and map to a card and action', async () => {
@@ -560,6 +563,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -589,6 +594,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction,
+        calculation: latestCalc,
       })
     })
     it('Should have print notification slip link', async () => {
@@ -600,6 +606,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -629,6 +637,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction,
+        calculation: latestCalc,
       })
     })
     it('Should get latest calc and map to a card but no action if calc reference missing', async () => {
@@ -639,6 +648,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -659,6 +670,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction: undefined,
+        calculation: latestCalc,
       })
     })
     it('Should return undefined card and action if no prisoner or calc found', async () => {
@@ -667,6 +679,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard: undefined,
         latestCalcCardAction: undefined,
+        calculation: undefined,
       })
     })
     it('Should return undefined card and action if error occurs', async () => {
@@ -675,6 +688,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard: undefined,
         latestCalcCardAction: undefined,
+        calculation: undefined,
       })
     })
     it('Should return Error object if no Nomis offence dates are present', async () => {
@@ -705,9 +719,11 @@ describe('Calculate release dates service tests', () => {
         calculationStatus: 'CONFIRMED',
         calculationReference: 'UUID',
         calculationType: 'CALCULATED',
-        calculationReason: { id: 1, isOther: true, displayName: 'Other' },
+        calculationReason: { id: 1, isOther: true, displayName: 'Other', useForApprovedDates: false },
         otherReasonDescription: 'Test',
         usePreviouslyRecordedSLEDIfFound: false,
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
       },
       dates: {
         CRD: {

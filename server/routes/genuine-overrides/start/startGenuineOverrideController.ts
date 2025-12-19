@@ -2,12 +2,9 @@ import { Request, Response } from 'express'
 import { Controller } from '../../controller'
 import GenuineOverrideUrls from '../genuineOverrideUrls'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
-import {
-  EnteredGenuineOverrideDate,
-  GenuineOverrideInputs,
-} from '../../../models/genuine-override/genuineOverrideInputs'
 import { GenuineOverrideDate } from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { filteredListOfDates } from '../../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { EnteredDate, GenuineOverrideInputs } from '../../../@types/journeys'
 
 export default class StartGenuineOverrideController implements Controller {
   constructor(private readonly calculateReleaseDatesService: CalculateReleaseDatesService) {}
@@ -52,7 +49,7 @@ export default class StartGenuineOverrideController implements Controller {
     return res.redirect(url)
   }
 
-  private mapDates(dates: GenuineOverrideDate[]): EnteredGenuineOverrideDate[] {
+  private mapDates(dates: GenuineOverrideDate[]): EnteredDate[] {
     return (
       dates
         // exclude ESED and any other hidden date types.

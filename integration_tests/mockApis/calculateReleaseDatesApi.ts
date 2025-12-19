@@ -2,6 +2,7 @@ import { SuperAgentRequest } from 'superagent'
 import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
 import {
+  ApprovedDate,
   DetailedCalculationResults,
   LatestCalculation,
   PreviouslyRecordedSLED,
@@ -11,6 +12,16 @@ import {
 import { components } from '../../server/@types/calculateReleaseDates'
 
 type PreviousOverride = components['schemas']['PreviousGenuineOverride']
+type EarlyReleaseTranche =
+  | 'TRANCHE_0'
+  | 'TRANCHE_1'
+  | 'TRANCHE_2'
+  | 'FTR_56_TRANCHE_1'
+  | 'FTR_56_TRANCHE_2'
+  | 'FTR_56_TRANCHE_3'
+  | 'FTR_56_TRANCHE_4'
+  | 'FTR_56_TRANCHE_5'
+  | 'FTR_56_TRANCHE_6'
 
 export default {
   stubCalculatePreliminaryReleaseDates: (opts: {
@@ -959,12 +970,20 @@ export default {
           {
             id: 1,
             displayName: 'A reason',
-            isOther: 'false',
+            isOther: false,
+            useForApprovedDates: false,
+          },
+          {
+            id: 99,
+            displayName: 'Add dates',
+            isOther: false,
+            useForApprovedDates: true,
           },
           {
             id: 2,
             displayName: 'Other',
-            isOther: 'true',
+            isOther: true,
+            useForApprovedDates: false,
           },
         ],
       },
@@ -1061,7 +1080,11 @@ export default {
       },
     })
   },
-  stubGetDetailedCalculationResults: (previouslyRecordedSLED?: PreviouslyRecordedSLED): SuperAgentRequest => {
+  stubGetDetailedCalculationResults: (args?: {
+    previouslyRecordedSLED?: PreviouslyRecordedSLED
+    releaseTranche?: EarlyReleaseTranche
+  }): SuperAgentRequest => {
+    const { previouslyRecordedSLED, releaseTranche } = args || {}
     const breakdown = {
       showSds40Hints: false,
       concurrentSentences: [
@@ -1298,6 +1321,8 @@ export default {
         calculationStatus: 'CONFIRMED',
         calculationType: 'CALCULATED',
         usePreviouslyRecordedSLEDIfFound: !!previouslyRecordedSLED,
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
       },
       calculationOriginalData: {
         prisonerDetails,
@@ -1306,6 +1331,10 @@ export default {
       calculationBreakdown: breakdown,
       approvedDates: {},
       usedPreviouslyRecordedSLED: previouslyRecordedSLED,
+    }
+
+    if (releaseTranche) {
+      detailedResults.tranche = releaseTranche
     }
 
     return stubFor({
@@ -1329,6 +1358,8 @@ export default {
       source: 'CRDS',
       reason: 'Transfer',
       establishment: 'Kirkham (HMP)',
+      calculatedByUsername: 'user1',
+      calculatedByDisplayName: 'User One',
       dates: [
         { date: '2018-11-05', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
         {
@@ -1577,6 +1608,55 @@ export default {
         jsonBody: {
           success: false,
           validationMessages: opts.validationMessages,
+        },
+      },
+    })
+  },
+  stubAvailableApprovedDatesInputs: (opts: {
+    calculationRequestId?: number
+    previousApprovedDates?: ApprovedDate[]
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/approved-dates/A1234AB/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          approvedDatesAvailable: true,
+          calculatedReleaseDates: {
+            dates: {
+              SLED: '2018-11-05',
+              CRD: '2017-05-07',
+              HDCED: '2016-12-24',
+            },
+            calculationRequestId: opts?.calculationRequestId ?? 123,
+            prisonerId: 'A1234AB',
+            bookingId: 1234,
+            calculationStatus: 'PRELIMINARY',
+          },
+          previousApprovedDates: opts?.previousApprovedDates ?? [],
+        },
+      },
+    })
+  },
+  stubUnavailableApprovedDatesInputs: (opts: {
+    calculationRequestId?: number
+    unavailableReason?: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/approved-dates/A1234AB/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          approvedDatesAvailable: false,
+          unavailableReason: opts?.unavailableReason ?? 'INPUTS_CHANGED_SINCE_LAST_CALCULATION',
         },
       },
     })

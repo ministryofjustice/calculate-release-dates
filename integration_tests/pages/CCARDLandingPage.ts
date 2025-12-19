@@ -26,8 +26,8 @@ export default class CCARDLandingPage extends Page {
     return cy.get('[data-qa=calculation-summary-reason]')
   }
 
-  latestCalculationEstablishment(): PageElement {
-    return cy.get('[data-qa=calculation-summary-establishment]')
+  latestCalculationCalculatedBy(): PageElement {
+    return cy.get('[data-qa=calculation-summary-calculated-by]')
   }
 
   latestCalculationSource(): PageElement {

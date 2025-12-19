@@ -22,19 +22,10 @@
 {% endblock %}
 
 {% block content %}
+    {% include '../partials/formError.njk' %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-                {% if errorMessage|length %}
-                    {% set errorMessageText = {text: errorMessage.text} %}
-                {% endif %}
-
-                {% if otherErrorMessage|length %}
-                    {% set otherErrorText = {text: otherErrorMessage.text  } %}
-                    {% set otherValueId = otherErrorMessage.id %}
-                    {% set otherText = otherErrorMessage.otherText %}
-                {% endif %}
-
                 {% set otherReasonHtml %}
                     {{ govukCharacterCount({
                         id: "other-reason-description",
@@ -44,8 +35,8 @@
                         maxlength: 120,
                         threshold: 50,
                         classes: "govuk-!-width-two-thirds",
-                        errorMessage: otherErrorText,
-                        value: otherText,
+                        errorMessage: validationErrors | findError('otherReasonDescription'),
+                        value: otherReasonDescription,
                         label: {
                             text: "Enter the reason for the calculation"
                         }
@@ -91,6 +82,7 @@
                     value: otherValueId
                 }) }}
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                <input type="hidden" name="otherReasonId" value="{{ otherReasonId }}"/>
                 {{ govukButton({
                     text: "Continue",
                     type: submit,

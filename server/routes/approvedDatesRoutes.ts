@@ -9,7 +9,7 @@ import RemoveApprovedDateViewModel from '../models/RemoveApprovedDateViewModel'
 import SelectApprovedDatesViewModel from '../models/SelectApprovedDatesViewModel'
 import ApprovedDatesSubmitDateViewModel from '../models/ApprovedDatesSubmitDateViewModel'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
-import saveCalculation from './saveCalculationHelper'
+import { saveCalculation } from './saveCalculationHelper'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 export default class ApprovedDatesRoutes {
@@ -72,7 +72,7 @@ export default class ApprovedDatesRoutes {
         prisonerDetail,
         calculationRequestId,
         config,
-        req.session.isAddDatesFlow,
+        req.session.isAddDatesFlow?.[nomsId] ?? false,
         req.originalUrl,
       ),
     )
@@ -92,7 +92,14 @@ export default class ApprovedDatesRoutes {
     if (error) {
       return res.render(
         'pages/approvedDates/selectApprovedDates',
-        new SelectApprovedDatesViewModel(prisonerDetail, calculationRequestId, config, false, req.originalUrl, error),
+        new SelectApprovedDatesViewModel(
+          prisonerDetail,
+          calculationRequestId,
+          config,
+          req.session.isAddDatesFlow?.[nomsId] ?? false,
+          req.originalUrl,
+          error,
+        ),
       )
     }
 

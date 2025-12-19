@@ -72,7 +72,7 @@ export default class CalculationRoutes {
       false,
       approvedDates,
       detailedCalculationResults,
-      hasGenuineOverridesAccess(userRoles),
+      hasGenuineOverridesAccess(),
     )
     res.render(
       'pages/calculation/printCalculationSummary',
@@ -80,7 +80,7 @@ export default class CalculationRoutes {
         model,
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
-        req.session.isAddDatesFlow,
+        req.session.isAddDatesFlow?.[nomsId] ?? false,
         req.originalUrl,
       ),
     )

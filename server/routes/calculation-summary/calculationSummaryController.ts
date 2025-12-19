@@ -13,7 +13,7 @@ import {
   approvedSummaryDatesCardModelFromCalculationSummaryViewModel,
 } from '../../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
-import saveCalculation from '../saveCalculationHelper'
+import { saveCalculation } from '../saveCalculationHelper'
 import GenuineOverrideUrls from '../genuine-overrides/genuineOverrideUrls'
 import { hasGenuineOverridesAccess } from '../genuine-overrides/genuineOverrideUtils'
 import { getSiblingCalculationWithPreviouslyRecordedSLED } from '../../utils/previouslyRecordedSledUtils'
@@ -85,7 +85,7 @@ export default class CalculationSummaryController implements Controller {
       false,
       approvedDates,
       detailedCalculationResults,
-      hasGenuineOverridesAccess(userRoles),
+      hasGenuineOverridesAccess(),
     )
     const siblingCalculationWithoutPreviouslyRecordedSLED = getSiblingCalculationWithPreviouslyRecordedSLED(
       req,
@@ -108,7 +108,7 @@ export default class CalculationSummaryController implements Controller {
           nomsId,
           calculationRequestId,
         } as ApprovedDateActionConfig),
-        req.session.isAddDatesFlow,
+        req.session.isAddDatesFlow?.[nomsId],
         callbackUrl || req.originalUrl,
         backLink,
       ),
@@ -131,7 +131,7 @@ export default class CalculationSummaryController implements Controller {
       return
     }
     if (!this.hasBeenAskedApprovedDatesQuestion(req, nomsId)) {
-      if (req.session.isAddDatesFlow) {
+      if (req.session.isAddDatesFlow[nomsId]) {
         res.redirect(`/calculation/${nomsId}/${calculationRequestId}/select-approved-dates`)
       } else {
         res.redirect(`/calculation/${nomsId}/${calculationRequestId}/approved-dates-question`)

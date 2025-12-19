@@ -1068,7 +1068,7 @@ export interface paths {
      * Get adjustments for a calculationRequestId
      * @description This endpoint will return the adjustments based on a calculationRequestId
      */
-    get: operations['get']
+    get: operations['getAdjustmentsForCalculationRequest']
     put?: never
     post?: never
     delete?: never
@@ -1305,8 +1305,6 @@ export interface components {
       prospective: boolean
     }
     AdjustmentDto: {
-      /** Format: int64 */
-      bookingId: number
       person: string
       /** @enum {string} */
       adjustmentType:
@@ -1322,6 +1320,8 @@ export interface components {
         | 'APPEAL_APPLICANT'
       /** Format: uuid */
       id?: string
+      /** Format: int64 */
+      bookingId?: number
       /** Format: date */
       toDate?: string
       /** Format: date */
@@ -1338,6 +1338,8 @@ export interface components {
       timeSpentAsAnAppealApplicant?: components['schemas']['TimeSpentAsAnAppealApplicantDto']
       /** Format: int32 */
       sentenceSequence?: number
+      /** Format: uuid */
+      recallId?: string
       adjustmentTypeText?: string
       /** @enum {string} */
       adjustmentArithmeticType?: 'ADDITION' | 'DEDUCTION' | 'NONE'
@@ -1393,6 +1395,8 @@ export interface components {
     RecordARecallRequest: {
       /** Format: date */
       revocationDate: string
+      /** Format: uuid */
+      recallId?: string
     }
     AutomatedCalculationData: {
       /** Format: int64 */
@@ -1717,6 +1721,7 @@ export interface components {
       id: number
       isOther: boolean
       displayName: string
+      useForApprovedDates: boolean
     }
     PreviouslyRecordedSLED: {
       /**
@@ -1908,6 +1913,8 @@ export interface components {
         | 'AGGRAVATING_FACTOR_OFFENCE'
         | 'OTHER'
       genuineOverrideReasonDescription?: string
+      calculatedByUsername: string
+      calculatedByDisplayName: string
     }
     GenuineOverrideReasonResponse: {
       code: string
@@ -2214,6 +2221,8 @@ export interface components {
       /** @enum {string} */
       source: 'NOMIS' | 'CRDS'
       dates: components['schemas']['DetailedDate'][]
+      calculatedByUsername: string
+      calculatedByDisplayName: string
     }
     ReleaseDateHint: {
       text: string
@@ -2251,6 +2260,10 @@ export interface components {
         | 'OTHER'
       genuineOverrideReasonDescription?: string
       usePreviouslyRecordedSLEDIfFound: boolean
+      calculatedByUsername: string
+      calculatedByDisplayName: string
+      calculatedAtPrisonId?: string
+      calculatedAtPrisonDescription?: string
     }
     ReleaseDatesAndCalculationContext: {
       calculation: components['schemas']['CalculationContext']
@@ -2358,6 +2371,8 @@ export interface components {
       calculatedAt: string
       comment?: string
       releaseDates: components['schemas']['DetailedDate'][]
+      calculatedByUsername: string
+      calculatedByDisplayName: string
     }
     /** @description Calculation breakdown details */
     CalculationBreakdown: {
@@ -2602,8 +2617,6 @@ export interface components {
     AnalysedAdjustment: {
       /** @enum {string} */
       analysisResult: 'NEW' | 'SAME'
-      /** Format: int64 */
-      bookingId: number
       person: string
       /** @enum {string} */
       adjustmentType:
@@ -2619,6 +2632,8 @@ export interface components {
         | 'APPEAL_APPLICANT'
       /** Format: uuid */
       id?: string
+      /** Format: int64 */
+      bookingId?: number
       /** Format: date */
       toDate?: string
       /** Format: date */
@@ -2635,6 +2650,8 @@ export interface components {
       timeSpentAsAnAppealApplicant?: components['schemas']['TimeSpentAsAnAppealApplicantDto']
       /** Format: int32 */
       sentenceSequence?: number
+      /** Format: uuid */
+      recallId?: string
       adjustmentTypeText?: string
       /** @enum {string} */
       adjustmentArithmeticType?: 'ADDITION' | 'DEDUCTION' | 'NONE'
@@ -5256,7 +5273,7 @@ export interface operations {
       }
     }
   }
-  get: {
+  getAdjustmentsForCalculationRequest: {
     parameters: {
       query?: never
       header?: never

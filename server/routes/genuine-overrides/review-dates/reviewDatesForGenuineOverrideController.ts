@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { Controller } from '../../controller'
 import GenuineOverrideUrls from '../genuineOverrideUrls'
-import { genuineOverrideInputsForPrisoner, sortDatesForGenuineOverride } from '../genuineOverrideUtils'
+import { genuineOverrideInputsForPrisoner } from '../genuineOverrideUtils'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import PrisonerService from '../../../services/prisonerService'
 import ReviewDatesForGenuineOverrideViewModel from '../../../models/genuine-override/ReviewDatesForGenuineOverrideViewModel'
@@ -15,6 +15,7 @@ import {
   convertValidationMessagesToErrorMessagesForPath,
   redirectToInputWithErrors,
 } from '../../../middleware/validationMiddleware'
+import { sortDisplayableDates } from '../../../utils/utils'
 
 export default class ReviewDatesForGenuineOverrideController implements Controller {
   constructor(
@@ -32,7 +33,7 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
     if (genuineOverrideInputs.datesToSave?.length === 0) {
       return res.redirect(GenuineOverrideUrls.selectDatesToAdd(nomsId, calculationRequestId))
     }
-    sortDatesForGenuineOverride(genuineOverrideInputs.datesToSave)
+    sortDisplayableDates(genuineOverrideInputs.datesToSave)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(
       token,
       'DESCRIPTION_ONLY',

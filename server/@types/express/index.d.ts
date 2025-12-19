@@ -1,9 +1,8 @@
 import { CalculationUserInputs } from '../calculateReleaseDates/calculateReleaseDatesClientTypes'
 import type { UserDetails } from '../../services/userService'
 import { ErrorMessages } from '../../types/ErrorMessages'
-import { GenuineOverrideInputs } from '../../models/genuine-override/genuineOverrideInputs'
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
-import { ApprovedDatesJourney } from '../journeys'
+import { ApprovedDatesJourney, GenuineOverrideInputs } from '../journeys'
 
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -20,7 +19,7 @@ declare module 'express-session' {
     manualJourneyDifferentDatesConfirmed?: boolean
     otherReasonDescription?: { string?: string }
     manualEntryValidationErrors?: ErrorMessages
-    isAddDatesFlow?: boolean
+    isAddDatesFlow?: Record<string, boolean>
     manualEntryRoutingForBookings?: [string]
     genuineOverrideInputs: Record<string, GenuineOverrideInputs>
     siblingCalculationWithPreviouslyRecordedSLED?: { number?: number }

@@ -10,6 +10,7 @@ import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClien
 import {
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
+  ApprovedDatesInputResponse,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
@@ -539,10 +540,12 @@ export default class CalculateReleaseDatesService {
         return {
           latestCalcCard,
           latestCalcCardAction: action,
+          calculation: latestCalc,
         }
       })
       .catch(error => {
-        if (!isDataError(error)) return { latestCalcCard: undefined, latestCalcCardAction: undefined }
+        if (!isDataError(error))
+          return { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
         const dataError = getMissingPrisonDataError(error.data.userMessage)
 
         switch (dataError) {
@@ -553,7 +556,7 @@ export default class CalculateReleaseDatesService {
           case FullPageErrorType.NO_LICENCE_TERM_CODE:
             return FullPageError.noLicenceTermPage()
           default:
-            return { latestCalcCard: undefined, latestCalcCardAction: undefined }
+            return { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
         }
       })
   }
@@ -607,5 +610,9 @@ export default class CalculateReleaseDatesService {
 
   async getGenuineOverrideInputs(calculationRequestId: number, token: string): Promise<GenuineOverrideInputResponse> {
     return new CalculateReleaseDatesApiClient(token).getGenuineOverrideInputs(calculationRequestId)
+  }
+
+  async getApprovedDatesInputs(prisonerId: string, token: string): Promise<ApprovedDatesInputResponse> {
+    return new CalculateReleaseDatesApiClient(token).getApprovedDatesInputs(prisonerId)
   }
 }

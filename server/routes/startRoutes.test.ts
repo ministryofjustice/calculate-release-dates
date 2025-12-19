@@ -21,12 +21,16 @@ import {
 } from './testutils/layoutExpectations'
 import AuthorisedRoles from '../enumerations/authorisedRoles'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  HistoricCalculation,
+  LatestCalculation,
+} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { FullPageError } from '../types/FullPageError'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
 import AuditService from '../services/auditService'
 import { CalculationCard } from '../types/CalculationCard'
+import config from '../config'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/prisonerService')
@@ -124,16 +128,27 @@ const calculationHistory = [
     commentText: 'a calculation',
     calculationType: 'CALCULATED',
     establishment: 'Kirkham (HMP)',
+    calculatedByDisplayName: 'Bob Smith',
     calculationRequestId: 90328,
     calculationReason: 'New Sentence',
   },
   {
-    offenderNo: 'MJ93022',
+    offenderNo: 'GU32342',
     calculationDate: '2021-09-27',
     calculationSource: 'CRDS',
     commentText: 'calculation without reason',
     calculationType: 'CALCULATED',
-    establishment: 'Five Wells (HMP)',
+    calculatedByDisplayName: 'John Butcher',
+    calculationRequestId: 849432,
+    calculationReason: null,
+  },
+  {
+    offenderNo: 'GU32342',
+    calculationDate: '2021-08-01',
+    calculationSource: 'CRDS',
+    commentText: 'calculation without reason',
+    calculationType: 'CALCULATED',
+    establishment: 'Kirkham (HMP)',
     calculationRequestId: 849432,
     calculationReason: null,
   },
@@ -157,6 +172,7 @@ const latestCalcCardActionForPrisoner: Action = {
 const noLatestCalcCard = {
   latestCalcCard: undefined,
   latestCalcCardAction: undefined,
+  calculation: undefined,
 }
 
 let app: Express
@@ -171,6 +187,7 @@ beforeEach(() => {
 })
 afterEach(() => {
   jest.resetAllMocks()
+  config.featureToggles.useNewApprovedDatesFlow = true
 })
 
 describe('Check access tests', () => {
@@ -225,11 +242,60 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('should render correct links for prisoner with no Indeterminate sentences', async () => {
+  it('should render correct links for prisoner with no Indeterminate sentences and new add dates flow', async () => {
+    config.featureToggles.useNewApprovedDatesFlow = true
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
     const cardAndAction: CalculationCard = {
       latestCalcCard: latestCalcCardForPrisoner,
       latestCalcCardAction: null,
+      calculation: {
+        source: 'NOMIS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        dates: [],
+      },
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
+    await request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
+        expect($('.govuk-link').first().attr('href')).toStrictEqual('/view/GU32342/nomis-calculation-summary/123456')
+        expect(addDatesFlowLink.attr('href')).toStrictEqual('/approved-dates/A1234AA/start')
+        expect(addDatesFlowLink.text()).toStrictEqual('Add APD, HDCAD or ROTL dates')
+      })
+  })
+
+  it('should render correct links for prisoner with no Indeterminate sentences and old approved dates flow', async () => {
+    config.featureToggles.useNewApprovedDatesFlow = false
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction: CalculationCard = {
+      latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: null,
+      calculation: {
+        source: 'NOMIS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        dates: [],
+      },
     }
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -253,6 +319,18 @@ describe('Start routes tests', () => {
     const cardAndAction: CalculationCard = {
       latestCalcCard: latestCalcCardForPrisoner,
       latestCalcCardAction: null,
+      calculation: {
+        source: 'NOMIS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        dates: [],
+      },
     }
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -271,12 +349,23 @@ describe('Start routes tests', () => {
       })
   })
 
-  it('GET ?prisonId=123 if CCARD feature toggle is on and user has CRD and adjustments then show all CCARD nav', () => {
+  it('GET ?prisonId=123 if user has CRD and adjustments then show all CCARD nav', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
     const cardAndAction = {
       latestCalcCard: latestCalcCardForPrisoner,
       latestCalcCardAction: latestCalcCardActionForPrisoner,
+      calculation: {
+        source: 'CRDS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        establishment: 'Kirkham (HMP)',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        calculatedByDisplayName: 'Bob Smith',
+        dates: [],
+      } as LatestCalculation,
     }
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -305,6 +394,10 @@ describe('Start routes tests', () => {
         expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
           '/calculation/A1234AA/reason',
         )
+        expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
+        expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
+        expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Bob Smith at Kirkham (HMP)')
+        expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
         expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
         const calculationHistoryHeadings = $('[data-qa=calculation-history-table-headings] th')
           .map((i, element) => $(element).text())
@@ -312,7 +405,7 @@ describe('Start routes tests', () => {
         expect(calculationHistoryHeadings).toStrictEqual([
           'Calculation date',
           'Calculation reason',
-          'Establishment',
+          'Calculated by',
           'Source',
         ])
         const calculationHistoryRow1 = $('[data-qa=calculation-history-table-data-1] td')
@@ -321,7 +414,7 @@ describe('Start routes tests', () => {
         expect(calculationHistoryRow1).toStrictEqual([
           '05 March 2024',
           'New Sentence',
-          'Kirkham (HMP)',
+          'Bob Smith at Kirkham (HMP)',
           'Calculate release dates service',
         ])
         const calculationHistoryRow2 = $('[data-qa=calculation-history-table-data-2] td')
@@ -330,7 +423,16 @@ describe('Start routes tests', () => {
         expect(calculationHistoryRow2).toStrictEqual([
           '27 September 2021',
           'Not entered',
-          'Five Wells (HMP)',
+          'John Butcher',
+          'Calculate release dates service',
+        ])
+        const calculationHistoryRow3 = $('[data-qa=calculation-history-table-data-3] td')
+          .map((i, element) => $(element).text().trim())
+          .get()
+        expect(calculationHistoryRow3).toStrictEqual([
+          '01 August 2021',
+          'Not entered',
+          'Kirkham (HMP)',
           'Calculate release dates service',
         ])
         const latestValuationSLEDRow = $('[data-qa=latest-calculation-card-release-date-SLED]').first()
@@ -348,12 +450,81 @@ describe('Start routes tests', () => {
         expect(links).toStrictEqual(['Overview', 'Adjustments', 'Release dates and calculations'])
       })
   })
+
+  it('GET ?prisonId=123 when latest calc has no establishment', () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: latestCalcCardActionForPrisoner,
+      calculation: {
+        source: 'NOMIS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        calculatedByDisplayName: 'Bob Smith',
+        dates: [],
+      } as LatestCalculation,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
+        expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
+        expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Bob Smith')
+        expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
+        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
+      })
+  })
+
+  it('GET ?prisonId=123 when latest calc has no user', () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: latestCalcCardActionForPrisoner,
+      calculation: {
+        source: 'NOMIS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        establishment: 'Kirkham (HMP)',
+        dates: [],
+      } as LatestCalculation,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
+        expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
+        expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Kirkham (HMP)')
+        expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
+        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
+      })
+  })
+
   it('GET ?prisonId=123 CCARD mode should not blow up if latest calc cannot be loaded', () => {
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
-    const cardAndAction = { latestCalcCard: undefined, latestCalcCardAction: undefined }
+    const cardAndAction = { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
@@ -412,6 +583,7 @@ describe('Start routes tests', () => {
         calculationReason: 'New Sentence',
         genuineOverrideReasonCode: 'OTHER',
         genuineOverrideReasonDescription: 'Some details about the GO',
+        calculatedByDisplayName: 'Bob Smith',
       },
     ] as HistoricCalculation[]
 
@@ -419,6 +591,17 @@ describe('Start routes tests', () => {
     const cardAndAction = {
       latestCalcCard: latestCalcCardForPrisoner,
       latestCalcCardAction: latestCalcCardActionForPrisoner,
+      calculation: {
+        source: 'CRDS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        establishment: 'Kirkham (HMP)',
+        calculatedByDisplayName: 'Bob Smith',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        dates: [],
+      } as LatestCalculation,
     }
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -436,7 +619,7 @@ describe('Start routes tests', () => {
         expect(calculationHistoryHeadings).toStrictEqual([
           'Calculation date',
           'Calculation reason',
-          'Establishment',
+          'Calculated by',
           'Source',
         ])
         const calculationHistoryRow1 = $('[data-qa=calculation-history-table-data-1] td')
@@ -451,7 +634,7 @@ describe('Start routes tests', () => {
         expect(calculationHistoryRow1).toStrictEqual([
           '05 March 2024',
           'New Sentence',
-          'Kirkham (HMP)',
+          'Bob Smith at Kirkham (HMP)',
           'User Override',
           '',
           'Some details about the GO',

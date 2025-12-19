@@ -90,9 +90,9 @@ export const convertValidationMessagesToErrorMessagesForPath = (
   return errorMessagesByPath
 }
 
-export const arrayOrUndefined = (val: string | string[] | undefined): string[] | undefined => {
+export const safeArray = (val: string | string[] | undefined): string[] | undefined => {
   if (val === undefined) {
-    return undefined
+    return []
   }
   if (Array.isArray(val)) {
     return val

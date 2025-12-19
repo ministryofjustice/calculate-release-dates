@@ -7,6 +7,7 @@ import PrisonerService from '../../../services/prisonerService'
 import { ReleaseDateForm } from '../../common-schemas/releaseDateSchemas'
 import GenuineOverrideEnterDateViewModel from '../../../models/genuine-override/GenuineOverrideEnterDateViewModel'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
+import { dateToDayMonthYear } from '../../../utils/utils'
 
 export default class EditGenuineOverrideDateController implements Controller {
   constructor(
@@ -34,11 +35,11 @@ export default class EditGenuineOverrideDateController implements Controller {
     if (!existingDate) {
       return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
     }
-    const parsedDate = dayjs(existingDate.date)
+    const parsedDate = dateToDayMonthYear(existingDate.date)
 
-    const day = res.locals?.formResponses?.day ?? parsedDate.date()
-    const month = res.locals?.formResponses?.month ?? parsedDate.month() + 1 // months are 0 indexed in JS
-    const year = res.locals?.formResponses?.year ?? parsedDate.year()
+    const day = res.locals?.formResponses?.day ?? parsedDate.day
+    const month = res.locals?.formResponses?.month ?? parsedDate.month
+    const year = res.locals?.formResponses?.year ?? parsedDate.year
 
     const description = await this.dateTypeConfigurationService
       .dateTypeToDescriptionMapping(token)

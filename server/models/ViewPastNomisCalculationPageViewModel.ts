@@ -9,6 +9,7 @@ export default class ViewPastNomisCalculationPageViewModel extends OptionalPriso
     public reason: string,
     public source: string,
     public calculationSummaryDatesCardModel?: CalculationSummaryDatesCardModel,
+    public calculatedByDisplayName?: string,
   ) {
     super(prisonerDetail)
   }
