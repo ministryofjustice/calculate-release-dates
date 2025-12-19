@@ -52,7 +52,7 @@ export default class StartRoutes {
         )
       }
 
-      const { latestCalcCard, latestCalcCardAction } = latestCalculationCardOrError
+      const { latestCalcCard, latestCalcCardAction, calculation } = latestCalculationCardOrError
       return res.render(
         'pages/ccardIndex',
         indexViewModelForPrisoner(
@@ -64,6 +64,7 @@ export default class StartRoutes {
           latestCalcCardAction,
           !hasIndeterminateSentence,
           serviceDefinitions,
+          calculation,
         ),
       )
     }

@@ -69,26 +69,53 @@ describe('GET /approved-dates/:nomsId/start', () => {
     )
   })
 
+  it('should map previously approved dates from inputs as dates to save', async () => {
+    // Given
+    const inputs: ApprovedDatesInputResponse = {
+      approvedDatesAvailable: true,
+      calculatedReleaseDates: {
+        calculationRequestId: 946,
+      } as unknown as CalculatedReleaseDates,
+      previousApprovedDates: [
+        { dateType: 'ROTL', date: '2029-01-03' },
+        { dateType: 'APD', date: '2030-02-20' },
+        { dateType: 'HDCAD', date: '2025-06-15' },
+      ],
+    }
+    calculateReleaseDatesService.getApprovedDatesInputs.mockResolvedValue(inputs)
+
+    // When
+    const response = await request(app).get(`/approved-dates/${nomsId}/start`)
+
+    // Then
+    expect(response.status).toEqual(302)
+    const journeys = Object.values(session.approvedDatesJourneys!)
+    expect(journeys).toHaveLength(1)
+    expect(response.headers.location).toStrictEqual(
+      `/approved-dates/${nomsId}/review-calculated-dates/${journeys[0].id}`,
+    )
+    expect(journeys[0]).toStrictEqual({
+      id: expect.anything(),
+      preliminaryCalculationRequestId: 946,
+      nomsId,
+      lastTouched: expect.anything(),
+      datesToSave: [
+        { type: 'ROTL', date: '2029-01-03' },
+        { type: 'APD', date: '2030-02-20' },
+        { type: 'HDCAD', date: '2025-06-15' },
+      ],
+      datesBeingAdded: [],
+    })
+  })
+
   it('should redirect to full calculation journey with approved dates reason set for the prisoner if approved dates in unavailable', async () => {
     // Given
-    const stubbedCalculationReasons = [
-      { id: 1, isOther: false, displayName: '2 day check', useForApprovedDates: false },
-      {
-        id: 123456,
-        isOther: false,
-        displayName: 'Recording a non-calculated date (including HDCAD, APD or ROTL)',
-        useForApprovedDates: true,
-      },
-      { id: 3, isOther: true, displayName: 'Other', useForApprovedDates: false },
-    ]
-
     const inputs: ApprovedDatesInputResponse = {
       approvedDatesAvailable: false,
       unavailableReason: 'INPUTS_CHANGED_SINCE_LAST_CALCULATION',
       previousApprovedDates: [],
     }
     calculateReleaseDatesService.getApprovedDatesInputs.mockResolvedValue(inputs)
-    calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
 
     // When
     const response = await request(app).get(`/approved-dates/${nomsId}/start`)
@@ -96,8 +123,7 @@ describe('GET /approved-dates/:nomsId/start', () => {
     // Then
     expect(response.status).toEqual(302)
     expect(session.approvedDatesJourneys).toBeUndefined()
-    expect(response.headers.location).toStrictEqual(`/calculation/${nomsId}/check-information`)
-    expect(session.calculationReasonId[nomsId]).toStrictEqual(123456)
+    expect(response.headers.location).toStrictEqual(`/calculation/${nomsId}/reason?isAddDatesFlow=true`)
   })
 
   it('should not remove any existing journeys in the session', async () => {

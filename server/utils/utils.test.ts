@@ -1,6 +1,6 @@
-import { convertToTitleCase, initialiseName, createSupportLink, sortDisplayableDates } from './utils'
+import { capitaliseName, initialiseName, createSupportLink, sortDisplayableDates } from './utils'
 
-describe('convert to title case', () => {
+describe('capitalise name', () => {
   it.each([
     [null, null, ''],
     ['empty string', '', ''],
@@ -11,8 +11,9 @@ describe('convert to title case', () => {
     ['Leading spaces', '  RobeRT', '  Robert'],
     ['Trailing spaces', 'RobeRT  ', 'Robert  '],
     ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
+    ['Otherwise punctuated', "billy-bob o'reilly jr.", "Billy-Bob O'Reilly Jr."],
   ])('%s convertToTitleCase(%s, %s)', (_: string, a: string, expected: string) => {
-    expect(convertToTitleCase(a)).toEqual(expected)
+    expect(capitaliseName(a)).toEqual(expected)
   })
 })
 

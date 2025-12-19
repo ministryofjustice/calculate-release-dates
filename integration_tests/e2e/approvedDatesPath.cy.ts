@@ -58,7 +58,8 @@ context('End to end user journeys entering and modifying approved dates', () => 
     checkInformationPage.calculateButton().click()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.yes().click()
@@ -110,7 +111,8 @@ context('End to end user journeys entering and modifying approved dates', () => 
     checkInformationPage.calculateButton().click()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.yes().click()
@@ -157,7 +159,8 @@ context('End to end user journeys entering and modifying approved dates', () => 
     checkInformationPage.calculateButton().click()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.yes().click()

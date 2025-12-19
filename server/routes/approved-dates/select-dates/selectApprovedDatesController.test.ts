@@ -66,13 +66,28 @@ describe('SelectApprovedDatesController', () => {
   })
 
   describe('GET', () => {
-    it('should load page and render correct navigation', async () => {
+    it('should load page and render correct navigation when there were previously entered approved dates', async () => {
+      journey.datesToSave = [{ type: 'APD', date: '2021-10-03' }]
       const response = await request(app).get(pageUrl)
 
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
       expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
         `/approved-dates/${prisonerNumber}/review-approved-dates/${journeyId}`,
+      )
+      expect($('[data-qa=cancel-link]').attr('href')).toStrictEqual(
+        `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=${pageUrl}`,
+      )
+    })
+
+    it('should load page and render correct navigation when there were no previously entered approved dates', async () => {
+      journey.datesToSave = []
+      const response = await request(app).get(pageUrl)
+
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+        `/approved-dates/${prisonerNumber}/review-calculated-dates/${journeyId}`,
       )
       expect($('[data-qa=cancel-link]').attr('href')).toStrictEqual(
         `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=${pageUrl}`,
@@ -113,14 +128,14 @@ describe('SelectApprovedDatesController', () => {
   })
 
   describe('POST', () => {
-    it('should return to input page with errors set if there was nothing selected', async () => {
+    it('should return to review dates if no date types at all were selected', async () => {
       journey.datesToSave = [{ type: 'APD', date: '2025-01-02' }]
       await request(app) //
         .post(pageUrl)
         .type('form')
         .send({})
         .expect(302)
-        .expect('Location', `${pageUrl}#`)
+        .expect('Location', `/approved-dates/${prisonerNumber}/review-approved-dates/${journeyId}`)
 
       // should not have set anything on inputs
       expect(journey).toStrictEqual({

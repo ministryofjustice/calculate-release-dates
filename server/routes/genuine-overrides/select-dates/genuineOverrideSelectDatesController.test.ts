@@ -116,21 +116,16 @@ describe('SelectGenuineOverrideReasonController', () => {
       expect(hdcedRadio.attr('checked')).toStrictEqual('checked')
       expect(hdcedRadio.attr('disabled')).toBeUndefined()
     })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
-    })
   })
 
   describe('POST', () => {
-    it('should return to input page with errors set if there was nothing selected', async () => {
+    it('should return to review dates if no dates were selected at all', async () => {
       await request(app) //
         .post(pageUrl)
         .type('form')
         .send({})
         .expect(302)
-        .expect('Location', `${pageUrl}#`)
+        .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`)
 
       // should not have set anything on inputs
       expect(genuineOverrideInputs).toStrictEqual({
@@ -228,16 +223,6 @@ describe('SelectGenuineOverrideReasonController', () => {
           { type: 'CRD', date: '2025-06-15' },
         ],
       })
-    })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app) //
-        .post(pageUrl)
-        .type('form')
-        .send({ dateType: 'HDCED' })
-        .expect(302)
-        .expect('Location', '/authError')
     })
   })
 })

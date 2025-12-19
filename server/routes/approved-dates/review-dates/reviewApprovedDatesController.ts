@@ -13,6 +13,7 @@ import ApprovedDatesUrls from '../approvedDateUrls'
 import { dateToDayMonthYear, sortDisplayableDates } from '../../../utils/utils'
 import ReviewApprovedDatesViewModel from '../../../models/approved-dates/ReviewApprovedDatesViewModel'
 import { getBreakdownFragment } from '../../saveCalculationHelper'
+import { approvedDateTypes } from '../approvedDatesUtils'
 
 export default class ReviewApprovedDatesController implements Controller {
   constructor(
@@ -27,14 +28,21 @@ export default class ReviewApprovedDatesController implements Controller {
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const journey = req.session.approvedDatesJourneys[journeyId]
-    if (journey.datesToSave?.length === 0) {
-      return res.redirect(ApprovedDatesUrls.selectDatesToAdd(nomsId, journeyId))
-    }
     sortDisplayableDates(journey.datesToSave)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(
       token,
       'DESCRIPTION_ONLY',
     )
+    let addLink: string
+    if (journey.datesToSave.length < approvedDateTypes.length) {
+      addLink = ApprovedDatesUrls.selectDatesToAdd(prisonerDetail.offenderNo, journeyId)
+    }
+    let backLink: string
+    if (journey.datesToSave.length === 0) {
+      backLink = ApprovedDatesUrls.selectDatesToAdd(nomsId, journeyId)
+    } else {
+      backLink = ApprovedDatesUrls.reviewCalculatedDates(nomsId, journeyId)
+    }
     return res.render(
       'pages/approvedDates/standalone/reviewApprovedDates',
       new ReviewApprovedDatesViewModel(
@@ -42,7 +50,8 @@ export default class ReviewApprovedDatesController implements Controller {
         journeyId,
         journey.datesToSave,
         dateTypeDefinitions,
-        ApprovedDatesUrls.reviewCalculatedDates(nomsId, journeyId),
+        addLink,
+        backLink,
         ApprovedDatesUrls.reviewApprovedDates(nomsId, journeyId),
       ),
     )

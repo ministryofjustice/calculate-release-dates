@@ -12,10 +12,12 @@
         {% endif %}
     {% endif %}
 
-    {% if calculation.establishment %}
-        {% set establishment = calculation.establishment %}
+    {% set establishment = calculation.establishment %}
+
+    {% if calculation.calculatedByDisplayName %}
+        {% set calculatedByDisplayName = calculation.calculatedByDisplayName %}
     {% else %}
-        {% set establishment = "Not entered" %}
+        {% set calculatedByDisplayName = null %}
     {% endif %}
 
     {% if calculation.calculationReason %}
@@ -31,7 +33,7 @@
             <td class="govuk-table__cell"><a class="govuk-link" href="/view/{{ calculation.offenderNo }}/sentences-and-offences/{{ calculation.calculationRequestId }}">{{ calculation.calculationDate | date('DD MMMM YYYY') }}</a></td>
         {% endif %}
         <td class="govuk-table__cell">{{ reason }}</td>
-        <td class="govuk-table__cell">{{ establishment }}</td>
+        <td class="govuk-table__cell">{{ calculatedByDisplayName | capitaliseName }}{% if calculatedByDisplayName and establishment %} at {% endif %}{{ establishment }}</td>
         <td class="govuk-table__cell">{{ source }}
             {% if source === 'Paper calculation' %}
                 <br/><span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>
@@ -48,7 +50,7 @@
         <tr class="govuk-table__row" data-qa="calculation-history-table-headings">
             <th scope="col" class="govuk-table__header">Calculation date</th>
             <th scope="col" class="govuk-table__header">Calculation reason</th>
-            <th scope="col" class="govuk-table__header">Establishment</th>
+            <th scope="col" class="govuk-table__header">Calculated by</th>
             <th scope="col" class="govuk-table__header">Source</th>
         </tr>
     </thead>

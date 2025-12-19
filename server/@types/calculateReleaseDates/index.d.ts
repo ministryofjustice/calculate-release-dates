@@ -1068,7 +1068,7 @@ export interface paths {
      * Get adjustments for a calculationRequestId
      * @description This endpoint will return the adjustments based on a calculationRequestId
      */
-    get: operations['get']
+    get: operations['getAdjustmentsForCalculationRequest']
     put?: never
     post?: never
     delete?: never
@@ -1913,6 +1913,8 @@ export interface components {
         | 'AGGRAVATING_FACTOR_OFFENCE'
         | 'OTHER'
       genuineOverrideReasonDescription?: string
+      calculatedByUsername: string
+      calculatedByDisplayName: string
     }
     GenuineOverrideReasonResponse: {
       code: string
@@ -2219,6 +2221,8 @@ export interface components {
       /** @enum {string} */
       source: 'NOMIS' | 'CRDS'
       dates: components['schemas']['DetailedDate'][]
+      calculatedByUsername: string
+      calculatedByDisplayName: string
     }
     ReleaseDateHint: {
       text: string
@@ -2256,6 +2260,10 @@ export interface components {
         | 'OTHER'
       genuineOverrideReasonDescription?: string
       usePreviouslyRecordedSLEDIfFound: boolean
+      calculatedByUsername: string
+      calculatedByDisplayName: string
+      calculatedAtPrisonId?: string
+      calculatedAtPrisonDescription?: string
     }
     ReleaseDatesAndCalculationContext: {
       calculation: components['schemas']['CalculationContext']
@@ -2363,6 +2371,8 @@ export interface components {
       calculatedAt: string
       comment?: string
       releaseDates: components['schemas']['DetailedDate'][]
+      calculatedByUsername: string
+      calculatedByDisplayName: string
     }
     /** @description Calculation breakdown details */
     CalculationBreakdown: {
@@ -5263,7 +5273,7 @@ export interface operations {
       }
     }
   }
-  get: {
+  getAdjustmentsForCalculationRequest: {
     parameters: {
       query?: never
       header?: never

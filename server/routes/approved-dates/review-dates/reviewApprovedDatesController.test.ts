@@ -70,11 +70,29 @@ describe('ReviewApprovedDatesController', () => {
   })
 
   describe('GET', () => {
-    it('should load page and render correct navigation for standard journey', async () => {
+    it('should load page and render correct navigation when not all dates added', async () => {
+      journey.datesToSave = [{ type: 'APD', date: '2021-02-04' }]
+
+      const response = await request(app).get(pageUrl)
+
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+        `/approved-dates/${prisonerNumber}/review-calculated-dates/${journeyId}`,
+      )
+      expect($('[data-qa=cancel-link]').attr('href')).toStrictEqual(
+        `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=${pageUrl}`,
+      )
+      expect($('[data-qa=add-dates-link]').attr('href')).toStrictEqual(
+        `/approved-dates/${prisonerNumber}/select-dates/${journeyId}`,
+      )
+    })
+
+    it('if all dates are present then hide the add link', async () => {
       journey.datesToSave = [
-        { type: 'CRD', date: '2021-02-04' },
-        { type: 'SED', date: '2021-02-03' },
-        { type: 'LED', date: '2021-02-03' },
+        { type: 'APD', date: '2021-02-04' },
+        { type: 'HDCAD', date: '2021-02-03' },
+        { type: 'ROTL', date: '2021-02-03' },
       ]
 
       const response = await request(app).get(pageUrl)
@@ -87,74 +105,69 @@ describe('ReviewApprovedDatesController', () => {
       expect($('[data-qa=cancel-link]').attr('href')).toStrictEqual(
         `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=${pageUrl}`,
       )
+      expect($('[data-qa=add-dates-link]')).toHaveLength(0)
     })
 
     it('should load dates from session and display in the correct order', async () => {
       journey.datesToSave = [
-        { type: 'HDCED', date: '2021-10-03' },
-        { type: 'CRD', date: '2021-02-04' },
-        { type: 'ERSED', date: '2020-02-03' },
-        { type: 'SED', date: '2021-02-03' },
+        { type: 'APD', date: '2021-10-03' },
+        { type: 'HDCAD', date: '2021-02-04' },
+        { type: 'ROTL', date: '2020-02-03' },
       ]
       const response = await request(app).get(pageUrl)
 
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
       const headings = $('dt')
-      expect(headings).toHaveLength(4)
+      expect(headings).toHaveLength(3)
       expect(headings.eq(0).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">SED</span><br><span class="govuk-hint">Sentence expiry date</span>',
+        '<span class="govuk-!-font-size-24">ROTL</span><br><span class="govuk-hint">Release on temporary licence</span>',
       )
       expect(headings.eq(1).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">CRD</span><br><span class="govuk-hint">Conditional release date</span>',
+        '<span class="govuk-!-font-size-24">HDCAD</span><br><span class="govuk-hint">Home detention curfew approved date</span>',
       )
       expect(headings.eq(2).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">HDCED</span><br><span class="govuk-hint">Home detention curfew eligibility date</span>',
-      )
-      expect(headings.eq(3).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">ERSED</span><br><span class="govuk-hint">Early removal scheme eligibility date</span>',
+        '<span class="govuk-!-font-size-24">APD</span><br><span class="govuk-hint">Approved parole date</span>',
       )
 
-      const sedHeading = $('dt:contains("SED")')
-      expect(sedHeading.next().html().trim()).toStrictEqual('03 February 2021')
-      const sedLinks = sedHeading.next().next().find('a')
+      const rotlHeading = $('dt:contains("ROTL")')
+      expect(rotlHeading.next().html().trim()).toStrictEqual('03 February 2020')
+      const sedLinks = rotlHeading.next().next().find('a')
       expect(sedLinks.eq(0).text()).toStrictEqual('Edit')
-      expect(sedLinks.eq(0).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/SED/edit/${journeyId}`)
+      expect(sedLinks.eq(0).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/ROTL/edit/${journeyId}`)
       expect(sedLinks.eq(1).text()).toStrictEqual('Delete')
-      expect(sedLinks.eq(1).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/SED/delete/${journeyId}`)
+      expect(sedLinks.eq(1).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/ROTL/delete/${journeyId}`)
 
-      const crdHeading = $('dt:contains("CRD")')
-      expect(crdHeading.next().text().trim()).toStrictEqual('04 February 2021')
-      const crdLinks = crdHeading.next().next().find('a')
-      expect(crdLinks.eq(0).text()).toStrictEqual('Edit')
-      expect(crdLinks.eq(0).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/CRD/edit/${journeyId}`)
-      expect(crdLinks.eq(1).text()).toStrictEqual('Delete')
-      expect(crdLinks.eq(1).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/CRD/delete/${journeyId}`)
+      const hdcadHeading = $('dt:contains("HDCAD")')
+      expect(hdcadHeading.next().text().trim()).toStrictEqual('04 February 2021')
+      const hdcadLinks = hdcadHeading.next().next().find('a')
+      expect(hdcadLinks.eq(0).text()).toStrictEqual('Edit')
+      expect(hdcadLinks.eq(0).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/HDCAD/edit/${journeyId}`)
+      expect(hdcadLinks.eq(1).text()).toStrictEqual('Delete')
+      expect(hdcadLinks.eq(1).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/HDCAD/delete/${journeyId}`)
 
-      const hdcedHeading = $('dt:contains("HDCED")')
-      expect(hdcedHeading.next().text().trim()).toStrictEqual('03 October 2021')
-      const hdcedLinks = hdcedHeading.next().next().find('a')
-      expect(hdcedLinks.eq(0).text()).toStrictEqual('Edit')
-      expect(hdcedLinks.eq(0).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/HDCED/edit/${journeyId}`)
-      expect(hdcedLinks.eq(1).text()).toStrictEqual('Delete')
-      expect(hdcedLinks.eq(1).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/HDCED/delete/${journeyId}`)
-
-      const ersedHeading = $('dt:contains("ERSED")')
-      expect(ersedHeading.next().text().trim()).toStrictEqual('03 February 2020')
-      const ersedLinks = ersedHeading.next().next().find('a')
-      expect(ersedLinks.eq(0).text()).toStrictEqual('Edit')
-      expect(ersedLinks.eq(0).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/ERSED/edit/${journeyId}`)
-      expect(ersedLinks.eq(1).text()).toStrictEqual('Delete')
-      expect(ersedLinks.eq(1).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/ERSED/delete/${journeyId}`)
+      const apdHeading = $('dt:contains("APD")')
+      expect(apdHeading.next().text().trim()).toStrictEqual('03 October 2021')
+      const apdLinks = apdHeading.next().next().find('a')
+      expect(apdLinks.eq(0).text()).toStrictEqual('Edit')
+      expect(apdLinks.eq(0).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/APD/edit/${journeyId}`)
+      expect(apdLinks.eq(1).text()).toStrictEqual('Delete')
+      expect(apdLinks.eq(1).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/APD/delete/${journeyId}`)
     })
 
-    it('should redirect to select dates screen if all dates have been removed', async () => {
+    it('should show no dates selected warning if all the dates are removed', async () => {
       journey.datesToSave = []
 
-      await request(app)
-        .get(pageUrl)
-        .expect(302)
-        .expect('Location', `/approved-dates/${prisonerNumber}/select-dates/${journeyId}`)
+      const response = await request(app).get(pageUrl)
+
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=no-dates-warning]').text().trim()).toStrictEqual(
+        'No APD, HDCAD or ROTL dates have been added.',
+      )
+      expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+        `/approved-dates/${prisonerNumber}/select-dates/${journeyId}`,
+      )
     })
   })
 
@@ -172,10 +185,9 @@ describe('ReviewApprovedDatesController', () => {
         calculationType: 'CALCULATED',
       })
       journey.datesToSave = [
-        { type: 'SED', date: '2021-02-03' },
-        { type: 'CRD', date: '2021-02-04' },
-        { type: 'HDCED', date: '2021-10-03' },
-        { type: 'ERSED', date: '2020-02-03' },
+        { type: 'ROTL', date: '2021-10-03' },
+        { type: 'HDCAD', date: '2021-02-04' },
+        { type: 'APD', date: '2021-02-03' },
       ]
 
       await request(app) //
@@ -193,10 +205,9 @@ describe('ReviewApprovedDatesController', () => {
         expect.objectContaining({
           calculationFragments: expect.anything(),
           approvedDates: [
-            { dateType: 'SED', date: { day: 3, month: 2, year: 2021 } },
-            { dateType: 'CRD', date: { day: 4, month: 2, year: 2021 } },
-            { dateType: 'HDCED', date: { day: 3, month: 10, year: 2021 } },
-            { dateType: 'ERSED', date: { day: 3, month: 2, year: 2020 } },
+            { dateType: 'ROTL', date: { day: 3, month: 10, year: 2021 } },
+            { dateType: 'HDCAD', date: { day: 4, month: 2, year: 2021 } },
+            { dateType: 'APD', date: { day: 3, month: 2, year: 2021 } },
           ],
         }),
       )
@@ -212,8 +223,8 @@ describe('ReviewApprovedDatesController', () => {
         throw error
       })
       journey.datesToSave = [
-        { type: 'SED', date: '2021-02-03' },
-        { type: 'CRD', date: '2021-02-04' },
+        { type: 'APD', date: '2021-02-03' },
+        { type: 'HDCAD', date: '2021-02-04' },
       ]
 
       await request(app) //

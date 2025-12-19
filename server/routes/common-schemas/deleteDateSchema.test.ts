@@ -1,11 +1,11 @@
-import { deduplicateFieldErrors } from '../../../middleware/validationMiddleware'
-import { deleteGenuineOverrideDateSchema } from './deleteGenuineOverrideSchema'
+import { deleteDateSchema } from './deleteDateSchema'
+import { deduplicateFieldErrors } from '../../middleware/validationMiddleware'
 
-describe('deleteGenuineOverrideDateSchema', () => {
+describe('deleteDateSchema', () => {
   type Form = {
     confirmDeleteDate?: string
   }
-  it('should require agreeing with the dates', async () => {
+  it('should require agreeing with deleting the date', async () => {
     // Given
     const form = {}
 
@@ -33,6 +33,6 @@ describe('deleteGenuineOverrideDateSchema', () => {
   })
 
   const doValidate = async (form: Form) => {
-    return deleteGenuineOverrideDateSchema.safeParse(form)
+    return deleteDateSchema.safeParse(form)
   }
 })

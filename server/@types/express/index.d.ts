@@ -19,7 +19,7 @@ declare module 'express-session' {
     manualJourneyDifferentDatesConfirmed?: boolean
     otherReasonDescription?: { string?: string }
     manualEntryValidationErrors?: ErrorMessages
-    isAddDatesFlow?: boolean
+    isAddDatesFlow?: Record<string, boolean>
     manualEntryRoutingForBookings?: [string]
     genuineOverrideInputs: Record<string, GenuineOverrideInputs>
     siblingCalculationWithPreviouslyRecordedSLED?: { number?: number }

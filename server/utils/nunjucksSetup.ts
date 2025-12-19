@@ -11,7 +11,14 @@ import {
 import dateFilter from 'nunjucks-date-filter'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { hmppsDesignSystemsEnvironmentName, initialiseName, createSupportLink, validPreCalcHints } from './utils'
+import {
+  hmppsDesignSystemsEnvironmentName,
+  initialiseName,
+  createSupportLink,
+  validPreCalcHints,
+  maxOf,
+  capitaliseName,
+} from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
@@ -87,6 +94,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('createSupportLink', createSupportLink)
 
   njkEnv.addFilter('initialiseName', initialiseName)
+  njkEnv.addFilter('capitaliseName', capitaliseName)
 
   njkEnv.addFilter('formatListAsString', (list?: string[]) => {
     return list ? `[${list.map(i => `'${i}'`).join(',')}]` : '[]'
@@ -156,6 +164,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatSds40Exclusion', formatSds40Exclusion)
   njkEnv.addFilter('validPreCalcHints', validPreCalcHints)
   njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
+  njkEnv.addFilter('latestRevocationDate', latestRevocationDate)
+  njkEnv.addFilter('trancheIsFtr56', trancheIsFtr56)
+  njkEnv.addFilter('formatFtr56Tranche', formatFtr56Tranche)
   njkEnv.addFilter('findError', findError)
 }
 
@@ -224,4 +235,21 @@ export const formatSds40Exclusion = (exclusion: string) => {
     .toLowerCase()
     .replace(/\b\w/g, char => char.toUpperCase())
   return isTrancheThree ? `${title} (for prisoners in custody on or after the 16th Dec 2024)` : title
+}
+
+export const latestRevocationDate = (dates: string[]) => maxOf(dates, revocationDate => new Date(revocationDate))
+
+export const trancheIsFtr56 = (tranche: string): boolean =>
+  [
+    'FTR_56_TRANCHE_1',
+    'FTR_56_TRANCHE_2',
+    'FTR_56_TRANCHE_3',
+    'FTR_56_TRANCHE_4',
+    'FTR_56_TRANCHE_5',
+    'FTR_56_TRANCHE_6',
+  ].includes(tranche)
+
+export const formatFtr56Tranche = (tranche: string): string => {
+  const trancheNumber = tranche[tranche.length - 1]
+  return `Tranche ${trancheNumber}`
 }

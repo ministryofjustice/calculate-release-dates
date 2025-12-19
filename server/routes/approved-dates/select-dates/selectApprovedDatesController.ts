@@ -7,14 +7,13 @@ import { PersonJourneyParams } from '../../../@types/journeys'
 import { SelectDatesForm } from '../../common-schemas/selectDatesSchema'
 import ApprovedDatesUrls from '../approvedDateUrls'
 import SelectApprovedDatesViewModel from '../../../models/approved-dates/SelectApprovedDatesViewModel'
+import { approvedDateTypes } from '../approvedDatesUtils'
 
 export default class SelectApprovedDatesController implements Controller {
   constructor(
     private readonly dateTypeConfigurationService: DateTypeConfigurationService,
     private readonly prisonerService: PrisonerService,
   ) {}
-
-  private approvedDateTypes = ['APD', 'HDCAD', 'ROTL']
 
   GET = async (req: Request<PersonJourneyParams>, res: Response): Promise<void> => {
     const { nomsId, journeyId } = req.params
@@ -25,7 +24,7 @@ export default class SelectApprovedDatesController implements Controller {
     const journey = req.session.approvedDatesJourneys[journeyId]
     const pendingDateTypes: string[] =
       res.locals.formResponses?.dateType ?? journey.datesBeingAdded?.map(it => it.type) ?? []
-    const checkboxes: SelectedDateCheckBox[] = this.approvedDateTypes.map(dateType => {
+    const checkboxes: SelectedDateCheckBox[] = approvedDateTypes.map(dateType => {
       const hasEnteredDate = journey.datesToSave?.find(it => it.type === dateType) !== undefined
       const hasPendingDate = pendingDateTypes?.find(it => it === dateType) !== undefined
       return {
@@ -38,12 +37,19 @@ export default class SelectApprovedDatesController implements Controller {
       }
     })
 
+    let backLink: string
+    if (journey.datesToSave.length === 0) {
+      backLink = ApprovedDatesUrls.reviewCalculatedDates(nomsId, journeyId)
+    } else {
+      backLink = ApprovedDatesUrls.reviewApprovedDates(nomsId, journeyId)
+    }
+
     return res.render(
       'pages/approvedDates/standalone/dateTypeSelection',
       new SelectApprovedDatesViewModel(
         prisonerDetail,
         checkboxes,
-        ApprovedDatesUrls.reviewApprovedDates(nomsId, journeyId),
+        backLink,
         ApprovedDatesUrls.selectDatesToAdd(nomsId, journeyId),
       ),
     )

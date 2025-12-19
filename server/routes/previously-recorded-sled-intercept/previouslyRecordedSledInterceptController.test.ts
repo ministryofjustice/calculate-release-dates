@@ -92,6 +92,8 @@ describe('PreviouslyRecordedSledInterceptController', () => {
       calculationReason: stubbedCalculationResults.calculationReason,
       otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
       usePreviouslyRecordedSLEDIfFound: true,
+      calculatedByUsername: 'user1',
+      calculatedByDisplayName: 'User One',
     },
     dates: {
       CRD: {

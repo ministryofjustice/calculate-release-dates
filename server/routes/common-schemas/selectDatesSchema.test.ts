@@ -1,11 +1,10 @@
-import { deduplicateFieldErrors } from '../../middleware/validationMiddleware'
 import { selectDatesSchema } from './selectDatesSchema'
 
 describe('selectDatesSchema', () => {
   type Form = {
     dateType?: string[] | string
   }
-  it('should require at least one date no form', async () => {
+  it('should not require any date empty form', async () => {
     // Given
     const form = {}
 
@@ -13,14 +12,11 @@ describe('selectDatesSchema', () => {
     const result = await doValidate(form)
 
     // Then
-    expect(result.success).toStrictEqual(false)
-    const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-    expect(deduplicatedFieldErrors).toStrictEqual({
-      dateType: ['You must select at least one date'],
-    })
+    expect(result.success).toStrictEqual(true)
+    expect(result.data).toStrictEqual({ dateType: [] })
   })
 
-  it('should require at least one date empty array', async () => {
+  it('should not require any date empty array', async () => {
     // Given
     const form = { dateType: [] }
 
@@ -28,11 +24,8 @@ describe('selectDatesSchema', () => {
     const result = await doValidate(form)
 
     // Then
-    expect(result.success).toStrictEqual(false)
-    const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-    expect(deduplicatedFieldErrors).toStrictEqual({
-      dateType: ['You must select at least one date'],
-    })
+    expect(result.success).toStrictEqual(true)
+    expect(result.data).toStrictEqual({ dateType: [] })
   })
 
   it('should include all date types from the form', async () => {
@@ -47,7 +40,7 @@ describe('selectDatesSchema', () => {
     expect(result.data).toStrictEqual({ dateType: ['CRD', 'SLED'] })
   })
 
-  it('should include handle only one date being selected which does not arrive as an array', async () => {
+  it('should handle only one date being selected which does not arrive as an array', async () => {
     // Given
     const form = { dateType: 'CRD' }
 

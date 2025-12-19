@@ -128,7 +128,8 @@ describe('ReviewCalculatedDatesBeforeAddingApprovedDatesController', () => {
   })
 
   describe('POST', () => {
-    it('should continue to review approved dates', async () => {
+    it('should continue to review approved dates if there were previously recorded dates', async () => {
+      journey.datesToSave = [{ type: 'APD', date: '2021-10-03' }]
       await request(app) //
         .post(pageUrl)
         .type('form')
@@ -136,5 +137,15 @@ describe('ReviewCalculatedDatesBeforeAddingApprovedDatesController', () => {
         .expect(302)
         .expect('Location', `/approved-dates/${prisonerNumber}/review-approved-dates/${journeyId}`)
     })
+  })
+
+  it('should continue to select dates if there were no previously recorded dates', async () => {
+    journey.datesToSave = []
+    await request(app) //
+      .post(pageUrl)
+      .type('form')
+      .send({})
+      .expect(302)
+      .expect('Location', `/approved-dates/${prisonerNumber}/select-dates/${journeyId}`)
   })
 })

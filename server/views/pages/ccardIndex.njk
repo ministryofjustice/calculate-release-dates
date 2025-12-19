@@ -37,31 +37,14 @@
             {% if calculationHistory.length %}
                 {% if latestCalculationCardConfig %}
                     {% if not anyThingsToDo  %}
-                        {% set latestCalc = calculationHistory[0] %}
-
-                        {% set calculationDate = latestCalc.calculationDate %}
-                        {% set calculationType = latestCalc.calculationType %}
-                        {% set source = "Calculate release dates service" %}
-                        {% if latestCalc.calculationSource === 'NOMIS' %}
-                            {% set source = "NOMIS" %}
-                        {% elseif latestCalc.calculationType and calculationType.startsWith("MANUAL") %}
-                            {% set source = "Paper calculation" %}
-                        {% elseif latestCalc.calculationType and calculationType === 'GENUINE_OVERRIDE' %}
-                            {% set source = "User Override" %}
-                        {% endif %}
-
-                        {% set establishment = latestCalc.establishment or "Not entered" %}
-                        {% set reason = latestCalc.calculationReason or "Not entered" %}
-                        {% set genuineOverrideReasonDescription = latestCalc.genuineOverrideReasonDescription %}
-
                         {% include "./partials/calculationSummary/summary.njk" %}
                         {% include "./partials/calculationSummary/minimalCalculationCard.njk" %}
-
-                        {% if latestCalc.calculationSource !== 'NOMIS' %}
+                        {% set latestCalc = calculationHistory[0] %}
+                        {% if latestCalculation.source !== 'NOMIS' %}
                             <ul class="govuk-list">
                                 <li>
                                     <a data-qa="ccard-sentence-details-link" class="govuk-link"
-                                    href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalc.calculationRequestId }}">View calculation details</a>
+                                    href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalculation.calculationRequestId }}">View calculation details</a>
                                 </li>
                             </ul>
                         {% endif %}

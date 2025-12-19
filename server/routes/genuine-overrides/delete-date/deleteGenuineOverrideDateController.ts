@@ -4,8 +4,8 @@ import GenuineOverrideUrls from '../genuineOverrideUrls'
 import { genuineOverrideInputsForPrisoner } from '../genuineOverrideUtils'
 import PrisonerService from '../../../services/prisonerService'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
-import { DeleteGenuineOverrideDateForm } from './deleteGenuineOverrideSchema'
 import GenuineOverrideDeleteDateViewModel from '../../../models/genuine-override/GenuineOverrideDeleteDateViewModel'
+import { DeleteDateForm } from '../../common-schemas/deleteDateSchema'
 
 export default class DeleteGenuineOverrideDateController implements Controller {
   constructor(
@@ -56,7 +56,7 @@ export default class DeleteGenuineOverrideDateController implements Controller {
         dateType: string
       },
       unknown,
-      DeleteGenuineOverrideDateForm
+      DeleteDateForm
     >,
     res: Response,
   ): Promise<void> => {
