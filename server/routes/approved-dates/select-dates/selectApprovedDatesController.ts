@@ -37,12 +37,19 @@ export default class SelectApprovedDatesController implements Controller {
       }
     })
 
+    let backLink: string
+    if (journey.datesToSave.length === 0) {
+      backLink = ApprovedDatesUrls.reviewCalculatedDates(nomsId, journeyId)
+    } else {
+      backLink = ApprovedDatesUrls.reviewApprovedDates(nomsId, journeyId)
+    }
+
     return res.render(
       'pages/approvedDates/standalone/dateTypeSelection',
       new SelectApprovedDatesViewModel(
         prisonerDetail,
         checkboxes,
-        ApprovedDatesUrls.reviewApprovedDates(nomsId, journeyId),
+        backLink,
         ApprovedDatesUrls.selectDatesToAdd(nomsId, journeyId),
       ),
     )

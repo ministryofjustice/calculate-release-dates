@@ -28,9 +28,6 @@ export default class ReviewApprovedDatesController implements Controller {
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
     const journey = req.session.approvedDatesJourneys[journeyId]
-    if (journey.datesToSave?.length === 0) {
-      return res.redirect(ApprovedDatesUrls.selectDatesToAdd(nomsId, journeyId))
-    }
     sortDisplayableDates(journey.datesToSave)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(
       token,
@@ -40,6 +37,12 @@ export default class ReviewApprovedDatesController implements Controller {
     if (journey.datesToSave.length < approvedDateTypes.length) {
       addLink = ApprovedDatesUrls.selectDatesToAdd(prisonerDetail.offenderNo, journeyId)
     }
+    let backLink: string
+    if (journey.datesToSave.length === 0) {
+      backLink = ApprovedDatesUrls.selectDatesToAdd(nomsId, journeyId)
+    } else {
+      backLink = ApprovedDatesUrls.reviewCalculatedDates(nomsId, journeyId)
+    }
     return res.render(
       'pages/approvedDates/standalone/reviewApprovedDates',
       new ReviewApprovedDatesViewModel(
@@ -48,7 +51,7 @@ export default class ReviewApprovedDatesController implements Controller {
         journey.datesToSave,
         dateTypeDefinitions,
         addLink,
-        ApprovedDatesUrls.reviewCalculatedDates(nomsId, journeyId),
+        backLink,
         ApprovedDatesUrls.reviewApprovedDates(nomsId, journeyId),
       ),
     )

@@ -66,13 +66,28 @@ describe('SelectApprovedDatesController', () => {
   })
 
   describe('GET', () => {
-    it('should load page and render correct navigation', async () => {
+    it('should load page and render correct navigation when there were previously entered approved dates', async () => {
+      journey.datesToSave = [{ type: 'APD', date: '2021-10-03' }]
       const response = await request(app).get(pageUrl)
 
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
       expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
         `/approved-dates/${prisonerNumber}/review-approved-dates/${journeyId}`,
+      )
+      expect($('[data-qa=cancel-link]').attr('href')).toStrictEqual(
+        `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=${pageUrl}`,
+      )
+    })
+
+    it('should load page and render correct navigation when there were no previously entered approved dates', async () => {
+      journey.datesToSave = []
+      const response = await request(app).get(pageUrl)
+
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+        `/approved-dates/${prisonerNumber}/review-calculated-dates/${journeyId}`,
       )
       expect($('[data-qa=cancel-link]').attr('href')).toStrictEqual(
         `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=${pageUrl}`,
