@@ -155,13 +155,19 @@ describe('ReviewApprovedDatesController', () => {
       expect(apdLinks.eq(1).attr('href')).toStrictEqual(`/approved-dates/${prisonerNumber}/APD/delete/${journeyId}`)
     })
 
-    it('should redirect to select dates screen if all dates have been removed', async () => {
+    it('should show no dates selected warning if all the dates are removed', async () => {
       journey.datesToSave = []
 
-      await request(app)
-        .get(pageUrl)
-        .expect(302)
-        .expect('Location', `/approved-dates/${prisonerNumber}/select-dates/${journeyId}`)
+      const response = await request(app).get(pageUrl)
+
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=no-dates-warning]').text().trim()).toStrictEqual(
+        'No APD, HDCAD or ROTL dates have been added.',
+      )
+      expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+        `/approved-dates/${prisonerNumber}/select-dates/${journeyId}`,
+      )
     })
   })
 
