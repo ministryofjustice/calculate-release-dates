@@ -19,12 +19,13 @@ describe('Should contain table headings and rows for release date mismatches', (
             arguments: [],
             message: 'A default term is consecutive to another default term or sentence',
             type: 'VALIDATION',
+            calculationUnsupported: false,
           },
         ],
         misMatchType: 'VALIDATION_ERROR',
         shortReference: 'ref-1',
         releaseDate: { date: '2024-06-15', type: 'CRD' },
-        sdsSentencesIdentified: {},
+        sdsSentencesIdentified: [],
       } as ComparisonMismatchSummary,
       {
         personId: 'HDW924',
@@ -36,7 +37,7 @@ describe('Should contain table headings and rows for release date mismatches', (
         misMatchType: 'RELEASE_DATES_MISMATCH',
         shortReference: 'ref-2',
         releaseDate: { date: '2022-06-15', type: 'ARD' },
-        sdsSentencesIdentified: {},
+        sdsSentencesIdentified: [],
       } as ComparisonMismatchSummary,
       {
         personId: 'ABC123',
@@ -48,7 +49,7 @@ describe('Should contain table headings and rows for release date mismatches', (
         misMatchType: 'RELEASE_DATES_MISMATCH',
         shortReference: 'ref-3',
         releaseDate: { date: '2022-06-15', type: 'ARD' },
-        sdsSentencesIdentified: {},
+        sdsSentencesIdentified: [],
       } as ComparisonMismatchSummary,
     ]
     const comparison = {
@@ -88,12 +89,13 @@ describe('Should contain table headings and rows for release date mismatches', (
             arguments: [],
             message: 'A default term is consecutive to another default term or sentence',
             type: 'VALIDATION',
+            calculationUnsupported: false,
           },
         ],
         misMatchType: 'VALIDATION_ERROR',
         shortReference: 'ref-1',
         releaseDate: { date: '2024-06-15', type: 'CRD' },
-        sdsSentencesIdentified: {},
+        sdsSentencesIdentified: [],
       } as ComparisonMismatchSummary,
       {
         personId: 'HDG321',
@@ -105,7 +107,7 @@ describe('Should contain table headings and rows for release date mismatches', (
         misMatchType: 'RELEASE_DATES_MISMATCH',
         shortReference: 'ref-2',
         releaseDate: { date: '2022-06-15', type: 'ARD' },
-        sdsSentencesIdentified: {},
+        sdsSentencesIdentified: [],
       } as ComparisonMismatchSummary,
       {
         personId: 'ABC123',
@@ -117,7 +119,7 @@ describe('Should contain table headings and rows for release date mismatches', (
         misMatchType: 'RELEASE_DATES_MISMATCH',
         shortReference: 'ref-3',
         releaseDate: { date: '2022-06-15', type: 'ARD' },
-        sdsSentencesIdentified: {},
+        sdsSentencesIdentified: [],
       } as ComparisonMismatchSummary,
     ]
     const comparison = {

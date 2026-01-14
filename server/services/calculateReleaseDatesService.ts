@@ -29,24 +29,26 @@ import {
   SupportedValidationResponse,
   ValidationMessage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import { ErrorMessages } from '../types/ErrorMessages'
 import logger from '../../logger'
 import CalculationRule from '../enumerations/calculationRule'
 import ReleaseDateWithAdjustments from '../@types/calculateReleaseDates/releaseDateWithAdjustments'
-import { arithmeticToWords, daysArithmeticToWords, longDateFormat } from '../utils/utils'
+import {
+  arithmeticToWords,
+  convertValidationToErrorMessages,
+  daysArithmeticToWords,
+  longDateFormat,
+} from '../utils/utils'
 import ReleaseDateType from '../enumerations/releaseDateType'
 import {
   ResultsWithBreakdownAndAdjustments,
   RulesWithExtraAdjustments,
 } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
-import ErrorMessage from '../types/ErrorMessage'
-import { FullPageError, FullPageErrorType } from '../types/FullPageError'
+import { FullPageError } from '../types/FullPageError'
 import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
 import AuditService from './auditService'
 import { CalculationCard } from '../types/CalculationCard'
-import { isDataError } from '../sanitisedError'
-import getMissingPrisonDataError from '../utils/errorUtils'
 
 export default class CalculateReleaseDatesService {
   constructor(private auditService: AuditService) {}
@@ -71,17 +73,6 @@ export default class CalculateReleaseDatesService {
 
   async getCalculationResults(calculationRequestId: number, token: string): Promise<BookingCalculation> {
     return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
-  }
-
-  async getCalculationResultsByReference(
-    calculationReference: string,
-    token: string,
-    checkForChanges = false,
-  ): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).getCalculationResultsByReference(
-      calculationReference,
-      checkForChanges,
-    )
   }
 
   async getUnsupportedSentenceOrCalculationMessages(prisonId: string, token: string): Promise<ValidationMessage[]> {
@@ -434,41 +425,17 @@ export default class CalculateReleaseDatesService {
     return date && now.isBefore(dayjs(date))
   }
 
-  async validateBackend(prisonId: string, userInput: CalculationUserInputs, token: string): Promise<ErrorMessages> {
-    const validationMessages = await new CalculateReleaseDatesApiClient(token).validate(prisonId, userInput)
-    if (validationMessages.length === 0) {
-      return { messages: [] }
-    }
-    return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
-  }
-
-  /**
-   * if all / only validation relates to concurrent consecutive sentences, return single error to trigger
-   * related informational page
-   * @param validationMessages
-   * @private
-   */
-  private convertMessages(validationMessages: ValidationMessage[]): ErrorMessages {
-    if (validationMessages.every(e => e.type === 'CONCURRENT_CONSECUTIVE')) {
-      return {
-        messageType: ErrorMessageType.CONCURRENT_CONSECUTIVE,
-        messages: [{ text: validationMessages[0].message } as ErrorMessage],
-      }
-    }
-
-    const messages = validationMessages.filter(v => v.type !== 'CONCURRENT_CONSECUTIVE')
-
-    return {
-      messageType: ErrorMessageType[messages[0].type],
-      messages: messages.map(m => {
-        return { text: m.message } as ErrorMessage
-      }),
-    }
+  async validateBackend(
+    prisonId: string,
+    userInput: CalculationUserInputs,
+    token: string,
+  ): Promise<ValidationMessage[]> {
+    return new CalculateReleaseDatesApiClient(token).validate(prisonId, userInput)
   }
 
   async validateDatesForManualEntry(token: string, dateTypes: string[]): Promise<ErrorMessages> {
     const validationMessages = await new CalculateReleaseDatesApiClient(token).getManualEntryDateValidation(dateTypes)
-    return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
+    return validationMessages.length ? convertValidationToErrorMessages(validationMessages) : { messages: [] }
   }
 
   async validateDatesForGenuineOverride(token: string, dateTypes: string[]): Promise<ValidationMessage[]> {
@@ -479,7 +446,7 @@ export default class CalculateReleaseDatesService {
     const validationMessages = await new CalculateReleaseDatesApiClient(token).getBookingManualEntryValidation(
       prisonerId,
     )
-    return validationMessages.length ? this.convertMessages(validationMessages) : { messages: [] }
+    return validationMessages.length ? convertValidationToErrorMessages(validationMessages) : { messages: [] }
   }
 
   async offenderHasPreviousManualCalculation(prisonerId: string, token: string): Promise<boolean> {
@@ -544,20 +511,7 @@ export default class CalculateReleaseDatesService {
         }
       })
       .catch(error => {
-        if (!isDataError(error))
-          return { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
-        const dataError = getMissingPrisonDataError(error.data.userMessage)
-
-        switch (dataError) {
-          case FullPageErrorType.NO_OFFENCE_DATES:
-            return FullPageError.noOffenceDatesPage()
-          case FullPageErrorType.NO_IMPRISONMENT_TERM_CODE:
-            return FullPageError.noImprisonmentTermPage()
-          case FullPageErrorType.NO_LICENCE_TERM_CODE:
-            return FullPageError.noLicenceTermPage()
-          default:
-            return { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
-        }
+        return { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
       })
   }
 

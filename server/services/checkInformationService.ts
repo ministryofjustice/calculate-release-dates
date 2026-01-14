@@ -1,68 +1,63 @@
-import { Request, Response } from 'express'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import SentenceTypes from '../models/SentenceTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import PrisonerService from './prisonerService'
-import UserInputService from './userInputService'
-import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../config'
+import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { convertValidationToErrorMessages } from '../utils/utils'
 
 export default class CheckInformationService {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly userInputService: UserInputService,
   ) {
     // intentionally blank
   }
 
   public async checkInformation(
-    req: Request,
-    res: Response,
-    requireUserInputs: boolean,
-    suppressSentenceTypeOrCalcErrors: boolean = false,
+    nomsId: string,
+    userInputs: CalculationUserInputs,
+    caseloads: string[],
+    token: string,
+    userRoles: string[],
   ): Promise<SentenceAndOffenceViewModel> {
-    const { caseloads, token, userRoles } = res.locals.user
-    const { calculationReference } = req.params
-    let { nomsId } = req.params
-    if (!req.session.selectedApprovedDates) {
-      req.session.selectedApprovedDates = {}
-    }
-    req.session.selectedApprovedDates[nomsId] = []
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
 
-    const prisonerId =
-      nomsId ??
-      (await this.calculateReleaseDatesService.getCalculationResultsByReference(calculationReference, token)).prisonerId
-
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonerId, token, caseloads, userRoles)
-    nomsId = prisonerId
-
-    const [sentencesAndOffences, adjustmentDetails, ersedAvailable, analysedAdjustments] = await Promise.all([
-      this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, token),
-      this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(prisonerDetail.bookingId, token),
-      this.calculateReleaseDatesService.getErsedEligibility(prisonerDetail.bookingId, token),
-      config.featureToggles.adjustmentsIntegrationEnabled
-        ? this.calculateReleaseDatesService.getAdjustmentsForPrisoner(prisonerDetail.offenderNo, token)
-        : Promise.resolve([]),
-    ])
+    const [sentencesAndOffences, adjustmentDetails, ersedAvailable, analysedAdjustments, validationResult] =
+      await Promise.all([
+        this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, token),
+        this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(prisonerDetail.bookingId, token),
+        this.calculateReleaseDatesService.getErsedEligibility(prisonerDetail.bookingId, token),
+        config.featureToggles.adjustmentsIntegrationEnabled
+          ? this.calculateReleaseDatesService.getAdjustmentsForPrisoner(prisonerDetail.offenderNo, token)
+          : Promise.resolve([]),
+        this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token),
+      ])
 
     const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
-      ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token)
+      ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, token).catch(error => {
+          if (error.status === 404) {
+            // RTC date not entered for a FTR but this will be flagged by validation so don't blow up
+            return null
+          }
+          throw error
+        })
       : null
 
-    const userInputs = requireUserInputs
-      ? this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-      : ({ sentenceCalculationUserInputs: [] } as CalculationUserInputs)
-
-    let validationMessages: ErrorMessages = null
-
-    if (req.query.hasErrors) {
-      if (suppressSentenceTypeOrCalcErrors) {
-        validationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
-      } else {
-        validationMessages = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
-      }
+    let validationMessages: ErrorMessages
+    const unsupportedMessages = validationResult.filter(error => error.calculationUnsupported)
+    const isUnsupported = Array.isArray(unsupportedMessages) && unsupportedMessages.length > 0
+    if (isUnsupported) {
+      // we only want to show invalid data errors relevant to manual entry on check-information as the unsupported errors are shown on manual-entry
+      validationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
+    } else if (validationResult.length) {
+      validationMessages = convertValidationToErrorMessages(
+        // hide CONCURRENT_CONSECUTIVE as they will be redirected to the dedicated intercept page on submission
+        validationResult.filter(e => e.type !== 'CONCURRENT_CONSECUTIVE'),
+      )
+    } else {
+      validationMessages = { messages: [] }
     }
 
     return new SentenceAndOffenceViewModel(
@@ -72,6 +67,7 @@ export default class CheckInformationService {
       adjustmentDetails,
       false,
       ersedAvailable.isValid,
+      isUnsupported,
       returnToCustody,
       validationMessages,
       analysedAdjustments,

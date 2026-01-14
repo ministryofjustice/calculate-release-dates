@@ -35,7 +35,6 @@ context('End to end user journeys entering and modifying approved dates through 
     cy.task('stubPrisonerDetails')
     cy.task('stubLatestCalculation')
     cy.task('stubCalculationUserInputs')
-    cy.task('stubSupportedValidationNoMessages')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetCalculationHistory')
     cy.task('stubGetDetailedCalculationResults')
