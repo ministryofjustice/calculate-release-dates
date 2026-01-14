@@ -44,6 +44,7 @@ export default class SentenceAndOffenceViewModel {
     adjustments: AnalysedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     public ersedEligible: boolean,
+    public isUnsupported: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
     adjustmentsDtos?: AnalysedAdjustment[] | AdjustmentDto[],

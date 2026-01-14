@@ -3,6 +3,9 @@ import { DesignSystemEnvironment } from '@ministryofjustice/hmpps-court-cases-re
 import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import config from '../config'
 import { filteredListOfDates } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import ErrorMessage from '../types/ErrorMessage'
 
 const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
 
@@ -115,4 +118,16 @@ export const dateToDayMonthYear = (date: string): { day: number; month: number; 
   const month = parsedDate.month() + 1 // months are 0 indexed in JS
   const year = parsedDate.year()
   return { day, month, year }
+}
+
+export const convertValidationToErrorMessages = (validationMessages: ValidationMessage[]): ErrorMessages => {
+  if (validationMessages.length === 0) {
+    return { messages: [] }
+  }
+  return {
+    messageType: ErrorMessageType[validationMessages[0].type],
+    messages: validationMessages.map(m => {
+      return { text: m.message } as ErrorMessage
+    }),
+  }
 }

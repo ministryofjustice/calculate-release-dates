@@ -24,7 +24,6 @@ import {
   psiExample25CalculationBreakdown,
 } from './breakdownExamplesTestData'
 import AuditService from './auditService'
-import { FullPageError } from '../types/FullPageError'
 
 jest.mock('../data/hmppsAuthClient')
 jest.mock('./auditService')
@@ -117,12 +116,14 @@ const invalidValidationResult: ValidationMessage[] = [
     message: 'Validation failed 1',
     arguments: [],
     type: 'VALIDATION',
+    calculationUnsupported: false,
   },
   {
     code: 'OFFENCE_MISSING_DATE',
     message: 'Validation failed 2',
     arguments: [],
     type: 'VALIDATION',
+    calculationUnsupported: false,
   },
 ]
 
@@ -132,12 +133,14 @@ const unsupportedValidationResult: ValidationMessage[] = [
     message: 'Unsupported sentence 1',
     arguments: [],
     type: 'UNSUPPORTED_SENTENCE',
+    calculationUnsupported: true,
   },
   {
     code: 'UNSUPPORTED_SENTENCE_TYPE',
     message: 'Unsupported sentence 2',
     arguments: [],
     type: 'UNSUPPORTED_SENTENCE',
+    calculationUnsupported: true,
   },
 ]
 
@@ -147,12 +150,14 @@ const unsupportedCalculationResult: ValidationMessage[] = [
     message: 'Unsupported calculation 1',
     arguments: [],
     type: 'UNSUPPORTED_CALCULATION',
+    calculationUnsupported: true,
   },
   {
     code: 'A_FINE_SENTENCE_CONSECUTIVE_TO',
     message: 'Unsupported calculation 2',
     arguments: [],
     type: 'UNSUPPORTED_CALCULATION',
+    calculationUnsupported: true,
   },
 ]
 
@@ -418,9 +423,7 @@ describe('Calculate release dates service tests', () => {
     it('Test validation passes', async () => {
       fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, validResult)
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
-      expect(result).toEqual({
-        messages: [],
-      })
+      expect(result).toEqual([])
     })
 
     it('Test for validation type errors', async () => {
@@ -428,20 +431,14 @@ describe('Calculate release dates service tests', () => {
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result).toEqual({
-        messages: [{ text: 'Validation failed 1' }, { text: 'Validation failed 2' }],
-        messageType: 'VALIDATION',
-      })
+      expect(result).toEqual(invalidValidationResult)
     })
     it('Test for unsupported sentences', async () => {
       fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, unsupportedValidationResult)
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result).toEqual({
-        messages: [{ text: 'Unsupported sentence 1' }, { text: 'Unsupported sentence 2' }],
-        messageType: 'UNSUPPORTED_SENTENCE',
-      })
+      expect(result).toEqual(unsupportedValidationResult)
     })
 
     it('Test for unsupported calculation', async () => {
@@ -449,10 +446,7 @@ describe('Calculate release dates service tests', () => {
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result).toEqual({
-        messages: [{ text: 'Unsupported calculation 1' }, { text: 'Unsupported calculation 2' }],
-        messageType: 'UNSUPPORTED_CALCULATION',
-      })
+      expect(result).toEqual(unsupportedCalculationResult)
     })
 
     it('Test for consecutive concurrent calculation', async () => {
@@ -466,32 +460,13 @@ describe('Calculate release dates service tests', () => {
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result).toEqual({
-        messages: [{ text: '10 years 9 months 8 weeks 7 days' }],
-        messageType: 'CONCURRENT_CONSECUTIVE',
-      })
-    })
-
-    it('Test for consecutive concurrent calculation with other validation', async () => {
-      fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, [
+      expect(result).toEqual([
         {
           code: 'CONCURRENT_CONSECUTIVE_SENTENCES_DURATION',
           message: '10 years 9 months 8 weeks 7 days',
           type: 'CONCURRENT_CONSECUTIVE',
         } as ValidationMessage,
-        {
-          code: 'OFFENCE_MISSING_DATE',
-          message: 'The validation failed',
-          type: 'VALIDATION',
-        } as ValidationMessage,
       ])
-
-      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
-
-      expect(result).toEqual({
-        messages: [{ text: 'The validation failed' }],
-        messageType: 'VALIDATION',
-      })
     })
 
     it('Gets calculation history', async () => {
@@ -690,23 +665,6 @@ describe('Calculate release dates service tests', () => {
         latestCalcCardAction: undefined,
         calculation: undefined,
       })
-    })
-    it('Should return Error object if no Nomis offence dates are present', async () => {
-      fakeApi
-        .get(`/calculation/${prisonerId}/latest`)
-        .reply(422, { userMessage: 'no offence end or start dates provided on charge 123' })
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
-      expect(result).toStrictEqual(FullPageError.noOffenceDatesPage())
-    })
-    it('Should return Error object if no Nomis sentence terms are present', async () => {
-      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(422, { userMessage: 'missing imprisonment_term_code 123' })
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
-      expect(result).toStrictEqual(FullPageError.noImprisonmentTermPage())
-    })
-    it('Should return Error object if no Nomis licence terms are present', async () => {
-      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(422, { userMessage: 'missing licence_term_code 123' })
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
-      expect(result).toStrictEqual(FullPageError.noLicenceTermPage())
     })
   })
   describe('get detailed calculation results with adjustments', () => {
@@ -1096,8 +1054,20 @@ describe('Calculate release dates service tests', () => {
     const response: GenuineOverrideCreatedResponse = {
       success: false,
       validationMessages: [
-        { code: 'DATES_MISSING_REQUIRED_TYPE', message: 'Error 1', type: 'VALIDATION', arguments: [] },
-        { code: 'DATES_PAIRINGS_INVALID', message: 'Error 2', type: 'VALIDATION', arguments: [] },
+        {
+          code: 'DATES_MISSING_REQUIRED_TYPE',
+          message: 'Error 1',
+          type: 'VALIDATION',
+          arguments: [],
+          calculationUnsupported: false,
+        },
+        {
+          code: 'DATES_PAIRINGS_INVALID',
+          message: 'Error 2',
+          type: 'VALIDATION',
+          arguments: [],
+          calculationUnsupported: false,
+        },
       ],
     }
     fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(400, response)

@@ -1,7 +1,6 @@
 import Page from '../pages/page'
 import CalculationReasonPage from '../pages/reasonForCalculation'
 import CCARDLandingPage from '../pages/CCARDLandingPage'
-import CheckInformationUnsupportedPage from '../pages/checkInformationUnsupported'
 import ManualEntryLandingPage from '../pages/manualEntryLandingPage'
 import ManualEntrySelectDatesPage from '../pages/manualEntrySelectDatesPage'
 import ManualDatesEnterDatePage from '../pages/manualDatesEnterDatePage'
@@ -9,6 +8,7 @@ import ManualDatesConfirmationPage from '../pages/manualDatesConfirmationPage'
 import CalculationCompletePage from '../pages/calculationComplete'
 import ManualDatesRemoveDatePage from '../pages/manualDatesRemoveDate'
 import ManualDatesNoDatesConfirmationPage from '../pages/manualDatesNoDatesConfirmationPage'
+import CheckInformationPage from '../pages/checkInformation'
 
 context('End to end user journeys entering and modifying approved dates', () => {
   beforeEach(() => {
@@ -20,6 +20,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubGetAnalyzedSentencesAndOffences')
     cy.task('stubGetAnalyzedSentenceAdjustments')
     cy.task('stubGetAdjustmentsForPrisoner')
+    cy.task('stubFullValidationUnsupported')
     cy.task('stubSupportedValidationUnsupportedSentence')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetCalculationHistory')
@@ -46,7 +47,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationUnsupportedPage.manualEntryButton().click()
 
     const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
@@ -115,7 +116,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationUnsupportedPage.manualEntryButton().click()
 
     const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
@@ -160,7 +161,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationUnsupportedPage.manualEntryButton().click()
 
     const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
@@ -210,7 +211,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationUnsupportedPage.manualEntryButton().click()
 
     const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
@@ -279,7 +280,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationUnsupportedPage.manualEntryButton().click()
 
     const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
@@ -331,7 +332,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     calculationReasonPage.radioByIndex(1).check()
     calculationReasonPage.submitReason().click()
 
-    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+    const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationUnsupportedPage.manualEntryButton().click()
 
     const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
@@ -383,7 +384,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
       calculationReasonPage.radioByIndex(1).check()
       calculationReasonPage.submitReason().click()
 
-      const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+      const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationPage)
       checkInformationUnsupportedPage.manualEntryButton().click()
 
       const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)
@@ -418,7 +419,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
       calculationReasonPage.radioByIndex(1).check()
       calculationReasonPage.submitReason().click()
 
-      const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationUnsupportedPage)
+      const checkInformationUnsupportedPage = Page.verifyOnPage(CheckInformationPage)
       checkInformationUnsupportedPage.manualEntryButton().click()
 
       const manualEntryLandingPage = Page.verifyOnPage(ManualEntryLandingPage)

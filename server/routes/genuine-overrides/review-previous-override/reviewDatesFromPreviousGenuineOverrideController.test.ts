@@ -196,8 +196,20 @@ describe('ReviewDatesFromPreviousGenuineOverrideController', () => {
       calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
         success: false,
         validationMessages: [
-          { code: 'DATES_MISSING_REQUIRED_TYPE', message: 'Error 1', type: 'VALIDATION', arguments: [] },
-          { code: 'DATES_PAIRINGS_INVALID', message: 'Error 2', type: 'VALIDATION', arguments: [] },
+          {
+            code: 'DATES_MISSING_REQUIRED_TYPE',
+            message: 'Error 1',
+            type: 'VALIDATION',
+            arguments: [],
+            calculationUnsupported: false,
+          },
+          {
+            code: 'DATES_PAIRINGS_INVALID',
+            message: 'Error 2',
+            type: 'VALIDATION',
+            arguments: [],
+            calculationUnsupported: false,
+          },
         ],
       })
       genuineOverrideInputs.previousOverride = {

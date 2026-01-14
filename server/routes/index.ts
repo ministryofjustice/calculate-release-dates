@@ -5,7 +5,6 @@ import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
 import SearchRoutes from './searchRoutes'
 import StartRoutes from './startRoutes'
-import CheckInformationRoutes from './checkInformationRoutes'
 import ViewRoutes from './viewRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
@@ -60,12 +59,6 @@ export default function Index({
     }
   }
   const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService, userInputService)
-  const checkInformationAccessRoutes = new CheckInformationRoutes(
-    calculateReleaseDatesService,
-    prisonerService,
-    userInputService,
-    checkInformationService,
-  )
   const searchAccessRoutes = new SearchRoutes(prisonerService)
 
   const compareAccessRoutes = new CompareRoutes(
@@ -121,14 +114,6 @@ export default function Index({
   }
 
   const manualEntryRoutes = () => {
-    router.get(
-      '/calculation/:nomsId/check-information-unsupported',
-      checkInformationAccessRoutes.unsupportedCheckInformation,
-    )
-    router.post(
-      '/calculation/:nomsId/check-information-unsupported',
-      checkInformationAccessRoutes.submitUnsupportedCheckInformation,
-    )
     router.get('/calculation/:nomsId/manual-entry', manualEntryAccessRoutes.landingPage)
     router.get('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.dateSelection)
     router.post('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.submitSelectedDates)
