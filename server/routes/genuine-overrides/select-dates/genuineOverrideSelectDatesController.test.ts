@@ -200,8 +200,20 @@ describe('SelectGenuineOverrideReasonController', () => {
 
     it('should return to input page if backend validation of dates fails', async () => {
       calculateReleaseDatesService.validateDatesForGenuineOverride.mockResolvedValue([
-        { code: 'DATES_MISSING_REQUIRED_TYPE', message: 'Error 1', type: 'VALIDATION', arguments: [] },
-        { code: 'DATES_PAIRINGS_INVALID', message: 'Error 2', type: 'VALIDATION', arguments: [] },
+        {
+          code: 'DATES_MISSING_REQUIRED_TYPE',
+          message: 'Error 1',
+          type: 'VALIDATION',
+          arguments: [],
+          calculationUnsupported: false,
+        },
+        {
+          code: 'DATES_PAIRINGS_INVALID',
+          message: 'Error 2',
+          type: 'VALIDATION',
+          arguments: [],
+          calculationUnsupported: false,
+        },
       ])
       genuineOverrideInputs.datesToSave = [
         { type: 'SLED', date: '2032-06-15' },

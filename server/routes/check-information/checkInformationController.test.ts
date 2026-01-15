@@ -25,7 +25,6 @@ import CheckInformationService from '../../services/checkInformationService'
 import UserInputService from '../../services/userInputService'
 import { ErrorMessageType } from '../../types/ErrorMessages'
 import SentenceAndOffenceViewModel from '../../models/SentenceAndOffenceViewModel'
-import { SanitisedError } from '../../sanitisedError'
 import trimHtml from '../testutils/testUtils'
 import { FullPageError } from '../../types/FullPageError'
 
@@ -42,7 +41,7 @@ describe('CheckInformationController', () => {
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
   const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
-  const checkInformationService = new CheckInformationService(null, null, null) as jest.Mocked<CheckInformationService>
+  const checkInformationService = new CheckInformationService(null, null) as jest.Mocked<CheckInformationService>
   const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 
   const stubbedEmptyMessages: ValidationMessage[] = []
@@ -531,6 +530,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         stubbedAdjustmentsForPrisoner,
@@ -626,6 +626,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         [],
@@ -653,6 +654,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         [],
@@ -684,6 +686,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         [],
@@ -714,6 +717,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         [],
@@ -741,6 +745,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         [],
@@ -764,6 +769,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         [],
@@ -793,6 +799,7 @@ describe('CheckInformationController', () => {
         stubbedEmptyAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         [],
@@ -813,10 +820,6 @@ describe('CheckInformationController', () => {
       calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
 
-      calculateReleaseDatesService.validateBackend.mockReturnValue({
-        messages: [{ text: 'An error occurred with the nomis information' }],
-        messageType: ErrorMessageType.VALIDATION,
-      } as never)
       const model = new SentenceAndOffenceViewModel(
         stubbedPrisonerData,
         stubbedUserInput,
@@ -824,6 +827,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         {
           messages: [{ text: 'An error occurred with the nomis information' }],
@@ -841,41 +845,64 @@ describe('CheckInformationController', () => {
           expect(res.text).toContain('Update these details in NOMIS and then')
         })
     })
-    it('GET /calculation/:nomsId/check-information UNSUPPORTED_SENTENCE should redirect to the unsupported check information page', () => {
-      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
-        {
-          type: 'UNSUPPORTED_SENTENCE',
-        } as ValidationMessage,
-      ])
+    it('GET /calculation/:nomsId/check-information should show unsupported navigation and no ERSED if the calc is unsupported', () => {
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        stubbedAdjustments,
+        false,
+        true,
+        true,
+        stubbedReturnToCustodyDate,
+        null,
+        [],
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
 
       return request(app)
         .get('/calculation/A1234AA/check-information')
-        .expect(302)
-        .expect('Location', '/calculation/A1234AA/check-information-unsupported')
+        .expect(200)
+        .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.redirect).toBeTruthy()
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=manual-entry]')).toHaveLength(1)
+          expect($('[data-qa=calculate-release-dates]')).toHaveLength(0)
+          expect($('#ersed')).toHaveLength(0)
         })
     })
-    it('GET /calculation/:nomsId/check-information should display unsupported calculation errors when they exist', () => {
-      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
-        {
-          type: 'UNSUPPORTED_CALCULATION',
-        } as ValidationMessage,
-      ])
+
+    it('GET /calculation/:nomsId/check-information should show supported navigation and ERSED if the calc is supported', () => {
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        stubbedAdjustments,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        null,
+        [],
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
 
       return request(app)
         .get('/calculation/A1234AA/check-information')
-        .expect(302)
-        .expect('Location', '/calculation/A1234AA/check-information-unsupported')
+        .expect(200)
+        .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.redirect).toBeTruthy()
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=manual-entry]')).toHaveLength(0)
+          expect($('[data-qa=calculate-release-dates]')).toHaveLength(1)
+          expect($('#ersed')).toHaveLength(1)
         })
     })
+
     it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
       calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
-      calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
 
       const model = new SentenceAndOffenceViewModel(
@@ -885,6 +912,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         { messages: [] } as never,
         [],
@@ -901,7 +929,6 @@ describe('CheckInformationController', () => {
 
     it('GET /calculation/:nomsId/check-information should display notification if sentence has multiple offences', () => {
       calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
-      calculateReleaseDatesService.validateBackend.mockReturnValue({ messages: [] } as never)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
 
       const model = new SentenceAndOffenceViewModel(
@@ -911,6 +938,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         null,
+        false,
         null,
         { messages: [] } as never,
         [],
@@ -941,6 +969,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         [],
@@ -996,6 +1025,7 @@ describe('CheckInformationController', () => {
         stubbedAdjustments,
         false,
         true,
+        false,
         stubbedReturnToCustodyDate,
         null,
         [],
@@ -1008,111 +1038,6 @@ describe('CheckInformationController', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(0)
-        })
-    })
-
-    it('GET /calculation/:nomsId/check-information should redirect to error page if no offence dates found', () => {
-      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockImplementation(() => {
-        const error = new Error('An error occurred') as Error & SanitisedError
-        error.status = 422
-        error.data = {
-          userMessage: 'no offence end or start dates provided on charge etc...',
-        }
-        throw error
-      })
-
-      userInputService.isCalculationReasonSet.mockReturnValue(true)
-
-      const model = new SentenceAndOffenceViewModel(
-        stubbedPrisonerData,
-        stubbedUserInput,
-        [],
-        stubbedAdjustments,
-        false,
-        true,
-        stubbedReturnToCustodyDate,
-        null,
-        [],
-      )
-      checkInformationService.checkInformation.mockResolvedValue(model)
-      return request(app)
-        .get('/calculation/A1234AA/check-information')
-        .expect(422)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain(
-            'This service cannot calculate release dates because the offence start date is missing.',
-          )
-        })
-    })
-
-    it('GET /calculation/:nomsId/check-information should redirect to error page if no imprisonment term is found', () => {
-      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockImplementation(() => {
-        const error = new Error('An error occurred') as Error & SanitisedError
-        error.status = 422
-        error.data = {
-          userMessage: 'Missing IMPRISONMENT_TERM_CODE...',
-        }
-        throw error
-      })
-
-      userInputService.isCalculationReasonSet.mockReturnValue(true)
-
-      const model = new SentenceAndOffenceViewModel(
-        stubbedPrisonerData,
-        stubbedUserInput,
-        [],
-        stubbedAdjustments,
-        false,
-        true,
-        stubbedReturnToCustodyDate,
-        null,
-        [],
-      )
-      checkInformationService.checkInformation.mockResolvedValue(model)
-      return request(app)
-        .get('/calculation/A1234AA/check-information')
-        .expect(422)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain(
-            'This service cannot calculate release dates because the offence is missing imprisonment terms.',
-          )
-        })
-    })
-
-    it('GET /calculation/:nomsId/check-information should redirect to error page if no offence licence code is found', () => {
-      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockImplementation(() => {
-        const error = new Error('An error occurred') as Error & SanitisedError
-        error.status = 422
-        error.data = {
-          userMessage: 'Missing LICENCE_TERM_CODE...',
-        }
-        throw error
-      })
-
-      userInputService.isCalculationReasonSet.mockReturnValue(true)
-
-      const model = new SentenceAndOffenceViewModel(
-        stubbedPrisonerData,
-        stubbedUserInput,
-        [],
-        stubbedAdjustments,
-        false,
-        true,
-        stubbedReturnToCustodyDate,
-        null,
-        [],
-      )
-      checkInformationService.checkInformation.mockResolvedValue(model)
-      return request(app)
-        .get('/calculation/A1234AA/check-information')
-        .expect(422)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain(
-            'This service cannot calculate release dates because the offence is missing a licence code.',
-          )
         })
     })
 
@@ -1156,7 +1081,7 @@ describe('CheckInformationController', () => {
     it('POST /calculation/:nomsId/check-information should redirect to summary if no previous SLED', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-      calculateReleaseDatesService.validateBackend.mockResolvedValue({ messages: [] })
+      calculateReleaseDatesService.validateBackend.mockResolvedValue([])
       userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
       calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue({
         calculationRequestId: 123,
@@ -1204,7 +1129,7 @@ describe('CheckInformationController', () => {
     it('POST /calculation/:nomsId/check-information should redirect to previous SLED intercept if preliminary calc used one', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-      calculateReleaseDatesService.validateBackend.mockResolvedValue({ messages: [] })
+      calculateReleaseDatesService.validateBackend.mockResolvedValue([])
       userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
       calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue({
         calculationRequestId: 123,
@@ -1239,10 +1164,14 @@ describe('CheckInformationController', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
-      calculateReleaseDatesService.validateBackend.mockReturnValue({
-        messages: [{ text: 'An error occurred with the nomis information' }],
-        messageType: ErrorMessageType.VALIDATION,
-      } as never)
+      calculateReleaseDatesService.validateBackend.mockResolvedValue([
+        {
+          code: 'A_FINE_SENTENCE_MISSING_FINE_AMOUNT',
+          type: 'VALIDATION',
+          message: 'Missing fine amount',
+          calculationUnsupported: false,
+        } as ValidationMessage,
+      ])
 
       return request(app)
         .post('/calculation/A1234AA/check-information')
@@ -1252,52 +1181,85 @@ describe('CheckInformationController', () => {
         })
     })
   })
-  it(
-    'POST /calculation/:nomsId/check-information should redirect to manual entry ' +
-      'when there is a unsupported SDS40 recall error',
-    () => {
-      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-      userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
-      calculateReleaseDatesService.validateBackend.mockReturnValue({
-        messages: [{ text: 'SDS40 Unsupported recall type' }],
-        messageType: ErrorMessageType.MANUAL_ENTRY_JOURNEY_REQUIRED,
-      } as never)
+  it('POST /calculation/:nomsId/check-information should redirect to manual entry when there is a unsupported SDS40 recall error', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.validateBackend.mockResolvedValue([
+      {
+        code: 'UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE',
+        type: 'MANUAL_ENTRY_JOURNEY_REQUIRED',
+        message: 'SDS40 Unsupported recall type',
+        calculationUnsupported: true,
+      } as ValidationMessage,
+    ])
+    calculateReleaseDatesService.validateBookingForManualEntry.mockResolvedValue({ messages: [] })
 
-      return request(app)
-        .post('/calculation/A1234AA/check-information')
-        .type('form')
-        .send({})
-        .expect(302)
-        .expect('Location', '/calculation/A1234AA/manual-entry')
-        .expect(res => {
-          expect(res.redirect).toBeTruthy()
-        })
-    },
-  )
-  it(
-    'POST /calculation/:nomsId/check-information should redirect to manual entry ' +
-      'when there is an unsupported SDS40 consecutive sentence error',
-    () => {
-      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-      userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
-      calculateReleaseDatesService.validateBackend.mockReturnValue({
-        messages: [{ text: 'SDS40 Unsupported Consecutive Sentence After Tranche Commencement' }],
-        messageType: ErrorMessageType.MANUAL_ENTRY_JOURNEY_REQUIRED,
-      } as never)
+    return request(app)
+      .post('/calculation/A1234AA/check-information')
+      .type('form')
+      .send({})
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/manual-entry')
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+      })
+  })
 
-      return request(app)
-        .post('/calculation/A1234AA/check-information')
-        .type('form')
-        .send({})
-        .expect(302)
-        .expect('Location', '/calculation/A1234AA/manual-entry')
-        .expect(res => {
-          expect(res.redirect).toBeTruthy()
-        })
-    },
-  )
+  it('POST /calculation/:nomsId/check-information should redirect to check-information when there is a unsupported error but also manual entry has validation errors', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.validateBackend.mockResolvedValue([
+      {
+        code: 'UNSUPPORTED_SDS40_RECALL_SENTENCE_TYPE',
+        type: 'MANUAL_ENTRY_JOURNEY_REQUIRED',
+        message: 'SDS40 Unsupported recall type',
+        calculationUnsupported: true,
+      } as ValidationMessage,
+    ])
+    calculateReleaseDatesService.validateBookingForManualEntry.mockResolvedValue({
+      messages: [{ text: 'Missing start or end dates' }],
+      messageType: ErrorMessageType.VALIDATION,
+    })
+
+    return request(app)
+      .post('/calculation/A1234AA/check-information')
+      .type('form')
+      .send({})
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/check-information')
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+      })
+  })
+
+  it('POST /calculation/:nomsId/check-information should redirect to consec concurrent intercept if that is the only error', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
+    calculateReleaseDatesService.validateBackend.mockResolvedValue([
+      {
+        code: 'CONCURRENT_CONSECUTIVE_SENTENCES_DURATION',
+        type: 'CONCURRENT_CONSECUTIVE',
+        message: '5 years 3 months 2 weeks 1 days',
+        calculationUnsupported: false,
+      } as ValidationMessage,
+    ])
+
+    return request(app)
+      .post('/calculation/A1234AA/check-information')
+      .type('form')
+      .send({})
+      .expect(302)
+      .expect(
+        'Location',
+        '/calculation/A1234AA/concurrent-consecutive?duration=5%20years%203%20months%202%20weeks%201%20days',
+      )
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+      })
+  })
 
   it('Cannot POST when not in caseload', () => {
     prisonerService.getPrisonerDetail.mockImplementation(() => {

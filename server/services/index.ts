@@ -35,11 +35,7 @@ export const services = () => {
   )
   const userPermissionsService = new UserPermissionsService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
-  const checkInformationService = new CheckInformationService(
-    calculateReleaseDatesService,
-    prisonerService,
-    userInputService,
-  )
+  const checkInformationService = new CheckInformationService(calculateReleaseDatesService, prisonerService)
   const frontEndComponentService = new FrontEndComponentsService(new FrontendComponentsApiClient())
   const comparisonService = new ComparisonService(auditService)
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()

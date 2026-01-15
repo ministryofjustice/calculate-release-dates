@@ -13,10 +13,10 @@ context('Check nomis information', () => {
     cy.task('stubGetAnalyzedSentenceAdjustments')
     cy.task('stubGetAdjustmentsForPrisoner')
     cy.task('stubGetUserCaseloads')
-    cy.task('stubSupportedValidationNoMessages')
     cy.task('stubComponents')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetEligibility')
+    cy.task('stubValidate')
   })
 
   it('Visit check nomis information page', () => {
@@ -60,38 +60,5 @@ context('Check nomis information', () => {
     CheckInformationPage.verifyOnPage(CheckInformationPage)
     cy.injectAxe()
     cy.checkA11y()
-  })
-
-  it('Check nomis information page displays missing offence dates if missing within Nomis', () => {
-    cy.task('stubSupportedValidationNoOffenceDates')
-    cy.signIn()
-    CalculationReasonPage.goTo('A1234AB')
-    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
-    calculationReasonPage.hasMiniProfile()
-    calculationReasonPage.submitReason().click()
-    calculationReasonPage.hasMissingOffenceDates(true)
-  })
-
-  it('Check nomis information page displays missing offence terms if missing within Nomis', () => {
-    cy.task('stubSupportedValidationNoOffenceTerms')
-    cy.signIn()
-    CalculationReasonPage.goTo('A1234AB')
-    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
-    calculationReasonPage.hasMiniProfile()
-    calculationReasonPage.submitReason().click()
-    calculationReasonPage.hasMissingOffenceTerms(true)
-  })
-
-  it('Check nomis information page displays missing offence licence terms if missing within Nomis', () => {
-    cy.task('stubSupportedValidationNoOffenceLicenceTerms')
-    cy.signIn()
-    CalculationReasonPage.goTo('A1234AB')
-    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
-    calculationReasonPage.hasMiniProfile()
-    calculationReasonPage.submitReason().click()
-    calculationReasonPage.hasMissingOffenceLicenceTerms(true)
   })
 })
