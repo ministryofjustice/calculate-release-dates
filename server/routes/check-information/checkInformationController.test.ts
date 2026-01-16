@@ -591,6 +591,60 @@ describe('CheckInformationController', () => {
         })
     })
 
+    it('GET /calculation/:nomsId/check-information should show return to custody date for FTRs if known', () => {
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        stubbedAdjustments,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        null,
+        stubbedAdjustmentsForPrisoner,
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/A1234AA/check-information')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('th:contains("Return to custody")').eq(0).next().text().trim()).toStrictEqual('12 April 2022')
+        })
+    })
+
+    it('GET /calculation/:nomsId/check-information should show Not provided for return to custody date for FTRs if unknown', () => {
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        stubbedAdjustments,
+        false,
+        true,
+        false,
+        null,
+        null,
+        stubbedAdjustmentsForPrisoner,
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/A1234AA/check-information')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('th:contains("Return to custody")').eq(0).next().text().trim()).toStrictEqual('Not entered')
+        })
+    })
+
     it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle on for single sentence', () => {
       config.featureToggles.sdsExclusionIndicatorsEnabled = true
 

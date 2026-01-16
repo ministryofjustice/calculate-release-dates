@@ -68,7 +68,11 @@
                                         <tr class="govuk-table__row govuk-body-s">
                                             <th scope="row" class="govuk-table__header sentence-table-header">Return to custody</th>
                                             <td class="govuk-table__cell">
-                                                {{ params.returnToCustodyDate | date('DD MMMM YYYY') }}
+                                                {% if params.returnToCustodyDate %}
+                                                    {{ params.returnToCustodyDate | date('DD MMMM YYYY') }}
+                                                {%  else %}
+                                                    Not entered
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endif %}
