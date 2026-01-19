@@ -23,9 +23,9 @@
                         <h4 class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="{{offence.offenceCode }}-title">{{offence.offenceCode }} - {{ offence.offenceDescription }}</h4>
                         <p class="govuk-body-s">
                             {% if (offence.offenceEndDate and offence.offenceStartDate and offence.offenceEndDate !== offence.offenceStartDate) %}
-                        Committed from {{ offence.offenceStartDate | date('DD MMMM YYYY') }} to {{ offence.offenceEndDate | date('DD MMMM YYYY') }}
+                        Committed from {{ offence.offenceStartDate | hmppsFormatDate('dd MMMM yyyy') }} to {{ offence.offenceEndDate | hmppsFormatDate('dd MMMM yyyy') }}
                             {% elseif (offence.offenceEndDate or offence.offenceStartDate) %}
-                        Committed on {{ (offence.offenceEndDate or offence.offenceStartDate) | date('DD MMMM YYYY') }}
+                        Committed on {{ (offence.offenceEndDate or offence.offenceStartDate) | hmppsFormatDate('dd MMMM yyyy') }}
                             {% else %}
                         Offence date not entered
                     {% endif %}
@@ -50,14 +50,14 @@
                                     </tr>
                                     <tr class="govuk-table__row govuk-body-s">
                                         <th scope="row" class="govuk-table__header sentence-table-header">Sentence date</th>
-                                        <td class="govuk-table__cell">{{ sentence.sentenceDate | date('DD MMMM YYYY') }}</td>
+                                        <td class="govuk-table__cell">{{ sentence.sentenceDate | hmppsFormatDate('dd MMMM yyyy') }}</td>
                                     </tr>
                                     {% if sentenceModel.isRecall() %}
                                         <tr class="govuk-table__row govuk-body-s">
                                             <th scope="row" class="govuk-table__header sentence-table-header">Revocation date</th>
                                             <td class="govuk-table__cell">
                                                 {% if sentence.revocationDates and sentence.revocationDates.length > 0 %}
-                                                    {{ sentence.revocationDates | latestRevocationDate | date('DD MMMM YYYY')  }}
+                                                    {{ sentence.revocationDates | latestRevocationDate | hmppsFormatDate('dd MMMM yyyy')  }}
                                                 {% else %}
                                                     Not entered 
                                                 {% endif %}
@@ -69,7 +69,7 @@
                                             <th scope="row" class="govuk-table__header sentence-table-header">Return to custody</th>
                                             <td class="govuk-table__cell">
                                                 {% if params.returnToCustodyDate %}
-                                                    {{ params.returnToCustodyDate | date('DD MMMM YYYY') }}
+                                                    {{ params.returnToCustodyDate | hmppsFormatDate('dd MMMM yyyy') }}
                                                 {%  else %}
                                                     Not entered
                                                 {% endif %}

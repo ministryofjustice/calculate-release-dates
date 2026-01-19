@@ -159,7 +159,7 @@ export default class CalculationSummaryController implements Controller {
     const result = {}
     dates.forEach(date => {
       const dateString = `${date.manualEntrySelectedDate.date.year}-${date.manualEntrySelectedDate.date.month}-${date.manualEntrySelectedDate.date.day}`
-      result[date.dateType] = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('cccc, dd LLLL yyyy')
+      result[date.dateType] = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('cccc, dd MMMM yyyy')
     })
     return result
   }

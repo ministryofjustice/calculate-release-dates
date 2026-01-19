@@ -1,10 +1,8 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import dateFilter from 'nunjucks-date-filter'
 import ApprovedSummaryDatesCardModel from './ApprovedSummaryDatesCardModel'
 
-const njkEnv = nunjucks.configure([__dirname])
-njkEnv.addFilter('date', dateFilter)
+nunjucks.configure([__dirname])
 
 describe('Tests for actions card component', () => {
   it('Should show lines in order', () => {

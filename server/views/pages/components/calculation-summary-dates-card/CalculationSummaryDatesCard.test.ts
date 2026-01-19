@@ -1,11 +1,11 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import dateFilter from 'nunjucks-date-filter'
+import { hmppsFormatDate } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import CalculationSummaryDatesCardModel, { filteredListOfDates } from './CalculationSummaryDatesCardModel'
 import { validPreCalcHints } from '../../../../utils/utils'
 
 const njkEnv = nunjucks.configure([__dirname])
-njkEnv.addFilter('date', dateFilter)
+njkEnv.addFilter('hmppsFormatDate', hmppsFormatDate)
 njkEnv.addFilter('validPreCalcHints', validPreCalcHints)
 
 describe('ReleaseDateType', () => {

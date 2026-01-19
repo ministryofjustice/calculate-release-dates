@@ -9,13 +9,13 @@
         <tr class="govuk-table__row">
             <td class="govuk-table__header">{{ model.calculationBreakdown.consecutiveSentence.dates | expiryDateType }}</td>
             {% set expiryDate = model.calculationBreakdown.consecutiveSentence.dates | expiryDates %}
-            <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+            <td class="govuk-table__cell">{{ expiryDate.unadjusted | hmppsFormatDate('dd MMMM yyyy') }}<br/>
                 <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">{{ expiryDate.daysFromSentenceStart }} days</span></td>
         </tr>
         <tr class="govuk-table__row">
             <td class="govuk-table__header">{{ model.calculationBreakdown.consecutiveSentence.dates | releaseDateType }}</td>
             {% set releaseDate = model.calculationBreakdown.consecutiveSentence.dates | releaseDates %}
-            <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+            <td class="govuk-table__cell">{{ releaseDate.unadjusted | hmppsFormatDate('dd MMMM yyyy') }}<br/>
                 <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">{{ releaseDate.daysFromSentenceStart }} days</span></td>
         </tr>
     </tbody>

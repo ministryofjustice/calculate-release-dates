@@ -134,7 +134,7 @@ export default class ApprovedDatesRoutes {
 
     let hdced
     if (req.session.HDCED[nomsId]) {
-      hdced = DateTime.fromFormat(req.session.HDCED[nomsId], 'yyyy-M-d').toFormat('cccc, dd LLLL yyyy')
+      hdced = DateTime.fromFormat(req.session.HDCED[nomsId], 'yyyy-M-d').toFormat('cccc, dd MMMM yyyy')
     }
     let hdcedWeekendAdjusted
     if (req.session.HDCED[nomsId]) {

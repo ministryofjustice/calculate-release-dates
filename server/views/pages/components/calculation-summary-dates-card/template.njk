@@ -5,7 +5,7 @@
             <p class="govuk-hint" data-qa="{{ releaseDate.shortName }}-full-name">{{ releaseDate.fullName }}</p>
         </dt>
         <dd class="govuk-summary-list__value"
-            data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | date('dddd, DD MMMM YYYY') }}
+            data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | hmppsFormatDate('cccc, dd MMMM yyyy') }}
             <p style="margin-top: 10px;" data-qa="{{ releaseDate.shortName }}-release-date-hints">
                 {% if isPreCalc %}
                     {% set hints = releaseDate.hints | validPreCalcHints %}

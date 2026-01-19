@@ -20,7 +20,7 @@
             Calculation date
         </dt>
         <dd class="govuk-summary-list__value" data-qa="calculation-summary-date">
-            {{ latestCalculation.calculatedAt | date('DD MMMM YYYY') }}
+            {{ latestCalculation.calculatedAt | hmppsFormatDate('dd MMMM yyyy') }}
         </dd>
     </div>
     <div class="govuk-summary-list__row">
