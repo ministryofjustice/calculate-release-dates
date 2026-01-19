@@ -2,6 +2,8 @@ import config, { ApiConfig } from '../config'
 import RestClient from '../data/restClient'
 import {
   AdjustmentDto,
+  Agency,
+  AgencySwitchUpdateResult,
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   ApprovedDatesInputResponse,
@@ -382,5 +384,17 @@ export default class CalculateReleaseDatesApiClient {
     return this.restClient.get({
       path: `/approved-dates/${prisonerId}/inputs`,
     }) as Promise<ApprovedDatesInputResponse>
+  }
+
+  getDisabledNomisAgencies(): Promise<Agency[]> {
+    return this.restClient.get({
+      path: `/feature-toggle/nomis-calc-disabled`,
+    }) as Promise<Agency[]>
+  }
+
+  updateDisabledNomisAgencies(): Promise<AgencySwitchUpdateResult> {
+    return this.restClient.post({
+      path: `/feature-toggle/nomis-calc-disabled`,
+    }) as Promise<AgencySwitchUpdateResult>
   }
 }

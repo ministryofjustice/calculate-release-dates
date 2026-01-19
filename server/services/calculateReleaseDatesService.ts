@@ -8,6 +8,8 @@ import {
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import {
+  Agency,
+  AgencySwitchUpdateResult,
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   ApprovedDatesInputResponse,
@@ -568,5 +570,13 @@ export default class CalculateReleaseDatesService {
 
   async getApprovedDatesInputs(prisonerId: string, token: string): Promise<ApprovedDatesInputResponse> {
     return new CalculateReleaseDatesApiClient(token).getApprovedDatesInputs(prisonerId)
+  }
+
+  async getDisabledNomisAgencies(token: string): Promise<Agency[]> {
+    return new CalculateReleaseDatesApiClient(token).getDisabledNomisAgencies()
+  }
+
+  async updateDisabledNomisAgencies(token: string): Promise<AgencySwitchUpdateResult> {
+    return new CalculateReleaseDatesApiClient(token).updateDisabledNomisAgencies()
   }
 }

@@ -24,6 +24,7 @@ import { previouslyRecordedSledSchema } from './previously-recorded-sled-interce
 import StandaloneApprovedDatesRoutes from './approved-dates/standaloneApprovedDatesRoutes'
 import CalculationReasonController from './calculation-reason/calculationReasonController'
 import { calculationReasonSchemaFactory } from './calculation-reason/calculationReasonSchemaFactory'
+import DisableNomisController from './disable-nomis/disableNomisController'
 
 export default function Index({
   prisonerService,
@@ -269,6 +270,13 @@ export default function Index({
     router.use('/', GenuineOverridesRoutes(calculateReleaseDatesService, prisonerService, dateTypeConfigurationService))
   }
 
+  const disableNomisRoutes = () => {
+    route({
+      path: '/disable-nomis',
+      controller: new DisableNomisController(calculateReleaseDatesService),
+    })
+  }
+
   indexRoutes()
   calculationRoutes()
   reasonRoutes()
@@ -281,5 +289,6 @@ export default function Index({
   approvedDatesRoutes()
   thingsToDoInterceptRouter()
   genuineOverridesRoutes()
+  disableNomisRoutes()
   return router
 }
