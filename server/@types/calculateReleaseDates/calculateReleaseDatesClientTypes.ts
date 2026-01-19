@@ -51,3 +51,5 @@ export type CalculatedReleaseDates = components['schemas']['CalculatedReleaseDat
 export type GenuineOverrideDate = components['schemas']['GenuineOverrideDate']
 export type PreviousOverride = components['schemas']['PreviousGenuineOverride']
 export type PreviouslyRecordedSLED = components['schemas']['PreviouslyRecordedSLED']
+export type Agency = components['schemas']['Agency']
+export type AgencySwitchUpdateResult = components['schemas']['AgencySwitchUpdateResult']

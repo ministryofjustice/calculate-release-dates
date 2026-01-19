@@ -1,0 +1,77 @@
+{% extends "../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - Check Disabled NOMIS Calculations" %}
+{% set pageId = "disable-nomis" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {% if updated %}
+            {% set backlink = "/disable-nomis" %}
+        {% else %}
+            {% set backlink = "/" %}
+        {% endif %}
+        {{ govukBackLink({
+            text: "Back",
+            href: backlink
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-l">Current status</h2>
+            <p class="govuk-body">NOMIS calculation is currently disabled for the following prisons:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                {% if disabledAgencies and disabledAgencies.length %}
+                    {% for agency in disabledAgencies %}
+                        <li>{{ agency.agencyId }} - {{ agency.description }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li>None</li>
+                {% endif %}
+            </ul>
+        </div>
+        {% if updated %}
+            <div class="govuk-grid-column-two-thirds">
+                <h2 class="govuk-heading-l">Prisons updated</h2>
+                <ul class="govuk-list govuk-list--bullet">
+                    {% if switchedOn and switchedOn.length %}
+                        {% for agency in switchedOn %}
+                            <li>{{ agency }} - NOMIS calculation disabled</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No prisons had NOMIS calc disabled</li>
+                    {% endif %}
+                    {% if switchedOff and switchedOff.length %}
+                        {% for agency in switchedOff %}
+                            <li>{{ agency }} - NOMIS calculation re-enabled</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No prisons had NOMIS calc re-enabled</li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% else %}
+            <div class="govuk-grid-column-two-thirds">
+                <p class="govuk-body">
+                    Submitting this form will update the SENTENCE_CALC switch for each agency according to the configuration defined in CRDS API.
+                    This will disable or re-enable NOMIS calculations for those prisons. <br><br>
+                    Only submit this form if you have confirmed with the dev team that updates to the configuration have been released to production.
+                </p>
+                <form method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                    {{ govukButton({
+                        text: "Trigger update",
+                        type: submit,
+                        value: 'submit',
+                        preventDoubleClick: true
+                    }) }}
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
