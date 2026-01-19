@@ -169,6 +169,30 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/feature-toggle/nomis-calc-disabled': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Checks which prisons currently have NOMIS calc disabled
+     * @description Return a list of prisons with NOMIS calc disabled
+     */
+    get: operations['getNomisCalcDisabled']
+    put?: never
+    /**
+     * Add or remove the SENTENCE_CALC agency switch so that it matches the prisons in CRDS config
+     * @description Add or remove the SENTENCE_CALC agency switch so that it matches the prisons in CRDS config and return the current list of activated prisons. SENTENCE_CALC being on means NOMIS calc is disabled.
+     */
+    post: operations['updateNomisCalcDisabled']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/comparison': {
     parameters: {
       query?: never
@@ -1286,6 +1310,7 @@ export interface components {
         | 'BROKEN_CONSECUTIVE_CHAINS'
         | 'RECALL_MISSING_REVOCATION_DATE'
         | 'COURT_MARTIAL_WITH_SDS_PLUS'
+        | 'REPATRIATED_PRISONER'
         | 'CONSECUTIVE_TO_SENTENCE_IMPOSED_AFTER'
         | 'REVOCATION_DATE_IN_THE_FUTURE'
       arguments: string[]
@@ -1577,6 +1602,16 @@ export interface components {
       /** Format: int64 */
       originalCalculationRequestId?: number
       validationMessages?: components['schemas']['ValidationMessage'][]
+    }
+    Agency: {
+      agencyId: string
+      description: string
+    }
+    AgencySwitchUpdateResult: {
+      requiredAgencies: string[]
+      agenciesSwitchedOn: string[]
+      agenciesSwitchedOff: string[]
+      current: components['schemas']['Agency'][]
     }
     ComparisonInput: {
       /** @description Criteria used in the comparison */
@@ -2053,6 +2088,7 @@ export interface components {
       terms: components['schemas']['SentenceTerms'][]
       offence: components['schemas']['OffenderOffence']
       caseReference?: string
+      courtId?: string
       courtDescription?: string
       courtTypeCode?: string
       fineAmount?: number
@@ -3070,6 +3106,64 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['GenuineOverrideCreatedResponse']
+        }
+      }
+    }
+  }
+  getNomisCalcDisabled: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description A list of prisons with NOMIS calc disabled */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Agency'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Agency'][]
+        }
+      }
+    }
+  }
+  updateNomisCalcDisabled: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description An updated list of prisons with NOMIS calc disabled */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AgencySwitchUpdateResult']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AgencySwitchUpdateResult']
         }
       }
     }
