@@ -19,8 +19,8 @@
                     <tr class="govuk-table__row">
                       <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-name">{{ adjustment.adjustmentName }}</td>
                       <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-days">{{ adjustment.adjustmentDays}} days {{ adjustment.adjustmentType }}</td>
-                      <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-from">{% if adjustment.adjustmentFrom %} {{ adjustment.adjustmentFrom | date('DD MMMM YYYY') }} {% endif %}</td>
-                      <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-to">{% if adjustment.adjustmentTo %} {{ adjustment.adjustmentTo | date('DD MMMM YYYY') }} {% endif %}</td>
+                      <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-from">{% if adjustment.adjustmentFrom %} {{ adjustment.adjustmentFrom | hmppsFormatDate('dd MMMM yyyy') }} {% endif %}</td>
+                      <td class="govuk-table__cell" data-qa="{{adjustment.adjustmentName}}-to">{% if adjustment.adjustmentTo %} {{ adjustment.adjustmentTo | hmppsFormatDate('dd MMMM yyyy') }} {% endif %}</td>
                     </tr>
                 {% endfor %}
               </tbody>

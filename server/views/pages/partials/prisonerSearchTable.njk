@@ -23,7 +23,7 @@
                                    data-qa="prisoner-link">{{ (prisoner.lastName + ', ' +prisoner.firstName ) | title }}</a>
                             </td>
                             <td class="govuk-table__cell">{{ prisoner.prisonerNumber }}</td>
-                            <td class="govuk-table__cell">{{ prisoner.dateOfBirth | date('DD MMMM YYYY') }}</td>
+                            <td class="govuk-table__cell">{{ prisoner.dateOfBirth | hmppsFormatDate('dd MMMM yyyy') }}</td>
                         </tr>
 
                     {% endfor %}

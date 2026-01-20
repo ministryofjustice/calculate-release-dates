@@ -74,11 +74,11 @@ describe('nunjucksSetup', () => {
   describe('latestRevocationDate', () => {
     it('returns the latest date from a list of ISO date strings', () => {
       const dates = ['2023-01-01', '2024-05-10', '2022-12-31']
-      expect(latestRevocationDate(dates)).toEqual(new Date('2024-05-10'))
+      expect(latestRevocationDate(dates)).toEqual('2024-05-10')
     })
     it('returns the latest date from a list with different formats', () => {
       const dates = ['2023/01/01', '2024-05-10', '2022-12-31']
-      expect(latestRevocationDate(dates)).toEqual(new Date('2024-05-10'))
+      expect(latestRevocationDate(dates)).toEqual('2024-05-10')
     })
     it('returns null for an empty array', () => {
       expect(latestRevocationDate([])).toBe(null)

@@ -3,18 +3,18 @@
 
 {% macro comparisonListItem(comparison, includePrison=true) %}
             <li class="gem-c-document-list__item">
-                <a class="gem-c-document-list__item-title govuk-link" href="/compare{{ '/manual' if comparison.comparisonType == ComparisonType.MANUAL }}/result/{{ comparison.comparisonShortReference }}">{% if includePrison %}{% if comparison.prisonName === 'all' %}All Prisons {% else %}{{ comparison.prisonName }}{% endif %} - {% endif %}{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</a>
+                <a class="gem-c-document-list__item-title govuk-link" href="/compare{{ '/manual' if comparison.comparisonType == ComparisonType.MANUAL }}/result/{{ comparison.comparisonShortReference }}">{% if includePrison %}{% if comparison.prisonName === 'all' %}All Prisons {% else %}{{ comparison.prisonName }}{% endif %} - {% endif %}{{ comparison.calculatedAt | hmppsFormatDate('dd MMMM yyyy') }}</a>
                 <p class="gem-c-document-list__item-description ">
                      {{ comparison.numberOfMismatches }} mismatches{% if comparison.numberOfPeopleComparisonFailedFor and comparison.numberOfPeopleComparisonFailedFor > 0 %} with {{ comparison.numberOfPeopleComparisonFailedFor }} failures{% endif %} from {{ comparison.numberOfPeopleCompared }}{% if comparison.status == 'PROCESSING' %} out of {{comparison.numberOfPeopleExpected}}{% endif %} results - {{ (comparison.comparisonType | formatComparisonType).toLowerCase() }} comparison
                 </p>
-                <p class="govuk-body-s"><time datetime="{{ comparison.calculatedAt | date('YYYY-MM-DD') }}">{{ comparison.calculatedAt | date('DD MMMM YYYY') }}</time> by {{ comparison.calculatedBy }} </p>
+                <p class="govuk-body-s"><time datetime="{{ comparison.calculatedAt | hmppsFormatDate('yyyy-MM-dd') }}">{{ comparison.calculatedAt | hmppsFormatDate('dd MMMM yyyy') }}</time> by {{ comparison.calculatedBy }} </p>
                 <p class="govuk-body-s">
                     {{ mojBadge({
                     text: comparison.status
                     }) }}
 
                     {% if comparison.status == 'PROCESSING' %}
-                        <span>{{comparison.percentageComplete}}% complete. Expected completion time {{ comparison.expectedCompletionTime | date('DD MMMM YYYY') }} at {{comparison.expectedCompletionTime | date('HH:mm') }}</span>
+                        <span>{{comparison.percentageComplete}}% complete. Expected completion time {{ comparison.expectedCompletionTime | hmppsFormatDate('dd MMMM yyyy') }} at {{comparison.expectedCompletionTime | hmppsFormatDate('HH:mm') }}</span>
                     {% endif %}
                 </p>
             </li>

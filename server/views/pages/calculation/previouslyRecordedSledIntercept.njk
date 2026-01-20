@@ -31,8 +31,8 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <p class="govuk-body" data-qa="previous-sled-details">This service has found a <strong>SLED (Sentence and licence expiry date)</strong> on <strong>{{ previouslyRecordedSLED | hmppsFormatDate('dd LLLL yyyy') }}</strong> from another period of custody that can be used for this calculation.</p>
-            <p class="govuk-body" data-qa="calculated-sled-details">The calculated SLED is currently <strong>{{ calculatedSLED | hmppsFormatDate('dd LLLL yyyy') }}</strong>.</p>
+            <p class="govuk-body" data-qa="previous-sled-details">This service has found a <strong>SLED (Sentence and licence expiry date)</strong> on <strong>{{ previouslyRecordedSLED | hmppsFormatDate('dd MMMM yyyy') }}</strong> from another period of custody that can be used for this calculation.</p>
+            <p class="govuk-body" data-qa="calculated-sled-details">The calculated SLED is currently <strong>{{ calculatedSLED | hmppsFormatDate('dd MMMM yyyy') }}</strong>.</p>
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -54,7 +54,7 @@
                             text: 'Yes, use the later SLED from another period of custody',
                             attributes: {'data-qa': 'use-previously-recorded-SLED-YES'},
                             hint: {
-                                text: previouslyRecordedSLED | hmppsFormatDate('dd LLLL yyyy')
+                                text: previouslyRecordedSLED | hmppsFormatDate('dd MMMM yyyy')
                             }
                         },
                         {

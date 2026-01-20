@@ -17,14 +17,14 @@
                         <p class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">Court case number: {{sentence.caseReference}}</p>
                     {% endif %}
                 </td>
-                <td class="govuk-table__cell">{{ sentence.sentencedAt | date('DD MMMM YYYY') }}</td>
+                <td class="govuk-table__cell">{{ sentence.sentencedAt | hmppsFormatDate('dd MMMM yyyy') }}</td>
                 <td class="govuk-table__cell">{{ sentence.sentenceLength }}</td>
                 {% set expiryDate = sentence.dates | expiryDates %}
-                <td class="govuk-table__cell">{{ expiryDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+                <td class="govuk-table__cell">{{ expiryDate.unadjusted | hmppsFormatDate('dd MMMM yyyy') }}<br/>
                     <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">{{ expiryDate.daysFromSentenceStart }} days</span><br/>
                     <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">{{ sentence.dates | expiryDateType }}</span></td>
                 {% set releaseDate = sentence.dates | releaseDates %}
-                <td class="govuk-table__cell">{{ releaseDate.unadjusted | date('DD MMMM YYYY') }}<br/>
+                <td class="govuk-table__cell">{{ releaseDate.unadjusted | hmppsFormatDate('dd MMMM yyyy') }}<br/>
                     <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">{{ releaseDate.daysFromSentenceStart }} days</span><br/>
                     <span class="govuk-hint govuk-!-margin-top-2 govuk-!-font-size-16">{{ sentence.dates | releaseDateType }}</span></td>
             </tr>

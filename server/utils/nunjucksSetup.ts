@@ -8,7 +8,6 @@ import {
   personStatus,
   hmppsFormatDate,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
-import dateFilter from 'nunjucks-date-filter'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import {
@@ -26,10 +25,6 @@ import { FieldValidationError } from '../types/FieldValidationError'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
 
 dayjs.extend(customParseFormat)
-
-// TODO the use of nunjucks-date-filter is raising a deprecation warning, some dates are in this format 12/12/2030 ->
-// Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable
-// across all browsers and versions. Non RFC2822/ISO date formats are discouraged.
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -99,8 +94,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatListAsString', (list?: string[]) => {
     return list ? `[${list.map(i => `'${i}'`).join(',')}]` : '[]'
   })
-
-  njkEnv.addFilter('date', dateFilter)
 
   njkEnv.addFilter('remandDate', remandDate)
 
@@ -224,7 +217,7 @@ export const remandDate = (date: string, format: string) => {
   if (!date) {
     return 'Date Not Entered'
   }
-  return dayjs(date).format(format)
+  return hmppsFormatDate(date, format)
 }
 
 export const formatSds40Exclusion = (exclusion: string) => {
@@ -237,7 +230,7 @@ export const formatSds40Exclusion = (exclusion: string) => {
   return isTrancheThree ? `${title} (for prisoners in custody on or after the 16th Dec 2024)` : title
 }
 
-export const latestRevocationDate = (dates: string[]) => maxOf(dates, revocationDate => new Date(revocationDate))
+export const latestRevocationDate = (dates: string[]) => maxOf(dates, revocationDate => revocationDate)
 
 export const trancheIsFtr56 = (tranche: string): boolean =>
   [

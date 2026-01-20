@@ -1,6 +1,5 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import dateFilter from 'nunjucks-date-filter'
 import AdjustmentTablesModel, { adjustmentsTablesFromAdjustmentDTOs } from './AdjustmentTablesModel'
 import {
   AdjustmentStatus,
@@ -8,12 +7,7 @@ import {
   AnalysedSentenceAndOffence,
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
-const njkEnv = nunjucks.configure([
-  __dirname,
-  'node_modules/govuk-frontend/dist/',
-  'node_modules/govuk-frontend/dist/components/',
-])
-njkEnv.addFilter('date', dateFilter)
+nunjucks.configure([__dirname, 'node_modules/govuk-frontend/dist/', 'node_modules/govuk-frontend/dist/components/'])
 const anAdjustment = {
   analysisResult: 'SAME',
   bookingId: 123458,

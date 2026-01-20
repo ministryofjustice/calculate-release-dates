@@ -27,9 +27,9 @@ export default class CalculationRoutes {
     Object.keys(dates).forEach((dateType: string) => {
       const date = dates[dateType]
       if (typeof date === 'string') {
-        result[dateType] = DateTime.fromFormat(date, 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+        result[dateType] = DateTime.fromFormat(date, 'yyyy-MM-d').toFormat('cccc, dd MMMM yyyy')
       } else {
-        result[dateType] = DateTime.fromFormat(date.date, 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+        result[dateType] = DateTime.fromFormat(date.date, 'yyyy-MM-d').toFormat('cccc, dd MMMM yyyy')
       }
     })
     return result

@@ -344,7 +344,7 @@ export default class ManualEntryService {
       return ''
     }
     const dateString = `${selectedDate.date.year}-${selectedDate.date.month}-${selectedDate.date.day}`
-    return DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd LLLL yyyy')
+    return DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('dd MMMM yyyy')
   }
 
   public async getConfirmationConfiguration(
