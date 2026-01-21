@@ -12,7 +12,9 @@ jest.mock('../services/prisonerService')
 jest.mock('../services/courtCasesReleaseDatesService')
 
 const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
-const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService() as jest.Mocked<CourtCasesReleaseDatesService>
+const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(
+  null,
+) as jest.Mocked<CourtCasesReleaseDatesService>
 
 let app: Express
 

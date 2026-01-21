@@ -5,15 +5,15 @@ import PrisonerService from '../services/prisonerService'
 import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
 import { FullPageErrorType } from '../types/FullPageError'
 import PrisonApiClient from './prisonApiClient'
-
-jest.mock('./hmppsAuthClient')
+import PrisonerSearchApiClient from './prisonerSearchApiClient'
 
 const mockAuthenticationClient: jest.Mocked<AuthenticationClient> = {
   getToken: jest.fn().mockResolvedValue('test-system-token'),
 } as unknown as jest.Mocked<AuthenticationClient>
 
 const prisonApiClient = new PrisonApiClient(mockAuthenticationClient)
-const prisonerService = new PrisonerService(mockAuthenticationClient, prisonApiClient)
+const prisonerSearchApiClient = new PrisonerSearchApiClient(mockAuthenticationClient)
+const prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient)
 
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
