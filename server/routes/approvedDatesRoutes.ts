@@ -23,9 +23,9 @@ export default class ApprovedDatesRoutes {
   }
 
   public askApprovedDatesQuestion: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     return res.render(
       'pages/approvedDates/approvedDatesQuestion',
       new ApprovedDatesQuestionViewModel(prisonerDetail, calculationRequestId, req.originalUrl),
@@ -33,9 +33,9 @@ export default class ApprovedDatesRoutes {
   }
 
   public submitApprovedDatesQuestion: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const hasApprovedDates = req.body.approvedDatesQuestion
     if (hasApprovedDates === 'yes') {
       return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/select-approved-dates`)
@@ -64,7 +64,7 @@ export default class ApprovedDatesRoutes {
     if (!req.session.selectedApprovedDates[nomsId]) {
       req.session.selectedApprovedDates[nomsId] = []
     }
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const config = await this.approvedDatesService.getConfig(token, req)
     return res.render(
       'pages/approvedDates/selectApprovedDates',
@@ -87,7 +87,7 @@ export default class ApprovedDatesRoutes {
     if (!req.session.selectedApprovedDates[nomsId]) {
       req.session.selectedApprovedDates[nomsId] = []
     }
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const { error, config } = await this.approvedDatesService.submitApprovedDateTypes(token, req)
     if (error) {
       return res.render(
@@ -117,11 +117,11 @@ export default class ApprovedDatesRoutes {
   }
 
   public loadSubmitDates: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles } = res.locals.user
     const { nomsId, calculationRequestId } = req.params as Record<string, string>
     const { dateType } = req.query as Record<string, string>
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const approvedDates = req.session.selectedApprovedDates[nomsId]
 
     if (approvedDates.length === 0) {
@@ -170,11 +170,11 @@ export default class ApprovedDatesRoutes {
   }
 
   public storeSubmitDates: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
     const { dateType } = req.query as Record<string, string>
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const dateValue: EnteredDate = req.body
     const storeDateResponse = this.manualEntryService.storeDate(req.session.selectedApprovedDates[nomsId], dateValue)
     const approvedDates: ManualJourneySelectedDate[] = req.session.selectedApprovedDates[nomsId]
@@ -231,7 +231,7 @@ export default class ApprovedDatesRoutes {
   public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
     const { caseloads, token, userRoles } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const dateToRemove: string = <string>req.query.dateType
     if (this.approvedDatesService.hasApprovedDateToRemove(req, nomsId, dateToRemove)) {
       const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
@@ -247,7 +247,7 @@ export default class ApprovedDatesRoutes {
     const { caseloads, token, userRoles } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
     const dateToRemove: string = <string>req.query.dateType
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const fullDateName = await this.manualEntryService.fullStringLookup(token, dateToRemove)
     if (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no') {
       return res.render(

@@ -29,7 +29,7 @@ export default class ReviewDatesFromPreviousGenuineOverrideController implements
     const { nomsId, calculationRequestId } = req.params
     const { caseloads, token, userRoles } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     sortDisplayableDates(genuineOverrideInputs.previousOverride.dates)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(

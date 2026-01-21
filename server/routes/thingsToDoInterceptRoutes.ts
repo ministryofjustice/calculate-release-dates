@@ -26,7 +26,7 @@ export default class ThingsToDoInterceptRoutes {
     if (!thingsToDo.length) {
       return res.redirect(`/?prisonId=${nomsId}`)
     }
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
 
     return res.render(
       'pages/calculation/thingsToDoIntercept',

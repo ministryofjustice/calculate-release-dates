@@ -19,7 +19,7 @@ describe('GenuineOverrideExpressInterceptController', () => {
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
-  const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 
   let genuineOverrideInputs: GenuineOverrideInputs
   const prisonerNumber = 'A1234BC'

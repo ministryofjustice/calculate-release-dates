@@ -1,6 +1,7 @@
 import nock from 'nock'
 import request from 'supertest'
 import { Express } from 'express'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import {
   CalculationSentenceUserInput,
@@ -9,9 +10,9 @@ import {
 import ViewReleaseDatesService from './viewReleaseDatesService'
 import { FullPageError } from '../types/FullPageError'
 import PrisonerService from './prisonerService'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import { appWithAllRoutes } from '../routes/testutils/appSetup'
 import SessionSetup from '../routes/testutils/sessionSetup'
+import PrisonApiClient from '../data/prisonApiClient'
 
 let app: Express
 let sessionSetup: SessionSetup
@@ -32,15 +33,20 @@ const stubbedUserInput = {
 describe('View release dates service tests', () => {
   let viewReleaseDatesService: ViewReleaseDatesService
   let fakeApi: nock.Scope
-  let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
+  let hmppsAuthClient: jest.Mocked<AuthenticationClient>
+  let prisonApiClient: jest.Mocked<PrisonApiClient>
   let prisonerService: jest.Mocked<PrisonerService>
   beforeEach(() => {
     sessionSetup = new SessionSetup()
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.calculateReleaseDates.url)
     viewReleaseDatesService = new ViewReleaseDatesService()
-    hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-    prisonerService = new PrisonerService(hmppsAuthClient) as jest.Mocked<PrisonerService> // Instantiate the mocked service
+    hmppsAuthClient = {
+      getToken: jest.fn().mockResolvedValue('test-system-token'),
+    } as unknown as jest.Mocked<AuthenticationClient>
+
+    prisonApiClient = new PrisonApiClient(null) as jest.Mocked<PrisonApiClient>
+    prisonerService = new PrisonerService(hmppsAuthClient, prisonApiClient) as jest.Mocked<PrisonerService> // Instantiate the mocked service
     app = appWithAllRoutes({
       services: { prisonerService },
       sessionSetup,

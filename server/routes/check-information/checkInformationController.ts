@@ -24,7 +24,7 @@ export default class CheckInformationController implements Controller {
     }
     req.session.selectedApprovedDates[nomsId] = []
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, token, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
 
     if (!this.userInputService.isCalculationReasonSet(req, nomsId)) {
       return res.redirect(`/calculation/${nomsId}/reason`)
@@ -39,7 +39,7 @@ export default class CheckInformationController implements Controller {
     const { ersed } = req.body
     const { caseloads, token, userRoles } = res.locals.user
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, token, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     userInputs.calculateErsed = ersed

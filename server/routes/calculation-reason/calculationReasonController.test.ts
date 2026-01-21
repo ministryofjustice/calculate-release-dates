@@ -29,7 +29,7 @@ describe('CalculationReasonController', () => {
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
-  const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
   const courtCasesReleaseDatesService =
     new CourtCasesReleaseDatesService() as jest.Mocked<CourtCasesReleaseDatesService>
 

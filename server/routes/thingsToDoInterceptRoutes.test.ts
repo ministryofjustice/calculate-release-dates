@@ -11,7 +11,7 @@ import AuthorisedRoles from '../enumerations/authorisedRoles'
 jest.mock('../services/prisonerService')
 jest.mock('../services/courtCasesReleaseDatesService')
 
-const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService() as jest.Mocked<CourtCasesReleaseDatesService>
 
 let app: Express

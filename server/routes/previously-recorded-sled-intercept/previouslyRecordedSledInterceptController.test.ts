@@ -30,7 +30,7 @@ describe('PreviouslyRecordedSledInterceptController', () => {
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
-  const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
   const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 
   const stubbedPrisonerData = {

@@ -19,7 +19,7 @@ export default class EditApprovedDateController implements Controller {
     const { nomsId, journeyId, dateType } = req.params
     const { caseloads, token, userRoles } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
 
     const journey = req.session.approvedDatesJourneys[journeyId]
 

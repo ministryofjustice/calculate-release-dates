@@ -24,7 +24,7 @@ export default class GenuineOverrideSelectDatesController implements Controller 
     const { nomsId, calculationRequestId } = req.params
     const { caseloads, token, userRoles } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const pendingDateTypes: string[] =

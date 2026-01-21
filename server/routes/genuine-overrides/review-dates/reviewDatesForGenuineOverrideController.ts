@@ -28,7 +28,7 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
     const { nomsId, calculationRequestId } = req.params
     const { caseloads, token, userRoles } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     if (genuineOverrideInputs.datesToSave?.length === 0) {
       return res.redirect(GenuineOverrideUrls.selectDatesToAdd(nomsId, calculationRequestId))

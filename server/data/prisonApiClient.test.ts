@@ -1,14 +1,19 @@
 import nock from 'nock'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import PrisonerService from '../services/prisonerService'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import { PrisonApiPrisoner, PrisonApiSentenceDetail } from '../@types/prisonApi/prisonClientTypes'
 import { FullPageErrorType } from '../types/FullPageError'
+import PrisonApiClient from './prisonApiClient'
 
-jest.mock('../data/hmppsAuthClient')
+jest.mock('./hmppsAuthClient')
 
-const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-const prisonerService = new PrisonerService(hmppsAuthClient)
+const mockAuthenticationClient: jest.Mocked<AuthenticationClient> = {
+  getToken: jest.fn().mockResolvedValue('test-system-token'),
+} as unknown as jest.Mocked<AuthenticationClient>
+
+const prisonApiClient = new PrisonApiClient(mockAuthenticationClient)
+const prisonerService = new PrisonerService(mockAuthenticationClient, prisonApiClient)
 
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
@@ -38,7 +43,6 @@ const stubbedPrisonerData = {
 } as PrisonApiPrisoner
 
 const caseloads = ['MDI']
-const token = 'token'
 
 describe('Prison API client tests', () => {
   let fakeApi: nock.Scope
@@ -55,7 +59,7 @@ describe('Prison API client tests', () => {
   describe('Prisoner detail', () => {
     it('Get prisoner detail', async () => {
       fakeApi.get('/api/offenders/AA1234A', '').reply(200, stubbedPrisonerData)
-      const data = await prisonerService.getPrisonerDetail('AA1234A', token, caseloads, [])
+      const data = await prisonerService.getPrisonerDetail('AA1234A', caseloads, [])
       expect(data).toEqual(stubbedPrisonerData)
       expect(nock.isDone()).toBe(true)
     })
@@ -63,7 +67,7 @@ describe('Prison API client tests', () => {
     it('Not found', async () => {
       fakeApi.get('/api/offenders/AA1234A', '').reply(404)
       try {
-        await prisonerService.getPrisonerDetail('AA1234A', token, caseloads, [])
+        await prisonerService.getPrisonerDetail('AA1234A', caseloads, [])
       } catch (e) {
         expect(e.errorKey).toBe(FullPageErrorType.NOT_IN_CASELOAD)
         expect(e.status).toBe(404)

@@ -20,7 +20,7 @@ describe('SelectGenuineOverrideReasonController', () => {
   let app: Express
   const sessionSetup = new SessionSetup()
 
-  const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
   const dateTypeConfigurationService = new DateTypeConfigurationService() as jest.Mocked<DateTypeConfigurationService>
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,

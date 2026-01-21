@@ -24,7 +24,7 @@ export default class DeleteGenuineOverrideDateController implements Controller {
     const { nomsId, calculationRequestId, dateType } = req.params
     const { caseloads, token, userRoles } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
 
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
