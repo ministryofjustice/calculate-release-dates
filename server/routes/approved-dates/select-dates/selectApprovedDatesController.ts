@@ -19,7 +19,7 @@ export default class SelectApprovedDatesController implements Controller {
     const { nomsId, journeyId } = req.params
     const { caseloads, token, userRoles } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
     const journey = req.session.approvedDatesJourneys[journeyId]
     const pendingDateTypes: string[] =

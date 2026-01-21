@@ -23,7 +23,7 @@ export default class ReviewCalculatedDatesBeforeAddingApprovedDatesController im
       journey.preliminaryCalculationRequestId,
       token,
     )
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
 
     return res.render(
       'pages/approvedDates/standalone/reviewCalculatedDatesBeforeAddingApprovedDates.njk',

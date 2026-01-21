@@ -40,7 +40,7 @@ describe('CheckInformationController', () => {
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
-  const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
   const checkInformationService = new CheckInformationService(null, null) as jest.Mocked<CheckInformationService>
   const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 

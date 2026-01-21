@@ -31,7 +31,7 @@ describe('CalculationSummaryController', () => {
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
-  const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 
   let approvedDates: { string?: ManualJourneySelectedDate[] }
   const prisonerNumber = 'A1234BC'

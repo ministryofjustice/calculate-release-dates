@@ -3,7 +3,7 @@ import UserService from './userService'
 import PrisonerService from './prisonerService'
 import ViewReleaseDatesService from './viewReleaseDatesService'
 import UserInputService from './userInputService'
-import { dataAccess } from '../data'
+import dataAccess from '../data'
 import ManualCalculationService from './manualCalculationService'
 import ManualEntryService from './manualEntryService'
 import UserPermissionsService from './userPermissionsService'
@@ -18,10 +18,10 @@ import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
 import AuditService from './auditService'
 
 export const services = () => {
-  const { applicationInfo, hmppsAuthClient, manageUsersApiClient } = dataAccess()
+  const { applicationInfo, hmppsAuthClient, manageUsersApiClient, prisonApiClient } = dataAccess()
   const auditService = new AuditService()
   const calculateReleaseDatesService = new CalculateReleaseDatesService(auditService)
-  const prisonerService = new PrisonerService(hmppsAuthClient)
+  const prisonerService = new PrisonerService(hmppsAuthClient, prisonApiClient)
   const userService = new UserService(manageUsersApiClient, prisonerService)
   const viewReleaseDatesService = new ViewReleaseDatesService()
   const userInputService = new UserInputService()

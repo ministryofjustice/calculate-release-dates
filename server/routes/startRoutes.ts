@@ -23,7 +23,7 @@ export default class StartRoutes {
     const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
     if (prisonId) {
       const { caseloads, token, userRoles } = res.locals.user
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, token, caseloads, userRoles)
+      const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, caseloads, userRoles)
       const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
       const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
         prisonerDetail.bookingId,
