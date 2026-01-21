@@ -25,7 +25,6 @@ import {
 } from './breakdownExamplesTestData'
 import AuditService from './auditService'
 
-jest.mock('../data/hmppsAuthClient')
 jest.mock('./auditService')
 
 const userName = 'USERNAME'

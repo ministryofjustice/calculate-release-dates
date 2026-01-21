@@ -4,7 +4,6 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 import AuditService from '../services/auditService'
 
-jest.mock('../data/hmppsAuthClient')
 jest.mock('../services/auditService')
 
 interface TestData {

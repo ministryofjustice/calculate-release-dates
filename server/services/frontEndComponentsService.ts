@@ -1,4 +1,4 @@
-import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
+import FrontendComponentsApiClient from '../data/frontendComponentsApiClient'
 
 export default class FrontEndComponentsService {
   private frontEndComponentsApiClient

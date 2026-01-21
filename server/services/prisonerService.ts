@@ -1,7 +1,6 @@
 import { Readable } from 'stream'
-import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import PrisonApiClient from '../data/prisonApiClient'
-import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
+import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { FullPageError } from '../types/FullPageError'
 import deriveAccessibleCaseloads from '../utils/caseloads'
 import {
@@ -14,7 +13,7 @@ import logger from '../../logger'
 
 export default class PrisonerService {
   constructor(
-    private readonly hmppsAuthClient: AuthenticationClient,
+    private readonly prisonerSearchApiClient: PrisonerSearchApiClient,
     private readonly prisonApiClient: PrisonApiClient,
   ) {}
 
@@ -64,8 +63,7 @@ export default class PrisonerService {
   }
 
   async searchPrisoners(username: string, criteria: PrisonerSearchCriteria): Promise<Prisoner[]> {
-    const token = await this.hmppsAuthClient.getToken(username)
-    return new PrisonerSearchApiClient(token).searchPrisoners(criteria)
+    return this.prisonerSearchApiClient.searchPrisoners(username, criteria)
   }
 
   async getUsersCaseloads(token: string): Promise<PrisonApiUserCaseloads[]> {

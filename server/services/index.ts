@@ -12,16 +12,22 @@ import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService from './dateValidationService'
 import CheckInformationService from './checkInformationService'
 import FrontEndComponentsService from './frontEndComponentsService'
-import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
 import ComparisonService from './comparisonService'
 import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
 import AuditService from './auditService'
 
 export const services = () => {
-  const { applicationInfo, hmppsAuthClient, manageUsersApiClient, prisonApiClient } = dataAccess()
+  const {
+    applicationInfo,
+    manageUsersApiClient,
+    prisonApiClient,
+    prisonerSearchApiClient,
+    courtCasesReleaseDatesApiClient,
+    frontendComponentsApiClient,
+  } = dataAccess()
   const auditService = new AuditService()
   const calculateReleaseDatesService = new CalculateReleaseDatesService(auditService)
-  const prisonerService = new PrisonerService(hmppsAuthClient, prisonApiClient)
+  const prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient)
   const userService = new UserService(manageUsersApiClient, prisonerService)
   const viewReleaseDatesService = new ViewReleaseDatesService()
   const userInputService = new UserInputService()
@@ -36,9 +42,9 @@ export const services = () => {
   const userPermissionsService = new UserPermissionsService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
   const checkInformationService = new CheckInformationService(calculateReleaseDatesService, prisonerService)
-  const frontEndComponentService = new FrontEndComponentsService(new FrontendComponentsApiClient())
+  const frontEndComponentService = new FrontEndComponentsService(frontendComponentsApiClient)
   const comparisonService = new ComparisonService(auditService)
-  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
+  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(courtCasesReleaseDatesApiClient)
 
   return {
     applicationInfo,

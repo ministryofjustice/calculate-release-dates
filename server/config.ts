@@ -111,8 +111,8 @@ export default {
     prisonerSearch: {
       url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8084', requiredInProduction),
       timeout: {
-        response: get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000),
-        deadline: get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 10000),
+        response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000))),
     },
@@ -125,6 +125,7 @@ export default {
         response: Number(get('FRONTEND_COMPONENT_API_TIMEOUT', 500)),
         deadline: Number(get('FRONTEND_COMPONENT_API_TIMEOUT', 500)),
       },
+      agent: new AgentConfig(Number(get('FRONTEND_COMPONENT_API_TIMEOUT', 500))),
     },
     courtCasesAndReleaseDatesUi: {
       url: get('COURT_CASES_AND_RELEASE_DATES_URL', 'http://localhost:3100', requiredInProduction),
