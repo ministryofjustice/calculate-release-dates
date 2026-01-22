@@ -1,8 +1,10 @@
 import nock from 'nock'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 import AuditService from '../services/auditService'
+import CalculateReleaseDatesApiRestClient from './calculateReleaseDatesApiRestClient'
 
 jest.mock('../services/auditService')
 
@@ -12,8 +14,12 @@ interface TestData {
 }
 
 const auditService = new AuditService() as jest.Mocked<AuditService>
+const mockAuthenticationClient: AuthenticationClient = {
+  getToken: jest.fn().mockResolvedValue('test-system-token'),
+} as unknown as jest.Mocked<AuthenticationClient>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
+  new CalculateReleaseDatesApiRestClient(mockAuthenticationClient),
 ) as jest.Mocked<CalculateReleaseDatesService>
 const stubbedTestData: TestData[] = [{ key: 'X', value: 'Y' } as TestData]
 const nomisCalculationSummary = { reason: 'Adjust Sentence', calculatedAt: '2024-04-18T10:47:39' }

@@ -42,7 +42,7 @@ export default class PreviouslyRecordedSledInterceptController implements Contro
     req: Request<{ nomsId: string; calculationRequestId: string }, unknown, PreviouslyRecordedSledForm>,
     res: Response,
   ): Promise<void> => {
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
     const { usePreviouslyRecordedSLED } = req.body
 
@@ -61,7 +61,7 @@ export default class PreviouslyRecordedSledInterceptController implements Contro
       const preliminaryRequest = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
         nomsId,
         calculationRequestModel,
-        token,
+        username,
       )
       calculationRequestIdToUse = preliminaryRequest.calculationRequestId
       setSiblingCalculationWithPreviouslyRecordedSLED(

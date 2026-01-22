@@ -12,6 +12,7 @@ describe('manualEntryService', () => {
   const dateValidationService = new DateValidationService()
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
+    null,
   ) as jest.Mocked<CalculateReleaseDatesService>
   const manualEntryService = new ManualEntryService(
     dateTypeConfigurationService,

@@ -6,7 +6,7 @@ import {
   ComparisonPersonOverview,
   ComparisonSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import ComparisonType from '../enumerations/comparisonType'
 import AuditService from './auditService'
 

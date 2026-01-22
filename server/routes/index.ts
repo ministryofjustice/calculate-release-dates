@@ -247,8 +247,8 @@ export default function Index({
 
   const compareRoutes = () => {
     router.get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
-    router.get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation) // TODO remove this route as it was only for testing
-    router.post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation) // TODO remove this route as it was only for testing
+    router.get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation)
+    router.post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation)
     router.post(comparePaths.COMPARE_RUN, compareAccessRoutes.run)
     router.get(comparePaths.COMPARE_CHOOSE, compareAccessRoutes.choose)
     router.get(comparePaths.COMPARE_RESULT, compareAccessRoutes.result)

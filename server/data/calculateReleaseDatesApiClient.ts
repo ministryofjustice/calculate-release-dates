@@ -1,5 +1,5 @@
 import config, { ApiConfig } from '../config'
-import RestClient from '../data/restClient'
+import RestClient from './restClient'
 import {
   AdjustmentDto,
   Agency,
@@ -8,9 +8,6 @@ import {
   AnalysedSentenceAndOffence,
   ApprovedDatesInputResponse,
   BookingCalculation,
-  CalculationBreakdown,
-  CalculationReason,
-  CalculationRequestModel,
   CalculationUserInputs,
   Comparison,
   ComparisonOverview,
@@ -24,7 +21,6 @@ import {
   ErsedEligibility,
   GenuineOverrideCreatedResponse,
   GenuineOverrideInputResponse,
-  GenuineOverrideReason,
   GenuineOverrideRequest,
   HistoricCalculation,
   LatestCalculation,
@@ -35,7 +31,6 @@ import {
   SubmitCalculationRequest,
   SupportedValidationResponse,
   ValidationMessage,
-  WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalysedPrisonApiBookingAndSentenceAdjustments,
@@ -56,47 +51,6 @@ export default class CalculateReleaseDatesApiClient {
     )
   }
 
-  // TODO test method - will be removed
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  calculateReleaseDates(booking: any): Promise<BookingCalculation> {
-    return this.restClient.post({ path: '/test/calculation-by-booking', data: booking }) as Promise<BookingCalculation>
-  }
-
-  calculatePreliminaryReleaseDates(
-    prisonerId: string,
-    calculationRequestModel: CalculationRequestModel,
-  ): Promise<BookingCalculation> {
-    return this.restClient.post({
-      path: `/calculation/${prisonerId}`,
-      data: calculationRequestModel || null,
-    }) as Promise<BookingCalculation>
-  }
-
-  getCalculationResults(calculationRequestId: number): Promise<BookingCalculation> {
-    return this.restClient.get({
-      path: `/calculation/results/${calculationRequestId}`,
-    }) as Promise<BookingCalculation>
-  }
-
-  getCalculationResultsByReference(
-    calculationReference: string,
-    checkForChanges: boolean,
-  ): Promise<BookingCalculation> {
-    let url = `/calculationReference/${calculationReference}`
-    if (checkForChanges) {
-      url += `?checkForChange=${checkForChanges}`
-    }
-    return this.restClient.get({
-      path: url,
-    }) as Promise<BookingCalculation>
-  }
-
-  getCalculationBreakdown(calculationRequestId: number): Promise<CalculationBreakdown> {
-    return this.restClient.get({
-      path: `/calculation/breakdown/${calculationRequestId}`,
-    }) as Promise<CalculationBreakdown>
-  }
-
   confirmCalculation(calculationRequestId: number, body: SubmitCalculationRequest): Promise<BookingCalculation> {
     return this.restClient.post({
       path: `/calculation/confirm/${calculationRequestId}`,
@@ -112,18 +66,6 @@ export default class CalculateReleaseDatesApiClient {
       path: `/genuine-override/calculation/${calculationRequestId}`,
       data: body,
     }) as Promise<GenuineOverrideCreatedResponse>
-  }
-
-  getNextWorkingDay(date: string): Promise<WorkingDay> {
-    return this.restClient.get({ path: `/working-day/next/${date}` }) as Promise<WorkingDay>
-  }
-
-  getCalculationReasons(): Promise<CalculationReason[]> {
-    return this.restClient.get({ path: `/calculation-reasons/` }) as Promise<CalculationReason[]>
-  }
-
-  getGenuineOverrideReasons(): Promise<GenuineOverrideReason[]> {
-    return this.restClient.get({ path: `/genuine-override/reasons` }) as Promise<GenuineOverrideReason[]>
   }
 
   validate(prisonerId: string, userInput: CalculationUserInputs): Promise<ValidationMessage[]> {

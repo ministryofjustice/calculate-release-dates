@@ -13,6 +13,7 @@ describe('StartGenuineOverrideController', () => {
 
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
+    null,
   ) as jest.Mocked<CalculateReleaseDatesService>
 
   const prisonerNumber = 'A1234BC'

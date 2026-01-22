@@ -37,7 +37,7 @@ export default class CheckInformationController implements Controller {
   POST = async (req: Request<{ nomsId: string }, unknown, CheckInformationForm>, res: Response): Promise<void> => {
     const { nomsId } = req.params
     const { ersed } = req.body
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
 
     await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
 
@@ -76,7 +76,7 @@ export default class CheckInformationController implements Controller {
     const releaseDates = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
       nomsId,
       calculationRequestModel,
-      token,
+      username,
     )
     if (releaseDates.usedPreviouslyRecordedSLED) {
       return res.redirect(
