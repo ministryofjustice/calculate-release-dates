@@ -25,7 +25,7 @@ export default class CalculationSummaryController implements Controller {
   ) {}
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const { callbackUrl } = req.query as Record<string, string>
     await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
@@ -60,7 +60,7 @@ export default class CalculationSummaryController implements Controller {
       req.session.HDCED[nomsId] = detailedCalculationResults.dates.HDCED.date
       const hcedWeekendAdjusted = await this.calculateReleaseDatesService.getNextWorkingDay(
         detailedCalculationResults.dates.HDCED.date,
-        token,
+        username,
       )
       req.session.HDCED_WEEKEND_ADJUSTED[nomsId] =
         detailedCalculationResults.dates.HDCED.date != null && hcedWeekendAdjusted != null

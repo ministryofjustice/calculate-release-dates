@@ -41,6 +41,7 @@ jest.mock('../services/auditService')
 const auditService = new AuditService() as jest.Mocked<AuditService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
+  null,
 ) as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>

@@ -12,7 +12,7 @@ import ManualEntrySelectDatesViewModel from '../models/manual_calculation/Manual
 import ManualEntryLandingPageViewModel from '../models/manual_calculation/ManualEntryLandingPageViewModel'
 import ManualEntryNoDatesConfirmationViewModel from '../models/manual_calculation/ManualEntryNoDatesConfirmationViewModel'
 import ManualEntryRemoteDateViewModel from '../models/manual_calculation/ManualEntryRemoteDateViewModel'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 
 export default class ManualEntryRoutes {

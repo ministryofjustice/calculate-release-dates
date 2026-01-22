@@ -1,5 +1,5 @@
 import { DateTypeDefinition } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
 

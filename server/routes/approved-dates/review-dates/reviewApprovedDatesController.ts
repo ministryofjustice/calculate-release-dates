@@ -64,7 +64,7 @@ export default class ReviewApprovedDatesController implements Controller {
 
     const result = await getBreakdownFragment(
       journey.preliminaryCalculationRequestId,
-      token,
+      username,
       this.calculateReleaseDatesService,
     )
       .then(breakdownHtml => {

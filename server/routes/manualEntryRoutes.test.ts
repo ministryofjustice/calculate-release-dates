@@ -33,6 +33,7 @@ const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerS
 const auditService = new AuditService() as jest.Mocked<AuditService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
+  null,
 ) as jest.Mocked<CalculateReleaseDatesService>
 const manualCalculationService = new ManualCalculationService(auditService) as jest.Mocked<ManualCalculationService>
 const dateTypeConfigurationService = new DateTypeConfigurationService()

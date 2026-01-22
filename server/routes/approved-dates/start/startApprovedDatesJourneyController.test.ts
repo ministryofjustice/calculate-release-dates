@@ -19,7 +19,10 @@ const nomsId = 'A1234BC'
 
 jest.mock('../../../services/calculateReleaseDatesService')
 
-const calculateReleaseDatesService = new CalculateReleaseDatesService(null) as jest.Mocked<CalculateReleaseDatesService>
+const calculateReleaseDatesService = new CalculateReleaseDatesService(
+  null,
+  null,
+) as jest.Mocked<CalculateReleaseDatesService>
 
 beforeEach(() => {
   const sessionSetup = new SessionSetup()

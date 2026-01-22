@@ -22,6 +22,7 @@ describe('ReviewApprovedDatesController', () => {
 
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
+    null,
   ) as jest.Mocked<CalculateReleaseDatesService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
   const dateTypeConfigurationService = new DateTypeConfigurationService() as jest.Mocked<DateTypeConfigurationService>

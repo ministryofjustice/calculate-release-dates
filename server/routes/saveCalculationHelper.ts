@@ -15,7 +15,7 @@ const saveCalculation = async (
   const { token, username } = res.locals.user
   const { nomsId } = req.params
   const calculationRequestId = Number(req.params.calculationRequestId)
-  const breakdownHtml = await getBreakdownFragment(calculationRequestId, token, calculateReleaseDatesService)
+  const breakdownHtml = await getBreakdownFragment(calculationRequestId, username, calculateReleaseDatesService)
   const approvedDates: ManualJourneySelectedDate[] =
     req.session.selectedApprovedDates != null && req.session.selectedApprovedDates[nomsId] != null
       ? req.session.selectedApprovedDates[nomsId]
@@ -70,10 +70,10 @@ const saveCalculation = async (
 
 const getBreakdownFragment = async (
   calculationRequestId: number,
-  token: string,
+  username: string,
   calculateReleaseDatesService: CalculateReleaseDatesService,
 ): Promise<string> => {
-  const breakdown = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+  const breakdown = await calculateReleaseDatesService.getBreakdown(calculationRequestId, username)
   return nunjucksEnv().render('pages/fragments/breakdownFragment.njk', {
     model: {
       ...breakdown,

@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import ManualCalculationResponse from '../models/manual_calculation/ManualCalculationResponse'
 import { ManualEntryRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import AuditService from './auditService'

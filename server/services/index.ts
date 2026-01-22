@@ -24,9 +24,11 @@ export const services = () => {
     prisonerSearchApiClient,
     courtCasesReleaseDatesApiClient,
     frontendComponentsApiClient,
+    calculateReleaseDatesApiClient,
   } = dataAccess()
   const auditService = new AuditService()
-  const calculateReleaseDatesService = new CalculateReleaseDatesService(auditService)
+
+  const calculateReleaseDatesService = new CalculateReleaseDatesService(auditService, calculateReleaseDatesApiClient)
   const prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient)
   const userService = new UserService(manageUsersApiClient, prisonerService)
   const viewReleaseDatesService = new ViewReleaseDatesService()
