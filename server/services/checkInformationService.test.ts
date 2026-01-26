@@ -109,7 +109,14 @@ describe('checkInformationService', () => {
   it('should build model with no validation errors present', async () => {
     calculateReleaseDatesService.validateBackend.mockResolvedValue([])
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, caseloads, token, userRoles)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      caseloads,
+      token,
+      userRoles,
+      'user1',
+    )
 
     expect(model.isUnsupported).toBe(false)
     expect(model.validationErrors).toStrictEqual({ messages: [] })
@@ -128,7 +135,14 @@ describe('checkInformationService', () => {
       messages: [{ text: 'Sentence type is not supported' }],
     })
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, caseloads, token, userRoles)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      caseloads,
+      token,
+      userRoles,
+      'user1',
+    )
 
     expect(model.isUnsupported).toBe(true)
     expect(model.validationErrors).toStrictEqual({
@@ -149,7 +163,14 @@ describe('checkInformationService', () => {
       messages: [],
     })
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, caseloads, token, userRoles)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      caseloads,
+      token,
+      userRoles,
+      'user1',
+    )
 
     expect(model.isUnsupported).toBe(true)
     expect(model.validationErrors).toStrictEqual({ messages: [] })
@@ -164,7 +185,14 @@ describe('checkInformationService', () => {
       } as ValidationMessage,
     ])
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, caseloads, token, userRoles)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      caseloads,
+      token,
+      userRoles,
+      'user1',
+    )
 
     expect(model.isUnsupported).toBe(false)
     expect(model.validationErrors).toStrictEqual({
@@ -187,7 +215,14 @@ describe('checkInformationService', () => {
       } as ValidationMessage,
     ])
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, caseloads, token, userRoles)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      caseloads,
+      token,
+      userRoles,
+      'user1',
+    )
 
     expect(model.validationErrors).toStrictEqual({
       messageType: ErrorMessageType.VALIDATION,
@@ -206,7 +241,14 @@ describe('checkInformationService', () => {
     calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences.mockResolvedValue([ftrSentence])
     prisonerService.getReturnToCustodyDate.mockResolvedValue({ bookingId: 99, returnToCustodyDate: '2025-01-03' })
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, caseloads, token, userRoles)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      caseloads,
+      token,
+      userRoles,
+      'user1',
+    )
 
     expect(model.returnToCustodyDate).toBe('2025-01-03')
     expect(prisonerService.getReturnToCustodyDate).toHaveBeenCalled()
@@ -223,7 +265,14 @@ describe('checkInformationService', () => {
     calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences.mockResolvedValue([ftrSentence])
     prisonerService.getReturnToCustodyDate.mockRejectedValue(createError(404, 'Not found'))
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, caseloads, token, userRoles)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      caseloads,
+      token,
+      userRoles,
+      'user1',
+    )
 
     expect(model.returnToCustodyDate).toBeUndefined()
     expect(prisonerService.getReturnToCustodyDate).toHaveBeenCalled()

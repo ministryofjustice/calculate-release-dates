@@ -81,7 +81,7 @@ describe('Prisoner service related tests', () => {
       it('should return prisoner details when agencyId is in user caseloads', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, prisonerDetails)
 
-        const result = await prisonerService.getPrisonerDetail('A1234AB', ['MDI'], [])
+        const result = await prisonerService.getPrisonerDetail('A1234AB', 'user1', ['MDI'], [])
 
         expect(result).toEqual(prisonerDetails)
       })
@@ -89,7 +89,7 @@ describe('Prisoner service related tests', () => {
       it('should throw NOT_IN_CASELOAD when agencyId not in derived caseloads', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'LEX' })
 
-        await expect(prisonerService.getPrisonerDetail('A1234AB', ['MDI'], [])).rejects.toMatchObject({
+        await expect(prisonerService.getPrisonerDetail('A1234AB', 'user1', ['MDI'], [])).rejects.toMatchObject({
           errorKey: FullPageErrorType.NOT_IN_CASELOAD,
           status: 404,
         })
@@ -100,6 +100,7 @@ describe('Prisoner service related tests', () => {
 
         const result = await prisonerService.getPrisonerDetail(
           'A1234AB',
+          'user1',
           ['MDI'],
           [AuthorisedRoles.ROLE_INACTIVE_BOOKINGS],
         )
@@ -110,7 +111,7 @@ describe('Prisoner service related tests', () => {
       it('should throw NOT_IN_CASELOAD when agencyId is OUT and user lacks relevant role', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'OUT' })
 
-        await expect(prisonerService.getPrisonerDetail('A1234AB', ['MDI'], [])).rejects.toMatchObject({
+        await expect(prisonerService.getPrisonerDetail('A1234AB', 'user1', ['MDI'], [])).rejects.toMatchObject({
           errorKey: FullPageErrorType.NOT_IN_CASELOAD,
           status: 404,
         })

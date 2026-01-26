@@ -21,8 +21,9 @@ export default class CheckInformationService {
     caseloads: string[],
     token: string,
     userRoles: string[],
+    username: string,
   ): Promise<SentenceAndOffenceViewModel> {
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
 
     const [sentencesAndOffences, adjustmentDetails, ersedAvailable, analysedAdjustments, validationResult] =
       await Promise.all([
@@ -36,7 +37,7 @@ export default class CheckInformationService {
       ])
 
     const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
-      ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId).catch(error => {
+      ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, username).catch(error => {
           if (error.status === 404) {
             // RTC date not entered for a FTR but this will be flagged by validation so don't blow up
             return null
