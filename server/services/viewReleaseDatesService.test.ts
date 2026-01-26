@@ -1,7 +1,6 @@
 import nock from 'nock'
 import request from 'supertest'
 import { Express } from 'express'
-import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import {
   CalculationSentenceUserInput,
@@ -13,10 +12,10 @@ import PrisonerService from './prisonerService'
 import { appWithAllRoutes } from '../routes/testutils/appSetup'
 import SessionSetup from '../routes/testutils/sessionSetup'
 import PrisonApiClient from '../data/prisonApiClient'
+import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 
 let app: Express
 let sessionSetup: SessionSetup
-jest.mock('../data/hmppsAuthClient')
 jest.mock('./prisonerService') // Mock the PrisonerService module
 
 const token = 'token'
@@ -33,20 +32,17 @@ const stubbedUserInput = {
 describe('View release dates service tests', () => {
   let viewReleaseDatesService: ViewReleaseDatesService
   let fakeApi: nock.Scope
-  let hmppsAuthClient: jest.Mocked<AuthenticationClient>
   let prisonApiClient: jest.Mocked<PrisonApiClient>
+  let prisonerSearchApiClient: jest.Mocked<PrisonerSearchApiClient>
   let prisonerService: jest.Mocked<PrisonerService>
   beforeEach(() => {
     sessionSetup = new SessionSetup()
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.calculateReleaseDates.url)
     viewReleaseDatesService = new ViewReleaseDatesService()
-    hmppsAuthClient = {
-      getToken: jest.fn().mockResolvedValue('test-system-token'),
-    } as unknown as jest.Mocked<AuthenticationClient>
-
     prisonApiClient = new PrisonApiClient(null) as jest.Mocked<PrisonApiClient>
-    prisonerService = new PrisonerService(hmppsAuthClient, prisonApiClient) as jest.Mocked<PrisonerService> // Instantiate the mocked service
+    prisonerSearchApiClient = new PrisonerSearchApiClient(null) as jest.Mocked<PrisonerSearchApiClient>
+    prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient) as jest.Mocked<PrisonerService> // Instantiate the mocked service
     app = appWithAllRoutes({
       services: { prisonerService },
       sessionSetup,

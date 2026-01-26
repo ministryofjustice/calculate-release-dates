@@ -11,7 +11,7 @@ import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export default class ViewReleaseDatesService {
   async getLatestCalculation(prisonerId: string, bookingId: number, token: string): Promise<BookingCalculation> {

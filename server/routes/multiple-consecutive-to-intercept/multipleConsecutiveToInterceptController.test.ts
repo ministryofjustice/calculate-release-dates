@@ -25,6 +25,7 @@ describe('MultipleConsecutiveToInterceptController', () => {
 
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
+    null,
   ) as jest.Mocked<CalculateReleaseDatesService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
   const checkInformationService = new CheckInformationService(null, null) as jest.Mocked<CheckInformationService>

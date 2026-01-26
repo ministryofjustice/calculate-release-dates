@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express'
-import logger from '../../logger'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import UserPermissionsService from '../services/userPermissionsService'
 import PrisonerService from '../services/prisonerService'
@@ -348,38 +347,7 @@ export default class CompareRoutes {
   }
 
   public manualCalculation: RequestHandler = async (req, res): Promise<void> => {
-    const { token } = res.locals.user
-    const { bookingData } = req.query
-    try {
-      const releaseDates = bookingData
-        ? await this.calculateReleaseDatesService.calculateReleaseDates(bookingData, token)
-        : ''
-
-      res.render('pages/compare/manual', {
-        releaseDates: releaseDates ? JSON.stringify(releaseDates, undefined, 4) : '',
-        bookingData,
-      })
-    } catch (ex) {
-      logger.error(ex)
-      const validationErrors =
-        ex.status > 499 && ex.status < 600
-          ? [
-              {
-                text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
-                href: '#bookingData',
-              },
-            ]
-          : [
-              {
-                text: 'The JSON is malformed',
-                href: '#bookingData',
-              },
-            ]
-      res.render('pages/test-pages/testCalculation', {
-        bookingData,
-        validationErrors,
-      })
-    }
+    return res.render('pages/compare/manual')
   }
 
   private summaryCausesToFormCauses(summaryCauses: ComparisonPersonDiscrepancyCause[]) {

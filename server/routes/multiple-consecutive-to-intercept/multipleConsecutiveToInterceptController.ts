@@ -34,7 +34,7 @@ export default class MultipleConsecutiveToInterceptController implements Control
   }
 
   POST = async (req: Request<{ nomsId: string }>, res: Response): Promise<void> => {
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
     const { sentenceDuration } = req.body
 
@@ -49,7 +49,7 @@ export default class MultipleConsecutiveToInterceptController implements Control
     const preliminaryRequest = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
       nomsId,
       calculationRequestModel,
-      token,
+      username,
     )
     if (preliminaryRequest.usedPreviouslyRecordedSLED) {
       res.redirect(

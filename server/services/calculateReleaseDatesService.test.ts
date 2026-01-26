@@ -4,6 +4,7 @@ import {
   Action,
   LatestCalculationCardConfig,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import config from '../config'
 import {
@@ -24,8 +25,8 @@ import {
   psiExample25CalculationBreakdown,
 } from './breakdownExamplesTestData'
 import AuditService from './auditService'
+import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
 
-jest.mock('../data/hmppsAuthClient')
 jest.mock('./auditService')
 
 const userName = 'USERNAME'
@@ -161,6 +162,11 @@ const unsupportedCalculationResult: ValidationMessage[] = [
   },
 ]
 
+const mockAuthenticationClient: AuthenticationClient = {
+  getToken: jest.fn().mockResolvedValue('test-system-token'),
+} as unknown as jest.Mocked<AuthenticationClient>
+const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiRestClient(mockAuthenticationClient)
+
 const token = 'token'
 
 describe('Calculate release dates service tests', () => {
@@ -172,7 +178,7 @@ describe('Calculate release dates service tests', () => {
     auditService.publishSentenceCalculationFailure.mockResolvedValue()
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.calculateReleaseDates.url)
-    calculateReleaseDatesService = new CalculateReleaseDatesService(auditService)
+    calculateReleaseDatesService = new CalculateReleaseDatesService(auditService, calculateReleaseDatesApiRestClient)
   })
   afterEach(() => {
     nock.cleanAll()

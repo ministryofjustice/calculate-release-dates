@@ -41,10 +41,13 @@ jest.mock('../services/auditService')
 const auditService = new AuditService() as jest.Mocked<AuditService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
+  null,
 ) as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
-const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService() as jest.Mocked<CourtCasesReleaseDatesService>
+const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(
+  null,
+) as jest.Mocked<CourtCasesReleaseDatesService>
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
   firstName: 'Anon',

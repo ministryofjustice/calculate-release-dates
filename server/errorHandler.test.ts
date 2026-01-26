@@ -3,13 +3,18 @@ import request from 'supertest'
 import { appWithAllRoutes } from './routes/testutils/appSetup'
 import CalculateReleaseDatesService from './services/calculateReleaseDatesService'
 import AuditService from './services/auditService'
+import CalculateReleaseDatesApiRestClient from './data/calculateReleaseDatesApiRestClient'
 
 jest.mock('./services/calculateReleaseDatesService')
 jest.mock('./services/auditService')
 
 const auditService = new AuditService() as jest.Mocked<AuditService>
+const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiRestClient(
+  null,
+) as jest.Mocked<CalculateReleaseDatesApiRestClient>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
+  calculateReleaseDatesApiRestClient,
 ) as jest.Mocked<CalculateReleaseDatesService>
 
 let app: Express

@@ -7,7 +7,7 @@ import { DetailedDate } from '../@types/calculateReleaseDates/calculateReleaseDa
 import { createSupportLink } from '../utils/utils'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export const dateTypeOrder = {
   SED: 1,

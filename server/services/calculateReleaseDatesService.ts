@@ -6,7 +6,7 @@ import {
   LatestCalculationCardDate,
   LatestCalculationCardDateHint,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import {
   Agency,
   AgencySwitchUpdateResult,
@@ -51,30 +51,28 @@ import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prison
 import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
 import AuditService from './auditService'
 import { CalculationCard } from '../types/CalculationCard'
+import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
 
 export default class CalculateReleaseDatesService {
-  constructor(private auditService: AuditService) {}
-
-  // TODO test method - will be removed
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async calculateReleaseDates(booking: any, token: string): Promise<BookingCalculation> {
-    const bookingData = JSON.parse(booking)
-    return new CalculateReleaseDatesApiClient(token).calculateReleaseDates(bookingData)
-  }
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly calculateReleaseDatesApiRestClient: CalculateReleaseDatesApiRestClient,
+  ) {}
 
   async calculatePreliminaryReleaseDates(
     prisonerId: string,
     calculationRequestModel: CalculationRequestModel,
-    token: string,
+    username: string,
   ): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).calculatePreliminaryReleaseDates(
+    return this.calculateReleaseDatesApiRestClient.calculatePreliminaryReleaseDates(
       prisonerId,
       calculationRequestModel,
+      username,
     )
   }
 
-  async getCalculationResults(calculationRequestId: number, token: string): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).getCalculationResults(calculationRequestId)
+  async getCalculationResults(calculationRequestId: number, username: string): Promise<BookingCalculation> {
+    return this.calculateReleaseDatesApiRestClient.getCalculationResults(calculationRequestId, username)
   }
 
   async getUnsupportedSentenceOrCalculationMessages(prisonId: string, token: string): Promise<ValidationMessage[]> {
@@ -112,13 +110,13 @@ export default class CalculateReleaseDatesService {
 
   async getBreakdown(
     calculationRequestId: number,
-    token: string,
+    username: string,
   ): Promise<{
     calculationBreakdown?: CalculationBreakdown
     releaseDatesWithAdjustments: ReleaseDateWithAdjustments[]
   }> {
     try {
-      const breakdown = await this.getCalculationBreakdown(calculationRequestId, token)
+      const breakdown = await this.getCalculationBreakdown(calculationRequestId, username)
       return {
         calculationBreakdown: breakdown,
         releaseDatesWithAdjustments: this.extractReleaseDatesWithAdjustments(breakdown),
@@ -345,16 +343,16 @@ export default class CalculateReleaseDatesService {
     }
   }
 
-  public async getCalculationBreakdown(calculationRequestId: number, token: string): Promise<CalculationBreakdown> {
-    return new CalculateReleaseDatesApiClient(token).getCalculationBreakdown(calculationRequestId)
+  public async getCalculationBreakdown(calculationRequestId: number, username: string): Promise<CalculationBreakdown> {
+    return this.calculateReleaseDatesApiRestClient.getCalculationBreakdown(calculationRequestId, username)
   }
 
-  public async getCalculationReasons(token: string): Promise<CalculationReason[]> {
-    return new CalculateReleaseDatesApiClient(token).getCalculationReasons()
+  public async getCalculationReasons(username: string): Promise<CalculationReason[]> {
+    return this.calculateReleaseDatesApiRestClient.getCalculationReasons(username)
   }
 
-  public async getGenuineOverrideReasons(token: string): Promise<GenuineOverrideReason[]> {
-    return new CalculateReleaseDatesApiClient(token).getGenuineOverrideReasons()
+  public async getGenuineOverrideReasons(username: string): Promise<GenuineOverrideReason[]> {
+    return this.calculateReleaseDatesApiRestClient.getGenuineOverrideReasons(username)
   }
 
   async confirmCalculation(
@@ -411,10 +409,9 @@ export default class CalculateReleaseDatesService {
     }
   }
 
-  async getNextWorkingDay(date: string, token: string): Promise<string> {
-    const client = new CalculateReleaseDatesApiClient(token)
+  async getNextWorkingDay(date: string, username: string): Promise<string> {
     if (this.existsAndIsInFuture(date)) {
-      const adjustment = await client.getNextWorkingDay(date)
+      const adjustment = await this.calculateReleaseDatesApiRestClient.getNextWorkingDay(date, username)
       if (adjustment.date !== date) {
         return adjustment.date
       }

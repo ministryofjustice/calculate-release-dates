@@ -24,7 +24,7 @@ export default class SelectGenuineOverrideReasonController implements Controller
     const reasonFurtherDetail =
       res.locals?.formResponses?.reasonFurtherDetail ?? genuineOverrideInputs?.reasonFurtherDetail
     const reasons = await this.calculateReleaseDatesService
-      .getGenuineOverrideReasons(res.locals.user.token)
+      .getGenuineOverrideReasons(res.locals.user.username)
       .then(unsortedReasons => unsortedReasons.sort((a, b) => a.displayOrder - b.displayOrder))
 
     const backLink =

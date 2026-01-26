@@ -33,6 +33,7 @@ const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationServi
 const auditService = new AuditService() as jest.Mocked<AuditService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
+  null,
 ) as jest.Mocked<CalculateReleaseDatesService>
 const manualEntryService = new ManualEntryService(dateTypeConfigurationService, null, calculateReleaseDatesService)
 

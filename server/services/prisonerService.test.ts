@@ -10,8 +10,7 @@ import {
 import { FullPageErrorType } from '../types/FullPageError'
 import AuthorisedRoles from '../enumerations/authorisedRoles'
 import PrisonApiClient from '../data/prisonApiClient'
-
-jest.mock('../data/hmppsAuthClient')
+import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 
 const caseload = {
   caseLoadId: 'MDI',
@@ -49,6 +48,7 @@ const token = 'token'
 describe('Prisoner service related tests', () => {
   let hmppsAuthClient: jest.Mocked<AuthenticationClient>
   let prisonApiClient: jest.Mocked<PrisonApiClient>
+  let prisonerSearchApiClient: jest.Mocked<PrisonerSearchApiClient>
   let prisonerService: PrisonerService
   let fakeApi: nock.Scope
 
@@ -60,7 +60,8 @@ describe('Prisoner service related tests', () => {
     } as unknown as jest.Mocked<AuthenticationClient>
 
     prisonApiClient = new PrisonApiClient(hmppsAuthClient) as jest.Mocked<PrisonApiClient>
-    prisonerService = new PrisonerService(hmppsAuthClient, prisonApiClient)
+    prisonerSearchApiClient = new PrisonerSearchApiClient(hmppsAuthClient) as jest.Mocked<PrisonerSearchApiClient>
+    prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient)
   })
 
   afterEach(() => {

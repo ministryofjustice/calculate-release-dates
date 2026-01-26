@@ -23,6 +23,7 @@ describe('SelectApprovedDatesController', () => {
   const dateTypeConfigurationService = new DateTypeConfigurationService() as jest.Mocked<DateTypeConfigurationService>
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
+    null,
   ) as jest.Mocked<CalculateReleaseDatesService>
 
   let journey: ApprovedDatesJourney

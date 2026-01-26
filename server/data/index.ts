@@ -10,6 +10,10 @@ import { createRedisClient } from './redisClient'
 import config from '../config'
 import logger from '../../logger'
 import PrisonApiClient from './prisonApiClient'
+import PrisonerSearchApiClient from './prisonerSearchApiClient'
+import CourtCasesReleaseDatesApiClient from './courtCasesReleaseDatesApiClient'
+import FrontendComponentsApiClient from './frontendComponentsApiClient'
+import CalculateReleaseDatesApiRestClient from './calculateReleaseDatesApiRestClient'
 
 const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
@@ -26,6 +30,10 @@ const dataAccess = () => ({
   hmppsAuthClient,
   manageUsersApiClient: new ManageUsersApiClient(hmppsAuthClient),
   prisonApiClient: new PrisonApiClient(hmppsAuthClient),
+  prisonerSearchApiClient: new PrisonerSearchApiClient(hmppsAuthClient),
+  courtCasesReleaseDatesApiClient: new CourtCasesReleaseDatesApiClient(hmppsAuthClient),
+  frontendComponentsApiClient: new FrontendComponentsApiClient(hmppsAuthClient),
+  calculateReleaseDatesApiClient: new CalculateReleaseDatesApiRestClient(hmppsAuthClient),
 })
 
 export default dataAccess

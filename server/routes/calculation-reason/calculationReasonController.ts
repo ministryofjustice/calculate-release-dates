@@ -24,7 +24,7 @@ export default class CalculationReasonController implements Controller {
     }
     req.session.isAddDatesFlow[nomsId] = isAddDatesFlow === 'true'
 
-    const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.token)
+    const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.username)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
 
     const isSupportUser = user.isDigitalSupportUser || user.isSpecialistSupportUser
