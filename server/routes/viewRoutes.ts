@@ -33,9 +33,9 @@ export default class ViewRoutes {
   }
 
   public startViewJourney: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     try {
       const latestCalculation = await this.viewReleaseDatesService.getLatestCalculation(
         nomsId,
@@ -51,10 +51,10 @@ export default class ViewRoutes {
   }
 
   public sentencesAndOffences: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
     try {
       const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
         calculationRequestId,
@@ -139,13 +139,14 @@ export default class ViewRoutes {
     token: string,
     caseloads: string[],
     userRoles: string[],
+    username: string,
   ): Promise<CalculationSummaryViewModel> {
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       token,
     )
     const hasErsed = 'ERSED' in detailedCalculationResults.dates
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const { calculationBreakdown, calculationOriginalData, breakdownMissingReason, releaseDatesWithAdjustments } =
       detailedCalculationResults
     if (!calculationBreakdown && breakdownMissingReason && breakdownMissingReason === 'PRISON_API_DATA_MISSING') {
@@ -215,10 +216,17 @@ export default class ViewRoutes {
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
     const calculationRequestId = Number(req.params.calculationRequestId)
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
-    const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
+    const model = await this.calculateReleaseDatesViewModel(
+      calculationRequestId,
+      nomsId,
+      token,
+      caseloads,
+      userRoles,
+      username,
+    )
     res.render(
       'pages/view/calculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
@@ -231,11 +239,18 @@ export default class ViewRoutes {
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
-    const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, token, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
+    const model = await this.calculateReleaseDatesViewModel(
+      calculationRequestId,
+      nomsId,
+      token,
+      caseloads,
+      userRoles,
+      username,
+    )
     res.render(
       'pages/view/printCalculationSummary',
       new ViewCalculateReleaseDatePageViewModel(
@@ -248,12 +263,12 @@ export default class ViewRoutes {
   }
 
   public printNotificationSlip: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const { fromPage, pageType } = req.query as Record<string, string>
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
 
     const [prisonerDetail, sentencesAndOffences, adjustmentDetails, releaseDateAndCalcContext, adjustmentsDtos] =
       await Promise.all([
@@ -311,9 +326,9 @@ export default class ViewRoutes {
 
   public nomisCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
     const offenderSentCalculationId = Number(req.params.offenderSentCalculationId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const pastNomisCalculation = await this.calculateReleaseDatesService.getNomisCalculationSummary(
       offenderSentCalculationId,
       token,

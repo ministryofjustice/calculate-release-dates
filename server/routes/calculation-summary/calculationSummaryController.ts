@@ -28,7 +28,7 @@ export default class CalculationSummaryController implements Controller {
     const { caseloads, token, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const { callbackUrl } = req.query as Record<string, string>
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
@@ -37,7 +37,7 @@ export default class CalculationSummaryController implements Controller {
     if (detailedCalculationResults.context.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
     }
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const serverErrors = req.flash('serverErrors')
     let validationErrors = null
     if (serverErrors && serverErrors[0]) {

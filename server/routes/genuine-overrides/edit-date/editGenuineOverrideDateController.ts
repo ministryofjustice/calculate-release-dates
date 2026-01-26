@@ -24,9 +24,9 @@ export default class EditGenuineOverrideDateController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId, dateType } = req.params
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
 
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
