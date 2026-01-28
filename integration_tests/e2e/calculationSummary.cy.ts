@@ -74,7 +74,7 @@ context('Calculation summary', () => {
   it('Visit Calculation summary page with FTR56 Tranche notification', () => {
     cy.task('stubGetDetailedCalculationResults', {
       previouslyRecordedSLED: null,
-      releaseTranche: 'FTR_56_TRANCHE_3',
+      ftr56Tranche: 'FTR_56_TRANCHE_3',
     })
     cy.signIn()
     const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
