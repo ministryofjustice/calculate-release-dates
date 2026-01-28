@@ -1054,9 +1054,9 @@ export default {
   },
   stubGetDetailedCalculationResults: (args?: {
     previouslyRecordedSLED?: PreviouslyRecordedSLED
-    releaseTranche?: EarlyReleaseTranche
+    ftr56Tranche?: EarlyReleaseTranche
   }): SuperAgentRequest => {
-    const { previouslyRecordedSLED, releaseTranche } = args || {}
+    const { previouslyRecordedSLED, ftr56Tranche } = args || {}
     const breakdown = {
       showSds40Hints: false,
       concurrentSentences: [
@@ -1305,8 +1305,8 @@ export default {
       usedPreviouslyRecordedSLED: previouslyRecordedSLED,
     }
 
-    if (releaseTranche) {
-      detailedResults.tranche = releaseTranche
+    if (ftr56Tranche) {
+      detailedResults.ftr56Tranche = ftr56Tranche
     }
 
     return stubFor({
