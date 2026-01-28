@@ -151,10 +151,16 @@ describe('CalculationReasonController', () => {
   } as CcrdServiceDefinitions
 
   const stubbedCalculationReasons = [
-    { id: 8, isOther: false, displayName: 'Add dates', useForApprovedDates: true },
-    { id: 9, isOther: false, displayName: '2 day check', useForApprovedDates: false },
-    { id: 10, isOther: false, displayName: 'Appeal decision', useForApprovedDates: false },
-    { id: 11, isOther: true, displayName: 'Other', useForApprovedDates: false },
+    { id: 8, isOther: false, displayName: 'Add dates', useForApprovedDates: true, requiresFurtherDetail: false },
+    { id: 9, isOther: false, displayName: '2 day check', useForApprovedDates: false, requiresFurtherDetail: false },
+    {
+      id: 10,
+      isOther: false,
+      displayName: 'Appeal decision',
+      useForApprovedDates: false,
+      requiresFurtherDetail: false,
+    },
+    { id: 11, isOther: true, displayName: 'Other', useForApprovedDates: false, requiresFurtherDetail: true },
   ]
 
   let currentSession: SessionData
