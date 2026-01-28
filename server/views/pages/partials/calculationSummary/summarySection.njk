@@ -11,8 +11,8 @@
         {% if not model.approvedDates %}
             <p class="govuk-body">Check the release dates before entering the approved dates.</p>
         {% endif %}
-        {% if model.detailedCalculationResults.tranche | trancheIsFtr56 %}
-            {% set tranche = model.detailedCalculationResults.tranche | formatFtr56Tranche  %}
+        {% if model.detailedCalculationResults.ftr56Tranche | trancheIsFtr56 %}
+            {% set tranche = model.detailedCalculationResults.ftr56Tranche | formatFtr56Tranche  %}
             {{ govukInsetText({
                 html: '<p>This person is in <b>' + tranche  + '</b> of the fixed-term recalls legislation change.</p>',
                 classes: "govuk-!-margin-bottom-4 ftr56-tranche-guidance-panel"

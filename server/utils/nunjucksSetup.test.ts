@@ -91,6 +91,7 @@ describe('nunjucksSetup', () => {
         expect(trancheIsFtr56('FTR_56_TRANCHE_6')).toBe(true)
       })
       it('returns false for invalid tranches', () => {
+        expect(trancheIsFtr56('FTR_56_TRANCHE_0')).toBe(false)
         expect(trancheIsFtr56('FTR_56_TRANCHE_7')).toBe(false)
         expect(trancheIsFtr56('OTHER_TRANCHE')).toBe(false)
         expect(trancheIsFtr56('')).toBe(false)

@@ -16,7 +16,7 @@ export default class CalculationReasonController implements Controller {
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
     const { user } = res.locals
-    const { caseloads, token, userRoles } = user
+    const { caseloads, token, userRoles, username } = user
     const { nomsId } = req.params
     const { isAddDatesFlow } = req.query as Record<string, string>
     if (!req.session.isAddDatesFlow) {
@@ -25,7 +25,7 @@ export default class CalculationReasonController implements Controller {
     req.session.isAddDatesFlow[nomsId] = isAddDatesFlow === 'true'
 
     const calculationReasons = await this.calculateReleaseDatesService.getCalculationReasons(res.locals.user.username)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
 
     const isSupportUser = user.isDigitalSupportUser || user.isSpecialistSupportUser
     if (!isSupportUser && config.featureToggles.thingsToDoIntercept) {
@@ -70,11 +70,11 @@ export default class CalculationReasonController implements Controller {
     req: Request<{ nomsId: string; calculationRequestId: string }, unknown, CalculationReasonForm>,
     res: Response,
   ): Promise<void> => {
-    const { caseloads, userRoles } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const { calculationReasonId, otherReasonDescription } = req.body
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
     this.setReason(req, nomsId, calculationReasonId, otherReasonDescription)
 
     return res.redirect(`/calculation/${nomsId}/check-information`)

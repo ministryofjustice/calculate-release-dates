@@ -327,7 +327,7 @@ describe('CalculationSummaryController', () => {
       ],
     },
     approvedDates: {},
-    tranche: 'TRANCHE_1',
+    sds40Tranche: 'TRANCHE_1',
   }
   const expectedMiniProfile = {
     name: 'Nobody, Anon',
@@ -779,7 +779,7 @@ describe('CalculationSummaryController', () => {
     })
     it('GET /calculation/:nomsId/summary/:calculationRequestId should not display tranche label', () => {
       const dataWithTranche1 = { ...stubbedResultsWithBreakdownAndAdjustments }
-      dataWithTranche1.tranche = 'TRANCHE_1'
+      dataWithTranche1.sds40Tranche = 'TRANCHE_1'
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(dataWithTranche1)
       return request(app)
         .get(`/calculation/${prisonerNumber}/summary/123456`)

@@ -365,7 +365,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
     ],
   },
   approvedDates: {},
-  tranche: 'TRANCHE_1',
+  sds40Tranche: 'TRANCHE_1',
 }
 
 beforeEach(() => {

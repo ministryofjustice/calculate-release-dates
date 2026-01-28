@@ -2517,7 +2517,18 @@ export interface components {
         | 'BREAKDOWN_CHANGED_SINCE_LAST_CALCULATION'
         | 'UNSUPPORTED_CALCULATION_BREAKDOWN'
       /** @enum {string} */
-      tranche?:
+      sds40Tranche?:
+        | 'TRANCHE_0'
+        | 'TRANCHE_1'
+        | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_1'
+        | 'FTR_56_TRANCHE_2'
+        | 'FTR_56_TRANCHE_3'
+        | 'FTR_56_TRANCHE_4'
+        | 'FTR_56_TRANCHE_5'
+        | 'FTR_56_TRANCHE_6'
+      /** @enum {string} */
+      ftr56Tranche?:
         | 'TRANCHE_0'
         | 'TRANCHE_1'
         | 'TRANCHE_2'

@@ -16,7 +16,7 @@ export default class CheckInformationController implements Controller {
   ) {}
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, token, userRoles, username } = res.locals.user
     const { nomsId } = req.params
 
     if (!req.session.selectedApprovedDates) {
@@ -24,13 +24,20 @@ export default class CheckInformationController implements Controller {
     }
     req.session.selectedApprovedDates[nomsId] = []
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
 
     if (!this.userInputService.isCalculationReasonSet(req, nomsId)) {
       return res.redirect(`/calculation/${nomsId}/reason`)
     }
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-    const model = await this.checkInformationService.checkInformation(nomsId, userInputs, caseloads, token, userRoles)
+    const model = await this.checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      caseloads,
+      token,
+      userRoles,
+      username,
+    )
     return res.render('pages/calculation/checkInformation', new CheckInformationViewModel(model, true, req.originalUrl))
   }
 
@@ -39,7 +46,7 @@ export default class CheckInformationController implements Controller {
     const { ersed } = req.body
     const { caseloads, token, userRoles, username } = res.locals.user
 
-    await this.prisonerService.checkPrisonerAccess(nomsId, caseloads, userRoles)
+    await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
 
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     userInputs.calculateErsed = ersed

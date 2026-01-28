@@ -21,35 +21,46 @@ export default class PrisonerService {
     return this.prisonApiClient.getPrisonerImage(nomsId, username)
   }
 
-  async getPrisonerDetail(nomsId: string, userCaseloads: string[], userRoles: string[]): Promise<PrisonApiPrisoner> {
-    return this.getAccessiblePrisoner(nomsId, userCaseloads, userRoles)
+  async getPrisonerDetail(
+    nomsId: string,
+    username: string,
+    userCaseloads: string[],
+    userRoles: string[],
+  ): Promise<PrisonApiPrisoner> {
+    return this.getAccessiblePrisoner(nomsId, username, userCaseloads, userRoles)
   }
 
-  async checkPrisonerAccess(nomsId: string, userCaseloads: string[], userRoles: string[]): Promise<PrisonApiPrisoner> {
-    return this.getAccessiblePrisoner(nomsId, userCaseloads, userRoles)
+  async checkPrisonerAccess(
+    nomsId: string,
+    username: string,
+    userCaseloads: string[],
+    userRoles: string[],
+  ): Promise<PrisonApiPrisoner> {
+    return this.getAccessiblePrisoner(nomsId, username, userCaseloads, userRoles)
   }
 
   private getAccessiblePrisoner(
     nomsId: string,
+    username: string,
     userCaseloads: string[],
     userRoles: string[],
   ): Promise<PrisonApiPrisoner> {
     const accessibleCaseloads = deriveAccessibleCaseloads(userCaseloads, userRoles)
-    return this.getPrisonerDetailImpl(nomsId, accessibleCaseloads)
+    return this.getPrisonerDetailImpl(nomsId, username, accessibleCaseloads)
   }
 
   private async getPrisonerDetailImpl(
     nomsId: string,
+    username: string,
     accessibleCaseloads: string[],
-    isSpecialistSupport = false,
   ): Promise<PrisonApiPrisoner> {
     try {
-      const prisonerDetail = await this.prisonApiClient.getPrisonerDetail(nomsId)
+      const prisonerDetail = await this.prisonApiClient.getPrisonerDetail(nomsId, username)
 
       logger.info('Accessible caseloads:', accessibleCaseloads)
       logger.info('Prisoner agencyId:', prisonerDetail.agencyId)
 
-      if (isSpecialistSupport || accessibleCaseloads.includes(prisonerDetail.agencyId)) {
+      if (accessibleCaseloads.includes(prisonerDetail.agencyId)) {
         return prisonerDetail
       }
 
@@ -70,8 +81,8 @@ export default class PrisonerService {
     return this.prisonApiClient.getUsersCaseloads(token)
   }
 
-  async getReturnToCustodyDate(bookingId: number): Promise<PrisonApiReturnToCustodyDate> {
-    const { returnToCustodyDate } = await this.prisonApiClient.getFixedTermRecallDetails(bookingId)
+  async getReturnToCustodyDate(bookingId: number, username: string): Promise<PrisonApiReturnToCustodyDate> {
+    const { returnToCustodyDate } = await this.prisonApiClient.getFixedTermRecallDetails(bookingId, username)
     return { bookingId, returnToCustodyDate }
   }
 }
