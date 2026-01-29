@@ -62,7 +62,7 @@ context(
       landingPage.calculateReleaseDatesAction().click()
 
       const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-      calculationReasonPage.radioByIndex(1).check()
+      calculationReasonPage.radioByReasonId(1).check()
       calculationReasonPage.submitReason().click()
 
       const checkInformationPage = Page.verifyOnPage(CheckInformationPage)

@@ -4,12 +4,16 @@ import { deduplicateFieldErrors } from '../../middleware/validationMiddleware'
 describe('calculationReasonSchemaFactory', () => {
   type Form = {
     calculationReasonId?: string
-    otherReasonDescription?: string
-    otherReasonId: string
+    reasons?: { id: string; requiresFurtherDetail: string; furtherDetail?: string }[]
   }
+
   it('should require the reason', async () => {
     // Given
-    const form = { otherReasonId: '99' }
+    const reasons = [
+      { id: '1', requiresFurtherDetail: 'false' },
+      { id: '2', requiresFurtherDetail: 'true', furtherDetail: 'some detail' },
+    ]
+    const form = { reasons }
 
     // When
     const result = await doValidate(form)
@@ -22,9 +26,13 @@ describe('calculationReasonSchemaFactory', () => {
     })
   })
 
-  it('should require further detail if the selected reason is the other reason id', async () => {
+  it('should require further detail if the selected reason is one that requires it', async () => {
     // Given
-    const form = { calculationReasonId: '99', otherReasonId: '99' }
+    const reasons = [
+      { id: '1', requiresFurtherDetail: 'false' },
+      { id: '2', requiresFurtherDetail: 'true', furtherDetail: '' },
+    ]
+    const form = { calculationReasonId: '2', reasons }
 
     // When
     const result = await doValidate(form)
@@ -33,13 +41,32 @@ describe('calculationReasonSchemaFactory', () => {
     expect(result.success).toStrictEqual(false)
     const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
     expect(deduplicatedFieldErrors).toStrictEqual({
-      otherReasonDescription: ['Enter the reason for this calculation'],
+      reasons_2_furtherDetail: ['Enter the reason for this calculation'],
     })
+  })
+
+  it('should not require further detail if the selected reason is one that does not require it', async () => {
+    // Given
+    const reasons = [
+      { id: '1', requiresFurtherDetail: 'false' },
+      { id: '2', requiresFurtherDetail: 'true' },
+    ]
+    const form = { calculationReasonId: '1', reasons }
+
+    // When
+    const result = await doValidate(form)
+
+    // Then
+    expect(result.success).toStrictEqual(true)
   })
 
   it('should reject further detail if more than 120 chars', async () => {
     // Given
-    const form = { calculationReasonId: '99', otherReasonId: '99', otherReasonDescription: 'x'.padStart(121, 'x') }
+    const reasons = [
+      { id: '1', requiresFurtherDetail: 'false' },
+      { id: '2', requiresFurtherDetail: 'true', furtherDetail: 'x'.padStart(121, 'x') },
+    ]
+    const form = { calculationReasonId: '2', reasons }
 
     // When
     const result = await doValidate(form)
@@ -48,13 +75,18 @@ describe('calculationReasonSchemaFactory', () => {
     expect(result.success).toStrictEqual(false)
     const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
     expect(deduplicatedFieldErrors).toStrictEqual({
-      otherReasonDescription: ['The reason for this calculation must be 120 characters or less'],
+      reasons_2_furtherDetail: ['The reason for this calculation must be 120 characters or less'],
     })
   })
 
   it('should include further detail if the reason requires it', async () => {
     // Given
-    const form = { calculationReasonId: '99', otherReasonId: '99', otherReasonDescription: 'Some deets' }
+    const reasons = [
+      { id: '1', requiresFurtherDetail: 'false' },
+      { id: '2', requiresFurtherDetail: 'true', furtherDetail: 'some details' },
+      { id: '3', requiresFurtherDetail: 'true', furtherDetail: 'other details' },
+    ]
+    const form = { calculationReasonId: '2', reasons }
 
     // When
     const result = await doValidate(form)
@@ -62,14 +94,19 @@ describe('calculationReasonSchemaFactory', () => {
     // Then
     expect(result.success).toStrictEqual(true)
     expect(result.data).toStrictEqual({
-      calculationReasonId: 99,
-      otherReasonDescription: 'Some deets',
+      calculationReasonId: 2,
+      furtherDetail: 'some details',
     })
   })
 
   it('should remove further detail if the reason does not require it', async () => {
     // Given
-    const form = { calculationReasonId: '1', otherReasonId: '99', otherReasonDescription: 'Some deets' }
+    const reasons = [
+      { id: '1', requiresFurtherDetail: 'false' },
+      { id: '2', requiresFurtherDetail: 'true', furtherDetail: 'some details' },
+      { id: '3', requiresFurtherDetail: 'true', furtherDetail: 'other details' },
+    ]
+    const form = { calculationReasonId: '1', reasons }
 
     // When
     const result = await doValidate(form)

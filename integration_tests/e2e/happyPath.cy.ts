@@ -45,7 +45,7 @@ context('End to end happy path of user journey', () => {
     cy.task('stubGetEligibility')
   })
 
-  it('Standalone user journey', () => {
+  it('Standalone user journey with a standard reason', () => {
     cy.signIn()
 
     const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
@@ -57,7 +57,7 @@ context('End to end happy path of user journey', () => {
     ccardLandingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.hasMiniProfile()
     calculationReasonPage.submitReason().click()
 
@@ -76,6 +76,66 @@ context('End to end happy path of user journey', () => {
     const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
 
     calculationCompletePage.title().should('contain.text', 'Calculation complete')
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/calculate-release-dates/calculation/A1234AB`,
+      },
+      {
+        calculationUserInputs: {
+          sentenceCalculationUserInputs: [],
+          calculateErsed: false,
+          usePreviouslyRecordedSLEDIfFound: true,
+        },
+        calculationReasonId: 1,
+      },
+    )
+  })
+
+  it('Standalone user journey with further details reason', () => {
+    cy.signIn()
+
+    const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
+    prisonerSearchPage.searchForFirstName('Marvin')
+    prisonerSearchPage.prisonerLinkFor('A1234AB').click()
+
+    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
+    ccardLandingPage.calculateReleaseDatesAction().click()
+
+    const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
+    calculationReasonPage.radioByReasonId(75).check()
+    calculationReasonPage.furtherDetailByReasonId(75).type('Some legislative change')
+    calculationReasonPage.submitReason().click()
+
+    const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
+    checkInformationPage.calculateButton().click()
+
+    const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
+
+    const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
+    approvedDatesQuestionPage.no().click()
+    approvedDatesQuestionPage.continue().click()
+
+    const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
+
+    calculationCompletePage.title().should('contain.text', 'Calculation complete')
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/calculate-release-dates/calculation/A1234AB`,
+      },
+      {
+        calculationUserInputs: {
+          sentenceCalculationUserInputs: [],
+          calculateErsed: false,
+          usePreviouslyRecordedSLEDIfFound: true,
+        },
+        calculationReasonId: 75,
+        otherReasonDescription: 'Some legislative change',
+      },
+    )
   })
 
   it('DPS user journey with selecting no in cancel question', () => {
@@ -84,7 +144,7 @@ context('End to end happy path of user journey', () => {
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.submitReason().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
@@ -117,7 +177,7 @@ context('End to end happy path of user journey', () => {
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.submitReason().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)

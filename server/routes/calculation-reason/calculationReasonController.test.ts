@@ -314,7 +314,9 @@ describe('CalculationReasonController', () => {
       return request(app)
         .post('/calculation/A1234AA/reason/')
         .type('form')
-        .send({ calculationReasonId: '7', otherReasonId: '11' })
+        .send('calculationReasonId=7')
+        .send('reasons[0][id]=7')
+        .send('reasons[0][requiresFurtherDetail]=false')
         .expect(404)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -327,7 +329,9 @@ describe('CalculationReasonController', () => {
       return request(app)
         .post('/calculation/A1234AA/reason/')
         .type('form')
-        .send({ calculationReasonId: '7', otherReasonId: '11' })
+        .send('calculationReasonId=7')
+        .send('reasons[0][id]=7')
+        .send('reasons[0][requiresFurtherDetail]=false')
         .expect(302)
         .expect('Location', '/calculation/A1234AA/check-information')
     })
@@ -338,7 +342,10 @@ describe('CalculationReasonController', () => {
       return request(app)
         .post('/calculation/A1234AA/reason/')
         .type('form')
-        .send({ calculationReasonId: '11', otherReasonId: '11', otherReasonDescription: 'A reason for calculation' })
+        .send('calculationReasonId=7')
+        .send('reasons[0][id]=7')
+        .send('reasons[0][requiresFurtherDetail]=true')
+        .send('reasons[0][furtherDetail]=some details')
         .expect(302)
         .expect('Location', '/calculation/A1234AA/check-information')
     })
@@ -350,10 +357,11 @@ describe('CalculationReasonController', () => {
       return request(app)
         .post('/calculation/A1234AA/reason')
         .type('form')
-        .send({ otherReasonId: '11' })
+        .send('reasons[0][id]=7')
+        .send('reasons[0][requiresFurtherDetail]=false')
         .expect(302)
         .expect('Location', '/calculation/A1234AA/reason#')
-        .expect(res => {
+        .expect(_ => {
           expect(flashProvider).toHaveBeenCalledWith(
             'validationErrors',
             JSON.stringify({ calculationReasonId: ['You must select a reason for this calculation'] }),
@@ -368,13 +376,15 @@ describe('CalculationReasonController', () => {
       return request(app)
         .post('/calculation/A1234AA/reason')
         .type('form')
-        .send({ calculationReasonId: '11', otherReasonDescription: '', otherReasonId: '11' })
+        .send('calculationReasonId=7')
+        .send('reasons[0][id]=7')
+        .send('reasons[0][requiresFurtherDetail]=true')
         .expect(302)
         .expect('Location', '/calculation/A1234AA/reason#')
         .expect(res => {
           expect(flashProvider).toHaveBeenCalledWith(
             'validationErrors',
-            JSON.stringify({ otherReasonDescription: ['Enter the reason for this calculation'] }),
+            JSON.stringify({ reasons_7_furtherDetail: ['Enter the reason for this calculation'] }),
           )
         })
     })
@@ -382,23 +392,22 @@ describe('CalculationReasonController', () => {
     it('POST /calculation/:nomsId/reason should return to the reason page and display the error message and the original text if the other reason is selected and more than 120 characters been entered', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-
+      const longDetails =
+        'A string which is at least 120 characters requires quite a bit of padding to get it to the correct length so it can be tested'
       return request(app)
         .post('/calculation/A1234AA/reason')
         .type('form')
-        .send({
-          calculationReasonId: '11',
-          otherReasonId: '11',
-          otherReasonDescription:
-            'A string which is at least 120 characters requires quite a bit of padding to get it to the correct length so it can be tested',
-        })
+        .send('calculationReasonId=7')
+        .send('reasons[0][id]=7')
+        .send('reasons[0][requiresFurtherDetail]=true')
+        .send(`reasons[0][furtherDetail]=${longDetails}`)
         .expect(302)
         .expect('Location', '/calculation/A1234AA/reason#')
         .expect(_ => {
           expect(flashProvider).toHaveBeenCalledWith(
             'validationErrors',
             JSON.stringify({
-              otherReasonDescription: ['The reason for this calculation must be 120 characters or less'],
+              reasons_7_furtherDetail: ['The reason for this calculation must be 120 characters or less'],
             }),
           )
         })
