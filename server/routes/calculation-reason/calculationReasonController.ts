@@ -49,10 +49,11 @@ export default class CalculationReasonController implements Controller {
       return res.redirect(`/calculation/${nomsId}/check-information`)
     }
 
-    const calculationReasonId =
-      res.locals?.formResponses?.calculationReasonId ?? req.session.calculationReasonId?.[nomsId]
-    const otherReasonDescription =
-      res.locals?.formResponses?.otherReasonDescription ?? req.session.otherReasonDescription?.[nomsId]
+    const calculationReasonId = res.locals?.formResponses?.calculationReasonId
+    let otherReasonDescription: string
+    if (calculationReasonId) {
+      otherReasonDescription = res.locals?.formResponses?.reasons?.find(r => r.id === calculationReasonId?.toString())
+    }
 
     return res.render(
       'pages/calculation/reason',
@@ -72,10 +73,10 @@ export default class CalculationReasonController implements Controller {
   ): Promise<void> => {
     const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
-    const { calculationReasonId, otherReasonDescription } = req.body
+    const { calculationReasonId, furtherDetail } = req.body
 
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
-    this.setReason(req, nomsId, calculationReasonId, otherReasonDescription)
+    this.setReason(req, nomsId, calculationReasonId, furtherDetail)
 
     return res.redirect(`/calculation/${nomsId}/check-information`)
   }

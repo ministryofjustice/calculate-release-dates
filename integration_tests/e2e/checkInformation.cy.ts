@@ -24,7 +24,7 @@ context('Check nomis information', () => {
 
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.hasMiniProfile()
     calculationReasonPage.submitReason().click()
 
@@ -53,7 +53,7 @@ context('Check nomis information', () => {
     cy.signIn()
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.hasMiniProfile()
     calculationReasonPage.submitReason().click()
 

@@ -66,7 +66,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.submitReason().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)

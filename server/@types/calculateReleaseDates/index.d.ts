@@ -1125,7 +1125,7 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get booking and sentence adjusments
+     * Get booking and sentence adjustments
      * @description This endpoint will return a response model which shows booking and sentence adjustments. It will notify if there are new adjustments since last calculation
      */
     get: operations['getBookingAndSentenceAdjustments']
@@ -1747,6 +1747,7 @@ export interface components {
         | 'TRANCHE_0'
         | 'TRANCHE_1'
         | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_0'
         | 'FTR_56_TRANCHE_1'
         | 'FTR_56_TRANCHE_2'
         | 'FTR_56_TRANCHE_3'
@@ -1758,6 +1759,7 @@ export interface components {
         | 'TRANCHE_0'
         | 'TRANCHE_1'
         | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_0'
         | 'FTR_56_TRANCHE_1'
         | 'FTR_56_TRANCHE_2'
         | 'FTR_56_TRANCHE_3'
@@ -1775,6 +1777,7 @@ export interface components {
       isOther: boolean
       displayName: string
       useForApprovedDates: boolean
+      requiresFurtherDetail: boolean
     }
     PreviouslyRecordedSLED: {
       /**
@@ -2521,6 +2524,7 @@ export interface components {
         | 'TRANCHE_0'
         | 'TRANCHE_1'
         | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_0'
         | 'FTR_56_TRANCHE_1'
         | 'FTR_56_TRANCHE_2'
         | 'FTR_56_TRANCHE_3'
@@ -2528,10 +2532,12 @@ export interface components {
         | 'FTR_56_TRANCHE_5'
         | 'FTR_56_TRANCHE_6'
       /** @enum {string} */
+      /** @enum {string} */
       ftr56Tranche?:
         | 'TRANCHE_0'
         | 'TRANCHE_1'
         | 'TRANCHE_2'
+        | 'FTR_56_TRANCHE_0'
         | 'FTR_56_TRANCHE_1'
         | 'FTR_56_TRANCHE_2'
         | 'FTR_56_TRANCHE_3'
@@ -2594,6 +2600,7 @@ export interface components {
       isOther: boolean
       displayName: string
       useForApprovedDates: boolean
+      requiresFurtherDetail: boolean
     }
     AnalysedBookingAdjustment: {
       active: boolean
