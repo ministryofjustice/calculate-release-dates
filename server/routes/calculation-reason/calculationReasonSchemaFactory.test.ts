@@ -45,6 +45,25 @@ describe('calculationReasonSchemaFactory', () => {
     })
   })
 
+  it('should use custom further detail description if provided and further detail is missing', async () => {
+    // Given
+    const reasons = [
+      { id: '1', requiresFurtherDetail: 'false' },
+      { id: '2', requiresFurtherDetail: 'true', furtherDetail: '', furtherDetailDescription: 'a thing' },
+    ]
+    const form = { calculationReasonId: '2', reasons }
+
+    // When
+    const result = await doValidate(form)
+
+    // Then
+    expect(result.success).toStrictEqual(false)
+    const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
+    expect(deduplicatedFieldErrors).toStrictEqual({
+      reasons_2_furtherDetail: ['Enter a thing'],
+    })
+  })
+
   it('should not require further detail if the selected reason is one that does not require it', async () => {
     // Given
     const reasons = [
@@ -76,6 +95,30 @@ describe('calculationReasonSchemaFactory', () => {
     const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
     expect(deduplicatedFieldErrors).toStrictEqual({
       reasons_2_furtherDetail: ['The reason for this calculation must be 120 characters or less'],
+    })
+  })
+
+  it('should use custom further detail description for too long further detail', async () => {
+    // Given
+    const reasons = [
+      { id: '1', requiresFurtherDetail: 'false' },
+      {
+        id: '2',
+        requiresFurtherDetail: 'true',
+        furtherDetail: 'x'.padStart(121, 'x'),
+        furtherDetailDescription: 'a thing',
+      },
+    ]
+    const form = { calculationReasonId: '2', reasons }
+
+    // When
+    const result = await doValidate(form)
+
+    // Then
+    expect(result.success).toStrictEqual(false)
+    const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
+    expect(deduplicatedFieldErrors).toStrictEqual({
+      reasons_2_furtherDetail: ['A thing must be 120 characters or less'],
     })
   })
 

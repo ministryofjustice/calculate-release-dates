@@ -37,6 +37,11 @@
 
             {% if model.calculationReason.isOther %}
                 {% set reason = "Other (" + model.otherReasonDescription + ")" %}
+            {% elseif model.calculationReason.requiresFurtherDetail %}
+                {% set reason %}
+                    <p class="govuk-body">{{ model.calculationReason.displayName }}</p>
+                    <p class="govuk-body govuk-hint govuk-!-font-size-16">({{ model.otherReasonDescription }})</p>
+                {% endset %}
             {% else %}
                 {% set reason = model.calculationReason.displayName %}
             {% endif %}
@@ -76,7 +81,7 @@
                                 classes: "custom-summary-list__key"
                             },
                             value: {
-                                text: reason
+                                html: reason
                             }
                         },{
                             key: {
