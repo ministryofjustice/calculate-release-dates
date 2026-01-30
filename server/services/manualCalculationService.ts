@@ -4,12 +4,16 @@ import ManualCalculationResponse from '../models/manual_calculation/ManualCalcul
 import { ManualEntryRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import AuditService from './auditService'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
 
 export default class ManualCalculationService {
-  constructor(private readonly auditService: AuditService) {}
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly calculateReleaseDatesApiClient: CalculateReleaseDatesApiRestClient,
+  ) {}
 
-  async hasIndeterminateSentences(bookingId: number, token: string): Promise<boolean> {
-    return new CalculateReleaseDatesApiClient(token).hasIndeterminateSentences(bookingId)
+  async hasIndeterminateSentences(bookingId: number, username: string): Promise<boolean> {
+    return this.calculateReleaseDatesApiClient.hasIndeterminateSentences(bookingId, username)
   }
 
   async hasRecallSentences(bookingId: number, token: string): Promise<boolean> {

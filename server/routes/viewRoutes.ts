@@ -33,14 +33,14 @@ export default class ViewRoutes {
   }
 
   public startViewJourney: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     try {
       const latestCalculation = await this.viewReleaseDatesService.getLatestCalculation(
         nomsId,
         prisonerDetail.bookingId,
-        token,
+        username,
       )
       res.redirect(`/view/${nomsId}/sentences-and-offences/${latestCalculation.calculationRequestId}`)
     } catch (error) {
@@ -56,25 +56,21 @@ export default class ViewRoutes {
     const calculationRequestId = Number(req.params.calculationRequestId)
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
     try {
-      const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(
-        calculationRequestId,
-        caseloads,
-        token,
-      )
+      const prisonerDetail = await this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, username)
       const sentencesAndOffences = await this.viewReleaseDatesService.getSentencesAndOffences(
         calculationRequestId,
-        token,
+        username,
       )
       const adjustmentDetails = await this.viewReleaseDatesService.getBookingAndSentenceAdjustments(
         calculationRequestId,
-        token,
+        username,
       )
       const adjustmentDtos = config.featureToggles.adjustmentsIntegrationEnabled
-        ? await this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, token)
+        ? await this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, username)
         : []
       const calculationUserInputs = await this.viewReleaseDatesService.getCalculationUserInputs(
         calculationRequestId,
-        token,
+        username,
       )
       const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
         calculationRequestId,
@@ -83,7 +79,7 @@ export default class ViewRoutes {
       const returnToCustody = sentencesAndOffences.filter((s: PrisonApiOffenderSentenceAndOffences) =>
         SentenceTypes.isSentenceFixedTermRecall(s),
       ).length
-        ? await this.viewReleaseDatesService.getReturnToCustodyDate(calculationRequestId, token)
+        ? await this.viewReleaseDatesService.getReturnToCustodyDate(calculationRequestId, username)
         : null
 
       res.render(
@@ -272,12 +268,12 @@ export default class ViewRoutes {
 
     const [prisonerDetail, sentencesAndOffences, adjustmentDetails, releaseDateAndCalcContext, adjustmentsDtos] =
       await Promise.all([
-        this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, caseloads, token),
-        this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, token),
-        this.viewReleaseDatesService.getBookingAndSentenceAdjustments(calculationRequestId, token),
+        this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, username),
+        this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, username),
+        this.viewReleaseDatesService.getBookingAndSentenceAdjustments(calculationRequestId, username),
         this.calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, token),
         config.featureToggles.adjustmentsIntegrationEnabled
-          ? this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, token)
+          ? this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, username)
           : Promise.resolve([]),
       ])
 

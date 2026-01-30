@@ -1,6 +1,7 @@
 import nock from 'nock'
 import request from 'supertest'
 import { Express } from 'express'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import {
   CalculationSentenceUserInput,
@@ -13,6 +14,7 @@ import { appWithAllRoutes } from '../routes/testutils/appSetup'
 import SessionSetup from '../routes/testutils/sessionSetup'
 import PrisonApiClient from '../data/prisonApiClient'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
+import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
 
 let app: Express
 let sessionSetup: SessionSetup
@@ -29,6 +31,9 @@ const stubbedUserInput = {
     } as CalculationSentenceUserInput,
   ],
 } as CalculationUserInputs
+const mockAuthenticationClient: AuthenticationClient = {
+  getToken: jest.fn().mockResolvedValue('test-system-token'),
+} as unknown as jest.Mocked<AuthenticationClient>
 describe('View release dates service tests', () => {
   let viewReleaseDatesService: ViewReleaseDatesService
   let fakeApi: nock.Scope
@@ -39,7 +44,9 @@ describe('View release dates service tests', () => {
     sessionSetup = new SessionSetup()
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.calculateReleaseDates.url)
-    viewReleaseDatesService = new ViewReleaseDatesService()
+    viewReleaseDatesService = new ViewReleaseDatesService(
+      new CalculateReleaseDatesApiRestClient(mockAuthenticationClient),
+    )
     prisonApiClient = new PrisonApiClient(null) as jest.Mocked<PrisonApiClient>
     prisonerSearchApiClient = new PrisonerSearchApiClient(null) as jest.Mocked<PrisonerSearchApiClient>
     prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient) as jest.Mocked<PrisonerService> // Instantiate the mocked service

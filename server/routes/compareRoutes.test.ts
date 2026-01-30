@@ -17,7 +17,7 @@ jest.mock('../services/userPermissionsService')
 jest.mock('../services/comparisonService')
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
 const auditService = new AuditService() as jest.Mocked<AuditService>
-const comparisonService = new ComparisonService(auditService) as jest.Mocked<ComparisonService>
+const comparisonService = new ComparisonService(auditService, null) as jest.Mocked<ComparisonService>
 
 beforeEach(() => {
   app = appWithAllRoutes({

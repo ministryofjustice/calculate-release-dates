@@ -34,12 +34,13 @@ export default class ManualEntryRoutes {
     }
 
     const unsupportedSentenceOrCalculationMessages =
-      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType(nomsId, token)
+      await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType(nomsId, username)
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -54,7 +55,7 @@ export default class ManualEntryRoutes {
 
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
-      token,
+      username,
     )
 
     const existingManualJourney = await this.calculateReleaseDatesService.offenderHasPreviousManualCalculation(
@@ -91,6 +92,7 @@ export default class ManualEntryRoutes {
   private async validateUseOfManualCalculationJourneyOrRedirect(
     nomsId: string,
     token: string,
+    username: string,
     bookingId: number,
     req: Request,
     validationMessages?: ValidationMessage[],
@@ -101,7 +103,7 @@ export default class ManualEntryRoutes {
     ) {
       const unsupportedSentenceOrCalculationMessages =
         validationMessages ||
-        (await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, token))
+        (await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages(nomsId, username))
       const hasRecallSentences = await this.manualCalculationService.hasRecallSentences(bookingId, token)
 
       if (unsupportedSentenceOrCalculationMessages.length === 0 && !hasRecallSentences) {
@@ -120,6 +122,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -133,7 +136,7 @@ export default class ManualEntryRoutes {
 
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
-      token,
+      username,
     )
 
     const existingDates = this.existingDatesInSession(req, nomsId)
@@ -177,6 +180,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -192,7 +196,7 @@ export default class ManualEntryRoutes {
 
     const hasIndeterminateSentences = await this.manualCalculationService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
-      token,
+      username,
     )
     const firstLoad = !req.query.addExtra
     const { config } = await this.manualEntryService.verifySelectedDateType(
@@ -219,6 +223,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -271,6 +276,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -339,6 +345,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -391,6 +398,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -420,6 +428,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -455,6 +464,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -513,6 +523,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )
@@ -534,6 +545,7 @@ export default class ManualEntryRoutes {
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       token,
+      username,
       prisonerDetail.bookingId,
       req,
     )

@@ -27,7 +27,7 @@ export default class StartRoutes {
       const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
       const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
         prisonerDetail.bookingId,
-        token,
+        username,
       )
 
       const latestCalculationCardOrError = await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(
