@@ -1,5 +1,3 @@
-// eslint-disable-next-line
-import { HTTPError } from 'superagent' // eslint thinks this is unused.
 import {
   AdjustmentDto,
   BookingCalculation,
@@ -11,51 +9,50 @@ import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
-import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
+import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
 
 export default class ViewReleaseDatesService {
-  async getLatestCalculation(prisonerId: string, bookingId: number, token: string): Promise<BookingCalculation> {
-    return new CalculateReleaseDatesApiClient(token).getLatestCalculation(prisonerId, bookingId)
+  constructor(private readonly calculateReleaseDatesApiRestClient: CalculateReleaseDatesApiRestClient) {}
+
+  async getLatestCalculation(prisonerId: string, bookingId: number, username: string): Promise<BookingCalculation> {
+    return this.calculateReleaseDatesApiRestClient.getLatestCalculation(prisonerId, bookingId, username)
   }
 
   async getBookingAndSentenceAdjustments(
     calculationId: number,
-    token: string,
+    username: string,
   ): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
-    return new CalculateReleaseDatesApiClient(token).getBookingAndSentenceAdjustments(calculationId)
+    return this.calculateReleaseDatesApiRestClient.getBookingAndSentenceAdjustments(calculationId, username)
   }
 
-  async getAdjustmentsDtosForCalculation(calculationId: number, token: string): Promise<AdjustmentDto[]> {
-    return new CalculateReleaseDatesApiClient(token).getAdjustmentsDtosForCalculation(calculationId)
+  async getAdjustmentsDtosForCalculation(calculationId: number, username: string): Promise<AdjustmentDto[]> {
+    return this.calculateReleaseDatesApiRestClient.getAdjustmentsDtosForCalculation(calculationId, username)
   }
 
   async getSentencesAndOffences(
     calculationId: number,
-    token: string,
+    username: string,
   ): Promise<SentenceAndOffenceWithReleaseArrangements[]> {
-    return new CalculateReleaseDatesApiClient(token).getSentencesAndOffences(calculationId)
+    return this.calculateReleaseDatesApiRestClient.getSentencesAndOffences(calculationId, username)
   }
 
-  async getPrisonerDetail(calculationId: number, userCaseloads: string[], token: string): Promise<PrisonApiPrisoner> {
-    return new CalculateReleaseDatesApiClient(token).getPrisonerDetail(calculationId)
+  async getPrisonerDetail(calculationId: number, username: string): Promise<PrisonApiPrisoner> {
+    return this.calculateReleaseDatesApiRestClient.getPrisonerDetail(calculationId, username)
   }
 
-  async getReturnToCustodyDate(calculationId: number, token: string): Promise<PrisonApiReturnToCustodyDate> {
-    return new CalculateReleaseDatesApiClient(token).getReturnToCustodyDate(calculationId)
+  async getReturnToCustodyDate(calculationId: number, username: string): Promise<PrisonApiReturnToCustodyDate> {
+    return this.calculateReleaseDatesApiRestClient.getReturnToCustodyDate(calculationId, username)
   }
 
-  async getCalculationUserInputs(calculationId: number, token: string): Promise<CalculationUserInputs> {
+  async getCalculationUserInputs(calculationId: number, username: string): Promise<CalculationUserInputs> {
     try {
       // await the result, so we can catch a 404 error.
-      return await new CalculateReleaseDatesApiClient(token).getCalculationUserInputs(calculationId)
-      // eslint-disable-next-line
-    } catch (error: HTTPError | any) {
+      return await this.calculateReleaseDatesApiRestClient.getCalculationUserInputs(calculationId, username)
+    } catch (error) {
       // eslint doesn't like any, but unknown is a primitive
-      if ('status' in error) {
-        if (error.status === 404) {
-          // If the calculation didn't have an user inputs, return null and continue.
-          return null
-        }
+      if ('responseStatus' in error && error.responseStatus === 404) {
+        // If the calculation didn't have an user inputs, return null and continue.
+        return null
       }
       throw error
     }

@@ -31,9 +31,9 @@ export const services = () => {
   const calculateReleaseDatesService = new CalculateReleaseDatesService(auditService, calculateReleaseDatesApiClient)
   const prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient)
   const userService = new UserService(manageUsersApiClient, prisonerService)
-  const viewReleaseDatesService = new ViewReleaseDatesService()
+  const viewReleaseDatesService = new ViewReleaseDatesService(calculateReleaseDatesApiClient)
   const userInputService = new UserInputService()
-  const manualCalculationService = new ManualCalculationService(auditService)
+  const manualCalculationService = new ManualCalculationService(auditService, calculateReleaseDatesApiClient)
   const dateTypeConfigurationService = new DateTypeConfigurationService()
   const dateValidationService = new DateValidationService()
   const manualEntryService = new ManualEntryService(
@@ -45,7 +45,7 @@ export const services = () => {
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
   const checkInformationService = new CheckInformationService(calculateReleaseDatesService, prisonerService)
   const frontEndComponentService = new FrontEndComponentsService(frontendComponentsApiClient)
-  const comparisonService = new ComparisonService(auditService)
+  const comparisonService = new ComparisonService(auditService, calculateReleaseDatesApiClient)
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(courtCasesReleaseDatesApiClient)
 
   return {

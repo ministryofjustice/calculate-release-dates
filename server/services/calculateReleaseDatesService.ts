@@ -75,9 +75,10 @@ export default class CalculateReleaseDatesService {
     return this.calculateReleaseDatesApiRestClient.getCalculationResults(calculationRequestId, username)
   }
 
-  async getUnsupportedSentenceOrCalculationMessages(prisonId: string, token: string): Promise<ValidationMessage[]> {
-    const validationMessages = await new CalculateReleaseDatesApiClient(token).getUnsupportedSentenceValidation(
+  async getUnsupportedSentenceOrCalculationMessages(prisonId: string, username: string): Promise<ValidationMessage[]> {
+    const validationMessages = await this.calculateReleaseDatesApiRestClient.getUnsupportedSentenceValidation(
       prisonId,
+      username,
     )
 
     const combinedMessages: ValidationMessage[] = []
@@ -92,9 +93,9 @@ export default class CalculateReleaseDatesService {
 
   async getUnsupportedSentenceOrCalculationMessagesWithType(
     prisonId: string,
-    token: string,
+    username: string,
   ): Promise<SupportedValidationResponse> {
-    return new CalculateReleaseDatesApiClient(token).getUnsupportedSentenceValidation(prisonId)
+    return this.calculateReleaseDatesApiRestClient.getUnsupportedSentenceValidation(prisonId, username)
   }
 
   async getBookingAndSentenceAdjustments(
@@ -515,12 +516,15 @@ export default class CalculateReleaseDatesService {
   }
 
   public async getPrisonJsonMismatchComparison(
-    token: string,
+    username: string,
     comparisonReference: string,
     mismatchReference: string,
   ): Promise<ComparisonResultMismatchDetailJsonModel> {
-    const crdAPIClient = new CalculateReleaseDatesApiClient(token)
-    const data = await crdAPIClient.getPrisonJsonMismatchComparison(comparisonReference, mismatchReference)
+    const data = await this.calculateReleaseDatesApiRestClient.getPrisonJsonMismatchComparison(
+      comparisonReference,
+      mismatchReference,
+      username,
+    )
     return new ComparisonResultMismatchDetailJsonModel(data.inputData, data.sentenceAndOffences, data.adjustments)
   }
 
@@ -557,8 +561,8 @@ export default class CalculateReleaseDatesService {
     return new CalculateReleaseDatesApiClient(token).getReleaseDatesForACalcReqId(calcRequestId)
   }
 
-  async hasIndeterminateSentences(bookingId: number, token: string): Promise<boolean> {
-    return new CalculateReleaseDatesApiClient(token).hasIndeterminateSentences(bookingId)
+  async hasIndeterminateSentences(bookingId: number, username: string): Promise<boolean> {
+    return this.calculateReleaseDatesApiRestClient.hasIndeterminateSentences(bookingId, username)
   }
 
   async getGenuineOverrideInputs(calculationRequestId: number, token: string): Promise<GenuineOverrideInputResponse> {

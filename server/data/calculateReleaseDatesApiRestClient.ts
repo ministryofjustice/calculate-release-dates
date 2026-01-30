@@ -2,14 +2,31 @@ import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import {
+  AdjustmentDto,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
   CalculationRequestModel,
+  CalculationUserInputs,
+  Comparison,
+  ComparisonOverview,
+  ComparisonPersonDiscrepancyRequest,
+  ComparisonPersonDiscrepancySummary,
+  ComparisonPersonJson,
+  ComparisonPersonOverview,
+  ComparisonSummary,
   GenuineOverrideReason,
+  SentenceAndOffenceWithReleaseArrangements,
+  SupportedValidationResponse,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import logger from '../../logger'
+import {
+  AnalysedPrisonApiBookingAndSentenceAdjustments,
+  PrisonApiPrisoner,
+  PrisonApiReturnToCustodyDate,
+} from '../@types/prisonApi/prisonClientTypes'
+import ComparisonType from '../enumerations/comparisonType'
 
 export default class CalculateReleaseDatesApiRestClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -58,5 +75,219 @@ export default class CalculateReleaseDatesApiRestClient extends RestClient {
 
   getGenuineOverrideReasons(username: string): Promise<GenuineOverrideReason[]> {
     return this.get<GenuineOverrideReason[]>({ path: `/genuine-override/reasons` }, asSystem(username))
+  }
+
+  getPrisonerDetail(calculationId: number, username: string): Promise<PrisonApiPrisoner> {
+    return this.get<PrisonApiPrisoner>({ path: `/calculation/prisoner-details/${calculationId}` }, asSystem(username))
+  }
+
+  getSentencesAndOffences(
+    calculationId: number,
+    username: string,
+  ): Promise<SentenceAndOffenceWithReleaseArrangements[]> {
+    return this.get<SentenceAndOffenceWithReleaseArrangements[]>(
+      {
+        path: `/calculation/sentence-and-offences/${calculationId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getReturnToCustodyDate(calculationId: number, username: string): Promise<PrisonApiReturnToCustodyDate> {
+    return this.get<PrisonApiReturnToCustodyDate>(
+      {
+        path: `/calculation/return-to-custody/${calculationId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getBookingAndSentenceAdjustments(
+    calculationId: number,
+    username: string,
+  ): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
+    return this.get<AnalysedPrisonApiBookingAndSentenceAdjustments>(
+      {
+        path: `/calculation/adjustments/${calculationId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getAdjustmentsDtosForCalculation(calculationId: number, username: string): Promise<AdjustmentDto[]> {
+    return this.get<AdjustmentDto[]>(
+      {
+        path: `/calculation/adjustments/${calculationId}`,
+        query: { 'adjustments-api': true },
+      },
+      asSystem(username),
+    )
+  }
+
+  getLatestCalculation(prisonerId: string, bookingId: number, username: string): Promise<BookingCalculation> {
+    return this.get<BookingCalculation>(
+      {
+        path: `/calculation/results/${prisonerId}/${bookingId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getCalculationUserInputs(calculationId: number, username: string): Promise<CalculationUserInputs> {
+    return this.get<CalculationUserInputs>(
+      {
+        path: `/calculation/calculation-user-input/${calculationId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getUnsupportedSentenceValidation(prisonerId: string, username: string): Promise<SupportedValidationResponse> {
+    return this.get<SupportedValidationResponse>(
+      {
+        path: `/validation/${prisonerId}/supported-validation`,
+      },
+      asSystem(username),
+    )
+  }
+
+  hasIndeterminateSentences(bookingId: number, username: string): Promise<boolean> {
+    return this.get<boolean>(
+      {
+        path: `/manual-calculation/${bookingId}/has-indeterminate-sentences`,
+      },
+      asSystem(username),
+    )
+  }
+
+  createPrisonComparison(prison: string, comparisonType: ComparisonType, username: string): Promise<Comparison> {
+    return this.post<Comparison>(
+      {
+        path: '/comparison',
+        data: { criteria: {}, prison, comparisonType },
+      },
+      asSystem(username),
+    )
+  }
+
+  getPrisonComparison(comparisonReference: string, username: string): Promise<ComparisonOverview> {
+    return this.get<ComparisonOverview>({ path: `/comparison/${comparisonReference}` }, asSystem(username))
+  }
+
+  getPrisonComparisons(username: string): Promise<ComparisonSummary[]> {
+    return this.get<ComparisonSummary[]>({ path: '/comparison' }, asSystem(username))
+  }
+
+  getManualComparisons(username: string): Promise<ComparisonSummary[]> {
+    return this.get<ComparisonSummary[]>({ path: '/comparison/manual' }, asSystem(username))
+  }
+
+  createManualComparison(prisonerIds: string[], username: string): Promise<Comparison> {
+    return this.post<Comparison>(
+      {
+        path: '/comparison/manual',
+        data: { prisonerIds },
+      },
+      asSystem(username),
+    )
+  }
+
+  getManualComparison(comparisonReference: string, username: string): Promise<ComparisonOverview> {
+    return this.get<ComparisonOverview>({ path: `/comparison/manual/${comparisonReference}` }, asSystem(username))
+  }
+
+  getPrisonMismatchComparison(
+    comparisonReference: string,
+    mismatchReference: string,
+    username: string,
+  ): Promise<ComparisonPersonOverview> {
+    return this.get<ComparisonPersonOverview>(
+      {
+        path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getPrisonJsonMismatchComparison(
+    comparisonReference: string,
+    mismatchReference: string,
+    username: string,
+  ): Promise<ComparisonPersonJson> {
+    return this.get<ComparisonPersonJson>(
+      {
+        path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/json`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getMismatchDiscrepancy(
+    comparisonReference: string,
+    mismatchReference: string,
+    username: string,
+  ): Promise<ComparisonPersonDiscrepancySummary> {
+    return this.get<ComparisonPersonDiscrepancySummary>(
+      {
+        path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getManualMismatchDiscrepancy(
+    comparisonReference: string,
+    mismatchReference: string,
+    username: string,
+  ): Promise<ComparisonPersonDiscrepancySummary> {
+    return this.get<ComparisonPersonDiscrepancySummary>(
+      {
+        path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
+      },
+      asSystem(username),
+    )
+  }
+
+  createMismatchDiscrepancy(
+    comparisonReference: string,
+    mismatchReference: string,
+    discrepancy: ComparisonPersonDiscrepancyRequest,
+    username: string,
+  ): Promise<ComparisonPersonDiscrepancySummary> {
+    return this.post<ComparisonPersonDiscrepancySummary>(
+      {
+        path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
+        data: discrepancy,
+      },
+      asSystem(username),
+    )
+  }
+
+  createManualMismatchDiscrepancy(
+    comparisonReference: string,
+    mismatchReference: string,
+    discrepancy: ComparisonPersonDiscrepancyRequest,
+    username: string,
+  ): Promise<ComparisonPersonDiscrepancySummary> {
+    return this.post<ComparisonPersonDiscrepancySummary>(
+      {
+        path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
+        data: discrepancy,
+      },
+      asSystem(username),
+    )
+  }
+
+  getManualMismatchComparison(
+    comparisonReference: string,
+    mismatchReference: string,
+    username: string,
+  ): Promise<ComparisonPersonOverview> {
+    return this.get<ComparisonPersonOverview>(
+      {
+        path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}`,
+      },
+      asSystem(username),
+    )
   }
 }

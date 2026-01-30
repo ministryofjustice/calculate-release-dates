@@ -1,7 +1,6 @@
 import config, { ApiConfig } from '../config'
 import RestClient from './restClient'
 import {
-  AdjustmentDto,
   Agency,
   AgencySwitchUpdateResult,
   AnalysedAdjustment,
@@ -9,13 +8,6 @@ import {
   ApprovedDatesInputResponse,
   BookingCalculation,
   CalculationUserInputs,
-  Comparison,
-  ComparisonOverview,
-  ComparisonPersonDiscrepancyRequest,
-  ComparisonPersonDiscrepancySummary,
-  ComparisonPersonJson,
-  ComparisonPersonOverview,
-  ComparisonSummary,
   DateTypeDefinition,
   DetailedCalculationResults,
   ErsedEligibility,
@@ -27,18 +19,11 @@ import {
   ManualEntryRequest,
   NomisCalculationSummary,
   ReleaseDatesAndCalculationContext,
-  SentenceAndOffenceWithReleaseArrangements,
   SubmitCalculationRequest,
-  SupportedValidationResponse,
   ValidationMessage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import {
-  AnalysedPrisonApiBookingAndSentenceAdjustments,
-  PrisonApiPrisoner,
-  PrisonApiReturnToCustodyDate,
-} from '../@types/prisonApi/prisonClientTypes'
+import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 import ManualCalculationResponse from '../models/manual_calculation/ManualCalculationResponse'
-import ComparisonType from '../enumerations/comparisonType'
 
 export default class CalculateReleaseDatesApiClient {
   restClient: RestClient
@@ -75,161 +60,11 @@ export default class CalculateReleaseDatesApiClient {
     }) as Promise<ValidationMessage[]>
   }
 
-  getPrisonerDetail(calculationId: number): Promise<PrisonApiPrisoner> {
-    return this.restClient.get({ path: `/calculation/prisoner-details/${calculationId}` }) as Promise<PrisonApiPrisoner>
-  }
-
-  getSentencesAndOffences(calculationId: number): Promise<SentenceAndOffenceWithReleaseArrangements[]> {
-    return this.restClient.get({
-      path: `/calculation/sentence-and-offences/${calculationId}`,
-    }) as Promise<SentenceAndOffenceWithReleaseArrangements[]>
-  }
-
-  getReturnToCustodyDate(calculationId: number): Promise<PrisonApiReturnToCustodyDate> {
-    return this.restClient.get({
-      path: `/calculation/return-to-custody/${calculationId}`,
-    }) as Promise<PrisonApiReturnToCustodyDate>
-  }
-
-  getBookingAndSentenceAdjustments(calculationId: number): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
-    return this.restClient.get({
-      path: `/calculation/adjustments/${calculationId}`,
-    }) as Promise<AnalysedPrisonApiBookingAndSentenceAdjustments>
-  }
-
-  getAdjustmentsDtosForCalculation(calculationId: number): Promise<AdjustmentDto[]> {
-    return this.restClient.get({
-      path: `/calculation/adjustments/${calculationId}`,
-      query: { 'adjustments-api': true },
-    }) as Promise<AdjustmentDto[]>
-  }
-
-  getLatestCalculation(prisonerId: string, bookingId: number): Promise<BookingCalculation> {
-    return this.restClient.get({
-      path: `/calculation/results/${prisonerId}/${bookingId}`,
-    }) as Promise<BookingCalculation>
-  }
-
-  getCalculationUserInputs(calculationId: number): Promise<CalculationUserInputs> {
-    return this.restClient.get({
-      path: `/calculation/calculation-user-input/${calculationId}`,
-    }) as Promise<CalculationUserInputs>
-  }
-
-  getUnsupportedSentenceValidation(prisonerId: string): Promise<SupportedValidationResponse> {
-    return this.restClient.get({
-      path: `/validation/${prisonerId}/supported-validation`,
-    }) as Promise<SupportedValidationResponse>
-  }
-
-  hasIndeterminateSentences(bookingId: number): Promise<boolean> {
-    return this.restClient.get({
-      path: `/manual-calculation/${bookingId}/has-indeterminate-sentences`,
-    }) as Promise<boolean>
-  }
-
   storeManualCalculation(nomsId: string, manualEntryRequest: ManualEntryRequest) {
     return this.restClient.post({
       path: `/manual-calculation/${nomsId}`,
       data: manualEntryRequest,
     }) as Promise<ManualCalculationResponse>
-  }
-
-  createPrisonComparison(prison: string, comparisonType: ComparisonType): Promise<Comparison> {
-    return this.restClient.post({
-      path: '/comparison',
-      data: { criteria: {}, prison, comparisonType },
-    }) as Promise<Comparison>
-  }
-
-  getPrisonComparison(comparisonReference: string): Promise<ComparisonOverview> {
-    return this.restClient.get({ path: `/comparison/${comparisonReference}` }) as Promise<ComparisonOverview>
-  }
-
-  getPrisonComparisons(): Promise<ComparisonSummary[]> {
-    return this.restClient.get({ path: '/comparison' }) as Promise<ComparisonSummary[]>
-  }
-
-  getManualComparisons(): Promise<ComparisonSummary[]> {
-    return this.restClient.get({ path: '/comparison/manual' }) as Promise<ComparisonSummary[]>
-  }
-
-  createManualComparison(prisonerIds: string[]): Promise<Comparison> {
-    return this.restClient.post({
-      path: '/comparison/manual',
-      data: { prisonerIds },
-    }) as Promise<Comparison>
-  }
-
-  getManualComparison(comparisonReference: string): Promise<ComparisonOverview> {
-    return this.restClient.get({ path: `/comparison/manual/${comparisonReference}` }) as Promise<ComparisonOverview>
-  }
-
-  getPrisonMismatchComparison(
-    comparisonReference: string,
-    mismatchReference: string,
-  ): Promise<ComparisonPersonOverview> {
-    return this.restClient.get({
-      path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}`,
-    }) as Promise<ComparisonPersonOverview>
-  }
-
-  getPrisonJsonMismatchComparison(
-    comparisonReference: string,
-    mismatchReference: string,
-  ): Promise<ComparisonPersonJson> {
-    return this.restClient.get({
-      path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/json`,
-    }) as Promise<ComparisonPersonJson>
-  }
-
-  getMismatchDiscrepancy(
-    comparisonReference: string,
-    mismatchReference: string,
-  ): Promise<ComparisonPersonDiscrepancySummary> {
-    return this.restClient.get({
-      path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
-    }) as Promise<ComparisonPersonDiscrepancySummary>
-  }
-
-  getManualMismatchDiscrepancy(
-    comparisonReference: string,
-    mismatchReference: string,
-  ): Promise<ComparisonPersonDiscrepancySummary> {
-    return this.restClient.get({
-      path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
-    }) as Promise<ComparisonPersonDiscrepancySummary>
-  }
-
-  createMismatchDiscrepancy(
-    comparisonReference: string,
-    mismatchReference: string,
-    discrepancy: ComparisonPersonDiscrepancyRequest,
-  ): Promise<ComparisonPersonDiscrepancySummary> {
-    return this.restClient.post({
-      path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
-      data: discrepancy,
-    }) as Promise<ComparisonPersonDiscrepancySummary>
-  }
-
-  createManualMismatchDiscrepancy(
-    comparisonReference: string,
-    mismatchReference: string,
-    discrepancy: ComparisonPersonDiscrepancyRequest,
-  ): Promise<ComparisonPersonDiscrepancySummary> {
-    return this.restClient.post({
-      path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}/discrepancy`,
-      data: discrepancy,
-    }) as Promise<ComparisonPersonDiscrepancySummary>
-  }
-
-  getManualMismatchComparison(
-    comparisonReference: string,
-    mismatchReference: string,
-  ): Promise<ComparisonPersonOverview> {
-    return this.restClient.get({
-      path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}`,
-    }) as Promise<ComparisonPersonOverview>
   }
 
   getAnalysedSentencesAndOffences(bookingId: number): Promise<AnalysedSentenceAndOffence[]> {

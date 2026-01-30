@@ -40,7 +40,7 @@ const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
   null,
 ) as jest.Mocked<CalculateReleaseDatesService>
-const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
+const viewReleaseDatesService = new ViewReleaseDatesService(null) as jest.Mocked<ViewReleaseDatesService>
 
 let app: Express
 

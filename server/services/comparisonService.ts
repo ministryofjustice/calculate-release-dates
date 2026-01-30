@@ -6,23 +6,26 @@ import {
   ComparisonPersonOverview,
   ComparisonSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import ComparisonType from '../enumerations/comparisonType'
 import AuditService from './auditService'
+import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
 
 export default class ComparisonService {
-  constructor(private auditService: AuditService) {}
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly calculateReleaseDatesApiClient: CalculateReleaseDatesApiRestClient,
+  ) {}
 
   async createPrisonComparison(
     userName: string,
     selectedOMU: string,
     comparisonType: ComparisonType,
-    token: string,
   ): Promise<Comparison> {
     try {
-      const bulkCalc = await new CalculateReleaseDatesApiClient(token).createPrisonComparison(
+      const bulkCalc = await this.calculateReleaseDatesApiClient.createPrisonComparison(
         selectedOMU,
         comparisonType,
+        userName,
       )
       await this.auditService.publishBulkComparison(
         userName,
@@ -37,64 +40,71 @@ export default class ComparisonService {
     }
   }
 
-  async getPrisonComparison(bulkComparisonId: string, token: string): Promise<ComparisonOverview> {
-    return new CalculateReleaseDatesApiClient(token).getPrisonComparison(bulkComparisonId)
+  async getPrisonComparison(bulkComparisonId: string, username: string): Promise<ComparisonOverview> {
+    return this.calculateReleaseDatesApiClient.getPrisonComparison(bulkComparisonId, username)
   }
 
-  async getPrisonComparisons(token: string): Promise<ComparisonSummary[]> {
-    return new CalculateReleaseDatesApiClient(token).getPrisonComparisons()
+  async getPrisonComparisons(username: string): Promise<ComparisonSummary[]> {
+    return this.calculateReleaseDatesApiClient.getPrisonComparisons(username)
   }
 
-  async getManualComparisons(token: string): Promise<ComparisonSummary[]> {
-    return new CalculateReleaseDatesApiClient(token).getManualComparisons()
+  async getManualComparisons(username: string): Promise<ComparisonSummary[]> {
+    return this.calculateReleaseDatesApiClient.getManualComparisons(username)
   }
 
-  async createManualComparison(nomsIds: string[], token: string): Promise<Comparison> {
-    return new CalculateReleaseDatesApiClient(token).createManualComparison(nomsIds)
+  async createManualComparison(nomsIds: string[], username: string): Promise<Comparison> {
+    return this.calculateReleaseDatesApiClient.createManualComparison(nomsIds, username)
   }
 
-  async getManualComparison(bulkComparisonId: string, token: string): Promise<ComparisonOverview> {
-    return new CalculateReleaseDatesApiClient(token).getManualComparison(bulkComparisonId)
+  async getManualComparison(bulkComparisonId: string, username: string): Promise<ComparisonOverview> {
+    return this.calculateReleaseDatesApiClient.getManualComparison(bulkComparisonId, username)
   }
 
   async getPrisonMismatchComparison(
     bulkComparisonId: string,
     bulkComparisonMismatchId: string,
-    token: string,
+    username: string,
   ): Promise<ComparisonPersonOverview> {
-    return new CalculateReleaseDatesApiClient(token).getPrisonMismatchComparison(
+    return this.calculateReleaseDatesApiClient.getPrisonMismatchComparison(
       bulkComparisonId,
       bulkComparisonMismatchId,
+      username,
     )
   }
 
   async getManualMismatchComparison(
     bulkComparisonId: string,
     bulkComparisonMismatchId: string,
-    token: string,
+    username: string,
   ): Promise<ComparisonPersonOverview> {
-    return new CalculateReleaseDatesApiClient(token).getManualMismatchComparison(
+    return this.calculateReleaseDatesApiClient.getManualMismatchComparison(
       bulkComparisonId,
       bulkComparisonMismatchId,
+      username,
     )
   }
 
   async getComparisonPersonDiscrepancy(
     bulkComparisonId: string,
     bulkComparisonMismatchId: string,
-    token: string,
+    username: string,
   ): Promise<ComparisonPersonDiscrepancySummary> {
-    return new CalculateReleaseDatesApiClient(token).getMismatchDiscrepancy(bulkComparisonId, bulkComparisonMismatchId)
+    return this.calculateReleaseDatesApiClient.getMismatchDiscrepancy(
+      bulkComparisonId,
+      bulkComparisonMismatchId,
+      username,
+    )
   }
 
   async getManualComparisonPersonDiscrepancy(
     bulkComparisonId: string,
     bulkComparisonMismatchId: string,
-    token: string,
+    username: string,
   ): Promise<ComparisonPersonDiscrepancySummary> {
-    return new CalculateReleaseDatesApiClient(token).getManualMismatchDiscrepancy(
+    return this.calculateReleaseDatesApiClient.getManualMismatchDiscrepancy(
       bulkComparisonId,
       bulkComparisonMismatchId,
+      username,
     )
   }
 
@@ -102,12 +112,13 @@ export default class ComparisonService {
     bulkComparisonId: string,
     bulkComparisonMismatchId: string,
     discrepancy: ComparisonPersonDiscrepancyRequest,
-    token: string,
+    username: string,
   ): Promise<ComparisonPersonDiscrepancySummary> {
-    return new CalculateReleaseDatesApiClient(token).createMismatchDiscrepancy(
+    return this.calculateReleaseDatesApiClient.createMismatchDiscrepancy(
       bulkComparisonId,
       bulkComparisonMismatchId,
       discrepancy,
+      username,
     )
   }
 
@@ -115,12 +126,13 @@ export default class ComparisonService {
     bulkComparisonId: string,
     bulkComparisonMismatchId: string,
     discrepancy: ComparisonPersonDiscrepancyRequest,
-    token: string,
+    username: string,
   ): Promise<ComparisonPersonDiscrepancySummary> {
-    return new CalculateReleaseDatesApiClient(token).createManualMismatchDiscrepancy(
+    return this.calculateReleaseDatesApiClient.createManualMismatchDiscrepancy(
       bulkComparisonId,
       bulkComparisonMismatchId,
       discrepancy,
+      username,
     )
   }
 }

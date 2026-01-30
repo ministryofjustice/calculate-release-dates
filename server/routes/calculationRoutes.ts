@@ -124,7 +124,7 @@ export default class CalculationRoutes {
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const noDates: string = <string>req.query.noDates
     const calculationRequestId = Number(req.params.calculationRequestId)
@@ -132,7 +132,7 @@ export default class CalculationRoutes {
     const calculation = await this.calculateReleaseDatesService.getCalculationResults(calculationRequestId, username)
     const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
-      token,
+      username,
     )
     if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
       throw FullPageError.notFoundError()
