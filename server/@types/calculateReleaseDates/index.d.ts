@@ -2532,7 +2532,6 @@ export interface components {
         | 'FTR_56_TRANCHE_5'
         | 'FTR_56_TRANCHE_6'
       /** @enum {string} */
-      /** @enum {string} */
       ftr56Tranche?:
         | 'TRANCHE_0'
         | 'TRANCHE_1'
@@ -2601,6 +2600,7 @@ export interface components {
       displayName: string
       useForApprovedDates: boolean
       requiresFurtherDetail: boolean
+      furtherDetailDescription?: string
     }
     AnalysedBookingAdjustment: {
       active: boolean

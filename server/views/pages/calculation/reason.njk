@@ -31,9 +31,11 @@
                 {% set buttons = [ ] %}
 
                 {% for reason in reasons %}
-                    <input type="hidden" name="reasons[{{ loop.index }}][requiresFurtherDetail]" value="{{ reason.requiresFurtherDetail }}"/>
                     <input type="hidden" name="reasons[{{ loop.index }}][id]" value="{{ reason.id }}"/>
+                    <input type="hidden" name="reasons[{{ loop.index }}][requiresFurtherDetail]" value="{{ reason.requiresFurtherDetail }}"/>
+                    <input type="hidden" name="reasons[{{ loop.index }}][furtherDetailDescription]" value="{{ reason.furtherDetailDescription }}"/>
                     {% if reason.requiresFurtherDetail %}
+                        {% set furtherDetailDescription = reason.furtherDetailDescription or 'the reason for the calculation' %}
                         {% set furtherDetailHTML %}
                             {{ govukCharacterCount({
                                 id: "reason-further-detail-" + reason.id,
@@ -46,7 +48,7 @@
                                 errorMessage: validationErrors | findError('reasons_' + reason.id + '_furtherDetail'),
                                 value: otherReasonDescription,
                                 label: {
-                                    text: "Enter the reason for the calculation"
+                                    text: "Enter " + furtherDetailDescription
                                 }
                             }) }}
                         {% endset %}
