@@ -17,13 +17,16 @@ export default class StartGenuineOverrideController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
 
     if (!req.session.genuineOverrideInputs) {
       req.session.genuineOverrideInputs = {}
     }
 
-    const result = await this.calculateReleaseDatesService.getGenuineOverrideInputs(Number(calculationRequestId), token)
+    const result = await this.calculateReleaseDatesService.getGenuineOverrideInputs(
+      Number(calculationRequestId),
+      username,
+    )
     let url: string
     let inputs: GenuineOverrideInputs
     if (result.mode === 'STANDARD' || !result.previousOverrideForExpressGenuineOverride) {

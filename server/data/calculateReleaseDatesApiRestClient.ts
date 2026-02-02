@@ -3,6 +3,11 @@ import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import {
   AdjustmentDto,
+  Agency,
+  AgencySwitchUpdateResult,
+  AnalysedAdjustment,
+  AnalysedSentenceAndOffence,
+  ApprovedDatesInputResponse,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
@@ -15,9 +20,18 @@ import {
   ComparisonPersonJson,
   ComparisonPersonOverview,
   ComparisonSummary,
+  DateTypeDefinition,
+  DetailedCalculationResults,
+  ErsedEligibility,
+  GenuineOverrideInputResponse,
   GenuineOverrideReason,
+  HistoricCalculation,
+  LatestCalculation,
+  NomisCalculationSummary,
+  ReleaseDatesAndCalculationContext,
   SentenceAndOffenceWithReleaseArrangements,
   SupportedValidationResponse,
+  ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import logger from '../../logger'
@@ -286,6 +300,178 @@ export default class CalculateReleaseDatesApiRestClient extends RestClient {
     return this.get<ComparisonPersonOverview>(
       {
         path: `/comparison/manual/${comparisonReference}/mismatch/${mismatchReference}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getDisabledNomisAgencies(username: string): Promise<Agency[]> {
+    return this.get<Agency[]>(
+      {
+        path: `/feature-toggle/nomis-calc-disabled`,
+      },
+      asSystem(username),
+    )
+  }
+
+  updateDisabledNomisAgencies(username: string): Promise<AgencySwitchUpdateResult> {
+    return this.post<AgencySwitchUpdateResult>(
+      {
+        path: `/feature-toggle/nomis-calc-disabled`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getAnalysedSentencesAndOffences(bookingId: number, username: string): Promise<AnalysedSentenceAndOffence[]> {
+    return this.get<AnalysedSentenceAndOffence[]>(
+      {
+        path: `/sentence-and-offence-information/${bookingId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getAnalysedAdjustments(bookingId: number, username: string): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
+    return this.get<AnalysedPrisonApiBookingAndSentenceAdjustments>(
+      {
+        path: `/booking-and-sentence-adjustments/${bookingId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getAdjustmentsForPrisoner(prisonerId: string, username: string): Promise<AnalysedAdjustment[]> {
+    return this.get<AnalysedAdjustment[]>(
+      {
+        path: `/adjustments/${prisonerId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  validate(prisonerId: string, userInput: CalculationUserInputs, username): Promise<ValidationMessage[]> {
+    return this.post<ValidationMessage[]>(
+      {
+        path: `/validation/${prisonerId}/full-validation`,
+        data: userInput || null,
+      },
+      asSystem(username),
+    )
+  }
+
+  getBookingManualEntryValidation(prisonerId: string, username: string): Promise<ValidationMessage[]> {
+    return this.get<ValidationMessage[]>(
+      {
+        path: `/validation/${prisonerId}/manual-entry-validation`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getManualEntryDateValidation(dateTypes: string[], username: string): Promise<ValidationMessage[]> {
+    return this.get<ValidationMessage[]>(
+      {
+        path: `/validation/manual-entry-dates-validation?releaseDates=${dateTypes.join(',')}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getCalculationHistory(prisonerId: string, username: string): Promise<HistoricCalculation[]> {
+    return this.get<HistoricCalculation[]>(
+      {
+        path: `/historicCalculations/${prisonerId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getDetailedCalculationResults(calculationRequestId: number, username: string): Promise<DetailedCalculationResults> {
+    return this.get<DetailedCalculationResults>(
+      {
+        path: `/calculation/detailed-results/${calculationRequestId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getLatestCalculationForPrisoner(prisonerId: string, username: string): Promise<LatestCalculation> {
+    return this.get<LatestCalculation>(
+      {
+        path: `/calculation/${prisonerId}/latest`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getNomisCalculationSummary(offenderSentCalcId: number, username: string): Promise<NomisCalculationSummary> {
+    return this.get<NomisCalculationSummary>(
+      {
+        path: `/calculation/nomis-calculation-summary/${offenderSentCalcId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getReleaseDatesForACalcReqId(calcReqId: number, username: string): Promise<ReleaseDatesAndCalculationContext> {
+    return this.get<ReleaseDatesAndCalculationContext>(
+      {
+        path: `/calculation/release-dates/${calcReqId}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getDateTypeDefinitions(username: string): Promise<DateTypeDefinition[]> {
+    return this.get<DateTypeDefinition[]>(
+      {
+        path: '/reference-data/date-type',
+      },
+      asSystem(username),
+    )
+  }
+
+  getErsedEligibility(bookingId: number, username: string): Promise<ErsedEligibility> {
+    return this.get<ErsedEligibility>(
+      {
+        path: `/eligibility/${bookingId}/ersed`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getGenuineOverrideInputs(calculationRequestId: number, username: string): Promise<GenuineOverrideInputResponse> {
+    return this.get<GenuineOverrideInputResponse>(
+      {
+        path: `/genuine-override/calculation/${calculationRequestId}/inputs`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getApprovedDatesInputs(prisonerId: string, username: string): Promise<ApprovedDatesInputResponse> {
+    return this.get<ApprovedDatesInputResponse>(
+      {
+        path: `/approved-dates/${prisonerId}/inputs`,
+      },
+      asSystem(username),
+    )
+  }
+
+  hasRecallSentences(bookingId: number, username: string): Promise<boolean> {
+    return this.get<boolean>(
+      {
+        path: `/manual-calculation/${bookingId}/has-recall-sentences`,
+      },
+      asSystem(username),
+    )
+  }
+
+  hasExistingManualCalculation(prisonerId: string, username: string): Promise<boolean> {
+    return this.get<boolean>(
+      {
+        path: `/manual-calculation/${prisonerId}/has-existing-calculation`,
       },
       asSystem(username),
     )

@@ -24,7 +24,7 @@ export default class EditGenuineOverrideDateController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId, dateType } = req.params
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
 
@@ -42,7 +42,7 @@ export default class EditGenuineOverrideDateController implements Controller {
     const year = res.locals?.formResponses?.year ?? parsedDate.year
 
     const description = await this.dateTypeConfigurationService
-      .dateTypeToDescriptionMapping(token)
+      .dateTypeToDescriptionMapping(username)
       .then(descriptions => descriptions[dateType])
 
     return res.render(

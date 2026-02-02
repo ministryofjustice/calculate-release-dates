@@ -25,14 +25,14 @@ export default class CalculationSummaryController implements Controller {
   ) {}
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const { callbackUrl } = req.query as Record<string, string>
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
     const calculationRequestId = Number(req.params.calculationRequestId)
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
-      token,
+      username,
     )
     if (detailedCalculationResults.context.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()

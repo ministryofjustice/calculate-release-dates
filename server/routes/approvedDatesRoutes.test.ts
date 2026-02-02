@@ -2,6 +2,7 @@ import request from 'supertest'
 import { Express } from 'express'
 import nock from 'nock'
 import * as cheerio from 'cheerio'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import PrisonerService from '../services/prisonerService'
 import {
   PrisonAPIAssignedLivingUnit,
@@ -21,6 +22,7 @@ import { FullPageError } from '../types/FullPageError'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import AuditService from '../services/auditService'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
+import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/auditService')
@@ -28,7 +30,12 @@ jest.mock('../services/auditService')
 let app: Express
 let sessionSetup: SessionSetup
 const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
-const dateTypeConfigurationService = new DateTypeConfigurationService()
+const mockAuthenticationClient: AuthenticationClient = {
+  getToken: jest.fn().mockResolvedValue('test-system-token'),
+} as unknown as jest.Mocked<AuthenticationClient>
+const dateTypeConfigurationService = new DateTypeConfigurationService(
+  new CalculateReleaseDatesApiRestClient(mockAuthenticationClient),
+)
 const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
 const auditService = new AuditService() as jest.Mocked<AuditService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(

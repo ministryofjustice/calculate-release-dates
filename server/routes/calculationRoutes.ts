@@ -36,13 +36,13 @@ export default class CalculationRoutes {
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
-      token,
+      username,
     )
 
     if (detailedCalculationResults.context.prisonerId !== nomsId) {

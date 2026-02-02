@@ -11,8 +11,8 @@ const selectDatesError = {
 export default class ApprovedDatesService {
   constructor(private readonly dateTypeConfigurationService: DateTypeConfigurationService) {}
 
-  public async getConfig(token: string, req: Request): Promise<DateSelectConfiguration> {
-    const config = await this.getApprovedDatesConfig(token)
+  public async getConfig(username: string, req: Request): Promise<DateSelectConfiguration> {
+    const config = await this.getApprovedDatesConfig(username)
     this.enrichConfiguration(config, req, req.params.nomsId)
     return config
   }
@@ -31,14 +31,14 @@ export default class ApprovedDatesService {
     }
   }
 
-  public async submitApprovedDateTypes(token: string, req: Request): Promise<SubmitApprovedDateTypesResponse> {
+  public async submitApprovedDateTypes(req: Request, username: string): Promise<SubmitApprovedDateTypesResponse> {
     if (req.body.dateSelect === undefined || req.body.dateSelect.length === 0) {
-      const config = await this.getApprovedDatesConfig(token)
+      const config = await this.getApprovedDatesConfig(username)
       return { error: true, config: { ...config, ...selectDatesError } }
     }
 
     req.session.selectedApprovedDates[req.params.nomsId] = await this.dateTypeConfigurationService.configureViaBackend(
-      token,
+      username,
       req.body.dateSelect,
       req.session.selectedApprovedDates[req.params.nomsId],
     )
@@ -59,8 +59,8 @@ export default class ApprovedDatesService {
     return req.session.selectedApprovedDates[nomsId].some((d: ManualJourneySelectedDate) => d.dateType === dateToRemove)
   }
 
-  private async getApprovedDatesConfig(token: string): Promise<DateSelectConfiguration> {
-    const dateTypeToDescriptionMapping = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+  private async getApprovedDatesConfig(username: string): Promise<DateSelectConfiguration> {
+    const dateTypeToDescriptionMapping = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username)
     return {
       name: 'dateSelect',
       fieldset: {

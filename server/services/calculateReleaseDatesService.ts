@@ -18,6 +18,7 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
+  DateTypeDefinition,
   GenuineOverrideCreatedResponse,
   GenuineOverrideInputResponse,
   GenuineOverrideReason,
@@ -100,13 +101,13 @@ export default class CalculateReleaseDatesService {
 
   async getBookingAndSentenceAdjustments(
     bookingId: number,
-    token: string,
+    username: string,
   ): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
-    return new CalculateReleaseDatesApiClient(token).getAnalysedAdjustments(bookingId)
+    return this.calculateReleaseDatesApiRestClient.getAnalysedAdjustments(bookingId, username)
   }
 
-  async getAdjustmentsForPrisoner(prisonerId: string, token: string): Promise<AnalysedAdjustment[]> {
-    return new CalculateReleaseDatesApiClient(token).getAdjustmentsForPrisoner(prisonerId)
+  async getAdjustmentsForPrisoner(prisonerId: string, username: string): Promise<AnalysedAdjustment[]> {
+    return this.calculateReleaseDatesApiRestClient.getAdjustmentsForPrisoner(prisonerId, username)
   }
 
   async getBreakdown(
@@ -140,9 +141,13 @@ export default class CalculateReleaseDatesService {
     } as CalculationRequestModel
   }
 
-  async getActiveAnalysedSentencesAndOffences(bookingId: number, token: string): Promise<AnalysedSentenceAndOffence[]> {
-    const sentencesAndOffences = await new CalculateReleaseDatesApiClient(token).getAnalysedSentencesAndOffences(
+  async getActiveAnalysedSentencesAndOffences(
+    bookingId: number,
+    username: string,
+  ): Promise<AnalysedSentenceAndOffence[]> {
+    const sentencesAndOffences = await this.calculateReleaseDatesApiRestClient.getAnalysedSentencesAndOffences(
       bookingId,
+      username,
     )
     if (sentencesAndOffences.length === 0) {
       throw FullPageError.noSentences(bookingId)
@@ -150,8 +155,8 @@ export default class CalculateReleaseDatesService {
     return sentencesAndOffences.filter((s: AnalysedSentenceAndOffence) => s.sentenceStatus === 'A')
   }
 
-  async getErsedEligibility(bookingId: number, token: string) {
-    return new CalculateReleaseDatesApiClient(token).getErsedEligibility(bookingId)
+  async getErsedEligibility(bookingId: number, username: string) {
+    return this.calculateReleaseDatesApiRestClient.getErsedEligibility(bookingId, username)
   }
 
   private extractReleaseDatesWithAdjustments(breakdown: CalculationBreakdown): ReleaseDateWithAdjustments[] {
@@ -428,41 +433,45 @@ export default class CalculateReleaseDatesService {
   async validateBackend(
     prisonId: string,
     userInput: CalculationUserInputs,
-    token: string,
+    username: string,
   ): Promise<ValidationMessage[]> {
-    return new CalculateReleaseDatesApiClient(token).validate(prisonId, userInput)
+    return this.calculateReleaseDatesApiRestClient.validate(prisonId, userInput, username)
   }
 
-  async validateDatesForManualEntry(token: string, dateTypes: string[]): Promise<ErrorMessages> {
-    const validationMessages = await new CalculateReleaseDatesApiClient(token).getManualEntryDateValidation(dateTypes)
-    return validationMessages.length ? convertValidationToErrorMessages(validationMessages) : { messages: [] }
-  }
-
-  async validateDatesForGenuineOverride(token: string, dateTypes: string[]): Promise<ValidationMessage[]> {
-    return new CalculateReleaseDatesApiClient(token).getManualEntryDateValidation(dateTypes)
-  }
-
-  async validateBookingForManualEntry(prisonerId: string, token: string): Promise<ErrorMessages> {
-    const validationMessages = await new CalculateReleaseDatesApiClient(token).getBookingManualEntryValidation(
-      prisonerId,
+  async validateDatesForManualEntry(username: string, dateTypes: string[]): Promise<ErrorMessages> {
+    const validationMessages = await this.calculateReleaseDatesApiRestClient.getManualEntryDateValidation(
+      dateTypes,
+      username,
     )
     return validationMessages.length ? convertValidationToErrorMessages(validationMessages) : { messages: [] }
   }
 
-  async offenderHasPreviousManualCalculation(prisonerId: string, token: string): Promise<boolean> {
-    return new CalculateReleaseDatesApiClient(token).hasExistingManualCalculation(prisonerId)
+  async validateDatesForGenuineOverride(username: string, dateTypes: string[]): Promise<ValidationMessage[]> {
+    return this.calculateReleaseDatesApiRestClient.getManualEntryDateValidation(dateTypes, username)
   }
 
-  async getCalculationHistory(prisonerId: string, token: string): Promise<HistoricCalculation[]> {
-    return new CalculateReleaseDatesApiClient(token).getCalculationHistory(prisonerId)
+  async validateBookingForManualEntry(prisonerId: string, username: string): Promise<ErrorMessages> {
+    const validationMessages = await this.calculateReleaseDatesApiRestClient.getBookingManualEntryValidation(
+      prisonerId,
+      username,
+    )
+    return validationMessages.length ? convertValidationToErrorMessages(validationMessages) : { messages: [] }
+  }
+
+  async offenderHasPreviousManualCalculation(prisonerId: string, username: string): Promise<boolean> {
+    return this.calculateReleaseDatesApiRestClient.hasExistingManualCalculation(prisonerId, username)
+  }
+
+  async getCalculationHistory(prisonerId: string, username: string): Promise<HistoricCalculation[]> {
+    return this.calculateReleaseDatesApiRestClient.getCalculationHistory(prisonerId, username)
   }
 
   async getResultsWithBreakdownAndAdjustments(
     calculationRequestId: number,
-    token: string,
+    username: string,
   ): Promise<ResultsWithBreakdownAndAdjustments> {
-    return new CalculateReleaseDatesApiClient(token)
-      .getDetailedCalculationResults(calculationRequestId)
+    return this.calculateReleaseDatesApiRestClient
+      .getDetailedCalculationResults(calculationRequestId, username)
       .then(results => {
         let withAdjustments: ResultsWithBreakdownAndAdjustments
         if (results.calculationBreakdown) {
@@ -480,14 +489,17 @@ export default class CalculateReleaseDatesService {
       })
   }
 
+  async getLatestCalculationForPrisoner(prisonerId: string, username: string): Promise<LatestCalculation> {
+    return this.calculateReleaseDatesApiRestClient.getLatestCalculationForPrisoner(prisonerId, username)
+  }
+
   async getLatestCalculationCardForPrisoner(
     prisonerId: string,
-    token: string,
+    username: string,
     hasIndeterminateSentence: boolean,
   ): Promise<CalculationCard | FullPageError> {
-    const crdAPIClient = new CalculateReleaseDatesApiClient(token)
-    return crdAPIClient
-      .getLatestCalculationForPrisoner(prisonerId)
+    return this.calculateReleaseDatesApiRestClient
+      .getLatestCalculationForPrisoner(prisonerId, username)
       .then(async latestCalc => {
         let action: Action
         const latestCalcCard = this.latestCalculationComponentConfig(latestCalc)
@@ -553,31 +565,41 @@ export default class CalculateReleaseDatesService {
     }
   }
 
-  async getNomisCalculationSummary(offenderSentCalcId: number, token: string): Promise<NomisCalculationSummary> {
-    return new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
+  async getNomisCalculationSummary(offenderSentCalcId: number, username: string): Promise<NomisCalculationSummary> {
+    return this.calculateReleaseDatesApiRestClient.getNomisCalculationSummary(offenderSentCalcId, username)
   }
 
-  async getReleaseDatesForACalcReqId(calcRequestId: number, token: string): Promise<ReleaseDatesAndCalculationContext> {
-    return new CalculateReleaseDatesApiClient(token).getReleaseDatesForACalcReqId(calcRequestId)
+  async getReleaseDatesForACalcReqId(
+    calcRequestId: number,
+    username: string,
+  ): Promise<ReleaseDatesAndCalculationContext> {
+    return this.calculateReleaseDatesApiRestClient.getReleaseDatesForACalcReqId(calcRequestId, username)
   }
 
   async hasIndeterminateSentences(bookingId: number, username: string): Promise<boolean> {
     return this.calculateReleaseDatesApiRestClient.hasIndeterminateSentences(bookingId, username)
   }
 
-  async getGenuineOverrideInputs(calculationRequestId: number, token: string): Promise<GenuineOverrideInputResponse> {
-    return new CalculateReleaseDatesApiClient(token).getGenuineOverrideInputs(calculationRequestId)
+  async getGenuineOverrideInputs(
+    calculationRequestId: number,
+    username: string,
+  ): Promise<GenuineOverrideInputResponse> {
+    return this.calculateReleaseDatesApiRestClient.getGenuineOverrideInputs(calculationRequestId, username)
   }
 
-  async getApprovedDatesInputs(prisonerId: string, token: string): Promise<ApprovedDatesInputResponse> {
-    return new CalculateReleaseDatesApiClient(token).getApprovedDatesInputs(prisonerId)
+  async getApprovedDatesInputs(prisonerId: string, username: string): Promise<ApprovedDatesInputResponse> {
+    return this.calculateReleaseDatesApiRestClient.getApprovedDatesInputs(prisonerId, username)
   }
 
-  async getDisabledNomisAgencies(token: string): Promise<Agency[]> {
-    return new CalculateReleaseDatesApiClient(token).getDisabledNomisAgencies()
+  async getDateTypeDefinitions(username: string): Promise<DateTypeDefinition[]> {
+    return this.calculateReleaseDatesApiRestClient.getDateTypeDefinitions(username)
   }
 
-  async updateDisabledNomisAgencies(token: string): Promise<AgencySwitchUpdateResult> {
-    return new CalculateReleaseDatesApiClient(token).updateDisabledNomisAgencies()
+  async getDisabledNomisAgencies(username: string): Promise<Agency[]> {
+    return this.calculateReleaseDatesApiRestClient.getDisabledNomisAgencies(username)
+  }
+
+  async updateDisabledNomisAgencies(username: string): Promise<AgencySwitchUpdateResult> {
+    return this.calculateReleaseDatesApiRestClient.updateDisabledNomisAgencies(username)
   }
 }

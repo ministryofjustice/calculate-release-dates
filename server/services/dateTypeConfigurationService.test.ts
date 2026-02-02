@@ -1,9 +1,16 @@
 import nock from 'nock'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import config from '../config'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
 
-const dateTypeConfigurationService = new DateTypeConfigurationService()
+const mockAuthenticationClient: AuthenticationClient = {
+  getToken: jest.fn().mockResolvedValue('test-system-token'),
+} as unknown as jest.Mocked<AuthenticationClient>
+const dateTypeConfigurationService = new DateTypeConfigurationService(
+  new CalculateReleaseDatesApiRestClient(mockAuthenticationClient),
+)
 describe('dateTypeConfigurationService', () => {
   describe('loads date config from backend', () => {
     let fakeApi: nock.Scope
@@ -25,7 +32,7 @@ describe('dateTypeConfigurationService', () => {
 
     it('returns the manual entry date with the date set if already in session', async () => {
       const configured = await dateTypeConfigurationService.configureViaBackend(
-        'token',
+        'user1',
         ['CRD', 'ARD'],
         [
           {
@@ -74,7 +81,7 @@ describe('dateTypeConfigurationService', () => {
       ])
     })
     it('adds a new date type with an undefined date if not in list', async () => {
-      const configured = await dateTypeConfigurationService.configureViaBackend('token', ['CRD'], [])
+      const configured = await dateTypeConfigurationService.configureViaBackend('user1', ['CRD'], [])
       expect(configured).toEqual([
         {
           position: 1,
@@ -89,7 +96,7 @@ describe('dateTypeConfigurationService', () => {
       ])
     })
     it('should format None correctly', async () => {
-      const configured = await dateTypeConfigurationService.configureViaBackend('token', ['None'], [])
+      const configured = await dateTypeConfigurationService.configureViaBackend('user1', ['None'], [])
       expect(configured).toEqual([
         {
           position: 1,
@@ -104,7 +111,7 @@ describe('dateTypeConfigurationService', () => {
       ])
     })
     it('can load all dates as dictionary', async () => {
-      const configured = await dateTypeConfigurationService.dateTypeToDescriptionMapping('token')
+      const configured = await dateTypeConfigurationService.dateTypeToDescriptionMapping('user1')
       expect(configured).toEqual({
         CRD: 'CRD (Conditional release date)',
         ARD: 'ARD (Automatic release date)',

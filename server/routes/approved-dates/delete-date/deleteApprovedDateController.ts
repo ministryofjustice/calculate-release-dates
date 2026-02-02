@@ -15,7 +15,7 @@ export default class DeleteApprovedDateController implements Controller {
 
   GET = async (req: Request<PersonJourneyParams & { dateType: string }>, res: Response): Promise<void> => {
     const { nomsId, journeyId, dateType } = req.params
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
 
@@ -28,7 +28,7 @@ export default class DeleteApprovedDateController implements Controller {
     }
 
     const description = await this.dateTypeConfigurationService
-      .dateTypeToDescriptionMapping(token)
+      .dateTypeToDescriptionMapping(username)
       .then(descriptions => descriptions[dateType])
 
     return res.render(

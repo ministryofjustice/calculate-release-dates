@@ -15,12 +15,12 @@ export default class PreviouslyRecordedSledInterceptController implements Contro
   ) {}
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId, calculationRequestId } = req.params
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       Number(calculationRequestId),
-      token,
+      username,
     )
     if (!detailedCalculationResults.usedPreviouslyRecordedSLED) {
       return res.redirect(`/calculation/${nomsId}/summary/${calculationRequestId}`)
