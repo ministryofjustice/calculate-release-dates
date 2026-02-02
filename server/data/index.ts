@@ -13,7 +13,7 @@ import PrisonApiClient from './prisonApiClient'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import CourtCasesReleaseDatesApiClient from './courtCasesReleaseDatesApiClient'
 import FrontendComponentsApiClient from './frontendComponentsApiClient'
-import CalculateReleaseDatesApiRestClient from './calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 
 const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
@@ -33,7 +33,7 @@ const dataAccess = () => ({
   prisonerSearchApiClient: new PrisonerSearchApiClient(hmppsAuthClient),
   courtCasesReleaseDatesApiClient: new CourtCasesReleaseDatesApiClient(hmppsAuthClient),
   frontendComponentsApiClient: new FrontendComponentsApiClient(hmppsAuthClient),
-  calculateReleaseDatesApiClient: new CalculateReleaseDatesApiRestClient(hmppsAuthClient),
+  calculateReleaseDatesApiClient: new CalculateReleaseDatesApiClient(hmppsAuthClient),
 })
 
 export default dataAccess

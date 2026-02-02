@@ -3,7 +3,7 @@ import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import AuditService from '../services/auditService'
-import CalculateReleaseDatesApiRestClient from './calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 
 jest.mock('../services/auditService')
 
@@ -16,7 +16,7 @@ const auditService = new AuditService() as jest.Mocked<AuditService>
 const mockAuthenticationClient: AuthenticationClient = {
   getToken: jest.fn().mockResolvedValue('test-system-token'),
 } as unknown as jest.Mocked<AuthenticationClient>
-const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiRestClient(mockAuthenticationClient)
+const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiClient(mockAuthenticationClient)
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
   calculateReleaseDatesApiRestClient,

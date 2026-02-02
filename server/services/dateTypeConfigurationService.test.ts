@@ -3,13 +3,13 @@ import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import config from '../config'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
-import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 const mockAuthenticationClient: AuthenticationClient = {
   getToken: jest.fn().mockResolvedValue('test-system-token'),
 } as unknown as jest.Mocked<AuthenticationClient>
 const dateTypeConfigurationService = new DateTypeConfigurationService(
-  new CalculateReleaseDatesApiRestClient(mockAuthenticationClient),
+  new CalculateReleaseDatesApiClient(mockAuthenticationClient),
 )
 describe('dateTypeConfigurationService', () => {
   describe('loads date config from backend', () => {

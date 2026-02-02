@@ -8,12 +8,12 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonType from '../enumerations/comparisonType'
 import AuditService from './auditService'
-import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export default class ComparisonService {
   constructor(
     private readonly auditService: AuditService,
-    private readonly calculateReleaseDatesApiClient: CalculateReleaseDatesApiRestClient,
+    private readonly calculateReleaseDatesApiClient: CalculateReleaseDatesApiClient,
   ) {}
 
   async createPrisonComparison(

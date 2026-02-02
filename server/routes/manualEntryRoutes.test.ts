@@ -24,7 +24,7 @@ import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import AuditService from '../services/auditService'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
-import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -45,7 +45,7 @@ const mockAuthenticationClient: AuthenticationClient = {
   getToken: jest.fn().mockResolvedValue('test-system-token'),
 } as unknown as jest.Mocked<AuthenticationClient>
 const dateTypeConfigurationService = new DateTypeConfigurationService(
-  new CalculateReleaseDatesApiRestClient(mockAuthenticationClient),
+  new CalculateReleaseDatesApiClient(mockAuthenticationClient),
 )
 const dateValidationService = new DateValidationService()
 const manualEntryService = new ManualEntryService(

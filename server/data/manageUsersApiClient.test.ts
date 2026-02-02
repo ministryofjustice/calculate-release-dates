@@ -4,8 +4,6 @@ import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import ManageUsersApiClient from './manageUsersApiClient'
 
-jest.mock('./tokenStore/redisTokenStore')
-
 const token = { access_token: 'token-1', expires_in: 300 }
 
 describe('manageUsersApiClient', () => {

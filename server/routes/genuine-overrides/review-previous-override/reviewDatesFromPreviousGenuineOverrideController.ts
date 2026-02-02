@@ -60,7 +60,7 @@ export default class ReviewDatesFromPreviousGenuineOverrideController implements
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    const { token, username } = res.locals.user
+    const { username } = res.locals.user
     const { stillCorrect } = req.body
 
     if (stillCorrect === 'YES') {
@@ -77,7 +77,6 @@ export default class ReviewDatesFromPreviousGenuineOverrideController implements
         username,
         nomsId,
         Number(calculationRequestId),
-        token,
         request,
       )
       if (!response.success) {

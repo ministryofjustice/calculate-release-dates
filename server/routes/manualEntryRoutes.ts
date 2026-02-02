@@ -444,7 +444,7 @@ export default class ManualEntryRoutes {
   }
 
   public save: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, username, userRoles } = res.locals.user
+    const { caseloads, username, userRoles } = res.locals.user
     const { nomsId } = req.params
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
@@ -464,7 +464,7 @@ export default class ManualEntryRoutes {
     }
 
     try {
-      const response = await this.manualCalculationService.storeManualCalculation(username, nomsId, req, token)
+      const response = await this.manualCalculationService.storeManualCalculation(username, nomsId, req)
       const isNone =
         req.session.selectedManualEntryDates[nomsId].length === 1 &&
         req.session.selectedManualEntryDates[nomsId][0].dateType === 'None'
@@ -474,7 +474,7 @@ export default class ManualEntryRoutes {
     } catch (error) {
       // TODO Move handling of validation errors from the api into the service layer
       logger.error(error)
-      if (error.status === 412) {
+      if ((error.status ?? error.responseStatus) === 412) {
         req.flash(
           'serverErrors',
           JSON.stringify({

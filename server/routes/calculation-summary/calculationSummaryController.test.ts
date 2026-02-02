@@ -2,7 +2,6 @@ import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import MockDate from 'mockdate'
-import { HttpError } from 'http-errors'
 import { SessionData } from 'express-session'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import { appWithAllRoutes, user } from '../testutils/appSetup'
@@ -796,9 +795,9 @@ describe('CalculationSummaryController', () => {
   describe('POST', () => {
     it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect if an error is thrown', () => {
       const error = {
-        status: 412,
+        responseStatus: 412,
         message: 'An error has occurred',
-      } as HttpError
+      }
 
       calculateReleaseDatesService.confirmCalculation.mockImplementation(() => {
         throw error

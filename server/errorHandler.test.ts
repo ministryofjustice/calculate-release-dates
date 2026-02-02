@@ -3,15 +3,15 @@ import request from 'supertest'
 import { appWithAllRoutes } from './routes/testutils/appSetup'
 import CalculateReleaseDatesService from './services/calculateReleaseDatesService'
 import AuditService from './services/auditService'
-import CalculateReleaseDatesApiRestClient from './data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from './data/calculateReleaseDatesApiClient'
 
 jest.mock('./services/calculateReleaseDatesService')
 jest.mock('./services/auditService')
 
 const auditService = new AuditService() as jest.Mocked<AuditService>
-const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiRestClient(
+const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiClient(
   null,
-) as jest.Mocked<CalculateReleaseDatesApiRestClient>
+) as jest.Mocked<CalculateReleaseDatesApiClient>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
   calculateReleaseDatesApiRestClient,

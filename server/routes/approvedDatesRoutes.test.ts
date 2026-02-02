@@ -22,7 +22,7 @@ import { FullPageError } from '../types/FullPageError'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import AuditService from '../services/auditService'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
-import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/auditService')
@@ -34,7 +34,7 @@ const mockAuthenticationClient: AuthenticationClient = {
   getToken: jest.fn().mockResolvedValue('test-system-token'),
 } as unknown as jest.Mocked<AuthenticationClient>
 const dateTypeConfigurationService = new DateTypeConfigurationService(
-  new CalculateReleaseDatesApiRestClient(mockAuthenticationClient),
+  new CalculateReleaseDatesApiClient(mockAuthenticationClient),
 )
 const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
 const auditService = new AuditService() as jest.Mocked<AuditService>

@@ -9,10 +9,10 @@ import {
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
-import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export default class ViewReleaseDatesService {
-  constructor(private readonly calculateReleaseDatesApiRestClient: CalculateReleaseDatesApiRestClient) {}
+  constructor(private readonly calculateReleaseDatesApiRestClient: CalculateReleaseDatesApiClient) {}
 
   async getLatestCalculation(prisonerId: string, bookingId: number, username: string): Promise<BookingCalculation> {
     return this.calculateReleaseDatesApiRestClient.getLatestCalculation(prisonerId, bookingId, username)

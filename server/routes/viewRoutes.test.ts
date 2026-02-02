@@ -644,7 +644,7 @@ describe('View journey routes tests', () => {
 
     it('GET /view/:nomsId/latest should redirect to the error page if no calculation was found ', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      viewReleaseDatesService.getLatestCalculation.mockRejectedValue({ status: 404 })
+      viewReleaseDatesService.getLatestCalculation.mockRejectedValue({ responseStatus: 404 })
       return request(app)
         .get('/view/A1234AA/latest')
         .expect(404)

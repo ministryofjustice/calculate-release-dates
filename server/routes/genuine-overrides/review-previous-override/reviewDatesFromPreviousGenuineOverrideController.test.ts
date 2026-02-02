@@ -181,7 +181,6 @@ describe('ReviewDatesFromPreviousGenuineOverrideController', () => {
         'user1',
         prisonerNumber,
         Number(calculationRequestId),
-        'token',
         {
           dates: [
             { dateType: 'SED', date: '2031-02-03' },
