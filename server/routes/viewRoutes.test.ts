@@ -40,7 +40,7 @@ const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
   null,
 ) as jest.Mocked<CalculateReleaseDatesService>
-const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
+const viewReleaseDatesService = new ViewReleaseDatesService(null) as jest.Mocked<ViewReleaseDatesService>
 
 let app: Express
 
@@ -1099,6 +1099,38 @@ describe('View journey routes tests', () => {
         })
     })
 
+    it('GET /view/:calculationRequestId/sentences-and-offences should show details if the calculation reason required further details and is not other', () => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue(stubbedUserInput)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: {
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
+          calculationType: 'CALCULATED',
+          calculationReason: {
+            id: 2,
+            displayName: 'Legislative changes',
+            isOther: false,
+            useForApprovedDates: false,
+            requiresFurtherDetail: true,
+          },
+          otherReasonDescription: 'Fixed term recall 56',
+        },
+      })
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const reasonSummaryItems = $('dt:contains("Calculation reason")').next().find('p')
+          expect(reasonSummaryItems.eq(0).text().trim()).toStrictEqual('Legislative changes')
+          expect(reasonSummaryItems.eq(1).text().trim()).toStrictEqual('(Fixed term recall 56)')
+        })
+    })
+
     it('GET /view/:calculationRequestId/sentences-and-offences should show details if the calculation reason is OTHER', () => {
       viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
@@ -1272,6 +1304,35 @@ describe('View journey routes tests', () => {
           expect(res.text).toContain('Calculation reason')
           expect(res.text).toContain('A calculation reason')
           expect(res.text).toContain('13 January 2024')
+        })
+    })
+
+    it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the reasons further detail', () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        context: {
+          ...stubbedResultsWithBreakdownAndAdjustments.context,
+          calculationDate: '2024-01-13',
+          calculationReason: {
+            id: 2,
+            displayName: 'Legislative changes',
+            isOther: false,
+            useForApprovedDates: false,
+            requiresFurtherDetail: true,
+          },
+          otherReasonDescription: 'Fixed term recall 56',
+        },
+      })
+
+      return request(app)
+        .get('/view/A1234AA/calculation-summary/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const reasonSummaryItems = $('dt:contains("Calculation reason")').next().find('p')
+          expect(reasonSummaryItems.eq(0).text().trim()).toStrictEqual('Legislative changes')
+          expect(reasonSummaryItems.eq(1).text().trim()).toStrictEqual('(Fixed term recall 56)')
         })
     })
 

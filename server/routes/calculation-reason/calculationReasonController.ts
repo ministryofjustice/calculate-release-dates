@@ -52,7 +52,9 @@ export default class CalculationReasonController implements Controller {
     const calculationReasonId = res.locals?.formResponses?.calculationReasonId
     let otherReasonDescription: string
     if (calculationReasonId) {
-      otherReasonDescription = res.locals?.formResponses?.reasons?.find(r => r.id === calculationReasonId?.toString())
+      otherReasonDescription = res.locals?.formResponses?.reasons?.find(
+        (r: { id: string }) => r.id === calculationReasonId?.toString(),
+      )?.furtherDetail
     }
 
     return res.render(
