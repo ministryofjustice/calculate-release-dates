@@ -16,7 +16,7 @@ export default class CheckInformationController implements Controller {
   ) {}
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
 
     if (!req.session.selectedApprovedDates) {
@@ -34,7 +34,6 @@ export default class CheckInformationController implements Controller {
       nomsId,
       userInputs,
       caseloads,
-      token,
       userRoles,
       username,
     )
@@ -44,7 +43,7 @@ export default class CheckInformationController implements Controller {
   POST = async (req: Request<{ nomsId: string }, unknown, CheckInformationForm>, res: Response): Promise<void> => {
     const { nomsId } = req.params
     const { ersed } = req.body
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
 
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
 
@@ -53,11 +52,14 @@ export default class CheckInformationController implements Controller {
     userInputs.usePreviouslyRecordedSLEDIfFound = true
     this.userInputService.setCalculationUserInputForPrisoner(req, nomsId, userInputs)
 
-    const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token)
+    const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, username)
 
     if (errors.length > 0) {
       if (errors.find(e => e.calculationUnsupported)) {
-        const validForManualEntry = await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
+        const validForManualEntry = await this.calculateReleaseDatesService.validateBookingForManualEntry(
+          nomsId,
+          username,
+        )
         if (validForManualEntry.messages.length === 0) {
           if (req.session.manualEntryRoutingForBookings === undefined) {
             req.session.manualEntryRoutingForBookings = [nomsId]

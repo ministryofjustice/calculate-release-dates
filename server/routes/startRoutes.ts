@@ -24,7 +24,7 @@ export default class StartRoutes {
     if (prisonId) {
       const { caseloads, token, userRoles, username } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, username, caseloads, userRoles)
-      const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, token)
+      const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, username)
       const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
         prisonerDetail.bookingId,
         username,
@@ -32,7 +32,7 @@ export default class StartRoutes {
 
       const latestCalculationCardOrError = await this.calculateReleaseDatesService.getLatestCalculationCardForPrisoner(
         prisonId,
-        token,
+        username,
         hasIndeterminateSentence,
       )
 

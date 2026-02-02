@@ -17,10 +17,10 @@ export default class SelectApprovedDatesController implements Controller {
 
   GET = async (req: Request<PersonJourneyParams>, res: Response): Promise<void> => {
     const { nomsId, journeyId } = req.params
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
-    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username)
     const journey = req.session.approvedDatesJourneys[journeyId]
     const pendingDateTypes: string[] =
       res.locals.formResponses?.dateType ?? journey.datesBeingAdded?.map(it => it.type) ?? []

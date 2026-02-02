@@ -19,7 +19,6 @@ export default class CheckInformationService {
     nomsId: string,
     userInputs: CalculationUserInputs,
     caseloads: string[],
-    token: string,
     userRoles: string[],
     username: string,
   ): Promise<SentenceAndOffenceViewModel> {
@@ -27,13 +26,13 @@ export default class CheckInformationService {
 
     const [sentencesAndOffences, adjustmentDetails, ersedAvailable, analysedAdjustments, validationResult] =
       await Promise.all([
-        this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, token),
-        this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(prisonerDetail.bookingId, token),
-        this.calculateReleaseDatesService.getErsedEligibility(prisonerDetail.bookingId, token),
+        this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, username),
+        this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(prisonerDetail.bookingId, username),
+        this.calculateReleaseDatesService.getErsedEligibility(prisonerDetail.bookingId, username),
         config.featureToggles.adjustmentsIntegrationEnabled
-          ? this.calculateReleaseDatesService.getAdjustmentsForPrisoner(prisonerDetail.offenderNo, token)
+          ? this.calculateReleaseDatesService.getAdjustmentsForPrisoner(prisonerDetail.offenderNo, username)
           : Promise.resolve([]),
-        this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, token),
+        this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, username),
       ])
 
     const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
@@ -51,7 +50,7 @@ export default class CheckInformationService {
     const isUnsupported = Array.isArray(unsupportedMessages) && unsupportedMessages.length > 0
     if (isUnsupported) {
       // we only want to show invalid data errors relevant to manual entry on check-information as the unsupported errors are shown on manual-entry
-      validationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, token)
+      validationMessages = await this.calculateReleaseDatesService.validateBookingForManualEntry(nomsId, username)
     } else if (validationResult.length) {
       validationMessages = convertValidationToErrorMessages(
         // hide CONCURRENT_CONSECUTIVE as they will be redirected to the dedicated intercept page on submission

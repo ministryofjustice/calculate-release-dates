@@ -7,7 +7,6 @@ import { DetailedDate } from '../@types/calculateReleaseDates/calculateReleaseDa
 import { createSupportLink } from '../utils/utils'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
-import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export const dateTypeOrder = {
   SED: 1,
@@ -88,12 +87,12 @@ export default class ManualEntryService {
   }
 
   public async verifySelectedDateType(
-    token: string,
     req: Request,
     nomsId: string,
     hasIndeterminateSentences: boolean,
     firstLoad: boolean,
     existingDateTypes: string[],
+    username: string,
   ): Promise<{ error: boolean; config: DateSelectConfiguration }> {
     if (!req.session.selectedManualEntryDates) {
       req.session.selectedManualEntryDates = {}
@@ -112,9 +111,9 @@ export default class ManualEntryService {
 
     let config: DateSelectConfiguration
     if (hasIndeterminateSentences) {
-      config = await this.indeterminateConfig(token, existingDateTypes)
+      config = await this.indeterminateConfig(username, existingDateTypes)
     } else {
-      config = await this.determinateConfig(token, existingDateTypes)
+      config = await this.determinateConfig(username, existingDateTypes)
     }
 
     if (insufficientDatesSelected) {
@@ -125,7 +124,7 @@ export default class ManualEntryService {
     const selectedDateTypes: string[] = Array.isArray(req.body.dateSelect) ? req.body.dateSelect : [req.body.dateSelect]
 
     const validationMessages = await this.calculateReleaseDatesService.validateDatesForManualEntry(
-      token,
+      username,
       selectedDateTypes,
     )
 
@@ -171,8 +170,8 @@ export default class ManualEntryService {
     }
   }
 
-  public async addManuallyCalculatedDateTypes(token: string, req: Request, nomsId: string): Promise<void> {
-    const dateTypeDefinitions = await new CalculateReleaseDatesApiClient(token).getDateTypeDefinitions()
+  public async addManuallyCalculatedDateTypes(username: string, req: Request, nomsId: string): Promise<void> {
+    const dateTypeDefinitions = await this.calculateReleaseDatesService.getDateTypeDefinitions(username)
     const selectedDateTypes: string[] = Array.isArray(req.body.dateSelect) ? req.body.dateSelect : [req.body.dateSelect]
 
     const currentDates: ManualJourneySelectedDate[] = req.session.selectedManualEntryDates[nomsId] || []
@@ -348,12 +347,12 @@ export default class ManualEntryService {
   }
 
   public async getConfirmationConfiguration(
-    token: string,
+    username: string,
     req: Request,
     nomsId: string,
     allowActions: boolean,
   ): Promise<ManualJourneySelectedDate[]> {
-    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username)
     return req.session.selectedManualEntryDates[nomsId]
       .map((d: ManualJourneySelectedDate) => {
         const dateValue = this.dateString(d.manualEntrySelectedDate)
@@ -401,8 +400,8 @@ export default class ManualEntryService {
     return items
   }
 
-  public async fullStringLookup(token: string, dateType: string): Promise<string> {
-    const def = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+  public async fullStringLookup(username: string, dateType: string): Promise<string> {
+    const def = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username)
     return def[dateType]
   }
 
@@ -416,8 +415,8 @@ export default class ManualEntryService {
     return req.session.selectedManualEntryDates[nomsId].length
   }
 
-  private async determinateConfig(token: string, existingTypes: string[]): Promise<DateSelectConfiguration> {
-    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+  private async determinateConfig(username: string, existingTypes: string[]): Promise<DateSelectConfiguration> {
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username)
     return {
       name: 'dateSelect',
       fieldset: {
@@ -441,8 +440,8 @@ export default class ManualEntryService {
     } as DateSelectConfiguration
   }
 
-  private async indeterminateConfig(token: string, existingTypes: string[]): Promise<DateSelectConfiguration> {
-    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+  private async indeterminateConfig(username: string, existingTypes: string[]): Promise<DateSelectConfiguration> {
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username)
     return {
       name: 'dateSelect',
       fieldset: {

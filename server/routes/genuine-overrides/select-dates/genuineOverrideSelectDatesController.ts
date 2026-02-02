@@ -22,10 +22,10 @@ export default class GenuineOverrideSelectDatesController implements Controller 
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
-    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(token)
+    const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const pendingDateTypes: string[] =
       res.locals.formResponses?.dateType ?? genuineOverrideInputs.datesBeingAdded?.map(it => it.type) ?? []
@@ -59,7 +59,7 @@ export default class GenuineOverrideSelectDatesController implements Controller 
   ): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
     const { dateType } = req.body
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const alreadyAddedDateTypes = genuineOverrideInputs.datesToSave?.map(it => it.type) ?? []
     const newDatesToAdd = dateType
@@ -69,7 +69,7 @@ export default class GenuineOverrideSelectDatesController implements Controller 
     if (!newDatesToAdd || newDatesToAdd.length === 0) {
       return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
     }
-    const validationMessages = await this.calculateReleaseDatesService.validateDatesForGenuineOverride(token, [
+    const validationMessages = await this.calculateReleaseDatesService.validateDatesForGenuineOverride(username, [
       ...genuineOverrideInputs.datesToSave.map(it => it.type),
       ...newDatesToAdd.map(it => it.type),
     ])

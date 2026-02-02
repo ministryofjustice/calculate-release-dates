@@ -51,7 +51,7 @@ export default class ViewRoutes {
   }
 
   public sentencesAndOffences: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
@@ -74,7 +74,7 @@ export default class ViewRoutes {
       )
       const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
         calculationRequestId,
-        token,
+        username,
       )
       const returnToCustody = sentencesAndOffences.filter((s: PrisonApiOffenderSentenceAndOffences) =>
         SentenceTypes.isSentenceFixedTermRecall(s),
@@ -139,7 +139,7 @@ export default class ViewRoutes {
   ): Promise<CalculationSummaryViewModel> {
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
-      token,
+      username,
     )
     const hasErsed = 'ERSED' in detailedCalculationResults.dates
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
@@ -259,7 +259,7 @@ export default class ViewRoutes {
   }
 
   public printNotificationSlip: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     const { fromPage, pageType } = req.query as Record<string, string>
@@ -271,7 +271,7 @@ export default class ViewRoutes {
         this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, username),
         this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, username),
         this.viewReleaseDatesService.getBookingAndSentenceAdjustments(calculationRequestId, username),
-        this.calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, token),
+        this.calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, username),
         config.featureToggles.adjustmentsIntegrationEnabled
           ? this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, username)
           : Promise.resolve([]),
@@ -322,12 +322,12 @@ export default class ViewRoutes {
 
   public nomisCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const offenderSentCalculationId = Number(req.params.offenderSentCalculationId)
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const pastNomisCalculation = await this.calculateReleaseDatesService.getNomisCalculationSummary(
       offenderSentCalculationId,
-      token,
+      username,
     )
     res.render(
       'pages/view/nomisCalculationSummary',

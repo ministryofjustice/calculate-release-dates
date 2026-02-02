@@ -7,11 +7,11 @@ export default class DisableNomisController implements Controller {
   constructor(private readonly calculateReleaseDatesService: CalculateReleaseDatesService) {}
 
   GET = async (_: Request, res: Response): Promise<void> => {
-    const { token, isDigitalSupportUser } = res.locals.user
+    const { username, isDigitalSupportUser } = res.locals.user
     if (!isDigitalSupportUser) {
       throw FullPageError.notFoundError()
     }
-    const disabledAgencies = await this.calculateReleaseDatesService.getDisabledNomisAgencies(token)
+    const disabledAgencies = await this.calculateReleaseDatesService.getDisabledNomisAgencies(username)
     return res.render('pages/disableNomis', {
       disabledAgencies,
       updated: false,
@@ -19,11 +19,11 @@ export default class DisableNomisController implements Controller {
   }
 
   POST = async (_: Request, res: Response): Promise<void> => {
-    const { token, isDigitalSupportUser } = res.locals.user
+    const { username, isDigitalSupportUser } = res.locals.user
     if (!isDigitalSupportUser) {
       throw FullPageError.notFoundError()
     }
-    const updateResult = await this.calculateReleaseDatesService.updateDisabledNomisAgencies(token)
+    const updateResult = await this.calculateReleaseDatesService.updateDisabledNomisAgencies(username)
     return res.render('pages/disableNomis', {
       disabledAgencies: updateResult.current,
       switchedOn: updateResult.agenciesSwitchedOn,

@@ -26,7 +26,7 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
 
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
@@ -35,7 +35,7 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
     }
     sortDisplayableDates(genuineOverrideInputs.datesToSave)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(
-      token,
+      username,
       'DESCRIPTION_ONLY',
     )
     return res.render(

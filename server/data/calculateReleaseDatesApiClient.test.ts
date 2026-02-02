@@ -2,7 +2,6 @@ import nock from 'nock'
 import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 import AuditService from '../services/auditService'
 import CalculateReleaseDatesApiRestClient from './calculateReleaseDatesApiRestClient'
 
@@ -17,9 +16,10 @@ const auditService = new AuditService() as jest.Mocked<AuditService>
 const mockAuthenticationClient: AuthenticationClient = {
   getToken: jest.fn().mockResolvedValue('test-system-token'),
 } as unknown as jest.Mocked<AuthenticationClient>
+const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiRestClient(mockAuthenticationClient)
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
-  new CalculateReleaseDatesApiRestClient(mockAuthenticationClient),
+  calculateReleaseDatesApiRestClient,
 ) as jest.Mocked<CalculateReleaseDatesService>
 const stubbedTestData: TestData[] = [{ key: 'X', value: 'Y' } as TestData]
 const nomisCalculationSummary = { reason: 'Adjust Sentence', calculatedAt: '2024-04-18T10:47:39' }
@@ -57,8 +57,7 @@ describe('Calculate release dates API client tests', () => {
 
     it('Get detailed calculation results', async () => {
       fakeApi.get(`/calculation/detailed-results/${calculationRequestId}`, '').reply(200, stubbedTestData)
-      const client = new CalculateReleaseDatesApiClient(token)
-      const data = await client.getDetailedCalculationResults(calculationRequestId)
+      const data = await calculateReleaseDatesApiRestClient.getDetailedCalculationResults(calculationRequestId, 'user1')
       expect(data).toEqual(stubbedTestData)
       expect(nock.isDone()).toBe(true)
     })
@@ -66,15 +65,16 @@ describe('Calculate release dates API client tests', () => {
     describe('Get nomis calculation summary for prisoner', () => {
       it('Get nomis calculation summary for offenderSentCalcId fails with 404 and throws Error', async () => {
         fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '').reply(404)
-        const client = new CalculateReleaseDatesApiClient(token)
-        await expect(client.getNomisCalculationSummary(offenderSentCalcId)).rejects.toThrow('Not Found')
+        await expect(
+          calculateReleaseDatesApiRestClient.getNomisCalculationSummary(offenderSentCalcId, 'user1'),
+        ).rejects.toThrow('Not Found')
       })
 
       it('Get nomis calculation summary for offenderSentCalcId successfully', async () => {
         fakeApi
           .get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`, '')
           .reply(200, nomisCalculationSummary)
-        const data = await new CalculateReleaseDatesApiClient(token).getNomisCalculationSummary(offenderSentCalcId)
+        const data = await calculateReleaseDatesApiRestClient.getNomisCalculationSummary(offenderSentCalcId, 'user1')
         expect(data).toEqual(nomisCalculationSummary)
         expect(nock.isDone()).toBe(true)
       })
@@ -83,14 +83,15 @@ describe('Calculate release dates API client tests', () => {
     describe('Get latest calculation for prisoner', () => {
       it('Get latest calculation for prisoner successfully', async () => {
         fakeApi.get(`/calculation/${prisonerId}/latest`, '').reply(200, stubbedTestData)
-        const data = await new CalculateReleaseDatesApiClient(token).getLatestCalculationForPrisoner(prisonerId)
+        const data = await calculateReleaseDatesApiRestClient.getLatestCalculationForPrisoner(prisonerId, 'user1')
         expect(data).toEqual(stubbedTestData)
         expect(nock.isDone()).toBe(true)
       })
       it('Get latest calculation for prisoner fails with 404 and throws Error', async () => {
         fakeApi.get(`/calculation/${prisonerId}/latest`, '').reply(404)
-        const client = new CalculateReleaseDatesApiClient(token)
-        await expect(client.getLatestCalculationForPrisoner(prisonerId)).rejects.toThrow('Not Found')
+        await expect(calculateReleaseDatesService.getLatestCalculationForPrisoner(prisonerId, 'user1')).rejects.toThrow(
+          'Not Found',
+        )
       })
     })
     describe('Get reference data', () => {
@@ -100,7 +101,7 @@ describe('Calculate release dates API client tests', () => {
           { type: 'BAR', description: 'Bar date' },
         ]
         fakeApi.get('/reference-data/date-type', '').reply(200, dates)
-        const data = await new CalculateReleaseDatesApiClient(token).getDateTypeDefinitions()
+        const data = await calculateReleaseDatesApiRestClient.getDateTypeDefinitions('user1')
         expect(data).toEqual(dates)
         expect(nock.isDone()).toBe(true)
       })

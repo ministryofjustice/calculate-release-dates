@@ -34,7 +34,7 @@ export const services = () => {
   const viewReleaseDatesService = new ViewReleaseDatesService(calculateReleaseDatesApiClient)
   const userInputService = new UserInputService()
   const manualCalculationService = new ManualCalculationService(auditService, calculateReleaseDatesApiClient)
-  const dateTypeConfigurationService = new DateTypeConfigurationService()
+  const dateTypeConfigurationService = new DateTypeConfigurationService(calculateReleaseDatesApiClient)
   const dateValidationService = new DateValidationService()
   const manualEntryService = new ManualEntryService(
     dateTypeConfigurationService,

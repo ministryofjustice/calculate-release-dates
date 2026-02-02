@@ -20,7 +20,9 @@ describe('SelectApprovedDatesController', () => {
   const sessionSetup = new SessionSetup()
 
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
-  const dateTypeConfigurationService = new DateTypeConfigurationService() as jest.Mocked<DateTypeConfigurationService>
+  const dateTypeConfigurationService = new DateTypeConfigurationService(
+    null,
+  ) as jest.Mocked<DateTypeConfigurationService>
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
     null,

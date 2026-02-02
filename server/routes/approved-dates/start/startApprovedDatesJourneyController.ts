@@ -12,8 +12,8 @@ export default class StartApprovedDatesJourney implements Controller {
 
   GET = async (req: Request<{ nomsId: string }>, res: Response): Promise<void> => {
     const { nomsId } = req.params
-    const { token } = res.locals.user
-    const inputs = await this.calculateReleaseDatesService.getApprovedDatesInputs(nomsId, token)
+    const { username } = res.locals.user
+    const inputs = await this.calculateReleaseDatesService.getApprovedDatesInputs(nomsId, username)
     if (inputs.approvedDatesAvailable) {
       const journey: ApprovedDatesJourney = {
         id: uuidv4(),

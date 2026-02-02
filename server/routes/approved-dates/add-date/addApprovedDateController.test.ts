@@ -17,7 +17,9 @@ describe('AddApprovedDateController', () => {
   let app: Express
   const sessionSetup = new SessionSetup()
 
-  const dateTypeConfigurationService = new DateTypeConfigurationService() as jest.Mocked<DateTypeConfigurationService>
+  const dateTypeConfigurationService = new DateTypeConfigurationService(
+    null,
+  ) as jest.Mocked<DateTypeConfigurationService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 
   let journey: ApprovedDatesJourney

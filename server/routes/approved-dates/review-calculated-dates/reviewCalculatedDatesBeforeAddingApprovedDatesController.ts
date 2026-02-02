@@ -16,12 +16,12 @@ export default class ReviewCalculatedDatesBeforeAddingApprovedDatesController im
 
   GET = async (req: Request<PersonJourneyParams>, res: Response): Promise<void> => {
     const { nomsId, journeyId } = req.params
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
 
     const journey = req.session.approvedDatesJourneys[journeyId]
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       journey.preliminaryCalculationRequestId,
-      token,
+      username,
     )
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
 
