@@ -1,10 +1,10 @@
 import { DateTypeDefinition } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
-import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export default class DateTypeConfigurationService {
-  constructor(private readonly calculateReleaseDatesApiRestClient: CalculateReleaseDatesApiRestClient) {}
+  constructor(private readonly calculateReleaseDatesApiRestClient: CalculateReleaseDatesApiClient) {}
 
   public async configureViaBackend(
     username: string,

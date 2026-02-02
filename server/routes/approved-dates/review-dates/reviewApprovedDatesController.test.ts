@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { HttpError } from 'http-errors'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import { appWithAllRoutes, flashProvider } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
@@ -204,7 +203,6 @@ describe('ReviewApprovedDatesController', () => {
         'user1',
         prisonerNumber,
         calculationRequestId,
-        'token',
         expect.objectContaining({
           calculationFragments: expect.anything(),
           approvedDates: [
@@ -218,9 +216,9 @@ describe('ReviewApprovedDatesController', () => {
 
     it('should redirect to input with errors if confirming calc with approved dates was not successful', async () => {
       const error = {
-        status: 412,
+        responseStatus: 412,
         message: 'An error has occurred',
-      } as HttpError
+      }
 
       calculateReleaseDatesService.confirmCalculation.mockImplementation(() => {
         throw error

@@ -14,7 +14,7 @@ import { appWithAllRoutes } from '../routes/testutils/appSetup'
 import SessionSetup from '../routes/testutils/sessionSetup'
 import PrisonApiClient from '../data/prisonApiClient'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
-import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 let app: Express
 let sessionSetup: SessionSetup
@@ -44,9 +44,7 @@ describe('View release dates service tests', () => {
     sessionSetup = new SessionSetup()
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.calculateReleaseDates.url)
-    viewReleaseDatesService = new ViewReleaseDatesService(
-      new CalculateReleaseDatesApiRestClient(mockAuthenticationClient),
-    )
+    viewReleaseDatesService = new ViewReleaseDatesService(new CalculateReleaseDatesApiClient(mockAuthenticationClient))
     prisonApiClient = new PrisonApiClient(null) as jest.Mocked<PrisonApiClient>
     prisonerSearchApiClient = new PrisonerSearchApiClient(null) as jest.Mocked<PrisonerSearchApiClient>
     prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient) as jest.Mocked<PrisonerService> // Instantiate the mocked service

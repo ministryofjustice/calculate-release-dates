@@ -6,7 +6,6 @@ import {
   LatestCalculationCardDate,
   LatestCalculationCardDateHint,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
-import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import {
   Agency,
   AgencySwitchUpdateResult,
@@ -52,12 +51,12 @@ import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prison
 import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
 import AuditService from './auditService'
 import { CalculationCard } from '../types/CalculationCard'
-import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export default class CalculateReleaseDatesService {
   constructor(
     private readonly auditService: AuditService,
-    private readonly calculateReleaseDatesApiRestClient: CalculateReleaseDatesApiRestClient,
+    private readonly calculateReleaseDatesApiRestClient: CalculateReleaseDatesApiClient,
   ) {}
 
   async calculatePreliminaryReleaseDates(
@@ -365,11 +364,14 @@ export default class CalculateReleaseDatesService {
     userName: string,
     nomsId: string,
     calculationRequestId: number,
-    token: string,
     body: SubmitCalculationRequest,
   ): Promise<BookingCalculation> {
     try {
-      const calculation = await new CalculateReleaseDatesApiClient(token).confirmCalculation(calculationRequestId, body)
+      const calculation = await this.calculateReleaseDatesApiRestClient.confirmCalculation(
+        calculationRequestId,
+        body,
+        userName,
+      )
       await this.auditService.publishSentenceCalculation(
         userName,
         calculation.prisonerId,
@@ -387,14 +389,13 @@ export default class CalculateReleaseDatesService {
     userName: string,
     nomsId: string,
     calculationRequestId: number,
-    token: string,
     body: GenuineOverrideRequest,
   ): Promise<GenuineOverrideCreatedResponse> {
     try {
-      const genuineOverrideResponse = await new CalculateReleaseDatesApiClient(token)
-        .createGenuineOverrideForCalculation(calculationRequestId, body)
+      const genuineOverrideResponse = await this.calculateReleaseDatesApiRestClient
+        .createGenuineOverrideForCalculation(calculationRequestId, body, userName)
         .catch(error => {
-          if (error.status === 400) {
+          if ((error.status ?? error.responseStatus) === 400) {
             logger.info(`Received 400 on creating genuine override. Date selection was invalid.`)
             return error.data
           }

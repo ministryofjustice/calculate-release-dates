@@ -25,7 +25,7 @@ import {
   psiExample25CalculationBreakdown,
 } from './breakdownExamplesTestData'
 import AuditService from './auditService'
-import CalculateReleaseDatesApiRestClient from '../data/calculateReleaseDatesApiRestClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 jest.mock('./auditService')
 
@@ -165,7 +165,7 @@ const unsupportedCalculationResult: ValidationMessage[] = [
 const mockAuthenticationClient: AuthenticationClient = {
   getToken: jest.fn().mockResolvedValue('test-system-token'),
 } as unknown as jest.Mocked<AuthenticationClient>
-const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiRestClient(mockAuthenticationClient)
+const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiClient(mockAuthenticationClient)
 
 const token = 'token'
 
@@ -237,18 +237,12 @@ describe('Calculate release dates service tests', () => {
   it('Test confirming the results of a calculation', async () => {
     fakeApi.post(`/calculation/confirm/${calculationRequestId}`).reply(200, calculationResults)
 
-    const result = await calculateReleaseDatesService.confirmCalculation(
-      userName,
-      nomsId,
-      calculationRequestId,
-      token,
-      {
-        calculationFragments: {
-          breakdownHtml: '',
-        },
-        approvedDates: [],
+    const result = await calculateReleaseDatesService.confirmCalculation(userName, nomsId, calculationRequestId, {
+      calculationFragments: {
+        breakdownHtml: '',
       },
-    )
+      approvedDates: [],
+    })
 
     expect(result).toEqual(calculationResults)
   })
@@ -1044,7 +1038,6 @@ describe('Calculate release dates service tests', () => {
       userName,
       nomsId,
       calculationRequestId,
-      token,
       {
         dates: [],
         reason: 'OTHER',
@@ -1088,7 +1081,6 @@ describe('Calculate release dates service tests', () => {
       userName,
       nomsId,
       calculationRequestId,
-      token,
       {
         dates: [],
         reason: 'OTHER',
@@ -1105,17 +1097,11 @@ describe('Calculate release dates service tests', () => {
     fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(500)
 
     try {
-      await calculateReleaseDatesService.createGenuineOverrideForCalculation(
-        userName,
-        nomsId,
-        calculationRequestId,
-        token,
-        {
-          dates: [],
-          reason: 'OTHER',
-          reasonFurtherDetail: 'Foo',
-        },
-      )
+      await calculateReleaseDatesService.createGenuineOverrideForCalculation(userName, nomsId, calculationRequestId, {
+        dates: [],
+        reason: 'OTHER',
+        reasonFurtherDetail: 'Foo',
+      })
       fail('Should have blown up')
     } catch (error) {
       expect(auditService.publishGenuineOverrideFailed).toHaveBeenCalledWith(

@@ -59,7 +59,7 @@ export default class ReviewApprovedDatesController implements Controller {
 
   POST = async (req: Request<PersonJourneyParams>, res: Response): Promise<void> => {
     const { nomsId, journeyId } = req.params
-    const { token, username } = res.locals.user
+    const { username } = res.locals.user
     const journey = req.session.approvedDatesJourneys[journeyId]
 
     const result = await getBreakdownFragment(
@@ -81,7 +81,6 @@ export default class ReviewApprovedDatesController implements Controller {
           username,
           nomsId,
           journey.preliminaryCalculationRequestId,
-          token,
           confirmCalcRequest,
         )
       })

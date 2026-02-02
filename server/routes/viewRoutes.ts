@@ -44,7 +44,7 @@ export default class ViewRoutes {
       )
       res.redirect(`/view/${nomsId}/sentences-and-offences/${latestCalculation.calculationRequestId}`)
     } catch (error) {
-      if (error.status === 404) {
+      if ((error.status ?? error.responseStatus) === 404) {
         throw FullPageError.noCalculationSubmitted(nomsId, prisonerDetail)
       }
     }
@@ -108,7 +108,7 @@ export default class ViewRoutes {
         ),
       )
     } catch (error) {
-      if (error.status === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
+      if ((error.status ?? error.responseStatus) === 404 && error.data?.errorCode === 'PRISON_API_DATA_MISSING') {
         res.redirect(`/view/${nomsId}/calculation-summary/${calculationRequestId}`)
       } else {
         throw error
@@ -132,7 +132,6 @@ export default class ViewRoutes {
   private async calculateReleaseDatesViewModel(
     calculationRequestId: number,
     nomsId: string,
-    token: string,
     caseloads: string[],
     userRoles: string[],
     username: string,
@@ -212,13 +211,12 @@ export default class ViewRoutes {
 
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const calculationRequestId = Number(req.params.calculationRequestId)
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
     const model = await this.calculateReleaseDatesViewModel(
       calculationRequestId,
       nomsId,
-      token,
       caseloads,
       userRoles,
       username,
@@ -235,14 +233,13 @@ export default class ViewRoutes {
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
     const model = await this.calculateReleaseDatesViewModel(
       calculationRequestId,
       nomsId,
-      token,
       caseloads,
       userRoles,
       username,

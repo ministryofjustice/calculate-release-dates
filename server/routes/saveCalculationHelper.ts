@@ -12,7 +12,7 @@ const saveCalculation = async (
   calculateReleaseDatesService: CalculateReleaseDatesService,
   errorUrl: string,
 ) => {
-  const { token, username } = res.locals.user
+  const { username } = res.locals.user
   const { nomsId } = req.params
   const calculationRequestId = Number(req.params.calculationRequestId)
   const breakdownHtml = await getBreakdownFragment(calculationRequestId, username, calculateReleaseDatesService)
@@ -32,7 +32,6 @@ const saveCalculation = async (
       username,
       nomsId,
       calculationRequestId,
-      token,
       {
         calculationFragments: {
           breakdownHtml,
@@ -43,7 +42,7 @@ const saveCalculation = async (
     res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
   } catch (error) {
     logger.error(error)
-    if (error.status === 412) {
+    if ((error.status ?? error.responseStatus) === 412) {
       req.flash(
         'serverErrors',
         JSON.stringify({
