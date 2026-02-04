@@ -21,6 +21,7 @@ import ReviewDatesFromPreviousGenuineOverrideController from './review-previous-
 import { reviewDatesFromPreviousOverrideSummarySchema } from './review-previous-override/reviewDatesFromPreviousOverrideSummarySchema'
 import { selectDatesSchema } from '../common-schemas/selectDatesSchema'
 import { deleteDateSchema } from '../common-schemas/deleteDateSchema'
+import GenuineOverrideHolidayInterceptController from './weekend-holiday-intercept/genuineOverrideHolidayInterceptController'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
@@ -55,6 +56,11 @@ const GenuineOverridesRoutes = (
   route({
     path: '/calculation/:nomsId/express-override-intercept/:calculationRequestId',
     controller: new GenuineOverrideExpressInterceptController(calculateReleaseDatesService, prisonerService),
+  })
+
+  route({
+    path: '/calculation/:nomsId/weekend-holiday-override-intercept/:calculationRequestId',
+    controller: new GenuineOverrideHolidayInterceptController(prisonerService),
   })
 
   route({
