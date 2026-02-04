@@ -166,5 +166,14 @@ describe('SelectGenuineOverrideReasonController', () => {
         reasonFurtherDetail: 'Foo',
       })
     })
+
+    it('should pass to holiday intercept page if a corresponding reason was selected correctly', async () => {
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({ reason: 'RELEASE_DATE_ON_WEEKEND_OR_HOLIDAY' })
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/weekend-holiday-override-intercept/${calculationRequestId}`)
+    })
   })
 })
