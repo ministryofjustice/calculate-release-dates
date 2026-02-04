@@ -15,6 +15,13 @@ export default class GenuineOverrideUrls {
     return `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`
   }
 
+  static interceptForWeekendHolidayGenuineOverride = (
+    prisonerNumber: string,
+    calculationRequestId: string | number,
+  ) => {
+    return `/calculation/${prisonerNumber}/weekend-holiday-override-intercept/${calculationRequestId}`
+  }
+
   static reviewDateFromPreviousOverride = (prisonerNumber: string, calculationRequestId: string | number) => {
     return `/calculation/${prisonerNumber}/review-dates-from-previous-override/${calculationRequestId}`
   }
@@ -33,5 +40,9 @@ export default class GenuineOverrideUrls {
 
   static selectDatesToAdd = (prisonerNumber: string, calculationRequestId: string | number) => {
     return `/calculation/${prisonerNumber}/override/select-dates/${calculationRequestId}`
+  }
+
+  static continueForHolidayInterceptOverride = (prisonerNumber: string, calculationRequestId: string | number) => {
+    return `/calculation/${prisonerNumber}/summary/${calculationRequestId}`
   }
 }
