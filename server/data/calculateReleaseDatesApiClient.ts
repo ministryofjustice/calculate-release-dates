@@ -1,4 +1,4 @@
-import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
+import { asSystem, asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import {
@@ -492,7 +492,7 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
         path: `/calculation/confirm/${calculationRequestId}`,
         data: body,
       },
-      asSystem(username),
+      asUser(username),
     )
   }
 
