@@ -485,42 +485,42 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
   confirmCalculation(
     calculationRequestId: number,
     body: SubmitCalculationRequest,
-    username: string,
+    token: string,
   ): Promise<BookingCalculation> {
     return this.post<BookingCalculation>(
       {
         path: `/calculation/confirm/${calculationRequestId}`,
         data: body,
       },
-      asUser(username),
+      asUser(token),
     )
   }
 
   createGenuineOverrideForCalculation(
     calculationRequestId: number,
     body: GenuineOverrideRequest,
-    username: string,
+    token: string,
   ): Promise<GenuineOverrideCreatedResponse> {
     return this.post<GenuineOverrideCreatedResponse>(
       {
         path: `/genuine-override/calculation/${calculationRequestId}`,
         data: body,
       },
-      asSystem(username),
+      asUser(token),
     )
   }
 
   storeManualCalculation(
     nomsId: string,
     manualEntryRequest: ManualEntryRequest,
-    username: string,
+    token: string,
   ): Promise<ManualCalculationResponse> {
     return this.post<ManualCalculationResponse>(
       {
         path: `/manual-calculation/${nomsId}`,
         data: manualEntryRequest,
       },
-      asSystem(username),
+      asUser(token),
     )
   }
 }

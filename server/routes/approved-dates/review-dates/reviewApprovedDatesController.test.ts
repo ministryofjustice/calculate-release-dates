@@ -211,6 +211,7 @@ describe('ReviewApprovedDatesController', () => {
             { dateType: 'APD', date: { day: 3, month: 2, year: 2021 } },
           ],
         }),
+        'token',
       )
     })
 

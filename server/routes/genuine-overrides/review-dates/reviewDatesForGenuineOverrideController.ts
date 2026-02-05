@@ -53,7 +53,7 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
 
   POST = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    const { username } = res.locals.user
+    const { username, token } = res.locals.user
     const inputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const request: GenuineOverrideRequest = {
       reason: inputs.reason as GenuineOverrideRequestReasonCode,
@@ -68,6 +68,7 @@ export default class ReviewDatesForGenuineOverrideController implements Controll
       nomsId,
       Number(calculationRequestId),
       request,
+      token,
     )
     if (!response.success) {
       return redirectToInputWithErrors(
