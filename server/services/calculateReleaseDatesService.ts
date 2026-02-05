@@ -361,6 +361,7 @@ export default class CalculateReleaseDatesService {
   }
 
   async confirmCalculation(
+    token: string,
     userName: string,
     nomsId: string,
     calculationRequestId: number,
@@ -370,7 +371,7 @@ export default class CalculateReleaseDatesService {
       const calculation = await this.calculateReleaseDatesApiRestClient.confirmCalculation(
         calculationRequestId,
         body,
-        userName,
+        token,
       )
       await this.auditService.publishSentenceCalculation(
         userName,

@@ -485,14 +485,14 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
   confirmCalculation(
     calculationRequestId: number,
     body: SubmitCalculationRequest,
-    username: string,
+    token: string,
   ): Promise<BookingCalculation> {
     return this.post<BookingCalculation>(
       {
         path: `/calculation/confirm/${calculationRequestId}`,
         data: body,
       },
-      asUser(username),
+      asUser(token),
     )
   }
 
