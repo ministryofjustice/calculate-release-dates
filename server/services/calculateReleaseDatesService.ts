@@ -365,12 +365,13 @@ export default class CalculateReleaseDatesService {
     nomsId: string,
     calculationRequestId: number,
     body: SubmitCalculationRequest,
+    token: string,
   ): Promise<BookingCalculation> {
     try {
       const calculation = await this.calculateReleaseDatesApiRestClient.confirmCalculation(
         calculationRequestId,
         body,
-        userName,
+        token,
       )
       await this.auditService.publishSentenceCalculation(
         userName,
@@ -390,10 +391,11 @@ export default class CalculateReleaseDatesService {
     nomsId: string,
     calculationRequestId: number,
     body: GenuineOverrideRequest,
+    token: string,
   ): Promise<GenuineOverrideCreatedResponse> {
     try {
       const genuineOverrideResponse = await this.calculateReleaseDatesApiRestClient
-        .createGenuineOverrideForCalculation(calculationRequestId, body, userName)
+        .createGenuineOverrideForCalculation(calculationRequestId, body, token)
         .catch(error => {
           if ((error.status ?? error.responseStatus) === 400) {
             logger.info(`Received 400 on creating genuine override. Date selection was invalid.`)

@@ -237,12 +237,18 @@ describe('Calculate release dates service tests', () => {
   it('Test confirming the results of a calculation', async () => {
     fakeApi.post(`/calculation/confirm/${calculationRequestId}`).reply(200, calculationResults)
 
-    const result = await calculateReleaseDatesService.confirmCalculation(userName, nomsId, calculationRequestId, {
-      calculationFragments: {
-        breakdownHtml: '',
+    const result = await calculateReleaseDatesService.confirmCalculation(
+      userName,
+      nomsId,
+      calculationRequestId,
+      {
+        calculationFragments: {
+          breakdownHtml: '',
+        },
+        approvedDates: [],
       },
-      approvedDates: [],
-    })
+      token,
+    )
 
     expect(result).toEqual(calculationResults)
   })
@@ -1043,6 +1049,7 @@ describe('Calculate release dates service tests', () => {
         reason: 'OTHER',
         reasonFurtherDetail: 'Foo',
       },
+      token,
     )
 
     expect(result).toEqual(response)
@@ -1086,6 +1093,7 @@ describe('Calculate release dates service tests', () => {
         reason: 'OTHER',
         reasonFurtherDetail: 'Foo',
       },
+      token,
     )
     expect(result).toEqual(response)
     expect(auditService.publishGenuineOverride).not.toHaveBeenCalled()
@@ -1097,11 +1105,17 @@ describe('Calculate release dates service tests', () => {
     fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(500)
 
     try {
-      await calculateReleaseDatesService.createGenuineOverrideForCalculation(userName, nomsId, calculationRequestId, {
-        dates: [],
-        reason: 'OTHER',
-        reasonFurtherDetail: 'Foo',
-      })
+      await calculateReleaseDatesService.createGenuineOverrideForCalculation(
+        userName,
+        nomsId,
+        calculationRequestId,
+        {
+          dates: [],
+          reason: 'OTHER',
+          reasonFurtherDetail: 'Foo',
+        },
+        token,
+      )
       fail('Should have blown up')
     } catch (error) {
       expect(auditService.publishGenuineOverrideFailed).toHaveBeenCalledWith(

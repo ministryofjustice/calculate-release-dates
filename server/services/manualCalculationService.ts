@@ -19,7 +19,12 @@ export default class ManualCalculationService {
     return this.calculateReleaseDatesApiClient.hasRecallSentences(bookingId, username)
   }
 
-  async storeManualCalculation(userName: string, prisonerId: string, req: Request): Promise<ManualCalculationResponse> {
+  async storeManualCalculation(
+    userName: string,
+    prisonerId: string,
+    req: Request,
+    token: string,
+  ): Promise<ManualCalculationResponse> {
     if (req.session.calculationReasonId == null) {
       req.session.calculationReasonId = {}
       req.session.otherReasonDescription = {}
@@ -36,7 +41,7 @@ export default class ManualCalculationService {
           reasonForCalculationId: reasonId,
           otherReasonDescription: req.session.otherReasonDescription[prisonerId],
         } as ManualEntryRequest,
-        userName,
+        token,
       )
       await this.auditService.publishManualSentenceCalculation(userName, prisonerId, calculation.enteredDates, reasonId)
       return calculation

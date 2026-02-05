@@ -12,7 +12,7 @@ const saveCalculation = async (
   calculateReleaseDatesService: CalculateReleaseDatesService,
   errorUrl: string,
 ) => {
-  const { username } = res.locals.user
+  const { username, token } = res.locals.user
   const { nomsId } = req.params
   const calculationRequestId = Number(req.params.calculationRequestId)
   const breakdownHtml = await getBreakdownFragment(calculationRequestId, username, calculateReleaseDatesService)
@@ -38,6 +38,7 @@ const saveCalculation = async (
         },
         approvedDates: newApprovedDates,
       },
+      token,
     )
     res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
   } catch (error) {
