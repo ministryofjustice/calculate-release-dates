@@ -346,6 +346,7 @@ const stubbedReleaseDatesUsingCalcReqId: ReleaseDatesAndCalculationContext = {
 const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustments = {
   context: {
     calculationRequestId: stubbedCalculationResults.calculationRequestId,
+    overridesCalculationRequestId: 12345,
     prisonerId: stubbedCalculationResults.prisonerId,
     bookingId: stubbedCalculationResults.bookingId,
     calculationDate: stubbedCalculationResults.calculationDate,
@@ -1645,6 +1646,69 @@ describe('View journey routes tests', () => {
             .split('\n')
             .map(it => it.trim()),
         ).toStrictEqual(['User Override', '', 'Some details about the GO'])
+      })
+  })
+  it('GET /view/:nomsId/calculation-summary/:calculationRequestId/overrides should show CRDS and Overridden dates', () => {
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockImplementation(
+      async calculationRequestId => {
+        if (calculationRequestId === stubbedCalculationResults.calculationRequestId) {
+          return {
+            ...stubbedResultsWithBreakdownAndAdjustments,
+            dates: {
+              CRD: {
+                date: '2021-02-03',
+                type: 'CRD',
+                description: 'Conditional release date',
+                hints: [],
+              },
+              SED: { date: '2021-01-05', type: 'SED', description: 'Sentence expiry date', hints: [] },
+              HDCED: {
+                date: '2025-01-05',
+                type: 'HDCED',
+                description: 'Home detention curfew eligibility date',
+                hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
+              },
+            },
+          } as ResultsWithBreakdownAndAdjustments
+        }
+        return {
+          ...stubbedResultsWithBreakdownAndAdjustments,
+          dates: {
+            CRD: {
+              date: '2021-02-05',
+              type: 'CRD',
+              description: 'Conditional release date',
+              hints: [],
+            },
+            SED: { date: '2025-01-05', type: 'SED', description: 'Sentence expiry date', hints: [] },
+            HDCED: {
+              date: '2021-01-05',
+              type: 'HDCED',
+              description: 'Home detention curfew eligibility date',
+              hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
+            },
+          },
+        } as ResultsWithBreakdownAndAdjustments
+      },
+    )
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/view/A1234AA/calculation-summary/123456/overrides')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('#release-dates-crds [data-qa="CRD-date"]').text()).toContain('Friday, 05 February 2021')
+        expect($('#release-dates-entered [data-qa="CRD-date"]').text()).toContain('Wednesday, 03 February 2021')
+        expect($('#release-dates-crds [data-qa="SED-date"]').text()).toContain('Sunday, 05 January 2025')
+        expect($('#release-dates-entered [data-qa="SED-date"]').text()).toContain('Tuesday, 05 January 2021')
+        expect($('#release-dates-crds [data-qa="HDCED-date"]').text()).toContain('Tuesday, 05 January 2021')
+        expect($('#release-dates-entered [data-qa="HDCED-date"]').text()).toContain('Sunday, 05 January 2025')
+        // hints should only show for dates entered
+        expect($('#release-dates-entered [data-qa=HDCED-release-date-hint-0]').text()).toStrictEqual(
+          'Tuesday, 05 October 2021 when adjusted to a working day',
+        )
+        expect($('#release-dates-crds [data-qa=HDCED-release-date-hint-0]').text()).toStrictEqual('')
       })
   })
   describe('Print Notification slip', () => {

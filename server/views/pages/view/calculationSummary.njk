@@ -142,13 +142,20 @@
             </div>
         </div>
     {% endif %}
-    {% if isManualCalc == false %}
+    {% if isManualCalc == false and isGenuineOverride == false %}
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
                 {% include "../partials/calculationSummary/howDatesCalculatedInset.njk" %}
             </div>
         </div>
+    {% endif %}
+
+    {% if isGenuineOverride %}
+    {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+    {{ govukInsetText({
+        html: "These release dates were entered manually to override CRDS calculated dates. <br/> You can <a href='" + model.calculationRequestId + "/overrides/'>view more details about the override</a>."
+    }) }}
     {% endif %}
 
     {% include "../partials/calculationSummaryBreakdown.njk" %}
