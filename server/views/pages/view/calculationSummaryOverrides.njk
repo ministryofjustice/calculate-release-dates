@@ -1,0 +1,67 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "../components/calculation-summary-dates-card/macro.njk" import calculationSummaryDatesCard %}
+{% from "../components/approved-summary-dates-card/macro.njk" import approvedSummaryDatesCard %}
+
+{% set pageTitle = applicationName + " - calculation summary" %}
+{% set pageId = "view-calculation-summary" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {% set backlink = "/view/" + model.nomsId + "/calculation-summary/" + model.calculationRequestId %}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backlink
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% set validationErrors = model.validationErrors %}
+    {% include "../partials/customErrorBanner.njk" %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Override details</h1>
+            {% set reason = model.calculationReason.displayName %}
+            {% if model.overrideReason|length %}
+                {% set source = "Calculate release dates service" %}
+                {% set calculatedByText %}{{ model.calculatedByDisplayName }}{% if model.calculatedByDisplayName and model.calculatedAtPrisonDescription %} at {% endif %}{{ model.calculatedAtPrisonDescription }}{% endset %}
+                {{ govukSummaryList({
+                    classes: "govuk-summary-list--no-border",
+                    rows: [
+                        {
+                            key: {
+                            text: "Reason for override",
+                            classes: "custom-summary-list__key"
+                        },
+                            value: {
+                            text: model.overrideReason
+                            }
+                        } ]
+                }) }}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row" id="release-dates-entered">
+        <div class="govuk-grid-column-three-quarters">
+            <h2 class="govuk-heading-l govuk-!-margin-top-9">Release dates entered by {{ model.calculatedByDisplayName }}</h2>
+            {{ calculationSummaryDatesCard(model.overrideDates, false, true) }}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row" id="release-dates-crds">
+        <div class="govuk-grid-column-three-quarters">
+            <h2 class="govuk-heading-l govuk-!-margin-top-9">Release dates from CRDS</h2>
+            <h3>These release dates have been overridden and should not be used for release purposes.</h3>
+            {{ calculationSummaryDatesCard(model.crdsDates, false, false) }}
+        </div>
+    </div>
+
+{% endblock %}

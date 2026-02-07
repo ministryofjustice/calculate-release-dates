@@ -232,6 +232,10 @@ export default function Index({
     )
     router.get('/view/:nomsId/calculation-summary/:calculationRequestId', viewAccessRoutes.calculationSummary)
     router.get(
+      '/view/:nomsId/calculation-summary/:calculationRequestId/overrides',
+      viewAccessRoutes.calculationSummaryOverrides,
+    )
+    router.get(
       '/view/:nomsId/calculation-summary/:calculationRequestId/print',
       viewAccessRoutes.printCalculationSummary,
     )

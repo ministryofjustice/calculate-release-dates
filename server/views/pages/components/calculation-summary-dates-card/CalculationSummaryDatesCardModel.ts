@@ -40,28 +40,14 @@ export const filteredListOfDates = [
   'APD',
 ]
 
-export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
-  model: CalculationSummaryViewModel | NomisCalculationSummary,
-  showNoDatesApply: boolean,
-): CalculationSummaryDatesCardModel {
-  const releaseDates: CalculationSummaryDatesCardLine[] = []
-
-  function pushLine(id: string) {
-    let detailed: DetailedDate | undefined
-    if (model instanceof CalculationSummaryViewModel) {
-      detailed = model.detailedCalculationResults.dates[id]
-    } else {
-      // eslint-disable-next-line prefer-destructuring
-      detailed = model.releaseDates.filter(date => date.type === id)[0]
-    }
-
-    if (detailed) {
-      const line: CalculationSummaryDatesCardLine = {
-        shortName: detailed.type,
-        fullName: detailed.description,
-        date: detailed.date,
-        hints: detailed.hints.map((hint, index) => {
-          const qaAttr = `${detailed.type}-release-date-hint-${index}`
+function getCalculationSummaryDatesCardLine(date: DetailedDate, showHints: boolean): CalculationSummaryDatesCardLine {
+  return {
+    shortName: date.type,
+    fullName: date.description,
+    date: date.date,
+    hints: showHints
+      ? date.hints.map((hint, index) => {
+          const qaAttr = `${date.type}-release-date-hint-${index}`
           let hintText = hint.text
 
           // Check if the hint contains 'HDC policy' and add a link just surrounding the 'HDC policy' text
@@ -77,10 +63,28 @@ export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
           return {
             html: `<p class="govuk-body govuk-hint govuk-!-font-size-16" ${hint.link ? '' : `data-qa="${qaAttr}"`}>${hintText}</p>`,
           }
-        }),
-      }
+        })
+      : [],
+  }
+}
 
-      releaseDates.push(line)
+export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
+  model: CalculationSummaryViewModel | NomisCalculationSummary,
+  showNoDatesApply: boolean,
+  showHints = true,
+): CalculationSummaryDatesCardModel {
+  const releaseDates: CalculationSummaryDatesCardLine[] = []
+
+  function pushLine(id: string) {
+    let detailed: DetailedDate | undefined
+    if (model instanceof CalculationSummaryViewModel) {
+      detailed = model.detailedCalculationResults.dates[id]
+    } else {
+      ;[detailed] = model.releaseDates.filter(date => date.type === id)
+    }
+
+    if (detailed) {
+      releaseDates.push(getCalculationSummaryDatesCardLine(detailed, showHints))
     }
   }
 
@@ -92,4 +96,17 @@ export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
     showNoDatesApply,
     releaseDates,
   } as CalculationSummaryDatesCardModel
+}
+
+export function calculationSummaryDatesCardModelFromOverridesViewModel(
+  dates: DetailedDate[],
+  showHints = true,
+): CalculationSummaryDatesCardModel {
+  const releaseDates: CalculationSummaryDatesCardLine[] = dates.map(d =>
+    getCalculationSummaryDatesCardLine(d, showHints),
+  )
+  return {
+    showNoDatesApply: false,
+    releaseDates,
+  }
 }
