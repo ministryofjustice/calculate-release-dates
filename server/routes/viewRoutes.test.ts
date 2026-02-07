@@ -26,6 +26,7 @@ import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDa
 import config from '../config'
 import { FullPageError } from '../types/FullPageError'
 import AuditService from '../services/auditService'
+import ViewRoutes from './viewRoutes'
 
 jest.mock('../services/userService')
 jest.mock('../services/calculateReleaseDatesService')
@@ -1646,6 +1647,28 @@ describe('View journey routes tests', () => {
             .split('\n')
             .map(it => it.trim()),
         ).toStrictEqual(['User Override', '', 'Some details about the GO'])
+      })
+  })
+  it('GET /view/:nomsId/calculation-summary/:calculationRequestId/overrides should redirect to summary if no override is present', () => {
+    const overridesSpy = jest
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .spyOn(ViewRoutes.prototype as any, 'calculateReleaseDatesOverridesViewModel')
+      .mockResolvedValue(null)
+    app = appWithAllRoutes({
+      services: {
+        userService,
+        prisonerService,
+        calculateReleaseDatesService,
+        viewReleaseDatesService,
+      },
+    })
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/view/A1234AA/calculation-summary/123456/overrides')
+      .expect(302)
+      .then(() => {
+        overridesSpy.mockRestore()
+        jest.resetAllMocks()
       })
   })
   it('GET /view/:nomsId/calculation-summary/:calculationRequestId/overrides should show CRDS and Overridden dates', () => {

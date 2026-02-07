@@ -225,6 +225,11 @@ export default class ViewRoutes {
     )
 
     const overrideRequestId = overrideResults.context.overridesCalculationRequestId
+
+    if (overrideRequestId === undefined || overrideRequestId === null) {
+      return null
+    }
+
     const currentResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       overrideRequestId,
       username,
@@ -285,7 +290,11 @@ export default class ViewRoutes {
       username,
     )
 
-    res.render('pages/view/calculationSummaryOverrides', { model })
+    if (model === null) {
+      return res.redirect(`/view/${nomsId}/calculation-summary/${calculationRequestId}`)
+    }
+
+    return res.render('pages/view/calculationSummaryOverrides', { model })
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
