@@ -54,9 +54,16 @@ export default class SelectGenuineOverrideReasonController implements Controller
     const { reason, reasonFurtherDetail } = req.body
     genuineOverrideInputs.reason = reason
     genuineOverrideInputs.reasonFurtherDetail = reasonFurtherDetail
+
+    let redirectUrl: string
     if (reason === 'RELEASE_DATE_ON_WEEKEND_OR_HOLIDAY') {
-      return res.redirect(GenuineOverrideUrls.interceptForWeekendHolidayGenuineOverride(nomsId, calculationRequestId))
+      redirectUrl = GenuineOverrideUrls.interceptForWeekendHolidayGenuineOverride(nomsId, calculationRequestId)
+    } else if (reason === 'ENTER_APPROVED_DATES') {
+      redirectUrl = GenuineOverrideUrls.enterApprovedDatesForOverride(nomsId, calculationRequestId)
+    } else {
+      redirectUrl = GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId)
     }
-    return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
+
+    return res.redirect(redirectUrl)
   }
 }
