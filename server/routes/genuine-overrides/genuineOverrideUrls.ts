@@ -45,4 +45,8 @@ export default class GenuineOverrideUrls {
   static continueForHolidayInterceptOverride = (prisonerNumber: string, calculationRequestId: string | number) => {
     return `/calculation/${prisonerNumber}/summary/${calculationRequestId}`
   }
+
+  static enterApprovedDatesForOverride(nomsId: string, calculationRequestId: string) {
+    return `/calculation/${nomsId}/${calculationRequestId}/select-approved-dates`
+  }
 }
