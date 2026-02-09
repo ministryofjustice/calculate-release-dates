@@ -175,5 +175,14 @@ describe('SelectGenuineOverrideReasonController', () => {
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/weekend-holiday-override-intercept/${calculationRequestId}`)
     })
+
+    it('should pass to enter approved dates journey if a corresponding reason was selected correctly', async () => {
+      await request(app) //
+        .post(pageUrl)
+        .type('form')
+        .send({ reason: 'ENTER_APPROVED_DATES' })
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/${calculationRequestId}/select-approved-dates`)
+    })
   })
 })
