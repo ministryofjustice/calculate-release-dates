@@ -15,7 +15,6 @@ import ViewCalculateReleaseDatePageViewModel from '../models/ViewCalculateReleas
 import SentenceAndOffencePageViewModel from '../models/SentenceAndOffencePageViewModel'
 import {
   calculationSummaryDatesCardModelFromCalculationSummaryViewModel,
-  calculationSummaryDatesCardModelFromOverridesViewModel,
   filteredListOfDates,
 } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
@@ -23,7 +22,6 @@ import ViewPastNomisCalculationPageViewModel from '../models/ViewPastNomisCalcul
 import PrintNotificationSlipViewModel from '../models/PrintNotificationSlipViewModel'
 import config from '../config'
 import { hasGenuineOverridesAccess } from './genuine-overrides/genuineOverrideUtils'
-import CalculationSummaryOverridesViewModel from '../models/calculation/CalculationSummaryOverridesViewModel'
 
 export default class ViewRoutes {
   constructor(
@@ -211,48 +209,6 @@ export default class ViewRoutes {
     )
   }
 
-  private async calculateReleaseDatesOverridesViewModel(
-    calculationRequestId: number,
-    nomsId: string,
-    caseloads: string[],
-    userRoles: string[],
-    username: string,
-  ) {
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
-    const overrideResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
-      calculationRequestId,
-      username,
-    )
-
-    const overrideRequestId = overrideResults.context.overridesCalculationRequestId
-
-    if (overrideRequestId === undefined || overrideRequestId === null) {
-      return null
-    }
-
-    const currentResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
-      overrideRequestId,
-      username,
-    )
-
-    const overrideReason = currentResults.context.genuineOverrideReasonDescription
-    const overrideDates = Object.values(overrideResults.dates)
-    const currentDates = Object.values(currentResults.dates)
-
-    const crdsDateLines = calculationSummaryDatesCardModelFromOverridesViewModel(currentDates)
-    const overrideDateLines = calculationSummaryDatesCardModelFromOverridesViewModel(overrideDates)
-
-    return new CalculationSummaryOverridesViewModel(
-      calculationRequestId,
-      nomsId,
-      prisonerDetail,
-      overrideResults.context.calculatedByDisplayName,
-      overrideReason,
-      crdsDateLines,
-      overrideDateLines,
-    )
-  }
-
   public calculationSummary: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { caseloads, userRoles, username } = res.locals.user
@@ -274,27 +230,6 @@ export default class ViewRoutes {
         nomsId,
       ),
     )
-  }
-
-  public calculationSummaryOverrides: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
-    const { caseloads, userRoles, username } = res.locals.user
-    const calculationRequestId = Number(req.params.calculationRequestId)
-    await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
-
-    const model = await this.calculateReleaseDatesOverridesViewModel(
-      calculationRequestId,
-      nomsId,
-      caseloads,
-      userRoles,
-      username,
-    )
-
-    if (model === null) {
-      return res.redirect(`/view/${nomsId}/calculation-summary/${calculationRequestId}`)
-    }
-
-    return res.render('pages/view/calculationSummaryOverrides', { model })
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {

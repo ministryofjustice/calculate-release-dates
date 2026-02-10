@@ -1065,8 +1065,10 @@ export default {
   stubGetDetailedCalculationResults: (args?: {
     previouslyRecordedSLED?: PreviouslyRecordedSLED
     ftr56Tranche?: EarlyReleaseTranche
+    calculationType?: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE'
+    overridesCalculationRequestId?: number
   }): SuperAgentRequest => {
-    const { previouslyRecordedSLED, ftr56Tranche } = args || {}
+    const { previouslyRecordedSLED, ftr56Tranche, calculationType, overridesCalculationRequestId } = args || {}
     const breakdown = {
       showSds40Hints: false,
       concurrentSentences: [
@@ -1301,10 +1303,11 @@ export default {
         prisonerId: 'A1234AB',
         bookingId: 1234,
         calculationStatus: 'CONFIRMED',
-        calculationType: 'CALCULATED',
+        calculationType: calculationType ?? 'CALCULATED',
         usePreviouslyRecordedSLEDIfFound: !!previouslyRecordedSLED,
         calculatedByUsername: 'user1',
         calculatedByDisplayName: 'User One',
+        overridesCalculationRequestId: overridesCalculationRequestId ?? null,
       },
       calculationOriginalData: {
         prisonerDetails,

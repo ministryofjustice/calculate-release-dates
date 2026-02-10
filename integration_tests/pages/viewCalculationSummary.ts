@@ -18,4 +18,12 @@ export default class ViewCalculationSummary extends CalculationSummaryCommon {
   public getCRDDateHintText(): PageElement {
     return cy.get('[data-qa=CRD-release-date-hint-1]')
   }
+
+  public getSentenceFaq(): PageElement {
+    return cy.get('[id=calculation-summary-faq]')
+  }
+
+  public getCalculationOverrides(): PageElement {
+    return cy.get('[id=calculation-overrides-link]')
+  }
 }
