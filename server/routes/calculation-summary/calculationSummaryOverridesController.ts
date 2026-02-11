@@ -3,7 +3,10 @@ import { Controller } from '../controller'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import PrisonerService from '../../services/prisonerService'
 import { CalculationSummaryForm } from './calculationSummarySchema'
-import { calculationSummaryDatesCardModelFromOverridesViewModel } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import {
+  calculationSummaryDatesCardModelFromOverridesViewModel,
+  filteredListOfDates,
+} from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import CalculationSummaryOverridesViewModel from '../../models/calculation/CalculationSummaryOverridesViewModel'
 
 export default class CalculationSummaryOverridesController implements Controller {
@@ -60,13 +63,9 @@ export default class CalculationSummaryOverridesController implements Controller
       username,
     )
 
-    if ('ESED' in currentResults.dates) {
-      delete currentResults.dates.ESED
-    }
-
     const overrideReason = currentResults.context.genuineOverrideReasonDescription
     const overrideDates = Object.values(overrideResults.dates)
-    const currentDates = Object.values(currentResults.dates)
+    const currentDates = Object.values(currentResults.dates).filter(d => filteredListOfDates.includes(d.type))
 
     const crdsDateLines = calculationSummaryDatesCardModelFromOverridesViewModel(currentDates)
     const overrideDateLines = calculationSummaryDatesCardModelFromOverridesViewModel(overrideDates)
