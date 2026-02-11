@@ -60,6 +60,10 @@ export default class CalculationSummaryOverridesController implements Controller
       username,
     )
 
+    if ('ESED' in currentResults.dates) {
+      delete currentResults.dates.ESED
+    }
+
     const overrideReason = currentResults.context.genuineOverrideReasonDescription
     const overrideDates = Object.values(overrideResults.dates)
     const currentDates = Object.values(currentResults.dates)
