@@ -52,15 +52,15 @@
     <div class="govuk-grid-row" id="release-dates-entered">
         <div class="govuk-grid-column-three-quarters">
             <h2 class="govuk-heading-l govuk-!-margin-top-9">Release dates entered by {{ model.calculatedByDisplayName }}</h2>
-            {{ calculationSummaryDatesCard(model.overrideDates, false, true) }}
+            {{ calculationSummaryDatesCard(model.overrideDates, false, false) }}
         </div>
     </div>
 
     <div class="govuk-grid-row" id="release-dates-crds">
         <div class="govuk-grid-column-three-quarters">
             <h2 class="govuk-heading-l govuk-!-margin-top-9">Release dates from CRDS</h2>
-            <h3>These release dates have been overridden and should not be used for release purposes.</h3>
-            {{ calculationSummaryDatesCard(model.crdsDates, false, false) }}
+            <p class="govuk-body">These release dates have been overridden and should not be used for release purposes.</p>
+            {{ calculationSummaryDatesCard(model.crdsDates, false, true) }}
         </div>
     </div>
 

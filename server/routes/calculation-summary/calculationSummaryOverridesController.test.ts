@@ -329,6 +329,7 @@ describe('calculationSummaryOverridesController', () => {
               description: 'Home detention curfew eligibility date',
               hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
             },
+            ESED: { date: '2025-01-05', type: 'ESED', description: 'Sentence expiry date', hints: [] },
           },
         } as ResultsWithBreakdownAndAdjustments
       },
@@ -346,11 +347,11 @@ describe('calculationSummaryOverridesController', () => {
         expect($('#release-dates-entered [data-qa="SED-date"]').text()).toContain('Tuesday, 05 January 2021')
         expect($('#release-dates-crds [data-qa="HDCED-date"]').text()).toContain('Tuesday, 05 January 2021')
         expect($('#release-dates-entered [data-qa="HDCED-date"]').text()).toContain('Sunday, 05 January 2025')
-        // hints should only show for dates entered
-        expect($('#release-dates-entered [data-qa=HDCED-release-date-hint-0]').text()).toStrictEqual(
+        expect($('#release-dates-entered [data-qa=HDCED-release-date-hint-0]').text()).toStrictEqual('')
+        expect($('#release-dates-crds [data-qa=HDCED-release-date-hint-0]').text()).toStrictEqual(
           'Tuesday, 05 October 2021 when adjusted to a working day',
         )
-        expect($('#release-dates-crds [data-qa=HDCED-release-date-hint-0]').text()).toStrictEqual('')
+        expect($('#release-dates-crds [data-qa="ESED-date"]').text()).toBe('')
       })
   })
 })
