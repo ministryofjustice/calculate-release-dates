@@ -2305,6 +2305,7 @@ export interface components {
       /** Format: uuid */
       calculationReference: string
       calculationReason?: components['schemas']['CalculationReasonDto']
+      overridesCalculationRequestId?: number
       otherReasonDescription?: string
       /** Format: date */
       calculationDate?: string

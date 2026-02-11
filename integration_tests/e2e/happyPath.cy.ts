@@ -250,5 +250,71 @@ context('End to end happy path of user journey', () => {
       .then(text => {
         expect(text.trim()).to.equal('Manually overridden')
       })
+
+    calculationSummaryPage.getSentenceFaq().should('exist')
+    calculationSummaryPage.getCalculationOverrides().should('not.exist')
+  })
+
+  it('View journey with genuine override', () => {
+    cy.signIn()
+    cy.task('stubGetDetailedCalculationResults', {
+      calculationType: 'GENUINE_OVERRIDE',
+      overridesCalculationRequestId: 987654,
+    })
+
+    const prisonerSearchPage = Page.verifyOnPage(PrisonerSearchPage)
+    prisonerSearchPage.searchForFirstName('Marvin')
+    prisonerSearchPage.prisonerLinkFor('A1234AB').click()
+
+    const landingPage = Page.verifyOnPage(CCARDLandingPage)
+
+    landingPage
+      .latestCalculationDate()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('05 March 2024')
+      })
+
+    landingPage
+      .latestCalculationReason()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('Transfer')
+      })
+
+    landingPage
+      .latestCalculationCalculatedBy()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('User One at Kirkham (HMP)')
+      })
+
+    landingPage
+      .latestCalculationSource()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('Calculate release dates service')
+      })
+
+    landingPage.navigateToSentenceDetailsAction().click()
+
+    const checkInformationPage = Page.verifyOnPage(ViewSentencesAndOffencesPage)
+    checkInformationPage.offenceTitle('123').should('have.text', '123 - Doing a crime')
+    checkInformationPage.remandTable().should('contain.text', 'Remand')
+    checkInformationPage.remandTable().should('contain.text', '28')
+    checkInformationPage.loadCalculationSummary().click()
+
+    const calculationSummaryPage = Page.verifyOnPage(ViewCalculationSummary)
+    calculationSummaryPage.loadSentenceAndOffences()
+
+    calculationSummaryPage
+      .getCRDDateHintText()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('Manually overridden')
+      })
+
+    calculationSummaryPage.getSentenceFaq().should('not.exist')
+    calculationSummaryPage.getCalculationOverrides().should('exist')
   })
 })

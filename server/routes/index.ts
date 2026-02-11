@@ -25,6 +25,7 @@ import StandaloneApprovedDatesRoutes from './approved-dates/standaloneApprovedDa
 import CalculationReasonController from './calculation-reason/calculationReasonController'
 import { calculationReasonSchemaFactory } from './calculation-reason/calculationReasonSchemaFactory'
 import DisableNomisController from './disable-nomis/disableNomisController'
+import CalculationSummaryOverridesController from './calculation-summary/calculationSummaryOverridesController'
 
 export default function Index({
   prisonerService,
@@ -231,6 +232,10 @@ export default function Index({
       viewAccessRoutes.nomisCalculationSummary,
     )
     router.get('/view/:nomsId/calculation-summary/:calculationRequestId', viewAccessRoutes.calculationSummary)
+    route({
+      path: '/view/:nomsId/calculation-summary/:calculationRequestId/overrides',
+      controller: new CalculationSummaryOverridesController(calculateReleaseDatesService, prisonerService),
+    })
     router.get(
       '/view/:nomsId/calculation-summary/:calculationRequestId/print',
       viewAccessRoutes.printCalculationSummary,

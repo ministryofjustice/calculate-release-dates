@@ -346,6 +346,7 @@ const stubbedReleaseDatesUsingCalcReqId: ReleaseDatesAndCalculationContext = {
 const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustments = {
   context: {
     calculationRequestId: stubbedCalculationResults.calculationRequestId,
+    overridesCalculationRequestId: 12345,
     prisonerId: stubbedCalculationResults.prisonerId,
     bookingId: stubbedCalculationResults.bookingId,
     calculationDate: stubbedCalculationResults.calculationDate,
