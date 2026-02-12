@@ -8,6 +8,7 @@ import {
   filteredListOfDates,
 } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import CalculationSummaryOverridesViewModel from '../../models/calculation/CalculationSummaryOverridesViewModel'
+import { sortDisplayableDates } from '../../utils/utils'
 
 export default class CalculationSummaryOverridesController implements Controller {
   constructor(
@@ -64,8 +65,10 @@ export default class CalculationSummaryOverridesController implements Controller
     )
 
     const overrideReason = currentResults.context.genuineOverrideReasonDescription
-    const overrideDates = Object.values(overrideResults.dates)
-    const currentDates = Object.values(currentResults.dates).filter(d => filteredListOfDates.includes(d.type))
+    const overrideDates = sortDisplayableDates(Object.values(overrideResults.dates))
+    const currentDates = sortDisplayableDates(
+      Object.values(currentResults.dates).filter(d => filteredListOfDates.includes(d.type)),
+    )
 
     const crdsDateLines = calculationSummaryDatesCardModelFromOverridesViewModel(currentDates)
     const overrideDateLines = calculationSummaryDatesCardModelFromOverridesViewModel(overrideDates)
