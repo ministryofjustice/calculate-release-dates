@@ -31,9 +31,6 @@
     "clean": "rm -rf dist build node_modules stylesheets",
     "generate-calculate-release-dates-api-types": "openapi-typescript https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/calculateReleaseDates/index.d.ts",
     "generate-court-cases-release-dates-api-types": "openapi-typescript https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > server/@types/courtCasesReleaseDatesApi/index.d.ts",
-    "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml",
-    "precommit:lint": "node_modules/.bin/lint-staged",
-    "precommit:verify": "npm run typecheck && npm test",
     "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
