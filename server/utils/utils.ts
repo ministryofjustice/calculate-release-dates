@@ -108,7 +108,7 @@ export const maxOf = <A, B>(all: A[], map: (a: A) => B): B => {
   return max
 }
 
-export const sortDisplayableDates = (dates: { type: string }[]): { type: string }[] => {
+export const sortDisplayableDates = <T extends { type: string }>(dates: T[]): T[] => {
   return dates.sort((a, b) => filteredListOfDates.indexOf(a.type) - filteredListOfDates.indexOf(b.type))
 }
 

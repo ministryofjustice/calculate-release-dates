@@ -316,6 +316,12 @@ describe('calculationSummaryOverridesController', () => {
         return {
           ...stubbedResultsWithBreakdownAndAdjustments,
           dates: {
+            HDCED: {
+              date: '2021-01-05',
+              type: 'HDCED',
+              description: 'Home detention curfew eligibility date',
+              hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
+            },
             CRD: {
               date: '2021-02-05',
               type: 'CRD',
@@ -323,12 +329,6 @@ describe('calculationSummaryOverridesController', () => {
               hints: [],
             },
             SED: { date: '2025-01-05', type: 'SED', description: 'Sentence expiry date', hints: [] },
-            HDCED: {
-              date: '2021-01-05',
-              type: 'HDCED',
-              description: 'Home detention curfew eligibility date',
-              hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
-            },
             ESED: { date: '2025-01-05', type: 'ESED', description: 'Sentence expiry date', hints: [] },
           },
         } as ResultsWithBreakdownAndAdjustments
@@ -341,6 +341,19 @@ describe('calculationSummaryOverridesController', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
+
+        const crdsHeadings = $('#release-dates-crds dt')
+        expect(crdsHeadings.eq(0).text()).toContain('SED')
+        expect(crdsHeadings.eq(1).text()).toContain('CRD')
+        expect(crdsHeadings.eq(2).text()).toContain('HDCED')
+        expect(crdsHeadings).toHaveLength(3)
+
+        const enteredHeadings = $('#release-dates-entered dt')
+        expect(enteredHeadings).toHaveLength(3)
+        expect(enteredHeadings.eq(0).text()).toContain('SED')
+        expect(enteredHeadings.eq(1).text()).toContain('CRD')
+        expect(enteredHeadings.eq(2).text()).toContain('HDCED')
+
         expect($('#release-dates-crds [data-qa="CRD-date"]').text()).toContain('Friday, 05 February 2021')
         expect($('#release-dates-entered [data-qa="CRD-date"]').text()).toContain('Wednesday, 03 February 2021')
         expect($('#release-dates-crds [data-qa="SED-date"]').text()).toContain('Sunday, 05 January 2025')
