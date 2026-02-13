@@ -34,8 +34,8 @@
     "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
-    "node": "^22",
-    "npm": "10 - 11"
+    "node": "^24",
+    "npm": "11"
   },
   "nodemonConfig": {
     "ignore": [
