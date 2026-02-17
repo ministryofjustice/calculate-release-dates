@@ -182,7 +182,12 @@ export default class CompareRoutes {
   public viewJson: RequestHandler = async (req, res): Promise<void> => {
     const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
     const { username } = res.locals.user
-    const jsonData = await this.calculateReleaseDatesService.getPrisonJsonMismatchComparison(
+    const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      username,
+    )
+    const jsonData = await this.calculateReleaseDatesService.getPersonComparisonInputData(
       username,
       bulkComparisonResultId,
       bulkComparisonDetailId,
@@ -191,6 +196,7 @@ export default class CompareRoutes {
     res.render('pages/compare/resultJson', {
       bulkComparisonResultId,
       bulkComparisonDetailId,
+      bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
       jsonData,
     })
   }
