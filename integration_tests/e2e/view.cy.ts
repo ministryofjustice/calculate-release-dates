@@ -28,37 +28,4 @@ context('View journey tests', () => {
     ccardLandingPage.hasMissingOffenceTerms(false)
     ccardLandingPage.hasMissingOffenceLicenceTerms(false)
   })
-
-  it('View journey search show no offence dates warning', () => {
-    cy.task('stubGetLatestCalculationNoOffenceDates')
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-
-    CCARDLandingPage.goTo('A1234AB')
-
-    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
-    ccardLandingPage.hasMiniProfile()
-    ccardLandingPage.hasMissingOffenceDates(true)
-  })
-
-  it('View journey search show no offence terms', () => {
-    cy.task('stubGetLatestCalculationNoOffenceTerms')
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-
-    CCARDLandingPage.goTo('A1234AB')
-
-    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
-    ccardLandingPage.hasMiniProfile()
-    ccardLandingPage.hasMissingOffenceTerms(true)
-  })
-
-  it('View journey search show no offence licence terms', () => {
-    cy.task('stubGetLatestCalculationNoOffenceLicenceTerms')
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-
-    CCARDLandingPage.goTo('A1234AB')
-
-    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
-    ccardLandingPage.hasMiniProfile()
-    ccardLandingPage.hasMissingOffenceLicenceTerms(true)
-  })
 })

@@ -13,7 +13,7 @@ describe('CalculationSummaryViewModel', () => {
         'CALCULATED',
         'Abc',
         false,
-        { id: 1, displayName: 'Other', isOther: true },
+        { id: 1, displayName: 'Other', isOther: true, useForApprovedDates: false, requiresFurtherDetail: true },
         '',
         '2024-01-01',
         undefined,
@@ -30,11 +30,14 @@ describe('CalculationSummaryViewModel', () => {
             bookingId: 1234,
             calculationStatus: 'CONFIRMED',
             calculationType: 'CALCULATED',
+            usePreviouslyRecordedSLEDIfFound: false,
+            calculatedByUsername: 'user1',
+            calculatedByDisplayName: 'User One',
           },
           calculationOriginalData: {},
           calculationBreakdown: undefined,
           approvedDates: {},
-          tranche: 'TRANCHE_1',
+          sds40Tranche: 'TRANCHE_1',
         },
       )
     }
@@ -45,7 +48,7 @@ describe('CalculationSummaryViewModel', () => {
       ['TRANCHE_2', 'SDS40 Tranche 2'],
     ])('The SDS40 tranche text is set correctly', (tranche, expectedResult) => {
       const modelWithoutDates = createModel({})
-      modelWithoutDates.detailedCalculationResults.tranche = tranche as 'TRANCHE_1' | 'TRANCHE_2' | 'TRANCHE_0'
+      modelWithoutDates.detailedCalculationResults.sds40Tranche = tranche as 'TRANCHE_1' | 'TRANCHE_2' | 'TRANCHE_0'
       expect(modelWithoutDates.getSDS40ReleaseTranche()).toBe(expectedResult)
     })
   })

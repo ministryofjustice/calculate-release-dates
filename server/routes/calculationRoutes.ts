@@ -11,7 +11,6 @@ import CalculationSummaryPageViewModel from '../models/calculation/CalculationSu
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
-import ConcurrentConsecutiveSentence from '../models/ConcurrentConsecutiveSentencesModel'
 import { hasGenuineOverridesAccess } from './genuine-overrides/genuineOverrideUtils'
 
 export default class CalculationRoutes {
@@ -28,22 +27,22 @@ export default class CalculationRoutes {
     Object.keys(dates).forEach((dateType: string) => {
       const date = dates[dateType]
       if (typeof date === 'string') {
-        result[dateType] = DateTime.fromFormat(date, 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+        result[dateType] = DateTime.fromFormat(date, 'yyyy-MM-d').toFormat('cccc, dd MMMM yyyy')
       } else {
-        result[dateType] = DateTime.fromFormat(date.date, 'yyyy-MM-d').toFormat('cccc, dd LLLL yyyy')
+        result[dateType] = DateTime.fromFormat(date.date, 'yyyy-MM-d').toFormat('cccc, dd MMMM yyyy')
       }
     })
     return result
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
-      token,
+      username,
     )
 
     if (detailedCalculationResults.context.prisonerId !== nomsId) {
@@ -73,7 +72,7 @@ export default class CalculationRoutes {
       false,
       approvedDates,
       detailedCalculationResults,
-      hasGenuineOverridesAccess(userRoles),
+      hasGenuineOverridesAccess(),
     )
     res.render(
       'pages/calculation/printCalculationSummary',
@@ -81,16 +80,16 @@ export default class CalculationRoutes {
         model,
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
-        req.session.isAddDatesFlow,
+        req.session.isAddDatesFlow?.[nomsId] ?? false,
         req.originalUrl,
       ),
     )
   }
 
   public askCancelQuestion: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     let redirectUrl = typeof req.query.redirectUrl === 'string' ? req.query.redirectUrl : ''
     if (typeof req.query === 'object') {
       const params = new URLSearchParams()
@@ -108,9 +107,9 @@ export default class CalculationRoutes {
   }
 
   public submitCancelQuestion: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const { redirectUrl, cancelQuestion } = req.body
     if (cancelQuestion === 'no') {
       return res.redirect(redirectUrl)
@@ -125,15 +124,15 @@ export default class CalculationRoutes {
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const noDates: string = <string>req.query.noDates
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
-    const calculation = await this.calculateReleaseDatesService.getCalculationResults(calculationRequestId, token)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const calculation = await this.calculateReleaseDatesService.getCalculationResults(calculationRequestId, username)
     const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
-      token,
+      username,
     )
     if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
       throw FullPageError.notFoundError()
@@ -142,50 +141,6 @@ export default class CalculationRoutes {
     res.render(
       'pages/calculation/calculationComplete',
       new CalculationCompleteViewModel(prisonerDetail, calculationRequestId, noDates, hasIndeterminateSentence),
-    )
-  }
-
-  public concurrentConsecutive: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, token, userRoles } = res.locals.user
-    const { nomsId } = req.params
-    const { duration } = req.query as Record<string, string>
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
-
-    if (req.session.calculationReasonId == null || duration == null) {
-      return res.redirect(`/calculation/${nomsId}/check-information`)
-    }
-
-    return res.render(
-      'pages/calculation/consecutiveConcurrentSentences',
-      new ConcurrentConsecutiveSentence(
-        prisonerDetail,
-        duration,
-        `/calculation/${nomsId}/cancelCalculation?redirectUrl=/calculation/${nomsId}/check-information`,
-        `/calculation/${nomsId}/check-information/`,
-      ),
-    )
-  }
-
-  public confirmConcurrentConsecutive: RequestHandler = async (req, res): Promise<void> => {
-    const { token } = res.locals.user
-    const { nomsId } = req.params
-    const { sentenceDuration } = req.body
-
-    const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-    const calculationRequestModel = await this.calculateReleaseDatesService.getCalculationRequestModel(
-      req,
-      userInputs,
-      nomsId,
-    )
-
-    const preliminaryRequest = await this.calculateReleaseDatesService.calculatePreliminaryReleaseDates(
-      nomsId,
-      calculationRequestModel,
-      token,
-    )
-
-    res.redirect(
-      `summary/${preliminaryRequest.calculationRequestId}?callbackUrl=/calculation/${nomsId}/concurrent-consecutive?duration=${sentenceDuration}`,
     )
   }
 }

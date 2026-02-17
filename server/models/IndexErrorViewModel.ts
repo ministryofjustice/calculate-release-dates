@@ -1,7 +1,3 @@
-import {
-  Action,
-  LatestCalculationCardConfig,
-} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OptionalPrisonerContextViewModel from './OptionalPrisonerContextViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import { HistoricCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -15,9 +11,6 @@ export default class IndexErrorViewModel extends OptionalPrisonerContextViewMode
     public calculationHistory?: HistoricCalculation[],
     public prisonId?: string,
     public allowBulkLoad?: boolean,
-    public latestCalculationCardConfig?: LatestCalculationCardConfig,
-    public latestCalculationCardAction?: Action,
-    public hasNoIndeterminateSentence?: boolean,
     public serviceDefinitions?: CcrdServiceDefinitions,
   ) {
     super(prisonerDetail)
@@ -38,9 +31,6 @@ export function indexErrorViewModelForPrisoner(
     calculationHistory,
     prisonId,
     allowBulkUpload,
-    null,
-    null,
-    null,
     serviceDefinitions,
   )
 }

@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode'
-import { convertToTitleCase } from '../utils/utils'
+import { capitaliseName } from '../utils/utils'
 import type { User } from '../data/manageUsersApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import PrisonerService from './prisonerService'
@@ -27,7 +27,7 @@ export default class UserService {
     return {
       ...user,
       roles,
-      ...(user.name && { displayName: convertToTitleCase(user.name) }),
+      ...(user.name && { displayName: capitaliseName(user.name) }),
       caseloads: userCaseloads.map(uc => uc.caseLoadId),
       caseloadDescriptions: userCaseloads.map(uc => uc.description),
       caseloadMap: new Map(userCaseloads.map(uc => [uc.caseLoadId, uc.description])),

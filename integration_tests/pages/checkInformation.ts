@@ -9,4 +9,8 @@ export default class CheckInformationPage extends ViewSentencesAndOffencesCommon
   public calculateButton(): PageElement {
     return cy.get('[data-qa=calculate-release-dates]')
   }
+
+  public manualEntryButton(): PageElement {
+    return cy.get('[data-qa=manual-entry]')
+  }
 }

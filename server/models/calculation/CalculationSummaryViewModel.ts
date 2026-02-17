@@ -31,6 +31,8 @@ export default class CalculationSummaryViewModel {
     public detailedCalculationResults?: DetailedCalculationResults,
     public hasGenuineOverridesAccess?: boolean,
     public genuineOverrideReasonDescription?: string,
+    public calculatedByDisplayName?: string,
+    public calculatedAtPrisonDescription?: string,
   ) {
     // intentionally left blank
   }
@@ -46,7 +48,7 @@ export default class CalculationSummaryViewModel {
   }
 
   public getSDS40ReleaseTranche(): string {
-    const tranche = this.detailedCalculationResults?.tranche
+    const tranche = this.detailedCalculationResults?.sds40Tranche
     const prefix = 'SDS40 Tranche'
     let result = ''
 

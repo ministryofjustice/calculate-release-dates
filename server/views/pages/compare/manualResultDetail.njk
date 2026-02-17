@@ -24,7 +24,7 @@
                     href: "/compare/"
                 },
                 {
-                    text: bulkComparison.calculatedAt | date('DD MMMM YYYY'),
+                    text: bulkComparison.calculatedAt | hmppsFormatDate('dd MMMM yyyy'),
                     href: overviewPath
                 },
                 {
@@ -80,7 +80,7 @@
                     text: "Date of latest calculation"
                 },
                 value: {
-                    text: bulkComparison.calculatedAt | date('DD MMMM YYYY')
+                    text: bulkComparison.calculatedAt | hmppsFormatDate('dd MMMM yyyy')
                 }
             },
             {

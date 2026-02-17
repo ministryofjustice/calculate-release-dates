@@ -1,0 +1,86 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " - This calculation may include a SLED from a previous period of custody" %}
+{% set pageId = "previously-recorded-sled-intercept" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backLink,
+            attributes: {"data-qa": "back-link"}
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">Calculate release dates</span>
+            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">This calculation may include a SLED from a previous period of custody</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body" data-qa="previous-sled-details">This service has found a <strong>SLED (Sentence and licence expiry date)</strong> on <strong>{{ previouslyRecordedSLED | hmppsFormatDate('dd MMMM yyyy') }}</strong> from another period of custody that can be used for this calculation.</p>
+            <p class="govuk-body" data-qa="calculated-sled-details">The calculated SLED is currently <strong>{{ calculatedSLED | hmppsFormatDate('dd MMMM yyyy') }}</strong>.</p>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+                {{ govukRadios({
+                    name: 'usePreviouslyRecordedSLED',
+                    fieldset: {
+                        legend: {
+                            text: "Do you want to use the later SLED from another period of custody?",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    errorMessage: formValidationErrors | findError('usePreviouslyRecordedSLED'),
+                    items: [
+                        {
+                            value: 'YES',
+                            text: 'Yes, use the later SLED from another period of custody',
+                            attributes: {'data-qa': 'use-previously-recorded-SLED-YES'},
+                            hint: {
+                                text: previouslyRecordedSLED | hmppsFormatDate('dd MMMM yyyy')
+                            }
+                        },
+                        {
+                            value: 'NO',
+                            text: 'No, do not use the later SLED from another period of custody',
+                            attributes: {'data-qa': 'use-previously-recorded-SLED-NO'}
+                        }
+                    ]
+                }) }}
+
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'continue' }
+                }) }}
+                {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+                <a data-qa="cancel-link"
+                   data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                   data-module="govuk-button"
+                   href="{{ cancelUrl }}">
+                    Cancel
+                </a>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

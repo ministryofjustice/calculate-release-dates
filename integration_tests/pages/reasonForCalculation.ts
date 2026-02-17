@@ -10,8 +10,12 @@ export default class CalculationReasonPage extends Page {
     return new CalculationReasonPage()
   }
 
-  public radioByIndex(index: number): PageElement {
-    return cy.get(`[data-qa=reasonRadio-${index}]`)
+  public radioByReasonId(reasonId: number): PageElement {
+    return cy.get(`[data-qa=reasonRadio-${reasonId}]`)
+  }
+
+  public furtherDetailByReasonId(reasonId: number): PageElement {
+    return cy.get(`#reason-further-detail-${reasonId}`)
   }
 
   public submitReason(): PageElement {

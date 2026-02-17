@@ -2,7 +2,7 @@
 {% from "../partials/printNotification/adjustmentsTable.njk" import adjustmentsTable %}
 {% from "../partials/printNotification/keyDates.njk" import keyDates %}
 {% from "../partials/printNotification/prisonerDetails.njk" import prisonerDetails %}
-
+{% from "../components/adjustments-tables/macro.njk" import adjustmentsTables %}
 {% block header %}
   {% if pageType == 'establishment' or pageType == 'offender' %}
      <script data-qa="print-invoker" src="/assets/print.js"></script>
@@ -73,7 +73,7 @@
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-full">
                 <h2 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="release-date-title">Release dates</h2>
-                <p class="govuk-body govuk-!-margin-bottom-1" data-qa="calculation-date">These release dates were calculated on {{ calculationDate | date('DD MMMM YYYY') }}.</p>
+                <p class="govuk-body govuk-!-margin-bottom-1" data-qa="calculation-date">These release dates were calculated on {{ calculationDate | hmppsFormatDate('dd MMMM yyyy') }}.</p>
 
                 <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-0">
                     <div class="govuk-summary-list__row">
@@ -110,11 +110,21 @@
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-full">
                 <h2 class="govuk-heading-m govuk-!-margin-bottom-2" data-qa="adjust-title">Adjustments</h2>
-
-                {{ adjustmentsTable(model) }}
-
-                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="appeal-custody">Days spent in custody pending appeal to count <b>(must be completed manually)</b>:</p>
-                <p class="govuk-body govuk-!-margin-bottom-4" data-qa="appeal-bail">Days spent on bail pending appeal not to count <b>(must be completed manually)</b>:</p>
+              </div>
+            </div>
+                  {% if featureToggles.adjustmentsIntegrationEnabled and model.adjustmentsTablesModel %}
+                      {{ adjustmentsTables(model.adjustmentsTablesModel) }}
+                  {% else %}
+                      <div class="govuk-grid-row">
+                          <div class="govuk-grid-column-full">
+                              {{ adjustmentsTable(model) }}
+                            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="appeal-custody">Days spent in custody pending appeal to count <b>(must be completed manually)</b>:</p>
+                            <p class="govuk-body govuk-!-margin-bottom-4" data-qa="appeal-bail">Days spent on bail pending appeal not to count <b>(must be completed manually)</b>:</p>
+                          </div>
+                      </div>
+                  {% endif%}
+              <div class="govuk-grid-row">
+                  <div class="govuk-grid-column-full">
                 {% if pageType == 'offender' %}
                     <p data-qa="offender-disagree-text" class="govuk-body">If you disagree with the above dates, please write down what you think the dates should be and hand to your wing office.</p>
                     {% if hasHDCED %}

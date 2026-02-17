@@ -10,7 +10,7 @@ import {
   PrisonApiReturnToCustodyDate,
 } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
-import { groupBy, indexBy, maxOf } from '../utils/utils'
+import { groupBy, indexBy } from '../utils/utils'
 import AdjustmentsViewModel from './AdjustmentsViewModel'
 import CourtCaseTableViewModel from './CourtCaseTableViewModel'
 import SentenceTypes from './SentenceTypes'
@@ -35,8 +35,6 @@ export default class SentenceAndOffenceViewModel {
 
   public adjustmentsTablesModel: AdjustmentTablesModel
 
-  public revocationDate?: Date
-
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
@@ -44,6 +42,7 @@ export default class SentenceAndOffenceViewModel {
     adjustments: AnalysedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     public ersedEligible: boolean,
+    public isUnsupported: boolean,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
     adjustmentsDtos?: AnalysedAdjustment[] | AdjustmentDto[],
@@ -63,7 +62,6 @@ export default class SentenceAndOffenceViewModel {
     this.sentencesAndOffences = sentencesAndOffences
     this.displaySDSPlusBanner = sentencesAndOffences.some(sentence => sentence.isSDSPlus === true)
     this.adjustmentsTablesModel = adjustmentsTablesFromAdjustmentDTOs(adjustmentsDtos ?? [], sentencesAndOffences)
-    this.revocationDate = this.getRevocationDate(sentencesAndOffences)
   }
 
   public rowIsSdsPlus(sentence: AnalysedSentenceAndOffence): boolean {
@@ -102,14 +100,5 @@ export default class SentenceAndOffenceViewModel {
       }
     })
     return Object.keys(duplicates).map(key => [duplicates[key].caseSequence, duplicates[key].lineSequence])
-  }
-
-  private getRevocationDate(sentencesAndOffences: AnalysedSentenceAndOffence[]): Date {
-    return maxOf(sentencesAndOffences, it => {
-      if (SentenceTypes.isRecall(it)) {
-        return maxOf(it.revocationDates || [], revocationDate => new Date(revocationDate))
-      }
-      return null
-    })
   }
 }

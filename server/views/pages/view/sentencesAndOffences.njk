@@ -24,6 +24,11 @@
             <h1 class="govuk-heading-xl" id="check-nomis-heading" data-qa="sentAndOff-title">Calculation details</h1>
             {% if model.calculationReason.isOther %}
                 {% set reason = "Other (" + model.otherReasonDescription + ")" %}
+            {% elseif model.calculationReason.requiresFurtherDetail %}
+                {% set reason %}
+                    <p class="govuk-body">{{ model.calculationReason.displayName }}</p>
+                    <p class="govuk-body govuk-hint govuk-!-font-size-16">({{ model.otherReasonDescription }})</p>
+                {% endset %}
             {% else %}
                 {% set reason = model.calculationReason.displayName %}
             {% endif %}
@@ -48,6 +53,8 @@
                 {% endset %}
             {% endif %}
 
+            {% set calculatedByText %}{{ model.calculatedByDisplayName }}{% if model.calculatedByDisplayName and model.calculatedAtPrisonDescription %} at {% endif %}{{ model.calculatedAtPrisonDescription }}{% endset %}
+
             {% if model.calculationReason|length %}
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
@@ -67,16 +74,16 @@
                             classes: "custom-summary-list__key"
                         },
                             value: {
-                            text: reason
+                            html: reason
                         }
                         },
                         {
                             key: {
-                            text: "Establishment",
+                            text: "Calculated by",
                             classes: "custom-summary-list__key"
                         },
                             value: {
-                            text: model.prisonerDetail.assignedLivingUnit.agencyName
+                            text: calculatedByText
                         }
                         },
                         {

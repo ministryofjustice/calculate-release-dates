@@ -32,14 +32,15 @@ jest.mock('../services/viewReleaseDatesService')
 jest.mock('../services/userPermissionsService')
 jest.mock('../services/auditService')
 
-const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 const userService = new UserService(null, prisonerService) as jest.Mocked<UserService>
 const auditService = new AuditService() as jest.Mocked<AuditService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
+  null,
 ) as jest.Mocked<CalculateReleaseDatesService>
 const userInputService = new UserInputService() as jest.Mocked<UserInputService>
-const viewReleaseDatesService = new ViewReleaseDatesService() as jest.Mocked<ViewReleaseDatesService>
+const viewReleaseDatesService = new ViewReleaseDatesService(null) as jest.Mocked<ViewReleaseDatesService>
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
 
 let app: Express
@@ -159,6 +160,9 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
     calculationType: stubbedCalculationResults.calculationType,
     calculationReason: stubbedCalculationResults.calculationReason,
     otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+    usePreviouslyRecordedSLEDIfFound: false,
+    calculatedByUsername: 'user1',
+    calculatedByDisplayName: 'User One',
   },
   dates: {
     CRD: {
@@ -361,7 +365,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
     ],
   },
   approvedDates: {},
-  tranche: 'TRANCHE_1',
+  sds40Tranche: 'TRANCHE_1',
 }
 
 beforeEach(() => {

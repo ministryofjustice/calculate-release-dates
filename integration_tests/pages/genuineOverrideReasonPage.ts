@@ -24,4 +24,9 @@ export default class GenuineOverrideReasonPage extends Page {
     cy.get('[data-qa=cancel-link]').click()
     return this
   }
+
+  public clickBack(): GenuineOverrideReasonPage {
+    cy.get('.govuk-back-link').click()
+    return this
+  }
 }

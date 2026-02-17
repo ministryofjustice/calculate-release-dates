@@ -1,11 +1,12 @@
-{% macro releaseDateLine(releaseDate, isPreCalc) %}
+{% macro releaseDateLine(releaseDate, isPreCalc, showHints) %}
     <div class="govuk-summary-list__row">
         <dt class="custom-summary-list__key release-dates-key govuk-!-font-size-24"
             data-qa="{{ releaseDate.shortName }}-short-name">{{ releaseDate.shortName }}
             <p class="govuk-hint" data-qa="{{ releaseDate.shortName }}-full-name">{{ releaseDate.fullName }}</p>
         </dt>
         <dd class="govuk-summary-list__value"
-            data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | date('dddd, DD MMMM YYYY') }}
+            data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | hmppsFormatDate('cccc, dd MMMM yyyy') }}
+            {% if showHints %}
             <p style="margin-top: 10px;" data-qa="{{ releaseDate.shortName }}-release-date-hints">
                 {% if isPreCalc %}
                     {% set hints = releaseDate.hints | validPreCalcHints %}
@@ -17,6 +18,7 @@
                     {{ hint.html | safe }}
                 {% endfor %}
             </p>
+            {% endif %}
         </dd>
     </div>
 {% endmacro %}
@@ -28,7 +30,7 @@
 
 <dl class="govuk-summary-list">
     {% for releaseDate in calculationSummaryDatesCardModel.releaseDates %}
-        {{ releaseDateLine(releaseDate, isPreCalc) }}
+        {{ releaseDateLine(releaseDate, isPreCalc, showHints) }}
     {% endfor %}
     {% if calculationSummaryDatesCardModel.showNoDatesApply %}
         {{ releaseNoDateLine() }}

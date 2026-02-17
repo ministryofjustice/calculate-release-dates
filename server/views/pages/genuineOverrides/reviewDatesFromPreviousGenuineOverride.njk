@@ -1,0 +1,81 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Confirm the dates are correct" %}
+{% set pageId = "genuine-override-review-previous-override" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backLink,
+            attributes: {"data-qa": "back-link"}
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% include '../partials/formError.njk' %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">Calculate release dates</span>
+            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Confirm the dates are correct</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukSummaryList({
+                rows: dateRows,
+                attributes: { id: 'datesToSave' }
+            }) }}
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">Confirm if these dates are still correct</h2>
+            <p class="govuk-body">If the dates are correct, they will be saved to NOMIS.</p>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukRadios({
+                    name: 'stillCorrect',
+                    errorMessage: formValidationErrors | findError('stillCorrect'),
+                    items: [
+                        {
+                            value: 'YES',
+                            text: 'Yes, all the release dates are still correct',
+                            attributes: {'data-qa': 'still-correct-dates-YES'}
+                        },
+                        {
+                            value: 'NO',
+                            text: 'No, release dates are either missing or incorrect',
+                            attributes: {'data-qa': 'still-correct-dates-NO'}
+                        }
+                    ]
+                }) }}
+                {{ govukButton({
+                    text: "Continue",
+                    type: submit,
+                    preventDoubleClick: true,
+                    attributes: {  'data-qa': 'continue' }
+                }) }}
+                {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+                <a data-qa="cancel-link"
+                   data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+                   data-module="govuk-button"
+                   href="{{ cancelUrl }}">
+                    Cancel
+                </a>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

@@ -10,6 +10,7 @@ export default class CalculationSummaryPageViewModel extends PrisonerContextView
     public approvedSummaryDatesCardModel: ApprovedSummaryDatesCardModel,
     public isAddDatesFlow: boolean,
     public pageCancelRedirectUrl?: string,
+    public backLink?: string,
   ) {
     super(model.prisonerDetail)
   }

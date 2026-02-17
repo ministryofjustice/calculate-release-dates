@@ -8,10 +8,16 @@ import {
   personStatus,
   hmppsFormatDate,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
-import dateFilter from 'nunjucks-date-filter'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { hmppsDesignSystemsEnvironmentName, initialiseName, createSupportLink, validPreCalcHints } from './utils'
+import {
+  hmppsDesignSystemsEnvironmentName,
+  initialiseName,
+  createSupportLink,
+  validPreCalcHints,
+  maxOf,
+  capitaliseName,
+} from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
@@ -19,10 +25,6 @@ import { FieldValidationError } from '../types/FieldValidationError'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
 
 dayjs.extend(customParseFormat)
-
-// TODO the use of nunjucks-date-filter is raising a deprecation warning, some dates are in this format 12/12/2030 ->
-// Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable
-// across all browsers and versions. Non RFC2822/ISO date formats are discouraged.
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -87,12 +89,11 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('createSupportLink', createSupportLink)
 
   njkEnv.addFilter('initialiseName', initialiseName)
+  njkEnv.addFilter('capitaliseName', capitaliseName)
 
   njkEnv.addFilter('formatListAsString', (list?: string[]) => {
     return list ? `[${list.map(i => `'${i}'`).join(',')}]` : '[]'
   })
-
-  njkEnv.addFilter('date', dateFilter)
 
   njkEnv.addFilter('remandDate', remandDate)
 
@@ -156,6 +157,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatSds40Exclusion', formatSds40Exclusion)
   njkEnv.addFilter('validPreCalcHints', validPreCalcHints)
   njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
+  njkEnv.addFilter('latestRevocationDate', latestRevocationDate)
+  njkEnv.addFilter('trancheIsFtr56', trancheIsFtr56)
+  njkEnv.addFilter('formatFtr56Tranche', formatFtr56Tranche)
   njkEnv.addFilter('findError', findError)
 }
 
@@ -213,7 +217,7 @@ export const remandDate = (date: string, format: string) => {
   if (!date) {
     return 'Date Not Entered'
   }
-  return dayjs(date).format(format)
+  return hmppsFormatDate(date, format)
 }
 
 export const formatSds40Exclusion = (exclusion: string) => {
@@ -224,4 +228,21 @@ export const formatSds40Exclusion = (exclusion: string) => {
     .toLowerCase()
     .replace(/\b\w/g, char => char.toUpperCase())
   return isTrancheThree ? `${title} (for prisoners in custody on or after the 16th Dec 2024)` : title
+}
+
+export const latestRevocationDate = (dates: string[]) => maxOf(dates, revocationDate => revocationDate)
+
+export const trancheIsFtr56 = (tranche: string): boolean =>
+  [
+    'FTR_56_TRANCHE_1',
+    'FTR_56_TRANCHE_2',
+    'FTR_56_TRANCHE_3',
+    'FTR_56_TRANCHE_4',
+    'FTR_56_TRANCHE_5',
+    'FTR_56_TRANCHE_6',
+  ].includes(tranche)
+
+export const formatFtr56Tranche = (tranche: string): string => {
+  const trancheNumber = tranche[tranche.length - 1]
+  return `Tranche ${trancheNumber}`
 }

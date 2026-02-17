@@ -1,7 +1,6 @@
 import { Readable } from 'stream'
-import type HmppsAuthClient from '../data/hmppsAuthClient'
-import PrisonApiClient from '../api/prisonApiClient'
-import PrisonerSearchApiClient from '../api/prisonerSearchApiClient'
+import PrisonApiClient from '../data/prisonApiClient'
+import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { FullPageError } from '../types/FullPageError'
 import deriveAccessibleCaseloads from '../utils/caseloads'
 import {
@@ -13,68 +12,61 @@ import { Prisoner, PrisonerSearchCriteria } from '../@types/prisonerOffenderSear
 import logger from '../../logger'
 
 export default class PrisonerService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
-
-  private prisonApi(token: string): PrisonApiClient {
-    return new PrisonApiClient(token)
-  }
+  constructor(
+    private readonly prisonerSearchApiClient: PrisonerSearchApiClient,
+    private readonly prisonApiClient: PrisonApiClient,
+  ) {}
 
   async getPrisonerImage(username: string, nomsId: string): Promise<Readable> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    return this.prisonApi(token).getPrisonerImage(nomsId)
+    return this.prisonApiClient.getPrisonerImage(nomsId, username)
   }
 
   async getPrisonerDetail(
     nomsId: string,
-    token: string,
+    username: string,
     userCaseloads: string[],
     userRoles: string[],
   ): Promise<PrisonApiPrisoner> {
-    return this.getAccessiblePrisoner(nomsId, token, userCaseloads, userRoles)
+    return this.getAccessiblePrisoner(nomsId, username, userCaseloads, userRoles)
   }
 
   async checkPrisonerAccess(
     nomsId: string,
-    token: string,
+    username: string,
     userCaseloads: string[],
     userRoles: string[],
   ): Promise<PrisonApiPrisoner> {
-    return this.getAccessiblePrisoner(nomsId, token, userCaseloads, userRoles)
-  }
-
-  async getPrisonerDetailForSpecialistSupport(nomsId: string, token: string): Promise<PrisonApiPrisoner> {
-    return this.getPrisonerDetailImpl(nomsId, [], token, true)
+    return this.getAccessiblePrisoner(nomsId, username, userCaseloads, userRoles)
   }
 
   private getAccessiblePrisoner(
     nomsId: string,
-    token: string,
+    username: string,
     userCaseloads: string[],
     userRoles: string[],
   ): Promise<PrisonApiPrisoner> {
     const accessibleCaseloads = deriveAccessibleCaseloads(userCaseloads, userRoles)
-    return this.getPrisonerDetailImpl(nomsId, accessibleCaseloads, token)
+    return this.getPrisonerDetailImpl(nomsId, username, accessibleCaseloads)
   }
 
   private async getPrisonerDetailImpl(
     nomsId: string,
+    username: string,
     accessibleCaseloads: string[],
-    token: string,
-    isSpecialistSupport = false,
   ): Promise<PrisonApiPrisoner> {
     try {
-      const prisonerDetail = await this.prisonApi(token).getPrisonerDetail(nomsId)
+      const prisonerDetail = await this.prisonApiClient.getPrisonerDetail(nomsId, username)
 
       logger.info('Accessible caseloads:', accessibleCaseloads)
       logger.info('Prisoner agencyId:', prisonerDetail.agencyId)
 
-      if (isSpecialistSupport || accessibleCaseloads.includes(prisonerDetail.agencyId)) {
+      if (accessibleCaseloads.includes(prisonerDetail.agencyId)) {
         return prisonerDetail
       }
 
       throw FullPageError.notInCaseLoadError(prisonerDetail)
     } catch (error) {
-      if (error?.status === 404 && !(error instanceof FullPageError)) {
+      if (error?.responseStatus === 404 && !(error instanceof FullPageError)) {
         throw FullPageError.notInCaseLoadError()
       }
       throw error
@@ -82,16 +74,15 @@ export default class PrisonerService {
   }
 
   async searchPrisoners(username: string, criteria: PrisonerSearchCriteria): Promise<Prisoner[]> {
-    const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    return new PrisonerSearchApiClient(token).searchPrisoners(criteria)
+    return this.prisonerSearchApiClient.searchPrisoners(username, criteria)
   }
 
   async getUsersCaseloads(token: string): Promise<PrisonApiUserCaseloads[]> {
-    return this.prisonApi(token).getUsersCaseloads()
+    return this.prisonApiClient.getUsersCaseloads(token)
   }
 
-  async getReturnToCustodyDate(bookingId: number, token: string): Promise<PrisonApiReturnToCustodyDate> {
-    const { returnToCustodyDate } = await this.prisonApi(token).getFixedTermRecallDetails(bookingId)
+  async getReturnToCustodyDate(bookingId: number, username: string): Promise<PrisonApiReturnToCustodyDate> {
+    const { returnToCustodyDate } = await this.prisonApiClient.getFixedTermRecallDetails(bookingId, username)
     return { bookingId, returnToCustodyDate }
   }
 }

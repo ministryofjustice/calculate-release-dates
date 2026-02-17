@@ -27,7 +27,7 @@
                     href: "/compare/"
                 },
                 {
-                    text: comparison.calculatedAt | date('DD MMMM YYYY'),
+                    text: comparison.calculatedAt | hmppsFormatDate('dd MMMM yyyy'),
                     href: overviewPath
                 }
             ]
@@ -42,7 +42,7 @@
 
             {% if comparison.status === 'PROCESSING' %}
                 {% set bannerHtml %}
-                    <h2 class="govuk-heading-l">Comparison is still processing {{comparison.percentageComplete}}% complete. Expected completion time {{ comparison.expectedCompletionTime | date('DD MMMM YYYY') }} at {{comparison.expectedCompletionTime | date('HH:mm') }}</h2>
+                    <h2 class="govuk-heading-l">Comparison is still processing {{comparison.percentageComplete}}% complete. Expected completion time {{ comparison.expectedCompletionTime | hmppsFormatDate('dd MMMM yyyy') }} at {{comparison.expectedCompletionTime | hmppsFormatDate('HH:mm') }}</h2>
                 {% endset %}
                 {{ mojBanner({
                     type: 'information',
@@ -81,7 +81,7 @@
                         text: "Bulk calculation on"
                     },
                     value: {
-                        text: comparison.calculatedAt | date('DD MMMM YYYY')
+                        text: comparison.calculatedAt | hmppsFormatDate('dd MMMM yyyy')
                     }
                 },
                 {

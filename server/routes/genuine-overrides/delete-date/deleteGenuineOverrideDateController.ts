@@ -4,8 +4,8 @@ import GenuineOverrideUrls from '../genuineOverrideUrls'
 import { genuineOverrideInputsForPrisoner } from '../genuineOverrideUtils'
 import PrisonerService from '../../../services/prisonerService'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
-import { DeleteGenuineOverrideDateForm } from './deleteGenuineOverrideSchema'
 import GenuineOverrideDeleteDateViewModel from '../../../models/genuine-override/GenuineOverrideDeleteDateViewModel'
+import { DeleteDateForm } from '../../common-schemas/deleteDateSchema'
 
 export default class DeleteGenuineOverrideDateController implements Controller {
   constructor(
@@ -22,9 +22,9 @@ export default class DeleteGenuineOverrideDateController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId, dateType } = req.params
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
 
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
@@ -35,7 +35,7 @@ export default class DeleteGenuineOverrideDateController implements Controller {
     }
 
     const description = await this.dateTypeConfigurationService
-      .dateTypeToDescriptionMapping(token)
+      .dateTypeToDescriptionMapping(username)
       .then(descriptions => descriptions[dateType])
 
     return res.render(
@@ -56,7 +56,7 @@ export default class DeleteGenuineOverrideDateController implements Controller {
         dateType: string
       },
       unknown,
-      DeleteGenuineOverrideDateForm
+      DeleteDateForm
     >,
     res: Response,
   ): Promise<void> => {

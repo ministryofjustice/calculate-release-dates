@@ -1,19 +1,30 @@
 import { Router } from 'express'
+import { z } from 'zod'
 import { Services } from '../services'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
 import StartRoutes from './startRoutes'
-import CheckInformationRoutes from './checkInformationRoutes'
 import ViewRoutes from './viewRoutes'
-import CalculationQuestionRoutes from './calculationQuestionRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
 import ThingsToDoInterceptRoutes from './thingsToDoInterceptRoutes'
 import GenuineOverridesRoutes from './genuine-overrides/genuineOverridesRoutes'
 import CalculationSummaryController from './calculation-summary/calculationSummaryController'
-import { validate } from '../middleware/validationMiddleware'
+import { SchemaFactory, validate } from '../middleware/validationMiddleware'
 import { calculationSummarySchema } from './calculation-summary/calculationSummarySchema'
+import CheckInformationController from './check-information/checkInformationController'
+import { Controller } from './controller'
+import asyncMiddleware from '../middleware/asyncMiddleware'
+import { checkInformationSchema } from './check-information/checkInformationSchema'
+import MultipleConsecutiveToInterceptController from './multiple-consecutive-to-intercept/multipleConsecutiveToInterceptController'
+import PreviouslyRecordedSledInterceptController from './previously-recorded-sled-intercept/previouslyRecordedSledInterceptController'
+import { previouslyRecordedSledSchema } from './previously-recorded-sled-intercept/previouslyRecordedSledSchema'
+import StandaloneApprovedDatesRoutes from './approved-dates/standaloneApprovedDatesRoutes'
+import CalculationReasonController from './calculation-reason/calculationReasonController'
+import { calculationReasonSchemaFactory } from './calculation-reason/calculationReasonSchemaFactory'
+import DisableNomisController from './disable-nomis/disableNomisController'
+import CalculationSummaryOverridesController from './calculation-summary/calculationSummaryOverridesController'
 import config from '../config'
 
 export default function Index({
@@ -31,14 +42,25 @@ export default function Index({
   dateTypeConfigurationService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
-
+  const route = <P extends { [key: string]: string }>({
+    path,
+    controller,
+    validateToSchema,
+  }: {
+    path: string
+    controller: Controller
+    validateToSchema?: z.ZodTypeAny | SchemaFactory<P>
+  }) => {
+    router.get(path, asyncMiddleware(controller.GET))
+    if (controller.POST) {
+      if (validateToSchema) {
+        router.post(path, validate(validateToSchema), asyncMiddleware(controller.POST))
+      } else {
+        router.post(path, asyncMiddleware(controller.POST))
+      }
+    }
+  }
   const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService, userInputService)
-  const checkInformationAccessRoutes = new CheckInformationRoutes(
-    calculateReleaseDatesService,
-    prisonerService,
-    userInputService,
-    checkInformationService,
-  )
 
   const compareAccessRoutes = new CompareRoutes(
     calculateReleaseDatesService,
@@ -55,12 +77,6 @@ export default function Index({
     courtCasesReleaseDatesService,
   )
   const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
-
-  const calculationQuestionRoutes = new CalculationQuestionRoutes(
-    calculateReleaseDatesService,
-    prisonerService,
-    courtCasesReleaseDatesService,
-  )
 
   const manualEntryAccessRoutes = new ManualEntryRoutes(
     calculateReleaseDatesService,
@@ -84,20 +100,21 @@ export default function Index({
     router.get('/accessibility', startRoutes.accessibility)
   }
 
+  const checkInformationController = new CheckInformationController(
+    calculateReleaseDatesService,
+    prisonerService,
+    checkInformationService,
+    userInputService,
+  )
   const checkInformationRoutes = () => {
-    router.get('/calculation/:nomsId/check-information', checkInformationAccessRoutes.checkInformation)
-    router.post('/calculation/:nomsId/check-information', checkInformationAccessRoutes.submitCheckInformation)
+    route({
+      path: '/calculation/:nomsId/check-information',
+      controller: checkInformationController,
+      validateToSchema: checkInformationSchema,
+    })
   }
 
   const manualEntryRoutes = () => {
-    router.get(
-      '/calculation/:nomsId/check-information-unsupported',
-      checkInformationAccessRoutes.unsupportedCheckInformation,
-    )
-    router.post(
-      '/calculation/:nomsId/check-information-unsupported',
-      checkInformationAccessRoutes.submitUnsupportedCheckInformation,
-    )
     router.get('/calculation/:nomsId/manual-entry', manualEntryAccessRoutes.landingPage)
     router.get('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.dateSelection)
     router.post('/calculation/:nomsId/manual-entry/select-dates', manualEntryAccessRoutes.submitSelectedDates)
@@ -118,6 +135,7 @@ export default function Index({
   const calculationSummaryController = new CalculationSummaryController(calculateReleaseDatesService, prisonerService)
 
   const approvedDatesRoutes = () => {
+    // routes integrated into the regular calculation journey
     router.get(
       '/calculation/:nomsId/:calculationRequestId/approved-dates-question',
       approvedDatesAccessRoutes.askApprovedDatesQuestion,
@@ -144,6 +162,12 @@ export default function Index({
     )
     router.get('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.loadRemoveDate)
     router.post('/calculation/:nomsId/:calculationRequestId/remove', approvedDatesAccessRoutes.submitRemoveDate)
+
+    // routes for standalone journey
+    router.use(
+      '/',
+      StandaloneApprovedDatesRoutes(calculateReleaseDatesService, prisonerService, dateTypeConfigurationService),
+    )
   }
 
   const calculationRoutes = () => {
@@ -164,13 +188,35 @@ export default function Index({
     router.get('/calculation/:nomsId/complete/:calculationRequestId', calculationAccessRoutes.complete)
     router.get('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.askCancelQuestion)
     router.post('/calculation/:nomsId/cancelCalculation', calculationAccessRoutes.submitCancelQuestion)
-    router.get('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.concurrentConsecutive)
-    router.post('/calculation/:nomsId/concurrent-consecutive', calculationAccessRoutes.confirmConcurrentConsecutive)
+    route({
+      path: '/calculation/:nomsId/concurrent-consecutive',
+      controller: new MultipleConsecutiveToInterceptController(
+        calculateReleaseDatesService,
+        prisonerService,
+        userInputService,
+      ),
+    })
+    route({
+      path: '/calculation/:nomsId/previously-recorded-sled-intercept/:calculationRequestId',
+      controller: new PreviouslyRecordedSledInterceptController(
+        calculateReleaseDatesService,
+        prisonerService,
+        userInputService,
+      ),
+      validateToSchema: previouslyRecordedSledSchema,
+    })
   }
 
   const reasonRoutes = () => {
-    router.get('/calculation/:nomsId/reason', calculationQuestionRoutes.selectCalculationReason)
-    router.post('/calculation/:nomsId/reason', calculationQuestionRoutes.submitCalculationReason)
+    route({
+      path: '/calculation/:nomsId/reason',
+      controller: new CalculationReasonController(
+        calculateReleaseDatesService,
+        prisonerService,
+        courtCasesReleaseDatesService,
+      ),
+      validateToSchema: calculationReasonSchemaFactory,
+    })
   }
 
   const viewRoutes = () => {
@@ -181,6 +227,10 @@ export default function Index({
       viewAccessRoutes.nomisCalculationSummary,
     )
     router.get('/view/:nomsId/calculation-summary/:calculationRequestId', viewAccessRoutes.calculationSummary)
+    route({
+      path: '/view/:nomsId/calculation-summary/:calculationRequestId/overrides',
+      controller: new CalculationSummaryOverridesController(calculateReleaseDatesService, prisonerService),
+    })
     router.get(
       '/view/:nomsId/calculation-summary/:calculationRequestId/print',
       viewAccessRoutes.printCalculationSummary,
@@ -197,8 +247,8 @@ export default function Index({
 
   const compareRoutes = () => {
     router.get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
-    router.get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation) // TODO remove this route as it was only for testing
-    router.post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation) // TODO remove this route as it was only for testing
+    router.get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation)
+    router.post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation)
     router.post(comparePaths.COMPARE_RUN, compareAccessRoutes.run)
     router.get(comparePaths.COMPARE_CHOOSE, compareAccessRoutes.choose)
     router.get(comparePaths.COMPARE_RESULT, compareAccessRoutes.result)
@@ -220,6 +270,13 @@ export default function Index({
     router.use('/', GenuineOverridesRoutes(calculateReleaseDatesService, prisonerService, dateTypeConfigurationService))
   }
 
+  const disableNomisRoutes = () => {
+    route({
+      path: '/disable-nomis',
+      controller: new DisableNomisController(calculateReleaseDatesService),
+    })
+  }
+
   indexRoutes()
   calculationRoutes()
   reasonRoutes()
@@ -236,5 +293,6 @@ export default function Index({
     res.redirect(config.apis.digitalPrisonServices.ui_url)
   })
 
+  disableNomisRoutes()
   return router
 }

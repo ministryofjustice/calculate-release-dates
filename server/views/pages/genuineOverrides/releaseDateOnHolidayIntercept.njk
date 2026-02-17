@@ -1,0 +1,63 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% set pageTitle = applicationName + " - Release Date on weekend or holiday intercept" %}
+{% set pageId = "genuine-override-reason-holiday-intercept" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backLink,
+            attributes: {"data-qa": "back-link"}
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-l">Calculate release dates</span>
+            <h1 class="govuk-heading-l" data-qa="main-heading" id="main-heading">
+                Weekend or public holiday release dates should be updated in the release schedule
+            </h1>
+            <p class="govuk-body">
+                Do not use this service or NOMIS key dates screen to process weekend or holiday releases.
+            </p>
+            <p class="govuk-body">
+                Use the release schedule in NOMIS to update the confirmed release date and reason.
+            </p>
+            <p class="govuk-body">
+                You can read more information on the
+                <a href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1083190/sc-annex-a-operational-guidance.pdf">
+                    policy framework.
+                </a>
+            </p>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+       <div class="govuk-grid-column-two-thirds">
+            <a href="{{ continueUrl }}"
+               class="govuk-button"
+               data-module="govuk-button"
+               data-qa="continue"
+               data-prevent-double-click="true">
+                Continue
+            </a>
+            {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
+            <a data-qa="cancel-link"
+               data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
+               data-module="govuk-button"
+               href="{{ cancelUrl }}">
+                Cancel
+            </a>
+       </div>
+    </div>
+{% endblock %}

@@ -1,8 +1,10 @@
 import FrontEndComponentsService from './frontEndComponentsService'
-import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
+import FrontendComponentsApiClient from '../data/frontendComponentsApiClient'
 
-jest.mock('../api/frontendComponentsApiClient')
-const mockedFrontendComponentsApiClient = new FrontendComponentsApiClient() as jest.Mocked<FrontendComponentsApiClient>
+jest.mock('../data/frontendComponentsApiClient')
+const mockedFrontendComponentsApiClient = new FrontendComponentsApiClient(
+  null,
+) as jest.Mocked<FrontendComponentsApiClient>
 const underTest = new FrontEndComponentsService(mockedFrontendComponentsApiClient)
 
 describe('frontendComponentsService', () => {

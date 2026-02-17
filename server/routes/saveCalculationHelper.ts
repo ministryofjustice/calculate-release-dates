@@ -3,7 +3,8 @@ import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import { nunjucksEnv } from '../utils/nunjucksSetup'
-import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManuallyEnteredDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 const saveCalculation = async (
   req: Request,
@@ -11,33 +12,38 @@ const saveCalculation = async (
   calculateReleaseDatesService: CalculateReleaseDatesService,
   errorUrl: string,
 ) => {
-  const { token, username } = res.locals.user
+  const { username, token } = res.locals.user
   const { nomsId } = req.params
   const calculationRequestId = Number(req.params.calculationRequestId)
-  const breakdownHtml = await getBreakdownFragment(calculationRequestId, token, calculateReleaseDatesService)
+  const breakdownHtml = await getBreakdownFragment(calculationRequestId, username, calculateReleaseDatesService)
   const approvedDates: ManualJourneySelectedDate[] =
     req.session.selectedApprovedDates != null && req.session.selectedApprovedDates[nomsId] != null
       ? req.session.selectedApprovedDates[nomsId]
       : []
 
-  const newApprovedDates: ManualEntrySelectedDate[] = approvedDates.map(d => d.manualEntrySelectedDate)
+  const newApprovedDates: ManuallyEnteredDate[] = approvedDates
+    .filter(d => d.manualEntrySelectedDate)
+    .map(d => ({
+      dateType: d.manualEntrySelectedDate.dateType,
+      date: d.manualEntrySelectedDate.date,
+    }))
   try {
     const bookingCalculation = await calculateReleaseDatesService.confirmCalculation(
       username,
       nomsId,
       calculationRequestId,
-      token,
       {
         calculationFragments: {
           breakdownHtml,
         },
         approvedDates: newApprovedDates,
       },
+      token,
     )
     res.redirect(`/calculation/${nomsId}/complete/${bookingCalculation.calculationRequestId}`)
   } catch (error) {
     logger.error(error)
-    if (error.status === 412) {
+    if ((error.status ?? error.responseStatus) === 412) {
       req.flash(
         'serverErrors',
         JSON.stringify({
@@ -64,10 +70,10 @@ const saveCalculation = async (
 
 const getBreakdownFragment = async (
   calculationRequestId: number,
-  token: string,
+  username: string,
   calculateReleaseDatesService: CalculateReleaseDatesService,
 ): Promise<string> => {
-  const breakdown = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
+  const breakdown = await calculateReleaseDatesService.getBreakdown(calculationRequestId, username)
   return nunjucksEnv().render('pages/fragments/breakdownFragment.njk', {
     model: {
       ...breakdown,
@@ -76,4 +82,4 @@ const getBreakdownFragment = async (
   })
 }
 
-export default saveCalculation
+export { saveCalculation, getBreakdownFragment }

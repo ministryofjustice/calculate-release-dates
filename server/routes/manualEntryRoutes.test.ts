@@ -2,6 +2,7 @@ import request from 'supertest'
 import type { Express } from 'express'
 import nock from 'nock'
 import * as cheerio from 'cheerio'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { appWithAllRoutes } from './testutils/appSetup'
 import PrisonerService from '../services/prisonerService'
 import {
@@ -23,19 +24,29 @@ import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import AuditService from '../services/auditService'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 jest.mock('../services/prisonerService')
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/manualCalculationService')
 jest.mock('../services/auditService')
 
-const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 const auditService = new AuditService() as jest.Mocked<AuditService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
+  null,
 ) as jest.Mocked<CalculateReleaseDatesService>
-const manualCalculationService = new ManualCalculationService(auditService) as jest.Mocked<ManualCalculationService>
-const dateTypeConfigurationService = new DateTypeConfigurationService()
+const manualCalculationService = new ManualCalculationService(
+  auditService,
+  null,
+) as jest.Mocked<ManualCalculationService>
+const mockAuthenticationClient: AuthenticationClient = {
+  getToken: jest.fn().mockResolvedValue('test-system-token'),
+} as unknown as jest.Mocked<AuthenticationClient>
+const dateTypeConfigurationService = new DateTypeConfigurationService(
+  new CalculateReleaseDatesApiClient(mockAuthenticationClient),
+)
 const dateValidationService = new DateValidationService()
 const manualEntryService = new ManualEntryService(
   dateTypeConfigurationService,
@@ -388,6 +399,12 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       } as ValidationMessage,
     ])
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getDateTypeDefinitions.mockResolvedValue([
+      {
+        type: 'SED',
+        description: 'Sentence expiry date',
+      },
+    ])
 
     return request(app)
       .post('/calculation/A1234AA/manual-entry/select-dates')

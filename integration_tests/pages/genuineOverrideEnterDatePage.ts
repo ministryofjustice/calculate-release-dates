@@ -41,4 +41,9 @@ export default class GenuineOverrideEnterDatePage extends Page {
     cy.get('[data-qa=continue-button]').click()
     return this
   }
+
+  public clickCancel(): GenuineOverrideEnterDatePage {
+    cy.get('[data-qa=cancel-link]').click()
+    return this
+  }
 }

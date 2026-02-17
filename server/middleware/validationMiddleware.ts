@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { z, ZodError } from 'zod'
+import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 // Set a custom locale with no default error message for custom errors to prevent defaulting to "Invalid input"
 z.config({
@@ -39,6 +40,17 @@ export const findError = (errors: fieldErrors, fieldName: string) => {
 
 export type SchemaFactory<P extends { [key: string]: string }> = (request: Request<P>) => Promise<z.ZodTypeAny>
 
+export const redirectToInputWithErrors = <P>(
+  req: Request<P>,
+  res: Response,
+  errorMessagesByPath: ErrorMessagesByPath,
+) => {
+  req.flash('formResponses', JSON.stringify(req.body))
+  req.flash('validationErrors', JSON.stringify(errorMessagesByPath))
+  const urlWithDefaultFragmentSoAnyFieldFocusIsRemoved = `${req.originalUrl}#`
+  return res.redirect(urlWithDefaultFragmentSoAnyFieldFocusIsRemoved)
+}
+
 export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeAny | SchemaFactory<P>) => {
   return async (req: Request<P>, res: Response, next: NextFunction) => {
     if (!schema) {
@@ -50,12 +62,7 @@ export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeA
       req.body = result.data
       return next()
     }
-    req.flash('formResponses', JSON.stringify(req.body))
-    const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
-
-    req.flash('validationErrors', JSON.stringify(deduplicatedFieldErrors))
-    const urlWithDefaultFragmentSoAnyFieldFocusIsRemoved = `${req.originalUrl}#`
-    return res.redirect(urlWithDefaultFragmentSoAnyFieldFocusIsRemoved)
+    return redirectToInputWithErrors(req, res, deduplicateFieldErrors(result.error))
   }
 }
 
@@ -63,7 +70,9 @@ export const createSchema = <T = object>(shape: T) => zObjectStrict(shape)
 
 const zObjectStrict = <T = object>(shape: T) => z.object({ _csrf: z.string().optional(), ...shape }).strict()
 
-export const deduplicateFieldErrors = <Output>(errors: ZodError<Output>) => {
+export type ErrorMessagesByPath = { [path: string]: string[] }
+
+export const deduplicateFieldErrors = <Output>(errors: ZodError<Output>): ErrorMessagesByPath => {
   return Object.fromEntries(
     Object.entries(z.flattenError(errors).fieldErrors).map(([key, value]) => [
       key,
@@ -72,9 +81,18 @@ export const deduplicateFieldErrors = <Output>(errors: ZodError<Output>) => {
   )
 }
 
-export const arrayOrUndefined = (val: string | string[] | undefined): string[] | undefined => {
+export const convertValidationMessagesToErrorMessagesForPath = (
+  path: string,
+  validationMessages: ValidationMessage[],
+): ErrorMessagesByPath => {
+  const errorMessagesByPath: ErrorMessagesByPath = {}
+  errorMessagesByPath[path] = validationMessages.filter(vm => vm.type === 'VALIDATION').map(vm => vm.message)
+  return errorMessagesByPath
+}
+
+export const safeArray = (val: string | string[] | undefined): string[] | undefined => {
   if (val === undefined) {
-    return undefined
+    return []
   }
   if (Array.isArray(val)) {
     return val

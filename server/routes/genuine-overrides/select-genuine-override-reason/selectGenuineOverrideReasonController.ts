@@ -15,17 +15,22 @@ export default class SelectGenuineOverrideReasonController implements Controller
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    const { caseloads, token, userRoles } = res.locals.user
+    const { caseloads, userRoles, username } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, token, caseloads, userRoles)
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
 
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const reason = res.locals?.formResponses?.reason ?? genuineOverrideInputs?.reason
     const reasonFurtherDetail =
       res.locals?.formResponses?.reasonFurtherDetail ?? genuineOverrideInputs?.reasonFurtherDetail
     const reasons = await this.calculateReleaseDatesService
-      .getGenuineOverrideReasons(res.locals.user.token)
+      .getGenuineOverrideReasons(res.locals.user.username)
       .then(unsortedReasons => unsortedReasons.sort((a, b) => a.displayOrder - b.displayOrder))
+
+    const backLink =
+      genuineOverrideInputs.mode === 'STANDARD'
+        ? `/calculation/${nomsId}/summary/${calculationRequestId}`
+        : GenuineOverrideUrls.reviewDateFromPreviousOverride(nomsId, calculationRequestId)
 
     return res.render(
       'pages/genuineOverrides/selectGenuineOverrideReason',
@@ -34,7 +39,7 @@ export default class SelectGenuineOverrideReasonController implements Controller
         reasons,
         reason,
         reasonFurtherDetail,
-        `/calculation/${nomsId}/summary/${calculationRequestId}`,
+        backLink,
         GenuineOverrideUrls.selectReasonForOverride(nomsId, calculationRequestId),
       ),
     )
@@ -49,6 +54,16 @@ export default class SelectGenuineOverrideReasonController implements Controller
     const { reason, reasonFurtherDetail } = req.body
     genuineOverrideInputs.reason = reason
     genuineOverrideInputs.reasonFurtherDetail = reasonFurtherDetail
-    return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
+
+    let redirectUrl: string
+    if (reason === 'RELEASE_DATE_ON_WEEKEND_OR_HOLIDAY') {
+      redirectUrl = GenuineOverrideUrls.interceptForWeekendHolidayGenuineOverride(nomsId, calculationRequestId)
+    } else if (reason === 'ENTER_APPROVED_DATES') {
+      redirectUrl = GenuineOverrideUrls.enterApprovedDatesForOverride(nomsId, calculationRequestId)
+    } else {
+      redirectUrl = GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId)
+    }
+
+    return res.redirect(redirectUrl)
   }
 }

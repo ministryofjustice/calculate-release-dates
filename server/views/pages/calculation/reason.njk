@@ -22,47 +22,43 @@
 {% endblock %}
 
 {% block content %}
+    {% include '../partials/formError.njk' %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-                {% if errorMessage|length %}
-                    {% set errorMessageText = {text: errorMessage.text} %}
-                {% endif %}
 
-                {% if otherErrorMessage|length %}
-                    {% set otherErrorText = {text: otherErrorMessage.text  } %}
-                    {% set otherValueId = otherErrorMessage.id %}
-                    {% set otherText = otherErrorMessage.otherText %}
-                {% endif %}
-
-                {% set otherReasonHtml %}
-                    {{ govukCharacterCount({
-                        id: "other-reason-description",
-                        name: "otherReasonDescription",
-                        type: "string",
-                        autocomplete: "string",
-                        maxlength: 120,
-                        threshold: 50,
-                        classes: "govuk-!-width-two-thirds",
-                        errorMessage: otherErrorText,
-                        value: otherText,
-                        label: {
-                            text: "Enter the reason for the calculation"
-                        }
-                    }) }}
-                {% endset %}
 
                 {% set buttons = [ ] %}
 
                 {% for reason in reasons %}
-                    {% if reason.isOther %}
+                    <input type="hidden" name="reasons[{{ loop.index }}][id]" value="{{ reason.id }}"/>
+                    <input type="hidden" name="reasons[{{ loop.index }}][requiresFurtherDetail]" value="{{ reason.requiresFurtherDetail }}"/>
+                    <input type="hidden" name="reasons[{{ loop.index }}][furtherDetailDescription]" value="{{ reason.furtherDetailDescription }}"/>
+                    {% if reason.requiresFurtherDetail %}
+                        {% set furtherDetailDescription = reason.furtherDetailDescription or 'the reason for the calculation' %}
+                        {% set furtherDetailHTML %}
+                            {{ govukCharacterCount({
+                                id: "reason-further-detail-" + reason.id,
+                                name: "reasons[" + loop.index + "][furtherDetail]",
+                                type: "string",
+                                autocomplete: "string",
+                                maxlength: 120,
+                                threshold: 50,
+                                classes: "govuk-!-width-two-thirds",
+                                errorMessage: validationErrors | findError('reasons_' + reason.id + '_furtherDetail'),
+                                value: otherReasonDescription,
+                                label: {
+                                    text: "Enter " + furtherDetailDescription
+                                }
+                            }) }}
+                        {% endset %}
                         {% set buttons = (buttons.push(
                             {
                                 value: reason.id,
                                 text: reason.displayName,
                                 isOther: true,
-                                conditional: {
-                                html: otherReasonHtml },
+                                conditional: { html: furtherDetailHTML },
+                                checked: calculationReasonId == reason.id,
                                 attributes: {'data-qa': 'reasonRadio-'+reason.id}
                             }
                         ), buttons) %}
@@ -71,6 +67,7 @@
                             {
                                 value: reason.id,
                                 text: reason.displayName,
+                                checked: calculationReasonId == reason.id,
                                 attributes: {'data-qa': 'reasonRadio-'+reason.id}
                             }
                         ), buttons) %}

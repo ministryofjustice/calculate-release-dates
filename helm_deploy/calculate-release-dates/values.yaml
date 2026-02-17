@@ -39,6 +39,8 @@ generic-service:
     AUDIT_SQS_REGION: "eu-west-2"
     AUDIT_SERVICE_NAME: "calculate-release-dates"
     SHOW_REVOCATION_DATE: "true"
+    USE_NEW_APPROVED_DATES_FLOW: "true"
+    ADJUSTMENTS_INTEGRATION_ENABLED: "true"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

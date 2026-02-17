@@ -1,15 +1,17 @@
 import { DateTypeDefinition } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export default class DateTypeConfigurationService {
+  constructor(private readonly calculateReleaseDatesApiRestClient: CalculateReleaseDatesApiClient) {}
+
   public async configureViaBackend(
-    token: string,
+    username: string,
     dateList: string | string[],
     sessionList: ManualJourneySelectedDate[],
   ): Promise<ManualJourneySelectedDate[]> {
-    const dateTypeDefinitions = await new CalculateReleaseDatesApiClient(token).getDateTypeDefinitions()
+    const dateTypeDefinitions = await this.calculateReleaseDatesApiRestClient.getDateTypeDefinitions(username)
     const selectedDateTypes: string[] = Array.isArray(dateList) ? dateList : [dateList]
     const newSessionList = sessionList.filter((d: ManualJourneySelectedDate) => selectedDateTypes.includes(d.dateType))
     let numberOfDates = 0
@@ -40,12 +42,14 @@ export default class DateTypeConfigurationService {
   }
 
   async dateTypeToDescriptionMapping(
-    token: string,
+    username: string,
     format: 'COMBINED' | 'DESCRIPTION_ONLY' = 'COMBINED',
   ): Promise<{ [key: string]: string }> {
-    return new CalculateReleaseDatesApiClient(token).getDateTypeDefinitions().then((defs: DateTypeDefinition[]) => {
-      return Object.fromEntries(defs.map(def => [def.type, this.fromDefinitionToDescription(def, format)]))
-    })
+    return this.calculateReleaseDatesApiRestClient
+      .getDateTypeDefinitions(username)
+      .then((defs: DateTypeDefinition[]) => {
+        return Object.fromEntries(defs.map(def => [def.type, this.fromDefinitionToDescription(def, format)]))
+      })
   }
 
   getDescription(

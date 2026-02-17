@@ -1,19 +1,22 @@
 import { Request } from 'express'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import ManualCalculationResponse from '../models/manual_calculation/ManualCalculationResponse'
 import { ManualEntryRequest } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import AuditService from './auditService'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export default class ManualCalculationService {
-  constructor(private readonly auditService: AuditService) {}
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly calculateReleaseDatesApiClient: CalculateReleaseDatesApiClient,
+  ) {}
 
-  async hasIndeterminateSentences(bookingId: number, token: string): Promise<boolean> {
-    return new CalculateReleaseDatesApiClient(token).hasIndeterminateSentences(bookingId)
+  async hasIndeterminateSentences(bookingId: number, username: string): Promise<boolean> {
+    return this.calculateReleaseDatesApiClient.hasIndeterminateSentences(bookingId, username)
   }
 
-  async hasRecallSentences(bookingId: number, token: string): Promise<boolean> {
-    return new CalculateReleaseDatesApiClient(token).hasRecallSentences(bookingId)
+  async hasRecallSentences(bookingId: number, username: string): Promise<boolean> {
+    return this.calculateReleaseDatesApiClient.hasRecallSentences(bookingId, username)
   }
 
   async storeManualCalculation(
@@ -31,11 +34,15 @@ export default class ManualCalculationService {
       (d: ManualJourneySelectedDate) => d.manualEntrySelectedDate,
     )
     try {
-      const calculation = await new CalculateReleaseDatesApiClient(token).storeManualCalculation(prisonerId, {
-        selectedManualEntryDates: manualDates,
-        reasonForCalculationId: reasonId,
-        otherReasonDescription: req.session.otherReasonDescription[prisonerId],
-      } as ManualEntryRequest)
+      const calculation = await this.calculateReleaseDatesApiClient.storeManualCalculation(
+        prisonerId,
+        {
+          selectedManualEntryDates: manualDates,
+          reasonForCalculationId: reasonId,
+          otherReasonDescription: req.session.otherReasonDescription[prisonerId],
+        } as ManualEntryRequest,
+        token,
+      )
       await this.auditService.publishManualSentenceCalculation(userName, prisonerId, calculation.enteredDates, reasonId)
       return calculation
     } catch (error) {

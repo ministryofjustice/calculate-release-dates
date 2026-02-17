@@ -32,7 +32,6 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubPrisonerDetails')
     cy.task('stubLatestCalculation')
     cy.task('stubCalculationUserInputs')
-    cy.task('stubSupportedValidationNoMessages')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetCalculationHistory')
     cy.task('stubGetDetailedCalculationResults')
@@ -50,14 +49,15 @@ context('End to end user journeys entering and modifying approved dates', () => 
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.submitReason().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.yes().click()
@@ -102,14 +102,15 @@ context('End to end user journeys entering and modifying approved dates', () => 
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.submitReason().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.yes().click()
@@ -149,14 +150,15 @@ context('End to end user journeys entering and modifying approved dates', () => 
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
-    calculationReasonPage.radioByIndex(1).check()
+    calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.submitReason().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
     checkInformationPage.calculateButton().click()
 
     const calculationSummaryPage = Page.verifyOnPage(CalculationSummaryPage)
-    calculationSummaryPage.submitToNomisButton().click()
+    calculationSummaryPage.agreeWithDatesRadio('YES').click()
+    calculationSummaryPage.continueButton().click()
 
     const approvedDatesQuestionPage = Page.verifyOnPage(ApprovedDatesQuestionPage)
     approvedDatesQuestionPage.yes().click()

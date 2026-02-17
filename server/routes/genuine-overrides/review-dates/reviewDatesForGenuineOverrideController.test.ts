@@ -2,14 +2,14 @@ import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
-import { appWithAllRoutes, user } from '../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
-import { GenuineOverrideInputs } from '../../../models/genuine-override/genuineOverrideInputs'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
-import { BookingCalculation } from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
+import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
+import { GenuineOverrideInputs } from '../../../@types/journeys'
 
 jest.mock('../../../services/calculateReleaseDatesService')
 jest.mock('../../../services/prisonerService')
@@ -21,9 +21,12 @@ describe('ReviewDatesForGenuineOverrideController', () => {
 
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
+    null,
   ) as jest.Mocked<CalculateReleaseDatesService>
-  const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
-  const dateTypeConfigurationService = new DateTypeConfigurationService() as jest.Mocked<DateTypeConfigurationService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
+  const dateTypeConfigurationService = new DateTypeConfigurationService(
+    null,
+  ) as jest.Mocked<DateTypeConfigurationService>
 
   let genuineOverrideInputs: GenuineOverrideInputs
   const prisonerNumber = 'A1234BC'
@@ -35,34 +38,9 @@ describe('ReviewDatesForGenuineOverrideController', () => {
   } as PrisonApiPrisoner
   const pageUrl = `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}`
 
-  const mockDateConfigs = {
-    CRD: 'Conditional release date',
-    LED: 'Licence expiry date',
-    SED: 'Sentence expiry date',
-    NPD: 'Non-parole date',
-    ARD: 'Automatic release date',
-    TUSED: 'Top up supervision expiry date',
-    PED: 'Parole eligibility date',
-    SLED: 'Sentence and licence expiry date',
-    HDCED: 'Home detention curfew eligibility date',
-    NCRD: 'Notional conditional release date',
-    ETD: 'Early transfer date',
-    MTD: 'Mid transfer date',
-    LTD: 'Late transfer date',
-    DPRRD: 'Detention and training order post recall release date',
-    PRRD: 'Post recall release date',
-    ESED: 'Effective sentence end date',
-    ERSED: 'Early removal scheme eligibility date',
-    TERSED: 'Tariff-expired removal scheme eligibility date',
-    APD: 'Approved parole date',
-    HDCAD: 'Home detention curfew approved date',
-    None: 'None of the above dates apply',
-    Tariff: 'known as the Tariff expiry date',
-    ROTL: 'Release on temporary licence',
-  }
   let currentUser: Express.User
   beforeEach(() => {
-    genuineOverrideInputs = { state: 'NEW' }
+    genuineOverrideInputs = { mode: 'STANDARD', datesToSave: [] }
     sessionSetup.sessionDoctor = req => {
       req.session.genuineOverrideInputs = {}
       req.session.genuineOverrideInputs[prisonerNumber] = genuineOverrideInputs
@@ -82,7 +60,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
     })
 
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(mockDateConfigs)
+    dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(testDateTypeToDescriptions)
   })
 
   afterEach(() => {
@@ -90,21 +68,12 @@ describe('ReviewDatesForGenuineOverrideController', () => {
   })
 
   describe('GET', () => {
-    it('should load page and render correct navigation', async () => {
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue({
-        dates: {
-          CRD: '2021-02-03',
-          SED: '2021-02-03',
-        },
-        calculationRequestId: 123456,
-        effectiveSentenceLength: null,
-        prisonerId: 'A1234AB',
-        calculationStatus: 'CONFIRMED',
-        calculationReference: 'ABC123',
-        calculationType: 'CALCULATED',
-        bookingId: 123,
-        approvedDates: {},
-      } as BookingCalculation)
+    it('should load page and render correct navigation for standard journey', async () => {
+      genuineOverrideInputs.datesToSave = [
+        { type: 'CRD', date: '2021-02-04' },
+        { type: 'SED', date: '2021-02-03' },
+        { type: 'LED', date: '2021-02-03' },
+      ]
 
       const response = await request(app).get(pageUrl)
 
@@ -118,25 +87,13 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       )
     })
 
-    it('should load dates from back end on initial load, in the correct order and excluding hidden types such as ESED', async () => {
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue({
-        dates: {
-          HDCED: '2021-10-03',
-          CRD: '2021-02-04',
-          ERSED: '2020-02-03',
-          SED: '2021-02-03',
-          ESED: '2020-02-05',
-        },
-        calculationRequestId: 123456,
-        effectiveSentenceLength: null,
-        prisonerId: 'A1234AB',
-        calculationStatus: 'CONFIRMED',
-        calculationReference: 'ABC123',
-        calculationType: 'CALCULATED',
-        bookingId: 123,
-        approvedDates: {},
-      } as BookingCalculation)
-
+    it('should load dates from session and display in the correct order', async () => {
+      genuineOverrideInputs.datesToSave = [
+        { type: 'HDCED', date: '2021-10-03' },
+        { type: 'CRD', date: '2021-02-04' },
+        { type: 'ERSED', date: '2020-02-03' },
+        { type: 'SED', date: '2021-02-03' },
+      ]
       const response = await request(app).get(pageUrl)
 
       expect(response.status).toEqual(200)
@@ -204,9 +161,8 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         `/calculation/${prisonerNumber}/override/ERSED/delete/${calculationRequestId}`,
       )
 
-      expect(calculateReleaseDatesService.getCalculationResults).toHaveBeenCalledTimes(1)
       expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
+        mode: 'STANDARD',
         datesToSave: [
           {
             date: '2021-02-03',
@@ -228,100 +184,22 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       })
     })
 
-    it('should decompose SLED into SED and LED', async () => {
-      calculateReleaseDatesService.getCalculationResults.mockResolvedValue({
-        dates: {
-          SLED: '2021-10-03',
-        },
-        calculationRequestId: 123456,
-        effectiveSentenceLength: null,
-        prisonerId: 'A1234AB',
-        calculationStatus: 'CONFIRMED',
-        calculationReference: 'ABC123',
-        calculationType: 'CALCULATED',
-        bookingId: 123,
-        approvedDates: {},
-      } as BookingCalculation)
-
-      const response = await request(app).get(pageUrl)
-
-      expect(response.status).toEqual(200)
-      const $ = cheerio.load(response.text)
-      const headings = $('dt')
-      expect(headings).toHaveLength(2)
-      expect(headings.eq(0).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">LED</span><br><span class="govuk-hint">Licence expiry date</span>',
-      )
-      expect(headings.eq(1).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">SED</span><br><span class="govuk-hint">Sentence expiry date</span>',
-      )
-      expect(calculateReleaseDatesService.getCalculationResults).toHaveBeenCalledTimes(1)
-      expect(genuineOverrideInputs).toStrictEqual({
-        state: 'INITIALISED_DATES',
-        datesToSave: [
-          {
-            type: 'LED',
-            date: '2021-10-03',
-          },
-          {
-            type: 'SED',
-            date: '2021-10-03',
-          },
-        ],
-      })
-    })
-
-    it('should load dates from session after initial load and maintain order', async () => {
-      genuineOverrideInputs.datesToSave = [
-        { type: 'SED', date: '2021-02-03' },
-        { type: 'CRD', date: '2021-02-04' },
-        { type: 'HDCED', date: '2021-10-03' },
-        { type: 'ERSED', date: '2020-02-03' },
-      ]
-      genuineOverrideInputs.state = 'INITIALISED_DATES'
-
-      const response = await request(app).get(pageUrl)
-
-      expect(response.status).toEqual(200)
-      const $ = cheerio.load(response.text)
-      const headings = $('dt')
-      expect(headings).toHaveLength(4)
-      expect(headings.eq(0).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">SED</span><br><span class="govuk-hint">Sentence expiry date</span>',
-      )
-      expect(headings.eq(1).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">CRD</span><br><span class="govuk-hint">Conditional release date</span>',
-      )
-      expect(headings.eq(2).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">HDCED</span><br><span class="govuk-hint">Home detention curfew eligibility date</span>',
-      )
-      expect(headings.eq(3).html().trim()).toStrictEqual(
-        '<span class="govuk-!-font-size-24">ERSED</span><br><span class="govuk-hint">Early removal scheme eligibility date</span>',
-      )
-
-      expect(calculateReleaseDatesService.getCalculationResults).not.toHaveBeenCalled()
-    })
-
     it('should redirect to select dates screen if all dates have been removed', async () => {
       genuineOverrideInputs.datesToSave = []
-      genuineOverrideInputs.state = 'INITIALISED_DATES'
+      genuineOverrideInputs.mode = 'STANDARD'
 
       await request(app)
         .get(pageUrl)
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/override/select-dates/${calculationRequestId}`)
     })
-
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
-      await request(app).get(pageUrl).expect(302).expect('Location', '/authError')
-    })
   })
 
   describe('POST', () => {
-    it('should create a genuine override and redirect to calculation complete', async () => {
+    it('should create a genuine override and redirect to calculation complete if successful', async () => {
       const newCalculationRequestId = 2468972456
       calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
+        success: true,
         newCalculationRequestId,
         originalCalculationRequestId: calculationRequestId,
       })
@@ -331,14 +209,14 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         { type: 'HDCED', date: '2021-10-03' },
         { type: 'ERSED', date: '2020-02-03' },
       ]
-      genuineOverrideInputs.state = 'INITIALISED_DATES'
+      genuineOverrideInputs.mode = 'STANDARD'
       genuineOverrideInputs.reason = 'OTHER'
       genuineOverrideInputs.reasonFurtherDetail = 'Some more details'
 
       await request(app) //
         .post(pageUrl)
         .type('form')
-        .send({ day: '28', month: '2', year: '2025' })
+        .send({})
         .expect(302)
         .expect('Location', `/calculation/${prisonerNumber}/complete/${newCalculationRequestId}`)
 
@@ -346,7 +224,6 @@ describe('ReviewDatesForGenuineOverrideController', () => {
         'user1',
         prisonerNumber,
         Number(calculationRequestId),
-        'token',
         {
           dates: [
             { dateType: 'SED', date: '2021-02-03' },
@@ -357,17 +234,49 @@ describe('ReviewDatesForGenuineOverrideController', () => {
           reason: 'OTHER',
           reasonFurtherDetail: 'Some more details',
         },
+        'token',
       )
     })
 
-    it('should redirect to auth error if the user does not have required role', async () => {
-      currentUser.userRoles = [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR]
+    it('should redirect to input with errors if saving genuine override was not successful', async () => {
+      calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
+        success: false,
+        validationMessages: [
+          {
+            code: 'DATES_MISSING_REQUIRED_TYPE',
+            message: 'Error 1',
+            type: 'VALIDATION',
+            arguments: [],
+            calculationUnsupported: false,
+          },
+          {
+            code: 'DATES_PAIRINGS_INVALID',
+            message: 'Error 2',
+            type: 'VALIDATION',
+            arguments: [],
+            calculationUnsupported: false,
+          },
+        ],
+      })
+      genuineOverrideInputs.datesToSave = [
+        { type: 'SED', date: '2021-02-03' },
+        { type: 'CRD', date: '2021-02-04' },
+      ]
+      genuineOverrideInputs.mode = 'STANDARD'
+      genuineOverrideInputs.reason = 'OTHER'
+      genuineOverrideInputs.reasonFurtherDetail = 'Some more details'
+
       await request(app) //
         .post(pageUrl)
         .type('form')
-        .send({ day: '28', month: '2', year: '2025' })
+        .send({})
         .expect(302)
-        .expect('Location', '/authError')
+        .expect('Location', `/calculation/${prisonerNumber}/review-dates-for-override/${calculationRequestId}#`)
+
+      expect(flashProvider).toHaveBeenCalledWith(
+        'validationErrors',
+        JSON.stringify({ datesToSave: ['Error 1', 'Error 2'] }),
+      )
     })
   })
 })

@@ -1,19 +1,22 @@
 import nock from 'nock'
 
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import ManageUsersApiClient from './manageUsersApiClient'
-
-jest.mock('./tokenStore/redisTokenStore')
 
 const token = { access_token: 'token-1', expires_in: 300 }
 
 describe('manageUsersApiClient', () => {
   let fakeManageUsersApiClient: nock.Scope
   let manageUsersApiClient: ManageUsersApiClient
+  let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
 
   beforeEach(() => {
     fakeManageUsersApiClient = nock(config.apis.manageUsersApi.url)
-    manageUsersApiClient = new ManageUsersApiClient()
+    mockAuthenticationClient = {
+      getToken: jest.fn().mockResolvedValue('test-system-token'),
+    } as unknown as jest.Mocked<AuthenticationClient>
+    manageUsersApiClient = new ManageUsersApiClient(mockAuthenticationClient)
   })
 
   afterEach(() => {

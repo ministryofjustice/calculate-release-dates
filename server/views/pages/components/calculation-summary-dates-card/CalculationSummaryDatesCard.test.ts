@@ -1,11 +1,15 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
-import dateFilter from 'nunjucks-date-filter'
-import CalculationSummaryDatesCardModel, { filteredListOfDates } from './CalculationSummaryDatesCardModel'
+import { hmppsFormatDate } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
+import CalculationSummaryDatesCardModel, {
+  filteredListOfDates,
+  calculationSummaryDatesCardModelFromOverridesViewModel,
+} from './CalculationSummaryDatesCardModel'
 import { validPreCalcHints } from '../../../../utils/utils'
+import { DetailedDate } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 const njkEnv = nunjucks.configure([__dirname])
-njkEnv.addFilter('date', dateFilter)
+njkEnv.addFilter('hmppsFormatDate', hmppsFormatDate)
 njkEnv.addFilter('validPreCalcHints', validPreCalcHints)
 
 describe('ReleaseDateType', () => {
@@ -162,4 +166,52 @@ describe('Tests for actions card component', () => {
           .filter(line => line.length > 0),
       )
   }
+})
+
+describe('calculationSummaryDatesCardModelFromOverridesViewModel', () => {
+  it('should build a CalculationSummaryDatesCardModel from DetailedDate[]', () => {
+    const detailedDates = [
+      {
+        type: 'CRD',
+        description: 'Conditional release date',
+        date: '2025-12-25',
+        hints: [
+          {
+            text: 'This is a hint for CRD',
+            link: 'https://example.com/crd-hint',
+          },
+        ],
+      },
+      {
+        type: 'SED',
+        description: 'Sentence expiry date',
+        date: '2026-06-15',
+        hints: [],
+      },
+    ] as DetailedDate[]
+
+    const result = calculationSummaryDatesCardModelFromOverridesViewModel(detailedDates)
+
+    expect(result).toEqual({
+      showNoDatesApply: false,
+      releaseDates: [
+        {
+          shortName: 'CRD',
+          fullName: 'Conditional release date',
+          date: '2025-12-25',
+          hints: [
+            {
+              html: '<p class="govuk-body govuk-hint govuk-!-font-size-16" ><a class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://example.com/crd-hint" data-qa="CRD-release-date-hint-0">This is a hint for CRD</a></p>',
+            },
+          ],
+        },
+        {
+          shortName: 'SED',
+          fullName: 'Sentence expiry date',
+          date: '2026-06-15',
+          hints: [],
+        },
+      ],
+    })
+  })
 })

@@ -2,14 +2,32 @@ import { SuperAgentRequest } from 'superagent'
 import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
 import {
+  ApprovedDate,
   DetailedCalculationResults,
   LatestCalculation,
+  PreviouslyRecordedSLED,
   SentenceAndOffenceWithReleaseArrangements,
   ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { components } from '../../server/@types/calculateReleaseDates'
+
+type PreviousOverride = components['schemas']['PreviousGenuineOverride']
+type EarlyReleaseTranche =
+  | 'TRANCHE_0'
+  | 'TRANCHE_1'
+  | 'TRANCHE_2'
+  | 'FTR_56_TRANCHE_1'
+  | 'FTR_56_TRANCHE_2'
+  | 'FTR_56_TRANCHE_3'
+  | 'FTR_56_TRANCHE_4'
+  | 'FTR_56_TRANCHE_5'
+  | 'FTR_56_TRANCHE_6'
 
 export default {
-  stubCalculatePreliminaryReleaseDates: (): SuperAgentRequest => {
+  stubCalculatePreliminaryReleaseDates: (opts: {
+    calculationRequestId?: number
+    usedPreviouslyRecordedSLED?: PreviouslyRecordedSLED
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
@@ -20,14 +38,15 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           dates: {
-            SLED: '2018-11-05',
+            SLED: opts?.usedPreviouslyRecordedSLED?.previouslyRecordedSLEDDate ?? '2018-11-05',
             CRD: '2017-05-07',
             HDCED: '2016-12-24',
           },
-          calculationRequestId: 123,
+          calculationRequestId: opts?.calculationRequestId ?? 123,
           prisonerId: 'A1234AB',
           bookingId: 1234,
           calculationStatus: 'PRELIMINARY',
+          usedPreviouslyRecordedSLED: opts?.usedPreviouslyRecordedSLED,
         },
       },
     })
@@ -147,10 +166,26 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          type: 'VALID',
-          messages: [],
-        },
+        jsonBody: [],
+      },
+    })
+  },
+  stubFullValidationUnsupported: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: `/calculate-release-dates/validation/A1234AB/full-validation`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            type: 'UNSUPPORTED_SENTENCE',
+            message: 'Sentence type is not supported',
+            calculationUnsupported: true,
+          } as ValidationMessage,
+        ],
       },
     })
   },
@@ -599,6 +634,19 @@ export default {
       },
     })
   },
+  stubManualEntryDateValidationWithErrors: (validationMessages: ValidationMessage[]): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/validation/manual-entry-dates-validation\\?releaseDates=([A-Za-z|,]*)',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: validationMessages,
+      },
+    })
+  },
   stubSupportedValidationNoMessages: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -609,51 +657,6 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: [],
-      },
-    })
-  },
-  stubSupportedValidationNoOffenceDates: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/calculate-release-dates/validation/A1234AB/supported-validation',
-      },
-      response: {
-        status: 422,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          userMessage: 'no offence end or start dates provided on charge for charge 123',
-        },
-      },
-    })
-  },
-  stubSupportedValidationNoOffenceTerms: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/calculate-release-dates/validation/A1234AB/supported-validation',
-      },
-      response: {
-        status: 422,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          userMessage: 'missing imprisonment_term_code for charge 123',
-        },
-      },
-    })
-  },
-  stubSupportedValidationNoOffenceLicenceTerms: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/calculate-release-dates/validation/A1234AB/supported-validation',
-      },
-      response: {
-        status: 422,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          userMessage: 'missing licence_term_code for charge 123',
-        },
       },
     })
   },
@@ -671,6 +674,7 @@ export default {
             {
               type: 'UNSUPPORTED_SENTENCE',
               message: 'Sentence type is not supported',
+              calculationUnsupported: true,
             } as ValidationMessage,
           ],
           unsupportedCalculationMessages: [],
@@ -938,12 +942,30 @@ export default {
           {
             id: 1,
             displayName: 'A reason',
-            isOther: 'false',
+            isOther: false,
+            useForApprovedDates: false,
+            requiresFurtherDetail: false,
+          },
+          {
+            id: 99,
+            displayName: 'Add dates',
+            isOther: false,
+            useForApprovedDates: true,
+            requiresFurtherDetail: false,
+          },
+          {
+            id: 75,
+            displayName: 'Legislative Changes',
+            isOther: false,
+            useForApprovedDates: true,
+            requiresFurtherDetail: true,
           },
           {
             id: 2,
             displayName: 'Other',
-            isOther: 'true',
+            isOther: true,
+            useForApprovedDates: false,
+            requiresFurtherDetail: true,
           },
         ],
       },
@@ -953,7 +975,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/calculate-release-dates/genuine-override-reasons/`,
+        urlPattern: `/calculate-release-dates/genuine-override/reasons`,
       },
       response: {
         status: 200,
@@ -972,6 +994,47 @@ export default {
             displayOrder: 1,
           },
         ],
+      },
+    })
+  },
+  stubGetGenuineOverrideInputStandardMode: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/genuine-override/calculation/([0-9]*)/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          mode: 'STANDARD',
+          calculatedDates: [
+            { dateType: 'SLED', date: '2018-11-05' },
+            { dateType: 'CRD', date: dayjs().add(7, 'day').format('YYYY-MM-DD') },
+            { dateType: 'HDCED', date: dayjs().add(3, 'day').format('YYYY-MM-DD') },
+          ],
+        },
+      },
+    })
+  },
+  stubGetGenuineOverrideInputExpressMode: (previousOverride: PreviousOverride): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/genuine-override/calculation/([0-9]*)/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          mode: 'EXPRESS',
+          calculatedDates: [
+            { dateType: 'SLED', date: '2018-11-05' },
+            { dateType: 'CRD', date: dayjs().add(7, 'day').format('YYYY-MM-DD') },
+            { dateType: 'HDCED', date: dayjs().add(3, 'day').format('YYYY-MM-DD') },
+          ],
+          previousOverrideForExpressGenuineOverride: previousOverride,
+        },
       },
     })
   },
@@ -999,7 +1062,13 @@ export default {
       },
     })
   },
-  stubGetDetailedCalculationResults: (): SuperAgentRequest => {
+  stubGetDetailedCalculationResults: (args?: {
+    previouslyRecordedSLED?: PreviouslyRecordedSLED
+    ftr56Tranche?: EarlyReleaseTranche
+    calculationType?: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE'
+    overridesCalculationRequestId?: number
+  }): SuperAgentRequest => {
+    const { previouslyRecordedSLED, ftr56Tranche, calculationType, overridesCalculationRequestId } = args || {}
     const breakdown = {
       showSds40Hints: false,
       concurrentSentences: [
@@ -1209,7 +1278,12 @@ export default {
     ]
     const detailedResults: DetailedCalculationResults = {
       dates: {
-        SLED: { date: '2018-11-05', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        SLED: {
+          date: previouslyRecordedSLED?.previouslyRecordedSLEDDate ?? '2018-11-05',
+          type: 'SLED',
+          description: 'Sentence and licence expiry date',
+          hints: [],
+        },
         CRD: {
           date: dayjs().add(7, 'day').format('YYYY-MM-DD'),
           type: 'CRD',
@@ -1229,7 +1303,11 @@ export default {
         prisonerId: 'A1234AB',
         bookingId: 1234,
         calculationStatus: 'CONFIRMED',
-        calculationType: 'CALCULATED',
+        calculationType: calculationType ?? 'CALCULATED',
+        usePreviouslyRecordedSLEDIfFound: !!previouslyRecordedSLED,
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
+        overridesCalculationRequestId: overridesCalculationRequestId ?? null,
       },
       calculationOriginalData: {
         prisonerDetails,
@@ -1237,6 +1315,11 @@ export default {
       },
       calculationBreakdown: breakdown,
       approvedDates: {},
+      usedPreviouslyRecordedSLED: previouslyRecordedSLED,
+    }
+
+    if (ftr56Tranche) {
+      detailedResults.ftr56Tranche = ftr56Tranche
     }
 
     return stubFor({
@@ -1260,6 +1343,8 @@ export default {
       source: 'CRDS',
       reason: 'Transfer',
       establishment: 'Kirkham (HMP)',
+      calculatedByUsername: 'user1',
+      calculatedByDisplayName: 'User One',
       dates: [
         { date: '2018-11-05', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
         {
@@ -1297,51 +1382,6 @@ export default {
       response: {
         status: 404,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-      },
-    })
-  },
-  stubGetLatestCalculationNoOffenceDates: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/calculate-release-dates/calculation/A1234AB/latest',
-      },
-      response: {
-        status: 422,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          userMessage: 'no offence end or start dates provided on charge for charge 123',
-        },
-      },
-    })
-  },
-  stubGetLatestCalculationNoOffenceTerms: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/calculate-release-dates/calculation/A1234AB/latest',
-      },
-      response: {
-        status: 422,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          userMessage: 'missing imprisonment_term_code for charge 123',
-        },
-      },
-    })
-  },
-  stubGetLatestCalculationNoOffenceLicenceTerms: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/calculate-release-dates/calculation/A1234AB/latest',
-      },
-      response: {
-        status: 422,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          userMessage: 'missing licence_term_code for charge 123',
-        },
       },
     })
   },
@@ -1476,18 +1516,87 @@ export default {
       },
     })
   },
-  stubCreateGenuineOverride: (opts: { originalCalcId: number; newCalcId: number }): SuperAgentRequest => {
+  stubCreateGenuineOverrideSuccessfully: (opts: { originalCalcId: number; newCalcId: number }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: `/calculate-release-dates/calculation/genuine-override/${opts.originalCalcId}`,
+        urlPattern: `/calculate-release-dates/genuine-override/calculation/${opts.originalCalcId}`,
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
+          success: true,
           originalCalculationRequestId: opts.originalCalcId,
           newCalculationRequestId: opts.newCalcId,
+        },
+      },
+    })
+  },
+  stubCreateGenuineOverrideFailsWithValidationError: (opts: {
+    originalCalcId: number
+    validationMessages: ValidationMessage[]
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: `/calculate-release-dates/genuine-override/calculation/${opts.originalCalcId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          success: false,
+          validationMessages: opts.validationMessages,
+        },
+      },
+    })
+  },
+  stubAvailableApprovedDatesInputs: (opts: {
+    calculationRequestId?: number
+    previousApprovedDates?: ApprovedDate[]
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/approved-dates/A1234AB/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          approvedDatesAvailable: true,
+          calculatedReleaseDates: {
+            dates: {
+              SLED: '2018-11-05',
+              CRD: '2017-05-07',
+              HDCED: '2016-12-24',
+            },
+            calculationRequestId: opts?.calculationRequestId ?? 123,
+            prisonerId: 'A1234AB',
+            bookingId: 1234,
+            calculationStatus: 'PRELIMINARY',
+          },
+          previousApprovedDates: opts?.previousApprovedDates ?? [],
+        },
+      },
+    })
+  },
+  stubUnavailableApprovedDatesInputs: (opts: {
+    calculationRequestId?: number
+    unavailableReason?: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/approved-dates/A1234AB/inputs`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          approvedDatesAvailable: false,
+          unavailableReason: opts?.unavailableReason ?? 'INPUTS_CHANGED_SINCE_LAST_CALCULATION',
         },
       },
     })

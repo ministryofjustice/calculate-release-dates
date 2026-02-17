@@ -1,11 +1,26 @@
 <h3 class="govuk-heading-l">Latest calculation</h3>
 <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-2" data-qa="calculation-summary">
+    {% set latestCalcFromHistory = calculationHistory[0] %}
+    {% set calculationType = latestCalcFromHistory.calculationType %}
+    {% set source = "Calculate release dates service" %}
+    {% if latestCalculation.source === 'NOMIS' %}
+        {% set source = "NOMIS" %}
+    {% elseif calculationType and calculationType.startsWith("MANUAL") %}
+        {% set source = "Paper calculation" %}
+    {% elseif calculationType and calculationType === 'GENUINE_OVERRIDE' %}
+        {% set source = "User Override" %}
+    {% endif %}
+
+    {% set establishment = latestCalculation.establishment %}
+    {% set calculatedByDisplayName = latestCalculation.calculatedByDisplayName | capitaliseName %}
+    {% set reason = latestCalculation.reason or "Not entered" %}
+    {% set genuineOverrideReasonDescription = latestCalcFromHistory.genuineOverrideReasonDescription %}
     <div class="govuk-summary-list__row">
         <dt class="custom-summary-list__key">
             Calculation date
         </dt>
         <dd class="govuk-summary-list__value" data-qa="calculation-summary-date">
-            {{ calculationDate | date('DD MMMM YYYY') }}
+            {{ latestCalculation.calculatedAt | hmppsFormatDate('dd MMMM yyyy') }}
         </dd>
     </div>
     <div class="govuk-summary-list__row">
@@ -13,15 +28,15 @@
             Calculation reason
         </dt>
         <dd class="govuk-summary-list__value" data-qa="calculation-summary-reason">
-            {{ reason }}
+            {{ latestCalculation.reason }}
         </dd>
     </div>
     <div class="govuk-summary-list__row">
         <dt class="custom-summary-list__key">
-            Establishment
+            Calculated by
         </dt>
-        <dd class="govuk-summary-list__value" data-qa="calculation-summary-establishment">
-            {{ establishment }}
+        <dd class="govuk-summary-list__value" data-qa="calculation-summary-calculated-by">
+            {{ calculatedByDisplayName }}{% if calculatedByDisplayName and establishment %} at {% endif %}{{ establishment }}
         </dd>
     </div>
     <div class="govuk-summary-list__row">

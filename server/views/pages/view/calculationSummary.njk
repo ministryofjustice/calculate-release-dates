@@ -37,6 +37,11 @@
 
             {% if model.calculationReason.isOther %}
                 {% set reason = "Other (" + model.otherReasonDescription + ")" %}
+            {% elseif model.calculationReason.requiresFurtherDetail %}
+                {% set reason %}
+                    <p class="govuk-body">{{ model.calculationReason.displayName }}</p>
+                    <p class="govuk-body govuk-hint govuk-!-font-size-16">({{ model.otherReasonDescription }})</p>
+                {% endset %}
             {% else %}
                 {% set reason = model.calculationReason.displayName %}
             {% endif %}
@@ -58,6 +63,7 @@
                         <span class="govuk-!-font-size-16 govuk-hint">{{ model.genuineOverrideReasonDescription }}</span>
                     {% endset %}
                 {% endif %}
+                {% set calculatedByText %}{{ model.calculatedByDisplayName }}{% if model.calculatedByDisplayName and model.calculatedAtPrisonDescription %} at {% endif %}{{ model.calculatedAtPrisonDescription }}{% endset %}
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
                     rows: [
@@ -75,15 +81,15 @@
                                 classes: "custom-summary-list__key"
                             },
                             value: {
-                                text: reason
+                                html: reason
                             }
                         },{
                             key: {
-                                text: "Establishment",
+                                text: "Calculated by",
                                 classes: "custom-summary-list__key"
                             },
                             value: {
-                                text: model.prisonerDetail.locationDescription
+                                text: calculatedByText
                             }
                         },{
                             key: {
@@ -136,13 +142,21 @@
             </div>
         </div>
     {% endif %}
-    {% if isManualCalc == false %}
-        <div class="govuk-grid-row">
+    {% if isManualCalc == false and isGenuineOverride == false %}
+        <div class="govuk-grid-row" id="calculation-summary-faq">
             <div class="govuk-grid-column-two-thirds">
                 {% include "../partials/calculationSummary/detailsMissingInset.njk" %}
                 {% include "../partials/calculationSummary/howDatesCalculatedInset.njk" %}
             </div>
         </div>
+    {% endif %}
+
+    {% if isGenuineOverride %}
+    {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+    {{ govukInsetText({
+        html: "These release dates were entered manually to override CRDS calculated dates. <br/> You can <a href='" + model.calculationRequestId + "/overrides/'>view more details about the override</a>.",
+        id: "calculation-overrides-link"
+    }) }}
     {% endif %}
 
     {% include "../partials/calculationSummaryBreakdown.njk" %}

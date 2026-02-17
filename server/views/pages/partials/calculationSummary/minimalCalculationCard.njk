@@ -21,7 +21,7 @@
                         <p class="govuk-!-font-size-16 govuk-hint release-date-description">{{ row.description }}</p>
                     </dt>
                     <dd class="govuk-summary-list__value release-dates-value">
-                        <span class="release-date-formatted">{{ row.date | hmppsFormatDate('cccc, dd LLLL yyyy') }}</span>
+                        <span class="release-date-formatted">{{ row.date | hmppsFormatDate('cccc, dd MMMM yyyy') }}</span>
                         {% if row.hints | length %}
                         {% for hint in row.hints %}
                             {% if hint %}

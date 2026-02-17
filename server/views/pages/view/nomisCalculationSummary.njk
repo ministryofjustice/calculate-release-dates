@@ -27,15 +27,15 @@
                     <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-margin-bottom-6">
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key custom-summary-list__key" data-qa="calculation-date-title">Date of calculation</dt>
-                            <dd class="govuk-summary-list__value" data-qa="calculation-date">{{ calculatedAt | date('DD MMMM YYYY') }}</dd>
+                            <dd class="govuk-summary-list__value" data-qa="calculation-date">{{ calculatedAt | hmppsFormatDate('dd MMMM yyyy') }}</dd>
                         </div>
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key custom-summary-list__key" data-qa="calculation-reason-title">Reason</dt>
                             <dd class="govuk-summary-list__value" data-qa="calculation-reason">{{ reason }}</dd>
                         </div>
                         <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key custom-summary-list__key" data-qa="calculation-establishment-title">Establishment</dt>
-                            <dd class="govuk-summary-list__value" data-qa="calculation-location-description">Not entered</dd>
+                            <dt class="govuk-summary-list__key custom-summary-list__key" data-qa="calculated-by-title">Calculated by</dt>
+                            <dd class="govuk-summary-list__value" data-qa="calculated-by">{{ calculatedByDisplayName | capitaliseName }}</dd>
                         </div>
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key custom-summary-list__key" data-qa="calculation-source-title">Source</dt>

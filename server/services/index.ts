@@ -3,7 +3,7 @@ import UserService from './userService'
 import PrisonerService from './prisonerService'
 import ViewReleaseDatesService from './viewReleaseDatesService'
 import UserInputService from './userInputService'
-import { dataAccess } from '../data'
+import dataAccess from '../data'
 import ManualCalculationService from './manualCalculationService'
 import ManualEntryService from './manualEntryService'
 import UserPermissionsService from './userPermissionsService'
@@ -12,21 +12,29 @@ import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService from './dateValidationService'
 import CheckInformationService from './checkInformationService'
 import FrontEndComponentsService from './frontEndComponentsService'
-import FrontendComponentsApiClient from '../api/frontendComponentsApiClient'
 import ComparisonService from './comparisonService'
 import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
 import AuditService from './auditService'
 
 export const services = () => {
-  const { applicationInfo, hmppsAuthClient, manageUsersApiClient } = dataAccess()
+  const {
+    applicationInfo,
+    manageUsersApiClient,
+    prisonApiClient,
+    prisonerSearchApiClient,
+    courtCasesReleaseDatesApiClient,
+    frontendComponentsApiClient,
+    calculateReleaseDatesApiClient,
+  } = dataAccess()
   const auditService = new AuditService()
-  const calculateReleaseDatesService = new CalculateReleaseDatesService(auditService)
-  const prisonerService = new PrisonerService(hmppsAuthClient)
+
+  const calculateReleaseDatesService = new CalculateReleaseDatesService(auditService, calculateReleaseDatesApiClient)
+  const prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient)
   const userService = new UserService(manageUsersApiClient, prisonerService)
-  const viewReleaseDatesService = new ViewReleaseDatesService()
+  const viewReleaseDatesService = new ViewReleaseDatesService(calculateReleaseDatesApiClient)
   const userInputService = new UserInputService()
-  const manualCalculationService = new ManualCalculationService(auditService)
-  const dateTypeConfigurationService = new DateTypeConfigurationService()
+  const manualCalculationService = new ManualCalculationService(auditService, calculateReleaseDatesApiClient)
+  const dateTypeConfigurationService = new DateTypeConfigurationService(calculateReleaseDatesApiClient)
   const dateValidationService = new DateValidationService()
   const manualEntryService = new ManualEntryService(
     dateTypeConfigurationService,
@@ -35,14 +43,10 @@ export const services = () => {
   )
   const userPermissionsService = new UserPermissionsService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
-  const checkInformationService = new CheckInformationService(
-    calculateReleaseDatesService,
-    prisonerService,
-    userInputService,
-  )
-  const frontEndComponentService = new FrontEndComponentsService(new FrontendComponentsApiClient())
-  const comparisonService = new ComparisonService(auditService)
-  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
+  const checkInformationService = new CheckInformationService(calculateReleaseDatesService, prisonerService)
+  const frontEndComponentService = new FrontEndComponentsService(frontendComponentsApiClient)
+  const comparisonService = new ComparisonService(auditService, calculateReleaseDatesApiClient)
+  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(courtCasesReleaseDatesApiClient)
 
   return {
     applicationInfo,

@@ -32,7 +32,6 @@ generic-service:
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk"
     GENUINE_OVERRIDES_ENABLED: "true"
     THING_TO_DO_INTERCEPT_ENABLED: "true"
-    ADJUSTMENTS_INTEGRATION_ENABLED: "true"
 
   namespace_secrets:
     sqs-hmpps-audit-secret:

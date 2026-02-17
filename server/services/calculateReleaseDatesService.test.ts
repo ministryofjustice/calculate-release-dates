@@ -4,6 +4,7 @@ import {
   Action,
   LatestCalculationCardConfig,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import config from '../config'
 import {
@@ -24,9 +25,8 @@ import {
   psiExample25CalculationBreakdown,
 } from './breakdownExamplesTestData'
 import AuditService from './auditService'
-import { FullPageError } from '../types/FullPageError'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
-jest.mock('../data/hmppsAuthClient')
 jest.mock('./auditService')
 
 const userName = 'USERNAME'
@@ -117,12 +117,14 @@ const invalidValidationResult: ValidationMessage[] = [
     message: 'Validation failed 1',
     arguments: [],
     type: 'VALIDATION',
+    calculationUnsupported: false,
   },
   {
     code: 'OFFENCE_MISSING_DATE',
     message: 'Validation failed 2',
     arguments: [],
     type: 'VALIDATION',
+    calculationUnsupported: false,
   },
 ]
 
@@ -132,12 +134,14 @@ const unsupportedValidationResult: ValidationMessage[] = [
     message: 'Unsupported sentence 1',
     arguments: [],
     type: 'UNSUPPORTED_SENTENCE',
+    calculationUnsupported: true,
   },
   {
     code: 'UNSUPPORTED_SENTENCE_TYPE',
     message: 'Unsupported sentence 2',
     arguments: [],
     type: 'UNSUPPORTED_SENTENCE',
+    calculationUnsupported: true,
   },
 ]
 
@@ -147,14 +151,21 @@ const unsupportedCalculationResult: ValidationMessage[] = [
     message: 'Unsupported calculation 1',
     arguments: [],
     type: 'UNSUPPORTED_CALCULATION',
+    calculationUnsupported: true,
   },
   {
     code: 'A_FINE_SENTENCE_CONSECUTIVE_TO',
     message: 'Unsupported calculation 2',
     arguments: [],
     type: 'UNSUPPORTED_CALCULATION',
+    calculationUnsupported: true,
   },
 ]
+
+const mockAuthenticationClient: AuthenticationClient = {
+  getToken: jest.fn().mockResolvedValue('test-system-token'),
+} as unknown as jest.Mocked<AuthenticationClient>
+const calculateReleaseDatesApiRestClient = new CalculateReleaseDatesApiClient(mockAuthenticationClient)
 
 const token = 'token'
 
@@ -167,10 +178,11 @@ describe('Calculate release dates service tests', () => {
     auditService.publishSentenceCalculationFailure.mockResolvedValue()
     config.apis.calculateReleaseDates.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.calculateReleaseDates.url)
-    calculateReleaseDatesService = new CalculateReleaseDatesService(auditService)
+    calculateReleaseDatesService = new CalculateReleaseDatesService(auditService, calculateReleaseDatesApiRestClient)
   })
   afterEach(() => {
     nock.cleanAll()
+    jest.resetAllMocks()
   })
 
   describe('Test GET releases date using a calculation request id', () => {
@@ -192,21 +204,15 @@ describe('Calculate release dates service tests', () => {
 
   describe('Test nomis calculation summary', () => {
     it('asserting successful scenario', async () => {
-      const bookingId = 123456
-      fakeApi
-        .get(`/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`)
-        .reply(200, nomisCalculationSummary)
-      const result = await calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, bookingId, token)
+      fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`).reply(200, nomisCalculationSummary)
+      const result = await calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, token)
       expect(result).toEqual(nomisCalculationSummary)
     })
     it('asserting fail scenario', async () => {
-      const bookingId = 123456
-      fakeApi
-        .get(`/calculation/nomis-calculation-summary/booking/${bookingId}/calculation/${offenderSentCalcId}`)
-        .reply(404)
-      await expect(
-        calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, bookingId, token),
-      ).rejects.toThrow('Not Found')
+      fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`).reply(404)
+      await expect(calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, token)).rejects.toThrow(
+        'Not Found',
+      )
     })
   })
 
@@ -235,13 +241,13 @@ describe('Calculate release dates service tests', () => {
       userName,
       nomsId,
       calculationRequestId,
-      token,
       {
         calculationFragments: {
           breakdownHtml: '',
         },
         approvedDates: [],
       },
+      token,
     )
 
     expect(result).toEqual(calculationResults)
@@ -423,9 +429,7 @@ describe('Calculate release dates service tests', () => {
     it('Test validation passes', async () => {
       fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, validResult)
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
-      expect(result).toEqual({
-        messages: [],
-      })
+      expect(result).toEqual([])
     })
 
     it('Test for validation type errors', async () => {
@@ -433,20 +437,14 @@ describe('Calculate release dates service tests', () => {
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result).toEqual({
-        messages: [{ text: 'Validation failed 1' }, { text: 'Validation failed 2' }],
-        messageType: 'VALIDATION',
-      })
+      expect(result).toEqual(invalidValidationResult)
     })
     it('Test for unsupported sentences', async () => {
       fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, unsupportedValidationResult)
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result).toEqual({
-        messages: [{ text: 'Unsupported sentence 1' }, { text: 'Unsupported sentence 2' }],
-        messageType: 'UNSUPPORTED_SENTENCE',
-      })
+      expect(result).toEqual(unsupportedValidationResult)
     })
 
     it('Test for unsupported calculation', async () => {
@@ -454,10 +452,7 @@ describe('Calculate release dates service tests', () => {
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result).toEqual({
-        messages: [{ text: 'Unsupported calculation 1' }, { text: 'Unsupported calculation 2' }],
-        messageType: 'UNSUPPORTED_CALCULATION',
-      })
+      expect(result).toEqual(unsupportedCalculationResult)
     })
 
     it('Test for consecutive concurrent calculation', async () => {
@@ -471,32 +466,13 @@ describe('Calculate release dates service tests', () => {
 
       const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
 
-      expect(result).toEqual({
-        messages: [{ text: '10 years 9 months 8 weeks 7 days' }],
-        messageType: 'CONCURRENT_CONSECUTIVE',
-      })
-    })
-
-    it('Test for consecutive concurrent calculation with other validation', async () => {
-      fakeApi.post(`/validation/${prisonerId}/full-validation`).reply(200, [
+      expect(result).toEqual([
         {
           code: 'CONCURRENT_CONSECUTIVE_SENTENCES_DURATION',
           message: '10 years 9 months 8 weeks 7 days',
           type: 'CONCURRENT_CONSECUTIVE',
         } as ValidationMessage,
-        {
-          code: 'OFFENCE_MISSING_DATE',
-          message: 'The validation failed',
-          type: 'VALIDATION',
-        } as ValidationMessage,
       ])
-
-      const result = await calculateReleaseDatesService.validateBackend(prisonerId, null, token)
-
-      expect(result).toEqual({
-        messages: [{ text: 'The validation failed' }],
-        messageType: 'VALIDATION',
-      })
     })
 
     it('Gets calculation history', async () => {
@@ -529,6 +505,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -554,6 +532,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction,
+        calculation: latestCalc,
       })
     })
     it('Should get latest calc and map to a card and action', async () => {
@@ -565,6 +544,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -594,6 +575,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction,
+        calculation: latestCalc,
       })
     })
     it('Should have print notification slip link', async () => {
@@ -605,6 +587,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -634,6 +618,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction,
+        calculation: latestCalc,
       })
     })
     it('Should get latest calc and map to a card but no action if calc reference missing', async () => {
@@ -644,6 +629,8 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -664,6 +651,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard,
         latestCalcCardAction: undefined,
+        calculation: latestCalc,
       })
     })
     it('Should return undefined card and action if no prisoner or calc found', async () => {
@@ -672,6 +660,7 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard: undefined,
         latestCalcCardAction: undefined,
+        calculation: undefined,
       })
     })
     it('Should return undefined card and action if error occurs', async () => {
@@ -680,24 +669,8 @@ describe('Calculate release dates service tests', () => {
       expect(result).toStrictEqual({
         latestCalcCard: undefined,
         latestCalcCardAction: undefined,
+        calculation: undefined,
       })
-    })
-    it('Should return Error object if no Nomis offence dates are present', async () => {
-      fakeApi
-        .get(`/calculation/${prisonerId}/latest`)
-        .reply(422, { userMessage: 'no offence end or start dates provided on charge 123' })
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
-      expect(result).toStrictEqual(FullPageError.noOffenceDatesPage())
-    })
-    it('Should return Error object if no Nomis sentence terms are present', async () => {
-      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(422, { userMessage: 'missing imprisonment_term_code 123' })
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
-      expect(result).toStrictEqual(FullPageError.noImprisonmentTermPage())
-    })
-    it('Should return Error object if no Nomis licence terms are present', async () => {
-      fakeApi.get(`/calculation/${prisonerId}/latest`).reply(422, { userMessage: 'missing licence_term_code 123' })
-      const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
-      expect(result).toStrictEqual(FullPageError.noLicenceTermPage())
     })
   })
   describe('get detailed calculation results with adjustments', () => {
@@ -710,8 +683,17 @@ describe('Calculate release dates service tests', () => {
         calculationStatus: 'CONFIRMED',
         calculationReference: 'UUID',
         calculationType: 'CALCULATED',
-        calculationReason: { id: 1, isOther: true, displayName: 'Other' },
+        calculationReason: {
+          id: 1,
+          isOther: true,
+          displayName: 'Other',
+          useForApprovedDates: false,
+          requiresFurtherDetail: true,
+        },
         otherReasonDescription: 'Test',
+        usePreviouslyRecordedSLEDIfFound: false,
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
       },
       dates: {
         CRD: {
@@ -1049,24 +1031,25 @@ describe('Calculate release dates service tests', () => {
     })
   })
 
-  it('Test creating a genuine override successfully audits it', async () => {
+  it('creating a genuine override successfully audits it', async () => {
     const response: GenuineOverrideCreatedResponse = {
+      success: true,
       newCalculationRequestId: 564658897564,
       originalCalculationRequestId: calculationRequestId,
     }
     auditService.publishGenuineOverride.mockResolvedValue()
-    fakeApi.post(`/calculation/genuine-override/${calculationRequestId}`).reply(200, response)
+    fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(200, response)
 
     const result = await calculateReleaseDatesService.createGenuineOverrideForCalculation(
       userName,
       nomsId,
       calculationRequestId,
-      token,
       {
         dates: [],
         reason: 'OTHER',
         reasonFurtherDetail: 'Foo',
       },
+      token,
     )
 
     expect(result).toEqual(response)
@@ -1078,21 +1061,60 @@ describe('Calculate release dates service tests', () => {
     )
   })
 
-  it('Test creating a genuine override fails is audited', async () => {
+  it('creating a genuine override fails with validation error is not audited but we return the validation messages', async () => {
     auditService.publishGenuineOverrideFailed.mockResolvedValue()
-    fakeApi.post(`/calculation/genuine-override/${calculationRequestId}`).reply(500)
+    const response: GenuineOverrideCreatedResponse = {
+      success: false,
+      validationMessages: [
+        {
+          code: 'DATES_MISSING_REQUIRED_TYPE',
+          message: 'Error 1',
+          type: 'VALIDATION',
+          arguments: [],
+          calculationUnsupported: false,
+        },
+        {
+          code: 'DATES_PAIRINGS_INVALID',
+          message: 'Error 2',
+          type: 'VALIDATION',
+          arguments: [],
+          calculationUnsupported: false,
+        },
+      ],
+    }
+    fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(400, response)
+
+    const result = await calculateReleaseDatesService.createGenuineOverrideForCalculation(
+      userName,
+      nomsId,
+      calculationRequestId,
+      {
+        dates: [],
+        reason: 'OTHER',
+        reasonFurtherDetail: 'Foo',
+      },
+      token,
+    )
+    expect(result).toEqual(response)
+    expect(auditService.publishGenuineOverride).not.toHaveBeenCalled()
+    expect(auditService.publishGenuineOverrideFailed).not.toHaveBeenCalled()
+  })
+
+  it('creating a genuine override fails with unknown error is audited', async () => {
+    auditService.publishGenuineOverrideFailed.mockResolvedValue()
+    fakeApi.post(`/genuine-override/calculation/${calculationRequestId}`).reply(500)
 
     try {
       await calculateReleaseDatesService.createGenuineOverrideForCalculation(
         userName,
         nomsId,
         calculationRequestId,
-        token,
         {
           dates: [],
           reason: 'OTHER',
           reasonFurtherDetail: 'Foo',
         },
+        token,
       )
       fail('Should have blown up')
     } catch (error) {

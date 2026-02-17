@@ -2,7 +2,6 @@ import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import MockDate from 'mockdate'
-import { HttpError } from 'http-errors'
 import { SessionData } from 'express-session'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import { appWithAllRoutes, user } from '../testutils/appSetup'
@@ -30,8 +29,9 @@ describe('CalculationSummaryController', () => {
 
   const calculateReleaseDatesService = new CalculateReleaseDatesService(
     null,
+    null,
   ) as jest.Mocked<CalculateReleaseDatesService>
-  const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 
   let approvedDates: { string?: ManualJourneySelectedDate[] }
   const prisonerNumber = 'A1234BC'
@@ -121,6 +121,9 @@ describe('CalculationSummaryController', () => {
       calculationType: stubbedCalculationResults.calculationType,
       calculationReason: stubbedCalculationResults.calculationReason,
       otherReasonDescription: stubbedCalculationResults.otherReasonDescription,
+      usePreviouslyRecordedSLEDIfFound: false,
+      calculatedByUsername: 'user1',
+      calculatedByDisplayName: 'User One',
     },
     dates: {
       CRD: {
@@ -323,7 +326,7 @@ describe('CalculationSummaryController', () => {
       ],
     },
     approvedDates: {},
-    tranche: 'TRANCHE_1',
+    sds40Tranche: 'TRANCHE_1',
   }
   const expectedMiniProfile = {
     name: 'Nobody, Anon',
@@ -342,7 +345,8 @@ describe('CalculationSummaryController', () => {
     userRoles = user.userRoles
     sessionSetup.sessionDoctor = req => {
       req.session.selectedApprovedDates = approvedDates
-      req.session.isAddDatesFlow = false
+      req.session.isAddDatesFlow = {}
+      req.session.isAddDatesFlow[prisonerNumber] = false
     }
 
     app = appWithAllRoutes({
@@ -377,8 +381,54 @@ describe('CalculationSummaryController', () => {
           expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
             `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=/calculation/${prisonerNumber}/123456/confirmation`,
           )
-          const submitToNomis = $('[data-qa=submit-to-nomis]').first()
+          expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+            `/calculation/${prisonerNumber}/check-information`,
+          )
+          const submitToNomis = $('[data-qa=continue-button]').first()
           expect(submitToNomis.length).toStrictEqual(1)
+        })
+    })
+
+    it(`Back link should go to previously recorded SLED if we came from there having selected no to using it`, () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
+      sessionSetup.sessionDoctor = req => {
+        req.session.siblingCalculationWithPreviouslyRecordedSLED = { 123456: 777888999 }
+      }
+      return request(app)
+        .get(`/calculation/${prisonerNumber}/123456/confirmation`)
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+            `/calculation/${prisonerNumber}/previously-recorded-sled-intercept/777888999`,
+          )
+        })
+    })
+
+    it(`Back link should go to previously recorded SLED if we came from there having selected yes to using it`, () => {
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        usedPreviouslyRecordedSLED: {
+          previouslyRecordedSLEDDate: '2020-01-02',
+          calculatedDate: '2019-03-15',
+          previouslyRecordedSLEDCalculationRequestId: 132456789,
+        },
+      })
+      sessionSetup.sessionDoctor = req => {
+        req.session.siblingCalculationWithPreviouslyRecordedSLED = {}
+      }
+      return request(app)
+        .get(`/calculation/${prisonerNumber}/123456/confirmation`)
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+            `/calculation/${prisonerNumber}/previously-recorded-sled-intercept/123456`,
+          )
         })
     })
 
@@ -674,18 +724,34 @@ describe('CalculationSummaryController', () => {
           expect(res.text).not.toContain('From 6 June, the policy for calculating HDCED has changed')
         })
     })
-    it('GET /calculation/:nomsId/summary should return confirm and continue button if approved dates on', () => {
+    it('GET /calculation/:nomsId/summary should return confirm and save to NOMIS button if approved dates has been asked or added', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
         ...stubbedResultsWithBreakdownAndAdjustments,
-        context: { ...stubbedResultsWithBreakdownAndAdjustments.context, prisonerId: 'A1234AA' },
+        context: { ...stubbedResultsWithBreakdownAndAdjustments.context, prisonerId: prisonerNumber },
       })
+      approvedDates[prisonerNumber] = [
+        {
+          position: 0,
+          dateType: 'APD',
+          completed: true,
+          manualEntrySelectedDate: {
+            dateType: 'APD',
+            dateText: 'APD (Approved parole date)',
+            date: { day: 3, month: 3, year: 2017 },
+          } as ManualEntrySelectedDate,
+        },
+      ]
+      sessionSetup.sessionDoctor = req => {
+        req.session.selectedApprovedDates = approvedDates
+      }
+
       return request(app)
-        .get('/calculation/A1234AA/summary/123456')
+        .get(`/calculation/${prisonerNumber}/summary/123456`)
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).toContain('Confirm and continue')
+          expect(res.text).toContain('Confirm and save to NOMIS')
           const $ = cheerio.load(res.text)
           expect($('[data-qa=agree-with-dates-YES]')).toHaveLength(0)
           expect($('[data-qa=agree-with-dates-NO]')).toHaveLength(0)
@@ -712,7 +778,7 @@ describe('CalculationSummaryController', () => {
     })
     it('GET /calculation/:nomsId/summary/:calculationRequestId should not display tranche label', () => {
       const dataWithTranche1 = { ...stubbedResultsWithBreakdownAndAdjustments }
-      dataWithTranche1.tranche = 'TRANCHE_1'
+      dataWithTranche1.sds40Tranche = 'TRANCHE_1'
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(dataWithTranche1)
       return request(app)
         .get(`/calculation/${prisonerNumber}/summary/123456`)
@@ -729,9 +795,9 @@ describe('CalculationSummaryController', () => {
   describe('POST', () => {
     it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect if an error is thrown', () => {
       const error = {
-        status: 412,
+        responseStatus: 412,
         message: 'An error has occurred',
-      } as HttpError
+      }
 
       calculateReleaseDatesService.confirmCalculation.mockImplementation(() => {
         throw error
@@ -802,7 +868,7 @@ describe('CalculationSummaryController', () => {
         .type('form')
         .send({ agreeWithDates: 'NO' })
         .expect(302)
-        .expect('Location', `/calculation/${prisonerNumber}/select-reason-for-override/123456`)
+        .expect('Location', `/calculation/${prisonerNumber}/start-genuine-override/123456`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(currentSession.genuineOverrideInputs[prisonerNumber]).toBeUndefined()
@@ -820,7 +886,7 @@ describe('CalculationSummaryController', () => {
         .type('form')
         .send({ agreeWithDates: 'NO' })
         .expect(302)
-        .expect('Location', `/calculation/${prisonerNumber}/select-reason-for-override/123456`)
+        .expect('Location', `/calculation/${prisonerNumber}/start-genuine-override/123456`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(currentSession.genuineOverrideInputs?.[prisonerNumber]).toBeUndefined()
@@ -830,7 +896,8 @@ describe('CalculationSummaryController', () => {
     it('POST /calculation/:nomsId/summary/:calculationRequestId should go straight to approved dates selection if there are no dates and we are in the approved dates flow', () => {
       sessionSetup.sessionDoctor = req => {
         req.session.selectedApprovedDates = approvedDates
-        req.session.isAddDatesFlow = true
+        req.session.isAddDatesFlow = {}
+        req.session.isAddDatesFlow[prisonerNumber] = true
       }
 
       return request(app)

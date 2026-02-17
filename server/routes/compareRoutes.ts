@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express'
-import logger from '../../logger'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import UserPermissionsService from '../services/userPermissionsService'
 import PrisonerService from '../services/prisonerService'
@@ -68,9 +67,9 @@ export default class CompareRoutes {
   }
 
   public list: RequestHandler = async (req, res) => {
-    const { userRoles, token, caseloadMap, username } = res.locals.user
+    const { userRoles, caseloadMap, username } = res.locals.user
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
-    const prisonComparisons = await this.comparisonService.getPrisonComparisons(token)
+    const prisonComparisons = await this.comparisonService.getPrisonComparisons(username)
     const comparisons = prisonComparisons.map(comparison => new ListComparisonViewModel(comparison, caseloadMap))
     let sortedComparisons = Array.from(comparisons).sort(function (a, b) {
       return new Date(b.calculatedAt).valueOf() - new Date(a.calculatedAt).valueOf()
@@ -104,9 +103,9 @@ export default class CompareRoutes {
   }
 
   public manual_list: RequestHandler = async (req, res) => {
-    const { userRoles, token, caseloadMap, username } = res.locals.user
+    const { userRoles, caseloadMap, username } = res.locals.user
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
-    const manualComparisons = await this.comparisonService.getManualComparisons(token)
+    const manualComparisons = await this.comparisonService.getManualComparisons(username)
     const comparisons = manualComparisons.map(comparison => new ListComparisonViewModel(comparison, caseloadMap))
     const sortedComparisons = Array.from(comparisons).sort(function (a, b) {
       return new Date(b.calculatedAt).valueOf() - new Date(a.calculatedAt).valueOf()
@@ -122,8 +121,8 @@ export default class CompareRoutes {
 
   public result: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId } = req.params
-    const { token, userRoles, caseloadMap } = res.locals.user
-    const comparison = await this.comparisonService.getPrisonComparison(bulkComparisonResultId, token)
+    const { username, userRoles, caseloadMap } = res.locals.user
+    const comparison = await this.comparisonService.getPrisonComparison(bulkComparisonResultId, username)
     const allowBulkComparison = this.bulkLoadService.allowBulkComparison(userRoles)
     const overviewModel = new ComparisonResultOverviewModel(comparison, caseloadMap)
     return res.render('pages/compare/resultOverview', {
@@ -135,8 +134,8 @@ export default class CompareRoutes {
 
   public manualResult: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId } = req.params
-    const { token, userRoles, caseloadMap } = res.locals.user
-    const comparison = await this.comparisonService.getManualComparison(bulkComparisonResultId, token)
+    const { username, userRoles, caseloadMap } = res.locals.user
+    const comparison = await this.comparisonService.getManualComparison(bulkComparisonResultId, username)
     const allowManualComparison = this.bulkLoadService.allowManualComparison(userRoles)
     return res.render('pages/compare/manualResultOverview', {
       allowManualComparison,
@@ -147,18 +146,18 @@ export default class CompareRoutes {
 
   public run: RequestHandler = async (req, res) => {
     const { selectedOMU, comparisonType } = req.body
-    const { token, username } = res.locals.user
-    const comparison = await this.comparisonService.createPrisonComparison(username, selectedOMU, comparisonType, token)
+    const { username } = res.locals.user
+    const comparison = await this.comparisonService.createPrisonComparison(username, selectedOMU, comparisonType)
     return res.redirect(`/compare/result/${comparison.comparisonShortReference}`)
   }
 
   public detail: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
-      token,
+      username,
     )
 
     let discrepancy = null
@@ -166,7 +165,7 @@ export default class CompareRoutes {
       const discrepancySummary = await this.comparisonService.getComparisonPersonDiscrepancy(
         bulkComparisonResultId,
         bulkComparisonDetailId,
-        token,
+        username,
       )
       discrepancy = { ...discrepancySummary, causes: this.summaryCausesToFormCauses(discrepancySummary.causes) }
     }
@@ -182,9 +181,14 @@ export default class CompareRoutes {
 
   public viewJson: RequestHandler = async (req, res): Promise<void> => {
     const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
-    const { token } = res.locals.user
-    const jsonData = await this.calculateReleaseDatesService.getPrisonJsonMismatchComparison(
-      token,
+    const { username } = res.locals.user
+    const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      username,
+    )
+    const jsonData = await this.calculateReleaseDatesService.getPersonComparisonInputData(
+      username,
       bulkComparisonResultId,
       bulkComparisonDetailId,
     )
@@ -192,13 +196,14 @@ export default class CompareRoutes {
     res.render('pages/compare/resultJson', {
       bulkComparisonResultId,
       bulkComparisonDetailId,
+      bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
       jsonData,
     })
   }
 
   public submitDetail: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { impact, causes, detail, priority, action } = req.body
     const formCauses = Array.isArray(causes) ? causes : [causes]
 
@@ -226,7 +231,7 @@ export default class CompareRoutes {
         bulkComparisonResultId,
         bulkComparisonDetailId,
         discrepancy,
-        token,
+        username,
       )
       return res.redirect(`/compare/result/${bulkComparisonResultId}`)
     }
@@ -242,7 +247,7 @@ export default class CompareRoutes {
     const comparisonMismatch = await this.comparisonService.getPrisonMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
-      token,
+      username,
     )
 
     return res.render('pages/compare/resultDetail', {
@@ -256,11 +261,11 @@ export default class CompareRoutes {
 
   public manualDetail: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const comparisonMismatch = await this.comparisonService.getManualMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
-      token,
+      username,
     )
 
     let discrepancy = null
@@ -268,7 +273,7 @@ export default class CompareRoutes {
       const discrepancySummary = await this.comparisonService.getManualComparisonPersonDiscrepancy(
         bulkComparisonResultId,
         bulkComparisonDetailId,
-        token,
+        username,
       )
       discrepancy = { ...discrepancySummary, causes: this.summaryCausesToFormCauses(discrepancySummary.causes) }
     }
@@ -283,7 +288,7 @@ export default class CompareRoutes {
 
   public submitManualDetail: RequestHandler = async (req, res) => {
     const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { impact, causes, detail, priority, action } = req.body
     const formCauses = Array.isArray(causes) ? causes : [causes]
 
@@ -310,7 +315,7 @@ export default class CompareRoutes {
         bulkComparisonResultId,
         bulkComparisonDetailId,
         discrepancy,
-        token,
+        username,
       )
       return res.redirect(`/compare/manual/result/${bulkComparisonResultId}`)
     }
@@ -326,7 +331,7 @@ export default class CompareRoutes {
     const comparisonMismatch = await this.comparisonService.getManualMismatchComparison(
       bulkComparisonResultId,
       bulkComparisonDetailId,
-      token,
+      username,
     )
 
     return res.render('pages/compare/resultDetail', {
@@ -340,46 +345,15 @@ export default class CompareRoutes {
 
   /* eslint-disable */
   public submitManualCalculation: RequestHandler = async (req, res) => {
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { prisonerIds } = req.body
     const nomsIds = prisonerIds.split(/\r?\n/)
-    const comparison = await this.comparisonService.createManualComparison(nomsIds, token)
+    const comparison = await this.comparisonService.createManualComparison(nomsIds, username)
     return res.redirect(`/compare/manual/result/${comparison.comparisonShortReference}`)
   }
 
   public manualCalculation: RequestHandler = async (req, res): Promise<void> => {
-    const { token } = res.locals.user
-    const { bookingData } = req.query
-    try {
-      const releaseDates = bookingData
-        ? await this.calculateReleaseDatesService.calculateReleaseDates(bookingData, token)
-        : ''
-
-      res.render('pages/compare/manual', {
-        releaseDates: releaseDates ? JSON.stringify(releaseDates, undefined, 4) : '',
-        bookingData,
-      })
-    } catch (ex) {
-      logger.error(ex)
-      const validationErrors =
-        ex.status > 499 && ex.status < 600
-          ? [
-              {
-                text: `There was an error in the calculation API service: ${ex.data.userMessage}`,
-                href: '#bookingData',
-              },
-            ]
-          : [
-              {
-                text: 'The JSON is malformed',
-                href: '#bookingData',
-              },
-            ]
-      res.render('pages/test-pages/testCalculation', {
-        bookingData,
-        validationErrors,
-      })
-    }
+    return res.render('pages/compare/manual')
   }
 
   private summaryCausesToFormCauses(summaryCauses: ComparisonPersonDiscrepancyCause[]) {

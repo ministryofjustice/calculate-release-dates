@@ -17,7 +17,7 @@
                         {% for adjustment in adjustments.recallSentenceRemand.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">From {{ adjustment.from | remandDate('DD MMMM YYYY') }} to {{ adjustment.to | remandDate('DD MMMM YYYY') }}
+                                <td class="govuk-table__cell">From {{ adjustment.from | remandDate('dd MMMM yyyy') }} to {{ adjustment.to | remandDate('dd MMMM yyyy') }}
                                 {% if adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                     ({{ adjustment.analysisResult.toLowerCase() }})
                                 {% endif %}
@@ -50,7 +50,7 @@
                         {% for adjustment in adjustments.remand.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">From {{ adjustment.from | remandDate('DD MMMM YYYY') }} to {{ adjustment.to | remandDate('DD MMMM YYYY') }}
+                                <td class="govuk-table__cell">From {{ adjustment.from | remandDate('dd MMMM yyyy') }} to {{ adjustment.to | remandDate('dd MMMM yyyy') }}
                                     {% if adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}
@@ -159,7 +159,7 @@
                         {% for adjustment in adjustments.restoredAdditionalDaysAwarded.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">Remitted {{ adjustment.from | date('DD MMMM YYYY') }}
+                                <td class="govuk-table__cell">Remitted {{ adjustment.from | hmppsFormatDate('dd MMMM yyyy') }}
                                     {% if adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}
@@ -207,7 +207,7 @@
                                     <!-- Dates -->
                                     <td class="govuk-table__cell">
                                         {% if adjustment.from or adjustment.to %}
-                                            From {{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
+                                            From {{ adjustment.from | hmppsFormatDate('dd MMMM yyyy') }} to {{ adjustment.to | hmppsFormatDate('dd MMMM yyyy') }}
                                         {% endif %}
                                         {% if adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                             ({{ adjustment.analysisResult.toLowerCase() }})
@@ -244,7 +244,7 @@
                         {% for adjustment in adjustments.additionalDaysAwarded.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">Awarded {{ adjustment.from | date('DD MMMM YYYY') }}
+                                <td class="govuk-table__cell">Awarded {{ adjustment.from | hmppsFormatDate('dd MMMM yyyy') }}
                                     {% if adjustment.analysisResult?? and adjustment.analysisResult === 'NEW' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}
@@ -278,7 +278,7 @@
                         {% for adjustment in adjustments.unlawfullyAtLarge.details %}
                             <tr class="govuk-table__row">
                                 <!-- Dates -->
-                                <td class="govuk-table__cell">{{ adjustment.from | date('DD MMMM YYYY') }} to {{ adjustment.to | date('DD MMMM YYYY') }}
+                                <td class="govuk-table__cell">{{ adjustment.from | hmppsFormatDate('dd MMMM yyyy') }} to {{ adjustment.to | hmppsFormatDate('dd MMMM yyyy') }}
                                     {% if adjustment.analysisResult?? and adjustment.analysisResult !== 'SAME' %}
                                         ({{ adjustment.analysisResult.toLowerCase() }})
                                     {% endif %}

@@ -1,3 +1,4 @@
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import UserService from './userService'
 import { PrisonApiUserCaseloads } from '../@types/prisonApi/prisonClientTypes'
 import ManageUsersApiClient, { type User } from '../data/manageUsersApiClient'
@@ -11,14 +12,19 @@ describe('User service', () => {
   let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
   let prisonerService: jest.Mocked<PrisonerService>
   let userService: UserService
+  let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
 
   describe('getUser', () => {
     const caseload = {
       caseLoadId: 'MDI',
     } as PrisonApiUserCaseloads
     beforeEach(() => {
-      manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
-      prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+      mockAuthenticationClient = {
+        getToken: jest.fn().mockResolvedValue('test-system-token'),
+      } as unknown as jest.Mocked<AuthenticationClient>
+
+      manageUsersApiClient = new ManageUsersApiClient(mockAuthenticationClient) as jest.Mocked<ManageUsersApiClient>
+      prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
       userService = new UserService(manageUsersApiClient, prisonerService)
     })
 

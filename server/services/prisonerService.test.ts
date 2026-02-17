@@ -1,5 +1,5 @@
 import nock from 'nock'
-import HmppsAuthClient from '../data/hmppsAuthClient'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import PrisonerService from './prisonerService'
 import {
@@ -9,8 +9,8 @@ import {
 } from '../@types/prisonApi/prisonClientTypes'
 import { FullPageErrorType } from '../types/FullPageError'
 import AuthorisedRoles from '../enumerations/authorisedRoles'
-
-jest.mock('../data/hmppsAuthClient')
+import PrisonApiClient from '../data/prisonApiClient'
+import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 
 const caseload = {
   caseLoadId: 'MDI',
@@ -46,15 +46,22 @@ const prisonerDetails = {
 const token = 'token'
 
 describe('Prisoner service related tests', () => {
-  let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
+  let hmppsAuthClient: jest.Mocked<AuthenticationClient>
+  let prisonApiClient: jest.Mocked<PrisonApiClient>
+  let prisonerSearchApiClient: jest.Mocked<PrisonerSearchApiClient>
   let prisonerService: PrisonerService
   let fakeApi: nock.Scope
 
   beforeEach(() => {
     config.apis.prisonApi.url = 'http://localhost:8100'
     fakeApi = nock(config.apis.prisonApi.url)
-    hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-    prisonerService = new PrisonerService(hmppsAuthClient)
+    hmppsAuthClient = {
+      getToken: jest.fn().mockResolvedValue('test-system-token'),
+    } as unknown as jest.Mocked<AuthenticationClient>
+
+    prisonApiClient = new PrisonApiClient(hmppsAuthClient) as jest.Mocked<PrisonApiClient>
+    prisonerSearchApiClient = new PrisonerSearchApiClient(hmppsAuthClient) as jest.Mocked<PrisonerSearchApiClient>
+    prisonerService = new PrisonerService(prisonerSearchApiClient, prisonApiClient)
   })
 
   afterEach(() => {
@@ -74,7 +81,7 @@ describe('Prisoner service related tests', () => {
       it('should return prisoner details when agencyId is in user caseloads', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, prisonerDetails)
 
-        const result = await prisonerService.getPrisonerDetail('A1234AB', token, ['MDI'], [])
+        const result = await prisonerService.getPrisonerDetail('A1234AB', 'user1', ['MDI'], [])
 
         expect(result).toEqual(prisonerDetails)
       })
@@ -82,7 +89,7 @@ describe('Prisoner service related tests', () => {
       it('should throw NOT_IN_CASELOAD when agencyId not in derived caseloads', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'LEX' })
 
-        await expect(prisonerService.getPrisonerDetail('A1234AB', token, ['MDI'], [])).rejects.toMatchObject({
+        await expect(prisonerService.getPrisonerDetail('A1234AB', 'user1', ['MDI'], [])).rejects.toMatchObject({
           errorKey: FullPageErrorType.NOT_IN_CASELOAD,
           status: 404,
         })
@@ -93,7 +100,7 @@ describe('Prisoner service related tests', () => {
 
         const result = await prisonerService.getPrisonerDetail(
           'A1234AB',
-          token,
+          'user1',
           ['MDI'],
           [AuthorisedRoles.ROLE_INACTIVE_BOOKINGS],
         )
@@ -104,7 +111,7 @@ describe('Prisoner service related tests', () => {
       it('should throw NOT_IN_CASELOAD when agencyId is OUT and user lacks relevant role', async () => {
         fakeApi.get(`/api/offenders/A1234AB`).reply(200, { ...prisonerDetails, agencyId: 'OUT' })
 
-        await expect(prisonerService.getPrisonerDetail('A1234AB', token, ['MDI'], [])).rejects.toMatchObject({
+        await expect(prisonerService.getPrisonerDetail('A1234AB', 'user1', ['MDI'], [])).rejects.toMatchObject({
           errorKey: FullPageErrorType.NOT_IN_CASELOAD,
           status: 404,
         })

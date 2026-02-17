@@ -3,14 +3,20 @@ import { CalculationReason } from '../../@types/calculateReleaseDates/calculateR
 import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 
 export default class CalculationReasonViewModel extends PrisonerContextViewModel {
+  protected otherReasonId: string
+
+  protected requiresFurtherDetailsIds: string[]
+
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     public reasons: CalculationReason[],
-    public errorMessage?: { text: string },
-    public otherErrorMessage?: { text: string; id: number; otherText?: string },
+    public calculationReasonId?: string,
+    public otherReasonDescription?: string,
     public pageCancelRedirectUrl?: string,
   ) {
     super(prisonerDetail)
     this.reasons = reasons
+    this.otherReasonId = reasons.find(it => it.isOther === true).id.toString()
+    this.requiresFurtherDetailsIds = reasons.filter(it => it.requiresFurtherDetail).map(it => it.id.toString())
   }
 }

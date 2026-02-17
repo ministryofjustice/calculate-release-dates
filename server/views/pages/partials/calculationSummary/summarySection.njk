@@ -3,11 +3,20 @@
     {% include "../../partials/ersedCannotHappenNotificationBanner.njk" %}
     {% from "../../components/calculation-summary-dates-card/macro.njk" import calculationSummaryDatesCard %}
     {% from "../../components/approved-summary-dates-card/macro.njk" import approvedSummaryDatesCard %}
+    {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Review calculation</h1>
         {% if not model.approvedDates %}
             <p class="govuk-body">Check the release dates before entering the approved dates.</p>
+        {% endif %}
+        {% if model.detailedCalculationResults.ftr56Tranche | trancheIsFtr56 %}
+            {% set tranche = model.detailedCalculationResults.ftr56Tranche | formatFtr56Tranche  %}
+            {{ govukInsetText({
+                html: '<p>This person is in <b>' + tranche  + '</b> of the fixed-term recalls legislation change.</p>',
+                classes: "govuk-!-margin-bottom-4 ftr56-tranche-guidance-panel"
+            }) }}
         {% endif %}
     </div>
 </div>
@@ -15,14 +24,14 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
         <div class="govuk-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">
-              <span class="govuk-!-font-size-24" data-qa="release-dates-title">Release dates</span>
-            </h2>
-          </div>
-          <div class="govuk-summary-card__content">
-            {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel, isPreCalc) }}
-          </div>
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">
+                    <span class="govuk-!-font-size-24" data-qa="release-dates-title">Release dates</span>
+                </h2>
+            </div>
+            <div class="govuk-summary-card__content">
+                {{ calculationSummaryDatesCard(calculationSummaryDatesCardModel, isPreCalc) }}
+            </div>
         </div>
     </div>
 </div>
@@ -30,14 +39,14 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <div class="govuk-summary-card">
-              <div class="govuk-summary-card__title-wrapper">
-                <h2 class="govuk-summary-card__title">
-                  <span class="govuk-!-font-size-24" data-qa=" manual-dates-title">Manual dates</span>
-                </h2>
-              </div>
-              <div class="govuk-summary-card__content">
-                {{ approvedSummaryDatesCard(approvedSummaryDatesCardModel, isPreCalc) }}
-              </div>
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">
+                        <span class="govuk-!-font-size-24" data-qa=" manual-dates-title">Manual dates</span>
+                    </h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    {{ approvedSummaryDatesCard(approvedSummaryDatesCardModel, isPreCalc) }}
+                </div>
             </div>
         </div>
     </div>

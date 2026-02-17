@@ -1,32 +1,39 @@
-/* eslint-disable import/first */
 /*
  * Do appinsights first as it does some magic instrumentation work, i.e. it affects other 'require's
  * In particular, applicationinsights automatically collects bunyan logs
  */
-import { initialiseAppInsights, buildAppInsightsClient } from '../utils/azureAppInsights'
+import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
+import { buildAppInsightsClient, initialiseAppInsights } from '../utils/azureAppInsights'
 import applicationInfoSupplier from '../applicationInfo'
+import ManageUsersApiClient from './manageUsersApiClient'
+import { createRedisClient } from './redisClient'
+import config from '../config'
+import logger from '../../logger'
+import PrisonApiClient from './prisonApiClient'
+import PrisonerSearchApiClient from './prisonerSearchApiClient'
+import CourtCasesReleaseDatesApiClient from './courtCasesReleaseDatesApiClient'
+import FrontendComponentsApiClient from './frontendComponentsApiClient'
+import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 
 const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
 buildAppInsightsClient(applicationInfo)
 
-import HmppsAuthClient from './hmppsAuthClient'
-import ManageUsersApiClient from './manageUsersApiClient'
-import { createRedisClient } from './redisClient'
-import RedisTokenStore from './tokenStore/redisTokenStore'
-import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
-import config from '../config'
+const hmppsAuthClient = new AuthenticationClient(
+  config.apis.hmppsAuth,
+  logger,
+  config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
+)
 
-type RestClientBuilder<T> = (token: string) => T
-
-export const dataAccess = () => ({
+const dataAccess = () => ({
   applicationInfo,
-  hmppsAuthClient: new HmppsAuthClient(
-    config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
-  ),
-  manageUsersApiClient: new ManageUsersApiClient(),
+  hmppsAuthClient,
+  manageUsersApiClient: new ManageUsersApiClient(hmppsAuthClient),
+  prisonApiClient: new PrisonApiClient(hmppsAuthClient),
+  prisonerSearchApiClient: new PrisonerSearchApiClient(hmppsAuthClient),
+  courtCasesReleaseDatesApiClient: new CourtCasesReleaseDatesApiClient(hmppsAuthClient),
+  frontendComponentsApiClient: new FrontendComponentsApiClient(hmppsAuthClient),
+  calculateReleaseDatesApiClient: new CalculateReleaseDatesApiClient(hmppsAuthClient),
 })
 
-export type DataAccess = ReturnType<typeof dataAccess>
-
-export { HmppsAuthClient, type RestClientBuilder, ManageUsersApiClient }
+export default dataAccess

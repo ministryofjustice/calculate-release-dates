@@ -25,7 +25,7 @@ context('Calculation summary', () => {
   it('Visit Calculation summary page', () => {
     cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
     const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
-    calculationSummaryPage.submitToNomisButton().should('exist')
+    calculationSummaryPage.continueButton().should('exist')
     calculationSummaryPage.sledDate().should('contain.text', 'Monday, 05 November 2018')
     calculationSummaryPage.crdDate().should('contain.text', dayjs().add(7, 'day').format('dddd, DD MMMM YYYY'))
     calculationSummaryPage.crdHints(0).should('contain.text', 'Friday, 05 May 2017 when adjusted to a working day')
@@ -69,6 +69,18 @@ context('Calculation summary', () => {
 
     calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '20 November 2018 minus 15 days')
     calculationSummaryPage.releaseDatesAdjustmentsTable().should('contain.text', '13 May 2017 minus 6 days')
+  })
+
+  it('Visit Calculation summary page with FTR56 Tranche notification', () => {
+    cy.task('stubGetDetailedCalculationResults', {
+      previouslyRecordedSLED: null,
+      ftr56Tranche: 'FTR_56_TRANCHE_3',
+    })
+    cy.signIn()
+    const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
+    calculationSummaryPage
+      .frt56TrancheNotification()
+      .should('contain.text', 'This person is in Tranche 3 of the fixed-term recalls legislation change.')
   })
 
   it('Error when NOMIS data has changed', () => {
