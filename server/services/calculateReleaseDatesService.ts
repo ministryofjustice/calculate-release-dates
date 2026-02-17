@@ -25,6 +25,7 @@ import {
   HistoricCalculation,
   LatestCalculation,
   NomisCalculationSummary,
+  PersonComparisonInputs,
   ReleaseDateCalculationBreakdown,
   ReleaseDatesAndCalculationContext,
   SubmitCalculationRequest,
@@ -48,7 +49,6 @@ import {
 } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import { FullPageError } from '../types/FullPageError'
 import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
-import ComparisonResultMismatchDetailJsonModel from '../models/ComparisonResultMismatchDetailJsonModel'
 import AuditService from './auditService'
 import { CalculationCard } from '../types/CalculationCard'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
@@ -530,17 +530,16 @@ export default class CalculateReleaseDatesService {
       })
   }
 
-  public async getPrisonJsonMismatchComparison(
+  public async getPersonComparisonInputData(
     username: string,
     comparisonReference: string,
     mismatchReference: string,
-  ): Promise<ComparisonResultMismatchDetailJsonModel> {
-    const data = await this.calculateReleaseDatesApiRestClient.getPrisonJsonMismatchComparison(
+  ): Promise<PersonComparisonInputs> {
+    return this.calculateReleaseDatesApiRestClient.getPersonComparisonInputData(
       comparisonReference,
       mismatchReference,
       username,
     )
-    return new ComparisonResultMismatchDetailJsonModel(data.inputData, data.sentenceAndOffences, data.adjustments)
   }
 
   private latestCalculationComponentConfig(latestCalculation: LatestCalculation): LatestCalculationCardConfig {

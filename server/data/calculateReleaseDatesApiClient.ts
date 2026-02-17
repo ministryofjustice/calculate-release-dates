@@ -17,7 +17,7 @@ import {
   ComparisonOverview,
   ComparisonPersonDiscrepancyRequest,
   ComparisonPersonDiscrepancySummary,
-  ComparisonPersonJson,
+  PersonComparisonInputs,
   ComparisonPersonOverview,
   ComparisonSummary,
   DateTypeDefinition,
@@ -228,14 +228,14 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     )
   }
 
-  getPrisonJsonMismatchComparison(
+  getPersonComparisonInputData(
     comparisonReference: string,
     mismatchReference: string,
     username: string,
-  ): Promise<ComparisonPersonJson> {
-    return this.get<ComparisonPersonJson>(
+  ): Promise<PersonComparisonInputs> {
+    return this.get<PersonComparisonInputs>(
       {
-        path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/json`,
+        path: `/comparison/${comparisonReference}/mismatch/${mismatchReference}/input-data`,
       },
       asSystem(username),
     )
