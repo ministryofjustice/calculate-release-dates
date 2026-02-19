@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { Services } from '../services'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
-import SearchRoutes from './searchRoutes'
 import StartRoutes from './startRoutes'
 import ViewRoutes from './viewRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
@@ -26,6 +25,7 @@ import CalculationReasonController from './calculation-reason/calculationReasonC
 import { calculationReasonSchemaFactory } from './calculation-reason/calculationReasonSchemaFactory'
 import DisableNomisController from './disable-nomis/disableNomisController'
 import CalculationSummaryOverridesController from './calculation-summary/calculationSummaryOverridesController'
+import config from '../config'
 
 export default function Index({
   prisonerService,
@@ -61,7 +61,6 @@ export default function Index({
     }
   }
   const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService, userInputService)
-  const searchAccessRoutes = new SearchRoutes(prisonerService)
 
   const compareAccessRoutes = new CompareRoutes(
     calculateReleaseDatesService,
@@ -220,10 +219,6 @@ export default function Index({
     })
   }
 
-  const searchRoutes = () => {
-    router.get('/search/prisoners', searchAccessRoutes.searchCalculatePrisoners)
-  }
-
   const viewRoutes = () => {
     router.get('/view/:nomsId/latest', viewAccessRoutes.startViewJourney)
     router.get('/view/:nomsId/sentences-and-offences/:calculationRequestId', viewAccessRoutes.sentencesAndOffences)
@@ -287,13 +282,17 @@ export default function Index({
   reasonRoutes()
   checkInformationRoutes()
   manualEntryRoutes()
-  searchRoutes()
   viewRoutes()
   otherRoutes()
   compareRoutes()
   approvedDatesRoutes()
   thingsToDoInterceptRouter()
   genuineOverridesRoutes()
+
+  router.get('/search/prisoners', (_req, res) => {
+    res.redirect(config.apis.digitalPrisonServices.ui_url)
+  })
+
   disableNomisRoutes()
   return router
 }

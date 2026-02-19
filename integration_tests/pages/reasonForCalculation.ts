@@ -21,4 +21,8 @@ export default class CalculationReasonPage extends Page {
   public submitReason(): PageElement {
     return cy.get(`[data-qa=submitReason]`)
   }
+
+  headerUserName(): PageElement {
+    return cy.get('[data-qa=header-user-name]')
+  }
 }
