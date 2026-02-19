@@ -50,10 +50,6 @@ context('End to end happy path of user journey', () => {
     const landingPage = CCARDLandingPage.verifyOnPage(CCARDLandingPage)
     landingPage.calculateReleaseDatesAction().click()
 
-    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
-    ccardLandingPage.hasMiniProfile()
-    ccardLandingPage.calculateReleaseDatesAction().click()
-
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByReasonId(1).check()
     calculationReasonPage.hasMiniProfile()
@@ -97,9 +93,6 @@ context('End to end happy path of user journey', () => {
     const landingPage = CCARDLandingPage.verifyOnPage(CCARDLandingPage)
     landingPage.calculateReleaseDatesAction().click()
 
-    const ccardLandingPage = Page.verifyOnPage(CCARDLandingPage)
-    ccardLandingPage.calculateReleaseDatesAction().click()
-
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByReasonId(75).check()
     calculationReasonPage.furtherDetailByReasonId(75).type('Some legislative change')
@@ -137,7 +130,8 @@ context('End to end happy path of user journey', () => {
   })
 
   it('DPS user journey with selecting no in cancel question', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
@@ -170,7 +164,8 @@ context('End to end happy path of user journey', () => {
   })
 
   it('DPS user journey with selecting yes in cancel question', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+
     const landingPage = CCARDLandingPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
@@ -197,7 +192,8 @@ context('End to end happy path of user journey', () => {
   it('View journey', () => {
     cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
 
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    CCARDLandingPage.goTo('A1234AB')
+    const landingPage = CCARDLandingPage.verifyOnPage(CCARDLandingPage)
 
     landingPage
       .latestCalculationDate()

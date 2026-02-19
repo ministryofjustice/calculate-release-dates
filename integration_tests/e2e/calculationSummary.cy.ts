@@ -76,7 +76,7 @@ context('Calculation summary', () => {
       previouslyRecordedSLED: null,
       ftr56Tranche: 'FTR_56_TRANCHE_3',
     })
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
     const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
     calculationSummaryPage
       .frt56TrancheNotification()

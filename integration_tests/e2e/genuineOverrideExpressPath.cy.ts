@@ -57,7 +57,7 @@ context(
       cy.task('stubCreateGenuineOverrideSuccessfully', { originalCalcId: 123, newCalcId: 456 })
       cy.task('stubManualEntryDateValidation')
 
-      cy.signIn()
+      cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
       const landingPage = CCARDLandingPage.goTo('A1234AB')
       landingPage.calculateReleaseDatesAction().click()
 
