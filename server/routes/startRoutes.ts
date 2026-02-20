@@ -20,8 +20,9 @@ export default class StartRoutes {
 
   public startPage: RequestHandler = async (req, res): Promise<void> => {
     const { prisonId } = req.query as Record<string, string>
-    const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
+
     if (prisonId) {
+      const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
       const { caseloads, token, userRoles, username } = res.locals.user
       const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, username, caseloads, userRoles)
       const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, username)
@@ -69,7 +70,7 @@ export default class StartRoutes {
       )
     }
 
-    return res.redirect('/search/prisoners')
+    return res.redirect(config.apis.digitalPrisonServices.ui_url)
   }
 
   public supportedSentences: RequestHandler = async (req, res): Promise<void> => {

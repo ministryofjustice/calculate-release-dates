@@ -20,7 +20,7 @@ context('Check nomis information', () => {
   })
 
   it('Visit check nomis information page', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
 
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -50,7 +50,7 @@ context('Check nomis information', () => {
   })
 
   it('Check nomis information page is accessible', () => {
-    cy.signIn()
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
     calculationReasonPage.radioByReasonId(1).check()

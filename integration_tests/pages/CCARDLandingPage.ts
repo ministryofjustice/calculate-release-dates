@@ -61,4 +61,20 @@ export default class CCARDLandingPage extends Page {
       .contains('This service cannot calculate release dates because the offence is missing a licence code.')
       .should(check)
   }
+
+  headerPhaseBanner(): PageElement {
+    return cy.get('[data-qa=header-phase-banner]')
+  }
+
+  headerUserName(): PageElement {
+    return cy.get('[data-qa=header-user-name]')
+  }
+
+  commonComponentsHeader(): PageElement {
+    return cy.get('[data-qa=common-header]')
+  }
+
+  designLibraryFooter(): PageElement {
+    return cy.get('[data-qa=ccrds-footer]')
+  }
 }

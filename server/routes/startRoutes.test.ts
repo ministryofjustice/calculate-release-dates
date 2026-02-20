@@ -13,12 +13,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import UserPermissionsService from '../services/userPermissionsService'
-import {
-  expectMiniProfile,
-  expectNoMiniProfile,
-  expectServiceHeader,
-  expectServiceHeaderForPrisoner,
-} from './testutils/layoutExpectations'
+import { expectMiniProfile, expectServiceHeaderForPrisoner } from './testutils/layoutExpectations'
 import AuthorisedRoles from '../enumerations/authorisedRoles'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
@@ -223,26 +218,8 @@ describe('Check access tests', () => {
 })
 
 describe('Start routes tests', () => {
-  it('GET / should render the search page', async () => {
-    let redirect: string
-    await request(app)
-      .get('/')
-      .expect(302)
-      .expect('Location', '/search/prisoners')
-      .expect(res => {
-        redirect = res.headers.location
-      })
-
-    await request(app)
-      .get(redirect)
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expectNoMiniProfile(res.text)
-        expectServiceHeader(res.text)
-        expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
-      })
+  it('GET / redirect to DPS', async () => {
+    await request(app).get('/').expect(302).expect('Location', config.apis.digitalPrisonServices.ui_url)
   })
 
   it('should render correct links for prisoner with no Indeterminate sentences and new add dates flow', async () => {
