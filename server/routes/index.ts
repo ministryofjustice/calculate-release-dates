@@ -260,6 +260,7 @@ export default function Index({
     router.get(comparePaths.COMPARE_MANUAL_RESULT, compareAccessRoutes.manualResult)
     router.get(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.manualDetail)
     router.post(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.submitManualDetail)
+    router.get(comparePaths.COMPARE_MANUAL_DETAIL_JSON, compareAccessRoutes.viewManualJson)
   }
 
   const thingsToDoInterceptRouter = () => {
