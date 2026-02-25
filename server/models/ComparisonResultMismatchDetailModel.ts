@@ -23,10 +23,13 @@ export default class ComparisonResultMismatchDetailModel {
 
   mismatchType: string
 
+  calculationRequestId?: number
+
   constructor(comparisonPerson: ComparisonPersonOverview) {
     this.nomisReference = comparisonPerson.personId
     this.lastName = comparisonPerson.lastName
     this.bookingId = comparisonPerson.bookingId
+    this.calculationRequestId = comparisonPerson.calculationRequestId
     this.calculatedAt = comparisonPerson.calculatedAt
     this.hdced14DayRuleApplied = this.isHdced14DayRule(
       comparisonPerson.crdsDates,
