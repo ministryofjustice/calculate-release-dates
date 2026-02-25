@@ -2182,6 +2182,8 @@ export interface components {
       }
       sdsSentencesIdentified: components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
       fatalException?: string
+      /** Format: int64 */
+      calculationRequestId?: number
     }
     /** @description Calculation breakdown details for a release date type */
     ReleaseDateCalculationBreakdown: {
