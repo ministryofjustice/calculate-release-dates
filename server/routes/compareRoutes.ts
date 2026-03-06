@@ -24,6 +24,7 @@ export const comparePaths = {
   COMPARE_DETAIL_JSON: '/compare/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId/json',
   COMPARE_MANUAL_RESULT: '/compare/manual/result/:bulkComparisonResultId',
   COMPARE_MANUAL_DETAIL: '/compare/manual/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId',
+  COMPARE_MANUAL_DETAIL_JSON: '/compare/manual/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId/json',
 }
 
 export default class CompareRoutes {
@@ -198,6 +199,7 @@ export default class CompareRoutes {
       bulkComparisonDetailId,
       bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
       jsonData,
+      isManual: false,
     })
   }
 
@@ -354,6 +356,29 @@ export default class CompareRoutes {
 
   public manualCalculation: RequestHandler = async (req, res): Promise<void> => {
     return res.render('pages/compare/manual')
+  }
+
+  public viewManualJson: RequestHandler = async (req, res): Promise<void> => {
+    const { bulkComparisonResultId, bulkComparisonDetailId } = req.params
+    const { username } = res.locals.user
+    const comparisonMismatch = await this.comparisonService.getManualMismatchComparison(
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      username,
+    )
+    const jsonData = await this.calculateReleaseDatesService.getPersonComparisonInputData(
+      username,
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+    )
+
+    res.render('pages/compare/resultJson', {
+      bulkComparisonResultId,
+      bulkComparisonDetailId,
+      bulkComparison: new ComparisonResultMismatchDetailModel(comparisonMismatch),
+      jsonData,
+      isManual: true,
+    })
   }
 
   private summaryCausesToFormCauses(summaryCauses: ComparisonPersonDiscrepancyCause[]) {

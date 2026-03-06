@@ -135,15 +135,17 @@
                 {% include "./recordDiscrepencyPanel.njk" %}
             {% endif %}
 
-            {{ govukButton({
-                text: "View JSON for Person",
-                type: button,
-                value: 'view-json-for-person',
-                href:  "/compare/result/" + bulkComparisonResultId + '/detail/' + bulkComparisonDetailId + '/json',
-                preventDoubleClick: true,
-                classes: "govuk-button--secondary",
-                attributes: {  'data-qa': 'bulk-comparison-view-json' }
-            }) }}
+            {% if bulkComparison.calculationRequestId %}
+                {{ govukButton({
+                    text: "View JSON for Person",
+                    type: button,
+                    value: 'view-json-for-person',
+                    href:  "/compare/result/" + bulkComparisonResultId + '/detail/' + bulkComparisonDetailId + '/json',
+                    preventDoubleClick: true,
+                    classes: "govuk-button--secondary",
+                    attributes: {  'data-qa': 'bulk-comparison-view-json' }
+                }) }}
+            {% endif %}
 
         </div>
     </div>
