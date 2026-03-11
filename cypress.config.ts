@@ -14,9 +14,9 @@ export default defineConfig({
   fixturesFolder: 'integration_tests/fixtures',
   screenshotsFolder: 'integration_tests/screenshots',
   videosFolder: 'integration_tests/videos',
-  reporter: 'cypress-multi-reporters',
+  reporter: 'junit',
   reporterOptions: {
-    configFile: 'reporter-config.json',
+    mochaFile: 'test_results/cypress/results-[hash].xml',
   },
   taskTimeout: 60000,
   e2e: {
