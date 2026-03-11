@@ -289,19 +289,17 @@ export default class ManualEntryRoutes {
       )
 
       const backlink = this.getEnterDatesBackLink(req, nomsId, previousDate)
-
-      return res.render(
-        'pages/manualEntry/dateEntry',
-        new ManualEntryDateEntryViewModel(
-          prisonerDetail,
-          backlink,
-          date,
-          undefined,
-          req.originalUrl,
-          message,
-          enteredDate,
-        ),
+      const model = new ManualEntryDateEntryViewModel(
+        prisonerDetail,
+        backlink,
+        date,
+        undefined,
+        req.originalUrl,
+        message,
+        enteredDate,
       )
+      model.setErrorMessage(message, date?.dateType)
+      return res.render('pages/manualEntry/dateEntry', model)
     }
 
     if (success && this.manualEntryService.getNextDateToEnter(req.session.selectedManualEntryDates[nomsId], dateType)) {

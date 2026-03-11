@@ -335,6 +335,16 @@ export default class ManualEntryService {
       year: Number(enteredDate.year),
     }
 
+    const invalidDate = this.dateValidationService.validateSedLedCrdDates(
+      manualEntry,
+      manualDates,
+      enteredDate,
+      allItems,
+    )
+    if (invalidDate) {
+      return invalidDate
+    }
+
     return { enteredDate: undefined, items: [], message: undefined, success: true, isNone: false, date: manualEntry }
   }
 

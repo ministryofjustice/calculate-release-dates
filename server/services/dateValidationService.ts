@@ -2,6 +2,94 @@ import { DateTime } from 'luxon'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 
 export default class DateValidationService {
+  public validateSedLedCrdDates(
+    manualEntrySelectedDate: ManualEntrySelectedDate,
+    manualDates: ManualJourneySelectedDate[],
+    enteredDate: EnteredDate,
+    allItems: DateInputItem[],
+  ): StorageResponseModel {
+    const createDateTime = ({
+      day,
+      month,
+      year,
+    }: {
+      day: string | number
+      month: string | number
+      year: string | number
+    }) =>
+      DateTime.fromObject({
+        day: Number(day),
+        month: Number(month),
+        year: Number(year),
+      })
+
+    const inputDate = createDateTime(enteredDate)
+
+    const findDateByType = (type: string) => manualDates.find(d => d.dateType === type)?.manualEntrySelectedDate?.date
+
+    let message = ''
+
+    if (enteredDate.dateType === 'LED') {
+      const sedDate = findDateByType('SED')
+      const crdDate = findDateByType('CRD')
+      if (sedDate) {
+        const sedDateTime = createDateTime(sedDate)
+        if (inputDate > sedDateTime) {
+          message = `The LED must be on or before the SED, which is ${sedDateTime.toFormat('dd/MM/yyyy')}`
+        }
+      }
+      if (crdDate) {
+        const crdDateTime = createDateTime(crdDate)
+        if (inputDate < crdDateTime) {
+          message = `The LED must be on or after the CRD, which is ${crdDateTime.toFormat('dd/MM/yyyy')}`
+        }
+      }
+    } else if (enteredDate.dateType === 'SED') {
+      const ledDate = findDateByType('LED')
+      const crdDate = findDateByType('CRD')
+      if (ledDate) {
+        const ledDateTime = createDateTime(ledDate)
+        if (inputDate < ledDateTime) {
+          message = `The SED must be on or after the LED, which is ${ledDateTime.toFormat('dd/MM/yyyy')}`
+        }
+      }
+      if (crdDate) {
+        const crdDateTime = createDateTime(crdDate)
+        if (inputDate < crdDateTime) {
+          message = `The SED must be on or after the CRD, which is ${crdDateTime.toFormat('dd/MM/yyyy')}`
+        }
+      }
+    } else if (enteredDate.dateType === 'CRD') {
+      const sedDate = findDateByType('SED')
+      const ledDate = findDateByType('LED')
+      if (sedDate) {
+        const sedDateTime = createDateTime(sedDate)
+        if (inputDate > sedDateTime) {
+          message = `The CRD must be on or before the SED, which is ${sedDateTime.toFormat('dd/MM/yyyy')}`
+        }
+      }
+      if (ledDate) {
+        const ledDateTime = createDateTime(ledDate)
+        if (inputDate > ledDateTime) {
+          message = `The CRD must be on or before the LED, which is ${ledDateTime.toFormat('dd/MM/yyyy')}`
+        }
+      }
+    }
+
+    const items = allItems.map(it => {
+      return { ...it, classes: `${it.classes} govuk-input--error` }
+    })
+
+    return {
+      message,
+      date: manualEntrySelectedDate,
+      enteredDate,
+      success: message === '',
+      items,
+      isNone: false,
+    } as StorageResponseModel
+  }
+
   public isDateValid(enteredDate: EnteredDate): boolean {
     const dateAsDate = DateTime.fromFormat(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`, 'yyyy-M-d')
     return dateAsDate.isValid
