@@ -82,16 +82,16 @@ export default class DateValidationService {
     } else if (enteredDateType === 'CRD') {
       const sedDate = findDateByType('SED')
       const ledDate = findDateByType('LED')
-      if (sedDate) {
-        const sedDateTime = this.createDateTime(sedDate)
-        if (inputDate > sedDateTime) {
-          return `The CRD must be on or before the SED, which is ${sedDateTime.toFormat(dateFormat)}`
-        }
-      }
       if (ledDate) {
         const ledDateTime = this.createDateTime(ledDate)
         if (inputDate > ledDateTime) {
           return `The CRD must be on or before the LED, which is ${ledDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (sedDate) {
+        const sedDateTime = this.createDateTime(sedDate)
+        if (inputDate > sedDateTime) {
+          return `The CRD must be on or before the SED, which is ${sedDateTime.toFormat(dateFormat)}`
         }
       }
     }
