@@ -51,7 +51,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [sedDate, ledDate]
     const enteredDate = createMockDate('30', '12', '2023', 'LED')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -68,7 +68,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [ledDate, sedDate]
     const enteredDate = createMockDate('31', '12', '2023', 'LED')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -85,7 +85,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [ledDate, sedDate]
     const enteredDate = createMockDate('30', '12', '2023', 'SED')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -102,7 +102,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
     const enteredDate = createMockDate('02', '12', '2023', 'SED')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       sedDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -119,7 +119,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
     const enteredDate = createMockDate('02', '12', '2023', 'LED')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -136,7 +136,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
     const enteredDate = createMockDate('01', '12', '2023', 'SED')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       sedDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -153,7 +153,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
     const enteredDate = createMockDate('01', '12', '2023', 'LED')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -170,7 +170,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
     const enteredDate = createMockDate('30', '12', '2023', 'CRD')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       crdDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -187,7 +187,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
     const enteredDate = createMockDate('30', '12', '2023', 'CRD')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       crdDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -204,7 +204,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
     const enteredDate = createMockDate('31', '12', '2023', 'CRD')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       crdDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -221,7 +221,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
     const enteredDate = createMockDate('31', '12', '2023', 'CRD')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       crdDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
@@ -236,7 +236,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = []
     const enteredDate = createMockDate('01', '01', '2023', 'LED')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       null,
       manualDates,
       enteredDate,
@@ -252,7 +252,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [sedDate]
     const enteredDate = createMockDate('01', '01', '2023', 'CRD')
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       null,
       manualDates,
       enteredDate,
@@ -269,7 +269,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const manualDates: ManualJourneySelectedDate[] = [sedDate, ledDate]
     const enteredDate = createMockDate('31', '12', '2023', 'LED') // Exactly on SED
 
-    const result: StorageResponseModel = dateValidationService.validateSedLedCrdDates(
+    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
       ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,

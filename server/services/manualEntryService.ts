@@ -335,7 +335,7 @@ export default class ManualEntryService {
       year: Number(enteredDate.year),
     }
 
-    const invalidDate = this.dateValidationService.validateSedLedCrdDates(
+    const invalidDate = this.dateValidationService.validateAgainstOtherDates(
       manualEntry,
       manualDates,
       enteredDate,

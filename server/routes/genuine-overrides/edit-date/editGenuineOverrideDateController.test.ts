@@ -9,6 +9,7 @@ import DateTypeConfigurationService from '../../../services/dateTypeConfiguratio
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
 import { GenuineOverrideInputs } from '../../../@types/journeys'
+import DateValidationService from '../../../services/dateValidationService'
 
 jest.mock('../../../services/dateTypeConfigurationService')
 jest.mock('../../../services/prisonerService')
@@ -20,6 +21,7 @@ describe('AddGenuineOverrideDateController', () => {
   const dateTypeConfigurationService = new DateTypeConfigurationService(
     null,
   ) as jest.Mocked<DateTypeConfigurationService>
+  const dateValidationService = new DateValidationService() as jest.Mocked<DateValidationService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 
   let genuineOverrideInputs: GenuineOverrideInputs
@@ -47,6 +49,7 @@ describe('AddGenuineOverrideDateController', () => {
       services: {
         dateTypeConfigurationService,
         prisonerService,
+        dateValidationService
       },
       sessionSetup,
       userSupplier: () => currentUser,
