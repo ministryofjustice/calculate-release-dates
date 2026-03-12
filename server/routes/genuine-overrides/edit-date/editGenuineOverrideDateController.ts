@@ -26,7 +26,6 @@ export default class EditGenuineOverrideDateController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId, dateType } = req.params
-    const { caseloads, userRoles, username } = res.locals.user
 
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
@@ -49,24 +48,38 @@ export default class EditGenuineOverrideDateController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId, dateType } = req.params
-    const { caseloads, userRoles, username } = res.locals.user
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const { day, month, year } = req.body
     const enteredDate: EnteredDate = {
       day: day.toString(),
       month: month.toString(),
       year: year.toString(),
-      dateType: dateType
+      dateType,
     }
-    const errorMessage = this.dateValidationService.validateSedLedCrdDates(dateType, enteredDate, null, genuineOverrideInputs)
-    if(errorMessage) {
+    const errorMessage = this.dateValidationService.validateSedLedCrdDates(
+      dateType,
+      enteredDate,
+      null,
+      genuineOverrideInputs,
+    )
+    if (errorMessage) {
       const errorList = [
         {
           text: errorMessage,
           href: `#releaseDate`,
         },
       ]
-      return this.renderEnterDateView(res, nomsId, calculationRequestId, dateType, day, month, year, errorList, errorMessage)
+      return this.renderEnterDateView(
+        res,
+        nomsId,
+        calculationRequestId,
+        dateType,
+        day,
+        month,
+        year,
+        errorList,
+        errorMessage,
+      )
     }
     const dateBeingSet = genuineOverrideInputs.datesToSave.find(it => it.type === dateType)
     dateBeingSet.date = dayjs(`${year}-${month}-${day}`).format('YYYY-MM-DD')
@@ -82,7 +95,7 @@ export default class EditGenuineOverrideDateController implements Controller {
     month: string | number,
     year: string | number,
     errorList: { text: string; href: string }[],
-    errorMessage?: string
+    errorMessage?: string,
   ): Promise<void> {
     const { caseloads, userRoles, username } = res.locals.user
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
@@ -101,7 +114,7 @@ export default class EditGenuineOverrideDateController implements Controller {
         GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId),
         GenuineOverrideUrls.editDate(nomsId, calculationRequestId, dateType),
         errorList,
-        errorMessage
+        errorMessage,
       ),
     )
   }

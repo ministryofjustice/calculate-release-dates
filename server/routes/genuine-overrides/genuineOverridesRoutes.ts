@@ -108,7 +108,11 @@ const GenuineOverridesRoutes = (
 
   route({
     path: '/calculation/:nomsId/override/:dateType/edit/:calculationRequestId',
-    controller: new EditGenuineOverrideDateController(dateTypeConfigurationService, prisonerService, dateValidationService),
+    controller: new EditGenuineOverrideDateController(
+      dateTypeConfigurationService,
+      prisonerService,
+      dateValidationService,
+    ),
     validateToSchema: releaseDateSchema,
   })
 

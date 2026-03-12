@@ -49,7 +49,7 @@ describe('AddGenuineOverrideDateController', () => {
       services: {
         dateTypeConfigurationService,
         prisonerService,
-        dateValidationService
+        dateValidationService,
       },
       sessionSetup,
       userSupplier: () => currentUser,

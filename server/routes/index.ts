@@ -269,7 +269,15 @@ export default function Index({
   }
 
   const genuineOverridesRoutes = () => {
-    router.use('/', GenuineOverridesRoutes(calculateReleaseDatesService, prisonerService, dateTypeConfigurationService, dateValidationService))
+    router.use(
+      '/',
+      GenuineOverridesRoutes(
+        calculateReleaseDatesService,
+        prisonerService,
+        dateTypeConfigurationService,
+        dateValidationService,
+      ),
+    )
   }
 
   const disableNomisRoutes = () => {
