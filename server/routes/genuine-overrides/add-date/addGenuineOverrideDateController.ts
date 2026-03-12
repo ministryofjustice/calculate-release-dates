@@ -61,6 +61,7 @@ export default class AddGenuineOverrideDateController implements Controller {
           genuineOverrideInputs?.datesBeingAdded ?? [],
         ),
         GenuineOverrideUrls.enterNewDate(nomsId, calculationRequestId, dateType),
+        null,
       ),
     )
   }

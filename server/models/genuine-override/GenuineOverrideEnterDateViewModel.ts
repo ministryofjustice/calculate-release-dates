@@ -10,6 +10,8 @@ export default class GenuineOverrideEnterDateViewModel extends PrisonerContextVi
     public description: string,
     public backLink: string,
     public pageCancelRedirectUrl: string,
+    public errorList: { text: string; href: string }[],
+    public error?: string,
   ) {
     super(prisonerDetail)
   }

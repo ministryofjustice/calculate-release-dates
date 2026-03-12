@@ -22,11 +22,13 @@ import { reviewDatesFromPreviousOverrideSummarySchema } from './review-previous-
 import { selectDatesSchema } from '../common-schemas/selectDatesSchema'
 import { deleteDateSchema } from '../common-schemas/deleteDateSchema'
 import GenuineOverrideHolidayInterceptController from './weekend-holiday-intercept/genuineOverrideHolidayInterceptController'
+import DateValidationService from '../../services/dateValidationService'
 
 const GenuineOverridesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
   prisonerService: PrisonerService,
   dateTypeConfigurationService: DateTypeConfigurationService,
+  dateValidationService: DateValidationService,
 ) => {
   const router = Router({ mergeParams: true })
   const route = <P extends { [key: string]: string }>({
@@ -106,7 +108,11 @@ const GenuineOverridesRoutes = (
 
   route({
     path: '/calculation/:nomsId/override/:dateType/edit/:calculationRequestId',
-    controller: new EditGenuineOverrideDateController(dateTypeConfigurationService, prisonerService),
+    controller: new EditGenuineOverrideDateController(
+      dateTypeConfigurationService,
+      prisonerService,
+      dateValidationService,
+    ),
     validateToSchema: releaseDateSchema,
   })
 

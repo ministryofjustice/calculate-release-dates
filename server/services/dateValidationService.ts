@@ -1,7 +1,123 @@
 import { DateTime } from 'luxon'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
+import { GenuineOverrideInputs } from '../@types/journeys'
 
 export default class DateValidationService {
+  public createDateTime({
+    day,
+    month,
+    year,
+  }: {
+    day: string | number
+    month: string | number
+    year: string | number
+  }): DateTime {
+    return DateTime.fromObject({
+      day: Number(day),
+      month: Number(month),
+      year: Number(year),
+    })
+  }
+
+  public findDateByType(
+    type: string,
+    manualDates: ManualJourneySelectedDate[],
+    genuineOverrideInputs: GenuineOverrideInputs,
+  ): { day: number; month: number; year: number } | null {
+    let storedDate = null
+    if (manualDates) {
+      storedDate = manualDates.find(d => d.dateType === type)?.manualEntrySelectedDate?.date
+    } else if (genuineOverrideInputs) {
+      const genuineOverrideDate = genuineOverrideInputs.datesToSave.find(d => d.type === type)?.date
+      if (typeof genuineOverrideDate === 'string') {
+        const [year, month, day] = genuineOverrideDate.split('-').map(Number)
+        storedDate = { day, month, year }
+      }
+    }
+    return storedDate
+  }
+
+  public validateSedLedCrdDates(
+    enteredDateType: string,
+    enteredDate: EnteredDate,
+    manualDates: ManualJourneySelectedDate[],
+    genuineOverrideInputs: GenuineOverrideInputs,
+  ): string {
+    const dateFormat = 'dd/MM/yyyy'
+
+    const inputDate = this.createDateTime(enteredDate)
+    const findDateByType = (type: string) => this.findDateByType(type, manualDates, genuineOverrideInputs)
+
+    const message = ''
+    if (enteredDateType === 'LED') {
+      const sedDate = findDateByType('SED')
+      const crdDate = findDateByType('CRD')
+      if (sedDate) {
+        const sedDateTime = this.createDateTime(sedDate)
+        if (inputDate > sedDateTime) {
+          return `The LED must be on or before the SED, which is ${sedDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (crdDate) {
+        const crdDateTime = this.createDateTime(crdDate)
+        if (inputDate < crdDateTime) {
+          return `The LED must be on or after the CRD, which is ${crdDateTime.toFormat(dateFormat)}`
+        }
+      }
+    } else if (enteredDateType === 'SED') {
+      const ledDate = findDateByType('LED')
+      const crdDate = findDateByType('CRD')
+      if (ledDate) {
+        const ledDateTime = this.createDateTime(ledDate)
+        if (inputDate < ledDateTime) {
+          return `The SED must be on or after the LED, which is ${ledDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (crdDate) {
+        const crdDateTime = this.createDateTime(crdDate)
+        if (inputDate < crdDateTime) {
+          return `The SED must be on or after the CRD, which is ${crdDateTime.toFormat(dateFormat)}`
+        }
+      }
+    } else if (enteredDateType === 'CRD') {
+      const sedDate = findDateByType('SED')
+      const ledDate = findDateByType('LED')
+      if (ledDate) {
+        const ledDateTime = this.createDateTime(ledDate)
+        if (inputDate > ledDateTime) {
+          return `The CRD must be on or before the LED, which is ${ledDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (sedDate) {
+        const sedDateTime = this.createDateTime(sedDate)
+        if (inputDate > sedDateTime) {
+          return `The CRD must be on or before the SED, which is ${sedDateTime.toFormat(dateFormat)}`
+        }
+      }
+    }
+    return message
+  }
+
+  public validateAgainstOtherDates(
+    manualEntrySelectedDate: ManualEntrySelectedDate,
+    manualDates: ManualJourneySelectedDate[],
+    enteredDate: EnteredDate,
+    allItems: DateInputItem[],
+  ): StorageResponseModel {
+    const items = allItems.map(it => {
+      return { ...it, classes: `${it.classes} govuk-input--error` }
+    })
+    const message = this.validateSedLedCrdDates(enteredDate.dateType, enteredDate, manualDates, null)
+    return {
+      message,
+      date: manualEntrySelectedDate,
+      enteredDate,
+      success: message === '',
+      items,
+      isNone: false,
+    } as StorageResponseModel
+  }
+
   public isDateValid(enteredDate: EnteredDate): boolean {
     const dateAsDate = DateTime.fromFormat(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`, 'yyyy-M-d')
     return dateAsDate.isValid

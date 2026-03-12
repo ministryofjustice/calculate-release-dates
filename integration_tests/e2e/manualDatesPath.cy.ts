@@ -85,7 +85,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
     enterCRDPage.checkIsFor('CRD')
-    enterCRDPage.enterDate('CRD', '03', '09', '2027')
+    enterCRDPage.enterDate('CRD', '03', '09', '2025')
     enterCRDPage.continue().click()
 
     const enterMTDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
@@ -95,7 +95,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const manualDatesConfirmationPage = Page.verifyOnPage(ManualDatesConfirmationPage)
     manualDatesConfirmationPage.dateShouldHaveValue('LED', '01 June 2026')
-    manualDatesConfirmationPage.dateShouldHaveValue('CRD', '03 September 2027')
+    manualDatesConfirmationPage.dateShouldHaveValue('CRD', '03 September 2025')
     manualDatesConfirmationPage.dateShouldHaveValue('MTD', '09 March 2028')
     // check unselected dates are not shown
     manualDatesConfirmationPage.dateShouldNotBePresent('LTD')
@@ -242,11 +242,11 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
     enterCRDPage.checkIsFor('CRD')
-    enterCRDPage.enterDate('CRD', '03', '09', '2027')
+    enterCRDPage.enterDate('CRD', '03', '09', '2025')
     enterCRDPage.continue().click()
 
     const manualDatesConfirmationPage = Page.verifyOnPage(ManualDatesConfirmationPage)
-    manualDatesConfirmationPage.dateShouldHaveValue('CRD', '03 September 2027')
+    manualDatesConfirmationPage.dateShouldHaveValue('CRD', '03 September 2025')
     manualDatesConfirmationPage.dateShouldNotBePresent('SED')
     manualDatesConfirmationPage.dateShouldNotBePresent('MTD')
     manualDatesConfirmationPage.addAnotherReleaseDateLink().click()
@@ -261,7 +261,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
     enterSedPage.continue().click()
 
     const manualDateConfAfterAddingSed = Page.verifyOnPage(ManualDatesConfirmationPage)
-    manualDateConfAfterAddingSed.dateShouldHaveValue('CRD', '03 September 2027')
+    manualDateConfAfterAddingSed.dateShouldHaveValue('CRD', '03 September 2025')
     manualDateConfAfterAddingSed.dateShouldHaveValue('SED', '01 June 2026')
     manualDateConfAfterAddingSed.dateShouldNotBePresent('MTD')
     manualDateConfAfterAddingSed.submitToNomisButton().click()
@@ -293,7 +293,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const enterSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
     enterSedPage.checkIsFor('SED')
-    enterSedPage.enterDate('SED', '01', '06', '2026')
+    enterSedPage.enterDate('SED', '01', '06', '2028')
     enterSedPage.continue().click()
 
     const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
@@ -303,7 +303,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const manualDatesConfirmationPage = Page.verifyOnPage(ManualDatesConfirmationPage)
     manualDatesConfirmationPage.dateShouldHaveValue('CRD', '03 September 2027')
-    manualDatesConfirmationPage.dateShouldHaveValue('SED', '01 June 2026')
+    manualDatesConfirmationPage.dateShouldHaveValue('SED', '01 June 2028')
     manualDatesConfirmationPage.dateShouldNotBePresent('MTD')
     manualDatesConfirmationPage.editReleaseDateLink('SED').click()
 
@@ -345,7 +345,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const enterSedPage = Page.verifyOnPage(ManualDatesEnterDatePage)
     enterSedPage.checkIsFor('SED')
-    enterSedPage.enterDate('SED', '01', '06', '2026')
+    enterSedPage.enterDate('SED', '01', '06', '2028')
     enterSedPage.continue().click()
 
     const enterCRDPage = Page.verifyOnPage(ManualDatesEnterDatePage)
@@ -355,7 +355,7 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
     const manualDatesConfirmationPage = Page.verifyOnPage(ManualDatesConfirmationPage)
     manualDatesConfirmationPage.dateShouldHaveValue('CRD', '03 September 2027')
-    manualDatesConfirmationPage.dateShouldHaveValue('SED', '01 June 2026')
+    manualDatesConfirmationPage.dateShouldHaveValue('SED', '01 June 2028')
     manualDatesConfirmationPage.removeReleaseDateLink('SED').click()
 
     const removeSedPage = Page.verifyOnPage(ManualDatesRemoveDatePage)
@@ -476,12 +476,12 @@ context('End to end user journeys entering and modifying approved dates', () => 
       const enterLedReturnPage = Page.verifyOnPage(ManualDatesEnterDatePage)
       enterLedReturnPage.backLinkExistsWithTitle('/calculation/A1234AB/manual-entry/enter-date?dateType=SED')
       enterLedReturnPage.checkIsFor('LED')
-      enterLedReturnPage.enterDate('LED', '02', '02', '2030')
+      enterLedReturnPage.enterDate('LED', '02', '02', '2027')
       enterLedReturnPage.continue().click()
 
       const manualDateReturnPageWithEditableDates = Page.verifyOnPage(ManualDatesConfirmationPage)
       manualDateReturnPageWithEditableDates.dateShouldHaveValue('SED', '01 June 2028')
-      manualDateReturnPageWithEditableDates.dateShouldHaveValue('LED', '02 February 2030')
+      manualDateReturnPageWithEditableDates.dateShouldHaveValue('LED', '02 February 2027')
       manualDateReturnPageWithEditableDates.submitToNomisButton().click()
 
       const calculationCompletePage = Page.verifyOnPage(CalculationCompletePage)
