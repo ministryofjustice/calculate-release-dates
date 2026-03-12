@@ -28,6 +28,7 @@ export default class DateValidationService {
     const findDateByType = (type: string) => manualDates.find(d => d.dateType === type)?.manualEntrySelectedDate?.date
 
     let message = ''
+    const dateFormat = 'dd/MM/yyyy'
 
     if (enteredDate.dateType === 'LED') {
       const sedDate = findDateByType('SED')
@@ -35,13 +36,13 @@ export default class DateValidationService {
       if (sedDate) {
         const sedDateTime = createDateTime(sedDate)
         if (inputDate > sedDateTime) {
-          message = `The LED must be on or before the SED, which is ${sedDateTime.toFormat('dd/MM/yyyy')}`
+          message = `The LED must be on or before the SED, which is ${sedDateTime.toFormat(dateFormat)}`
         }
       }
       if (crdDate) {
         const crdDateTime = createDateTime(crdDate)
         if (inputDate < crdDateTime) {
-          message = `The LED must be on or after the CRD, which is ${crdDateTime.toFormat('dd/MM/yyyy')}`
+          message = `The LED must be on or after the CRD, which is ${crdDateTime.toFormat(dateFormat)}`
         }
       }
     } else if (enteredDate.dateType === 'SED') {
@@ -50,13 +51,13 @@ export default class DateValidationService {
       if (ledDate) {
         const ledDateTime = createDateTime(ledDate)
         if (inputDate < ledDateTime) {
-          message = `The SED must be on or after the LED, which is ${ledDateTime.toFormat('dd/MM/yyyy')}`
+          message = `The SED must be on or after the LED, which is ${ledDateTime.toFormat(dateFormat)}`
         }
       }
       if (crdDate) {
         const crdDateTime = createDateTime(crdDate)
         if (inputDate < crdDateTime) {
-          message = `The SED must be on or after the CRD, which is ${crdDateTime.toFormat('dd/MM/yyyy')}`
+          message = `The SED must be on or after the CRD, which is ${crdDateTime.toFormat(dateFormat)}`
         }
       }
     } else if (enteredDate.dateType === 'CRD') {
@@ -65,13 +66,13 @@ export default class DateValidationService {
       if (sedDate) {
         const sedDateTime = createDateTime(sedDate)
         if (inputDate > sedDateTime) {
-          message = `The CRD must be on or before the SED, which is ${sedDateTime.toFormat('dd/MM/yyyy')}`
+          message = `The CRD must be on or before the SED, which is ${sedDateTime.toFormat(dateFormat)}`
         }
       }
       if (ledDate) {
         const ledDateTime = createDateTime(ledDate)
         if (inputDate > ledDateTime) {
-          message = `The CRD must be on or before the LED, which is ${ledDateTime.toFormat('dd/MM/yyyy')}`
+          message = `The CRD must be on or before the LED, which is ${ledDateTime.toFormat(dateFormat)}`
         }
       }
     }
