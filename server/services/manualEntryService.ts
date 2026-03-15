@@ -328,7 +328,7 @@ export default class ManualEntryService {
     }
 
     const invalidDate = this.dateValidationService.validateAgainstOtherDates(manualDates, enteredDate, allItems)
-    if (invalidDate) {
+    if (invalidDate && !invalidDate.success) {
       return invalidDate
     }
 
