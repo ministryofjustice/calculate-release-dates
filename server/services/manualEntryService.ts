@@ -327,11 +327,7 @@ export default class ManualEntryService {
       return notWithinOneHundredYears
     }
 
-    const invalidDate = this.dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      allItems,
-    )
+    const invalidDate = this.dateValidationService.validateAgainstOtherDates(manualDates, enteredDate, allItems)
     if (invalidDate) {
       return invalidDate
     }

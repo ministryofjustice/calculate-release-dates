@@ -220,7 +220,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     expect(result.success).toBe(false)
     expect(result.message).toBe('The CRD must be on or before the SED, which is 30/12/2023')
   })
-  
+
   it('should return success when enteredDate is exactly on the boundary date', () => {
     const sedDate = createMockManualDate('SED', '2023-12-31')
     const ledDate = createMockManualDate('LED', null)
