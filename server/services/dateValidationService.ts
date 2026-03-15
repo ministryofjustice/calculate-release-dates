@@ -99,7 +99,6 @@ export default class DateValidationService {
   }
 
   public validateAgainstOtherDates(
-    manualEntrySelectedDate: ManualEntrySelectedDate,
     manualDates: ManualJourneySelectedDate[],
     enteredDate: EnteredDate,
     allItems: DateInputItem[],
@@ -107,6 +106,8 @@ export default class DateValidationService {
     const items = allItems.map(it => {
       return { ...it, classes: `${it.classes} govuk-input--error` }
     })
+    const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
+    const { manualEntrySelectedDate } = manualDate
     const message = this.validateSedLedCrdDates(enteredDate.dateType, enteredDate, manualDates, null)
     return {
       message,

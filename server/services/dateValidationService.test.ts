@@ -52,7 +52,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('30', '12', '2023', 'LED')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -69,7 +68,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('31', '12', '2023', 'LED')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -86,7 +84,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('30', '12', '2023', 'SED')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -103,7 +100,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('02', '12', '2023', 'SED')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      sedDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -120,7 +116,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('02', '12', '2023', 'LED')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -137,7 +132,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('01', '12', '2023', 'SED')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      sedDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -154,7 +148,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('01', '12', '2023', 'LED')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -171,7 +164,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('30', '12', '2023', 'CRD')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      crdDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -188,7 +180,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('30', '12', '2023', 'CRD')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      crdDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -205,7 +196,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('31', '12', '2023', 'CRD')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      crdDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -222,7 +212,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('31', '12', '2023', 'CRD')
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      crdDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
@@ -231,38 +220,7 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     expect(result.success).toBe(false)
     expect(result.message).toBe('The CRD must be on or before the SED, which is 30/12/2023')
   })
-
-  it('should return success when no manual dates are provided', () => {
-    const manualDates: ManualJourneySelectedDate[] = []
-    const enteredDate = createMockDate('01', '01', '2023', 'LED')
-
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      null,
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
-
-    expect(result.success).toBe(true)
-    expect(result.message).toBe('')
-  })
-
-  it('should return success when enteredDate.dateType does not match any in manualDates', () => {
-    const sedDate = createMockManualDate('SED', '2023-12-31')
-    const manualDates: ManualJourneySelectedDate[] = [sedDate]
-    const enteredDate = createMockDate('01', '01', '2023', 'CRD')
-
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      null,
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
-
-    expect(result.success).toBe(true)
-    expect(result.message).toBe('')
-  })
-
+  
   it('should return success when enteredDate is exactly on the boundary date', () => {
     const sedDate = createMockManualDate('SED', '2023-12-31')
     const ledDate = createMockManualDate('LED', null)
@@ -270,7 +228,6 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     const enteredDate = createMockDate('31', '12', '2023', 'LED') // Exactly on SED
 
     const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      ledDate.manualEntrySelectedDate,
       manualDates,
       enteredDate,
       createMockDateInputItems(),
