@@ -329,6 +329,11 @@ export default class ManualEntryService {
 
     const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
     const manualEntry = manualDate.manualEntrySelectedDate
+    manualDate.manualEntrySelectedDate.date = {
+      day: Number(enteredDate.day),
+      month: Number(enteredDate.month),
+      year: Number(enteredDate.year),
+    }
 
     const invalidDate = this.dateValidationService.validateAgainstOtherDates(
       manualEntry,
@@ -338,12 +343,6 @@ export default class ManualEntryService {
     )
     if (invalidDate) {
       return invalidDate
-    }
-
-    manualDate.manualEntrySelectedDate.date = {
-      day: Number(enteredDate.day),
-      month: Number(enteredDate.month),
-      year: Number(enteredDate.year),
     }
 
     return { enteredDate: undefined, items: [], message: undefined, success: true, isNone: false, date: manualEntry }
