@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
@@ -31,7 +31,7 @@ describe('ReviewApprovedDatesController', () => {
   let journey: ApprovedDatesJourney
   const prisonerNumber = 'A1234BC'
   const calculationRequestId = 465987
-  const journeyId = uuidv4()
+  const journeyId = randomUUID()
   const stubbedPrisonerData = {
     offenderNo: prisonerNumber,
     firstName: 'Anon',

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { Controller } from '../../controller'
 import { ApprovedDatesJourney } from '../../../@types/journeys'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
@@ -16,7 +16,7 @@ export default class StartApprovedDatesJourney implements Controller {
     const inputs = await this.calculateReleaseDatesService.getApprovedDatesInputs(nomsId, username)
     if (inputs.approvedDatesAvailable) {
       const journey: ApprovedDatesJourney = {
-        id: uuidv4(),
+        id: randomUUID(),
         lastTouched: new Date().toISOString(),
         nomsId,
         preliminaryCalculationRequestId: inputs.calculatedReleaseDates.calculationRequestId,

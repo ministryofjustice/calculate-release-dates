@@ -29,28 +29,4 @@ export default abstract class Page {
   get errorSummaryItems(): PageElement {
     return this.errorSummary().find('.govuk-error-summary__list a')
   }
-
-  hasMissingOffenceDates(flag: boolean): PageElement {
-    const check = flag ? 'exist' : 'not.exist'
-    return cy
-      .get('p')
-      .contains('This service cannot calculate release dates because the offence start date is missing.')
-      .should(check)
-  }
-
-  hasMissingOffenceTerms(flag: boolean): PageElement {
-    const check = flag ? 'exist' : 'not.exist'
-    return cy
-      .get('p')
-      .contains('This service cannot calculate release dates because the offence is missing imprisonment terms.')
-      .should(check)
-  }
-
-  hasMissingOffenceLicenceTerms(flag: boolean): PageElement {
-    const check = flag ? 'exist' : 'not.exist'
-    return cy
-      .get('p')
-      .contains('This service cannot calculate release dates because the offence is missing a licence code.')
-      .should(check)
-  }
 }

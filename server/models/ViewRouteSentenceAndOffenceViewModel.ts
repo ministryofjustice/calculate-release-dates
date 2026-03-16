@@ -17,7 +17,7 @@ import {
 import { ErrorMessages } from '../types/ErrorMessages'
 import { groupBy, indexBy } from '../utils/utils'
 import SentenceTypes from './SentenceTypes'
-import ViewRouteAdjustmentsViewModel from './ViewRouteAdjustmentsViewModel'
+import ViewRouteAdjustmentsViewModel, { AdjustmentViewModel } from './ViewRouteAdjustmentsViewModel'
 import ViewRouteCourtCaseTableViewModel from './ViewRouteCourtCaseTableViewModel'
 import AdjustmentTablesModel, {
   adjustmentsTablesFromAdjustmentDTOs,
@@ -93,13 +93,15 @@ export default class ViewRouteSentenceAndOffenceViewModel {
   }
 
   public getMultipleOffencesToASentence(): number[][] {
-    const array = this.sentencesAndOffences.map(sentence => {
-      return { caseSequence: sentence.caseSequence, lineSequence: sentence.lineSequence }
-    })
-    const elementTracker = {}
-    const duplicates = {}
+    const caseAndLIneSequences: { caseSequence: number; lineSequence: number }[] = this.sentencesAndOffences.map(
+      sentence => {
+        return { caseSequence: sentence.caseSequence, lineSequence: sentence.lineSequence }
+      },
+    )
+    const elementTracker: Record<string, boolean> = {}
+    const duplicates: Record<string, { caseSequence: number; lineSequence: number }> = {}
 
-    array.forEach(item => {
+    caseAndLIneSequences.forEach(item => {
       const key = `${item.caseSequence}-${item.lineSequence}`
       if (elementTracker[key]) {
         duplicates[key] = item
@@ -119,11 +121,20 @@ export default class ViewRouteSentenceAndOffenceViewModel {
   }
 
   generateAdjustmentsRows() {
-    const adjustmentsRows = []
+    const adjustmentsRows: {
+      adjustmentName: string
+      adjustmentType: string
+      adjustmentFrom: string
+      adjustmentTo: string
+      adjustmentDays: number
+    }[] = []
 
-    const pushAdjustmentDetails = (adjustmentType, adjustmentName, addOrDeduct) => {
-      if (this.adjustments[adjustmentType].aggregate !== 0) {
-        this.adjustments[adjustmentType].details.forEach(adjustment => {
+    const pushAdjustmentDetails = (adjustmentType: string, adjustmentName: string, addOrDeduct: string) => {
+      const adjustmentViewModel = this.adjustments[
+        adjustmentType as keyof ViewRouteAdjustmentsViewModel
+      ] as AdjustmentViewModel
+      if (adjustmentViewModel.aggregate !== 0) {
+        adjustmentViewModel.details.forEach(adjustment => {
           adjustmentsRows.push({
             adjustmentName,
             adjustmentType: addOrDeduct,

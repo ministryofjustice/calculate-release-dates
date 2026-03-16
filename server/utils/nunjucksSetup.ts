@@ -10,6 +10,7 @@ import {
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import fs from 'fs'
 import {
   hmppsDesignSystemsEnvironmentName,
   initialiseName,
@@ -23,6 +24,7 @@ import config from '../config'
 import ComparisonType from '../enumerations/comparisonType'
 import { FieldValidationError } from '../types/FieldValidationError'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
+import logger from '../../logger'
 
 dayjs.extend(customParseFormat)
 
@@ -57,6 +59,17 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       res.locals.version = Date.now().toString()
       return next()
     })
+  }
+
+  let assetManifest: Record<string, string> = {}
+
+  try {
+    const assetMetadataPath = path.resolve(__dirname, '../../assets/manifest.json')
+    assetManifest = JSON.parse(fs.readFileSync(assetMetadataPath, 'utf8'))
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'test') {
+      logger.error(e, 'Could not read asset manifest file')
+    }
   }
 
   njkEnv = nunjucks.configure(
@@ -161,6 +174,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('trancheIsFtr56', trancheIsFtr56)
   njkEnv.addFilter('formatFtr56Tranche', formatFtr56Tranche)
   njkEnv.addFilter('findError', findError)
+  njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
 }
 
 const getReleaseDateType = (dates: { [key: string]: unknown }): string => {

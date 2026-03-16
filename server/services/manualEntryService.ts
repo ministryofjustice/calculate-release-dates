@@ -3,12 +3,12 @@ import { DateTime } from 'luxon'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import DateValidationService, { DateInputItem, EnteredDate, StorageResponseModel } from './dateValidationService'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
-import { DetailedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ApiReleaseDateType, DetailedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { createSupportLink } from '../utils/utils'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
 
-export const dateTypeOrder = {
+export const dateTypeOrder: Partial<Record<ApiReleaseDateType, number>> = {
   SED: 1,
   LED: 2,
   CRD: 3,
@@ -351,13 +351,13 @@ export default class ManualEntryService {
     req: Request,
     nomsId: string,
     allowActions: boolean,
-  ): Promise<ManualJourneySelectedDate[]> {
+  ): Promise<DateRow[]> {
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username)
     return req.session.selectedManualEntryDates[nomsId]
       .map((d: ManualJourneySelectedDate) => {
         const dateValue = this.dateString(d.manualEntrySelectedDate)
         const text = dateTypeDefinitions[d.dateType]
-        const items = allowActions ? this.getItems(nomsId, d.manualEntrySelectedDate, text) : null
+        const items: ActionItem[] = allowActions ? this.getItems(nomsId, d.manualEntrySelectedDate, text) : null
         return {
           key: {
             text,
@@ -370,13 +370,13 @@ export default class ManualEntryService {
             items,
           },
           order: this.getOrder(d.dateType),
-        }
+        } as DateRow
       })
       .sort((row1: DateRow, row2: DateRow) => row1.order - row2.order)
   }
 
-  private getOrder(dateType: string) {
-    return dateTypeOrder[dateType]
+  private getOrder(dateType: string | ApiReleaseDateType): number {
+    return dateTypeOrder[dateType as ApiReleaseDateType]
   }
 
   private getItems(nomsId: string, d: ManualEntrySelectedDate, text: string) {
@@ -409,7 +409,7 @@ export default class ManualEntryService {
     const dateToRemove = req.query.dateType
     if (req.body != null && req.body['remove-date'] === 'yes') {
       req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
-        (d: ManualEntrySelectedDate) => d.dateType !== dateToRemove,
+        (d: ManualJourneySelectedDate) => d.dateType !== dateToRemove,
       )
     }
     return req.session.selectedManualEntryDates[nomsId].length
@@ -518,9 +518,9 @@ export interface SelectedDateCheckBox {
 }
 
 export interface DateRow {
-  key: string
-  value: string
-  actions: ActionItem
+  key: { text: string }
+  value: { text: string; classes: string[] }
+  actions: { items: ActionItem[] }
   order: number
 }
 

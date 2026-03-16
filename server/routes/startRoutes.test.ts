@@ -167,11 +167,7 @@ const latestCalcCardActionForPrisoner: Action = {
   href: '/foo',
   dataQa: 'latest-calc-card-action',
 }
-const noLatestCalcCard = {
-  latestCalcCard: undefined,
-  latestCalcCardAction: undefined,
-  calculation: undefined,
-}
+const noLatestCalcCard = {}
 
 let app: Express
 
@@ -189,17 +185,17 @@ afterEach(() => {
 })
 
 describe('Check access tests', () => {
-  const runTest = async routes => {
+  const runTest = async (routes: { method: 'GET' | 'POST'; url: string }[]) => {
     await Promise.all(
-      routes.map(route =>
-        request(app)
-          [route.method.toLowerCase()](route.url)
+      routes.map(route => {
+        const requested = route.method === 'GET' ? request(app).get(route.url) : request(app).post(route.url)
+        return requested
           .expect(404)
           .expect('Content-Type', /html/)
           .expect(res => {
             expect(res.text).toContain('The details for this person cannot be found')
-          }),
-      ),
+          })
+      }),
     )
   }
 
@@ -211,7 +207,7 @@ describe('Check access tests', () => {
       throw FullPageError.notInCaseLoadError()
     })
 
-    const routes = [{ method: 'GET', url: '?prisonId=123' }]
+    const routes: { method: 'GET' | 'POST'; url: string }[] = [{ method: 'GET', url: '?prisonId=123' }]
 
     await runTest(routes)
   })
@@ -504,7 +500,7 @@ describe('Start routes tests', () => {
     courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
-    const cardAndAction = { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
+    const cardAndAction = {}
     calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)

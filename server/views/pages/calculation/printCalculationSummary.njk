@@ -43,5 +43,5 @@
 
 {% block bodyEnd %}
     {{ super() }}
-    <script src="/assets/print.js"></script>
+    <script src="{{ '/assets/js/print.js' | assetMap }}"></script>
 {% endblock %}

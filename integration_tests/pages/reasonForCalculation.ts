@@ -25,4 +25,25 @@ export default class CalculationReasonPage extends Page {
   headerUserName(): PageElement {
     return cy.get('[data-qa=header-user-name]')
   }
+
+  hasMissingOffenceDates(flag: boolean) {
+    const check = flag ? 'exist' : 'not.exist'
+    cy.get('p')
+      .contains('This service cannot calculate release dates because the offence start date is missing.')
+      .should(check)
+  }
+
+  hasMissingOffenceTerms(flag: boolean) {
+    const check = flag ? 'exist' : 'not.exist'
+    cy.get('p')
+      .contains('This service cannot calculate release dates because the offence is missing imprisonment terms.')
+      .should(check)
+  }
+
+  hasMissingOffenceLicenceTerms(flag: boolean) {
+    const check = flag ? 'exist' : 'not.exist'
+    cy.get('p')
+      .contains('This service cannot calculate release dates because the offence is missing a licence code.')
+      .should(check)
+  }
 }

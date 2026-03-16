@@ -355,7 +355,7 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     )
   }
 
-  validate(prisonerId: string, userInput: CalculationUserInputs, username): Promise<ValidationMessage[]> {
+  validate(prisonerId: string, userInput: CalculationUserInputs, username: string): Promise<ValidationMessage[]> {
     return this.post<ValidationMessage[]>(
       {
         path: `/validation/${prisonerId}/full-validation`,

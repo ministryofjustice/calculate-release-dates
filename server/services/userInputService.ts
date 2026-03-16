@@ -24,6 +24,6 @@ export default class UserInputService {
   }
 
   public isCalculationReasonSet(req: Request, nomsId: string): boolean {
-    return req.session.calculationReasonId && req.session.calculationReasonId[nomsId]
+    return req.session.calculationReasonId && !!req.session.calculationReasonId[nomsId]
   }
 }

@@ -14,6 +14,7 @@ export default function setUpStaticResources(): Router {
   const cacheControl = { maxAge: config.staticResourceCacheDuration }
 
   Array.of(
+    '/dist/assets',
     '/assets',
     '/assets/stylesheets',
     '/assets/js',
