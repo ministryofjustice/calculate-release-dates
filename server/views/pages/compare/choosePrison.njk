@@ -28,7 +28,7 @@
 
 {% block javascripts %}
     <script src="/assets/accessible-autocomplete.min.js"></script>
-    <script id="autocomplete-script" src="/assets/js/autoCompletePrisonName.js"></script>
+    <script id="autocomplete-script" src="{{ '/assets/js/autoCompletePrisonName.js' | assetMap }}"></script>
 {% endblock %}
 
 {% block content %}

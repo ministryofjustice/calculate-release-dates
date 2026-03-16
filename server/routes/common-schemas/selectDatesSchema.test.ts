@@ -18,7 +18,7 @@ describe('selectDatesSchema', () => {
 
   it('should not require any date empty array', async () => {
     // Given
-    const form = { dateType: [] }
+    const form = { dateType: new Array<string>() }
 
     // When
     const result = await doValidate(form)

@@ -92,7 +92,7 @@
     <!-- End Google Tag Manager -->
   {% endif %}
 
-  <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
+  <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
 
   {% if feComponents.cssIncludes %}
     {% for css in feComponents.cssIncludes %}
@@ -137,7 +137,7 @@
 {% block bodyEnd %}
   {# Run JavaScript at end of the
   <body>, to avoid blocking the initial render. #}
-  <script type="module" src="/assets/govukFrontendInit.js"></script>
+  <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
     {% for js in feComponents.jsIncludes %}
       <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
     {% endfor %}
@@ -145,11 +145,11 @@
 
 {% block footer %}
     {{
-      footer({ 
-        environment: hmppsDesignSystemEnvironment, 
+      footer({
+        environment: hmppsDesignSystemEnvironment,
         attributes: {
           "data-qa": "ccrds-footer"
-        } 
-      }) 
+        }
+      })
     }}
 {% endblock %}

@@ -1,8 +1,9 @@
 import CalculationSummaryViewModel from './CalculationSummaryViewModel'
+import { DetailedDate } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 describe('CalculationSummaryViewModel', () => {
   describe('SDS40 release tranche label', () => {
-    function createModel(dates) {
+    function createModel(dates: Record<string, DetailedDate>) {
       return new CalculationSummaryViewModel(
         123,
         'ABC132',

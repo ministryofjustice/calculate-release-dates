@@ -9,20 +9,20 @@ declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
-    userInputs?: { string?: CalculationUserInputs }
-    selectedManualEntryDates?: { string?: ManualJourneySelectedDate[] }
-    selectedApprovedDates?: { string?: ManualJourneySelectedDate[] }
-    HDCED?: { string?: string }
-    HDCED_WEEKEND_ADJUSTED?: { string?: boolean }
-    calculationReasonId?: { string?: number }
+    userInputs?: Record<string, CalculationUserInputs>
+    selectedManualEntryDates?: Record<string, ManualJourneySelectedDate[]>
+    selectedApprovedDates?: Record<string, ManualJourneySelectedDate[]>
+    HDCED?: Record<string, string>
+    HDCED_WEEKEND_ADJUSTED?: Record<string, boolean>
+    calculationReasonId?: Record<string, number>
     unchangedManualJourney?: boolean
     manualJourneyDifferentDatesConfirmed?: boolean
-    otherReasonDescription?: { string?: string }
+    otherReasonDescription?: Record<string, string>
     manualEntryValidationErrors?: ErrorMessages
     isAddDatesFlow?: Record<string, boolean>
-    manualEntryRoutingForBookings?: [string]
+    manualEntryRoutingForBookings?: string[]
     genuineOverrideInputs: Record<string, GenuineOverrideInputs>
-    siblingCalculationWithPreviouslyRecordedSLED?: { number?: number }
+    siblingCalculationWithPreviouslyRecordedSLED?: Record<number, number>
     approvedDatesJourneys: Record<string, ApprovedDatesJourney>
   }
 }

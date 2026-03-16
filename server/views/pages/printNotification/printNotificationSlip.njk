@@ -5,11 +5,11 @@
 {% from "../components/adjustments-tables/macro.njk" import adjustmentsTables %}
 {% block header %}
   {% if pageType == 'establishment' or pageType == 'offender' %}
-     <script data-qa="print-invoker" src="/assets/print.js"></script>
+     <script data-qa="print-invoker" src="{{ '/assets/js/print.js' | assetMap }}"></script>
   {% endif %}
 
   <head>
-    <link href="/assets/stylesheets/application.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="{{ '/assets/css/index.css' | assetMap }}" media="all" rel="stylesheet" type="text/css" />
   </head>
 
   <body class="govuk-template__body  js-enabled" data-new-gr-c-s-check-loaded="14.1110.0" data-gr-ext-installed="">

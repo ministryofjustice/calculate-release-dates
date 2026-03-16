@@ -38,26 +38,23 @@ export default class CCARDLandingPage extends Page {
     return cy.get('[data-qa=calc-release-dates-for-adding-dates-link]')
   }
 
-  hasMissingOffenceDates(flag: boolean): PageElement {
+  hasMissingOffenceDates(flag: boolean) {
     const check = flag ? 'exist' : 'not.exist'
-    return cy
-      .get('p')
+    cy.get('p')
       .contains('This service cannot calculate release dates because the offence start date is missing.')
       .should(check)
   }
 
-  hasMissingOffenceTerms(flag: boolean): PageElement {
+  hasMissingOffenceTerms(flag: boolean) {
     const check = flag ? 'exist' : 'not.exist'
-    return cy
-      .get('p')
+    cy.get('p')
       .contains('This service cannot calculate release dates because the offence is missing imprisonment terms.')
       .should(check)
   }
 
-  hasMissingOffenceLicenceTerms(flag: boolean): PageElement {
+  hasMissingOffenceLicenceTerms(flag: boolean) {
     const check = flag ? 'exist' : 'not.exist'
-    return cy
-      .get('p')
+    cy.get('p')
       .contains('This service cannot calculate release dates because the offence is missing a licence code.')
       .should(check)
   }

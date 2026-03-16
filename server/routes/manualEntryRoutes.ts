@@ -138,7 +138,7 @@ export default class ManualEntryRoutes {
     )
 
     const existingDates = this.existingDatesInSession(req, nomsId)
-      ? req.session.selectedManualEntryDates[nomsId].map((d: ManualEntrySelectedDate) => d.dateType)
+      ? req.session.selectedManualEntryDates[nomsId].map((d: ManualJourneySelectedDate) => d.dateType)
       : []
 
     const { error, config } = await this.manualEntryService.verifySelectedDateType(
@@ -401,7 +401,7 @@ export default class ManualEntryRoutes {
 
     const dateToRemove: string = <string>req.query.dateType
     if (
-      req.session.selectedManualEntryDates[nomsId].some((d: ManualEntrySelectedDate) => d.dateType === dateToRemove)
+      req.session.selectedManualEntryDates[nomsId].some((d: ManualJourneySelectedDate) => d.dateType === dateToRemove)
     ) {
       const fullDateName = await this.manualEntryService.fullStringLookup(username, dateToRemove)
       return res.render(
@@ -568,7 +568,7 @@ export default class ManualEntryRoutes {
     )
   }
 
-  private existingDatesInSession(req, nomsId: string): boolean {
+  private existingDatesInSession(req: Request, nomsId: string): boolean {
     return (
       req.session.selectedManualEntryDates != null &&
       req.session.selectedManualEntryDates[nomsId] != null &&
@@ -576,7 +576,7 @@ export default class ManualEntryRoutes {
     )
   }
 
-  private getEnterDatesBackLink(req, nomsId: string, previousDate?: ManualEntrySelectedDate) {
+  private getEnterDatesBackLink(req: Request, nomsId: string, previousDate?: ManualEntrySelectedDate) {
     const numberOfDates = req.session.selectedManualEntryDates[nomsId].filter(
       (d: ManualJourneySelectedDate) => d.completed === false,
     ).length

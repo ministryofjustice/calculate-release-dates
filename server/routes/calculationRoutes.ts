@@ -23,7 +23,7 @@ export default class CalculationRoutes {
   }
 
   private indexApprovedDates(dates: { [key: string]: string } | { [key: string]: DetailedDate }) {
-    const result = {}
+    const result: Record<string, string> = {}
     Object.keys(dates).forEach((dateType: string) => {
       const date = dates[dateType]
       if (typeof date === 'string') {

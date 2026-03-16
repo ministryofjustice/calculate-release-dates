@@ -2,7 +2,7 @@ import { getAPICallCountMatching, getLastAPICallMatching } from '../mockApis/wir
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true, returnUrl: '/' }) => {
   cy.request(options.returnUrl)
-  return cy.task('getSignInUrl').then((url: string) => cy.visit(url, options))
+  return cy.task('getSignInUrl').then(url => cy.visit(url as string, options))
 })
 
 Cypress.Commands.add('verifyLastAPICall', (matching: string | object, expected: object) => {

@@ -50,7 +50,6 @@ import {
 import { FullPageError } from '../types/FullPageError'
 import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 import AuditService from './auditService'
-import { CalculationCard } from '../types/CalculationCard'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 export default class CalculateReleaseDatesService {
@@ -500,7 +499,11 @@ export default class CalculateReleaseDatesService {
     prisonerId: string,
     username: string,
     hasIndeterminateSentence: boolean,
-  ): Promise<CalculationCard | FullPageError> {
+  ): Promise<{
+    latestCalcCard?: LatestCalculationCardConfig
+    latestCalcCardAction?: Action
+    calculation?: LatestCalculation
+  }> {
     return this.calculateReleaseDatesApiRestClient
       .getLatestCalculationForPrisoner(prisonerId, username)
       .then(async latestCalc => {
@@ -525,8 +528,8 @@ export default class CalculateReleaseDatesService {
           calculation: latestCalc,
         }
       })
-      .catch(error => {
-        return { latestCalcCard: undefined, latestCalcCardAction: undefined, calculation: undefined }
+      .catch(_ => {
+        return {}
       })
   }
 

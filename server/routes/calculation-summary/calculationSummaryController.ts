@@ -156,7 +156,7 @@ export default class CalculationSummaryController implements Controller {
   }
 
   private indexBy(dates: ManualJourneySelectedDate[]) {
-    const result = {}
+    const result: Record<string, string> = {}
     dates.forEach(date => {
       const dateString = `${date.manualEntrySelectedDate.date.year}-${date.manualEntrySelectedDate.date.month}-${date.manualEntrySelectedDate.date.day}`
       result[date.dateType] = DateTime.fromFormat(dateString, 'yyyy-M-d').toFormat('cccc, dd MMMM yyyy')

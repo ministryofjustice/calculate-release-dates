@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express'
+import { RequestHandler, Request } from 'express'
 import { DateTime } from 'luxon'
 import PrisonerService from '../services/prisonerService'
 import ApprovedDatesService from '../services/approvedDatesService'
@@ -11,6 +11,7 @@ import ApprovedDatesSubmitDateViewModel from '../models/ApprovedDatesSubmitDateV
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 import { saveCalculation } from './saveCalculationHelper'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+import { SubmittedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 export default class ApprovedDatesRoutes {
   constructor(
@@ -204,9 +205,9 @@ export default class ApprovedDatesRoutes {
     }
 
     if (storeDateResponse.success && !storeDateResponse.message) {
-      const currentDate = req.session.selectedApprovedDates[nomsId].find(
-        (d: ManualEntrySelectedDate) => d.dateType === storeDateResponse.date.dateType,
-      )
+      const currentDate: ManualJourneySelectedDate & { date?: SubmittedDate } = req.session.selectedApprovedDates[
+        nomsId
+      ].find((d: ManualJourneySelectedDate) => d.dateType === storeDateResponse.date.dateType)
 
       currentDate.date = storeDateResponse.date.date
 
@@ -259,7 +260,12 @@ export default class ApprovedDatesRoutes {
     return res.redirect(`/calculation/${nomsId}/${calculationRequestId}/confirmation`)
   }
 
-  private getSubmitDatesBackLink(req, nomsId: string, requestId: string, previousDate?: ManualEntrySelectedDate) {
+  private getSubmitDatesBackLink(
+    req: Request,
+    nomsId: string,
+    requestId: string,
+    previousDate?: ManualEntrySelectedDate,
+  ) {
     const numberOfDates = req.session.selectedApprovedDates[nomsId].filter(
       (d: ManualJourneySelectedDate) => d.completed === false,
     ).length

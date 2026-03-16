@@ -36,13 +36,15 @@ export default class CheckInformationService {
       ])
 
     const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
-      ? await this.prisonerService.getReturnToCustodyDate(prisonerDetail.bookingId, username).catch(error => {
-          if ((error.status ?? error.responseStatus) === 404) {
-            // RTC date not entered for a FTR but this will be flagged by validation so don't blow up
-            return null
-          }
-          throw error
-        })
+      ? await this.prisonerService
+          .getReturnToCustodyDate(prisonerDetail.bookingId, username)
+          .catch((error: { status?: number; responseStatus?: number }): null => {
+            if ((error.status ?? error.responseStatus) === 404) {
+              // RTC date not entered for a FTR but this will be flagged by validation so don't blow up
+              return null
+            }
+            throw error
+          })
       : null
 
     let validationMessages: ErrorMessages

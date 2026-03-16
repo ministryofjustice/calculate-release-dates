@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { ApprovedDatesJourney } from '../../../@types/journeys'
 import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
@@ -131,7 +131,7 @@ describe('GET /approved-dates/:nomsId/start', () => {
 
   it('should not remove any existing journeys in the session', async () => {
     // Given
-    const existingUuid = v4()
+    const existingUuid = randomUUID()
     preExistingJourneysToAddToSession = [
       {
         id: existingUuid,

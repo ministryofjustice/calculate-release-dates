@@ -50,7 +50,6 @@ const pastNomisCalculation = {
   prisonerDetail: {
     locationDescription: 'Inside - Leeds HMP',
   },
-  comment: null,
   calculatedByDisplayName: 'Bob Smith',
   releaseDates: [
     {
@@ -60,7 +59,6 @@ const pastNomisCalculation = {
       hints: [
         {
           text: 'Friday, 10 May 2024 when adjusted to a working day',
-          link: null,
         },
       ],
     },
@@ -480,17 +478,17 @@ afterEach(() => {
 })
 
 describe('Check access tests', () => {
-  const runTest = async routes => {
+  const runTest = async (routes: { method: 'GET' | 'POST'; url: string }[]) => {
     await Promise.all(
-      routes.map(route =>
-        request(app)
-          [route.method.toLowerCase()](route.url)
+      routes.map(route => {
+        const requested = route.method === 'GET' ? request(app).get(route.url) : request(app).post(route.url)
+        return requested
           .expect(404)
           .expect('Content-Type', /html/)
           .expect(res => {
             expect(res.text).toContain('The details for this person cannot be found')
-          }),
-      ),
+          })
+      }),
     )
   }
 
@@ -502,7 +500,7 @@ describe('Check access tests', () => {
       throw FullPageError.notInCaseLoadError()
     })
 
-    const routes = [
+    const routes: { method: 'GET' | 'POST'; url: string }[] = [
       { method: 'GET', url: '/view/A1234AA/nomis-calculation-summary/-1' },
       { method: 'GET', url: '/view/A1234AA/latest' },
       { method: 'GET', url: '/view/A1234AA/sentences-and-offences/123456' },
@@ -1242,7 +1240,7 @@ describe('View journey routes tests', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).toContain('Anon Nobody')
-          expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
+          expect(res.text).toMatch(/<script src="\/assets\/js\/print.js"><\/script>/)
           expect(res.text).toMatch(/Calculation/)
           expectMiniProfile(res.text, expectedMiniProfile)
         })
@@ -1530,66 +1528,93 @@ describe('View journey routes tests', () => {
         })
     })
     it('GET /view/:calculationRequestId/calculation-summary should not show the ERSED warning banner if no recall only', () => {
-      const detailedCalResultWIthNotificationBannerSentencesAndOffences = {
+      const detailedCalResultWIthNotificationBannerSentencesAndOffences: ResultsWithBreakdownAndAdjustments = {
         ...stubbedResultsWithBreakdownAndAdjustments,
-        sentencesAndOffences: [
-          {
-            bookingId: 1,
-            sentenceStatus: '',
-            sentenceCategory: '',
-            sentenceDate: '2021-02-03',
-            terms: [
-              {
-                years: 2,
-                months: 0,
-                weeks: 0,
-                days: 0,
-                code: 'IMP',
-              },
-            ],
-            caseSequence: 2,
-            lineSequence: 2,
-            sentenceSequence: 2,
-            consecutiveToSequence: 1,
-            sentenceCalculationType: 'LR_EDS18',
-            sentenceTypeDescription: 'SDS Standard Sentence',
-            offence: {
-              offenderChargeId: 1,
-              offenceEndDate: '2021-02-03',
-              offenceCode: '123',
-              offenceDescription: '',
-              indicators: [],
+        calculationOriginalData: {
+          prisonerDetails: {
+            firstName: stubbedPrisonerData.firstName,
+            lastName: stubbedPrisonerData.lastName,
+            bookingId: stubbedPrisonerData.bookingId,
+            agencyId: stubbedPrisonerData.agencyId,
+            offenderNo: stubbedPrisonerData.offenderNo,
+            dateOfBirth: stubbedPrisonerData.dateOfBirth,
+            assignedLivingUnit: {
+              agencyId: stubbedPrisonerData?.assignedLivingUnit?.agencyId,
+              agencyName: stubbedPrisonerData?.assignedLivingUnit?.agencyName,
+              description: stubbedPrisonerData?.assignedLivingUnit?.description,
+              locationId: stubbedPrisonerData?.assignedLivingUnit?.locationId,
             },
+            alerts: [],
           },
-          {
-            bookingId: 1,
-            sentenceStatus: '',
-            sentenceCategory: '',
-            sentenceDate: '2021-02-03',
-            terms: [
-              {
-                years: 2,
-                months: 0,
-                weeks: 0,
-                days: 0,
-                code: 'IMP',
+          sentencesAndOffences: [
+            {
+              bookingId: 1,
+              sentenceStatus: '',
+              sentenceCategory: '',
+              sentenceDate: '2021-02-03',
+              terms: [
+                {
+                  years: 2,
+                  months: 0,
+                  weeks: 0,
+                  days: 0,
+                  code: 'IMP',
+                },
+              ],
+              caseSequence: 2,
+              lineSequence: 2,
+              sentenceSequence: 2,
+              consecutiveToSequence: 1,
+              sentenceCalculationType: 'LR_EDS18',
+              sentenceTypeDescription: 'SDS Standard Sentence',
+              offence: {
+                offenderChargeId: 1,
+                offenceEndDate: '2021-02-03',
+                offenceCode: '123',
+                offenceDescription: '',
+                indicators: [],
               },
-            ],
-            caseSequence: 2,
-            lineSequence: 2,
-            sentenceSequence: 2,
-            consecutiveToSequence: 1,
-            sentenceCalculationType: 'EDS18',
-            sentenceTypeDescription: 'SDS Standard Sentence',
-            offence: {
-              offenderChargeId: 2,
-              offenceEndDate: '2021-02-03',
-              offenceCode: '123',
-              offenceDescription: '',
-              indicators: [],
+              isSDSPlus: false,
+              hasAnSDSEarlyReleaseExclusion: 'NO',
+              isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+              isSDSPlusOffenceInPeriod: false,
+              revocationDates: [],
             },
-          },
-        ],
+            {
+              bookingId: 1,
+              sentenceStatus: '',
+              sentenceCategory: '',
+              sentenceDate: '2021-02-03',
+              terms: [
+                {
+                  years: 2,
+                  months: 0,
+                  weeks: 0,
+                  days: 0,
+                  code: 'IMP',
+                },
+              ],
+              caseSequence: 2,
+              lineSequence: 2,
+              sentenceSequence: 2,
+              consecutiveToSequence: 1,
+              sentenceCalculationType: 'EDS18',
+              sentenceTypeDescription: 'SDS Standard Sentence',
+              offence: {
+                offenderChargeId: 2,
+                offenceEndDate: '2021-02-03',
+                offenceCode: '123',
+                offenceDescription: '',
+                indicators: [],
+              },
+              isSDSPlus: false,
+              hasAnSDSEarlyReleaseExclusion: 'NO',
+              isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+              isSDSPlusOffenceInPeriod: false,
+              revocationDates: [],
+            },
+          ],
+        },
       }
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
         detailedCalResultWIthNotificationBannerSentencesAndOffences,
@@ -1617,7 +1642,7 @@ describe('View journey routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Anon Nobody')
-        expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
+        expect(res.text).toMatch(/<script src="\/assets\/js\/print.js"><\/script>/)
         expect(res.text).toMatch(/Dates for/)
         expectMiniProfile(res.text, expectedMiniProfile)
       })
@@ -1802,7 +1827,7 @@ describe('View journey routes tests', () => {
           const printInvoker = $('[data-qa="print-invoker"]').first()
           const offenderHDCED = $('[data-qa="offender-hdced-text"]').first()
 
-          expect(printInvoker.attr('src')).toStrictEqual('/assets/print.js')
+          expect(printInvoker.attr('src')).toStrictEqual('/assets/js/print.js')
           expect(calculatedBy.length).toStrictEqual(0)
           expect(calcReasonTitle.text()).toContain('Calculation reason')
           expect(calcReason.text()).toContain('A calculation reason')
@@ -1837,7 +1862,7 @@ describe('View journey routes tests', () => {
           const printInvoker = $('[data-qa="print-invoker"]').first()
           const offenderHDCED = $('[data-qa="offender-hdced-text"]').first()
 
-          expect(printInvoker.attr('src')).toStrictEqual('/assets/print.js')
+          expect(printInvoker.attr('src')).toStrictEqual('/assets/js/print.js')
           expect(calculatedBy.text()).toStrictEqual('Calculated by:')
           expect(calcReasonTitle.text()).toContain('Calculation reason')
           expect(calcReason.text()).toContain('A calculation reason')

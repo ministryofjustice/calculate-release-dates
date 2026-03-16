@@ -58,17 +58,17 @@ describe('View release dates service tests', () => {
   })
 
   describe('Check access tests', () => {
-    const runTest = async routes => {
+    const runTest = async (routes: { method: 'GET' | 'POST'; url: string }[]) => {
       await Promise.all(
-        routes.map(route =>
-          request(app)
-            [route.method.toLowerCase()](route.url)
+        routes.map(route => {
+          const requested = route.method === 'GET' ? request(app).get(route.url) : request(app).post(route.url)
+          return requested
             .expect(404)
             .expect('Content-Type', /html/)
             .expect(res => {
               expect(res.text).toContain('The details for this person cannot be found')
-            }),
-        ),
+            })
+        }),
       )
     }
 
@@ -80,7 +80,7 @@ describe('View release dates service tests', () => {
         throw FullPageError.notInCaseLoadError()
       })
 
-      const routes = [
+      const routes: { method: 'GET' | 'POST'; url: string }[] = [
         { method: 'GET', url: '/view/A1234AA/latest' },
         { method: 'GET', url: '/view/A1234AA/sentences-and-offences/123456' },
         { method: 'GET', url: '/view/A1234AA/nomis-calculation-summary/123456' },

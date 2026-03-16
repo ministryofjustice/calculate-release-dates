@@ -56,7 +56,6 @@ const releaseDatesAndCalcContext = {
       type: 'SLED',
       description: 'Sentence and licence expiry date',
       date: '2027-11-01',
-      hints: [],
     },
   ],
 }
@@ -657,20 +656,12 @@ describe('Calculate release dates service tests', () => {
     it('Should return undefined card and action if no prisoner or calc found', async () => {
       fakeApi.get(`/calculation/${prisonerId}/latest`).reply(404)
       const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
-      expect(result).toStrictEqual({
-        latestCalcCard: undefined,
-        latestCalcCardAction: undefined,
-        calculation: undefined,
-      })
+      expect(result).toStrictEqual({})
     })
     it('Should return undefined card and action if error occurs', async () => {
       fakeApi.get(`/calculation/${prisonerId}/latest`).reply(422, { userMessage: 'Generic error message' })
       const result = await calculateReleaseDatesService.getLatestCalculationCardForPrisoner(prisonerId, null, false)
-      expect(result).toStrictEqual({
-        latestCalcCard: undefined,
-        latestCalcCardAction: undefined,
-        calculation: undefined,
-      })
+      expect(result).toStrictEqual({})
     })
   })
   describe('get detailed calculation results with adjustments', () => {

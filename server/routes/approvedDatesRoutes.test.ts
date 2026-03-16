@@ -21,7 +21,7 @@ import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import AuditService from '../services/auditService'
-import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 jest.mock('../services/calculateReleaseDatesService')
@@ -90,7 +90,7 @@ beforeEach(() => {
   sessionSetup = new SessionSetup()
   sessionSetup.sessionDoctor = req => {
     req.session.manualEntryRoutingForBookings = []
-    req.session.calculationReasonId = 1
+    req.session.calculationReasonId = {}
   }
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
@@ -111,17 +111,17 @@ afterEach(() => {
 })
 
 describe('Check access tests', () => {
-  const runTest = async routes => {
+  const runTest = async (routes: { method: 'GET' | 'POST'; url: string }[]) => {
     await Promise.all(
-      routes.map(route =>
-        request(app)
-          [route.method.toLowerCase()](route.url)
+      routes.map(route => {
+        const requested = route.method === 'GET' ? request(app).get(route.url) : request(app).post(route.url)
+        return requested
           .expect(404)
           .expect('Content-Type', /html/)
           .expect(res => {
             expect(res.text).toContain('The details for this person cannot be found')
-          }),
-      ),
+          })
+      }),
     )
   }
 
@@ -133,7 +133,7 @@ describe('Check access tests', () => {
       throw FullPageError.notInCaseLoadError()
     })
 
-    const routes = [
+    const routes: { method: 'GET' | 'POST'; url: string }[] = [
       { method: 'GET', url: '/calculation/A1234AA/123456/approved-dates-question' },
       { method: 'GET', url: '/calculation/A1234AA/123456/select-approved-dates' },
       { method: 'GET', url: '/calculation/A1234AA/123456/remove?dateType=CRD' },
@@ -274,7 +274,7 @@ describe('approvedDatesRoutes', () => {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
           date: { day: 3, month: 3, year: 2017 },
-        } as ManualEntrySelectedDate,
+        } as unknown as ManualJourneySelectedDate,
       ]
     }
 
@@ -319,7 +319,7 @@ describe('approvedDatesRoutes', () => {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
           date: undefined,
-        } as ManualEntrySelectedDate,
+        } as unknown as ManualJourneySelectedDate,
       ]
       req.session.HDCED = {}
       req.session.HDCED[nomsId] = '2020-01-01'
@@ -360,7 +360,7 @@ describe('approvedDatesRoutes', () => {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
           date: undefined,
-        } as ManualEntrySelectedDate,
+        } as unknown as ManualJourneySelectedDate,
       ]
       req.session.HDCED = {}
       req.session.HDCED[nomsId] = '2020-01-01'

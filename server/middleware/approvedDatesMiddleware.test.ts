@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { Request as ExpressRequest, Response } from 'express'
 import { SessionData } from 'express-session'
 import ensureInApprovedDatesJourney from './approvedDatesMiddleware'
@@ -9,7 +9,7 @@ type Request = ExpressRequest<PersonJourneyParams>
 
 describe('journeyMiddleware', () => {
   describe('ensureInApprovedDatesJourney', () => {
-    const journeyId = uuidv4()
+    const journeyId = randomUUID()
     const nomsId = 'A1234BC'
     let req: Request
     let res: Response

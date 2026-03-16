@@ -1,3 +1,5 @@
+import { Request } from 'express'
+
 export default class SessionSetup {
-  public sessionDoctor: (Request) => void = () => {}
+  public sessionDoctor: (req: Request) => void = () => {}
 }

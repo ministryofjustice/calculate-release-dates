@@ -85,13 +85,15 @@ export default class SentenceAndOffenceViewModel {
   }
 
   public getMultipleOffencesToASentence(): number[][] {
-    const array = this.sentencesAndOffences.map(sentence => {
-      return { caseSequence: sentence.caseSequence, lineSequence: sentence.lineSequence }
-    })
-    const elementTracker = {}
-    const duplicates = {}
+    const caseAndLIneSequences: { caseSequence: number; lineSequence: number }[] = this.sentencesAndOffences.map(
+      sentence => {
+        return { caseSequence: sentence.caseSequence, lineSequence: sentence.lineSequence }
+      },
+    )
+    const elementTracker: Record<string, boolean> = {}
+    const duplicates: Record<string, { caseSequence: number; lineSequence: number }> = {}
 
-    array.forEach(item => {
+    caseAndLIneSequences.forEach(item => {
       const key = `${item.caseSequence}-${item.lineSequence}`
       if (elementTracker[key]) {
         duplicates[key] = item
