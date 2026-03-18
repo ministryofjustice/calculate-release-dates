@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { Services } from '../services'
 import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
-import StartRoutes from './startRoutes'
 import ViewRoutes from './viewRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
 import CompareRoutes, { comparePaths } from './compareRoutes'
@@ -26,6 +25,9 @@ import { calculationReasonSchemaFactory } from './calculation-reason/calculation
 import DisableNomisController from './disable-nomis/disableNomisController'
 import CalculationSummaryOverridesController from './calculation-summary/calculationSummaryOverridesController'
 import config from '../config'
+import StartController from './start/startController'
+import SupportedSentencesController from './start/supportedSentencesController'
+import AccessibilityController from './start/accessibilityController'
 
 export default function Index({
   prisonerService,
@@ -70,12 +72,14 @@ export default function Index({
   )
 
   const otherAccessRoutes = new OtherRoutes(prisonerService)
-  const startRoutes = new StartRoutes(
+  const startController = new StartController(
     calculateReleaseDatesService,
     prisonerService,
     userPermissionsService,
     courtCasesReleaseDatesService,
   )
+  const supportedSentencesController = new SupportedSentencesController()
+  const accessibilityController = new AccessibilityController()
   const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
 
   const manualEntryAccessRoutes = new ManualEntryRoutes(
@@ -94,10 +98,10 @@ export default function Index({
   const thingsToDoInterceptRoutes = new ThingsToDoInterceptRoutes(prisonerService, courtCasesReleaseDatesService)
 
   const indexRoutes = () => {
-    router.get('/', startRoutes.startPage)
-    router.get('/supported-sentences', startRoutes.supportedSentences)
-    router.get('/supported-sentences/:nomsId', startRoutes.supportedSentences)
-    router.get('/accessibility', startRoutes.accessibility)
+    route({ path: '/', controller: startController })
+    route({ path: '/supported-sentences', controller: supportedSentencesController })
+    route({ path: '/supported-sentences/:nomsId', controller: supportedSentencesController })
+    route({ path: '/accessibility', controller: accessibilityController })
   }
 
   const checkInformationController = new CheckInformationController(
