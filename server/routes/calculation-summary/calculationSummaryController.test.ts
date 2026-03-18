@@ -33,7 +33,7 @@ describe('CalculationSummaryController', () => {
   ) as jest.Mocked<CalculateReleaseDatesService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 
-  let approvedDates: { string?: ManualJourneySelectedDate[] }
+  let approvedDates: Record<string, ManualJourneySelectedDate[]>
   const prisonerNumber = 'A1234BC'
   const stubbedPrisonerData = {
     offenderNo: prisonerNumber,
@@ -826,7 +826,7 @@ describe('CalculationSummaryController', () => {
           dateType: 'APD',
           dateText: 'APD (Approved parole date)',
           date: { day: 3, month: 3, year: 2017 },
-        } as ManualEntrySelectedDate,
+        } as unknown as ManualJourneySelectedDate,
       ]
       await request(app)
         .post(`/calculation/${prisonerNumber}/summary/123456`)
@@ -854,12 +854,12 @@ describe('CalculationSummaryController', () => {
     })
 
     it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect to genuine overrides if user disagrees with dates and wipe existing genuine override inputs', () => {
-      let currentSession: SessionData
+      let currentSession: Partial<SessionData>
       sessionSetup.sessionDoctor = req => {
         currentSession = req.session
         req.session.genuineOverrideInputs = {}
         req.session.genuineOverrideInputs[prisonerNumber] = {
-          state: 'INITIALISED_DATES',
+          mode: 'EXPRESS',
           datesToSave: [{ type: 'CRD', date: '2020-01-02' }],
         }
       }
@@ -876,7 +876,7 @@ describe('CalculationSummaryController', () => {
     })
 
     it('POST /calculation/:nomsId/summary/:calculationRequestId should redirect to genuine overrides if user disagrees with dates with no existing data', () => {
-      let currentSession: SessionData
+      let currentSession: Partial<SessionData>
       sessionSetup.sessionDoctor = req => {
         currentSession = req.session
         delete req.session.genuineOverrideInputs

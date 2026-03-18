@@ -13,19 +13,18 @@
     margin-right: 1cm;
     margin-bottom: 1.5cm;
     margin-top: 1.5cm;
+  }
 
-    h1, h2, h3, h4, h5 {
-      page-break-after: avoid;
-    }
+  h1, h2, h3, h4, h5 {
+    page-break-after: avoid;
+  }
 
-    table, figure, dl {
-      page-break-inside: avoid;
-    }
+  table, figure, dl {
+    page-break-inside: avoid;
+  }
 
-    .dont-break {
-      page-break-inside: avoid;
-    }
-
+  .dont-break {
+    page-break-inside: avoid;
   }
 
   footer {

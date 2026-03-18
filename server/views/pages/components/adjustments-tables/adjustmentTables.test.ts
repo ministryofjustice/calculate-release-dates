@@ -32,7 +32,7 @@ const anAdjustment = {
   createdDate: '2024-03-27T12:24:50.36377',
   effectiveDays: 1,
   source: 'DPS',
-}
+} as Partial<AnalysedAdjustment>
 
 const aDeduction = {
   ...anAdjustment,

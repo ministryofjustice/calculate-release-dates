@@ -4,6 +4,7 @@ import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import SessionSetup from '../../testutils/sessionSetup'
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
+import { GenuineOverrideInputs } from '../../../@types/journeys'
 
 jest.mock('../../../services/calculateReleaseDatesService')
 
@@ -21,7 +22,7 @@ describe('StartGenuineOverrideController', () => {
   const pageUrl = `/calculation/${prisonerNumber}/start-genuine-override/${calculationRequestId}`
   let currentUser: Express.User
 
-  const genuineOverrideInputsHolder = {}
+  const genuineOverrideInputsHolder: Record<string, GenuineOverrideInputs> = {}
 
   beforeEach(() => {
     sessionSetup.sessionDoctor = req => {

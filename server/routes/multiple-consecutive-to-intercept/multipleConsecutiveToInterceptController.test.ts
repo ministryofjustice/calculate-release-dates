@@ -13,6 +13,7 @@ import {
 import config from '../../config'
 import CheckInformationService from '../../services/checkInformationService'
 import UserInputService from '../../services/userInputService'
+import { CalculationUserInputs } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -85,7 +86,7 @@ describe('MultipleConsecutiveToInterceptController', () => {
   describe('GET', () => {
     it('GET /calculation/:nomsId/concurrent-consecutive should display a warning including the period', () => {
       sessionSetup.sessionDoctor = req => {
-        req.session.calculationReasonId = 1
+        req.session.calculationReasonId = { A1234AA: 1 }
       }
 
       return request(app)
@@ -116,7 +117,7 @@ describe('MultipleConsecutiveToInterceptController', () => {
 
     it('GET /calculation/:nomsId/concurrent-consecutive should redirect back to check information if no duration set', () => {
       sessionSetup.sessionDoctor = req => {
-        req.session.calculationReasonId = 1
+        req.session.calculationReasonId = { A1234AA: 1 }
       }
 
       return request(app)
@@ -128,13 +129,13 @@ describe('MultipleConsecutiveToInterceptController', () => {
 
   describe('POST', () => {
     it('POST /calculation/:nomsId/concurrent-consecutive should submit a new calculation with previous SLED requested in case the sentences have been updated', () => {
-      const userInputsFromSession = {
+      const userInputsFromSession: CalculationUserInputs = {
         sentenceCalculationUserInputs: [],
         calculateErsed: true,
         usePreviouslyRecordedSLEDIfFound: false,
         useOffenceIndicators: false,
       }
-      const expectedInputs = {
+      const expectedInputs: CalculationUserInputs = {
         sentenceCalculationUserInputs: [],
         calculateErsed: true,
         usePreviouslyRecordedSLEDIfFound: true,
@@ -187,13 +188,13 @@ describe('MultipleConsecutiveToInterceptController', () => {
     })
 
     it('POST /calculation/:nomsId/concurrent-consecutive should redirect to previously recorded SLED intercept if one was used in the new calc', () => {
-      const userInputsFromSession = {
+      const userInputsFromSession: CalculationUserInputs = {
         sentenceCalculationUserInputs: [],
         calculateErsed: true,
         usePreviouslyRecordedSLEDIfFound: false,
         useOffenceIndicators: false,
       }
-      const expectedInputs = {
+      const expectedInputs: CalculationUserInputs = {
         sentenceCalculationUserInputs: [],
         calculateErsed: true,
         usePreviouslyRecordedSLEDIfFound: true,

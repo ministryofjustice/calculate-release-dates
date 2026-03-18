@@ -387,17 +387,17 @@ afterEach(() => {
 })
 
 describe('Check access tests', () => {
-  const runTest = async routes => {
+  const runTest = async (routes: { method: 'GET' | 'POST'; url: string }[]) => {
     await Promise.all(
-      routes.map(route =>
-        request(app)
-          [route.method.toLowerCase()](route.url)
+      routes.map(route => {
+        const requested = route.method === 'GET' ? request(app).get(route.url) : request(app).post(route.url)
+        return requested
           .expect(404)
           .expect('Content-Type', /html/)
           .expect(res => {
             expect(res.text).toContain('The details for this person cannot be found')
-          }),
-      ),
+          })
+      }),
     )
   }
 
@@ -409,7 +409,7 @@ describe('Check access tests', () => {
       throw FullPageError.notInCaseLoadError()
     })
 
-    const routes = [
+    const routes: { method: 'GET' | 'POST'; url: string }[] = [
       { method: 'GET', url: '/calculation/A1234AB/cancelCalculation' },
       { method: 'GET', url: '/calculation/A1234AB/123456/confirmation' },
       { method: 'GET', url: '/calculation/A1234AB/complete/123456' },
@@ -607,7 +607,7 @@ describe('Calculation routes tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Anon Nobody')
-        expect(res.text).toMatch(/<script src="\/assets\/print.js"><\/script>/)
+        expect(res.text).toMatch(/<script src="\/assets\/js\/print.js"><\/script>/)
         expect(res.text).toMatch(/Dates for/)
         expectMiniProfile(res.text, expectedMiniProfile)
       })

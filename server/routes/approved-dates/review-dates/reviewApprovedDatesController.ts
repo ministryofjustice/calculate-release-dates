@@ -4,6 +4,7 @@ import CalculateReleaseDatesService from '../../../services/calculateReleaseDate
 import PrisonerService from '../../../services/prisonerService'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import {
+  BookingCalculation,
   ManualEntrySelectedDateType,
   SubmitCalculationRequest,
 } from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -62,41 +63,37 @@ export default class ReviewApprovedDatesController implements Controller {
     const { username, token } = res.locals.user
     const journey = req.session.approvedDatesJourneys[journeyId]
 
-    const result = await getBreakdownFragment(
-      journey.preliminaryCalculationRequestId,
-      username,
-      this.calculateReleaseDatesService,
-    )
-      .then(breakdownHtml => {
-        const confirmCalcRequest: SubmitCalculationRequest = {
-          calculationFragments: {
-            breakdownHtml,
-          },
-          approvedDates: journey.datesToSave.map(date => ({
-            dateType: date.type as ManualEntrySelectedDateType,
-            date: dateToDayMonthYear(date.date),
-          })),
-        }
-        return this.calculateReleaseDatesService.confirmCalculation(
-          username,
-          nomsId,
-          journey.preliminaryCalculationRequestId,
-          confirmCalcRequest,
-          token,
-        )
-      })
-      .then(
-        bookingCalculation => {
-          return { success: true, bookingCalculation, errorCode: null }
-        },
-        error => {
-          return {
-            success: false,
-            bookingCalculation: null,
-            errorCode: error.status,
+    const result: { success: boolean; bookingCalculation?: BookingCalculation; errorCode?: number } =
+      await getBreakdownFragment(journey.preliminaryCalculationRequestId, username, this.calculateReleaseDatesService)
+        .then(breakdownHtml => {
+          const confirmCalcRequest: SubmitCalculationRequest = {
+            calculationFragments: {
+              breakdownHtml,
+            },
+            approvedDates: journey.datesToSave.map(date => ({
+              dateType: date.type as ManualEntrySelectedDateType,
+              date: dateToDayMonthYear(date.date),
+            })),
           }
-        },
-      )
+          return this.calculateReleaseDatesService.confirmCalculation(
+            username,
+            nomsId,
+            journey.preliminaryCalculationRequestId,
+            confirmCalcRequest,
+            token,
+          )
+        })
+        .then(
+          bookingCalculation => {
+            return { success: true, bookingCalculation }
+          },
+          error => {
+            return {
+              success: false,
+              errorCode: error.status,
+            }
+          },
+        )
 
     if (!result.success) {
       return redirectToInputWithErrors(req, res, { datesToSave: ['Adding approved dates failed'] })

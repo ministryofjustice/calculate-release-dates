@@ -1,4 +1,4 @@
-import Page, { PageElement } from './page'
+import Page from './page'
 
 export default class CalculationCompletePage extends Page {
   constructor() {
@@ -10,7 +10,7 @@ export default class CalculationCompletePage extends Page {
     return new CalculationCompletePage()
   }
 
-  public title(): PageElement {
+  public title() {
     return cy.get('h1')
   }
 }

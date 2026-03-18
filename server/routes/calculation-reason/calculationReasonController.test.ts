@@ -163,7 +163,7 @@ describe('CalculationReasonController', () => {
     { id: 11, isOther: true, displayName: 'Other', useForApprovedDates: false, requiresFurtherDetail: true },
   ]
 
-  let currentSession: SessionData
+  let currentSession: Partial<SessionData>
 
   beforeEach(() => {
     config.featureToggles.showBreakdown = true

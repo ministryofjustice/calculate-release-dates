@@ -23,7 +23,7 @@ describe('Print Release Dates Notification Slip', () => {
       null,
     )
     it('returns undefined when keyDates is empty', () => {
-      const keyDates = []
+      const keyDates: KeyDate[] = []
       const model = new PrintNotificationSlipViewModel(
         viewRouteSentenceAndOffenceViewModel,
         null,

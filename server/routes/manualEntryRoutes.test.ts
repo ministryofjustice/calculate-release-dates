@@ -23,7 +23,7 @@ import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import AuditService from '../services/auditService'
-import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 jest.mock('../services/prisonerService')
@@ -100,7 +100,7 @@ beforeEach(() => {
   sessionSetup = new SessionSetup()
   sessionSetup.sessionDoctor = req => {
     req.session.manualEntryRoutingForBookings = []
-    req.session.calculationReasonId = 1
+    req.session.calculationReasonId = { A1234AA: 1 }
   }
   config.apis.calculateReleaseDates.url = 'http://localhost:8100'
   fakeApi = nock(config.apis.calculateReleaseDates.url)
@@ -126,17 +126,17 @@ afterEach(() => {
 })
 
 describe('Check access tests', () => {
-  const runTest = async routes => {
+  const runTest = async (routes: { method: 'GET' | 'POST'; url: string }[]) => {
     await Promise.all(
-      routes.map(route =>
-        request(app)
-          [route.method.toLowerCase()](route.url)
+      routes.map(route => {
+        const requested = route.method === 'GET' ? request(app).get(route.url) : request(app).post(route.url)
+        return requested
           .expect(404)
           .expect('Content-Type', /html/)
           .expect(res => {
             expect(res.text).toContain('The details for this person cannot be found')
-          }),
-      ),
+          })
+      }),
     )
   }
 
@@ -148,7 +148,7 @@ describe('Check access tests', () => {
       throw FullPageError.notInCaseLoadError()
     })
 
-    const routes = [
+    const routes: { method: 'GET' | 'POST'; url: string }[] = [
       { method: 'GET', url: '/calculation/A1234AA/manual-entry' },
       { method: 'GET', url: '/calculation/A1234AA/manual-entry/select-dates' },
       { method: 'GET', url: '/calculation/A1234AA/manual-entry/confirmation' },
@@ -211,7 +211,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
 
     sessionSetup.sessionDoctor = req => {
-      req.session.calculationReasonId = 1
+      req.session.calculationReasonId = { A1234AA: 1 }
       req.session.manualEntryRoutingForBookings = ['A1234AA']
     }
 
@@ -237,7 +237,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
 
     sessionSetup.sessionDoctor = req => {
       req.session.manualEntryRoutingForBookings = ['A9999999']
-      req.session.calculationReasonId = 1
+      req.session.calculationReasonId = { A9999999: 1 }
     }
 
     return request(app)
@@ -462,7 +462,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
           } as ManualJourneySelectedDate,
         ],
       }
-      req.session.calculationReasonId = 1
+      req.session.calculationReasonId = { A1234AA: 1 }
       req.session.manualEntryRoutingForBookings = []
     }
 
@@ -488,8 +488,8 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       } as ValidationMessage,
     ])
     sessionSetup.sessionDoctor = req => {
-      req.session.selectedManualEntryDates = []
-      req.session.calculationReasonId = 1
+      req.session.selectedManualEntryDates = { A1234AA: [] }
+      req.session.calculationReasonId = { A1234AA: 1 }
       req.session.manualEntryRoutingForBookings = []
     }
 
@@ -509,13 +509,13 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
-      req.session.calculationReasonId = 1
+      req.session.calculationReasonId = { A1234AA: 1 }
       req.session.selectedManualEntryDates.A1234AA = [
         {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
           date: { day: 3, month: 3, year: 2017 },
-        } as ManualEntrySelectedDate,
+        } as unknown as ManualJourneySelectedDate,
       ]
       req.session.manualEntryRoutingForBookings = []
     }
@@ -556,13 +556,13 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
-      req.session.calculationReasonId = 1
+      req.session.calculationReasonId = { A1234AA: 1 }
       req.session.selectedManualEntryDates.A1234AA = [
         {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
           date: { day: 3, month: 3, year: 2017 },
-        } as ManualEntrySelectedDate,
+        } as unknown as ManualJourneySelectedDate,
       ]
       req.session.manualEntryRoutingForBookings = []
     }
@@ -607,9 +607,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
           date: { day: 3, month: 3, year: 2017 },
-        } as ManualEntrySelectedDate,
+        } as unknown as ManualJourneySelectedDate,
       ]
-      req.session.calculationReasonId = 1
+      req.session.calculationReasonId = { A1234AA: 1 }
       req.session.manualEntryRoutingForBookings = []
     }
 
@@ -692,7 +692,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
-      req.session.calculationReasonId = 1
+      req.session.calculationReasonId = { A1234AA: 1 }
       req.session.manualEntryRoutingForBookings = []
     }
     return request(app)
@@ -718,13 +718,13 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     ])
     sessionSetup.sessionDoctor = req => {
       req.session.selectedManualEntryDates = {}
-      req.session.calculationReasonId = 1
+      req.session.calculationReasonId = { A1234AA: 1 }
       req.session.selectedManualEntryDates.A1234AA = [
         {
           dateType: 'CRD',
           dateText: 'CRD (Conditional release date)',
           date: { day: 3, month: 3, year: 2017 },
-        } as ManualEntrySelectedDate,
+        } as unknown as ManualJourneySelectedDate,
       ]
       req.session.manualEntryRoutingForBookings = []
     }

@@ -5,7 +5,7 @@ import {
   PrisonApiSentenceAdjustmentValues,
 } from '../@types/prisonApi/prisonClientTypes'
 
-type AdjustmentViewModel = {
+export type AdjustmentViewModel = {
   aggregate: number
   details: AdjustmentDetailViewModel[]
 }

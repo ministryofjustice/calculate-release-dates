@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
 import {
   ApprovedDate,
+  CalculationBreakdown,
   DetailedCalculationResults,
   LatestCalculation,
   PreviouslyRecordedSLED,
@@ -1069,7 +1070,7 @@ export default {
     overridesCalculationRequestId?: number
   }): SuperAgentRequest => {
     const { previouslyRecordedSLED, ftr56Tranche, calculationType, overridesCalculationRequestId } = args || {}
-    const breakdown = {
+    const breakdown: CalculationBreakdown = {
       showSds40Hints: false,
       concurrentSentences: [
         {
@@ -1150,8 +1151,6 @@ export default {
             caseReference: 'ABC345',
             sentenceLength: '2 years',
             sentenceLengthDays: 730,
-            consecutiveToLineSequence: null,
-            consecutiveToCaseSequence: null,
             externalSentenceId: {
               sentenceSequence: 0,
               bookingId: 0,
@@ -1243,6 +1242,9 @@ export default {
         },
         isSDSPlus: false,
         hasAnSDSEarlyReleaseExclusion: 'NO',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
+        revocationDates: [],
       } as SentenceAndOffenceWithReleaseArrangements,
       {
         bookingId: 1,
@@ -1274,6 +1276,9 @@ export default {
         },
         isSDSPlus: false,
         hasAnSDSEarlyReleaseExclusion: 'NO',
+        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
+        isSDSPlusOffenceInPeriod: false,
+        revocationDates: [],
       } as SentenceAndOffenceWithReleaseArrangements,
     ]
     const detailedResults: DetailedCalculationResults = {
@@ -1307,7 +1312,7 @@ export default {
         usePreviouslyRecordedSLEDIfFound: !!previouslyRecordedSLED,
         calculatedByUsername: 'user1',
         calculatedByDisplayName: 'User One',
-        overridesCalculationRequestId: overridesCalculationRequestId ?? null,
+        overridesCalculationRequestId,
       },
       calculationOriginalData: {
         prisonerDetails,

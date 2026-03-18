@@ -35,7 +35,7 @@ export default class AuditService {
     user: string,
     prisonerId: string,
     dates: Map<ReleaseDateType, string>,
-    reasonId: string,
+    reasonId: number,
   ) {
     const detail = { ...dates, reasonId }
     await this.sendAuditMessage(AuditAction.MANUAL_CALCULATION_CREATED, user, prisonerId, JSON.stringify(detail))

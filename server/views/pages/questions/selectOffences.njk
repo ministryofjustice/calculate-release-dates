@@ -113,5 +113,5 @@
 
 {% block bodyEnd %}
 {{ super() }}
-<script src="/assets/unselectAll.js"></script>
+<script src="{{ '/assets/js/unselectAll.js' | assetMap }}"></script>
 {% endblock %}

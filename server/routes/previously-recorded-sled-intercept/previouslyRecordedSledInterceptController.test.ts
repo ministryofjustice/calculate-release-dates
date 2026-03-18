@@ -10,7 +10,10 @@ import {
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
 } from '../../@types/prisonApi/prisonClientTypes'
-import { BookingCalculation } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  BookingCalculation,
+  CalculationUserInputs,
+} from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../../config'
 import UserInputService from '../../services/userInputService'
 import { ResultsWithBreakdownAndAdjustments } from '../../@types/calculateReleaseDates/rulesWithExtraAdjustments'
@@ -19,7 +22,7 @@ jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
 jest.mock('../../services/userInputService')
 
-let siblingCalculationWithPreviouslyRecordedSLED
+let siblingCalculationWithPreviouslyRecordedSLED: Record<number, number>
 
 describe('PreviouslyRecordedSledInterceptController', () => {
   let app: Express
@@ -190,13 +193,13 @@ describe('PreviouslyRecordedSledInterceptController', () => {
     })
 
     it('POST /calculation/:nomsId/previously-recorded-sled-intercept/:calculationRequestId selecting NO should generate a new preliminary calc with no previous SLED and redirect to its calc summary', () => {
-      const userInputsFromSession = {
+      const userInputsFromSession: CalculationUserInputs = {
         sentenceCalculationUserInputs: [],
         calculateErsed: true,
         usePreviouslyRecordedSLEDIfFound: true,
         useOffenceIndicators: false,
       }
-      const expectedInputs = {
+      const expectedInputs: CalculationUserInputs = {
         sentenceCalculationUserInputs: [],
         calculateErsed: true,
         usePreviouslyRecordedSLEDIfFound: false,
