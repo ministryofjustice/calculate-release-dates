@@ -910,5 +910,22 @@ describe('CalculationSummaryController', () => {
           expect(res.redirect).toBeTruthy()
         })
     })
+
+    it('POST /calculation/:nomsId/summary/:calculationRequestId should handle isAddDatesFlow not being initialised by assuming it is not an approved dates flow', () => {
+      sessionSetup.sessionDoctor = req => {
+        req.session.selectedApprovedDates = approvedDates
+        delete req.session.isAddDatesFlow
+      }
+
+      return request(app)
+        .post(`/calculation/${prisonerNumber}/summary/123456`)
+        .type('form')
+        .send({ agreeWithDates: 'YES' })
+        .expect(302)
+        .expect('Location', `/calculation/${prisonerNumber}/123456/approved-dates-question`)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+        })
+    })
   })
 })
