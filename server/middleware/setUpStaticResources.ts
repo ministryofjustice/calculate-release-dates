@@ -15,9 +15,6 @@ export default function setUpStaticResources(): Router {
 
   Array.of(
     '/dist/assets',
-    '/assets',
-    '/assets/stylesheets',
-    '/assets/js',
     '/node_modules/govuk-frontend/dist/govuk/assets',
     '/node_modules/govuk-frontend/dist',
     '/node_modules/@ministryofjustice/frontend/moj/assets',
@@ -30,6 +27,9 @@ export default function setUpStaticResources(): Router {
   ).forEach(dir => {
     router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
   })
+
+  // Default path of favicon requested by some browsers that doesn't respect the icons defined in the template
+  router.use('/favicon.ico', express.static(path.join(process.cwd(), '/assets/images/favicon.ico'), cacheControl))
 
   // Don't cache dynamic resources
   router.use(noCache())
