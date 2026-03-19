@@ -2,7 +2,6 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "../components/validatedDateInput/macro.njk" import validatedDateInput %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageTitle = applicationName + " - Enter the date" %}
 {% set pageId = "genuine-override-enter-dates" %}
@@ -32,9 +31,6 @@
                         classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
                     },
                     validationErrors: validationErrors,
-                    errorMessage: {
-                        text: error
-                    },
                     hintText: "For example, 17 2 2025.",
                     day: day,
                     month: month,
