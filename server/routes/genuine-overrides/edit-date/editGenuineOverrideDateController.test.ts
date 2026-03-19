@@ -33,6 +33,7 @@ describe('AddGenuineOverrideDateController', () => {
     lastName: 'Nobody',
   } as PrisonApiPrisoner
   const pageUrl = `/calculation/${prisonerNumber}/override/HDCED/edit/${calculationRequestId}`
+  const pageUrlForCRD = `/calculation/${prisonerNumber}/override/CRD/edit/${calculationRequestId}`
   let currentUser: Express.User
 
   beforeEach(() => {
@@ -144,6 +145,18 @@ describe('AddGenuineOverrideDateController', () => {
         .expect('Location', `${pageUrl}#`)
 
       expect(genuineOverrideInputs).toStrictEqual({ mode: 'STANDARD', datesToSave: [originalHdced] })
+    })
+
+    it('should return to input page without saving the date if there were additional validation errors', async () => {
+      const sedDate = { type: 'SED', date: '2010-10-11' }
+      genuineOverrideInputs.datesToSave = [sedDate]
+
+      await request(app) //
+        .post(pageUrlForCRD)
+        .type('form')
+        .send({ day: '11', month: '2', year: '3000' })
+        .expect(302)
+        .expect('Location', `${pageUrlForCRD}#`)
     })
 
     it('should return the review page with updated dates if valid ', async () => {

@@ -17,6 +17,8 @@ export const releaseDateSchema = createSchema({
   day: z.string().trim().optional(),
   month: z.string().trim().optional(),
   year: z.string().trim().optional(),
+  dateType: z.string().optional(),
+  errorMessage: z.string().optional(),
 })
   .superRefine((val, ctx) => {
     if (!val.day && !val.month && !val.year) {
@@ -61,6 +63,15 @@ export const releaseDateSchema = createSchema({
       if (val.year && val.year.length < 4) {
         ctx.addIssue({ code: 'custom', message: YEAR_ERROR, path: ['year'] })
       }
+    }
+  })
+  .superRefine((val, ctx) => {
+    if (val.errorMessage && val.errorMessage !== '') {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: val.errorMessage,
+        path: ['day'],
+      })
     }
   })
   .transform(val => {

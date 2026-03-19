@@ -8,7 +8,7 @@ import { ReleaseDateForm } from '../../common-schemas/releaseDateSchemas'
 import GenuineOverrideEnterDateViewModel from '../../../models/genuine-override/GenuineOverrideEnterDateViewModel'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import { dateToDayMonthYear } from '../../../utils/utils'
-import DateValidationService, { EnteredDate } from '../../../services/dateValidationService'
+import DateValidationService from '../../../services/dateValidationService'
 
 export default class EditGenuineOverrideDateController implements Controller {
   constructor(
@@ -16,6 +16,21 @@ export default class EditGenuineOverrideDateController implements Controller {
     private readonly prisonerService: PrisonerService,
     private readonly dateValidationService: DateValidationService,
   ) {}
+
+  ADDITIONAL_VALIDATION = (req: Request, res: Response): string => {
+    const { day, month, year } = req.body
+    if (day && month && year) {
+      const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, req.params.nomsId)
+      const enteredDate = { day, month, year, dateType: req.params.dateType }
+      return this.dateValidationService.validateSedLedCrdDates(
+        req.params.dateType,
+        enteredDate,
+        null,
+        genuineOverrideInputs,
+      )
+    }
+    return ''
+  }
 
   GET = async (
     req: Request<{
@@ -26,7 +41,6 @@ export default class EditGenuineOverrideDateController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId, dateType } = req.params
-
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
     // if the date type hasn't been saved before go back to review dates to allow choosing a date or to add it back if it was removed
@@ -40,7 +54,7 @@ export default class EditGenuineOverrideDateController implements Controller {
     const month = res.locals?.formResponses?.month ?? parsedDate.month
     const year = res.locals?.formResponses?.year ?? parsedDate.year
 
-    return this.renderEnterDateView(res, nomsId, calculationRequestId, dateType, day, month, year, null)
+    return this.renderEnterDateView(res, nomsId, calculationRequestId, dateType, day, month, year)
   }
 
   POST = async (
@@ -50,37 +64,6 @@ export default class EditGenuineOverrideDateController implements Controller {
     const { nomsId, calculationRequestId, dateType } = req.params
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const { day, month, year } = req.body
-    const enteredDate: EnteredDate = {
-      day: day.toString(),
-      month: month.toString(),
-      year: year.toString(),
-      dateType,
-    }
-    const errorMessage = this.dateValidationService.validateSedLedCrdDates(
-      dateType,
-      enteredDate,
-      null,
-      genuineOverrideInputs,
-    )
-    if (errorMessage) {
-      const errorList = [
-        {
-          text: errorMessage,
-          href: `#releaseDate`,
-        },
-      ]
-      return this.renderEnterDateView(
-        res,
-        nomsId,
-        calculationRequestId,
-        dateType,
-        day,
-        month,
-        year,
-        errorList,
-        errorMessage,
-      )
-    }
     const dateBeingSet = genuineOverrideInputs.datesToSave.find(it => it.type === dateType)
     dateBeingSet.date = dayjs(`${year}-${month}-${day}`).format('YYYY-MM-DD')
     return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
@@ -94,8 +77,6 @@ export default class EditGenuineOverrideDateController implements Controller {
     day: number,
     month: number,
     year: number,
-    errorList: { text: string; href: string }[],
-    errorMessage?: string,
   ): Promise<void> {
     const { caseloads, userRoles, username } = res.locals.user
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
@@ -113,8 +94,6 @@ export default class EditGenuineOverrideDateController implements Controller {
         description,
         GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId),
         GenuineOverrideUrls.editDate(nomsId, calculationRequestId, dateType),
-        errorList,
-        errorMessage,
       ),
     )
   }

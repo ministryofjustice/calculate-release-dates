@@ -14,12 +14,6 @@
     {% set dayError = opts.validationErrors['day'] if opts.validationErrors['day'] else '' %}
     {% set monthError = opts.validationErrors['month'] if opts.validationErrors['month'] else '' %}
     {% set yearError = opts.validationErrors['year'] if opts.validationErrors['year'] else '' %}
-
-    {% if opts.errorMessage and opts.errorMessage.text %}
-        {% set dayError = opts.errorMessage.text %}
-        {% set monthError = [] %}
-        {% set yearError = [] %}
-    {% endif %}
 {% endif %}
 
   {% macro joinErrors(errors) %}

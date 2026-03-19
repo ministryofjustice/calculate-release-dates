@@ -43,7 +43,12 @@ const GenuineOverridesRoutes = (
     router.get(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.GET))
     if (controller.POST) {
       if (validateToSchema) {
-        router.post(path, requireGenuineOverrideAccess(), validate(validateToSchema), asyncMiddleware(controller.POST))
+        router.post(
+          path,
+          requireGenuineOverrideAccess(),
+          validate(validateToSchema, controller.ADDITIONAL_VALIDATION),
+          asyncMiddleware(controller.POST),
+        )
       } else {
         router.post(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.POST))
       }

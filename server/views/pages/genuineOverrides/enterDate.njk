@@ -20,16 +20,6 @@
 
 {% block content %}
     {% include '../partials/formError.njk' %}
-    {% if errorList %}
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: errorList
-        }) }}
-      </div>
-    </div>
-    {% endif %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
