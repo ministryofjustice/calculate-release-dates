@@ -1,24 +1,21 @@
-import { RequestHandler } from 'express'
-import PrisonerService from '../services/prisonerService'
-import UserPermissionsService from '../services/userPermissionsService'
-import { indexViewModelForPrisoner } from '../models/IndexViewModel'
-import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
-import config from '../config'
-import { indexErrorViewModelForPrisoner } from '../models/IndexErrorViewModel'
-import { FullPageError } from '../types/FullPageError'
+import { Request, Response } from 'express'
+import { Controller } from '../controller'
+import PrisonerService from '../../services/prisonerService'
+import UserPermissionsService from '../../services/userPermissionsService'
+import { indexViewModelForPrisoner } from '../../models/IndexViewModel'
+import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
+import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
+import config from '../../config'
 
-export default class StartRoutes {
+export default class StartController implements Controller {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
     private readonly userPermissionsService: UserPermissionsService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
-  ) {
-    // intentionally left blank
-  }
+  ) {}
 
-  public startPage: RequestHandler = async (req, res): Promise<void> => {
+  GET = async (req: Request, res: Response): Promise<void> => {
     const { prisonId } = req.query as Record<string, string>
 
     if (prisonId) {
@@ -39,20 +36,6 @@ export default class StartRoutes {
 
       const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(prisonId, token)
 
-      if (latestCalculationCardOrError instanceof FullPageError) {
-        return res.render(
-          'pages/ccardIndexError',
-          indexErrorViewModelForPrisoner(
-            latestCalculationCardOrError,
-            prisonerDetail,
-            calculationHistory,
-            prisonId,
-            allowBulkLoad,
-            serviceDefinitions,
-          ),
-        )
-      }
-
       const { latestCalcCard, latestCalcCardAction, calculation } = latestCalculationCardOrError
       return res.render(
         'pages/ccardIndex',
@@ -71,15 +54,5 @@ export default class StartRoutes {
     }
 
     return res.redirect(config.apis.digitalPrisonServices.ui_url)
-  }
-
-  public supportedSentences: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
-    return res.render('pages/supportedSentences', { nomsId })
-  }
-
-  public accessibility: RequestHandler = async (req, res): Promise<void> => {
-    const ccardAccessibility = `${config.apis.courtCasesAndReleaseDatesUi.url}/accessibility`
-    return res.redirect(ccardAccessibility)
   }
 }

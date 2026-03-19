@@ -5,37 +5,34 @@ import {
   Action,
   LatestCalculationCardConfig,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
-import { appWithAllRoutes, user } from './testutils/appSetup'
-import PrisonerService from '../services/prisonerService'
+import { appWithAllRoutes, user } from '../testutils/appSetup'
+import PrisonerService from '../../services/prisonerService'
+import UserPermissionsService from '../../services/userPermissionsService'
+import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
+import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
+import AuthorisedRoles from '../../enumerations/authorisedRoles'
+import { CalculationCard } from '../../types/CalculationCard'
+import {
+  HistoricCalculation,
+  LatestCalculation,
+} from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import config from '../../config'
+import { expectMiniProfile, expectServiceHeaderForPrisoner } from '../testutils/layoutExpectations'
 import {
   PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
-} from '../@types/prisonApi/prisonClientTypes'
-import UserPermissionsService from '../services/userPermissionsService'
-import { expectMiniProfile, expectServiceHeaderForPrisoner } from './testutils/layoutExpectations'
-import AuthorisedRoles from '../enumerations/authorisedRoles'
-import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import {
-  HistoricCalculation,
-  LatestCalculation,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { FullPageError } from '../types/FullPageError'
-import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
-import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
-import AuditService from '../services/auditService'
-import { CalculationCard } from '../types/CalculationCard'
-import config from '../config'
+} from '../../@types/prisonApi/prisonClientTypes'
+import { CcrdServiceDefinitions } from '../../@types/courtCasesReleaseDatesApi/types'
+import { FullPageError } from '../../types/FullPageError'
 
-jest.mock('../services/calculateReleaseDatesService')
-jest.mock('../services/prisonerService')
-jest.mock('../services/userPermissionsService')
-jest.mock('../services/courtCasesReleaseDatesService')
-jest.mock('../services/auditService')
+jest.mock('../../services/calculateReleaseDatesService')
+jest.mock('../../services/prisonerService')
+jest.mock('../../services/userPermissionsService')
+jest.mock('../../services/courtCasesReleaseDatesService')
 
-const auditService = new AuditService() as jest.Mocked<AuditService>
 const calculateReleaseDatesService = new CalculateReleaseDatesService(
-  auditService,
+  null,
   null,
 ) as jest.Mocked<CalculateReleaseDatesService>
 const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
@@ -43,6 +40,9 @@ const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserP
 const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(
   null,
 ) as jest.Mocked<CourtCasesReleaseDatesService>
+
+let app: Express
+
 const stubbedPrisonerData = {
   offenderNo: 'A1234AA',
   firstName: 'Anon',
@@ -167,53 +167,21 @@ const latestCalcCardActionForPrisoner: Action = {
   href: '/foo',
   dataQa: 'latest-calc-card-action',
 }
-const noLatestCalcCard = {}
 
-let app: Express
+const noLatestCalcCard = {}
 
 beforeEach(() => {
   app = appWithAllRoutes({
     services: { calculateReleaseDatesService, prisonerService, userPermissionsService, courtCasesReleaseDatesService },
-    userSupplier: () => {
-      return { ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }
-    },
+    userSupplier: () => ({ ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }),
   })
 })
+
 afterEach(() => {
   jest.resetAllMocks()
-  config.featureToggles.useNewApprovedDatesFlow = true
 })
 
-describe('Check access tests', () => {
-  const runTest = async (routes: { method: 'GET' | 'POST'; url: string }[]) => {
-    await Promise.all(
-      routes.map(route => {
-        const requested = route.method === 'GET' ? request(app).get(route.url) : request(app).post(route.url)
-        return requested
-          .expect(404)
-          .expect('Content-Type', /html/)
-          .expect(res => {
-            expect(res.text).toContain('The details for this person cannot be found')
-          })
-      }),
-    )
-  }
-
-  it('Check urls no access when not in caseload', async () => {
-    prisonerService.getPrisonerDetail.mockImplementation(() => {
-      throw FullPageError.notInCaseLoadError()
-    })
-    prisonerService.checkPrisonerAccess.mockImplementation(() => {
-      throw FullPageError.notInCaseLoadError()
-    })
-
-    const routes: { method: 'GET' | 'POST'; url: string }[] = [{ method: 'GET', url: '?prisonId=123' }]
-
-    await runTest(routes)
-  })
-})
-
-describe('Start routes tests', () => {
+describe('StartController', () => {
   it('GET / redirect to DPS', async () => {
     await request(app).get('/').expect(302).expect('Location', config.apis.digitalPrisonServices.ui_url)
   })
@@ -624,5 +592,33 @@ describe('Start routes tests', () => {
             .map(it => it.trim()),
         ).toStrictEqual(['User Override', '', 'Some details about the GO'])
       })
+  })
+  describe('Check access tests', () => {
+    const runTest = async (routes: { method: 'GET' | 'POST'; url: string }[]) => {
+      await Promise.all(
+        routes.map(route => {
+          const requested = route.method === 'GET' ? request(app).get(route.url) : request(app).post(route.url)
+          return requested
+            .expect(404)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+              expect(res.text).toContain('The details for this person cannot be found')
+            })
+        }),
+      )
+    }
+
+    it('Check urls no access when not in caseload', async () => {
+      prisonerService.getPrisonerDetail.mockImplementation(() => {
+        throw FullPageError.notInCaseLoadError()
+      })
+      prisonerService.checkPrisonerAccess.mockImplementation(() => {
+        throw FullPageError.notInCaseLoadError()
+      })
+
+      const routes: { method: 'GET' | 'POST'; url: string }[] = [{ method: 'GET', url: '?prisonId=123' }]
+
+      await runTest(routes)
+    })
   })
 })
