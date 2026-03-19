@@ -91,9 +91,9 @@ export default class EditGenuineOverrideDateController implements Controller {
     nomsId: string,
     calculationRequestId: string,
     dateType: string,
-    day: string | number,
-    month: string | number,
-    year: string | number,
+    day: number,
+    month: number,
+    year: number,
     errorList: { text: string; href: string }[],
     errorMessage?: string,
   ): Promise<void> {
