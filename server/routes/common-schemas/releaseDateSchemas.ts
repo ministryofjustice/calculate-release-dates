@@ -81,6 +81,16 @@ export const releaseDateSchema = (dateValidationService: DateValidationService) 
               message,
               path: ['day'],
             })
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: '',
+              path: ['month'],
+            })
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: '',
+              path: ['year'],
+            })
           }
         }
       }
