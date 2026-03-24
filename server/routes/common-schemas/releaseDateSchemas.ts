@@ -16,7 +16,7 @@ const YEAR_ERROR = 'Year must include 4 numbers'
 const BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED = ''
 const REAL_DATE_ERROR = `The date must be a real date`
 
-export const releaseDateSchema = (dateValidationService: DateValidationService) => async (req: Request) => {
+export const releaseDateSchema = (dateValidationService?: DateValidationService) => async (req: Request) => {
   return createSchema({
     day: z.string().trim().optional(),
     month: z.string().trim().optional(),
