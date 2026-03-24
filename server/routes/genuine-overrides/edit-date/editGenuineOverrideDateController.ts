@@ -17,21 +17,6 @@ export default class EditGenuineOverrideDateController implements Controller {
     private readonly dateValidationService: DateValidationService,
   ) {}
 
-  ADDITIONAL_VALIDATION = (req: Request, res: Response): string => {
-    const { day, month, year } = req.body
-    if (day && month && year) {
-      const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, req.params.nomsId)
-      const enteredDate = { day, month, year, dateType: req.params.dateType }
-      return this.dateValidationService.validateSedLedCrdDates(
-        req.params.dateType,
-        enteredDate,
-        null,
-        genuineOverrideInputs,
-      )
-    }
-    return ''
-  }
-
   GET = async (
     req: Request<{
       nomsId: string

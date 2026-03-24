@@ -51,22 +51,14 @@ export const redirectToInputWithErrors = <P>(
   return res.redirect(urlWithDefaultFragmentSoAnyFieldFocusIsRemoved)
 }
 
-export const validate = <P extends { [key: string]: string }>(
-  schema: z.ZodTypeAny | SchemaFactory<P>,
-  additionalValidation?: unknown,
-) => {
+export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeAny | SchemaFactory<P>) => {
   return async (req: Request<P>, res: Response, next: NextFunction) => {
     if (!schema) {
       return next()
     }
     const resolvedSchema = typeof schema === 'function' ? await schema(req) : schema
-    let result
-    if (typeof additionalValidation === 'function') {
-      const errorMessage = await additionalValidation(req, res)
-      result = resolvedSchema.safeParse({ ...req.body, errorMessage })
-    } else {
-      result = resolvedSchema.safeParse(req.body)
-    }
+    const result = resolvedSchema.safeParse(req.body)
+
     if (result && result.success) {
       req.body = result.data
       return next()

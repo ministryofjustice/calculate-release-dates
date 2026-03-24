@@ -1,7 +1,10 @@
 import { z } from 'zod'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { Request } from 'express'
 import { createSchema } from '../../middleware/validationMiddleware'
+import DateValidationService from '../../services/dateValidationService'
+import { genuineOverrideInputsForPrisoner } from '../genuine-overrides/genuineOverrideUtils'
 
 dayjs.extend(customParseFormat)
 
@@ -13,76 +16,90 @@ const YEAR_ERROR = 'Year must include 4 numbers'
 const BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED = ''
 const REAL_DATE_ERROR = `The date must be a real date`
 
-export const releaseDateSchema = createSchema({
-  day: z.string().trim().optional(),
-  month: z.string().trim().optional(),
-  year: z.string().trim().optional(),
-  dateType: z.string().optional(),
-  errorMessage: z.string().optional(),
-})
-  .superRefine((val, ctx) => {
-    if (!val.day && !val.month && !val.year) {
-      ctx.addIssue({ code: 'custom', message: DATE_IS_REQUIRED_MESSAGE, path: ['day'] })
-      ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
-      ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
-    } else {
-      const missing: string[] = []
-      if (!val.day) {
-        missing.push('day')
-      }
-      if (!val.month) {
-        missing.push('month')
-      }
-      if (!val.year) {
-        missing.push('year')
-      }
-      if (missing.length === 1) {
-        const field = missing[0]!
-        ctx.addIssue({ code: 'custom', message: SINGLE_FIELD_MISSING_ERROR(field), path: [field] })
-      } else if (missing.length === 2) {
-        const fieldOne = missing[0]!
-        const fieldTwo = missing[1]!
-        ctx.addIssue({
-          code: 'custom',
-          message: TWO_FIELDS_MISSING_ERROR(fieldOne, fieldTwo),
-          path: [fieldOne],
-        })
-        ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: [fieldTwo] })
-      } else if (val.year && val.year.length >= 4) {
-        const isValid = dayjs(
-          `${val.year}-${val.month?.padStart(2, '0')}-${val.day?.padStart(2, '0')}`,
-          'YYYY-MM-DD',
-          true,
-        ).isValid()
-        if (!isValid) {
-          ctx.addIssue({ code: 'custom', message: REAL_DATE_ERROR, path: ['day'] })
-          ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
-          ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
+export const releaseDateSchema = (dateValidationService: DateValidationService) => async (req: Request) => {
+  return createSchema({
+    day: z.string().trim().optional(),
+    month: z.string().trim().optional(),
+    year: z.string().trim().optional(),
+    dateType: z.string().optional(),
+  })
+    .superRefine((val, ctx) => {
+      if (!val.day && !val.month && !val.year) {
+        ctx.addIssue({ code: 'custom', message: DATE_IS_REQUIRED_MESSAGE, path: ['day'] })
+        ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
+        ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
+      } else {
+        const missing: string[] = []
+        if (!val.day) {
+          missing.push('day')
+        }
+        if (!val.month) {
+          missing.push('month')
+        }
+        if (!val.year) {
+          missing.push('year')
+        }
+        if (missing.length === 1) {
+          const field = missing[0]!
+          ctx.addIssue({ code: 'custom', message: SINGLE_FIELD_MISSING_ERROR(field), path: [field] })
+        } else if (missing.length === 2) {
+          const fieldOne = missing[0]!
+          const fieldTwo = missing[1]!
+          ctx.addIssue({
+            code: 'custom',
+            message: TWO_FIELDS_MISSING_ERROR(fieldOne, fieldTwo),
+            path: [fieldOne],
+          })
+          ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: [fieldTwo] })
+        } else if (val.year && val.year.length >= 4) {
+          const isValid = dayjs(
+            `${val.year}-${val.month?.padStart(2, '0')}-${val.day?.padStart(2, '0')}`,
+            'YYYY-MM-DD',
+            true,
+          ).isValid()
+          if (!isValid) {
+            ctx.addIssue({ code: 'custom', message: REAL_DATE_ERROR, path: ['day'] })
+            ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
+            ctx.addIssue({ code: 'custom', message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
+          }
+        }
+        if (val.year && val.year.length < 4) {
+          ctx.addIssue({ code: 'custom', message: YEAR_ERROR, path: ['year'] })
         }
       }
-      if (val.year && val.year.length < 4) {
-        ctx.addIssue({ code: 'custom', message: YEAR_ERROR, path: ['year'] })
-      }
-    }
-  })
-  .superRefine((val, ctx) => {
-    if (val.errorMessage && val.errorMessage !== '') {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: val.errorMessage,
-        path: ['day'],
-      })
-    }
-  })
-  .transform(val => {
-    const { day, month, year } = val
-    return !day && !month && !year
-      ? {}
-      : {
-          day: Number(day),
-          month: Number(month),
-          year: Number(year),
+    })
+    .superRefine((val, ctx) => {
+      if (dateValidationService) {
+        const { day, month, year } = req.body
+        if (day && month && year) {
+          const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, req.params.nomsId)
+          const enteredDate = { day, month, year, dateType: req.params.dateType }
+          const message = dateValidationService.validateSedLedCrdDates(
+            req.params.dateType,
+            enteredDate,
+            null,
+            genuineOverrideInputs,
+          )
+          if (message !== '') {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message,
+              path: ['day'],
+            })
+          }
         }
-  })
+      }
+    })
+    .transform(val => {
+      const { day, month, year } = val
+      return !day && !month && !year
+        ? {}
+        : {
+            day: Number(day),
+            month: Number(month),
+            year: Number(year),
+          }
+    })
+}
 
-export type ReleaseDateForm = z.infer<typeof releaseDateSchema>
+export type ReleaseDateForm = z.infer<Awaited<ReturnType<ReturnType<typeof releaseDateSchema>>>>

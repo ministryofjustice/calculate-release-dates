@@ -43,12 +43,7 @@ const GenuineOverridesRoutes = (
     router.get(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.GET))
     if (controller.POST) {
       if (validateToSchema) {
-        router.post(
-          path,
-          requireGenuineOverrideAccess(),
-          validate(validateToSchema, controller.ADDITIONAL_VALIDATION),
-          asyncMiddleware(controller.POST),
-        )
+        router.post(path, requireGenuineOverrideAccess(), validate(validateToSchema), asyncMiddleware(controller.POST))
       } else {
         router.post(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.POST))
       }
@@ -108,7 +103,7 @@ const GenuineOverridesRoutes = (
   route({
     path: '/calculation/:nomsId/override/:dateType/add/:calculationRequestId',
     controller: new AddGenuineOverrideDateController(dateTypeConfigurationService, prisonerService),
-    validateToSchema: releaseDateSchema,
+    validateToSchema: releaseDateSchema(dateValidationService),
   })
 
   route({
@@ -118,7 +113,7 @@ const GenuineOverridesRoutes = (
       prisonerService,
       dateValidationService,
     ),
-    validateToSchema: releaseDateSchema,
+    validateToSchema: releaseDateSchema(dateValidationService),
   })
 
   route({
