@@ -539,6 +539,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/enter-date',
         )
+        expect($('.govuk-error-summary__title').text().trim()).not.toBe('There is a problem')
         const questionTitle = $('.govuk-fieldset__heading').first()
         expect(questionTitle.text().trim()).toStrictEqual('Enter the CRD')
         expectMiniProfile(res.text, expectedMiniProfile)
@@ -591,7 +592,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       })
   })
 
-  it('POST /calculation/:nomsId/manual-entry/enter-date shows enter date page with mini profile', () => {
+  it('POST /calculation/:nomsId/manual-entry/enter-date shows enter date page with error and with mini profile', () => {
     manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
@@ -628,6 +629,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/enter-date',
         )
+        expect($('.govuk-error-summary__title').text().trim()).toBe('There is a problem')
+        expect($('.govuk-error-summary__list li').length).toBe(1)
+        expect($('.govuk-error-summary__list li').eq(0).text().trim()).toBe('Foo')
       })
   })
 

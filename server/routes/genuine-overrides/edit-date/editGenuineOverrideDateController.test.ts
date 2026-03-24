@@ -9,6 +9,7 @@ import DateTypeConfigurationService from '../../../services/dateTypeConfiguratio
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
 import { GenuineOverrideInputs } from '../../../@types/journeys'
+import DateValidationService from '../../../services/dateValidationService'
 
 jest.mock('../../../services/dateTypeConfigurationService')
 jest.mock('../../../services/prisonerService')
@@ -20,6 +21,7 @@ describe('AddGenuineOverrideDateController', () => {
   const dateTypeConfigurationService = new DateTypeConfigurationService(
     null,
   ) as jest.Mocked<DateTypeConfigurationService>
+  const dateValidationService = new DateValidationService() as jest.Mocked<DateValidationService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 
   let genuineOverrideInputs: GenuineOverrideInputs
@@ -31,6 +33,7 @@ describe('AddGenuineOverrideDateController', () => {
     lastName: 'Nobody',
   } as PrisonApiPrisoner
   const pageUrl = `/calculation/${prisonerNumber}/override/HDCED/edit/${calculationRequestId}`
+  const pageUrlForCRD = `/calculation/${prisonerNumber}/override/CRD/edit/${calculationRequestId}`
   let currentUser: Express.User
 
   beforeEach(() => {
@@ -47,6 +50,7 @@ describe('AddGenuineOverrideDateController', () => {
       services: {
         dateTypeConfigurationService,
         prisonerService,
+        dateValidationService,
       },
       sessionSetup,
       userSupplier: () => currentUser,
@@ -141,6 +145,18 @@ describe('AddGenuineOverrideDateController', () => {
         .expect('Location', `${pageUrl}#`)
 
       expect(genuineOverrideInputs).toStrictEqual({ mode: 'STANDARD', datesToSave: [originalHdced] })
+    })
+
+    it('should return to input page without saving the date if there were additional validation errors', async () => {
+      const sedDate = { type: 'SED', date: '2010-10-11' }
+      genuineOverrideInputs.datesToSave = [sedDate]
+
+      await request(app) //
+        .post(pageUrlForCRD)
+        .type('form')
+        .send({ dateType: 'CRD', day: '11', month: '2', year: '3000' })
+        .expect(302)
+        .expect('Location', `${pageUrlForCRD}#`)
     })
 
     it('should return the review page with updated dates if valid ', async () => {

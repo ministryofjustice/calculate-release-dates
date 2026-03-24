@@ -65,6 +65,7 @@ export const services = () => {
     courtCasesReleaseDatesService,
     auditService,
     dateTypeConfigurationService,
+    dateValidationService,
   }
 }
 

@@ -42,6 +42,7 @@ export default function Index({
   comparisonService,
   courtCasesReleaseDatesService,
   dateTypeConfigurationService,
+  dateValidationService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
   const route = <P extends { [key: string]: string }>({
@@ -272,7 +273,15 @@ export default function Index({
   }
 
   const genuineOverridesRoutes = () => {
-    router.use('/', GenuineOverridesRoutes(calculateReleaseDatesService, prisonerService, dateTypeConfigurationService))
+    router.use(
+      '/',
+      GenuineOverridesRoutes(
+        calculateReleaseDatesService,
+        prisonerService,
+        dateTypeConfigurationService,
+        dateValidationService,
+      ),
+    )
   }
 
   const disableNomisRoutes = () => {

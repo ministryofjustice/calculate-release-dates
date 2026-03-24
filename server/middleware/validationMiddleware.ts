@@ -58,7 +58,8 @@ export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeA
     }
     const resolvedSchema = typeof schema === 'function' ? await schema(req) : schema
     const result = resolvedSchema.safeParse(req.body)
-    if (result.success) {
+
+    if (result && result.success) {
       req.body = result.data
       return next()
     }
