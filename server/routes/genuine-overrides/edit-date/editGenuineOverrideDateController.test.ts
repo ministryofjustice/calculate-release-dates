@@ -154,7 +154,7 @@ describe('AddGenuineOverrideDateController', () => {
       await request(app) //
         .post(pageUrlForCRD)
         .type('form')
-        .send({ day: '11', month: '2', year: '3000' })
+        .send({ dateType: 'CRD', day: '11', month: '2', year: '3000' })
         .expect(302)
         .expect('Location', `${pageUrlForCRD}#`)
     })

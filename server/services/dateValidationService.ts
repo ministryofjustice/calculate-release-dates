@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 import { GenuineOverrideInputs } from '../@types/journeys'
+import { dateToDayMonthYear } from '../utils/utils'
 
 export default class DateValidationService {
   public createDateTime({
@@ -30,20 +31,19 @@ export default class DateValidationService {
     } else if (genuineOverrideInputs) {
       const genuineOverrideDate = genuineOverrideInputs.datesToSave.find(d => d.type === type)?.date
       if (typeof genuineOverrideDate === 'string') {
-        const [year, month, day] = genuineOverrideDate.split('-').map(Number)
-        storedDate = { day, month, year }
+        storedDate = dateToDayMonthYear(genuineOverrideDate)
       }
     }
     return storedDate
   }
 
   public validateSedLedCrdDates(
-    enteredDateType: string,
     enteredDate: EnteredDate,
     manualDates: ManualJourneySelectedDate[],
     genuineOverrideInputs: GenuineOverrideInputs,
   ): string {
     const dateFormat = 'dd/MM/yyyy'
+    const enteredDateType = enteredDate.dateType
 
     const inputDate = this.createDateTime(enteredDate)
     const findDateByType = (type: string) => this.findDateByType(type, manualDates, genuineOverrideInputs)
@@ -108,7 +108,7 @@ export default class DateValidationService {
     })
     const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
     const { manualEntrySelectedDate } = manualDate
-    const message = this.validateSedLedCrdDates(enteredDate.dateType, enteredDate, manualDates, null)
+    const message = this.validateSedLedCrdDates(enteredDate, manualDates, null)
     return {
       message,
       date: manualEntrySelectedDate,
