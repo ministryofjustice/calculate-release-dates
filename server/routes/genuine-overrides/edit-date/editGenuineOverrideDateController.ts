@@ -8,13 +8,11 @@ import { ReleaseDateForm } from '../../common-schemas/releaseDateSchemas'
 import GenuineOverrideEnterDateViewModel from '../../../models/genuine-override/GenuineOverrideEnterDateViewModel'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import { dateToDayMonthYear } from '../../../utils/utils'
-import DateValidationService from '../../../services/dateValidationService'
 
 export default class EditGenuineOverrideDateController implements Controller {
   constructor(
     private readonly dateTypeConfigurationService: DateTypeConfigurationService,
     private readonly prisonerService: PrisonerService,
-    private readonly dateValidationService: DateValidationService,
   ) {}
 
   GET = async (
