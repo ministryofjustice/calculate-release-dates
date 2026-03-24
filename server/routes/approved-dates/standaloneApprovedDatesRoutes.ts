@@ -9,7 +9,6 @@ import ensureInApprovedDatesJourney from '../../middleware/approvedDatesMiddlewa
 import ReviewCalculatedDatesBeforeAddingApprovedDatesController from './review-calculated-dates/reviewCalculatedDatesBeforeAddingApprovedDatesController'
 import PrisonerService from '../../services/prisonerService'
 import DateTypeConfigurationService from '../../services/dateTypeConfigurationService'
-import DateValidationService from '../../services/dateValidationService'
 import ReviewApprovedDatesController from './review-dates/reviewApprovedDatesController'
 import SelectApprovedDatesController from './select-dates/selectApprovedDatesController'
 import { selectDatesSchema } from '../common-schemas/selectDatesSchema'
@@ -23,7 +22,6 @@ const StandaloneApprovedDatesRoutes = (
   calculateReleaseDatesService: CalculateReleaseDatesService,
   prisonerService: PrisonerService,
   dateTypeConfigurationService: DateTypeConfigurationService,
-  dateValidationService: DateValidationService,
 ) => {
   const router = Router({ mergeParams: true })
   const route = <P extends { [key: string]: string }>({

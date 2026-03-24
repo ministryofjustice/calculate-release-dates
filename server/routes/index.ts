@@ -171,12 +171,7 @@ export default function Index({
     // routes for standalone journey
     router.use(
       '/',
-      StandaloneApprovedDatesRoutes(
-        calculateReleaseDatesService,
-        prisonerService,
-        dateTypeConfigurationService,
-        dateValidationService,
-      ),
+      StandaloneApprovedDatesRoutes(calculateReleaseDatesService, prisonerService, dateTypeConfigurationService),
     )
   }
 
