@@ -1,13 +1,11 @@
 import { Router } from 'express'
 import { z } from 'zod'
 import { Services } from '../services'
-import OtherRoutes from './otherRoutes'
 import CalculationRoutes from './calculationRoutes'
-import ViewRoutes from './viewRoutes'
 import ManualEntryRoutes from './manualEntryRoutes'
-import CompareRoutes, { comparePaths } from './compareRoutes'
+import comparePaths from './comparePaths'
 import ApprovedDatesRoutes from './approvedDatesRoutes'
-import ThingsToDoInterceptRoutes from './thingsToDoInterceptRoutes'
+import ThingsToDoInterceptController from './things-to-do-intercept/thingsToDoInterceptController'
 import GenuineOverridesRoutes from './genuine-overrides/genuineOverridesRoutes'
 import CalculationSummaryController from './calculation-summary/calculationSummaryController'
 import { SchemaFactory, validate } from '../middleware/validationMiddleware'
@@ -28,6 +26,26 @@ import config from '../config'
 import StartController from './start/startController'
 import SupportedSentencesController from './start/supportedSentencesController'
 import AccessibilityController from './start/accessibilityController'
+import ViewJourneyController from './view/ViewJourneyController'
+import ViewCalculationSummaryController from './view/ViewCalculationSummaryController'
+import ViewPrintCalculationSummaryController from './view/ViewPrintCalculationSummaryController'
+import ViewPrintNotificationSlipController from './view/ViewPrintNotificationSlipController'
+import ViewSentencesAndOffencesController from './view/ViewSentencesAndOffencesController'
+import ViewNomisCalculationSummaryController from './view/ViewNomisCalculationSummaryController'
+import OtherController from './other/otherController'
+import CompareIndexController from './compare/CompareIndexController'
+import CompareChooseController from './compare/CompareChooseController'
+import CompareListController from './compare/CompareListController'
+import CompareManualListController from './compare/CompareManualListController'
+import CompareResultController from './compare/CompareResultController'
+import CompareManualResultController from './compare/CompareManualResultController'
+import CompareRunController from './compare/CompareRunController'
+import CompareDetailController from './compare/CompareDetailController'
+import CompareJsonController from './compare/CompareJsonController'
+import CompareManualDetailController from './compare/CompareManualDetailController'
+import CompareManualJsonController from './compare/CompareManualJsonController'
+import CompareManualCalculationController from './compare/CompareManualCalculationController'
+import CompareSubmitManualCalculationController from './compare/CompareSubmitManualCalculationController'
 
 export default function Index({
   prisonerService,
@@ -64,14 +82,20 @@ export default function Index({
   }
   const calculationAccessRoutes = new CalculationRoutes(calculateReleaseDatesService, prisonerService, userInputService)
 
-  const compareAccessRoutes = new CompareRoutes(
-    calculateReleaseDatesService,
-    userPermissionsService,
-    prisonerService,
-    comparisonService,
-  )
+  const compareIndexController = new CompareIndexController(userPermissionsService)
+  const compareChooseController = new CompareChooseController(userPermissionsService, prisonerService)
+  const compareListController = new CompareListController(userPermissionsService, comparisonService)
+  const compareManualListController = new CompareManualListController(userPermissionsService, comparisonService)
+  const compareResultController = new CompareResultController(userPermissionsService, comparisonService)
+  const compareManualResultController = new CompareManualResultController(userPermissionsService, comparisonService)
+  const compareRunController = new CompareRunController(comparisonService)
+  const compareDetailController = new CompareDetailController(comparisonService)
+  const compareJsonController = new CompareJsonController(comparisonService, calculateReleaseDatesService)
+  const compareManualDetailController = new CompareManualDetailController(comparisonService)
+  const compareManualJsonController = new CompareManualJsonController(comparisonService, calculateReleaseDatesService)
+  const compareManualCalculationController = new CompareManualCalculationController()
+  const compareSubmitManualCalculationController = new CompareSubmitManualCalculationController(comparisonService)
 
-  const otherAccessRoutes = new OtherRoutes(prisonerService)
   const startController = new StartController(
     calculateReleaseDatesService,
     prisonerService,
@@ -80,7 +104,34 @@ export default function Index({
   )
   const supportedSentencesController = new SupportedSentencesController()
   const accessibilityController = new AccessibilityController()
-  const viewAccessRoutes = new ViewRoutes(viewReleaseDatesService, calculateReleaseDatesService, prisonerService)
+  const viewJourneyController = new ViewJourneyController(prisonerService, viewReleaseDatesService)
+  const viewCalculationSummaryController = new ViewCalculationSummaryController(
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+  const viewCalculationSummaryOverridesController = new CalculationSummaryOverridesController(
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+  const viewPrintCalculationSummaryController = new ViewPrintCalculationSummaryController(
+    viewReleaseDatesService,
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+  const viewPrintNotificationSlipController = new ViewPrintNotificationSlipController(
+    viewReleaseDatesService,
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+  const viewSentencesAndOffencesController = new ViewSentencesAndOffencesController(
+    viewReleaseDatesService,
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+  const viewNomisCalculationSummaryController = new ViewNomisCalculationSummaryController(
+    calculateReleaseDatesService,
+    prisonerService,
+  )
 
   const manualEntryAccessRoutes = new ManualEntryRoutes(
     calculateReleaseDatesService,
@@ -95,7 +146,6 @@ export default function Index({
     manualEntryService,
     calculateReleaseDatesService,
   )
-  const thingsToDoInterceptRoutes = new ThingsToDoInterceptRoutes(prisonerService, courtCasesReleaseDatesService)
 
   const indexRoutes = () => {
     route({ path: '/', controller: startController })
@@ -181,10 +231,10 @@ export default function Index({
       validate(calculationSummarySchema),
       calculationSummaryController.POST,
     )
-    router.get(
-      '/calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip',
-      viewAccessRoutes.printNotificationSlip,
-    )
+    route({
+      path: '/calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip',
+      controller: viewPrintNotificationSlipController,
+    })
     router.get(
       '/calculation/:nomsId/summary/:calculationRequestId/print',
       calculationAccessRoutes.printCalculationSummary,
@@ -224,51 +274,64 @@ export default function Index({
   }
 
   const viewRoutes = () => {
-    router.get('/view/:nomsId/latest', viewAccessRoutes.startViewJourney)
-    router.get('/view/:nomsId/sentences-and-offences/:calculationRequestId', viewAccessRoutes.sentencesAndOffences)
-    router.get(
-      '/view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId',
-      viewAccessRoutes.nomisCalculationSummary,
-    )
-    router.get('/view/:nomsId/calculation-summary/:calculationRequestId', viewAccessRoutes.calculationSummary)
+    route({
+      path: '/view/:nomsId/latest',
+      controller: viewJourneyController,
+    })
+    route({
+      path: '/view/:nomsId/sentences-and-offences/:calculationRequestId',
+      controller: viewSentencesAndOffencesController,
+    })
+    route({
+      path: '/view/:nomsId/nomis-calculation-summary/:offenderSentCalculationId',
+      controller: viewNomisCalculationSummaryController,
+    })
+    route({
+      path: '/view/:nomsId/calculation-summary/:calculationRequestId',
+      controller: viewCalculationSummaryController,
+    })
     route({
       path: '/view/:nomsId/calculation-summary/:calculationRequestId/overrides',
-      controller: new CalculationSummaryOverridesController(calculateReleaseDatesService, prisonerService),
+      controller: viewCalculationSummaryOverridesController,
     })
-    router.get(
-      '/view/:nomsId/calculation-summary/:calculationRequestId/print',
-      viewAccessRoutes.printCalculationSummary,
-    )
-    router.get(
-      '/view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip',
-      viewAccessRoutes.printNotificationSlip,
-    )
+    route({
+      path: '/view/:nomsId/calculation-summary/:calculationRequestId/print',
+      controller: viewPrintCalculationSummaryController,
+    })
+    route({
+      path: '/view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip',
+      controller: viewPrintNotificationSlipController,
+    })
   }
 
   const otherRoutes = () => {
-    router.get('/prisoner/:nomsId/image', otherAccessRoutes.getPrisonerImage)
+    route({
+      path: '/prisoner/:nomsId/image',
+      controller: new OtherController(prisonerService),
+    })
   }
 
   const compareRoutes = () => {
-    router.get(comparePaths.COMPARE_INDEX, compareAccessRoutes.index)
-    router.get(comparePaths.COMPARE_MANUAL, compareAccessRoutes.manualCalculation)
-    router.post(comparePaths.COMPARE_MANUAL, compareAccessRoutes.submitManualCalculation)
-    router.post(comparePaths.COMPARE_RUN, compareAccessRoutes.run)
-    router.get(comparePaths.COMPARE_CHOOSE, compareAccessRoutes.choose)
-    router.get(comparePaths.COMPARE_RESULT, compareAccessRoutes.result)
-    router.get(comparePaths.COMPARE_DETAIL, compareAccessRoutes.detail)
-    router.post(comparePaths.COMPARE_DETAIL, compareAccessRoutes.submitDetail)
-    router.get(comparePaths.COMPARE_DETAIL_JSON, compareAccessRoutes.viewJson)
-    router.get(comparePaths.COMPARE_LIST, compareAccessRoutes.list)
-    router.get(comparePaths.COMPARE_MANUAL_LIST, compareAccessRoutes.manual_list)
-    router.get(comparePaths.COMPARE_MANUAL_RESULT, compareAccessRoutes.manualResult)
-    router.get(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.manualDetail)
-    router.post(comparePaths.COMPARE_MANUAL_DETAIL, compareAccessRoutes.submitManualDetail)
-    router.get(comparePaths.COMPARE_MANUAL_DETAIL_JSON, compareAccessRoutes.viewManualJson)
+    route({ path: comparePaths.COMPARE_INDEX, controller: compareIndexController })
+    route({ path: comparePaths.COMPARE_MANUAL, controller: compareManualCalculationController })
+    route({ path: comparePaths.COMPARE_RUN, controller: compareRunController })
+    route({ path: comparePaths.COMPARE_CHOOSE, controller: compareChooseController })
+    route({ path: comparePaths.COMPARE_RESULT, controller: compareResultController })
+    route({ path: comparePaths.COMPARE_DETAIL, controller: compareDetailController })
+    route({ path: comparePaths.COMPARE_DETAIL_JSON, controller: compareJsonController })
+    route({ path: comparePaths.COMPARE_LIST, controller: compareListController })
+    route({ path: comparePaths.COMPARE_MANUAL_LIST, controller: compareManualListController })
+    route({ path: comparePaths.COMPARE_MANUAL_RESULT, controller: compareManualResultController })
+    route({ path: comparePaths.COMPARE_MANUAL_DETAIL, controller: compareManualDetailController })
+    route({ path: comparePaths.COMPARE_MANUAL_DETAIL_JSON, controller: compareManualJsonController })
+    route({ path: comparePaths.COMPARE_MANUAL, controller: compareSubmitManualCalculationController })
   }
 
   const thingsToDoInterceptRouter = () => {
-    router.get('/calculation/:nomsId/things-to-do-before-calculation', thingsToDoInterceptRoutes.thingsToDoIntercept)
+    route({
+      path: '/calculation/:nomsId/things-to-do-before-calculation',
+      controller: new ThingsToDoInterceptController(prisonerService, courtCasesReleaseDatesService),
+    })
   }
 
   const genuineOverridesRoutes = () => {

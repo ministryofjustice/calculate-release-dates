@@ -1,15 +1,15 @@
 import request from 'supertest'
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from './testutils/appSetup'
-import PrisonerService from '../services/prisonerService'
-import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
-import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
-import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
-import AuthorisedRoles from '../enumerations/authorisedRoles'
+import { appWithAllRoutes, user } from '../testutils/appSetup'
+import PrisonerService from '../../services/prisonerService'
+import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
+import { CcrdServiceDefinitions } from '../../@types/courtCasesReleaseDatesApi/types'
+import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
+import AuthorisedRoles from '../../enumerations/authorisedRoles'
 
-jest.mock('../services/prisonerService')
-jest.mock('../services/courtCasesReleaseDatesService')
+jest.mock('../../services/prisonerService')
+jest.mock('../../services/courtCasesReleaseDatesService')
 
 const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(
@@ -120,38 +120,41 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('Intercept when there are things to do', () => {
-  it('GET /calculation/:nomsId/things-to-do-before-calculation should render intercept page', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyAdjustmentsThingsToDo)
+describe('ThingsToDoInterceptController', () => {
+  describe('Intercept when there are things to do', () => {
+    it('GET /calculation/:nomsId/things-to-do-before-calculation should render intercept page', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyAdjustmentsThingsToDo)
 
-    return request(app)
-      .get('/calculation/A1234AA/things-to-do-before-calculation')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const interuptionCard = $('.moj-interruption-card')
-        expect(interuptionCard.find('ul li:eq(0)').text()).toStrictEqual(
-          'This service has identified periods of remand that may be relevant. You must review this remand periods before calculating a release date.',
-        )
-        expect(interuptionCard.find('ul li:eq(1)').text()).toStrictEqual(
-          'Updates have been made to ADA (Additional days awarded) information, which need to be approved.',
-        )
-        const button = interuptionCard.find('.govuk-button')
-        expect(button.text().trim()).toStrictEqual('Review remand')
-        expect(button.attr('href')).toStrictEqual(
-          'https://identify-remand-periods-dev.hmpps.service.justice.gov.uk/prisoner/A1234AA',
-        )
-      })
-  })
-  it('GET /calculation/:nomsId/things-to-do-before-calculation should redirect if nothing to do', () => {
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+      return request(app)
+        .get('/calculation/A1234AA/things-to-do-before-calculation')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const interuptionCard = $('.moj-interruption-card')
+          expect(interuptionCard.find('ul li:eq(0)').text()).toStrictEqual(
+            'This service has identified periods of remand that may be relevant. You must review this remand periods before calculating a release date.',
+          )
+          expect(interuptionCard.find('ul li:eq(1)').text()).toStrictEqual(
+            'Updates have been made to ADA (Additional days awarded) information, which need to be approved.',
+          )
+          const button = interuptionCard.find('.govuk-button')
+          expect(button.text().trim()).toStrictEqual('Review remand')
+          expect(button.attr('href')).toStrictEqual(
+            'https://identify-remand-periods-dev.hmpps.service.justice.gov.uk/prisoner/A1234AA',
+          )
+        })
+    })
 
-    return request(app)
-      .get('/calculation/A1234AA/things-to-do-before-calculation')
-      .expect(302)
-      .expect('Location', '/?prisonId=A1234AA')
+    it('GET /calculation/:nomsId/things-to-do-before-calculation should redirect if nothing to do', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/things-to-do-before-calculation')
+        .expect(302)
+        .expect('Location', '/?prisonId=A1234AA')
+    })
   })
 })
