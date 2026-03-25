@@ -25,7 +25,7 @@ function createMockManualDate(dateType: string, dateStr: string): ManualJourneyS
   } as ManualJourneySelectedDate
 }
 
-describe('DateValidationService - validateAgainstOtherDates', () => {
+describe('DateValidationService - validateDate', () => {
   let dateValidationService: DateValidationService
 
   beforeEach(() => {
@@ -45,195 +45,295 @@ describe('DateValidationService - validateAgainstOtherDates', () => {
     { classes: '', name: 'year', value: '' },
   ]
 
-  it('should return success when LED is on or before SED', () => {
-    const sedDate = createMockManualDate('SED', '2023-12-31')
-    const ledDate = createMockManualDate('LED', null)
-    const manualDates: ManualJourneySelectedDate[] = [sedDate, ledDate]
-    const enteredDate = createMockDate('30', '12', '2023', 'LED')
+  describe('DateValidationService - validateAgainstOtherDates', () => {
+    it('should return success when LED is on or before SED', () => {
+      const sedDate = createMockManualDate('SED', '2023-12-31')
+      const ledDate = createMockManualDate('LED', null)
+      const manualDates: ManualJourneySelectedDate[] = [sedDate, ledDate]
+      const enteredDate = createMockDate('30', '12', '2023', 'LED')
 
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
 
-    expect(result.success).toBe(true)
-    expect(result.message).toBe('')
+      expect(result.success).toBe(true)
+      expect(result.message).toBe('')
+    })
+
+    it('should return error when LED is after SED', () => {
+      const ledDate = createMockManualDate('LED', null)
+      const sedDate = createMockManualDate('SED', '2023-12-30')
+      const manualDates: ManualJourneySelectedDate[] = [ledDate, sedDate]
+      const enteredDate = createMockDate('31', '12', '2023', 'LED')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The LED must be on or before the SED, which is 30/12/2023')
+    })
+
+    it('should return error when SED is after LED', () => {
+      const sedDate = createMockManualDate('SED', null)
+      const ledDate = createMockManualDate('LED', '2023-12-31')
+      const manualDates: ManualJourneySelectedDate[] = [ledDate, sedDate]
+      const enteredDate = createMockDate('30', '12', '2023', 'SED')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The SED must be on or after the LED, which is 31/12/2023')
+    })
+
+    it('should return success when SED is on or after CRD', () => {
+      const crdDate = createMockManualDate('CRD', '2023-12-01')
+      const sedDate = createMockManualDate('SED', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
+      const enteredDate = createMockDate('02', '12', '2023', 'SED')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+      expect(result.message).toBe('')
+    })
+
+    it('should return success when LED is on or after CRD', () => {
+      const crdDate = createMockManualDate('CRD', '2023-12-01')
+      const ledDate = createMockManualDate('LED', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
+      const enteredDate = createMockDate('02', '12', '2023', 'LED')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+      expect(result.message).toBe('')
+    })
+
+    it('should return error when SED is before CRD', () => {
+      const crdDate = createMockManualDate('CRD', '2023-12-02')
+      const sedDate = createMockManualDate('SED', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
+      const enteredDate = createMockDate('01', '12', '2023', 'SED')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The SED must be on or after the CRD, which is 02/12/2023')
+    })
+
+    it('should return error when LED is before CRD', () => {
+      const crdDate = createMockManualDate('CRD', '2023-12-02')
+      const ledDate = createMockManualDate('LED', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
+      const enteredDate = createMockDate('01', '12', '2023', 'LED')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The LED must be on or after the CRD, which is 02/12/2023')
+    })
+
+    it('should return success when CRD is on or before LED', () => {
+      const ledDate = createMockManualDate('LED', '2023-12-30')
+      const crdDate = createMockManualDate('CRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
+      const enteredDate = createMockDate('30', '12', '2023', 'CRD')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+      expect(result.message).toBe('')
+    })
+
+    it('should return success when CRD is on or before SED', () => {
+      const sedDate = createMockManualDate('SED', '2023-12-30')
+      const crdDate = createMockManualDate('CRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
+      const enteredDate = createMockDate('30', '12', '2023', 'CRD')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+      expect(result.message).toBe('')
+    })
+
+    it('should return error when CRD is after LED', () => {
+      const ledDate = createMockManualDate('LED', '2023-12-30')
+      const crdDate = createMockManualDate('CRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
+      const enteredDate = createMockDate('31', '12', '2023', 'CRD')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The CRD must be on or before the LED, which is 30/12/2023')
+    })
+
+    it('should return error when CRD is after SED', () => {
+      const sedDate = createMockManualDate('SED', '2023-12-30')
+      const crdDate = createMockManualDate('CRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
+      const enteredDate = createMockDate('31', '12', '2023', 'CRD')
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The CRD must be on or before the SED, which is 30/12/2023')
+    })
+
+    it('should return success when enteredDate is exactly on the boundary date', () => {
+      const sedDate = createMockManualDate('SED', '2023-12-31')
+      const ledDate = createMockManualDate('LED', null)
+      const manualDates: ManualJourneySelectedDate[] = [sedDate, ledDate]
+      const enteredDate = createMockDate('31', '12', '2023', 'LED') // Exactly on SED
+
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+      expect(result.message).toBe('')
+    })
   })
 
-  it('should return error when LED is after SED', () => {
-    const ledDate = createMockManualDate('LED', null)
-    const sedDate = createMockManualDate('SED', '2023-12-30')
-    const manualDates: ManualJourneySelectedDate[] = [ledDate, sedDate]
-    const enteredDate = createMockDate('31', '12', '2023', 'LED')
+  describe('DateValidationService - validateHdcadHdcedCrdDate', () => {
+    it('should return error when HDCAD is before HDCED', () => {
+      const hdcedDate = createMockManualDate('HDCED', '2023-12-01')
+      const hdcadDate = createMockManualDate('HDCAD', null)
+      const manualDates: ManualJourneySelectedDate[] = [hdcedDate, hdcadDate]
+      const enteredDate = createMockDate('30', '11', '2023', 'HDCAD')
 
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
 
-    expect(result.success).toBe(false)
-    expect(result.message).toBe('The LED must be on or before the SED, which is 30/12/2023')
-  })
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The HDCAD must be on or after the HDCED, which is 01/12/2023')
+    })
 
-  it('should return error when SED is after LED', () => {
-    const sedDate = createMockManualDate('SED', null)
-    const ledDate = createMockManualDate('LED', '2023-12-31')
-    const manualDates: ManualJourneySelectedDate[] = [ledDate, sedDate]
-    const enteredDate = createMockDate('30', '12', '2023', 'SED')
+    it('should return error when HDCED is after HDCAD', () => {
+      const hdcadDate = createMockManualDate('HDCAD', '2023-11-30')
+      const hdcedDate = createMockManualDate('HDCED', null)
+      const manualDates: ManualJourneySelectedDate[] = [hdcadDate, hdcedDate]
+      const enteredDate = createMockDate('1', '12', '2023', 'HDCED')
 
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
 
-    expect(result.success).toBe(false)
-    expect(result.message).toBe('The SED must be on or after the LED, which is 31/12/2023')
-  })
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The HDCED must be on or before the HDCAD, which is 30/11/2023')
+    })
 
-  it('should return success when SED is on or after CRD', () => {
-    const crdDate = createMockManualDate('CRD', '2023-12-01')
-    const sedDate = createMockManualDate('SED', null)
-    const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
-    const enteredDate = createMockDate('02', '12', '2023', 'SED')
+    it('should return error when CRD is before HDCED', () => {
+      const hdcedDate = createMockManualDate('HDCED', '2023-12-01')
+      const crdDate = createMockManualDate('CRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [hdcedDate, crdDate]
+      const enteredDate = createMockDate('30', '11', '2023', 'CRD')
 
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
 
-    expect(result.success).toBe(true)
-    expect(result.message).toBe('')
-  })
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The CRD must be after the HDCED, which is 01/12/2023')
+    })
 
-  it('should return success when LED is on or after CRD', () => {
-    const crdDate = createMockManualDate('CRD', '2023-12-01')
-    const ledDate = createMockManualDate('LED', null)
-    const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
-    const enteredDate = createMockDate('02', '12', '2023', 'LED')
+    it('should return error when CRD is before HDCAD', () => {
+      const hdcadDate = createMockManualDate('HDCAD', '2023-12-01')
+      const crdDate = createMockManualDate('CRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [hdcadDate, crdDate]
+      const enteredDate = createMockDate('30', '11', '2023', 'CRD')
 
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
 
-    expect(result.success).toBe(true)
-    expect(result.message).toBe('')
-  })
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The CRD must be after the HDCAD, which is 01/12/2023')
+    })
 
-  it('should return error when SED is before CRD', () => {
-    const crdDate = createMockManualDate('CRD', '2023-12-02')
-    const sedDate = createMockManualDate('SED', null)
-    const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
-    const enteredDate = createMockDate('01', '12', '2023', 'SED')
+    it('should return error when HDCED is after CRD', () => {
+      const crdDate = createMockManualDate('CRD', '2023-12-01')
+      const hdcedDate = createMockManualDate('HDCED', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, hdcedDate]
+      const enteredDate = createMockDate('02', '12', '2023', 'HDCED')
 
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
 
-    expect(result.success).toBe(false)
-    expect(result.message).toBe('The SED must be on or after the CRD, which is 02/12/2023')
-  })
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The HDCED must be before the CRD, which is 01/12/2023')
+    })
 
-  it('should return error when LED is before CRD', () => {
-    const crdDate = createMockManualDate('CRD', '2023-12-02')
-    const ledDate = createMockManualDate('LED', null)
-    const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
-    const enteredDate = createMockDate('01', '12', '2023', 'LED')
+    it('should return error when HDCAD is after CRD', () => {
+      const crdDate = createMockManualDate('CRD', '2023-12-01')
+      const hdcadDate = createMockManualDate('HDCAD', null)
+      const manualDates: ManualJourneySelectedDate[] = [crdDate, hdcadDate]
+      const enteredDate = createMockDate('02', '12', '2023', 'HDCAD')
 
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
+      const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
 
-    expect(result.success).toBe(false)
-    expect(result.message).toBe('The LED must be on or after the CRD, which is 02/12/2023')
-  })
-
-  it('should return success when CRD is on or before LED', () => {
-    const ledDate = createMockManualDate('LED', '2023-12-30')
-    const crdDate = createMockManualDate('CRD', null)
-    const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
-    const enteredDate = createMockDate('30', '12', '2023', 'CRD')
-
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
-
-    expect(result.success).toBe(true)
-    expect(result.message).toBe('')
-  })
-
-  it('should return success when CRD is on or before SED', () => {
-    const sedDate = createMockManualDate('SED', '2023-12-30')
-    const crdDate = createMockManualDate('CRD', null)
-    const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
-    const enteredDate = createMockDate('30', '12', '2023', 'CRD')
-
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
-
-    expect(result.success).toBe(true)
-    expect(result.message).toBe('')
-  })
-
-  it('should return error when CRD is after LED', () => {
-    const ledDate = createMockManualDate('LED', '2023-12-30')
-    const crdDate = createMockManualDate('CRD', null)
-    const manualDates: ManualJourneySelectedDate[] = [crdDate, ledDate]
-    const enteredDate = createMockDate('31', '12', '2023', 'CRD')
-
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
-
-    expect(result.success).toBe(false)
-    expect(result.message).toBe('The CRD must be on or before the LED, which is 30/12/2023')
-  })
-
-  it('should return error when CRD is after SED', () => {
-    const sedDate = createMockManualDate('SED', '2023-12-30')
-    const crdDate = createMockManualDate('CRD', null)
-    const manualDates: ManualJourneySelectedDate[] = [crdDate, sedDate]
-    const enteredDate = createMockDate('31', '12', '2023', 'CRD')
-
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
-
-    expect(result.success).toBe(false)
-    expect(result.message).toBe('The CRD must be on or before the SED, which is 30/12/2023')
-  })
-
-  it('should return success when enteredDate is exactly on the boundary date', () => {
-    const sedDate = createMockManualDate('SED', '2023-12-31')
-    const ledDate = createMockManualDate('LED', null)
-    const manualDates: ManualJourneySelectedDate[] = [sedDate, ledDate]
-    const enteredDate = createMockDate('31', '12', '2023', 'LED') // Exactly on SED
-
-    const result: StorageResponseModel = dateValidationService.validateAgainstOtherDates(
-      manualDates,
-      enteredDate,
-      createMockDateInputItems(),
-    )
-
-    expect(result.success).toBe(true)
-    expect(result.message).toBe('')
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The HDCAD must be before the CRD, which is 01/12/2023')
+    })
   })
 })

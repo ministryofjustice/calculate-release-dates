@@ -147,7 +147,7 @@ describe('AddGenuineOverrideDateController', () => {
       expect(genuineOverrideInputs).toStrictEqual({ mode: 'STANDARD', datesToSave: [originalHdced] })
     })
 
-    it('should return to input page without saving the date if there were additional validation errors', async () => {
+    it('should return to input page without saving the date when CRD is after SED', async () => {
       const sedDate = { type: 'SED', date: '2010-10-11' }
       genuineOverrideInputs.datesToSave = [sedDate]
 
@@ -155,6 +155,18 @@ describe('AddGenuineOverrideDateController', () => {
         .post(pageUrlForCRD)
         .type('form')
         .send({ dateType: 'CRD', day: '11', month: '2', year: '3000' })
+        .expect(302)
+        .expect('Location', `${pageUrlForCRD}#`)
+    })
+
+    it('should return to input page without saving the date when CRD is before HDCAD', async () => {
+      const hdcadDate = { type: 'HDCAD', date: '2010-10-11' }
+      genuineOverrideInputs.datesToSave = [hdcadDate]
+
+      await request(app) //
+        .post(pageUrlForCRD)
+        .type('form')
+        .send({ dateType: 'CRD', day: '11', month: '2', year: '2000' })
         .expect(302)
         .expect('Location', `${pageUrlForCRD}#`)
     })
