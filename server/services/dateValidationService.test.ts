@@ -26,11 +26,7 @@ function createMockManualDate(dateType: string, dateStr: string): ManualJourneyS
 }
 
 describe('DateValidationService - validateDate', () => {
-  let dateValidationService: DateValidationService
-
-  beforeEach(() => {
-    dateValidationService = new DateValidationService()
-  })
+  const dateValidationService: DateValidationService = new DateValidationService()
 
   const createMockDate = (day: string, month: string, year: string, dateType: string): EnteredDate => ({
     day,
@@ -45,7 +41,7 @@ describe('DateValidationService - validateDate', () => {
     { classes: '', name: 'year', value: '' },
   ]
 
-  describe('DateValidationService - validateAgainstOtherDates', () => {
+  describe('DateValidationService - validateSedLedCrdDates', () => {
     it('should return success when LED is on or before SED', () => {
       const sedDate = createMockManualDate('SED', '2023-12-31')
       const ledDate = createMockManualDate('LED', null)
