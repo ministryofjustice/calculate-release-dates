@@ -5,6 +5,8 @@ import { EnteredDate } from '../../services/dateValidationService'
 import { ManualEntrySelectedDate } from '../../types/ManualJourney'
 
 export default class ManualEntryDateEntryViewModel extends PrisonerContextViewModel {
+  public errorList: [{ text: string; href: string }]
+
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     public backLink: string,
@@ -15,5 +17,16 @@ export default class ManualEntryDateEntryViewModel extends PrisonerContextViewMo
     public enteredDate?: EnteredDate,
   ) {
     super(prisonerDetail)
+  }
+
+  setErrorMessage(error: string, fieldPrefix: string) {
+    if (error) {
+      this.errorList = [
+        {
+          text: error,
+          href: `#${fieldPrefix}-day`,
+        },
+      ]
+    }
   }
 }

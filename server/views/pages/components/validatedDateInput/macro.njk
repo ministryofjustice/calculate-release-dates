@@ -10,11 +10,11 @@
   {% set month = opts.month %}
   {% set year = opts.year %}
 
-  {% if opts.validationErrors %}
+{% if opts.validationErrors %}
     {% set dayError = opts.validationErrors['day'] if opts.validationErrors['day'] else '' %}
     {% set monthError = opts.validationErrors['month'] if opts.validationErrors['month'] else '' %}
-    {% set yearError = opts.validationErrors['year']  if opts.validationErrors['year'] else '' %}
-  {% endif %}
+    {% set yearError = opts.validationErrors['year'] if opts.validationErrors['year'] else '' %}
+{% endif %}
 
   {% macro joinErrors(errors) %}
     {% if errors %}{% for error in errors %}{% if error and error.length > 0 %}{{ error }}{% endif %}{% endfor %}{% endif %}

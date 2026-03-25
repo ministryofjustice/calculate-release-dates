@@ -24,10 +24,6 @@ export default class EditGenuineOverrideDateController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId, dateType } = req.params
-    const { caseloads, userRoles, username } = res.locals.user
-
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
-
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
     // if the date type hasn't been saved before go back to review dates to allow choosing a date or to add it back if it was removed
@@ -41,6 +37,32 @@ export default class EditGenuineOverrideDateController implements Controller {
     const month = res.locals?.formResponses?.month ?? parsedDate.month
     const year = res.locals?.formResponses?.year ?? parsedDate.year
 
+    return this.renderEnterDateView(res, nomsId, calculationRequestId, dateType, day, month, year)
+  }
+
+  POST = async (
+    req: Request<{ nomsId: string; calculationRequestId: string; dateType: string }, unknown, ReleaseDateForm>,
+    res: Response,
+  ): Promise<void> => {
+    const { nomsId, calculationRequestId, dateType } = req.params
+    const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
+    const { day, month, year } = req.body
+    const dateBeingSet = genuineOverrideInputs.datesToSave.find(it => it.type === dateType)
+    dateBeingSet.date = dayjs(`${year}-${month}-${day}`).format('YYYY-MM-DD')
+    return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
+  }
+
+  private async renderEnterDateView(
+    res: Response,
+    nomsId: string,
+    calculationRequestId: string,
+    dateType: string,
+    day: number,
+    month: number,
+    year: number,
+  ): Promise<void> {
+    const { caseloads, userRoles, username } = res.locals.user
+    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const description = await this.dateTypeConfigurationService
       .dateTypeToDescriptionMapping(username)
       .then(descriptions => descriptions[dateType])
@@ -57,17 +79,5 @@ export default class EditGenuineOverrideDateController implements Controller {
         GenuineOverrideUrls.editDate(nomsId, calculationRequestId, dateType),
       ),
     )
-  }
-
-  POST = async (
-    req: Request<{ nomsId: string; calculationRequestId: string; dateType: string }, unknown, ReleaseDateForm>,
-    res: Response,
-  ): Promise<void> => {
-    const { nomsId, calculationRequestId, dateType } = req.params
-    const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
-    const { day, month, year } = req.body
-    const dateBeingSet = genuineOverrideInputs.datesToSave.find(it => it.type === dateType)
-    dateBeingSet.date = dayjs(`${year}-${month}-${day}`).format('YYYY-MM-DD')
-    return res.redirect(GenuineOverrideUrls.reviewDatesForOverride(nomsId, calculationRequestId))
   }
 }

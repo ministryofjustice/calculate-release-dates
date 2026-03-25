@@ -327,6 +327,11 @@ export default class ManualEntryService {
       return notWithinOneHundredYears
     }
 
+    const invalidDate = this.dateValidationService.validateAgainstOtherDates(manualDates, enteredDate, allItems)
+    if (invalidDate && !invalidDate.success) {
+      return invalidDate
+    }
+
     const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
     const manualEntry = manualDate.manualEntrySelectedDate
     manualDate.manualEntrySelectedDate.date = {

@@ -75,13 +75,13 @@ const StandaloneApprovedDatesRoutes = (
   route({
     path: '/approved-dates/:nomsId/:dateType/add/:journeyId',
     controller: new AddApprovedDateController(dateTypeConfigurationService, prisonerService),
-    validateToSchema: releaseDateSchema,
+    validateToSchema: releaseDateSchema(),
   })
 
   route({
     path: '/approved-dates/:nomsId/:dateType/edit/:journeyId',
     controller: new EditApprovedDateController(dateTypeConfigurationService, prisonerService),
-    validateToSchema: releaseDateSchema,
+    validateToSchema: releaseDateSchema(),
   })
 
   route({

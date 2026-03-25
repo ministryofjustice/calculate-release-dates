@@ -190,6 +190,7 @@ describe('releaseDateSchema', () => {
   })
 
   const doValidate = async (form: Form) => {
-    return releaseDateSchema.safeParse(form)
+    const schema = await releaseDateSchema(null)(null)
+    return schema.safeParse(form)
   }
 })
