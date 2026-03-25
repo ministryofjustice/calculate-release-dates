@@ -80,7 +80,7 @@ export const releaseDateSchema = (dateValidationService?: DateValidationService)
             null,
             genuineOverrideInputs,
           )
-          if (messageSedLedCrdDate) {
+          if (messageSedLedCrdDate !== '') {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: messageSedLedCrdDate,
@@ -104,7 +104,7 @@ export const releaseDateSchema = (dateValidationService?: DateValidationService)
             null,
             genuineOverrideInputs,
           )
-          if (messageHdcedHdcadCrdDate) {
+          if (messageHdcedHdcadCrdDate !== '') {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: messageHdcedHdcadCrdDate,
