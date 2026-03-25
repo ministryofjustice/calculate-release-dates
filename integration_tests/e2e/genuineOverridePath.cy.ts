@@ -164,16 +164,17 @@ context('End to end user journeys for a user with genuine overrides access', () 
       .continue('continue-button')
       .click()
 
+    const futureHdcadDate = dayjs().add(4, 'day')
     Page.verifyOnPage(GenuineOverrideEnterDatePage) //
       .checkIsFor('HDCAD (Home detention curfew approved date)')
-      .enterDate('01', '02', '2025')
+      .enterDate(futureHdcadDate.format('DD'), futureHdcadDate.format('MM'), futureHdcadDate.format('YYYY'))
       .clickContinue()
 
     Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
       .expectDates(['LED', 'SED', 'CRD', 'HDCED', 'HDCAD'])
       .expectDate('CRD', defaultCrd.format('DD MMMM YYYY'))
       .expectDate('HDCED', defaultHdced.format('DD MMMM YYYY'))
-      .expectDate('HDCAD', '01 February 2025')
+      .expectDate('HDCAD', futureHdcadDate.format('DD MMMM YYYY'))
       .expectDate('LED', '05 November 2018')
       .expectDate('SED', '05 November 2018')
       .continueButton()
@@ -194,7 +195,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
           { dateType: 'SED', date: '2018-11-05' },
           { dateType: 'CRD', date: defaultCrd.format('YYYY-MM-DD') },
           { dateType: 'HDCED', date: defaultHdced.format('YYYY-MM-DD') },
-          { dateType: 'HDCAD', date: '2025-02-01' },
+          { dateType: 'HDCAD', date: futureHdcadDate.format('YYYY-MM-DD') },
         ],
         reason: 'TERRORISM',
       },
