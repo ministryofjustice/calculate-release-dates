@@ -37,6 +37,69 @@ export default class DateValidationService {
     return storedDate
   }
 
+  public validateHdcadHdcedCrdDate(
+    enteredDate: EnteredDate,
+    manualDates: ManualJourneySelectedDate[],
+    genuineOverrideInputs: GenuineOverrideInputs,
+  ): string {
+    const dateFormat = 'dd/MM/yyyy'
+    const enteredDateType = enteredDate.dateType
+
+    const inputDate = this.createDateTime(enteredDate)
+    const findDateByType = (type: string) => this.findDateByType(type, manualDates, genuineOverrideInputs)
+
+    const message = ''
+
+    if (enteredDateType === 'HDCED') {
+      const hdcadDate = findDateByType('HDCAD')
+      const crdDate = findDateByType('CRD')
+      if (hdcadDate) {
+        const hdcadDateTime = this.createDateTime(hdcadDate)
+        if (hdcadDateTime < inputDate) {
+          return `The HDCED must be on or before the HDCAD, which is ${hdcadDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (crdDate) {
+        const crdDateTime = this.createDateTime(crdDate)
+        if (inputDate >= crdDateTime) {
+          return `The HDCED must be before the CRD, which is ${crdDateTime.toFormat(dateFormat)}`
+        }
+      }
+    } else if (enteredDateType === 'HDCAD') {
+      const hdcedDate = findDateByType('HDCED')
+      const crdDate = findDateByType('CRD')
+      if (hdcedDate) {
+        const hdcedDateTime = this.createDateTime(hdcedDate)
+        if (inputDate < hdcedDateTime) {
+          return `The HDCAD must be on or after the HDCED, which is ${hdcedDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (crdDate) {
+        const crdDateTime = this.createDateTime(crdDate)
+        if (inputDate >= crdDateTime) {
+          return `The HDCAD must be before the CRD, which is ${crdDateTime.toFormat(dateFormat)}`
+        }
+      }
+    } else if (enteredDateType === 'CRD') {
+      const hdcadDate = findDateByType('HDCAD')
+      const hdcedDate = findDateByType('HDCED')
+      if (hdcedDate) {
+        const hdcedDateTime = this.createDateTime(hdcedDate)
+        if (inputDate <= hdcedDateTime) {
+          return `The CRD must be after the HDCED, which is ${hdcedDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (hdcadDate) {
+        const hdcadDateTime = this.createDateTime(hdcadDate)
+        if (inputDate <= hdcadDateTime) {
+          return `The CRD must be after the HDCAD, which is ${hdcadDateTime.toFormat(dateFormat)}`
+        }
+      }
+    }
+
+    return message
+  }
+
   public validateSedLedCrdDates(
     enteredDate: EnteredDate,
     manualDates: ManualJourneySelectedDate[],
@@ -108,12 +171,25 @@ export default class DateValidationService {
     })
     const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
     const { manualEntrySelectedDate } = manualDate
-    const message = this.validateSedLedCrdDates(enteredDate, manualDates, null)
+
+    const messageForSedLedCrdDate = this.validateSedLedCrdDates(enteredDate, manualDates, null)
+    if (messageForSedLedCrdDate) {
+      return {
+        message: messageForSedLedCrdDate,
+        date: manualEntrySelectedDate,
+        enteredDate,
+        success: false,
+        items,
+        isNone: false,
+      } as StorageResponseModel
+    }
+
+    const messageHdcedHdcadCrdDate = this.validateHdcadHdcedCrdDate(enteredDate, manualDates, null)
     return {
-      message,
+      message: messageHdcedHdcadCrdDate,
       date: manualEntrySelectedDate,
       enteredDate,
-      success: message === '',
+      success: messageHdcedHdcadCrdDate === '',
       items,
       isNone: false,
     } as StorageResponseModel
