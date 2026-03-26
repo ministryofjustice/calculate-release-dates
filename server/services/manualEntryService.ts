@@ -117,7 +117,7 @@ export default class ManualEntryService {
     }
 
     if (insufficientDatesSelected) {
-      const mergedConfig = { ...config, ...errorMessage }
+      const mergedConfig = req.method === 'POST' ? { ...config, ...errorMessage } : { ...config }
       this.enrichConfiguration(mergedConfig, req, nomsId, existingDateTypes)
       return { error: true, config: mergedConfig }
     }

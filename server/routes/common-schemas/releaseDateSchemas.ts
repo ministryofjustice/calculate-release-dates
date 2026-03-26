@@ -74,11 +74,40 @@ export const releaseDateSchema = (dateValidationService?: DateValidationService)
         if (day && month && year) {
           const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, req.params.nomsId)
           const enteredDate = { day, month, year, dateType: req.params.dateType }
-          const message = dateValidationService.validateSedLedCrdDates(enteredDate, null, genuineOverrideInputs)
-          if (message !== '') {
+
+          const messageSedLedCrdDate = dateValidationService.validateSedLedCrdDates(
+            enteredDate,
+            null,
+            genuineOverrideInputs,
+          )
+          if (messageSedLedCrdDate !== '') {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
-              message,
+              message: messageSedLedCrdDate,
+              path: ['day'],
+            })
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: '',
+              path: ['month'],
+            })
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: '',
+              path: ['year'],
+            })
+            return
+          }
+
+          const messageHdcedHdcadCrdDate = dateValidationService.validateHdcadHdcedCrdDate(
+            enteredDate,
+            null,
+            genuineOverrideInputs,
+          )
+          if (messageHdcedHdcadCrdDate !== '') {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: messageHdcedHdcadCrdDate,
               path: ['day'],
             })
             ctx.addIssue({

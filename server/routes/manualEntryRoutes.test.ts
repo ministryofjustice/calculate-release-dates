@@ -369,6 +369,43 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       })
   })
 
+  it('GET it shouldnt load with error message', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry/select-dates')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).not.toContain('Select at least one release date.')
+      })
+  })
+
+  it('POST without date selected should throw error message', () => {
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
+    return request(app)
+      .post('/calculation/A1234AA/manual-entry/select-dates')
+      .type('form')
+      .send({})
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Select at least one release date.')
+      })
+  })
+
   it('GET if there are determinate sentences then should have correct data', () => {
     manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
