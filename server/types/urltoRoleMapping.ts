@@ -1,6 +1,6 @@
 import { match } from 'path-to-regexp'
 import AuthorisedRoles from '../enumerations/authorisedRoles'
-import { comparePaths } from '../routes/compareRoutes'
+import comparePaths from '../routes/comparePaths'
 
 function getMatchPath(path: string) {
   return match(path, { decode: decodeURIComponent })

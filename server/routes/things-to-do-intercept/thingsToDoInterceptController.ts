@@ -1,17 +1,16 @@
-import { RequestHandler } from 'express'
-import PrisonerService from '../services/prisonerService'
-import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
-import ThingsToDoInterceptViewModel from '../models/ThingsToDoInterceptViewModel'
+import { Request, Response } from 'express'
+import { Controller } from '../controller'
+import PrisonerService from '../../services/prisonerService'
+import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
+import ThingsToDoInterceptViewModel from '../../models/ThingsToDoInterceptViewModel'
 
-export default class ThingsToDoInterceptRoutes {
+export default class ThingsToDoInterceptController implements Controller {
   constructor(
     private readonly prisonerService: PrisonerService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
-  ) {
-    // intentionally left blank
-  }
+  ) {}
 
-  public thingsToDoIntercept: RequestHandler = async (req, res): Promise<void> => {
+  GET = async (req: Request, res: Response): Promise<void> => {
     const { token, caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
 
@@ -24,13 +23,12 @@ export default class ThingsToDoInterceptRoutes {
       .flatMap(it => it.things)
 
     if (!thingsToDo.length) {
-      return res.redirect(`/?prisonId=${nomsId}`)
+      res.redirect(`/?prisonId=${nomsId}`)
+      return
     }
+
     const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
 
-    return res.render(
-      'pages/calculation/thingsToDoIntercept',
-      new ThingsToDoInterceptViewModel(prisonerDetail, thingsToDo),
-    )
+    res.render('pages/calculation/thingsToDoIntercept', new ThingsToDoInterceptViewModel(prisonerDetail, thingsToDo))
   }
 }
