@@ -225,6 +225,9 @@ describe('CalculationReasonController', () => {
           expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
             '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/reason',
           )
+          expect($('[data-qa=mini-profile-person-profile-link]').first().attr('href')).toStrictEqual(
+            'http://localhost:9084/prisoner/A1234AA',
+          )
           expectMiniProfile(res.text, expectedMiniProfile)
           expect(currentSession.isAddDatesFlow[prisonerNumber]).toStrictEqual(false)
         })

@@ -508,7 +508,7 @@ describe('Calculation routes tests', () => {
 
         expect(prisonerProfileLink.length).toStrictEqual(1)
         expect(prisonerProfileLink.text()).toStrictEqual('Prisoner profile')
-        expect(prisonerProfileLink.attr('href')).toStrictEqual('http://localhost:3000/dps/prisoner/A1234AA')
+        expect(prisonerProfileLink.attr('href')).toStrictEqual('http://localhost:9084/prisoner/A1234AA')
 
         expect(res.text).toContain('Calculation complete')
         expect(res.text).toContain('The calculation has been saved in NOMIS.')

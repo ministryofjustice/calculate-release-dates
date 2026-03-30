@@ -116,6 +116,9 @@ export default {
       },
       agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000))),
     },
+    prisonerProfile: {
+      url: get('PRISONER_PROFILE_API_URL', 'http://localhost:9084', requiredInProduction),
+    },
     digitalPrisonServices: {
       ui_url: get('DIGITAL_PRISON_SERVICES_URL', 'http://localhost:3000/dps', requiredInProduction),
     },
