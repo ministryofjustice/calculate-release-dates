@@ -422,4 +422,378 @@ describe('DateValidationService - validateDate', () => {
       expect(result.success).toBe(true)
     })
   })
+
+  describe('DateValidationService - validateEtdMtdLtdDprrdDate', () => {
+    it('should return error when ETD is not before MTD', () => {
+      const mtdDate = createMockManualDate('MTD', '2023-01-02')
+      const etdDate = createMockManualDate('ETD', null)
+      const manualDates: ManualJourneySelectedDate[] = [mtdDate, etdDate]
+      const enteredDate = createMockDate('3', '1', '2023', 'ETD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The ETD must be before the MTD, which is 02/01/2023')
+    })
+
+    it('should return success when ETD is before MTD', () => {
+      const mtdDate = createMockManualDate('MTD', '2023-01-02')
+      const etdDate = createMockManualDate('ETD', null)
+      const manualDates: ManualJourneySelectedDate[] = [mtdDate, etdDate]
+      const enteredDate = createMockDate('1', '1', '2023', 'ETD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when ETD is not before LTD', () => {
+      const ltdDate = createMockManualDate('LTD', '2023-01-03')
+      const etdDate = createMockManualDate('ETD', null)
+      const manualDates: ManualJourneySelectedDate[] = [ltdDate, etdDate]
+      const enteredDate = createMockDate('4', '1', '2023', 'ETD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The ETD must be before the LTD, which is 03/01/2023')
+    })
+
+    it('should return success when ETD is before LTD', () => {
+      const ltdDate = createMockManualDate('LTD', '2023-01-03')
+      const etdDate = createMockManualDate('ETD', null)
+      const manualDates: ManualJourneySelectedDate[] = [ltdDate, etdDate]
+      const enteredDate = createMockDate('2', '1', '2023', 'ETD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when ETD is not before DPRRD', () => {
+      const dprrdDate = createMockManualDate('DPRRD', '2023-01-04')
+      const etdDate = createMockManualDate('ETD', null)
+      const manualDates: ManualJourneySelectedDate[] = [dprrdDate, etdDate]
+      const enteredDate = createMockDate('5', '1', '2023', 'ETD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The ETD must be before the DPRRD, which is 04/01/2023')
+    })
+
+    it('should return success when ETD is before DPRRD', () => {
+      const dprrdDate = createMockManualDate('DPRRD', '2023-01-04')
+      const etdDate = createMockManualDate('ETD', null)
+      const manualDates: ManualJourneySelectedDate[] = [dprrdDate, etdDate]
+      const enteredDate = createMockDate('3', '1', '2023', 'ETD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when MTD is not after ETD', () => {
+      const etdDate = createMockManualDate('ETD', '2023-01-01')
+      const mtdDate = createMockManualDate('MTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [etdDate, mtdDate]
+      const enteredDate = createMockDate('1', '1', '2023', 'MTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The MTD must be after the ETD, which is 01/01/2023')
+    })
+
+    it('should return success when MTD is after ETD', () => {
+      const etdDate = createMockManualDate('ETD', '2023-01-01')
+      const mtdDate = createMockManualDate('MTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [etdDate, mtdDate]
+      const enteredDate = createMockDate('2', '1', '2023', 'MTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when MTD is not before LTD', () => {
+      const ltdDate = createMockManualDate('LTD', '2023-01-03')
+      const mtdDate = createMockManualDate('MTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [ltdDate, mtdDate]
+      const enteredDate = createMockDate('4', '1', '2023', 'MTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The MTD must be before the LTD, which is 03/01/2023')
+    })
+
+    it('should return success when MTD is before LTD', () => {
+      const ltdDate = createMockManualDate('LTD', '2023-01-03')
+      const mtdDate = createMockManualDate('MTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [ltdDate, mtdDate]
+      const enteredDate = createMockDate('2', '1', '2023', 'MTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when MTD is not before DPRRD', () => {
+      const dprrdDate = createMockManualDate('DPRRD', '2023-01-04')
+      const mtdDate = createMockManualDate('MTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [dprrdDate, mtdDate]
+      const enteredDate = createMockDate('5', '1', '2023', 'MTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The MTD must be before the DPRRD, which is 04/01/2023')
+    })
+
+    it('should return success when MTD is before DPRRD', () => {
+      const dprrdDate = createMockManualDate('DPRRD', '2023-01-04')
+      const mtdDate = createMockManualDate('MTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [dprrdDate, mtdDate]
+      const enteredDate = createMockDate('3', '1', '2023', 'MTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when LTD is not after ETD', () => {
+      const etdDate = createMockManualDate('ETD', '2023-01-01')
+      const ltdDate = createMockManualDate('LTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [etdDate, ltdDate]
+      const enteredDate = createMockDate('31', '12', '2022', 'LTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The LTD must be after the ETD, which is 01/01/2023')
+    })
+
+    it('should return success when LTD is after ETD', () => {
+      const etdDate = createMockManualDate('ETD', '2023-01-01')
+      const ltdDate = createMockManualDate('LTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [etdDate, ltdDate]
+      const enteredDate = createMockDate('02', '01', '2023', 'LTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when LTD is not after MTD', () => {
+      const mtdDate = createMockManualDate('MTD', '2023-01-02')
+      const ltdDate = createMockManualDate('LTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [mtdDate, ltdDate]
+      const enteredDate = createMockDate('01', '01', '2023', 'LTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The LTD must be after the MTD, which is 02/01/2023')
+    })
+
+    it('should return success when LTD is after MTD', () => {
+      const mtdDate = createMockManualDate('MTD', '2023-01-02')
+      const ltdDate = createMockManualDate('LTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [mtdDate, ltdDate]
+      const enteredDate = createMockDate('03', '01', '2023', 'LTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when LTD is not before DPRRD', () => {
+      const dprrdDate = createMockManualDate('DPRRD', '2023-01-04')
+      const ltdDate = createMockManualDate('LTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [dprrdDate, ltdDate]
+      const enteredDate = createMockDate('05', '01', '2023', 'LTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The LTD must be before the DPRRD, which is 04/01/2023')
+    })
+
+    it('should return success when LTD is before DPRRD', () => {
+      const dprrdDate = createMockManualDate('DPRRD', '2023-01-04')
+      const ltdDate = createMockManualDate('LTD', null)
+      const manualDates: ManualJourneySelectedDate[] = [dprrdDate, ltdDate]
+      const enteredDate = createMockDate('03', '01', '2023', 'LTD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when DPRRD is not after ETD', () => {
+      const etdDate = createMockManualDate('ETD', '2023-01-01')
+      const dprrdDate = createMockManualDate('DPRRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [etdDate, dprrdDate]
+      const enteredDate = createMockDate('31', '12', '2022', 'DPRRD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The DPRRD must be after the ETD, which is 01/01/2023')
+    })
+
+    it('should return success when DPRRD is after ETD', () => {
+      const etdDate = createMockManualDate('ETD', '2023-01-01')
+      const dprrdDate = createMockManualDate('DPRRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [etdDate, dprrdDate]
+      const enteredDate = createMockDate('02', '01', '2023', 'DPRRD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when DPRRD is not after MTD', () => {
+      const mtdDate = createMockManualDate('MTD', '2023-01-02')
+      const dprrdDate = createMockManualDate('DPRRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [mtdDate, dprrdDate]
+      const enteredDate = createMockDate('01', '01', '2023', 'DPRRD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The DPRRD must be after the MTD, which is 02/01/2023')
+    })
+
+    it('should return success when DPRRD is after MTD', () => {
+      const mtdDate = createMockManualDate('MTD', '2023-01-02')
+      const dprrdDate = createMockManualDate('DPRRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [mtdDate, dprrdDate]
+      const enteredDate = createMockDate('03', '01', '2023', 'DPRRD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+
+    it('should return error when DPRRD is not after LTD', () => {
+      const ltdDate = createMockManualDate('LTD', '2023-01-03')
+      const dprrdDate = createMockManualDate('DPRRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [ltdDate, dprrdDate]
+      const enteredDate = createMockDate('02', '01', '2023', 'DPRRD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.message).toBe('The DPRRD must be after the LTD, which is 03/01/2023')
+    })
+
+    it('should return success when DPRRD is after LTD', () => {
+      const ltdDate = createMockManualDate('LTD', '2023-01-03')
+      const dprrdDate = createMockManualDate('DPRRD', null)
+      const manualDates: ManualJourneySelectedDate[] = [ltdDate, dprrdDate]
+      const enteredDate = createMockDate('04', '01', '2023', 'DPRRD')
+
+      const result = dateValidationService.validateAgainstOtherDates(
+        manualDates,
+        enteredDate,
+        createMockDateInputItems(),
+      )
+
+      expect(result.success).toBe(true)
+    })
+  })
 })
