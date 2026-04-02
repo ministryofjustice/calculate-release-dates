@@ -120,6 +120,30 @@ export const releaseDateSchema = (dateValidationService?: DateValidationService)
               message: '',
               path: ['year'],
             })
+            return
+          }
+
+          const messageEtdMtdLtdDprrdDate = dateValidationService.validateEtdMtdLtdDprrdDate(
+            enteredDate,
+            null,
+            genuineOverrideInputs,
+          )
+          if (messageEtdMtdLtdDprrdDate !== '') {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: messageEtdMtdLtdDprrdDate,
+              path: ['day'],
+            })
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: '',
+              path: ['month'],
+            })
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: '',
+              path: ['year'],
+            })
           }
         }
       }

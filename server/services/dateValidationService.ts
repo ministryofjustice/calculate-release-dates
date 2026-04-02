@@ -29,12 +29,125 @@ export default class DateValidationService {
     if (manualDates) {
       storedDate = manualDates.find(d => d.dateType === type)?.manualEntrySelectedDate?.date
     } else if (genuineOverrideInputs) {
-      const genuineOverrideDate = genuineOverrideInputs.datesToSave.find(d => d.type === type)?.date
-      if (typeof genuineOverrideDate === 'string') {
-        storedDate = dateToDayMonthYear(genuineOverrideDate)
+      const goDateToSave = genuineOverrideInputs.datesToSave.find(d => d.type === type)?.date
+      if (typeof goDateToSave === 'string') {
+        storedDate = dateToDayMonthYear(goDateToSave)
+      } else if (genuineOverrideInputs.datesBeingAdded?.length > 0) {
+        const goDateToAdd = genuineOverrideInputs.datesBeingAdded.find(d => d.type === type)
+        if (goDateToAdd && goDateToAdd.day && goDateToAdd.month && goDateToAdd.year) {
+          storedDate = {
+            day: Number(goDateToAdd.day),
+            month: Number(goDateToAdd.month),
+            year: Number(goDateToAdd.year),
+          }
+        }
       }
     }
     return storedDate
+  }
+
+  public validateEtdMtdLtdDprrdDate(
+    enteredDate: EnteredDate,
+    manualDates: ManualJourneySelectedDate[],
+    genuineOverrideInputs: GenuineOverrideInputs,
+  ): string {
+    const dateFormat = 'dd/MM/yyyy'
+    const enteredDateType = enteredDate.dateType
+
+    const inputDate = this.createDateTime(enteredDate)
+    const findDateByType = (type: string) => this.findDateByType(type, manualDates, genuineOverrideInputs)
+
+    if (enteredDateType === 'ETD') {
+      const mtdDate = findDateByType('MTD')
+      const ltdDate = findDateByType('LTD')
+      const dprrdDate = findDateByType('DPRRD')
+      if (mtdDate) {
+        const mtdDateTime = this.createDateTime(mtdDate)
+        if (inputDate >= mtdDateTime) {
+          return `The ETD must be before the MTD, which is ${mtdDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (ltdDate) {
+        const ltdDateTime = this.createDateTime(ltdDate)
+        if (inputDate >= ltdDateTime) {
+          return `The ETD must be before the LTD, which is ${ltdDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (dprrdDate) {
+        const dprrdDateTime = this.createDateTime(dprrdDate)
+        if (inputDate >= dprrdDateTime) {
+          return `The ETD must be before the DPRRD, which is ${dprrdDateTime.toFormat(dateFormat)}`
+        }
+      }
+    } else if (enteredDateType === 'MTD') {
+      const etdDate = findDateByType('ETD')
+      const ltdDate = findDateByType('LTD')
+      const dprrdDate = findDateByType('DPRRD')
+      if (etdDate) {
+        const etdDateTime = this.createDateTime(etdDate)
+        if (inputDate <= etdDateTime) {
+          return `The MTD must be after the ETD, which is ${etdDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (ltdDate) {
+        const ltdDateTime = this.createDateTime(ltdDate)
+        if (inputDate >= ltdDateTime) {
+          return `The MTD must be before the LTD, which is ${ltdDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (dprrdDate) {
+        const dprrdDateTime = this.createDateTime(dprrdDate)
+        if (inputDate >= dprrdDateTime) {
+          return `The MTD must be before the DPRRD, which is ${dprrdDateTime.toFormat(dateFormat)}`
+        }
+      }
+    } else if (enteredDateType === 'LTD') {
+      const etdDate = findDateByType('ETD')
+      const mtdDate = findDateByType('MTD')
+      const dprrdDate = findDateByType('DPRRD')
+      if (etdDate) {
+        const etdDateTime = this.createDateTime(etdDate)
+        if (inputDate <= etdDateTime) {
+          return `The LTD must be after the ETD, which is ${etdDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (mtdDate) {
+        const mtdDateTime = this.createDateTime(mtdDate)
+        if (inputDate <= mtdDateTime) {
+          return `The LTD must be after the MTD, which is ${mtdDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (dprrdDate) {
+        const dprrdDateTime = this.createDateTime(dprrdDate)
+        if (inputDate >= dprrdDateTime) {
+          return `The LTD must be before the DPRRD, which is ${dprrdDateTime.toFormat(dateFormat)}`
+        }
+      }
+    } else if (enteredDateType === 'DPRRD') {
+      const etdDate = findDateByType('ETD')
+      const mtdDate = findDateByType('MTD')
+      const ltdDate = findDateByType('LTD')
+      if (etdDate) {
+        const etdDateTime = this.createDateTime(etdDate)
+        if (inputDate <= etdDateTime) {
+          return `The DPRRD must be after the ETD, which is ${etdDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (mtdDate) {
+        const mtdDateTime = this.createDateTime(mtdDate)
+        if (inputDate <= mtdDateTime) {
+          return `The DPRRD must be after the MTD, which is ${mtdDateTime.toFormat(dateFormat)}`
+        }
+      }
+      if (ltdDate) {
+        const ltdDateTime = this.createDateTime(ltdDate)
+        if (inputDate <= ltdDateTime) {
+          return `The DPRRD must be after the LTD, which is ${ltdDateTime.toFormat(dateFormat)}`
+        }
+      }
+    }
+
+    return ''
   }
 
   public validateHdcadHdcedCrdDate(
@@ -185,11 +298,23 @@ export default class DateValidationService {
     }
 
     const messageHdcedHdcadCrdDate = this.validateHdcadHdcedCrdDate(enteredDate, manualDates, null)
+    if (messageHdcedHdcadCrdDate) {
+      return {
+        message: messageHdcedHdcadCrdDate,
+        date: manualEntrySelectedDate,
+        enteredDate,
+        success: messageHdcedHdcadCrdDate === '',
+        items,
+        isNone: false,
+      } as StorageResponseModel
+    }
+
+    const messageEtdMtdLtdDprrdDate = this.validateEtdMtdLtdDprrdDate(enteredDate, manualDates, null)
     return {
-      message: messageHdcedHdcadCrdDate,
+      message: messageEtdMtdLtdDprrdDate,
       date: manualEntrySelectedDate,
       enteredDate,
-      success: messageHdcedHdcadCrdDate === '',
+      success: messageEtdMtdLtdDprrdDate === '',
       items,
       isNone: false,
     } as StorageResponseModel
