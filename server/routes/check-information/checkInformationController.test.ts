@@ -42,7 +42,7 @@ describe('CheckInformationController', () => {
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
-  const checkInformationService = new CheckInformationService(null, null) as jest.Mocked<CheckInformationService>
+  const checkInformationService = new CheckInformationService(null, null, null) as jest.Mocked<CheckInformationService>
   const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 
   const stubbedEmptyMessages: ValidationMessage[] = []

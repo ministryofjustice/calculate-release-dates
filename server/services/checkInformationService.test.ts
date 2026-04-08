@@ -1,4 +1,5 @@
 import createError from 'http-errors'
+import { TelemetryClient } from 'applicationinsights'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import PrisonerService from './prisonerService'
 import CheckInformationService from './checkInformationService'
@@ -91,8 +92,16 @@ describe('checkInformationService', () => {
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
+  const mockTrackEvent = jest.fn()
+  const telemetryClient: TelemetryClient = {
+    trackEvent: mockTrackEvent,
+  } as unknown as jest.Mocked<TelemetryClient>
 
-  const checkInformationService = new CheckInformationService(calculateReleaseDatesService, prisonerService)
+  const checkInformationService = new CheckInformationService(
+    calculateReleaseDatesService,
+    prisonerService,
+    telemetryClient,
+  )
 
   const nomsId = 'A1234BC'
   const { userRoles, caseloads } = user
@@ -135,6 +144,15 @@ describe('checkInformationService', () => {
       messageType: ErrorMessageType.VALIDATION,
       messages: [{ text: 'Sentence type is not supported' }],
     })
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: 'validation-failures-requiring-fix',
+      properties: {
+        count: 1,
+        prisonerNumber: nomsId,
+        username: 'user1',
+        isUnsupported: true,
+      },
+    })
   })
 
   it('should build model with unsupported validation errors and no manual entry validation errors', async () => {
@@ -171,6 +189,15 @@ describe('checkInformationService', () => {
       messageType: ErrorMessageType.VALIDATION,
       messages: [{ text: 'Missing dates' }],
     })
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: 'validation-failures-requiring-fix',
+      properties: {
+        count: 1,
+        prisonerNumber: nomsId,
+        username: 'user1',
+        isUnsupported: false,
+      },
+    })
   })
 
   it('should not show multiple consecutive sentences to a single sentence errors', async () => {
@@ -192,6 +219,15 @@ describe('checkInformationService', () => {
     expect(model.validationErrors).toStrictEqual({
       messageType: ErrorMessageType.VALIDATION,
       messages: [{ text: 'Missing dates' }],
+    })
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: 'validation-failures-requiring-fix',
+      properties: {
+        count: 1,
+        prisonerNumber: nomsId,
+        username: 'user1',
+        isUnsupported: false,
+      },
     })
   })
 
