@@ -25,6 +25,7 @@ export const services = () => {
     courtCasesReleaseDatesApiClient,
     frontendComponentsApiClient,
     calculateReleaseDatesApiClient,
+    telemetryClient,
   } = dataAccess()
   const auditService = new AuditService()
 
@@ -43,7 +44,11 @@ export const services = () => {
   )
   const userPermissionsService = new UserPermissionsService()
   const approvedDatesService = new ApprovedDatesService(dateTypeConfigurationService)
-  const checkInformationService = new CheckInformationService(calculateReleaseDatesService, prisonerService)
+  const checkInformationService = new CheckInformationService(
+    calculateReleaseDatesService,
+    prisonerService,
+    telemetryClient,
+  )
   const frontEndComponentService = new FrontEndComponentsService(frontendComponentsApiClient)
   const comparisonService = new ComparisonService(auditService, calculateReleaseDatesApiClient)
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(courtCasesReleaseDatesApiClient)

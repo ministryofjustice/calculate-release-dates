@@ -17,7 +17,7 @@ import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 
 const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
-buildAppInsightsClient(applicationInfo)
+const telemetryClient = buildAppInsightsClient(applicationInfo)
 
 const hmppsAuthClient = new AuthenticationClient(
   config.apis.hmppsAuth,
@@ -34,6 +34,7 @@ const dataAccess = () => ({
   courtCasesReleaseDatesApiClient: new CourtCasesReleaseDatesApiClient(hmppsAuthClient),
   frontendComponentsApiClient: new FrontendComponentsApiClient(hmppsAuthClient),
   calculateReleaseDatesApiClient: new CalculateReleaseDatesApiClient(hmppsAuthClient),
+  telemetryClient,
 })
 
 export default dataAccess

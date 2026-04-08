@@ -1,3 +1,4 @@
+import { TelemetryClient } from 'applicationinsights'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import SentenceTypes from '../models/SentenceTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
@@ -11,6 +12,7 @@ export default class CheckInformationService {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
+    private readonly telemetryClient: TelemetryClient,
   ) {
     // intentionally blank
   }
@@ -60,6 +62,18 @@ export default class CheckInformationService {
       )
     } else {
       validationMessages = { messages: [] }
+    }
+
+    if (validationMessages?.messages?.length) {
+      this.telemetryClient?.trackEvent({
+        name: 'validation-failures-requiring-fix',
+        properties: {
+          count: validationMessages?.messages?.length,
+          prisonerNumber: nomsId,
+          username,
+          isUnsupported,
+        },
+      })
     }
 
     return new SentenceAndOffenceViewModel(
