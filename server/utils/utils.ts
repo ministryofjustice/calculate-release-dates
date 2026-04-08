@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { DesignSystemEnvironment } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import config from '../config'
-import { filteredListOfDates } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { getFilteredListOfDates } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import ErrorMessage from '../types/ErrorMessage'
@@ -109,7 +109,7 @@ export const maxOf = <A, B>(all: A[], map: (a: A) => B): B => {
 }
 
 export const sortDisplayableDates = <T extends { type: string }>(dates: T[]): T[] => {
-  return dates.sort((a, b) => filteredListOfDates.indexOf(a.type) - filteredListOfDates.indexOf(b.type))
+  return dates.sort((a, b) => getFilteredListOfDates().indexOf(a.type) - getFilteredListOfDates().indexOf(b.type))
 }
 
 export const dateToDayMonthYear = (date: string): { day: number; month: number; year: number } => {

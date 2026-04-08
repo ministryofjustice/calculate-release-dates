@@ -1,3 +1,4 @@
+
 generic-service:
   nameOverride: calculate-release-dates
   serviceAccountName: "calculate-release-dates"
@@ -41,6 +42,7 @@ generic-service:
     SHOW_REVOCATION_DATE: "true"
     USE_NEW_APPROVED_DATES_FLOW: "true"
     ADJUSTMENTS_INTEGRATION_ENABLED: "true"
+    APPLY_POST_RECALL_REPEAL_RULES: "false"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

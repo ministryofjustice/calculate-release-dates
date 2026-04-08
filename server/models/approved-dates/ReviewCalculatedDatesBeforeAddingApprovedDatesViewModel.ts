@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import PrisonerContextViewModel from '../PrisonerContextViewModel'
 import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 import { DetailedCalculationResults } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { filteredListOfDates } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { getFilteredListOfDates } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 
 export default class ReviewCalculatedDatesBeforeAddingApprovedDatesViewModel extends PrisonerContextViewModel {
   public dateRows: {
@@ -17,6 +17,7 @@ export default class ReviewCalculatedDatesBeforeAddingApprovedDatesViewModel ext
     public pageCancelRedirectUrl: string,
   ) {
     super(prisonerDetail)
+    const filteredListOfDates = getFilteredListOfDates()
     this.dateRows = Object.values(detailedCalculationResults.dates)
       .filter(dateObject => dateObject && dateObject.date && filteredListOfDates.includes(dateObject.type))
       .sort((a, b) => filteredListOfDates.indexOf(a.type) - filteredListOfDates.indexOf(b.type))

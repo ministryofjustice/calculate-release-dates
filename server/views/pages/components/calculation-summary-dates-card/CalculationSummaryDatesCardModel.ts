@@ -3,6 +3,7 @@ import {
   DetailedDate,
   NomisCalculationSummary,
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import config from '../../../../config'
 
 export default interface CalculationSummaryDatesCardModel {
   showNoDatesApply: boolean
@@ -17,7 +18,7 @@ export interface CalculationSummaryDatesCardLine {
   hints: { html: string }[]
 }
 
-export const filteredListOfDates = [
+const filteredListOfDates = [
   'SLED',
   'LED',
   'SED',
@@ -39,6 +40,11 @@ export const filteredListOfDates = [
   'TERSED',
   'APD',
 ]
+
+const filteredListOfDatesPostRecallRepeal = filteredListOfDates.filter(d => d !== 'TUSED')
+
+export const getFilteredListOfDates = (): string[] =>
+  config.featureToggles.applyPostRecallRepealRules ? filteredListOfDatesPostRecallRepeal : filteredListOfDates
 
 function getCalculationSummaryDatesCardLine(date: DetailedDate, showHints: boolean): CalculationSummaryDatesCardLine {
   return {

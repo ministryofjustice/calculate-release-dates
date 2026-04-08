@@ -33,6 +33,7 @@ generic-service:
     SHOW_CRDS_INTERCEPT: "true"
     GENUINE_OVERRIDES_ENABLED: "true"
     THING_TO_DO_INTERCEPT_ENABLED: "true"
+    APPLY_POST_RECALL_REPEAL_RULES: "true"
 
   # Switches off the allow list in the DEV env only.
   allowlist: null

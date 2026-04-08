@@ -7,6 +7,7 @@ import { ApiReleaseDateType, DetailedDate } from '../@types/calculateReleaseDate
 import { createSupportLink } from '../utils/utils'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
+import config from '../config'
 
 export const dateTypeOrder: Partial<Record<ApiReleaseDateType, number>> = {
   SED: 1,
@@ -31,7 +32,7 @@ export const dateTypeOrder: Partial<Record<ApiReleaseDateType, number>> = {
   None: 30,
 }
 
-export const determinateDateTypesForManualEntry = [
+const determinateDateTypesForManualEntry = [
   'SED',
   'LED',
   'CRD',
@@ -50,6 +51,13 @@ export const determinateDateTypesForManualEntry = [
   'NPD',
   'DPRRD',
 ]
+
+const determinateDateTypesForManualEntryPostRecallRepeal = determinateDateTypesForManualEntry.filter(d => d !== 'TUSED')
+
+export const getDeterminateDateTypesForManualEntry = () =>
+  config.featureToggles.applyPostRecallRepealRules
+    ? determinateDateTypesForManualEntryPostRecallRepeal
+    : determinateDateTypesForManualEntry
 
 const errorMessage = {
   errorMessage: {
@@ -109,15 +117,15 @@ export default class ManualEntryService {
       req.body == null ||
       (!firstLoad && newDates.length === 0 && (req.body.dateSelect === undefined || req.body.dateSelect.length === 0))
 
-    let config: DateSelectConfiguration
+    let dateConfig: DateSelectConfiguration
     if (hasIndeterminateSentences) {
-      config = await this.indeterminateConfig(username, existingDateTypes)
+      dateConfig = await this.indeterminateConfig(username, existingDateTypes)
     } else {
-      config = await this.determinateConfig(username, existingDateTypes)
+      dateConfig = await this.determinateConfig(username, existingDateTypes)
     }
 
     if (insufficientDatesSelected) {
-      const mergedConfig = req.method === 'POST' ? { ...config, ...errorMessage } : { ...config }
+      const mergedConfig = req.method === 'POST' ? { ...dateConfig, ...errorMessage } : { ...dateConfig }
       this.enrichConfiguration(mergedConfig, req, nomsId, existingDateTypes)
       return { error: true, config: mergedConfig }
     }
@@ -142,12 +150,12 @@ export default class ManualEntryService {
         ${validationMessages.messages.map(e => `<li>${e.text}</li>`).join('\n')}</ul></div>
       </ul>${errorEnd}</div>`
       const validationError = { errorMessage: { html: dateErrors } }
-      const mergedConfig = { ...config, ...validationError }
+      const mergedConfig = { ...dateConfig, ...validationError }
       this.enrichConfiguration(<DateSelectConfiguration>mergedConfig, req, nomsId, existingDateTypes)
       return { error: true, config: <DateSelectConfiguration>mergedConfig }
     }
-    this.enrichConfiguration(config, req, nomsId, existingDateTypes)
-    return { error: false, config: <DateSelectConfiguration>config }
+    this.enrichConfiguration(dateConfig, req, nomsId, existingDateTypes)
+    return { error: false, config: <DateSelectConfiguration>dateConfig }
   }
 
   private enrichConfiguration(
@@ -434,7 +442,7 @@ export default class ManualEntryService {
       hint: {
         text: 'Select all that apply to the manual calculation.',
       },
-      items: determinateDateTypesForManualEntry.map(dateType => {
+      items: getDeterminateDateTypesForManualEntry().map(dateType => {
         return {
           value: dateType,
           text: dateTypeDefinitions[dateType],
