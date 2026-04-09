@@ -14,9 +14,9 @@ export default class GenuineOverrideExpressInterceptController implements Contro
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    const { caseloads, username, userRoles } = res.locals.user
+    const { username } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const genuineOverrideReasons = await this.calculateReleaseDatesService.getGenuineOverrideReasons(username)
     const reason =

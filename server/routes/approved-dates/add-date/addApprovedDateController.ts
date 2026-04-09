@@ -17,9 +17,9 @@ export default class AddApprovedDateController implements Controller {
 
   GET = async (req: Request<PersonJourneyParams & { dateType: string }>, res: Response): Promise<void> => {
     const { nomsId, journeyId, dateType } = req.params
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     const journey = req.session.approvedDatesJourneys[journeyId]
 

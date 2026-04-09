@@ -37,7 +37,7 @@ export default class CalculationSummaryController implements Controller {
     if (detailedCalculationResults.context.prisonerId !== nomsId) {
       throw FullPageError.notFoundError()
     }
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     const serverErrors = req.flash('serverErrors')
     let validationErrors = null
     if (serverErrors && serverErrors[0]) {

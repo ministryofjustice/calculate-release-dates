@@ -11,9 +11,9 @@ export default class ViewJourneyController implements Controller {
   ) {}
 
   GET = async (req: Request, res: Response, next?: NextFunction): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     try {
       const latestCalculation = await this.viewReleaseDatesService.getLatestCalculation(
         nomsId,

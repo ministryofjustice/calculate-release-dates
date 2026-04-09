@@ -25,9 +25,9 @@ export default class ReviewApprovedDatesController implements Controller {
 
   GET = async (req: Request<PersonJourneyParams>, res: Response): Promise<void> => {
     const { nomsId, journeyId } = req.params
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     const journey = req.session.approvedDatesJourneys[journeyId]
     sortDisplayableDates(journey.datesToSave)
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(
