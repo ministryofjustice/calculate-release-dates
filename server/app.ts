@@ -45,7 +45,10 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware(Object.values(AuthorisedRoles)))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.use(['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId'], getPrisoner(services.prisonerService))
+  app.use(
+    ['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId', '/'],
+    getPrisoner(services.prisonerService),
+  )
   app.use(setUpFrontendComponents(services))
   app.use(setUpCCARDComponents())
   app.use(populateValidationErrors())

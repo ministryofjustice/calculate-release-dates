@@ -4,7 +4,7 @@ import PrisonerService from '../services/prisonerService'
 export default function getPrisoner(prisonerService: PrisonerService): RequestHandler {
   return async (req, res, next) => {
     const { caseloads, userRoles, username } = res.locals.user
-    const { nomsId } = req.params
+    const nomsId = req.params.nomsId ?? (req.query.prisonId as string)
 
     if (username && nomsId) {
       req.prisoner = await prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
