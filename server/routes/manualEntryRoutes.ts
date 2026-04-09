@@ -25,7 +25,7 @@ export default class ManualEntryRoutes {
   }
 
   public landingPage: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
 
     if (req.session.calculationReasonId == null) {
@@ -35,7 +35,7 @@ export default class ManualEntryRoutes {
     const unsupportedSentenceOrCalculationMessages =
       await this.calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType(nomsId, username)
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
       username,
@@ -113,10 +113,10 @@ export default class ManualEntryRoutes {
   }
 
   public submitSelectedDates: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
@@ -165,11 +165,11 @@ export default class ManualEntryRoutes {
   }
 
   public dateSelection: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
     const { unchangedManualJourney } = req.session
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     if (!req.session.selectedManualEntryDates) {
       req.session.selectedManualEntryDates = {}
@@ -211,11 +211,11 @@ export default class ManualEntryRoutes {
   }
 
   public enterDate: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
     const { dateType } = req.query as Record<string, string>
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
@@ -263,11 +263,11 @@ export default class ManualEntryRoutes {
   }
 
   public submitDate: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
     const { dateType } = req.query as Record<string, string>
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
@@ -317,11 +317,11 @@ export default class ManualEntryRoutes {
   }
 
   public loadConfirmation: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
     const { confirmationError, reconfirm } = req.query
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     if (reconfirm) req.session.manualJourneyDifferentDatesConfirmed = false
 
@@ -382,10 +382,10 @@ export default class ManualEntryRoutes {
   }
 
   public loadRemoveDate: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
@@ -411,10 +411,10 @@ export default class ManualEntryRoutes {
   }
 
   public submitRemoveDate: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
@@ -442,10 +442,10 @@ export default class ManualEntryRoutes {
   }
 
   public save: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, username, userRoles, token } = res.locals.user
+    const { username, token } = res.locals.user
     const { nomsId } = req.params
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     if (req.session.calculationReasonId == null) {
       return res.redirect(`/calculation/${nomsId}/reason`)
@@ -505,9 +505,9 @@ export default class ManualEntryRoutes {
   }
 
   public noDatesConfirmation: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
@@ -526,9 +526,9 @@ export default class ManualEntryRoutes {
   }
 
   public submitNoDatesConfirmation: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     const redirect = await this.validateUseOfManualCalculationJourneyOrRedirect(
       nomsId,
