@@ -122,11 +122,11 @@ export default class CalculateReleaseDatesService {
         releaseDatesWithAdjustments: this.extractReleaseDatesWithAdjustments(breakdown),
       }
     } catch (error) {
-      // If an error happens in this breakdown, still display the release dates.
+      // If an error happens in this breakdown, still display the release dates if possible.
       logger.error(error)
       return {
-        calculationBreakdown: null,
-        releaseDatesWithAdjustments: null,
+        calculationBreakdown: undefined,
+        releaseDatesWithAdjustments: [],
       }
     }
   }
@@ -134,8 +134,8 @@ export default class CalculateReleaseDatesService {
   getCalculationRequestModel(req: Request, userInputs: CalculationUserInputs, nomsId: string): CalculationRequestModel {
     return {
       calculationUserInputs: userInputs,
-      calculationReasonId: req.session.calculationReasonId[nomsId],
-      otherReasonDescription: req.session.otherReasonDescription[nomsId],
+      calculationReasonId: req.session?.calculationReasonId?.[nomsId],
+      otherReasonDescription: req.session?.otherReasonDescription?.[nomsId],
     } as CalculationRequestModel
   }
 
@@ -181,27 +181,29 @@ export default class CalculateReleaseDatesService {
     }
     if (breakdown.breakdownByReleaseDateType.HDCED) {
       const hdcedDetails = breakdown.breakdownByReleaseDateType.HDCED
-      releaseDatesWithAdjustments.push(
-        this.hdcedRulesToAdjustmentRow(
-          hdcedDetails.rules,
-          hdcedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
-          hdcedDetails.releaseDate,
-          hdcedDetails.unadjustedDate,
-          hdcedDetails.adjustedDays,
-        ),
+      const hdcedRow = this.hdcedRulesToAdjustmentRow(
+        hdcedDetails.rules,
+        hdcedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
+        hdcedDetails.releaseDate,
+        hdcedDetails.unadjustedDate,
+        hdcedDetails.adjustedDays,
       )
+      if (hdcedRow) {
+        releaseDatesWithAdjustments.push(hdcedRow)
+      }
     }
     if (breakdown.breakdownByReleaseDateType.TUSED) {
       const tusedDetails = breakdown.breakdownByReleaseDateType.TUSED
-      releaseDatesWithAdjustments.push(
-        this.tusedRulesToAdjustmentRow(
-          tusedDetails.rules,
-          tusedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
-          tusedDetails.releaseDate,
-          tusedDetails.unadjustedDate,
-          tusedDetails.adjustedDays,
-        ),
+      const tusedRow = this.tusedRulesToAdjustmentRow(
+        tusedDetails.rules,
+        tusedDetails.rulesWithExtraAdjustments as unknown as RulesWithExtraAdjustments,
+        tusedDetails.releaseDate,
+        tusedDetails.unadjustedDate,
+        tusedDetails.adjustedDays,
       )
+      if (tusedRow) {
+        releaseDatesWithAdjustments.push(tusedRow)
+      }
     }
     if (breakdown.breakdownByReleaseDateType.ERSED) {
       const ersedDetails = breakdown.breakdownByReleaseDateType.ERSED
@@ -222,7 +224,7 @@ export default class CalculateReleaseDatesService {
         )
       }
     }
-    return releaseDatesWithAdjustments.filter(item => item)
+    return releaseDatesWithAdjustments
   }
 
   private static standardAdjustmentRow(
@@ -247,7 +249,7 @@ export default class CalculateReleaseDatesService {
     releaseDate: string,
     unadjustedDate: string,
     adjustedDays: number,
-  ): ReleaseDateWithAdjustments {
+  ): ReleaseDateWithAdjustments | null {
     if (rules.includes(CalculationRule.HDCED_MINIMUM_CUSTODIAL_PERIOD)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments.HDCED_MINIMUM_CUSTODIAL_PERIOD
       return CalculateReleaseDatesService.createAdjustmentRow(
@@ -309,7 +311,7 @@ export default class CalculateReleaseDatesService {
     releaseDate: string,
     unadjustedDate: string,
     adjustedDays: number,
-  ): ReleaseDateWithAdjustments {
+  ): ReleaseDateWithAdjustments | null {
     if (rules.includes(CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y)) {
       const ruleSpecificAdjustment = rulesWithExtraAdjustments[CalculationRule.TUSED_LICENCE_PERIOD_LT_1Y]
       return CalculateReleaseDatesService.createAdjustmentRow(
@@ -380,8 +382,9 @@ export default class CalculateReleaseDatesService {
       )
       return calculation
     } catch (error) {
-      await this.auditService.publishSentenceCalculationFailure(userName, nomsId, error)
-      throw error
+      const err = error instanceof Error ? error : new Error(String(error))
+      await this.auditService.publishSentenceCalculationFailure(userName, nomsId, err)
+      throw err
     }
   }
 
@@ -412,12 +415,13 @@ export default class CalculateReleaseDatesService {
       }
       return genuineOverrideResponse
     } catch (error) {
-      await this.auditService.publishGenuineOverrideFailed(userName, nomsId, calculationRequestId, error)
-      throw error
+      const err = error instanceof Error ? error : new Error(String(error))
+      await this.auditService.publishGenuineOverrideFailed(userName, nomsId, calculationRequestId, err)
+      throw err
     }
   }
 
-  async getNextWorkingDay(date: string, username: string): Promise<string> {
+  async getNextWorkingDay(date: string, username: string): Promise<string | null> {
     if (this.existsAndIsInFuture(date)) {
       const adjustment = await this.calculateReleaseDatesApiRestClient.getNextWorkingDay(date, username)
       if (adjustment.date !== date) {
@@ -429,7 +433,7 @@ export default class CalculateReleaseDatesService {
 
   private existsAndIsInFuture(date: string): boolean {
     const now = dayjs()
-    return date && now.isBefore(dayjs(date))
+    return !!date && now.isBefore(dayjs(date))
   }
 
   async validateBackend(
@@ -507,7 +511,7 @@ export default class CalculateReleaseDatesService {
     return this.calculateReleaseDatesApiRestClient
       .getLatestCalculationForPrisoner(prisonerId, username)
       .then(async latestCalc => {
-        let action: Action
+        let action: Action | undefined
         const latestCalcCard = this.latestCalculationComponentConfig(latestCalc)
         if (latestCalc.calculationRequestId) {
           action = {

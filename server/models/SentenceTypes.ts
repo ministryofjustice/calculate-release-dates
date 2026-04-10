@@ -40,43 +40,43 @@ export default class SentenceTypes {
   private static dtoSentenceTypes = ['DTO_ORA', 'DTO']
 
   public static isSentenceSds(sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences): boolean {
-    return this.sdsSentenceTypes.includes(sentence.sentenceCalculationType)
+    return this.sdsSentenceTypes.includes(sentence.sentenceCalculationType ?? '')
   }
 
   public static isSentenceFixedTermRecall(
     sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
-    return this.fixedTermRecallTypes.includes(sentence.sentenceCalculationType)
+    return this.fixedTermRecallTypes.includes(sentence.sentenceCalculationType ?? '')
   }
 
   public static isSentenceSopc(sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences): boolean {
-    return this.sopcSentenceTypes.includes(sentence.sentenceCalculationType)
+    return this.sopcSentenceTypes.includes(sentence.sentenceCalculationType ?? '')
   }
 
   public static isSentenceEds(sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences): boolean {
-    return this.edsSentenceTypes.includes(sentence.sentenceCalculationType)
+    return this.edsSentenceTypes.includes(sentence.sentenceCalculationType ?? '')
   }
 
   public static isSentenceAfine(sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences): boolean {
-    return this.aFineSentenceTypes.includes(sentence.sentenceCalculationType)
+    return this.aFineSentenceTypes.includes(sentence.sentenceCalculationType ?? '')
   }
 
   public static isSentenceSopcRecall(
     sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
-    return this.sopcRecallSentenceTypes.includes(sentence.sentenceCalculationType)
+    return this.sopcRecallSentenceTypes.includes(sentence.sentenceCalculationType ?? '')
   }
 
   public static isSentenceEdsRecall(
     sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
-    return this.edsRecallSentenceTypes.includes(sentence.sentenceCalculationType)
+    return this.edsRecallSentenceTypes.includes(sentence.sentenceCalculationType ?? '')
   }
 
   public static isSentenceStandardRecall(
     sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences,
   ): boolean {
-    return this.standardRecallSentenceTypes.includes(sentence.sentenceCalculationType)
+    return this.standardRecallSentenceTypes.includes(sentence.sentenceCalculationType ?? '')
   }
 
   public static isRecall(sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences): boolean {
@@ -89,7 +89,7 @@ export default class SentenceTypes {
   }
 
   public static isSentenceDto(sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences): boolean {
-    return this.dtoSentenceTypes.includes(sentence.sentenceCalculationType)
+    return this.dtoSentenceTypes.includes(sentence.sentenceCalculationType ?? '')
   }
 
   public static isSentenceErsed(sentence: AnalysedSentenceAndOffence | PrisonApiOffenderSentenceAndOffences): boolean {

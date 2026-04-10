@@ -6,11 +6,12 @@ import SessionSetup from '../../testutils/sessionSetup'
 import PrisonerService from '../../../services/prisonerService'
 import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
-import { determinateDateTypesForManualEntry } from '../../../services/manualEntryService'
+import { getDeterminateDateTypesForManualEntry } from '../../../services/manualEntryService'
 import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import { GenuineOverrideInputs } from '../../../@types/journeys'
+import config from '../../../config'
 
 jest.mock('../../../services/prisonerService')
 jest.mock('../../../services/dateTypeConfigurationService')
@@ -93,7 +94,7 @@ describe('SelectGenuineOverrideReasonController', () => {
 
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
-      determinateDateTypesForManualEntry.forEach(expectedRadio => {
+      getDeterminateDateTypesForManualEntry().forEach(expectedRadio => {
         const radio = $(`[data-qa=checkbox-${expectedRadio}]`)
         expect(radio).toHaveLength(1)
         if (['CRD', 'SLED'].includes(expectedRadio)) {
@@ -104,6 +105,21 @@ describe('SelectGenuineOverrideReasonController', () => {
           expect(radio.attr('disabled')).toBeUndefined()
         }
       })
+    })
+
+    it('should show TUSED date as an option', async () => {
+      const response = await request(app).get(pageUrl)
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      expect($(`[data-qa=checkbox-TUSED]`)).toHaveLength(1)
+    })
+
+    it('should not show TUSED date as an option when applyPostRecallRepealRules is applied', async () => {
+      config.featureToggles.applyPostRecallRepealRules = true
+      const response = await request(app).get(pageUrl)
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      expect($(`[data-qa=checkbox-TUSED]`)).toHaveLength(0)
     })
 
     it('should show list of dates with the ones already added being disabled and pending ones just ticked but not disabled', async () => {

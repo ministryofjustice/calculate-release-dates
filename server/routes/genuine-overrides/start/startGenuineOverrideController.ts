@@ -3,7 +3,7 @@ import { Controller } from '../../controller'
 import GenuineOverrideUrls from '../genuineOverrideUrls'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import { GenuineOverrideDate } from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { filteredListOfDates } from '../../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { getFilteredListOfDates } from '../../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { EnteredDate, GenuineOverrideInputs } from '../../../@types/journeys'
 
 export default class StartGenuineOverrideController implements Controller {
@@ -56,7 +56,7 @@ export default class StartGenuineOverrideController implements Controller {
     return (
       dates
         // exclude ESED and any other hidden date types.
-        .filter(it => filteredListOfDates.indexOf(it.dateType) >= 0)
+        .filter(it => getFilteredListOfDates().indexOf(it.dateType) >= 0)
         .flatMap(date => {
           // decompose SLED into SED and LED to allow users to override them to be different dates
           if (date.dateType === 'SLED') {

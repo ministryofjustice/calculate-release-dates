@@ -5,7 +5,7 @@ import PrisonerService from '../../services/prisonerService'
 import { CalculationSummaryForm } from './calculationSummarySchema'
 import {
   calculationSummaryDatesCardModelFromOverridesViewModel,
-  filteredListOfDates,
+  getFilteredListOfDates,
 } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import CalculationSummaryOverridesViewModel from '../../models/calculation/CalculationSummaryOverridesViewModel'
 import { sortDisplayableDates } from '../../utils/utils'
@@ -67,7 +67,7 @@ export default class CalculationSummaryOverridesController implements Controller
     const overrideReason = currentResults.context.genuineOverrideReasonDescription
     const overrideDates = sortDisplayableDates(Object.values(overrideResults.dates))
     const currentDates = sortDisplayableDates(
-      Object.values(currentResults.dates).filter(d => filteredListOfDates.includes(d.type)),
+      Object.values(currentResults.dates).filter(d => getFilteredListOfDates().includes(d.type)),
     )
 
     const crdsDateLines = calculationSummaryDatesCardModelFromOverridesViewModel(currentDates)

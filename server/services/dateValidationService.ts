@@ -22,17 +22,20 @@ export default class DateValidationService {
 
   public findDateByType(
     type: string,
-    manualDates: ManualJourneySelectedDate[],
-    genuineOverrideInputs: GenuineOverrideInputs,
+    manualDates: ManualJourneySelectedDate[] | null,
+    genuineOverrideInputs: GenuineOverrideInputs | null,
   ): { day: number; month: number; year: number } | null {
-    let storedDate = null
+    let storedDate: { day: number; month: number; year: number } | null = null
     if (manualDates) {
-      storedDate = manualDates.find(d => d.dateType === type)?.manualEntrySelectedDate?.date
+      const manualDate = manualDates.find(d => d.dateType === type)
+      if (manualDate?.manualEntrySelectedDate?.date) {
+        storedDate = manualDate.manualEntrySelectedDate.date
+      }
     } else if (genuineOverrideInputs) {
       const goDateToSave = genuineOverrideInputs.datesToSave.find(d => d.type === type)?.date
       if (typeof goDateToSave === 'string') {
         storedDate = dateToDayMonthYear(goDateToSave)
-      } else if (genuineOverrideInputs.datesBeingAdded?.length > 0) {
+      } else if (genuineOverrideInputs.datesBeingAdded && genuineOverrideInputs.datesBeingAdded.length > 0) {
         const goDateToAdd = genuineOverrideInputs.datesBeingAdded.find(d => d.type === type)
         if (goDateToAdd && goDateToAdd.day && goDateToAdd.month && goDateToAdd.year) {
           storedDate = {
@@ -48,8 +51,8 @@ export default class DateValidationService {
 
   public validateEtdMtdLtdDprrdDate(
     enteredDate: EnteredDate,
-    manualDates: ManualJourneySelectedDate[],
-    genuineOverrideInputs: GenuineOverrideInputs,
+    manualDates: ManualJourneySelectedDate[] | null,
+    genuineOverrideInputs: GenuineOverrideInputs | null,
   ): string {
     const dateFormat = 'dd/MM/yyyy'
     const enteredDateType = enteredDate.dateType
@@ -152,8 +155,8 @@ export default class DateValidationService {
 
   public validateHdcadHdcedCrdDate(
     enteredDate: EnteredDate,
-    manualDates: ManualJourneySelectedDate[],
-    genuineOverrideInputs: GenuineOverrideInputs,
+    manualDates: ManualJourneySelectedDate[] | null,
+    genuineOverrideInputs: GenuineOverrideInputs | null,
   ): string {
     const dateFormat = 'dd/MM/yyyy'
     const enteredDateType = enteredDate.dateType
@@ -215,8 +218,8 @@ export default class DateValidationService {
 
   public validateSedLedCrdDates(
     enteredDate: EnteredDate,
-    manualDates: ManualJourneySelectedDate[],
-    genuineOverrideInputs: GenuineOverrideInputs,
+    manualDates: ManualJourneySelectedDate[] | null,
+    genuineOverrideInputs: GenuineOverrideInputs | null,
   ): string {
     const dateFormat = 'dd/MM/yyyy'
     const enteredDateType = enteredDate.dateType
@@ -282,7 +285,7 @@ export default class DateValidationService {
     const items = allItems.map(it => {
       return { ...it, classes: `${it.classes} govuk-input--error` }
     })
-    const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
+    const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)!
     const { manualEntrySelectedDate } = manualDate
 
     const messageForSedLedCrdDate = this.validateSedLedCrdDates(enteredDate, manualDates, null)
@@ -331,7 +334,7 @@ export default class DateValidationService {
     allItems: DateInputItem[],
     message: string,
   ) {
-    const manualDate = dates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
+    const manualDate = dates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)!
     const { manualEntrySelectedDate } = manualDate
     const items = allItems.map(it => {
       return { ...it, classes: `${it.classes} govuk-input--error` }
@@ -351,7 +354,7 @@ export default class DateValidationService {
     enteredDate: EnteredDate,
     allItems: DateInputItem[],
   ) {
-    const manualDate = dates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
+    const manualDate = dates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)!
     const { manualEntrySelectedDate } = manualDate
     const dateAsDate = DateTime.fromFormat(`${enteredDate.year}-${enteredDate.month}-${enteredDate.day}`, 'yyyy-M-d')
     const now = DateTime.now()
@@ -380,7 +383,7 @@ export default class DateValidationService {
     dates: ManualJourneySelectedDate[],
     allItems: DateInputItem[],
     enteredDate: EnteredDate,
-  ): StorageResponseModel {
+  ): StorageResponseModel | undefined {
     let i = 0
     let message = 'The date entered must include a'
     const items = allItems
@@ -410,7 +413,7 @@ export default class DateValidationService {
       })
       .filter(it => it !== undefined)
     if (i > 0) {
-      const manualDate = dates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
+      const manualDate = dates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)!
       const { manualEntrySelectedDate } = manualDate
       message += '.'
       return {

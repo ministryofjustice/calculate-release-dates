@@ -45,7 +45,7 @@ export default {
   redis: {
     enabled: get('REDIS_ENABLED', 'false', requiredInProduction) === 'true',
     host: get('REDIS_HOST', 'localhost', requiredInProduction),
-    port: parseInt(process.env.REDIS_PORT, 10) || 6379,
+    port: Number(get('REDIS_PORT', '6379', requiredInProduction)),
     password: process.env.REDIS_AUTH_TOKEN,
     tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
   },
@@ -149,6 +149,7 @@ export default {
     thingsToDoIntercept: get('THING_TO_DO_INTERCEPT_ENABLED', false) === 'true',
     adjustmentsIntegrationEnabled: get('ADJUSTMENTS_INTEGRATION_ENABLED', false) === 'true',
     useNewApprovedDatesFlow: get('USE_NEW_APPROVED_DATES_FLOW', false) === 'true',
+    applyPostRecallRepealRules: get('APPLY_POST_RECALL_REPEAL_RULES', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),

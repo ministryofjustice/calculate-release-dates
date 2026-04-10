@@ -60,13 +60,19 @@ export default class PrisonerService {
       logger.info('Accessible caseloads:', accessibleCaseloads)
       logger.info('Prisoner agencyId:', prisonerDetail.agencyId)
 
-      if (accessibleCaseloads.includes(prisonerDetail.agencyId)) {
+      if (accessibleCaseloads.includes(prisonerDetail.agencyId || '')) {
         return prisonerDetail
       }
 
       throw FullPageError.notInCaseLoadError(prisonerDetail)
-    } catch (error) {
-      if (error?.responseStatus === 404 && !(error instanceof FullPageError)) {
+    } catch (error: unknown) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'responseStatus' in error &&
+        (error as { responseStatus?: number }).responseStatus === 404 &&
+        !(error instanceof FullPageError)
+      ) {
         throw FullPageError.notInCaseLoadError()
       }
       throw error
@@ -83,6 +89,6 @@ export default class PrisonerService {
 
   async getReturnToCustodyDate(bookingId: number, username: string): Promise<PrisonApiReturnToCustodyDate> {
     const { returnToCustodyDate } = await this.prisonApiClient.getFixedTermRecallDetails(bookingId, username)
-    return { bookingId, returnToCustodyDate }
+    return { bookingId, returnToCustodyDate: returnToCustodyDate ?? '' }
   }
 }

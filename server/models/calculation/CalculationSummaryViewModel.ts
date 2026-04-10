@@ -41,7 +41,7 @@ export default class CalculationSummaryViewModel {
     return (
       config.featureToggles.showBreakdown &&
       !!this.calculationBreakdown &&
-      !this.detailedCalculationResults.dates?.PRRD &&
+      !this.detailedCalculationResults?.dates?.PRRD &&
       !this.calculationBreakdown?.otherDates?.PRRD &&
       this.allSentencesSupported()
     )
