@@ -17,7 +17,8 @@ export default class AuditService {
         details,
       })
     } catch (error) {
-      logger.error(`Failed to publish audit event ${action}: ${error.message}`)
+      const message = error instanceof Error ? error.message : String(error)
+      logger.error(`Failed to publish audit event ${action}: ${message}`)
     }
   }
 

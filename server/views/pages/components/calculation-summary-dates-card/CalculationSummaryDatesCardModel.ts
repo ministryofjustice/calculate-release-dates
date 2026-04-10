@@ -84,7 +84,7 @@ export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
   function pushLine(id: string) {
     let detailed: DetailedDate | undefined
     if (model instanceof CalculationSummaryViewModel) {
-      detailed = model.detailedCalculationResults.dates[id]
+      detailed = model.detailedCalculationResults?.dates[id]
     } else {
       ;[detailed] = model.releaseDates.filter(date => date.type === id)
     }

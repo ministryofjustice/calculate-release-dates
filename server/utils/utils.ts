@@ -7,10 +7,11 @@ import { ValidationMessage } from '../@types/calculateReleaseDates/calculateRele
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import ErrorMessage from '../types/ErrorMessage'
 
-const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
-
 export const capitaliseName = (name?: string): string => {
-  return isBlank(name) ? '' : name!.toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase())
+  if (!name) {
+    return ''
+  }
+  return name.toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase())
 }
 
 export const initialiseName = (fullName?: string): string | null => {
@@ -95,14 +96,15 @@ export function createSupportLink({
   return `${prefixText}${contactLink}${suffixText}`
 }
 
-export const maxOf = <A, B>(all: A[], map: (a: A) => B): B => {
-  let max: B = null
+export const maxOf = <A, B>(all: A[], map: (a: A) => B): B | null => {
+  let max: B | null = null
   all.forEach(it => {
-    if (!max) {
-      max = map(it)
+    const mapped = map(it)
+    if (mapped == null) {
+      return
     }
-    if (map(it) && map(it) > max) {
-      max = map(it)
+    if (max == null || mapped > max) {
+      max = mapped
     }
   })
   return max

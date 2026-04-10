@@ -57,10 +57,12 @@ export default class DateTypeConfigurationService {
     date: string,
     format: 'COMBINED' | 'DESCRIPTION_ONLY' = 'COMBINED',
   ) {
-    return this.fromDefinitionToDescription(
-      dateTypeDefinitions.find((dtd: DateTypeDefinition) => dtd.type === date),
-      format,
-    )
+    const def = dateTypeDefinitions.find((dtd: DateTypeDefinition) => dtd.type === date)
+    if (!def) {
+      // Fallback to the raw date type if no definition is found
+      return date
+    }
+    return this.fromDefinitionToDescription(def, format)
   }
 
   fromDefinitionToDescription(def: DateTypeDefinition, format: 'COMBINED' | 'DESCRIPTION_ONLY' = 'COMBINED') {

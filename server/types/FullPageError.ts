@@ -1,9 +1,9 @@
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 
 export class FullPageError extends Error {
-  errorKey: FullPageErrorType
+  errorKey!: FullPageErrorType
 
-  status: number
+  status!: number
 
   nomsId?: string
 
