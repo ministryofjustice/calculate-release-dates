@@ -132,17 +132,10 @@ export default class CalculateReleaseDatesService {
   }
 
   getCalculationRequestModel(req: Request, userInputs: CalculationUserInputs, nomsId: string): CalculationRequestModel {
-    type CalculationSession = Request['session'] & {
-      calculationReasonId?: Record<string, number>
-      otherReasonDescription?: Record<string, string>
-    }
-
-    const session = req.session as CalculationSession
-
     return {
       calculationUserInputs: userInputs,
-      calculationReasonId: session.calculationReasonId?.[nomsId],
-      otherReasonDescription: session.otherReasonDescription?.[nomsId],
+      calculationReasonId: req.session?.calculationReasonId?.[nomsId],
+      otherReasonDescription: req.session?.otherReasonDescription?.[nomsId],
     } as CalculationRequestModel
   }
 
