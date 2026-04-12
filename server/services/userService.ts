@@ -27,7 +27,7 @@ export default class UserService {
     return {
       ...user,
       roles,
-      ...(user.name && { displayName: capitaliseName(user.name) }),
+      displayName: capitaliseName(user.name),
       caseloads: userCaseloads.map(uc => uc.caseLoadId),
       caseloadDescriptions: userCaseloads.map(uc => uc.description),
       caseloadMap: new Map(userCaseloads.map(uc => [uc.caseLoadId, uc.description])),

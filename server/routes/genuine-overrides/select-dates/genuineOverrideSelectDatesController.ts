@@ -4,7 +4,7 @@ import GenuineOverrideUrls from '../genuineOverrideUrls'
 import PrisonerService from '../../../services/prisonerService'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import GenuineOverrideSelectDatesViewModel from '../../../models/genuine-override/GenuineOverrideSelectDatesViewModel'
-import { determinateDateTypesForManualEntry, SelectedDateCheckBox } from '../../../services/manualEntryService'
+import { getDeterminateDateTypesForManualEntry, SelectedDateCheckBox } from '../../../services/manualEntryService'
 import { genuineOverrideInputsForPrisoner } from '../genuineOverrideUtils'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import {
@@ -29,7 +29,7 @@ export default class GenuineOverrideSelectDatesController implements Controller 
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
     const pendingDateTypes: string[] =
       res.locals.formResponses?.dateType ?? genuineOverrideInputs.datesBeingAdded?.map(it => it.type) ?? []
-    const checkboxes: SelectedDateCheckBox[] = determinateDateTypesForManualEntry.map(dateType => {
+    const checkboxes: SelectedDateCheckBox[] = getDeterminateDateTypesForManualEntry().map(dateType => {
       const hasEnteredDate = genuineOverrideInputs.datesToSave?.find(it => it.type === dateType) !== undefined
       const hasPendingDate = pendingDateTypes?.find(it => it === dateType) !== undefined
       return {

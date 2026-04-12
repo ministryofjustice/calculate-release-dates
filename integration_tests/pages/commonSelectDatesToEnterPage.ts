@@ -33,6 +33,10 @@ export default class CommonSelectDatesToEnterPage extends Page {
     return this
   }
 
+  public checkDateOptionExists(dateType: string) {
+    cy.get(`input.govuk-checkboxes__input[value="${dateType}"]`).should('exist')
+  }
+
   public continue(buttonDataQa: string = 'manual-entry'): PageElement {
     return cy.get(`[data-qa=${buttonDataQa}]`)
   }

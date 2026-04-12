@@ -7,7 +7,7 @@ import PrintNotificationSlipViewModel from '../../models/PrintNotificationSlipVi
 import ViewRouteSentenceAndOffenceViewModel from '../../models/ViewRouteSentenceAndOffenceViewModel'
 import SentenceTypes from '../../models/SentenceTypes'
 import config from '../../config'
-import { filteredListOfDates } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { getFilteredListOfDates } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 
 export default class ViewPrintNotificationSlipController implements Controller {
   constructor(
@@ -38,7 +38,7 @@ export default class ViewPrintNotificationSlipController implements Controller {
     const hasDTOSentence = sentencesAndOffences.some(sentence => SentenceTypes.isSentenceDto(sentence))
     const hasOnlyDTOSentences = sentencesAndOffences.every(sentence => SentenceTypes.isSentenceDto(sentence))
     const datesArray = Object.values(releaseDateAndCalcContext.dates)
-      .filter(dateObject => dateObject && dateObject.date && filteredListOfDates.includes(dateObject.type))
+      .filter(dateObject => dateObject && dateObject.date && getFilteredListOfDates().includes(dateObject.type))
       .map(dateObject => ({ code: dateObject.type, description: dateObject.description, date: dateObject.date }))
 
     const reasonForCalculation =

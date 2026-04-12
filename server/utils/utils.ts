@@ -2,15 +2,16 @@ import dayjs from 'dayjs'
 import { DesignSystemEnvironment } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import config from '../config'
-import { filteredListOfDates } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { getFilteredListOfDates } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import ErrorMessage from '../types/ErrorMessage'
 
-const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
-
 export const capitaliseName = (name?: string): string => {
-  return isBlank(name) ? '' : name!.toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase())
+  if (!name) {
+    return ''
+  }
+  return name.toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase())
 }
 
 export const initialiseName = (fullName?: string): string | null => {
@@ -95,21 +96,22 @@ export function createSupportLink({
   return `${prefixText}${contactLink}${suffixText}`
 }
 
-export const maxOf = <A, B>(all: A[], map: (a: A) => B): B => {
-  let max: B = null
+export const maxOf = <A, B>(all: A[], map: (a: A) => B): B | null => {
+  let max: B | null = null
   all.forEach(it => {
-    if (!max) {
-      max = map(it)
+    const mapped = map(it)
+    if (mapped == null) {
+      return
     }
-    if (map(it) && map(it) > max) {
-      max = map(it)
+    if (max == null || mapped > max) {
+      max = mapped
     }
   })
   return max
 }
 
 export const sortDisplayableDates = <T extends { type: string }>(dates: T[]): T[] => {
-  return dates.sort((a, b) => filteredListOfDates.indexOf(a.type) - filteredListOfDates.indexOf(b.type))
+  return dates.sort((a, b) => getFilteredListOfDates().indexOf(a.type) - getFilteredListOfDates().indexOf(b.type))
 }
 
 export const dateToDayMonthYear = (date: string): { day: number; month: number; year: number } => {

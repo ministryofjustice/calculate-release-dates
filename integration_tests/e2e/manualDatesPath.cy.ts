@@ -9,6 +9,7 @@ import CalculationCompletePage from '../pages/calculationComplete'
 import ManualDatesRemoveDatePage from '../pages/manualDatesRemoveDate'
 import ManualDatesNoDatesConfirmationPage from '../pages/manualDatesNoDatesConfirmationPage'
 import CheckInformationPage from '../pages/checkInformation'
+import { getDeterminateDateTypesForManualEntry } from '../../server/services/manualEntryService'
 
 context('End to end user journeys entering and modifying approved dates', () => {
   beforeEach(() => {
@@ -287,6 +288,11 @@ context('End to end user journeys entering and modifying approved dates', () => 
     manualEntryLandingPage.continue().click()
 
     const selectDatesPage = Page.verifyOnPage(ManualEntrySelectDatesPage)
+
+    getDeterminateDateTypesForManualEntry().forEach(dateType => {
+      selectDatesPage.checkDateOptionExists(dateType)
+    })
+
     selectDatesPage.checkDate('SED')
     selectDatesPage.checkDate('CRD')
     selectDatesPage.continue().click()

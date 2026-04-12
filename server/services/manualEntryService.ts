@@ -7,6 +7,11 @@ import { ApiReleaseDateType, DetailedDate } from '../@types/calculateReleaseDate
 import { createSupportLink } from '../utils/utils'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
+import config from '../config'
+
+type ManualEntrySession = Request['session'] & {
+  selectedManualEntryDates?: Record<string, ManualJourneySelectedDate[]>
+}
 
 export const dateTypeOrder: Partial<Record<ApiReleaseDateType, number>> = {
   SED: 1,
@@ -31,7 +36,7 @@ export const dateTypeOrder: Partial<Record<ApiReleaseDateType, number>> = {
   None: 30,
 }
 
-export const determinateDateTypesForManualEntry = [
+const determinateDateTypesForManualEntry = [
   'SED',
   'LED',
   'CRD',
@@ -51,6 +56,13 @@ export const determinateDateTypesForManualEntry = [
   'DPRRD',
 ]
 
+const determinateDateTypesForManualEntryPostRecallRepeal = determinateDateTypesForManualEntry.filter(d => d !== 'TUSED')
+
+export const getDeterminateDateTypesForManualEntry = () =>
+  config.featureToggles.applyPostRecallRepealRules
+    ? determinateDateTypesForManualEntryPostRecallRepeal
+    : determinateDateTypesForManualEntry
+
 const errorMessage = {
   errorMessage: {
     text: 'Select at least one release date.',
@@ -66,10 +78,14 @@ export default class ManualEntryService {
   }
 
   public populateExistingDates(req: Request, nomsId: string, dates: DetailedDate[]) {
-    if (!req.session.selectedManualEntryDates[nomsId]) {
-      req.session.selectedManualEntryDates[nomsId] = new Array<ManualJourneySelectedDate>()
+    const session = req.session as ManualEntrySession
+    if (!session.selectedManualEntryDates) {
+      session.selectedManualEntryDates = {}
     }
-    req.session.selectedManualEntryDates[nomsId] = dates
+    if (!session.selectedManualEntryDates[nomsId]) {
+      session.selectedManualEntryDates[nomsId] = new Array<ManualJourneySelectedDate>()
+    }
+    session.selectedManualEntryDates[nomsId] = dates
       .filter(d => d.date)
       .map(({ type, description, date }, i): ManualJourneySelectedDate => {
         const { day, month, year } = DateTime.fromISO(date)
@@ -94,14 +110,15 @@ export default class ManualEntryService {
     existingDateTypes: string[],
     username: string,
   ): Promise<{ error: boolean; config: DateSelectConfiguration }> {
-    if (!req.session.selectedManualEntryDates) {
-      req.session.selectedManualEntryDates = {}
+    const session = req.session as ManualEntrySession
+    if (!session.selectedManualEntryDates) {
+      session.selectedManualEntryDates = {}
     }
-    if (!req.session.selectedManualEntryDates[nomsId]) {
-      req.session.selectedManualEntryDates[nomsId] = []
+    if (!session.selectedManualEntryDates[nomsId]) {
+      session.selectedManualEntryDates[nomsId] = []
     }
 
-    const newDates = req.session.selectedManualEntryDates[nomsId].filter(
+    const newDates = session.selectedManualEntryDates[nomsId].filter(
       (existingDate: ManualJourneySelectedDate) => !existingDate.completed,
     )
 
@@ -109,15 +126,15 @@ export default class ManualEntryService {
       req.body == null ||
       (!firstLoad && newDates.length === 0 && (req.body.dateSelect === undefined || req.body.dateSelect.length === 0))
 
-    let config: DateSelectConfiguration
+    let dateConfig: DateSelectConfiguration
     if (hasIndeterminateSentences) {
-      config = await this.indeterminateConfig(username, existingDateTypes)
+      dateConfig = await this.indeterminateConfig(username, existingDateTypes)
     } else {
-      config = await this.determinateConfig(username, existingDateTypes)
+      dateConfig = await this.determinateConfig(username, existingDateTypes)
     }
 
     if (insufficientDatesSelected) {
-      const mergedConfig = req.method === 'POST' ? { ...config, ...errorMessage } : { ...config }
+      const mergedConfig = req.method === 'POST' ? { ...dateConfig, ...errorMessage } : { ...dateConfig }
       this.enrichConfiguration(mergedConfig, req, nomsId, existingDateTypes)
       return { error: true, config: mergedConfig }
     }
@@ -142,12 +159,12 @@ export default class ManualEntryService {
         ${validationMessages.messages.map(e => `<li>${e.text}</li>`).join('\n')}</ul></div>
       </ul>${errorEnd}</div>`
       const validationError = { errorMessage: { html: dateErrors } }
-      const mergedConfig = { ...config, ...validationError }
+      const mergedConfig = { ...dateConfig, ...validationError }
       this.enrichConfiguration(<DateSelectConfiguration>mergedConfig, req, nomsId, existingDateTypes)
       return { error: true, config: <DateSelectConfiguration>mergedConfig }
     }
-    this.enrichConfiguration(config, req, nomsId, existingDateTypes)
-    return { error: false, config: <DateSelectConfiguration>config }
+    this.enrichConfiguration(dateConfig, req, nomsId, existingDateTypes)
+    return { error: false, config: <DateSelectConfiguration>dateConfig }
   }
 
   private enrichConfiguration(
@@ -156,13 +173,14 @@ export default class ManualEntryService {
     nomsId: string,
     existingDateTypes: string[],
   ) {
+    const session = req.session as ManualEntrySession
     for (const item of mergedConfig.items) {
       if (
-        req.session.selectedManualEntryDates[nomsId] &&
-        req.session.selectedManualEntryDates[nomsId].some((d: ManualJourneySelectedDate) => d.dateType === item.value)
+        session.selectedManualEntryDates?.[nomsId] &&
+        session.selectedManualEntryDates[nomsId].some((d: ManualJourneySelectedDate) => d.dateType === item.value)
       ) {
         item.checked = true
-        item.attributes = existingDateTypes.includes(item.value) ? { disabled: true } : {}
+        item.attributes = existingDateTypes.includes(item.value ?? '') ? { disabled: true } : {}
       } else {
         item.checked = false
         item.attributes = {}
@@ -174,7 +192,8 @@ export default class ManualEntryService {
     const dateTypeDefinitions = await this.calculateReleaseDatesService.getDateTypeDefinitions(username)
     const selectedDateTypes: string[] = Array.isArray(req.body.dateSelect) ? req.body.dateSelect : [req.body.dateSelect]
 
-    const currentDates: ManualJourneySelectedDate[] = req.session.selectedManualEntryDates[nomsId] || []
+    const session = req.session as ManualEntrySession
+    const currentDates: ManualJourneySelectedDate[] = session.selectedManualEntryDates?.[nomsId] || []
 
     const immutableDates: ManualJourneySelectedDate[] = []
     const existingMutableDates: ManualJourneySelectedDate[] = []
@@ -223,7 +242,10 @@ export default class ManualEntryService {
         return newDate
       })
 
-    req.session.selectedManualEntryDates[nomsId] = [
+    if (!session.selectedManualEntryDates) {
+      session.selectedManualEntryDates = {}
+    }
+    session.selectedManualEntryDates[nomsId] = [
       ...positionedImmutableDates,
       ...positionedExistingMutableDates,
       ...newMutableDates,
@@ -235,13 +257,13 @@ export default class ManualEntryService {
       return undefined
     }
 
-    return outstandingDates.find(d => d.manualEntrySelectedDate.dateType === dateType)
+    return outstandingDates.find(d => d.manualEntrySelectedDate?.dateType === dateType)
   }
 
   public getNextDateToEnter(
     outstandingDates: ManualJourneySelectedDate[],
     currentDateType?: string,
-  ): ManualJourneySelectedDate {
+  ): ManualJourneySelectedDate | undefined {
     if (!Array.isArray(outstandingDates) || outstandingDates.length === 0) {
       return undefined
     }
@@ -278,7 +300,12 @@ export default class ManualEntryService {
 
   public storeDate(manualDates: ManualJourneySelectedDate[], enteredDate: EnteredDate): StorageResponseModel {
     if (enteredDate.dateType === 'None') {
-      return { success: false, date: undefined, enteredDate: undefined, items: [], message: '', isNone: true }
+      const dummyDate: ManualEntrySelectedDate = {
+        dateType: 'None' as releaseDateType,
+        dateText: '',
+        date: undefined,
+      }
+      return { success: false, date: dummyDate, enteredDate, items: [], message: '', isNone: true }
     }
 
     const allItems: DateInputItem[] = [
@@ -332,19 +359,22 @@ export default class ManualEntryService {
       return invalidDate
     }
 
-    const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)
-    const manualEntry = manualDate.manualEntrySelectedDate
-    manualDate.manualEntrySelectedDate.date = {
+    const manualDate = manualDates.find((d: ManualJourneySelectedDate) => d.dateType === enteredDate.dateType)!
+    const manualEntry = manualDate.manualEntrySelectedDate!
+    manualDate.manualEntrySelectedDate!.date = {
       day: Number(enteredDate.day),
       month: Number(enteredDate.month),
       year: Number(enteredDate.year),
     }
 
-    return { enteredDate: undefined, items: [], message: undefined, success: true, isNone: false, date: manualEntry }
+    return { enteredDate, items: [], message: '', success: true, isNone: false, date: manualEntry }
   }
 
   private dateString(selectedDate: ManualEntrySelectedDate): string {
     if (selectedDate.dateType === 'None') {
+      return ''
+    }
+    if (!selectedDate.date) {
       return ''
     }
     const dateString = `${selectedDate.date.year}-${selectedDate.date.month}-${selectedDate.date.day}`
@@ -358,11 +388,12 @@ export default class ManualEntryService {
     allowActions: boolean,
   ): Promise<DateRow[]> {
     const dateTypeDefinitions = await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username)
-    return req.session.selectedManualEntryDates[nomsId]
+    const session = req.session as ManualEntrySession
+    return (session.selectedManualEntryDates?.[nomsId] ?? [])
       .map((d: ManualJourneySelectedDate) => {
-        const dateValue = this.dateString(d.manualEntrySelectedDate)
+        const dateValue = this.dateString(d.manualEntrySelectedDate!)
         const text = dateTypeDefinitions[d.dateType]
-        const items: ActionItem[] = allowActions ? this.getItems(nomsId, d.manualEntrySelectedDate, text) : null
+        const items: ActionItem[] = allowActions ? this.getItems(nomsId, d.manualEntrySelectedDate!, text) : []
         return {
           key: {
             text,
@@ -381,7 +412,7 @@ export default class ManualEntryService {
   }
 
   private getOrder(dateType: string | ApiReleaseDateType): number {
-    return dateTypeOrder[dateType as ApiReleaseDateType]
+    return dateTypeOrder[dateType as ApiReleaseDateType] ?? 0
   }
 
   private getItems(nomsId: string, d: ManualEntrySelectedDate, text: string) {
@@ -412,12 +443,13 @@ export default class ManualEntryService {
 
   public removeDate(req: Request, nomsId: string): number {
     const dateToRemove = req.query.dateType
+    const session = req.session as ManualEntrySession
     if (req.body != null && req.body['remove-date'] === 'yes') {
-      req.session.selectedManualEntryDates[nomsId] = req.session.selectedManualEntryDates[nomsId].filter(
+      session.selectedManualEntryDates![nomsId] = session.selectedManualEntryDates![nomsId].filter(
         (d: ManualJourneySelectedDate) => d.dateType !== dateToRemove,
       )
     }
-    return req.session.selectedManualEntryDates[nomsId].length
+    return session.selectedManualEntryDates?.[nomsId]?.length ?? 0
   }
 
   private async determinateConfig(username: string, existingTypes: string[]): Promise<DateSelectConfiguration> {
@@ -434,7 +466,7 @@ export default class ManualEntryService {
       hint: {
         text: 'Select all that apply to the manual calculation.',
       },
-      items: determinateDateTypesForManualEntry.map(dateType => {
+      items: getDeterminateDateTypesForManualEntry().map(dateType => {
         return {
           value: dateType,
           text: dateTypeDefinitions[dateType],
