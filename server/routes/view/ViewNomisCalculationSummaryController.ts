@@ -12,11 +12,10 @@ export default class ViewNomisCalculationSummaryController implements Controller
   ) {}
 
   GET = async (req: Request, res: Response): Promise<void> => {
-    const { nomsId } = req.params
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const offenderSentCalculationId = Number(req.params.offenderSentCalculationId)
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     const pastNomisCalculation = await this.calculateReleaseDatesService.getNomisCalculationSummary(
       offenderSentCalculationId,
       username,

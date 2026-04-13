@@ -11,7 +11,7 @@ export default class ThingsToDoInterceptController implements Controller {
   ) {}
 
   GET = async (req: Request, res: Response): Promise<void> => {
-    const { token, caseloads, userRoles, username } = res.locals.user
+    const { token } = res.locals.user
     const { nomsId } = req.params
 
     const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token)
@@ -27,7 +27,7 @@ export default class ThingsToDoInterceptController implements Controller {
       return
     }
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     res.render('pages/calculation/thingsToDoIntercept', new ThingsToDoInterceptViewModel(prisonerDetail, thingsToDo))
   }

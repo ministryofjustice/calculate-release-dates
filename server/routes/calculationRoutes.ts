@@ -36,10 +36,10 @@ export default class CalculationRoutes {
   }
 
   public printCalculationSummary: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       username,
@@ -87,9 +87,7 @@ export default class CalculationRoutes {
   }
 
   public askCancelQuestion: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
-    const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     let redirectUrl = typeof req.query.redirectUrl === 'string' ? req.query.redirectUrl : ''
     if (typeof req.query === 'object') {
       const params = new URLSearchParams()
@@ -107,9 +105,8 @@ export default class CalculationRoutes {
   }
 
   public submitCancelQuestion: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     const { redirectUrl, cancelQuestion } = req.body
     if (cancelQuestion === 'no') {
       return res.redirect(redirectUrl)
@@ -124,11 +121,11 @@ export default class CalculationRoutes {
   }
 
   public complete: RequestHandler = async (req, res): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
     const { nomsId } = req.params
     const noDates: string = <string>req.query.noDates
     const calculationRequestId = Number(req.params.calculationRequestId)
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
     const calculation = await this.calculateReleaseDatesService.getCalculationResults(calculationRequestId, username)
     const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
       prisonerDetail.bookingId,
