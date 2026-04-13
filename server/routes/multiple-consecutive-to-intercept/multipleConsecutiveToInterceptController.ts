@@ -13,10 +13,9 @@ export default class MultipleConsecutiveToInterceptController implements Control
   ) {}
 
   GET = async (req: Request<{ nomsId: string }>, res: Response): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     const { duration } = req.query as Record<string, string>
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     if (req.session.calculationReasonId == null || duration == null) {
       return res.redirect(`/calculation/${nomsId}/check-information`)

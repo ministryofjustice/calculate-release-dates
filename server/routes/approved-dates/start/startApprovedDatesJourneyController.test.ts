@@ -10,6 +10,8 @@ import {
   ApprovedDatesInputResponse,
   CalculatedReleaseDates,
 } from '../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import PrisonerService from '../../../services/prisonerService'
+import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 
 let app: Express
 let session: Partial<SessionData>
@@ -24,7 +26,16 @@ const calculateReleaseDatesService = new CalculateReleaseDatesService(
   null,
 ) as jest.Mocked<CalculateReleaseDatesService>
 
+const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
+
+const stubbedPrisonerData = {
+  offenderNo: nomsId,
+  firstName: 'Anon',
+  lastName: 'Nobody',
+} as PrisonApiPrisoner
+
 beforeEach(() => {
+  prisonerService.getPrisonerDetail = jest.fn()
   const sessionSetup = new SessionSetup()
   sessionSetup.sessionDoctor = req => {
     session = req.session
@@ -38,10 +49,12 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       calculateReleaseDatesService,
+      prisonerService,
     },
     userSupplier: () => user,
     sessionSetup,
   })
+  prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
 })
 
 afterEach(() => {
