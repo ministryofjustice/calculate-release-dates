@@ -149,6 +149,7 @@ describe('checkInformationService', () => {
         prisonerNumber: nomsId,
         username: 'user1',
         isUnsupported: true,
+        prisonId: 'LEI',
       },
     })
   })
@@ -194,6 +195,7 @@ describe('checkInformationService', () => {
         prisonerNumber: nomsId,
         username: 'user1',
         isUnsupported: false,
+        prisonId: 'LEI',
       },
     })
   })
@@ -225,6 +227,7 @@ describe('checkInformationService', () => {
         prisonerNumber: nomsId,
         username: 'user1',
         isUnsupported: false,
+        prisonId: 'LEI',
       },
     })
   })

@@ -63,6 +63,7 @@ export default class CheckInformationService {
     }
 
     if (validationMessages?.messages?.length) {
+      const prisonId = prisonerDetail?.agencyId || null
       this.telemetryClient?.trackEvent({
         name: 'validation-failures-requiring-fix',
         properties: {
@@ -70,6 +71,7 @@ export default class CheckInformationService {
           prisonerNumber: nomsId,
           username,
           isUnsupported,
+          ...(prisonId && { prisonId }),
         },
       })
     }
