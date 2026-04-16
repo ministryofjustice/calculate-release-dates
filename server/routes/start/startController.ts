@@ -20,8 +20,8 @@ export default class StartController implements Controller {
 
     if (prisonId) {
       const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
-      const { caseloads, token, userRoles, username } = res.locals.user
-      const prisonerDetail = await this.prisonerService.getPrisonerDetail(prisonId, username, caseloads, userRoles)
+      const { token, username } = res.locals.user
+      const prisonerDetail = req.prisoner
       const calculationHistory = await this.calculateReleaseDatesService.getCalculationHistory(prisonId, username)
       const hasIndeterminateSentence = await this.calculateReleaseDatesService.hasIndeterminateSentences(
         prisonerDetail.bookingId,

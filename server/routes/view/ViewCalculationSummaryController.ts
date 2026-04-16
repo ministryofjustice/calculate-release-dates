@@ -11,6 +11,7 @@ import ViewCalculateReleaseDatePageViewModel from '../../models/ViewCalculateRel
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import { hasGenuineOverridesAccess } from '../genuine-overrides/genuineOverrideUtils'
+import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 
 export default class ViewCalculationSummaryController implements Controller {
   constructor(
@@ -34,16 +35,14 @@ export default class ViewCalculationSummaryController implements Controller {
   private async calculateReleaseDatesViewModel(
     calculationRequestId: number,
     nomsId: string,
-    caseloads: string[],
-    userRoles: string[],
     username: string,
+    prisonerDetail: PrisonApiPrisoner,
   ): Promise<CalculationSummaryViewModel> {
     const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       username,
     )
     const hasErsed = 'ERSED' in detailedCalculationResults.dates
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const { calculationBreakdown, calculationOriginalData, breakdownMissingReason, releaseDatesWithAdjustments } =
       detailedCalculationResults
     if (!calculationBreakdown && breakdownMissingReason && breakdownMissingReason === 'PRISON_API_DATA_MISSING') {
@@ -117,13 +116,7 @@ export default class ViewCalculationSummaryController implements Controller {
     const calculationRequestId = Number(req.params.calculationRequestId)
 
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
-    const model = await this.calculateReleaseDatesViewModel(
-      calculationRequestId,
-      nomsId,
-      caseloads,
-      userRoles,
-      username,
-    )
+    const model = await this.calculateReleaseDatesViewModel(calculationRequestId, nomsId, username, req.prisoner)
 
     res.render(
       'pages/view/calculationSummary',

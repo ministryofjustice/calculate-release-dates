@@ -3,6 +3,7 @@ import type { UserDetails } from '../../services/userService'
 import { ErrorMessages } from '../../types/ErrorMessages'
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
 import { ApprovedDatesJourney, GenuineOverrideInputs } from '../journeys'
+import { PrisonApiPrisoner } from '../prisonApi/prisonClientTypes'
 
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -40,6 +41,7 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+      prisoner?: PrisonApiPrisoner
     }
 
     interface Locals {

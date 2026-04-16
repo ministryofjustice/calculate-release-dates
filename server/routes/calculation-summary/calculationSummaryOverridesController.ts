@@ -9,6 +9,7 @@ import {
 } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import CalculationSummaryOverridesViewModel from '../../models/calculation/CalculationSummaryOverridesViewModel'
 import { sortDisplayableDates } from '../../utils/utils'
+import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 
 export default class CalculationSummaryOverridesController implements Controller {
   constructor(
@@ -28,9 +29,8 @@ export default class CalculationSummaryOverridesController implements Controller
     const model = await this.calculateReleaseDatesOverridesViewModel(
       calculationRequestId,
       nomsId,
-      caseloads,
-      userRoles,
       username,
+      req.prisoner,
     )
 
     if (model === null) {
@@ -43,11 +43,9 @@ export default class CalculationSummaryOverridesController implements Controller
   public async calculateReleaseDatesOverridesViewModel(
     calculationRequestId: number,
     nomsId: string,
-    caseloads: string[],
-    userRoles: string[],
     username: string,
+    prisonerDetail: PrisonApiPrisoner,
   ) {
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
     const overrideResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
       calculationRequestId,
       username,
