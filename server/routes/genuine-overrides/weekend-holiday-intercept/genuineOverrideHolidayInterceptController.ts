@@ -9,9 +9,8 @@ export default class GenuineOverrideHolidayInterceptController implements Contro
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params
-    const { caseloads, username, userRoles } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     return res.render(
       'pages/genuineOverrides/releaseDateOnHolidayIntercept',

@@ -22,9 +22,9 @@ export default class DeleteGenuineOverrideDateController implements Controller {
     res: Response,
   ): Promise<void> => {
     const { nomsId, calculationRequestId, dateType } = req.params
-    const { caseloads, userRoles, username } = res.locals.user
+    const { username } = res.locals.user
 
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const prisonerDetail = req.prisoner
 
     const genuineOverrideInputs = genuineOverrideInputsForPrisoner(req, nomsId)
 
