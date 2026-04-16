@@ -1,5 +1,5 @@
 import { DataTelemetry, EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
-import { addUserDataToRequests, ContextObject } from './azureAppInsights'
+import { addCustomDataToRequests, ContextObject } from './azureAppInsights'
 
 const user = {
   username: 'test-user',
@@ -33,7 +33,7 @@ describe('azureAppInsights', () => {
     it('adds user data to properties when present', () => {
       const envelope = createEnvelope({ other: 'things' })
 
-      addUserDataToRequests(envelope, context)
+      addCustomDataToRequests(envelope, context)
 
       expect(envelope.data.baseData.properties).toStrictEqual({
         ...user,
@@ -44,7 +44,7 @@ describe('azureAppInsights', () => {
     it('handles absent user data', () => {
       const envelope = createEnvelope({})
 
-      addUserDataToRequests(envelope, context)
+      addCustomDataToRequests(envelope, context)
 
       expect(envelope.data.baseData.properties).toStrictEqual({
         ...user,
@@ -54,7 +54,7 @@ describe('azureAppInsights', () => {
     it('returns true when not RequestData type', () => {
       const envelope = createEnvelope({}, 'NOT_REQUEST_DATA')
 
-      const response = addUserDataToRequests(envelope, context)
+      const response = addCustomDataToRequests(envelope, context)
 
       expect(response).toStrictEqual(true)
     })
@@ -62,7 +62,7 @@ describe('azureAppInsights', () => {
     it('handles when no properties have been set', () => {
       const envelope = createEnvelope(undefined)
 
-      addUserDataToRequests(envelope, context)
+      addCustomDataToRequests(envelope, context)
 
       expect(envelope.data.baseData.properties).toStrictEqual(user)
     })
@@ -70,7 +70,7 @@ describe('azureAppInsights', () => {
     it('handles missing user details', () => {
       const envelope = createEnvelope({ other: 'things' })
 
-      addUserDataToRequests(envelope, {
+      addCustomDataToRequests(envelope, {
         'http.ServerRequest': {},
       } as ContextObject)
 

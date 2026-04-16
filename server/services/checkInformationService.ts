@@ -7,6 +7,7 @@ import PrisonerService from './prisonerService'
 import config from '../config'
 import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { convertValidationToErrorMessages } from '../utils/utils'
+import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 
 export default class CheckInformationService {
   constructor(
@@ -20,12 +21,9 @@ export default class CheckInformationService {
   public async checkInformation(
     nomsId: string,
     userInputs: CalculationUserInputs,
-    caseloads: string[],
-    userRoles: string[],
     username: string,
+    prisonerDetail: PrisonApiPrisoner,
   ): Promise<SentenceAndOffenceViewModel> {
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
-
     const [sentencesAndOffences, adjustmentDetails, ersedAvailable, analysedAdjustments, validationResult] =
       await Promise.all([
         this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, username),
@@ -65,6 +63,7 @@ export default class CheckInformationService {
     }
 
     if (validationMessages?.messages?.length) {
+      const prisonId = prisonerDetail?.agencyId || null
       this.telemetryClient?.trackEvent({
         name: 'validation-failures-requiring-fix',
         properties: {
@@ -72,6 +71,7 @@ export default class CheckInformationService {
           prisonerNumber: nomsId,
           username,
           isUnsupported,
+          ...(prisonId && { prisonId }),
         },
       })
     }

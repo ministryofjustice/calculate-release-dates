@@ -30,13 +30,7 @@ export default class CheckInformationController implements Controller {
       return res.redirect(`/calculation/${nomsId}/reason`)
     }
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-    const model = await this.checkInformationService.checkInformation(
-      nomsId,
-      userInputs,
-      caseloads,
-      userRoles,
-      username,
-    )
+    const model = await this.checkInformationService.checkInformation(nomsId, userInputs, username, req.prisoner)
     return res.render('pages/calculation/checkInformation', new CheckInformationViewModel(model, true, req.originalUrl))
   }
 

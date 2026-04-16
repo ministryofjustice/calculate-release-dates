@@ -8,6 +8,7 @@ import { ReleaseDateForm } from '../../common-schemas/releaseDateSchemas'
 import GenuineOverrideEnterDateViewModel from '../../../models/genuine-override/GenuineOverrideEnterDateViewModel'
 import DateTypeConfigurationService from '../../../services/dateTypeConfigurationService'
 import { dateToDayMonthYear } from '../../../utils/utils'
+import { PrisonApiPrisoner } from '../../../@types/prisonApi/prisonClientTypes'
 
 export default class EditGenuineOverrideDateController implements Controller {
   constructor(
@@ -37,7 +38,7 @@ export default class EditGenuineOverrideDateController implements Controller {
     const month = res.locals?.formResponses?.month ?? parsedDate.month
     const year = res.locals?.formResponses?.year ?? parsedDate.year
 
-    return this.renderEnterDateView(res, nomsId, calculationRequestId, dateType, day, month, year)
+    return this.renderEnterDateView(res, nomsId, calculationRequestId, dateType, day, month, year, req.prisoner)
   }
 
   POST = async (
@@ -60,9 +61,9 @@ export default class EditGenuineOverrideDateController implements Controller {
     day: number,
     month: number,
     year: number,
+    prisonerDetail: PrisonApiPrisoner,
   ): Promise<void> {
-    const { caseloads, userRoles, username } = res.locals.user
-    const prisonerDetail = await this.prisonerService.getPrisonerDetail(nomsId, username, caseloads, userRoles)
+    const { username } = res.locals.user
     const description = await this.dateTypeConfigurationService
       .dateTypeToDescriptionMapping(username)
       .then(descriptions => descriptions[dateType])
