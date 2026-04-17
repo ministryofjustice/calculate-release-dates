@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import { z } from 'zod'
 import { Controller } from '../controller'
-import asyncMiddleware from '../../middleware/asyncMiddleware'
 import SelectGenuineOverrideReasonController from './select-genuine-override-reason/selectGenuineOverrideReasonController'
 import { SchemaFactory, validate } from '../../middleware/validationMiddleware'
 import { selectGenuineOverrideReasonSchemaFactory } from './select-genuine-override-reason/selectGenuineOverrideReasonSchemas'
@@ -40,12 +39,12 @@ const GenuineOverridesRoutes = (
     controller: Controller
     validateToSchema?: z.ZodTypeAny | SchemaFactory<P>
   }) => {
-    router.get(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.GET))
+    router.get(path, requireGenuineOverrideAccess(), controller.GET)
     if (controller.POST) {
       if (validateToSchema) {
-        router.post(path, requireGenuineOverrideAccess(), validate(validateToSchema), asyncMiddleware(controller.POST))
+        router.post(path, requireGenuineOverrideAccess(), validate(validateToSchema), controller.POST)
       } else {
-        router.post(path, requireGenuineOverrideAccess(), asyncMiddleware(controller.POST))
+        router.post(path, requireGenuineOverrideAccess(), controller.POST)
       }
     }
   }

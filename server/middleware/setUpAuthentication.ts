@@ -1,15 +1,48 @@
-import type { Router } from 'express'
-import express from 'express'
 import passport from 'passport'
 import flash from 'connect-flash'
+import { Router } from 'express'
+import { Strategy } from 'passport-oauth2'
+import { VerificationClient, AuthenticatedRequest } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
-import auth from '../authentication/auth'
+import { HmppsUser } from '../interfaces/hmppsUser'
+import generateOauthClientToken from '../utils/clientCredentials'
 import logger from '../../logger'
 
-const router = express.Router()
+passport.serializeUser((user, done) => {
+  // Not used but required for Passport
+  done(null, user)
+})
 
-export default function setUpAuth(): Router {
-  auth.init()
+passport.deserializeUser((user, done) => {
+  // Not used but required for Passport
+  done(null, user as Express.User)
+})
+
+passport.use(
+  new Strategy(
+    {
+      authorizationURL: `${config.apis.hmppsAuth.externalUrl}/oauth/authorize`,
+      tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
+      clientID: config.apis.hmppsAuth.authClientId,
+      clientSecret: config.apis.hmppsAuth.authClientSecret,
+      callbackURL: `${config.domain}/sign-in/callback`,
+      state: true,
+      customHeaders: { Authorization: generateOauthClientToken() },
+    },
+    (token, refreshToken, params, profile, done) => {
+      return done(null, {
+        token,
+        username: params.user_name,
+        authSource: params.auth_source,
+        userRoles: params.userRoles,
+      })
+    },
+  ),
+)
+
+export default function setupAuthentication() {
+  const router = Router()
+  const tokenVerificationClient = new VerificationClient(config.apis.tokenVerification, logger)
 
   router.use(passport.initialize())
   router.use(passport.session())
@@ -22,42 +55,18 @@ export default function setUpAuth(): Router {
 
   router.get('/sign-in', passport.authenticate('oauth2'))
 
-  router.get('/sign-in/callback', (req, res, next) => {
-    const authCallback: passport.AuthenticateCallback = (err, user, info) => {
-      if (err) {
-        logger.error('There was an error')
-        logger.error(err)
-        return res.redirect('/autherror')
-      }
-      if (!user) {
-        const { message } = info as { message: string }
-        if (info && message === 'Unable to verify authorization request state.') {
-          // failure to due authorisation state not being there on return, so retry
-          logger.error('Retrying auth callback as no state found')
-          return res.redirect('/')
-        }
-        logger.error(`Auth failure due to ${JSON.stringify(info)}`)
-        return res.redirect('/autherror')
-      }
-      const { returnTo } = req.session
-      req.logIn(user, err2 => {
-        if (err2) {
-          return next(err2)
-        }
-        if (typeof returnTo === 'string' && returnTo.startsWith('/')) {
-          return res.redirect(returnTo)
-        }
-        return res.redirect('/')
-      })
-      return null
-    }
-    passport.authenticate('oauth2', authCallback)(req, res, next)
-  })
+  router.get('/sign-in/callback', (req, res, next) =>
+    passport.authenticate('oauth2', {
+      successReturnToOrRedirect: req.session.returnTo || '/',
+      failureRedirect: '/autherror',
+    })(req, res, next),
+  )
 
   const authUrl = config.apis.hmppsAuth.externalUrl
-  const authSignOutUrl = `${authUrl}/sign-out?client_id=${config.apis.hmppsAuth.authClientId}&redirect_uri=${config.domain}`
+  const authParameters = `client_id=${config.apis.hmppsAuth.authClientId}&redirect_uri=${config.domain}`
 
   router.use('/sign-out', (req, res, next) => {
+    const authSignOutUrl = `${authUrl}/sign-out?${authParameters}`
     if (req.user) {
       req.logout(err => {
         if (err) return next(err)
@@ -67,11 +76,19 @@ export default function setUpAuth(): Router {
   })
 
   router.use('/account-details', (req, res) => {
-    res.redirect(`${authUrl}/account-details`)
+    res.redirect(`${authUrl}/account-details?${authParameters}`)
+  })
+
+  router.use(async (req, res, next) => {
+    if (req.isAuthenticated() && (await tokenVerificationClient.verifyToken(req as unknown as AuthenticatedRequest))) {
+      return next()
+    }
+    req.session.returnTo = req.originalUrl
+    return res.redirect('/sign-in')
   })
 
   router.use((req, res, next) => {
-    res.locals.user = req.user
+    res.locals.user = req.user as HmppsUser
     next()
   })
 

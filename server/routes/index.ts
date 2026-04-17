@@ -12,7 +12,6 @@ import { SchemaFactory, validate } from '../middleware/validationMiddleware'
 import { calculationSummarySchema } from './calculation-summary/calculationSummarySchema'
 import CheckInformationController from './check-information/checkInformationController'
 import { Controller } from './controller'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import { checkInformationSchema } from './check-information/checkInformationSchema'
 import MultipleConsecutiveToInterceptController from './multiple-consecutive-to-intercept/multipleConsecutiveToInterceptController'
 import PreviouslyRecordedSledInterceptController from './previously-recorded-sled-intercept/previouslyRecordedSledInterceptController'
@@ -72,12 +71,14 @@ export default function Index({
     controller: Controller
     validateToSchema?: z.ZodTypeAny | SchemaFactory<P>
   }) => {
-    router.get(path, asyncMiddleware(controller.GET))
+    if (controller.GET) {
+      router.get(path, controller.GET)
+    }
     if (controller.POST) {
       if (validateToSchema) {
-        router.post(path, validate(validateToSchema), asyncMiddleware(controller.POST))
+        router.post(path, validate(validateToSchema), controller.POST)
       } else {
-        router.post(path, asyncMiddleware(controller.POST))
+        router.post(path, controller.POST)
       }
     }
   }
