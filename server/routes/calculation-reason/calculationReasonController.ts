@@ -15,7 +15,7 @@ export default class CalculationReasonController implements Controller {
   ) {}
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
-    const { user, token } = res.locals
+    const { user } = res.locals
     const { nomsId } = req.params
     const { isAddDatesFlow } = req.query as Record<string, string>
     if (!req.session.isAddDatesFlow) {
@@ -28,7 +28,7 @@ export default class CalculationReasonController implements Controller {
 
     const isSupportUser = user.isDigitalSupportUser || user.isSpecialistSupportUser
     if (!isSupportUser && config.featureToggles.thingsToDoIntercept) {
-      const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token)
+      const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, user.token)
 
       const anyNonCrdsThingsToDo = Object.keys(serviceDefinitions.services)
         .filter(it => it !== 'releaseDates')
