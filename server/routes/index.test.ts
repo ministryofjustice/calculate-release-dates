@@ -22,7 +22,7 @@ describe('GET /', () => {
 
   it('should render maintenance page', () => {
     config.maintenanceMode = true
-    return request(app)
+    return request(appWithAllRoutes({}))
       .get('/')
       .expect(503)
       .expect(res => {
