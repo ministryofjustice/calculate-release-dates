@@ -153,4 +153,5 @@ export default {
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
+  maintenanceMode: get('MAINTENANCE_MODE', 'false') === 'true',
 }

@@ -11,6 +11,7 @@ import SessionSetup from './sessionSetup'
 import setUpCCARDComponents from '../../middleware/setUpCCARDComponents'
 import populateValidationErrors from '../../middleware/populateValidationErrors'
 import getPrisoner from '../../middleware/getPrisoner'
+import maintenanceMiddleware from '../../middleware/maintenanceMiddleware'
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
@@ -59,6 +60,7 @@ function appSetup(
   })
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+  app.use(maintenanceMiddleware)
   app.use(setUpCCARDComponents())
   app.use(populateValidationErrors())
   app.use(

@@ -25,6 +25,7 @@ import type { Services } from './services'
 import setUpCCARDComponents from './middleware/setUpCCARDComponents'
 import populateValidationErrors from './middleware/populateValidationErrors'
 import getPrisoner from './middleware/getPrisoner'
+import maintenanceMiddleware from './middleware/maintenanceMiddleware'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -45,6 +46,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware(Object.values(AuthorisedRoles)))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
+  app.use(maintenanceMiddleware)
   app.use(
     ['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId', '/'],
     getPrisoner(services.prisonerService),
