@@ -11,6 +11,8 @@ import SessionSetup from './sessionSetup'
 import setUpCCARDComponents from '../../middleware/setUpCCARDComponents'
 import populateValidationErrors from '../../middleware/populateValidationErrors'
 import getPrisoner from '../../middleware/getPrisoner'
+import maintenanceMiddleware from '../../middleware/maintenanceMiddleware'
+import config from '../../config'
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
@@ -65,7 +67,13 @@ function appSetup(
     ['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId', '/'],
     getPrisoner(services.prisonerService),
   )
-  app.use(routes(services))
+
+  if (config.maintenanceMode) {
+    app.use(maintenanceMiddleware)
+  } else {
+    app.use(routes(services))
+  }
+
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
 
