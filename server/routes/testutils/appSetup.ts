@@ -61,12 +61,12 @@ function appSetup(
   })
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
-  app.use(setUpCCARDComponents())
-  app.use(populateValidationErrors())
 
   if (config.maintenanceMode) {
     app.use(maintenanceMiddleware)
   } else {
+    app.use(setUpCCARDComponents())
+    app.use(populateValidationErrors())
     app.use(
       ['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId', '/'],
       getPrisoner(services.prisonerService),
