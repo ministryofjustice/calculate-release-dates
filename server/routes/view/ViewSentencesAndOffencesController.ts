@@ -8,7 +8,6 @@ import ViewRouteSentenceAndOffenceViewModel from '../../models/ViewRouteSentence
 import SentenceAndOffencePageViewModel from '../../models/SentenceAndOffencePageViewModel'
 import { PrisonApiOffenderSentenceAndOffences } from '../../@types/prisonApi/prisonClientTypes'
 import { longDateFormat } from '../../utils/utils'
-import config from '../../config'
 
 export default class ViewSentencesAndOffencesController implements Controller {
   constructor(
@@ -30,13 +29,11 @@ export default class ViewSentencesAndOffencesController implements Controller {
         calculationRequestId,
         username,
       )
-      const adjustmentDetails = await this.viewReleaseDatesService.getBookingAndSentenceAdjustments(
+
+      const adjustmentDtos = await this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(
         calculationRequestId,
         username,
       )
-      const adjustmentDtos = config.featureToggles.adjustmentsIntegrationEnabled
-        ? await this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, username)
-        : []
       const calculationUserInputs = await this.viewReleaseDatesService.getCalculationUserInputs(
         calculationRequestId,
         username,
@@ -58,7 +55,6 @@ export default class ViewSentencesAndOffencesController implements Controller {
             prisonerDetail,
             calculationUserInputs,
             sentencesAndOffences,
-            adjustmentDetails,
             detailedCalculationResults.context.calculationType,
             returnToCustody,
             null,

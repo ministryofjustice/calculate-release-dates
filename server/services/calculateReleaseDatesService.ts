@@ -48,7 +48,6 @@ import {
   RulesWithExtraAdjustments,
 } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import { FullPageError } from '../types/FullPageError'
-import { AnalysedPrisonApiBookingAndSentenceAdjustments } from '../@types/prisonApi/prisonClientTypes'
 import AuditService from './auditService'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
@@ -95,13 +94,6 @@ export default class CalculateReleaseDatesService {
     username: string,
   ): Promise<SupportedValidationResponse> {
     return this.calculateReleaseDatesApiRestClient.getUnsupportedSentenceValidation(prisonId, username)
-  }
-
-  async getBookingAndSentenceAdjustments(
-    bookingId: number,
-    username: string,
-  ): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
-    return this.calculateReleaseDatesApiRestClient.getAnalysedAdjustments(bookingId, username)
   }
 
   async getAdjustmentsForPrisoner(prisonerId: string, username: string): Promise<AnalysedAdjustment[]> {

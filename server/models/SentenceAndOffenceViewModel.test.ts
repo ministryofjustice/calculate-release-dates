@@ -4,7 +4,6 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import SentenceAndOffenceViewModel from './SentenceAndOffenceViewModel'
 import {
-  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
@@ -41,11 +40,6 @@ const stubbedPrisonerData = {
     description: 'D-2-003',
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
-
-const stubbedEmptyAdjustments = {
-  sentenceAdjustments: [],
-  bookingAdjustments: [],
-} as AnalysedPrisonApiBookingAndSentenceAdjustments
 
 const stubbedReturnToCustodyDate = {
   returnToCustodyDate: '2022-04-12',
@@ -120,7 +114,6 @@ describe('SentenceAndOffenceViewModel', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         sentencesAndOffences,
-        stubbedEmptyAdjustments,
         false,
         true,
         false,
@@ -195,7 +188,6 @@ describe('SentenceAndOffenceViewModel', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         sentencesAndOffences,
-        stubbedEmptyAdjustments,
         false,
         true,
         false,

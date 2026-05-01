@@ -10,7 +10,6 @@ import {
   ValidationMessage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
-  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
@@ -51,10 +50,6 @@ describe('checkInformationService', () => {
       description: 'D-2-003',
     } as PrisonAPIAssignedLivingUnit,
   } as PrisonApiPrisoner
-  const stubbedNoAdjustments = {
-    sentenceAdjustments: [],
-    bookingAdjustments: [],
-  } as AnalysedPrisonApiBookingAndSentenceAdjustments
 
   const ftrSentence = {
     sentenceSequence: 3,
@@ -110,7 +105,6 @@ describe('checkInformationService', () => {
     calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences.mockResolvedValue([])
     calculateReleaseDatesService.getErsedEligibility.mockResolvedValue({ isValid: true } as ErsedEligibility)
     calculateReleaseDatesService.getAdjustmentsForPrisoner.mockResolvedValue([])
-    calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedNoAdjustments)
   })
 
   it('should build model with no validation errors present', async () => {

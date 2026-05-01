@@ -337,15 +337,6 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     )
   }
 
-  getAnalysedAdjustments(bookingId: number, username: string): Promise<AnalysedPrisonApiBookingAndSentenceAdjustments> {
-    return this.get<AnalysedPrisonApiBookingAndSentenceAdjustments>(
-      {
-        path: `/booking-and-sentence-adjustments/${bookingId}`,
-      },
-      asSystem(username),
-    )
-  }
-
   getAdjustmentsForPrisoner(prisonerId: string, username: string): Promise<AnalysedAdjustment[]> {
     return this.get<AnalysedAdjustment[]>(
       {

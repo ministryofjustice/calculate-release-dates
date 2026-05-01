@@ -6,7 +6,6 @@ import CalculateReleaseDatesService from '../../services/calculateReleaseDatesSe
 import PrintNotificationSlipViewModel from '../../models/PrintNotificationSlipViewModel'
 import ViewRouteSentenceAndOffenceViewModel from '../../models/ViewRouteSentenceAndOffenceViewModel'
 import SentenceTypes from '../../models/SentenceTypes'
-import config from '../../config'
 import { getFilteredListOfDates } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 
 export default class ViewPrintNotificationSlipController implements Controller {
@@ -24,16 +23,12 @@ export default class ViewPrintNotificationSlipController implements Controller {
 
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
 
-    const [prisonerDetail, sentencesAndOffences, adjustmentDetails, releaseDateAndCalcContext, adjustmentsDtos] =
-      await Promise.all([
-        this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, username),
-        this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, username),
-        this.viewReleaseDatesService.getBookingAndSentenceAdjustments(calculationRequestId, username),
-        this.calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, username),
-        config.featureToggles.adjustmentsIntegrationEnabled
-          ? this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, username)
-          : Promise.resolve([]),
-      ])
+    const [prisonerDetail, sentencesAndOffences, releaseDateAndCalcContext, adjustmentsDtos] = await Promise.all([
+      this.viewReleaseDatesService.getPrisonerDetail(calculationRequestId, username),
+      this.viewReleaseDatesService.getSentencesAndOffences(calculationRequestId, username),
+      this.calculateReleaseDatesService.getReleaseDatesForACalcReqId(calculationRequestId, username),
+      this.viewReleaseDatesService.getAdjustmentsDtosForCalculation(calculationRequestId, username),
+    ])
 
     const hasDTOSentence = sentencesAndOffences.some(sentence => SentenceTypes.isSentenceDto(sentence))
     const hasOnlyDTOSentences = sentencesAndOffences.every(sentence => SentenceTypes.isSentenceDto(sentence))
@@ -53,7 +48,6 @@ export default class ViewPrintNotificationSlipController implements Controller {
           prisonerDetail,
           null,
           sentencesAndOffences,
-          adjustmentDetails,
           null,
           null,
           null,
