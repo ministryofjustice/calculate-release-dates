@@ -6,7 +6,6 @@ import { appWithAllRoutes } from '../testutils/appSetup'
 import SessionSetup from '../testutils/sessionSetup'
 import PrisonerService from '../../services/prisonerService'
 import {
-  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
@@ -357,43 +356,6 @@ describe('CheckInformationController', () => {
     ],
   } as CalculationUserInputs
 
-  const stubbedAdjustments = {
-    sentenceAdjustments: [
-      {
-        sentenceSequence: 1,
-        type: 'UNUSED_REMAND',
-        numberOfDays: 2,
-        fromDate: '2021-02-01',
-        toDate: '2021-02-02',
-        active: true,
-      },
-      {
-        sentenceSequence: 8,
-        type: 'REMAND',
-        numberOfDays: 98765,
-        fromDate: '2021-02-01',
-        toDate: '2021-02-02',
-        active: true,
-      },
-    ],
-    bookingAdjustments: [
-      {
-        type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
-        numberOfDays: 2,
-        fromDate: '2021-03-07',
-        toDate: '2021-03-08',
-        active: true,
-      },
-      {
-        type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
-        numberOfDays: 987654,
-        fromDate: '2021-03-07',
-        toDate: '2021-03-08',
-        active: false,
-      },
-    ],
-  } as AnalysedPrisonApiBookingAndSentenceAdjustments
-
   const stubbedAdjustmentsForPrisoner = [
     {
       sentenceSequence: 1,
@@ -470,11 +432,6 @@ describe('CheckInformationController', () => {
     } as AnalysedSentenceAndOffence,
   ]
 
-  const stubbedEmptyAdjustments = {
-    sentenceAdjustments: [],
-    bookingAdjustments: [],
-  } as AnalysedPrisonApiBookingAndSentenceAdjustments
-
   const stubbedReturnToCustodyDate = {
     returnToCustodyDate: '2022-04-12',
   } as PrisonApiReturnToCustodyDate
@@ -528,7 +485,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -600,7 +556,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -627,7 +582,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -678,7 +632,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         singleSentencesAndOffencesWithExclusions,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -706,7 +659,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         sentencesAndOffencesWithExclusions,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -738,7 +690,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         sentencesAndOffencesWithExclusions,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -769,7 +720,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -797,7 +747,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -821,7 +770,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         null,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -851,7 +799,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedEmptyAdjustments,
         false,
         true,
         false,
@@ -879,7 +826,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -905,7 +851,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         true,
@@ -933,7 +878,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -964,7 +908,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -990,7 +933,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         null,
         false,
@@ -1021,7 +963,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         stubbedSentencesAndOffences,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -1077,7 +1018,6 @@ describe('CheckInformationController', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         sentenceAndOffencesWithNoSDSPlus,
-        stubbedAdjustments,
         false,
         true,
         false,
@@ -1135,7 +1075,6 @@ describe('CheckInformationController', () => {
   describe('POST', () => {
     it('POST /calculation/:nomsId/check-information should redirect to summary if no previous SLED', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       calculateReleaseDatesService.validateBackend.mockResolvedValue([])
       userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
       calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue({
@@ -1183,7 +1122,6 @@ describe('CheckInformationController', () => {
 
     it('POST /calculation/:nomsId/check-information should redirect to previous SLED intercept if preliminary calc used one', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       calculateReleaseDatesService.validateBackend.mockResolvedValue([])
       userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
       calculateReleaseDatesService.calculatePreliminaryReleaseDates.mockResolvedValue({
@@ -1217,7 +1155,6 @@ describe('CheckInformationController', () => {
 
     it('POST /calculation/:nomsId/check-information should redirect if validation fails', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
       userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
       calculateReleaseDatesService.validateBackend.mockResolvedValue([
         {
@@ -1238,7 +1175,6 @@ describe('CheckInformationController', () => {
   })
   it('POST /calculation/:nomsId/check-information should redirect to manual entry when there is a unsupported SDS40 recall error', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockResolvedValue([
       {
@@ -1263,7 +1199,6 @@ describe('CheckInformationController', () => {
 
   it('POST /calculation/:nomsId/check-information should redirect to check-information when there is a unsupported error but also manual entry has validation errors', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockResolvedValue([
       {
@@ -1291,7 +1226,6 @@ describe('CheckInformationController', () => {
 
   it('POST /calculation/:nomsId/check-information should redirect to consec concurrent intercept if that is the only error', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     userInputService.getCalculationUserInputForPrisoner.mockReturnValue(stubbedUserInput)
     calculateReleaseDatesService.validateBackend.mockResolvedValue([
       {

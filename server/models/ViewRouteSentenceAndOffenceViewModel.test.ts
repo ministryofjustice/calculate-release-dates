@@ -4,7 +4,6 @@ import {
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewRouteSentenceAndOffenceViewModel from './ViewRouteSentenceAndOffenceViewModel'
 import {
-  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonAPIAssignedLivingUnit,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
@@ -42,11 +41,6 @@ const stubbedPrisonerData = {
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 
-const stubbedEmptyAdjustments = {
-  sentenceAdjustments: [],
-  bookingAdjustments: [],
-} as AnalysedPrisonApiBookingAndSentenceAdjustments
-
 const stubbedReturnToCustodyDate = {
   returnToCustodyDate: '2022-04-12',
 } as PrisonApiReturnToCustodyDate
@@ -54,44 +48,6 @@ const stubbedUserInput = {
   sentenceCalculationUserInputs: [],
 } as CalculationUserInputs
 
-const stubbedAdjustments = {
-  bookingAdjustments: [
-    {
-      active: true,
-      fromDate: '2022-01-01',
-      toDate: '2022-01-08',
-      numberOfDays: 8,
-      type: 'ADDITIONAL_DAYS_AWARDED',
-    },
-    { active: true, fromDate: '2022-02-01', toDate: '2022-01-08', numberOfDays: 8, type: 'UNLAWFULLY_AT_LARGE' },
-    {
-      active: true,
-      fromDate: '2022-03-01',
-      toDate: '2022-01-08',
-      numberOfDays: 8,
-      type: 'RESTORED_ADDITIONAL_DAYS_AWARDED',
-    },
-  ],
-  sentenceAdjustments: [
-    { active: true, fromDate: '2022-05-01', toDate: '2024-03-03', numberOfDays: 3, type: 'REMAND' },
-    { active: true, fromDate: '2022-06-01', toDate: '2024-03-19', numberOfDays: 15, type: 'TAGGED_BAIL' },
-    { active: true, fromDate: '2022-07-01', toDate: '2024-03-19', numberOfDays: 15, type: 'UNUSED_REMAND' },
-    {
-      active: true,
-      fromDate: '2022-08-01',
-      toDate: '2024-03-19',
-      numberOfDays: 15,
-      type: 'RECALL_SENTENCE_TAGGED_BAIL',
-    },
-    {
-      active: true,
-      fromDate: '2022-09-01',
-      toDate: '2024-03-19',
-      numberOfDays: 15,
-      type: 'RECALL_SENTENCE_REMAND',
-    },
-  ],
-}
 const sentenceCalculationType = 'CALCULATION'
 
 describe('ViewRouteSentenceAndOffenceViewModel', () => {
@@ -179,7 +135,6 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         sentencesAndOffences,
-        stubbedEmptyAdjustments,
         sentenceCalculationType,
         stubbedReturnToCustodyDate,
         null,
@@ -270,7 +225,6 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
         stubbedPrisonerData,
         stubbedUserInput,
         sentencesAndOffences,
-        stubbedEmptyAdjustments,
         sentenceCalculationType,
         stubbedReturnToCustodyDate,
         null,
@@ -278,81 +232,5 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
       expect(model.hasMultipleOffencesToASentence()).toStrictEqual(false)
       expect(model.getMultipleOffencesToASentence()).toStrictEqual([])
     })
-  })
-  it('should return correct days for tagged bail or unused remand', () => {
-    const model = new ViewRouteSentenceAndOffenceViewModel(
-      stubbedPrisonerData,
-      stubbedUserInput,
-      [],
-      stubbedAdjustments as AnalysedPrisonApiBookingAndSentenceAdjustments,
-      sentenceCalculationType,
-      stubbedReturnToCustodyDate,
-      null,
-    )
-    const numberOfDaysDeducted = model.daysInUnsedRemand()
-    expect(numberOfDaysDeducted).toStrictEqual(15)
-  })
-  it('should generate adjustments array correctly', () => {
-    const model = new ViewRouteSentenceAndOffenceViewModel(
-      stubbedPrisonerData,
-      stubbedUserInput,
-      [],
-      stubbedAdjustments as AnalysedPrisonApiBookingAndSentenceAdjustments,
-      sentenceCalculationType,
-      stubbedReturnToCustodyDate,
-      null,
-    )
-    const adjustmentsArray = model.generateAdjustmentsRows()
-    expect(adjustmentsArray).toStrictEqual([
-      {
-        adjustmentName: 'Recall remand',
-        adjustmentType: 'deducted',
-        adjustmentFrom: '2022-09-01',
-        adjustmentTo: '2024-03-19',
-        adjustmentDays: 15,
-      },
-      {
-        adjustmentName: 'Recall tagged bail',
-        adjustmentType: 'deducted',
-        adjustmentFrom: '2022-08-01',
-        adjustmentTo: '2024-03-19',
-        adjustmentDays: 15,
-      },
-      {
-        adjustmentName: 'Tagged bail',
-        adjustmentType: 'deducted',
-        adjustmentFrom: '2022-06-01',
-        adjustmentTo: '2024-03-19',
-        adjustmentDays: 15,
-      },
-      {
-        adjustmentName: 'Remand',
-        adjustmentType: 'deducted',
-        adjustmentFrom: '2022-05-01',
-        adjustmentTo: '2024-03-03',
-        adjustmentDays: 3,
-      },
-      {
-        adjustmentName: 'Restored additional days awarded (RADA)',
-        adjustmentType: 'deducted',
-        adjustmentFrom: '2022-03-01',
-        adjustmentTo: '2022-01-08',
-        adjustmentDays: 8,
-      },
-      {
-        adjustmentName: 'Unlawfully at large',
-        adjustmentType: 'added',
-        adjustmentFrom: '2022-02-01',
-        adjustmentTo: '2022-01-08',
-        adjustmentDays: 8,
-      },
-      {
-        adjustmentName: 'Additional days awarded (ADA)',
-        adjustmentType: 'added',
-        adjustmentFrom: '2022-01-01',
-        adjustmentTo: '2022-01-08',
-        adjustmentDays: 8,
-      },
-    ])
   })
 })

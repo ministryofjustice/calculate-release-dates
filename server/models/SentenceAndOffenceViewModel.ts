@@ -4,14 +4,9 @@ import {
   AnalysedSentenceAndOffence,
   CalculationUserInputs,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import {
-  AnalysedPrisonApiBookingAndSentenceAdjustments,
-  PrisonApiPrisoner,
-  PrisonApiReturnToCustodyDate,
-} from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiPrisoner, PrisonApiReturnToCustodyDate } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import { groupBy, indexBy } from '../utils/utils'
-import AdjustmentsViewModel from './AdjustmentsViewModel'
 import CourtCaseTableViewModel from './CourtCaseTableViewModel'
 import SentenceTypes from './SentenceTypes'
 import AdjustmentTablesModel, {
@@ -19,8 +14,6 @@ import AdjustmentTablesModel, {
 } from '../views/pages/components/adjustments-tables/AdjustmentTablesModel'
 
 export default class SentenceAndOffenceViewModel {
-  public adjustments: AdjustmentsViewModel
-
   public cases: CourtCaseTableViewModel[]
 
   public sentenceSequenceToSentence: Map<number, AnalysedSentenceAndOffence>
@@ -39,7 +32,6 @@ export default class SentenceAndOffenceViewModel {
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
     sentencesAndOffences: AnalysedSentenceAndOffence[],
-    adjustments: AnalysedPrisonApiBookingAndSentenceAdjustments,
     public viewJourney: boolean,
     public ersedEligible: boolean,
     public isUnsupported: boolean,
@@ -47,7 +39,6 @@ export default class SentenceAndOffenceViewModel {
     public validationErrors?: ErrorMessages,
     adjustmentsDtos?: AnalysedAdjustment[] | AdjustmentDto[],
   ) {
-    this.adjustments = new AdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
       groupBy(sentencesAndOffences, (sent: AnalysedSentenceAndOffence) => sent.caseSequence).values(),
     )

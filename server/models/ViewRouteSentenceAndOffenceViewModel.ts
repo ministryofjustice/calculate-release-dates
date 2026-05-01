@@ -9,7 +9,6 @@ import {
   SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
-  AnalysedPrisonApiBookingAndSentenceAdjustments,
   PrisonApiOffenderSentenceAndOffences,
   PrisonApiPrisoner,
   PrisonApiReturnToCustodyDate,
@@ -17,15 +16,12 @@ import {
 import { ErrorMessages } from '../types/ErrorMessages'
 import { groupBy, indexBy } from '../utils/utils'
 import SentenceTypes from './SentenceTypes'
-import ViewRouteAdjustmentsViewModel, { AdjustmentViewModel } from './ViewRouteAdjustmentsViewModel'
 import ViewRouteCourtCaseTableViewModel from './ViewRouteCourtCaseTableViewModel'
 import AdjustmentTablesModel, {
   adjustmentsTablesFromAdjustmentDTOs,
 } from '../views/pages/components/adjustments-tables/AdjustmentTablesModel'
 
 export default class ViewRouteSentenceAndOffenceViewModel {
-  public adjustments: ViewRouteAdjustmentsViewModel
-
   public cases: ViewRouteCourtCaseTableViewModel[]
 
   public sentenceSequenceToSentence: Map<number, PrisonApiOffenderSentenceAndOffences>
@@ -42,7 +38,6 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
     sentencesAndOffences: SentenceAndOffenceWithReleaseArrangements[],
-    adjustments: AnalysedPrisonApiBookingAndSentenceAdjustments,
     public calculationType: string,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
@@ -54,7 +49,6 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     public calculatedByDisplayName?: string,
     public calculatedAtPrisonDescription?: string,
   ) {
-    this.adjustments = new ViewRouteAdjustmentsViewModel(adjustments, sentencesAndOffences)
     this.cases = Array.from(
       groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values(),
     )
@@ -110,52 +104,5 @@ export default class ViewRouteSentenceAndOffenceViewModel {
       }
     })
     return Object.keys(duplicates).map(key => [duplicates[key].caseSequence, duplicates[key].lineSequence])
-  }
-
-  hasUnusedRemand(): boolean {
-    return this.adjustments.unusedRemand.aggregate > 0
-  }
-
-  daysInUnsedRemand(): number {
-    return this.adjustments.unusedRemand.aggregate
-  }
-
-  generateAdjustmentsRows() {
-    const adjustmentsRows: {
-      adjustmentName: string
-      adjustmentType: string
-      adjustmentFrom: string
-      adjustmentTo: string
-      adjustmentDays: number
-    }[] = []
-
-    const pushAdjustmentDetails = (adjustmentType: string, adjustmentName: string, addOrDeduct: string) => {
-      const adjustmentViewModel = this.adjustments[
-        adjustmentType as keyof ViewRouteAdjustmentsViewModel
-      ] as AdjustmentViewModel
-      if (adjustmentViewModel.aggregate !== 0) {
-        adjustmentViewModel.details.forEach(adjustment => {
-          adjustmentsRows.push({
-            adjustmentName,
-            adjustmentType: addOrDeduct,
-            adjustmentFrom: adjustment.from,
-            adjustmentTo: adjustment.to,
-            adjustmentDays: adjustment.days,
-          })
-        })
-      }
-    }
-
-    pushAdjustmentDetails('recallSentenceRemand', 'Recall remand', 'deducted')
-    pushAdjustmentDetails('remand', 'Remand', 'deducted')
-    pushAdjustmentDetails('recallSentenceTaggedBail', 'Recall tagged bail', 'deducted')
-    pushAdjustmentDetails('taggedBail', 'Tagged bail', 'deducted')
-    pushAdjustmentDetails('restoredAdditionalDaysAwarded', 'Restored additional days awarded (RADA)', 'deducted')
-    pushAdjustmentDetails('additionalDaysAwarded', 'Additional days awarded (ADA)', 'added')
-    pushAdjustmentDetails('unlawfullyAtLarge', 'Unlawfully at large', 'added')
-
-    adjustmentsRows.sort((a, b) => new Date(b.adjustmentFrom).getTime() - new Date(a.adjustmentFrom).getTime())
-
-    return adjustmentsRows
   }
 }

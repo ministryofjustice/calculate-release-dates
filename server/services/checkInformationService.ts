@@ -4,7 +4,6 @@ import SentenceTypes from '../models/SentenceTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import PrisonerService from './prisonerService'
-import config from '../config'
 import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { convertValidationToErrorMessages } from '../utils/utils'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
@@ -24,16 +23,12 @@ export default class CheckInformationService {
     username: string,
     prisonerDetail: PrisonApiPrisoner,
   ): Promise<SentenceAndOffenceViewModel> {
-    const [sentencesAndOffences, adjustmentDetails, ersedAvailable, analysedAdjustments, validationResult] =
-      await Promise.all([
-        this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, username),
-        this.calculateReleaseDatesService.getBookingAndSentenceAdjustments(prisonerDetail.bookingId, username),
-        this.calculateReleaseDatesService.getErsedEligibility(prisonerDetail.bookingId, username),
-        config.featureToggles.adjustmentsIntegrationEnabled
-          ? this.calculateReleaseDatesService.getAdjustmentsForPrisoner(prisonerDetail.offenderNo, username)
-          : Promise.resolve([]),
-        this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, username),
-      ])
+    const [sentencesAndOffences, ersedAvailable, analysedAdjustments, validationResult] = await Promise.all([
+      this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, username),
+      this.calculateReleaseDatesService.getErsedEligibility(prisonerDetail.bookingId, username),
+      this.calculateReleaseDatesService.getAdjustmentsForPrisoner(prisonerDetail.offenderNo, username),
+      this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, username),
+    ])
 
     const returnToCustody = sentencesAndOffences.filter(s => SentenceTypes.isSentenceFixedTermRecall(s)).length
       ? await this.prisonerService
@@ -80,7 +75,6 @@ export default class CheckInformationService {
       prisonerDetail,
       userInputs,
       sentencesAndOffences,
-      adjustmentDetails,
       false,
       ersedAvailable.isValid,
       isUnsupported,

@@ -1,23 +1,15 @@
 import PrintNotificationSlipViewModel from './PrintNotificationSlipViewModel'
 import ViewRouteSentenceAndOffenceViewModel from './ViewRouteSentenceAndOffenceViewModel'
-import {
-  AnalysedPrisonApiBookingAndSentenceAdjustments,
-  PrisonApiPrisoner,
-} from '../@types/prisonApi/prisonClientTypes'
+import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
 import KeyDate from './KeyDate'
 
 describe('Print Release Dates Notification Slip', () => {
   describe('dates in correct order for subset of Non DTO dates', () => {
     const prisonerDetail = { offenderNo: 'A1234AA', firstName: 'John', lastName: 'Smith' } as PrisonApiPrisoner
-    const adjustments = {
-      sentenceAdjustments: [],
-      bookingAdjustments: [],
-    } as AnalysedPrisonApiBookingAndSentenceAdjustments
     const viewRouteSentenceAndOffenceViewModel = new ViewRouteSentenceAndOffenceViewModel(
       prisonerDetail,
       null,
       [],
-      adjustments,
       null,
       null,
       null,
@@ -148,15 +140,10 @@ describe('Print Release Dates Notification Slip', () => {
 
   describe('Has key Dates in correct order', () => {
     const prisonerDetail = { offenderNo: 'A1234AA', firstName: 'John', lastName: 'Smith' } as PrisonApiPrisoner
-    const adjustments = {
-      sentenceAdjustments: [],
-      bookingAdjustments: [],
-    } as AnalysedPrisonApiBookingAndSentenceAdjustments
     const viewRouteSentenceAndOffenceViewModel = new ViewRouteSentenceAndOffenceViewModel(
       prisonerDetail,
       null,
       [],
-      adjustments,
       null,
       null,
       null,
