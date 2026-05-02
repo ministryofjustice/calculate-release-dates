@@ -46,7 +46,10 @@
               envelope.data.content = JSON.stringify(contentArray);
           }
         });
-      appInsights.trackPageView();
+      appInsights.trackPageView(null, {
+        username: '{{ user.username | default("") | safe }}',
+        prisonId: '{{ user.activeCaseLoadId | default("") | safe }}'
+      })
     </script>
   {% endif %}
 
