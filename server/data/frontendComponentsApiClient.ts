@@ -1,4 +1,4 @@
-import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
+import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import FrontendComponent from '../models/FrontendComponent'
 import config from '../config'
@@ -9,17 +9,14 @@ export default class FrontendComponentsApiClient extends RestClient {
     super('Frontend Components API', config.apis.frontendComponents, logger, authenticationClient)
   }
 
-  async getComponents<T extends AvailableComponent[]>(
+  getComponents<T extends AvailableComponent[]>(
     components: T,
-    authToken: string,
+    userToken: string,
   ): Promise<Record<T[number], FrontendComponent>> {
-    return this.get<Record<T[number], FrontendComponent>>(
-      {
-        path: `/components`,
-        query: `component=${components.join('&component=')}`,
-        headers: { 'x-user-token': authToken },
-      },
-      asSystem(),
-    )
+    return this.get({
+      path: `/components`,
+      query: `component=${components.join('&component=')}`,
+      headers: { 'x-user-token': userToken },
+    })
   }
 }

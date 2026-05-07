@@ -7,7 +7,7 @@ export default class FrontEndComponentsService {
     this.frontEndComponentsApiClient = frontEndComponentsApiClient
   }
 
-  async getComponents(components: AvailableComponent[], authToken: string) {
-    return this.frontEndComponentsApiClient.getComponents(components, authToken)
+  async getComponents(components: AvailableComponent[], userToken: string) {
+    return this.frontEndComponentsApiClient.getComponents(components, userToken)
   }
 }
