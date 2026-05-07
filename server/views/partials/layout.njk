@@ -45,11 +45,14 @@
               }
               envelope.data.content = JSON.stringify(contentArray);
           }
+
+          if (envelope && (envelope.baseType === "EventData" || envelope.baseType === "PageviewData")) {
+              envelope.baseData.properties = envelope.baseData.properties || {};
+              envelope.baseData.properties.username = '{{ user.username | default("") | safe }}';
+              envelope.baseData.properties.caseloadId = '{{ prisonerDetail.agencyId | default("") | safe }}';
+          }
         });
-      appInsights.trackPageView(null, {
-        username: '{{ user.username | default("") | safe }}',
-        caseloadId: '{{ prisonerDetail.agencyId | default("") | safe }}'
-      })
+      appInsights.trackPageView()
     </script>
   {% endif %}
 
