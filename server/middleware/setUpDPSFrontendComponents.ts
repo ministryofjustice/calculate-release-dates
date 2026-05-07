@@ -3,7 +3,7 @@ import { Services } from '../services'
 import logger from '../../logger'
 
 export default function setUpFrontendComponents({ frontEndComponentService }: Services): RequestHandler {
-  return async (req, res, next) => {
+  return async (_, res, next) => {
     try {
       const { header } = await frontEndComponentService.getComponents(['header'], res.locals.user.token)
 
