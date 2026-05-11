@@ -39,7 +39,7 @@ export const selectGenuineOverrideReasonSchemaFactory = createSchema({
 
 export type SelectGenuineOverrideReasonForm = z.infer<typeof selectGenuineOverrideReasonSchemaFactory>
 
-const IgnoreListTokens = ['na', 'n a', 'other']
+const IgnoreListTokens = ['na', 'n a', 'other', 'no', 'nothing', 'none', 'nil', 'unknown']
 
 const IgnoreListRegex = new RegExp(
   `\\b(${IgnoreListTokens.map(token => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`,
