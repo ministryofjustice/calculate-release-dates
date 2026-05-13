@@ -39,10 +39,10 @@ export const selectGenuineOverrideReasonSchemaFactory = createSchema({
 
 export type SelectGenuineOverrideReasonForm = z.infer<typeof selectGenuineOverrideReasonSchemaFactory>
 
-const IgnoreListTokens = ['na', 'n a', 'other', 'no', 'nothing', 'none', 'nil', 'unknown']
+const IGNORE_LIST_TOKENS = ['na', 'n a', 'other', 'no', 'nothing', 'none', 'nil', 'unknown']
 
-const IgnoreListRegex = new RegExp(
-  `\\b(${IgnoreListTokens.map(token => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`,
+const IGNORE_LIST_REGEX = new RegExp(
+  `\\b(${IGNORE_LIST_TOKENS.map(token => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`,
   'gi',
 )
 
@@ -62,7 +62,7 @@ export function isValidReason(input: string | null): boolean {
     .replace(/[^A-Za-z0-9 ]/g, '')
 
     // Remove filler words defined in the IgnoreListTokens
-    .replace(IgnoreListRegex, '')
+    .replace(IGNORE_LIST_REGEX, '')
 
     // Remove all spaces so we can measure "real" content
     .replace(/\s+/g, '')
