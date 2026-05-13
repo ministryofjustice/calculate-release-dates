@@ -1,5 +1,50 @@
 import { deduplicateFieldErrors } from '../../../middleware/validationMiddleware'
-import { selectGenuineOverrideReasonSchemaFactory } from './selectGenuineOverrideReasonSchemas'
+import { selectGenuineOverrideReasonSchemaFactory, isValidReason } from './selectGenuineOverrideReasonSchemas'
+
+describe('isValidReason', () => {
+  it('should return false for null input', () => {
+    expect(isValidReason(null)).toBe(false)
+  })
+
+  it('should return false for undefined input', () => {
+    expect(isValidReason(undefined as unknown as string)).toBe(false)
+  })
+
+  it('should return false for empty string', () => {
+    expect(isValidReason('')).toBe(false)
+  })
+
+  it('should return false for input with only spaces', () => {
+    expect(isValidReason('   ')).toBe(false)
+  })
+
+  it('should return false for input with only filler words', () => {
+    expect(isValidReason('na')).toBe(false)
+    expect(isValidReason('n a')).toBe(false)
+    expect(isValidReason('other')).toBe(false)
+    expect(isValidReason('na other')).toBe(false)
+  })
+
+  it('should return false for input with only special characters', () => {
+    expect(isValidReason('!@#$%^&*()')).toBe(false)
+  })
+
+  it('should return true for valid input with meaningful content', () => {
+    expect(isValidReason('This is valid')).toBe(true)
+    expect(isValidReason('FTR-56')).toBe(true)
+    expect(isValidReason('UAL')).toBe(true)
+  })
+
+  it('should return true for input with filler words but enough meaningful content', () => {
+    expect(isValidReason('na valid reason')).toBe(true)
+    expect(isValidReason('other valid reason')).toBe(true)
+  })
+
+  it('should return false for input with less than 2 meaningful characters', () => {
+    expect(isValidReason('a')).toBe(false)
+    expect(isValidReason('n a')).toBe(false)
+  })
+})
 
 describe('selectGenuineOverrideReasonSchemaFactory', () => {
   type Form = {
