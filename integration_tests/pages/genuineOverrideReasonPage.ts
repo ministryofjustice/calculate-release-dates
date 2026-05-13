@@ -11,7 +11,7 @@ export default class GenuineOverrideReasonPage extends Page {
   }
 
   public enterReasonFurtherDetail(furtherDetail: string): GenuineOverrideReasonPage {
-    cy.get(`#reason-further-detail`).type(furtherDetail)
+    cy.get(`#reasonFurtherDetail`).type(furtherDetail)
     return this
   }
 

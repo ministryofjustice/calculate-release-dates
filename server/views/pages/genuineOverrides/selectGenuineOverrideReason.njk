@@ -5,6 +5,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
 {% set pageTitle = applicationName + " - Select why the dates are incorrect" %}
@@ -27,20 +28,15 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
                 {% set otherReasonHtml %}
-                    {{ govukCharacterCount({
-                        id: "reason-further-detail",
-                        name: "reasonFurtherDetail",
-                        type: "string",
-                        autocomplete: "string",
-                        maxlength: 120,
-                        threshold: 50,
-                        classes: "govuk-!-width-two-thirds",
-                        errorMessage: validationErrors | findError('reasonFurtherDetail'),
-                        value: reasonFurtherDetail,
-                        label: {
-                            text: "Enter the reason this calculation is incorrect"
-                        }
-                    }) }}
+                 {{ govukTextarea({
+                    name: "reasonFurtherDetail",
+                    id: "reasonFurtherDetail",
+                    value: reasonFurtherDetail,
+                    label: {
+                        text: "Enter the reason this calculation is incorrect"
+                    },
+                    errorMessage: validationErrors | findError('reasonFurtherDetail')
+                 }) }}
                 {% endset %}
 
                 {% set radios = [ ] %}
