@@ -118,8 +118,13 @@ export default class ApprovedDatesRoutes {
   public loadSubmitDates: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, calculationRequestId } = req.params as Record<string, string>
     const { dateType } = req.query as Record<string, string>
-
     const prisonerDetail = req.prisoner
+    if (!req.session.selectedApprovedDates) {
+      req.session.selectedApprovedDates = {}
+    }
+    if (!req.session.selectedApprovedDates[nomsId]) {
+      req.session.selectedApprovedDates[nomsId] = []
+    }
     const approvedDates = req.session.selectedApprovedDates[nomsId]
 
     if (approvedDates.length === 0) {
