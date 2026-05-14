@@ -427,4 +427,13 @@ describe('approvedDatesRoutes', () => {
         )
       })
   })
+
+  it('POST /calculation/:nomsId/:calculationRequestId/submit-dates loads with mini profile if there is no session', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+
+    return request(app)
+      .get('/calculation/A1234AA/123456/submit-dates?dateType=CRD')
+      .expect(302)
+      .expect('Location', '/calculation/A1234AA/123456/select-approved-dates')
+  })
 })
