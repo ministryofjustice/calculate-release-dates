@@ -745,10 +745,6 @@ describe('Calculate release dates service tests', () => {
               offenceDescription: '',
               indicators: [],
             },
-            isSDSPlus: false,
-            hasAnSDSEarlyReleaseExclusion: 'NO',
-            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-            isSDSPlusOffenceInPeriod: false,
             revocationDates: [],
           },
           {
@@ -778,10 +774,6 @@ describe('Calculate release dates service tests', () => {
               offenceDescription: '',
               indicators: [],
             },
-            isSDSPlus: false,
-            hasAnSDSEarlyReleaseExclusion: 'NO',
-            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-            isSDSPlusOffenceInPeriod: false,
             revocationDates: [],
           },
           {
@@ -810,10 +802,6 @@ describe('Calculate release dates service tests', () => {
               offenceDescription: '',
               indicators: [],
             },
-            isSDSPlus: false,
-            hasAnSDSEarlyReleaseExclusion: 'NO',
-            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-            isSDSPlusOffenceInPeriod: false,
             revocationDates: [],
           },
           {
@@ -843,10 +831,6 @@ describe('Calculate release dates service tests', () => {
               offenceDescription: '',
               indicators: [],
             },
-            isSDSPlus: false,
-            hasAnSDSEarlyReleaseExclusion: 'NO',
-            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-            isSDSPlusOffenceInPeriod: false,
             revocationDates: [],
           },
           {
@@ -876,16 +860,13 @@ describe('Calculate release dates service tests', () => {
               offenceDescription: '',
               indicators: [],
             },
-            isSDSPlus: false,
-            hasAnSDSEarlyReleaseExclusion: 'NO',
-            isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-            isSDSPlusOffenceInPeriod: false,
             revocationDates: [],
           },
         ],
       },
       approvedDates: {},
       breakdownMissingReason: 'UNSUPPORTED_CALCULATION_BREAKDOWN',
+      allocatedTranches: [],
     }
 
     it('can get with breakdown missing safely', async () => {

@@ -29,6 +29,7 @@ export type ComparisonPersonDiscrepancySummary = components['schemas']['Comparis
 export type ComparisonPersonDiscrepancyCause = components['schemas']['DiscrepancyCause']
 export type HistoricCalculation = components['schemas']['HistoricCalculation']
 export type DetailedCalculationResults = components['schemas']['DetailedCalculationResults']
+export type AllocatedTranches = components['schemas']['AllocatedTranche']
 export type DetailedDate = components['schemas']['DetailedDate']
 export type LatestCalculation = components['schemas']['LatestCalculation']
 export type DateTypeDefinition = components['schemas']['DateTypeDefinition']

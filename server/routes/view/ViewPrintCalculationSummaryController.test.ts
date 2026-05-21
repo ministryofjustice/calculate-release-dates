@@ -208,10 +208,6 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           offenceDescription: '',
           indicators: [],
         },
-        isSDSPlus: false,
-        hasAnSDSEarlyReleaseExclusion: 'NO',
-        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-        isSDSPlusOffenceInPeriod: false,
         revocationDates: [],
       },
       {
@@ -241,15 +237,12 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           offenceDescription: '',
           indicators: [],
         },
-        isSDSPlus: false,
-        hasAnSDSEarlyReleaseExclusion: 'NO',
-        isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-        isSDSPlusOffenceInPeriod: false,
         revocationDates: [],
       },
     ],
   },
   approvedDates: {},
+  allocatedTranches: [],
 }
 let app: Express
 

@@ -95,7 +95,6 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceEndDate: '2021-02-03' },
-    isSDSPlus: false,
   } as SentenceAndOffenceWithReleaseArrangements,
   {
     terms: [
@@ -109,7 +108,6 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-    isSDSPlus: false,
   } as SentenceAndOffenceWithReleaseArrangements,
   {
     terms: [
@@ -123,7 +121,6 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceStartDate: '2021-03-06' },
-    isSDSPlus: false,
   } as SentenceAndOffenceWithReleaseArrangements,
   {
     terms: [
@@ -137,7 +134,6 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: {},
-    isSDSPlus: false,
   } as SentenceAndOffenceWithReleaseArrangements,
   {
     terms: [
@@ -151,7 +147,6 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
-    isSDSPlus: false,
   } as SentenceAndOffenceWithReleaseArrangements,
   {
     terms: [
@@ -166,7 +161,6 @@ const stubbedSentencesAndOffences = [
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
     offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
-    isSDSPlus: false,
   } as SentenceAndOffenceWithReleaseArrangements,
 ]
 const stubbedReleaseDatesUsingCalcReqId: ReleaseDatesAndCalculationContext = {
@@ -241,7 +235,6 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-        isSDSPlus: false,
       } as SentenceAndOffenceWithReleaseArrangements,
       {
         terms: [
@@ -257,7 +250,6 @@ describe('Print Notification slip controller tests', () => {
         sentenceCalculationType: 'ADIMP',
         sentenceTypeDescription: 'SDS Standard Sentence',
         offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
-        isSDSPlus: false,
       } as SentenceAndOffenceWithReleaseArrangements,
     ]
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -521,7 +513,6 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-        isSDSPlus: false,
       } as SentenceAndOffenceWithReleaseArrangements,
     ]
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -560,7 +551,6 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-        isSDSPlus: false,
       } as SentenceAndOffenceWithReleaseArrangements,
     ]
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -662,7 +652,6 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-        isSDSPlus: false,
       } as SentenceAndOffenceWithReleaseArrangements,
       {
         terms: [
@@ -681,7 +670,6 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-        isSDSPlus: false,
       } as SentenceAndOffenceWithReleaseArrangements,
     ]
     const stubbedNoAdjustments = {
@@ -784,7 +772,6 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-        isSDSPlus: false,
       } as SentenceAndOffenceWithReleaseArrangements,
       {
         terms: [
@@ -800,7 +787,6 @@ describe('Print Notification slip controller tests', () => {
         sentenceCalculationType: 'ADIMP',
         sentenceTypeDescription: 'SDS Standard Sentence',
         offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
-        isSDSPlus: false,
       } as SentenceAndOffenceWithReleaseArrangements,
     ]
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
