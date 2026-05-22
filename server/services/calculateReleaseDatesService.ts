@@ -550,7 +550,7 @@ export default class CalculateReleaseDatesService {
         hints: date.hints.map(hint => {
           const cardHint: LatestCalculationCardDateHint = {
             text: hint.text,
-            href: hint.link,
+            href: hint.link ?? '',
           }
           return cardHint
         }),
@@ -560,7 +560,7 @@ export default class CalculateReleaseDatesService {
     return {
       source: latestCalculation.source,
       calculatedAt: latestCalculation.calculatedAt,
-      establishment: latestCalculation.establishment,
+      establishment: latestCalculation.establishment ?? '',
       reason: latestCalculation.reason,
       dates,
     }

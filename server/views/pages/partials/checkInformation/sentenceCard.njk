@@ -59,7 +59,7 @@
                                                 {% if sentence.revocationDates and sentence.revocationDates.length > 0 %}
                                                     {{ sentence.revocationDates | latestRevocationDate | hmppsFormatDate('dd MMMM yyyy')  }}
                                                 {% else %}
-                                                    Not entered 
+                                                    Not entered
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -104,11 +104,22 @@
                                             </tr>
                                         {% endif %}
                                     {% endif %}
-                                    {% if featureToggles.sdsExclusionIndicatorsEnabled and sentence.hasAnSDSEarlyReleaseExclusion and sentence.hasAnSDSEarlyReleaseExclusion !== 'NO' %}
-                                        <tr class="govuk-table__row govuk-body-s" data-qa="sds-early-release-exclusion">
-                                            <th scope="row" class="govuk-table__header sentence-table-header">SDS40 Release Exclusion</th>
-                                            <td class="govuk-table__cell">{{ sentence.hasAnSDSEarlyReleaseExclusion | formatSds40Exclusion }}</td>
-                                        </tr>
+                                    {% if featureToggles.sdsExclusionIndicatorsEnabled %}
+                                        {% if sentence.sdsReleaseArrangements and sentence.sdsReleaseArrangements.sdsEarlyReleaseExclusions %}
+                                            <tr class="govuk-table__row govuk-body-s" data-qa="sds-early-release-exclusion">
+                                                {% for exclusion in sentence.sdsReleaseArrangements.sdsEarlyReleaseExclusions %}
+                                                {% if exclusion.includes('PART_3') == false %}
+                                                <th scope="row" class="govuk-table__header sentence-table-header">SDS40 Release Exclusion</th>
+                                                <td class="govuk-table__cell">{{ exclusion | formatSds40Exclusion }}</td>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        {% elseif sentence.hasAnSDSEarlyReleaseExclusion and sentence.hasAnSDSEarlyReleaseExclusion !== 'NO' %}
+                                            <tr class="govuk-table__row govuk-body-s" data-qa="sds-early-release-exclusion">
+                                                <th scope="row" class="govuk-table__header sentence-table-header">SDS40 Release Exclusion</th>
+                                                <td class="govuk-table__cell">{{ sentence.hasAnSDSEarlyReleaseExclusion | formatSds40Exclusion }}</td>
+                                            </tr>
+                                        {% endif %}
                                     {% endif %}
                                 </tbody>
                             </table>

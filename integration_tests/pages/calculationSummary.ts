@@ -45,7 +45,9 @@ export default class CalculationSummaryPage extends CalculationSummaryCommon {
     return cy.get(`[data-qa=agree-with-dates-${option}]`)
   }
 
-  public frt56TrancheNotification = (): PageElement => cy.get('.ftr56-tranche-guidance-panel')
+  public frt56TrancheNotification = (): PageElement => cy.get('#ftr56-tranche-guidance-panel')
+
+  public progressionTrancheNotification = (): PageElement => cy.get('body').find('#progression-tranche-guidance-panel')
 
   public submitToNomisButton = (): PageElement => cy.get('[data-qa=submit-to-nomis]')
 

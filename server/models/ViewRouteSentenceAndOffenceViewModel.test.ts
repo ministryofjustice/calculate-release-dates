@@ -78,6 +78,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
             },
           ],
           bookingId: 123,
+          revocationDates: [],
         } as SentenceAndOffenceWithReleaseArrangements,
         {
           caseSequence: 1,
@@ -86,7 +87,14 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
           isSDSPlusOffenceInPeriod: false,
           lineSequence: 1,
-          offence: { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+          offence: {
+            indicators: [],
+            offenceCode: '',
+            offenceDescription: '',
+            offenderChargeId: 0,
+            offenceStartDate: '2021-01-04',
+            offenceEndDate: '2021-01-05',
+          },
           sentenceCalculationType: 'SDS Standard Sentence',
           sentenceCategory: '2003',
           sentenceDate: '',
@@ -103,6 +111,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
             },
           ],
           bookingId: 123,
+          revocationDates: [],
         } as SentenceAndOffenceWithReleaseArrangements,
         {
           caseSequence: 1,
@@ -129,6 +138,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
             { years: 0, months: 32, weeks: 0, days: 0, code: 'LIC' },
           ],
           bookingId: 123,
+          revocationDates: [],
         } as SentenceAndOffenceWithReleaseArrangements,
       ]
       const model = new ViewRouteSentenceAndOffenceViewModel(
@@ -151,7 +161,13 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
           isSDSPlusOffenceInPeriod: false,
           lineSequence: 1,
-          offence: { offenceEndDate: '2021-02-03' },
+          offence: {
+            indicators: [],
+            offenceCode: '',
+            offenceDescription: '',
+            offenderChargeId: 0,
+            offenceEndDate: '2021-02-03',
+          },
           sentenceCalculationType: 'SDS Standard Sentence',
           sentenceCategory: '',
           sentenceDate: '',
@@ -168,6 +184,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
             },
           ],
           bookingId: 123,
+          revocationDates: [],
         } as SentenceAndOffenceWithReleaseArrangements,
         {
           caseSequence: 1,
@@ -176,7 +193,14 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
           isSDSPlusOffenceInPeriod: false,
           lineSequence: 2,
-          offence: { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
+          offence: {
+            offenceDescription: 'Description',
+            indicators: [],
+            offenderChargeId: 123,
+            offenceStartDate: '2021-01-04',
+            offenceEndDate: '2021-01-05',
+            offenceCode: 'abc',
+          },
           sentenceCalculationType: 'SDS Standard Sentence',
           sentenceCategory: '',
           sentenceDate: '',
@@ -193,6 +217,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
             },
           ],
           bookingId: 123,
+          revocationDates: [],
         } as SentenceAndOffenceWithReleaseArrangements,
         {
           caseSequence: 5,
@@ -219,6 +244,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
             { years: 0, months: 32, weeks: 0, days: 0, code: 'LIC' },
           ],
           bookingId: 123,
+          revocationDates: [],
         } as SentenceAndOffenceWithReleaseArrangements,
       ]
       const model = new ViewRouteSentenceAndOffenceViewModel(

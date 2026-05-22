@@ -64,14 +64,26 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     this.adjustmentsTablesModel = adjustmentsTablesFromAdjustmentDTOs(adjustmentsDtos ?? [], sentencesAndOffences)
   }
 
-  public rowIsSdsPlus(sentence: AnalysedSentenceAndOffence, offence: OffenderOffence): boolean {
+  private static isSentenceWithReleaseArrangements(
+    sentence: AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements,
+  ): sentence is SentenceAndOffenceWithReleaseArrangements {
+    return !('isSDSPlus' in sentence)
+  }
+
+  public rowIsSdsPlus(
+    sentence: AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements,
+    offence: OffenderOffence,
+  ): boolean {
     const oldUserInputForSDSPlus =
       this.userInputs &&
       this.userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
-    const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus && oldUserInputForSDSPlus.userChoice
-    return isUserIdentifiedSDSPlus || sentence.isSDSPlus
+    const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus?.userChoice ?? false
+    const isSDSPlus = ViewRouteSentenceAndOffenceViewModel.isSentenceWithReleaseArrangements(sentence)
+      ? (sentence.sdsReleaseArrangements?.isSDSPlus ?? false)
+      : sentence.isSDSPlus
+    return isUserIdentifiedSDSPlus || isSDSPlus
   }
 
   public isErsedChecked(): boolean {
