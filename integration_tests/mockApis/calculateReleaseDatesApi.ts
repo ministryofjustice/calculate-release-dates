@@ -2,6 +2,7 @@ import { SuperAgentRequest } from 'superagent'
 import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
 import {
+  AllocatedTranches,
   ApprovedDate,
   CalculationBreakdown,
   DetailedCalculationResults,
@@ -17,6 +18,15 @@ type EarlyReleaseTranche =
   | 'TRANCHE_0'
   | 'TRANCHE_1'
   | 'TRANCHE_2'
+  | 'TRANCHE_3'
+  | 'TRANCHE_4'
+  | 'TRANCHE_5'
+  | 'TRANCHE_6'
+  | 'TRANCHE_7'
+  | 'TRANCHE_8'
+  | 'TRANCHE_9'
+  | 'TRANCHE_10'
+  | 'FTR_56_TRANCHE_0'
   | 'FTR_56_TRANCHE_1'
   | 'FTR_56_TRANCHE_2'
   | 'FTR_56_TRANCHE_3'
@@ -1066,10 +1076,19 @@ export default {
   stubGetDetailedCalculationResults: (args?: {
     previouslyRecordedSLED?: PreviouslyRecordedSLED
     ftr56Tranche?: EarlyReleaseTranche
+    progressionModelTranche?: EarlyReleaseTranche
+    allocatedTranches?: AllocatedTranches[]
     calculationType?: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE'
     overridesCalculationRequestId?: number
   }): SuperAgentRequest => {
-    const { previouslyRecordedSLED, ftr56Tranche, calculationType, overridesCalculationRequestId } = args || {}
+    const {
+      previouslyRecordedSLED,
+      ftr56Tranche,
+      progressionModelTranche,
+      allocatedTranches,
+      calculationType,
+      overridesCalculationRequestId,
+    } = args || {}
     const breakdown: CalculationBreakdown = {
       showSds40Hints: false,
       concurrentSentences: [
@@ -1282,6 +1301,7 @@ export default {
       } as SentenceAndOffenceWithReleaseArrangements,
     ]
     const detailedResults: DetailedCalculationResults = {
+      allocatedTranches: [],
       dates: {
         SLED: {
           date: previouslyRecordedSLED?.previouslyRecordedSLEDDate ?? '2018-11-05',
@@ -1325,6 +1345,14 @@ export default {
 
     if (ftr56Tranche) {
       detailedResults.ftr56Tranche = ftr56Tranche
+    }
+
+    if (progressionModelTranche) {
+      detailedResults.progressionModelTranche = progressionModelTranche
+    }
+
+    if (allocatedTranches) {
+      detailedResults.allocatedTranches = allocatedTranches
     }
 
     return stubFor({

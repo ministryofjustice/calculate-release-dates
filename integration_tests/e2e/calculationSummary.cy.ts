@@ -3,6 +3,7 @@ import CalculationSummaryPage from '../pages/calculationSummary'
 import ErrorPage from '../pages/error'
 import Page from '../pages/page'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
+import { AllocatedTranches } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 context('Calculation summary', () => {
   beforeEach(() => {
@@ -81,6 +82,39 @@ context('Calculation summary', () => {
     calculationSummaryPage
       .frt56TrancheNotification()
       .should('contain.text', 'This person is in Tranche 3 of the fixed-term recalls legislation change.')
+  })
+
+  it('Visit Calculation summary page with Progression Tranche notification', () => {
+    const tranches: AllocatedTranches[] = [
+      { legislationName: 'SDS_PROGRESSION_MODEL', trancheName: 'TRANCHE_3', trancheDate: '2024-12-01' },
+    ]
+    cy.task('stubGetDetailedCalculationResults', {
+      previouslyRecordedSLED: null,
+      progressionModelTranche: 'TRANCHE_3',
+      allocatedTranches: tranches,
+    })
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+    const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
+    calculationSummaryPage
+      .progressionTrancheNotification()
+      .should(
+        'contain.text',
+        'This person is in Tranche 3 of the Progression Model legislation change, commencing Sunday, 1 December 2024',
+      )
+  })
+
+  it('Visit Calculation summary page with no Progression Tranche notification if allocated Tranche 0', () => {
+    const tranches: AllocatedTranches[] = [
+      { legislationName: 'SDS_PROGRESSION_MODEL', trancheName: 'TRANCHE_0', trancheDate: null },
+    ]
+    cy.task('stubGetDetailedCalculationResults', {
+      previouslyRecordedSLED: null,
+      progressionModelTranche: 'TRANCHE_0',
+      allocatedTranches: tranches,
+    })
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+    const calculationSummaryPage = CalculationSummaryPage.goTo('A1234AB', '123')
+    calculationSummaryPage.progressionTrancheNotification().should('not.exist')
   })
 
   it('Error when NOMIS data has changed', () => {

@@ -209,10 +209,6 @@ describe('calculationSummaryOverridesController', () => {
             offenceDescription: '',
             indicators: [],
           },
-          isSDSPlus: false,
-          hasAnSDSEarlyReleaseExclusion: 'NO',
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          isSDSPlusOffenceInPeriod: false,
           revocationDates: [],
         },
         {
@@ -242,15 +238,12 @@ describe('calculationSummaryOverridesController', () => {
             offenceDescription: '',
             indicators: [],
           },
-          isSDSPlus: false,
-          hasAnSDSEarlyReleaseExclusion: 'NO',
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          isSDSPlusOffenceInPeriod: false,
           revocationDates: [],
         },
       ],
     },
     approvedDates: {},
+    allocatedTranches: [],
   }
 
   let userRoles: string[]

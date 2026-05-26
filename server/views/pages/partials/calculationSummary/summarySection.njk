@@ -12,10 +12,21 @@
             <p class="govuk-body">Check the release dates before entering the approved dates.</p>
         {% endif %}
         {% if model.detailedCalculationResults.ftr56Tranche | trancheIsFtr56 %}
-            {% set tranche = model.detailedCalculationResults.ftr56Tranche | formatFtr56Tranche  %}
+            {% set tranche = model.detailedCalculationResults.ftr56Tranche | formatTranche  %}
             {{ govukInsetText({
                 html: '<p>This person is in <b>' + tranche  + '</b> of the fixed-term recalls legislation change.</p>',
-                classes: "govuk-!-margin-bottom-4 ftr56-tranche-guidance-panel"
+                classes: "govuk-!-margin-bottom-4 tranche-guidance-panel",
+                id: "ftr56-tranche-guidance-panel"
+            }) }}
+        {% endif %}
+
+        {% if model.detailedCalculationResults.progressionModelTranche and model.detailedCalculationResults.progressionModelTranche != 'TRANCHE_0' %}
+            {% set tranche = model.detailedCalculationResults.progressionModelTranche | formatTranche  %}
+            {% set trancheDate = model.detailedCalculationResults.allocatedTranches | formatProgressionTrancheDate %}
+            {{ govukInsetText({
+                html: '<p>This person is in <b>' + tranche  + '</b> of the Progression Model legislation change, commencing ' + trancheDate + '.</p>',
+                classes: "govuk-!-margin-bottom-4 tranche-guidance-panel",
+                id: "progression-tranche-guidance-panel"
             }) }}
         {% endif %}
     </div>

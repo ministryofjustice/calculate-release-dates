@@ -25,6 +25,7 @@ import ComparisonType from '../enumerations/comparisonType'
 import { FieldValidationError } from '../types/FieldValidationError'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
 import logger from '../../logger'
+import { AllocatedTranches } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 dayjs.extend(customParseFormat)
 
@@ -173,7 +174,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
   njkEnv.addFilter('latestRevocationDate', latestRevocationDate)
   njkEnv.addFilter('trancheIsFtr56', trancheIsFtr56)
-  njkEnv.addFilter('formatFtr56Tranche', formatFtr56Tranche)
+  njkEnv.addFilter('formatTranche', formatTranche)
+  njkEnv.addFilter('formatProgressionTrancheDate', formatProgressionTrancheDate)
   njkEnv.addFilter('findError', findError)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
 }
@@ -257,7 +259,13 @@ export const trancheIsFtr56 = (tranche: string): boolean =>
     'FTR_56_TRANCHE_6',
   ].includes(tranche)
 
-export const formatFtr56Tranche = (tranche: string): string => {
-  const trancheNumber = tranche[tranche.length - 1]
-  return `Tranche ${trancheNumber}`
+export const formatTranche = (tranche: string): string => {
+  const match = tranche.match(/TRANCHE_(\d+)$/)
+  if (!match) return 'unknown'
+  return `Tranche ${match[1]}`
+}
+
+export const formatProgressionTrancheDate = (allocatedTranches: AllocatedTranches[]) => {
+  const tranche = allocatedTranches.find(t => t.legislationName === 'SDS_PROGRESSION_MODEL')
+  return tranche ? dayjs(tranche.trancheDate).format('dddd, D MMMM YYYY') : 'Tranche date not found'
 }

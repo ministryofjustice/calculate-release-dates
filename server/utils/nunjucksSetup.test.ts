@@ -1,7 +1,7 @@
 import express from 'express'
 import { ApplicationInfo } from '../applicationInfo'
 import nunjucksSetup, {
-  formatFtr56Tranche,
+  formatTranche,
   formatSds40Exclusion,
   latestRevocationDate,
   pluraliseName,
@@ -84,7 +84,7 @@ describe('nunjucksSetup', () => {
       expect(latestRevocationDate([])).toBe(null)
     })
   })
-  describe('trancheIsFtr56 and formatFtr56Tranche', () => {
+  describe('tranche is valid and formatTranche', () => {
     describe('trancheIsFtr56', () => {
       it('returns true for valid FTR 56 tranches', () => {
         expect(trancheIsFtr56('FTR_56_TRANCHE_1')).toBe(true)
@@ -99,12 +99,18 @@ describe('nunjucksSetup', () => {
     })
     describe('formatFtr56Tranche', () => {
       it('returns the correct tranche label', () => {
-        expect(formatFtr56Tranche('FTR_56_TRANCHE_1')).toBe('Tranche 1')
-        expect(formatFtr56Tranche('FTR_56_TRANCHE_5')).toBe('Tranche 5')
+        expect(formatTranche('FTR_56_TRANCHE_1')).toBe('Tranche 1')
+        expect(formatTranche('FTR_56_TRANCHE_5')).toBe('Tranche 5')
       })
       it('returns the last character as tranche number', () => {
-        expect(formatFtr56Tranche('SOME_TRANCHE_3')).toBe('Tranche 3')
+        expect(formatTranche('SOME_TRANCHE_3')).toBe('Tranche 3')
       })
+    })
+  })
+  describe('trancheIsProgression', () => {
+    it('returns tranche if progression', () => {
+      expect(formatTranche('TRANCHE_1')).toBe('Tranche 1')
+      expect(formatTranche('TRANCHE_10')).toBe('Tranche 10')
     })
   })
 })
