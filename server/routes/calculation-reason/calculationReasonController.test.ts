@@ -166,7 +166,6 @@ describe('CalculationReasonController', () => {
   let currentSession: Partial<SessionData>
 
   beforeEach(() => {
-    config.featureToggles.showBreakdown = true
     currentUser = {
       ...user,
       userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR],
@@ -193,7 +192,6 @@ describe('CalculationReasonController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
-    config.featureToggles.showBreakdown = true
   })
 
   describe('GET', () => {

@@ -20,7 +20,6 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubGetAnalyzedSentencesAndOffences')
     cy.task('stubCalculatePreliminaryReleaseDates')
     cy.task('stubGetCalculationResults')
-    cy.task('stubGetCalculationBreakdown')
     cy.task('stubConfirmCalculation')
     cy.task('stubGetNextWorkingDay')
     cy.task('stubGetPreviousWorkingDay')

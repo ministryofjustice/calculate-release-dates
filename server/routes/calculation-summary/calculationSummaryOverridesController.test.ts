@@ -16,7 +16,6 @@ import {
   BookingCalculation,
   CalculationBreakdown,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import config from '../../config'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -251,7 +250,6 @@ describe('calculationSummaryOverridesController', () => {
   afterEach(() => {
     jest.resetAllMocks()
     userRoles = user.userRoles
-    config.featureToggles.showBreakdown = true
 
     app = appWithAllRoutes({
       services: {

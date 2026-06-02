@@ -28,7 +28,6 @@ generic-service:
     FRONTEND_COMPONENT_API_TIMEOUT: 500
     ENVIRONMENT_NAME: DEV
     SDS_EXCLUSION_INDICATORS_ENABLED: "true"
-    SHOW_BREAKDOWN: "true"
     ADJUSTMENTS_UI_URL: "https://adjustments-dev.hmpps.service.justice.gov.uk"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk"
     GENUINE_OVERRIDES_ENABLED: "true"

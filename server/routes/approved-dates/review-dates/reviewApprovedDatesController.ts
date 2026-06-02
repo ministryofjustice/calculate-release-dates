@@ -13,7 +13,6 @@ import { PersonJourneyParams } from '../../../@types/journeys'
 import ApprovedDatesUrls from '../approvedDateUrls'
 import { dateToDayMonthYear, sortDisplayableDates } from '../../../utils/utils'
 import ReviewApprovedDatesViewModel from '../../../models/approved-dates/ReviewApprovedDatesViewModel'
-import { getBreakdownFragment } from '../../saveCalculationHelper'
 import { approvedDateTypes } from '../approvedDatesUtils'
 
 export default class ReviewApprovedDatesController implements Controller {
@@ -62,27 +61,19 @@ export default class ReviewApprovedDatesController implements Controller {
     const { nomsId, journeyId } = req.params
     const { username, token } = res.locals.user
     const journey = req.session.approvedDatesJourneys[journeyId]
+    const confirmCalcRequest: SubmitCalculationRequest = {
+      calculationFragments: {
+        breakdownHtml: '',
+      },
+      approvedDates: journey.datesToSave.map(date => ({
+        dateType: date.type as ManualEntrySelectedDateType,
+        date: dateToDayMonthYear(date.date),
+      })),
+    }
 
     const result: { success: boolean; bookingCalculation?: BookingCalculation; errorCode?: number } =
-      await getBreakdownFragment(journey.preliminaryCalculationRequestId, username, this.calculateReleaseDatesService)
-        .then(breakdownHtml => {
-          const confirmCalcRequest: SubmitCalculationRequest = {
-            calculationFragments: {
-              breakdownHtml,
-            },
-            approvedDates: journey.datesToSave.map(date => ({
-              dateType: date.type as ManualEntrySelectedDateType,
-              date: dateToDayMonthYear(date.date),
-            })),
-          }
-          return this.calculateReleaseDatesService.confirmCalculation(
-            username,
-            nomsId,
-            journey.preliminaryCalculationRequestId,
-            confirmCalcRequest,
-            token,
-          )
-        })
+      await this.calculateReleaseDatesService
+        .confirmCalculation(username, nomsId, journey.preliminaryCalculationRequestId, confirmCalcRequest, token)
         .then(
           bookingCalculation => {
             return { success: true, bookingCalculation }

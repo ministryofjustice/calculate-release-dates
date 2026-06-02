@@ -9,7 +9,6 @@ import {
   AnalysedSentenceAndOffence,
   ApprovedDatesInputResponse,
   BookingCalculation,
-  CalculationBreakdown,
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
@@ -17,7 +16,6 @@ import {
   ComparisonOverview,
   ComparisonPersonDiscrepancyRequest,
   ComparisonPersonDiscrepancySummary,
-  PersonComparisonInputs,
   ComparisonPersonOverview,
   ComparisonSummary,
   DateTypeDefinition,
@@ -31,6 +29,7 @@ import {
   LatestCalculation,
   ManualEntryRequest,
   NomisCalculationSummary,
+  PersonComparisonInputs,
   ReleaseDatesAndCalculationContext,
   SentenceAndOffenceWithReleaseArrangements,
   SubmitCalculationRequest,
@@ -70,15 +69,6 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     return this.get<BookingCalculation>(
       {
         path: `/calculation/results/${calculationRequestId}`,
-      },
-      asSystem(username),
-    )
-  }
-
-  getCalculationBreakdown(calculationRequestId: number, username: string): Promise<CalculationBreakdown> {
-    return this.get<CalculationBreakdown>(
-      {
-        path: `/calculation/breakdown/${calculationRequestId}`,
       },
       asSystem(username),
     )

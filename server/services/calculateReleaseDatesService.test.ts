@@ -9,21 +9,13 @@ import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import config from '../config'
 import {
   BookingCalculation,
-  CalculationBreakdown,
   DetailedCalculationResults,
   GenuineOverrideCreatedResponse,
   LatestCalculation,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import {
-  ersedAdjustedByArdBreakdown,
-  ersedBeforeSentenceBreakdown,
-  ersedHalfwayBreakdown,
-  ersedTwoThirdsBreakdown,
-  psiExample16CalculationBreakdown,
-  psiExample25CalculationBreakdown,
-} from './breakdownExamplesTestData'
+import { psiExample25CalculationBreakdown } from './breakdownExamplesTestData'
 import AuditService from './auditService'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
@@ -73,39 +65,6 @@ const calculationResults: BookingCalculation = {
   bookingId: 123,
   calculationType: 'CALCULATED',
   calculationStatus: 'CONFIRMED',
-}
-const calculationBreakdown: CalculationBreakdown = {
-  showSds40Hints: false,
-  concurrentSentences: [
-    {
-      dates: {
-        CRD: {
-          adjusted: '2021-02-03',
-          unadjusted: '2021-01-15',
-          adjustedByDays: 18,
-          daysFromSentenceStart: 100,
-        },
-        SLED: {
-          adjusted: '2021-10-28',
-          unadjusted: '2021-01-15',
-          adjustedByDays: 18,
-          daysFromSentenceStart: 100,
-        },
-      },
-      sentenceLength: '2 years',
-      sentenceLengthDays: 785,
-      sentencedAt: '2020-01-01',
-      lineSequence: 2,
-      caseSequence: 1,
-      externalSentenceId: {
-        sentenceSequence: 0,
-        bookingId: 0,
-      },
-    },
-  ],
-  breakdownByReleaseDateType: {},
-  otherDates: {},
-  ersedNotApplicableDueToDtoLaterThanCrd: false,
 }
 
 const validResult: ValidationMessage[] = []
@@ -271,129 +230,6 @@ describe('Calculate release dates service tests', () => {
   it('weekend adjustments in the past do not appear', async () => {
     const result = await calculateReleaseDatesService.getNextWorkingDay('2021-10-10', token)
     expect(result).toBeNull()
-  })
-
-  describe('Test getting effective dates and breakdown', () => {
-    it('Test data', async () => {
-      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, calculationBreakdown)
-
-      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-
-      expect(result.calculationBreakdown).toEqual(calculationBreakdown)
-    })
-
-    it('PSI example 16', async () => {
-      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, psiExample16CalculationBreakdown())
-
-      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-
-      expect(result.calculationBreakdown).toEqual(psiExample16CalculationBreakdown())
-
-      expect(result.releaseDatesWithAdjustments).toEqual([
-        {
-          releaseDate: '2015-07-28',
-          releaseDateType: 'LED',
-          hintText: '11 August 2015 minus 14 days',
-        },
-        {
-          hintText: '11 October 2015 minus 14 days',
-          releaseDate: '2015-09-27',
-          releaseDateType: 'SED',
-        },
-        {
-          hintText: '12 June 2015 minus 14 days',
-          releaseDate: '2015-05-29',
-          releaseDateType: 'CRD',
-        },
-        {
-          releaseDate: '2015-03-28',
-          releaseDateType: 'HDCED',
-          hintText: '16 February 2015 plus 61 days minus 21 days',
-        },
-        {
-          releaseDate: '2016-05-26',
-          releaseDateType: 'TUSED',
-          hintText: '16 June 2015 plus 12 months minus 21 days',
-        },
-      ])
-    })
-
-    it('PSI example 25', async () => {
-      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, psiExample25CalculationBreakdown())
-
-      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-
-      expect(result.calculationBreakdown).toEqual(psiExample25CalculationBreakdown())
-
-      expect(result.releaseDatesWithAdjustments).toEqual([
-        {
-          hintText: '14 July 2015 plus 44 days',
-          releaseDate: '2015-08-27',
-          releaseDateType: 'LED',
-        },
-        {
-          hintText: '21 December 2015 plus 0 days',
-          releaseDate: '2015-12-21',
-          releaseDateType: 'SED',
-        },
-        {
-          hintText: '23 July 2015 plus 0 days',
-          releaseDate: '2015-07-23',
-          releaseDateType: 'CRD',
-        },
-        {
-          releaseDate: '2015-03-28',
-          releaseDateType: 'HDCED',
-          hintText: '16 February 2015 plus 61 days minus 21 days',
-        },
-        {
-          releaseDate: '2016-05-26',
-          releaseDateType: 'TUSED',
-          hintText: '16 June 2015 plus 12 months minus 21 days',
-        },
-      ])
-    })
-
-    it('ERSED halfway', async () => {
-      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedHalfwayBreakdown())
-
-      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-
-      expect(result.calculationBreakdown).toEqual(ersedHalfwayBreakdown())
-
-      expect(result.releaseDatesWithAdjustments).toEqual([
-        { hintText: '01 December 2010 plus 50 days', releaseDate: '2010-12-01', releaseDateType: 'ERSED' },
-      ])
-    })
-    it('ERSED two thirds', async () => {
-      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedTwoThirdsBreakdown())
-
-      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-
-      expect(result.calculationBreakdown).toEqual(ersedTwoThirdsBreakdown())
-
-      expect(result.releaseDatesWithAdjustments).toEqual([
-        { hintText: '20 March 2023 plus 66 days', releaseDate: '2023-03-20', releaseDateType: 'ERSED' },
-      ])
-    })
-    it('ERSED adjusted to afine', async () => {
-      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedAdjustedByArdBreakdown())
-
-      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-
-      expect(result.calculationBreakdown).toEqual(ersedAdjustedByArdBreakdown())
-
-      expect(result.releaseDatesWithAdjustments.find(it => it.releaseDateType === 'ERSED')).toBeFalsy()
-    })
-    it('ERSED before sentence date', async () => {
-      fakeApi.get(`/calculation/breakdown/${calculationRequestId}`).reply(200, ersedBeforeSentenceBreakdown())
-
-      const result = await calculateReleaseDatesService.getBreakdown(calculationRequestId, token)
-
-      expect(result.calculationBreakdown).toEqual(ersedBeforeSentenceBreakdown())
-
-      expect(result.releaseDatesWithAdjustments.find(it => it.releaseDateType === 'ERSED')).toBeFalsy()
-    })
   })
 
   describe('Validation tests', () => {

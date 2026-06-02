@@ -7,7 +7,6 @@ import ReleaseDateWithAdjustments from '../../@types/calculateReleaseDates/relea
 import { PrisonApiOffenderSentenceAndOffences, PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 import { ErrorMessages } from '../../types/ErrorMessages'
 import SentenceTypes from '../SentenceTypes'
-import config from '../../config'
 
 export default class CalculationSummaryViewModel {
   constructor(
@@ -35,16 +34,6 @@ export default class CalculationSummaryViewModel {
     public calculatedAtPrisonDescription?: string,
   ) {
     // intentionally left blank
-  }
-
-  public showBreakdown(): boolean {
-    return (
-      config.featureToggles.showBreakdown &&
-      !!this.calculationBreakdown &&
-      !this.detailedCalculationResults?.dates?.PRRD &&
-      !this.calculationBreakdown?.otherDates?.PRRD &&
-      this.allSentencesSupported()
-    )
   }
 
   public getSDS40ReleaseTranche(): string {
