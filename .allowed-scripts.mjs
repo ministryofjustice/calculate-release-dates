@@ -13,6 +13,6 @@ export default configureAllowedScripts({
     // Native solution to quickly resolve module paths, used by jest and eslint
     'node_modules/unrs-resolver@1.11.1': 'ALLOW',
     // Needed by cypress to be able to run a browser for the tests
-    'node_modules/cypress@15.15.0': 'ALLOW',
+    'node_modules/cypress@15.16.0': 'ALLOW',
   },
 })
