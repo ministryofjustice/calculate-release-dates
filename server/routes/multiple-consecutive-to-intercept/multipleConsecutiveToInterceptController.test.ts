@@ -10,7 +10,6 @@ import {
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
 } from '../../@types/prisonApi/prisonClientTypes'
-import config from '../../config'
 import CheckInformationService from '../../services/checkInformationService'
 import UserInputService from '../../services/userInputService'
 import { CalculationUserInputs } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -64,8 +63,6 @@ describe('MultipleConsecutiveToInterceptController', () => {
   } as PrisonApiPrisoner
 
   beforeEach(() => {
-    config.featureToggles.showBreakdown = true
-
     app = appWithAllRoutes({
       services: {
         calculateReleaseDatesService,
@@ -80,7 +77,6 @@ describe('MultipleConsecutiveToInterceptController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
-    config.featureToggles.showBreakdown = true
   })
 
   describe('GET', () => {

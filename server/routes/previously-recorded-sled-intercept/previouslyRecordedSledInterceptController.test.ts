@@ -14,7 +14,6 @@ import {
   BookingCalculation,
   CalculationUserInputs,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import config from '../../config'
 import UserInputService from '../../services/userInputService'
 import { ResultsWithBreakdownAndAdjustments } from '../../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 
@@ -124,7 +123,6 @@ describe('PreviouslyRecordedSledInterceptController', () => {
   }
 
   beforeEach(() => {
-    config.featureToggles.showBreakdown = true
     siblingCalculationWithPreviouslyRecordedSLED = {}
     app = appWithAllRoutes({
       services: {
@@ -139,7 +137,6 @@ describe('PreviouslyRecordedSledInterceptController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
-    config.featureToggles.showBreakdown = true
   })
 
   describe('GET', () => {

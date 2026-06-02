@@ -14,7 +14,6 @@ import {
   BookingCalculation,
   CalculationBreakdown,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import config from '../../config'
 import { ResultsWithBreakdownAndAdjustments } from '../../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ReleaseDateWithAdjustments from '../../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../../types/ManualJourney'
@@ -321,7 +320,6 @@ describe('CalculationSummaryController', () => {
   let userRoles: string[]
 
   beforeEach(() => {
-    config.featureToggles.showBreakdown = true
     approvedDates = {}
     userRoles = user.userRoles
     sessionSetup.sessionDoctor = req => {
@@ -345,7 +343,6 @@ describe('CalculationSummaryController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
-    config.featureToggles.showBreakdown = true
   })
 
   describe('GET', () => {
@@ -413,20 +410,6 @@ describe('CalculationSummaryController', () => {
         })
     })
 
-    it('GET /calculation/:nomsId/summary/:calculationRequestId should hide breakdown if feature toggle is off', () => {
-      config.featureToggles.showBreakdown = false
-      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-        stubbedResultsWithBreakdownAndAdjustments,
-      )
-      return request(app)
-        .get(`/calculation/${prisonerNumber}/summary/123456`)
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).not.toContain('Calculation breakdown')
-        })
-    })
-
     it('GET /calculation/:nomsId/summary/:calculationRequestId should return details about the calculation requested', () => {
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
         stubbedResultsWithBreakdownAndAdjustments,
@@ -449,12 +432,7 @@ describe('CalculationSummaryController', () => {
           // The design without SLED will come in time
           expect(res.text).toContain('Sentence')
           expect(res.text).not.toContain('Consecutive sentence')
-          expect(res.text).toContain('Release dates with adjustments')
-          expect(res.text).toContain('03 February 2021')
-          expect(res.text).toContain('15 January 2021 minus 18 days')
-          expect(res.text).toContain('HDCED with adjustments')
-          expect(res.text).toContain('13 May 2029')
-          expect(res.text).toContain('14 May 2029 minus 1 day')
+
           expect(res.text).toContain(
             `Some release dates and details are not included because they are not relevant to this person's sentences`,
           )
@@ -466,7 +444,6 @@ describe('CalculationSummaryController', () => {
           expect(res.text).not.toContain(
             'Early removal cannot happen as release from the Detention Training Order (DTO) is later than the Conditional Release Date (CRD).',
           )
-          expect(res.text).toContain('Calculation breakdown')
           const $ = cheerio.load(res.text)
           expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
             `/calculation/${prisonerNumber}/cancelCalculation?redirectUrl=/calculation/${prisonerNumber}/summary/123456`,

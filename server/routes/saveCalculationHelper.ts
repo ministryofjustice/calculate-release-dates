@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import logger from '../../logger'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { nunjucksEnv } from '../utils/nunjucksSetup'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
 import { ManuallyEnteredDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
@@ -15,7 +14,6 @@ const saveCalculation = async (
   const { username, token } = res.locals.user
   const { nomsId } = req.params
   const calculationRequestId = Number(req.params.calculationRequestId)
-  const breakdownHtml = await getBreakdownFragment(calculationRequestId, username, calculateReleaseDatesService)
   const approvedDates: ManualJourneySelectedDate[] =
     req.session.selectedApprovedDates != null && req.session.selectedApprovedDates[nomsId] != null
       ? req.session.selectedApprovedDates[nomsId]
@@ -34,7 +32,7 @@ const saveCalculation = async (
       calculationRequestId,
       {
         calculationFragments: {
-          breakdownHtml,
+          breakdownHtml: '',
         },
         approvedDates: newApprovedDates,
       },
@@ -68,18 +66,4 @@ const saveCalculation = async (
   }
 }
 
-const getBreakdownFragment = async (
-  calculationRequestId: number,
-  username: string,
-  calculateReleaseDatesService: CalculateReleaseDatesService,
-): Promise<string> => {
-  const breakdown = await calculateReleaseDatesService.getBreakdown(calculationRequestId, username)
-  return nunjucksEnv().render('pages/fragments/breakdownFragment.njk', {
-    model: {
-      ...breakdown,
-      showBreakdown: () => true,
-    },
-  })
-}
-
-export { saveCalculation, getBreakdownFragment }
+export default saveCalculation

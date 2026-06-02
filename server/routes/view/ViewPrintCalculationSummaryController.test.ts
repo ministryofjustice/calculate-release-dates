@@ -269,7 +269,7 @@ it('GET /view/:calculationRequestId/calculation-summary/print should return a pr
     .expect(res => {
       expect(res.text).toContain('Anon Nobody')
       expect(res.text).toMatch(/<script src="\/assets\/js\/print.js"><\/script>/)
-      expect(res.text).toMatch(/Calculation/)
+      expect(res.text).toMatch(/Dates for Anon Nobody/)
       expectMiniProfile(res.text, {
         name: 'Nobody, Anon',
         dob: '24/06/2000',

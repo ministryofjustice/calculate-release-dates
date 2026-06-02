@@ -20,7 +20,6 @@ import ViewReleaseDatesService from '../services/viewReleaseDatesService'
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import UserPermissionsService from '../services/userPermissionsService'
-import config from '../config'
 import { FullPageError } from '../types/FullPageError'
 import AuditService from '../services/auditService'
 
@@ -364,7 +363,6 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
-  config.featureToggles.showBreakdown = true
 })
 
 describe('Check access tests', () => {

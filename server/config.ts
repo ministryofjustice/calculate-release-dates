@@ -143,7 +143,6 @@ export default {
   },
   featureToggles: {
     sdsExclusionIndicatorsEnabled: get('SDS_EXCLUSION_INDICATORS_ENABLED', false) === 'true',
-    showBreakdown: get('SHOW_BREAKDOWN', false) === 'true',
     showCrdsIntercept: get('SHOW_CRDS_INTERCEPT', false) === 'true',
     genuineOverridesEnabled: get('GENUINE_OVERRIDES_ENABLED', false) === 'true',
     thingsToDoIntercept: get('THING_TO_DO_INTERCEPT_ENABLED', false) === 'true',

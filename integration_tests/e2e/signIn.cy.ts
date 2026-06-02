@@ -12,7 +12,6 @@ context('Sign In', () => {
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetSentencesAndOffences')
     cy.task('stubGetCalculationResults')
-    cy.task('stubGetCalculationBreakdown')
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
     cy.task('stubLatestCalculation')

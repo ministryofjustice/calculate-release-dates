@@ -100,29 +100,6 @@ export default class CalculateReleaseDatesService {
     return this.calculateReleaseDatesApiRestClient.getAdjustmentsForPrisoner(prisonerId, username)
   }
 
-  async getBreakdown(
-    calculationRequestId: number,
-    username: string,
-  ): Promise<{
-    calculationBreakdown?: CalculationBreakdown
-    releaseDatesWithAdjustments: ReleaseDateWithAdjustments[]
-  }> {
-    try {
-      const breakdown = await this.getCalculationBreakdown(calculationRequestId, username)
-      return {
-        calculationBreakdown: breakdown,
-        releaseDatesWithAdjustments: this.extractReleaseDatesWithAdjustments(breakdown),
-      }
-    } catch (error) {
-      // If an error happens in this breakdown, still display the release dates if possible.
-      logger.error(error)
-      return {
-        calculationBreakdown: undefined,
-        releaseDatesWithAdjustments: [],
-      }
-    }
-  }
-
   getCalculationRequestModel(req: Request, userInputs: CalculationUserInputs, nomsId: string): CalculationRequestModel {
     return {
       calculationUserInputs: userInputs,
@@ -339,10 +316,6 @@ export default class CalculateReleaseDatesService {
       releaseDateType,
       hintText,
     }
-  }
-
-  public async getCalculationBreakdown(calculationRequestId: number, username: string): Promise<CalculationBreakdown> {
-    return this.calculateReleaseDatesApiRestClient.getCalculationBreakdown(calculationRequestId, username)
   }
 
   public async getCalculationReasons(username: string): Promise<CalculationReason[]> {

@@ -21,7 +21,6 @@ context('End to end user journey with previously recorded SLED found', () => {
     cy.task('stubGetSentencesAndOffences')
     cy.task('stubGetAnalyzedSentencesAndOffences')
     cy.task('stubGetCalculationResults')
-    cy.task('stubGetCalculationBreakdown')
     cy.task('stubConfirmCalculation')
     cy.task('stubGetNextWorkingDay')
     cy.task('stubGetPreviousWorkingDay')

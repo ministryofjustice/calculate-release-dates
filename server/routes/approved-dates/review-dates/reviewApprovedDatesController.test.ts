@@ -221,9 +221,7 @@ describe('ReviewApprovedDatesController', () => {
         message: 'An error has occurred',
       }
 
-      calculateReleaseDatesService.confirmCalculation.mockImplementation(() => {
-        throw error
-      })
+      calculateReleaseDatesService.confirmCalculation.mockRejectedValue(error)
       journey.datesToSave = [
         { type: 'APD', date: '2021-02-03' },
         { type: 'HDCAD', date: '2021-02-04' },

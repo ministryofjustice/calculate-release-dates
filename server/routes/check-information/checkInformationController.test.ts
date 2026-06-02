@@ -437,7 +437,6 @@ describe('CheckInformationController', () => {
   } as PrisonApiReturnToCustodyDate
 
   beforeEach(() => {
-    config.featureToggles.showBreakdown = true
     sessionSetup.sessionDoctor = req => {
       req.session.isAddDatesFlow = {}
       req.session.isAddDatesFlow.A1234AA = false
@@ -456,7 +455,6 @@ describe('CheckInformationController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
-    config.featureToggles.showBreakdown = true
   })
 
   describe('GET', () => {
