@@ -37,6 +37,8 @@ FROM base
 COPY --from=build --chown=appuser:appgroup \
         /app/package.json \
         /app/package-lock.json \
+        .allowed-scripts.mjs \
+        .npmrc \
         ./
 
 COPY --from=build --chown=appuser:appgroup \
