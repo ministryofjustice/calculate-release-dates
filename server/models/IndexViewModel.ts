@@ -47,7 +47,9 @@ export function indexViewModelForPrisoner(
     latestCalculationCardAction,
     hasNoIndeterminateSentence,
     serviceDefinitions,
-    Object.values(serviceDefinitions?.services).some(it => it.thingsToDo.count > 0),
+    Object.values(serviceDefinitions?.services).some(
+      it => it.thingsToDo.count > 0 && it.thingsToDo.severity !== 'NOTIFICATION',
+    ),
     latestCalculation,
   )
 }
