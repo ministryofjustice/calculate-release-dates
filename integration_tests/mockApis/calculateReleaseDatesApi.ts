@@ -438,7 +438,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/calculate-release-dates/calculation/sentence-and-offences/([0-9]*)`,
+        urlPattern: `/calculate-release-dates/calculation/sentence-and-offence-information/([0-9]*)`,
       },
       response: {
         status: 200,
@@ -462,6 +462,9 @@ export default {
               offenceCode: '123',
               offenceDescription: 'Doing a crime',
             },
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
+            sentenceAndOffenceAnalysis: 'SAME',
           },
           {
             terms: [
@@ -478,6 +481,9 @@ export default {
             sentenceStatus: 'A',
             sentenceTypeDescription: 'SDS Standard Sentence',
             offence: { offenceEndDate: '2021-02-05', offenceDescription: 'Doing a crime' },
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
+            sentenceAndOffenceAnalysis: 'SAME',
           },
         ],
       },

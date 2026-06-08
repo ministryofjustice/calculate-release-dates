@@ -1,8 +1,8 @@
 import {
   AdjustmentDto,
+  AnalysedSentenceAndOffence,
   BookingCalculation,
   CalculationUserInputs,
-  SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   AnalysedPrisonApiBookingAndSentenceAdjustments,
@@ -29,10 +29,7 @@ export default class ViewReleaseDatesService {
     return this.calculateReleaseDatesApiRestClient.getAdjustmentsDtosForCalculation(calculationId, username)
   }
 
-  async getSentencesAndOffences(
-    calculationId: number,
-    username: string,
-  ): Promise<SentenceAndOffenceWithReleaseArrangements[]> {
+  async getSentencesAndOffences(calculationId: number, username: string): Promise<AnalysedSentenceAndOffence[]> {
     return this.calculateReleaseDatesApiRestClient.getSentencesAndOffences(calculationId, username)
   }
 
