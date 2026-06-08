@@ -10,13 +10,12 @@ import {
   PrisonApiPrisoner,
   PrisonApiSentenceDetail,
 } from '../../@types/prisonApi/prisonClientTypes'
-import config from '../../config'
 import {
+  AnalysedSentenceAndOffence,
   BookingCalculation,
   CalculationBreakdown,
   CalculationSentenceUserInput,
   CalculationUserInputs,
-  SentenceAndOffenceWithReleaseArrangements,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ResultsWithBreakdownAndAdjustments } from '../../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import UserService from '../../services/userService'
@@ -302,13 +301,10 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceEndDate: '2021-02-03' },
-    sdsReleaseArrangements: {
-      isSDSPlus: false,
-      isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-      sdsEarlyReleaseExclusions: ['NO'],
-      isSection250: false,
-    },
-  } as SentenceAndOffenceWithReleaseArrangements,
+    isSDSPlus: false,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+    sentenceAndOffenceAnalysis: 'SAME',
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -321,13 +317,10 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-    sdsReleaseArrangements: {
-      isSDSPlus: false,
-      isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-      sdsEarlyReleaseExclusions: ['NO'],
-      isSection250: false,
-    },
-  } as SentenceAndOffenceWithReleaseArrangements,
+    isSDSPlus: false,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+    sentenceAndOffenceAnalysis: 'SAME',
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -340,13 +333,10 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceStartDate: '2021-03-06' },
-    sdsReleaseArrangements: {
-      isSDSPlus: false,
-      isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-      sdsEarlyReleaseExclusions: ['NO'],
-      isSection250: false,
-    },
-  } as SentenceAndOffenceWithReleaseArrangements,
+    isSDSPlus: false,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+    sentenceAndOffenceAnalysis: 'SAME',
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -359,13 +349,10 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: {},
-    sdsReleaseArrangements: {
-      isSDSPlus: false,
-      isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-      sdsEarlyReleaseExclusions: ['NO'],
-      isSection250: false,
-    },
-  } as SentenceAndOffenceWithReleaseArrangements,
+    isSDSPlus: false,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+    sentenceAndOffenceAnalysis: 'SAME',
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -378,7 +365,7 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
-  } as SentenceAndOffenceWithReleaseArrangements,
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -392,13 +379,10 @@ const stubbedSentencesAndOffences = [
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
     offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
-    sdsReleaseArrangements: {
-      isSDSPlus: false,
-      isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-      sdsEarlyReleaseExclusions: ['NO'],
-      isSection250: false,
-    },
-  } as SentenceAndOffenceWithReleaseArrangements,
+    isSDSPlus: false,
+    hasAnSDSEarlyReleaseExclusion: 'NO',
+    sentenceAndOffenceAnalysis: 'SAME',
+  } as AnalysedSentenceAndOffence,
 ]
 
 const stubbedUserInput = {
@@ -416,7 +400,6 @@ const stubbedUserInput = {
 let app: Express
 
 beforeEach(() => {
-  config.featureToggles.sdsExclusionIndicatorsEnabled = false
   app = appWithAllRoutes({
     services: {
       userService,
@@ -451,13 +434,9 @@ describe('View Sentences and Offences controller tests', () => {
         sentenceCalculationType: 'ADIMP',
         sentenceTypeDescription: 'SDS Standard Sentence',
         offence: { offenceEndDate: '2021-02-03', offenceCode: '123' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['SEXUAL'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
+        isSDSPlus: true,
+        sentenceAndOffenceAnalysis: 'SAME',
+      } as AnalysedSentenceAndOffence,
     ])
     viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
@@ -474,8 +453,7 @@ describe('View Sentences and Offences controller tests', () => {
       })
   })
 
-  it('GET /view/:calculationRequestId/sentences-and-offences should show exclusions if feature toggle is enabled', () => {
-    config.featureToggles.sdsExclusionIndicatorsEnabled = true
+  it('GET /view/:calculationRequestId/sentences-and-offences should show SDS40 and Progression Model exclusions if they are present', () => {
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
       stubbedResultsWithBreakdownAndAdjustments,
@@ -494,13 +472,12 @@ describe('View Sentences and Offences controller tests', () => {
         sentenceCalculationType: 'ADIMP',
         sentenceTypeDescription: 'SDS Standard Sentence',
         offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'SXOFFENCE' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['SEXUAL'],
-          isSection250: false,
+        isSDSPlus: true,
+        hasAnSDSEarlyReleaseExclusion: 'SEXUAL',
+        sdsDescriptions: {
+          sds40ExclusionDescription: 'Sexual',
         },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
       {
         terms: [
           {
@@ -513,14 +490,14 @@ describe('View Sentences and Offences controller tests', () => {
         consecutiveToSequence: 1,
         sentenceCalculationType: 'ADIMP',
         sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'VIOOFFENCE' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['VIOLENT'],
-          isSection250: false,
+        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'PMOFFENCE' },
+        isSDSPlus: false,
+        hasAnSDSEarlyReleaseExclusion: 'PROGRESSION_MODEL_SCHEDULE_13_PART_3',
+        sentenceAndOffenceAnalysis: 'SAME',
+        sdsDescriptions: {
+          progressionModelExclusionDescription: 'Would be SDS+',
         },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
       {
         terms: [
           {
@@ -534,13 +511,11 @@ describe('View Sentences and Offences controller tests', () => {
         sentenceCalculationType: 'ADIMP',
         sentenceTypeDescription: 'SDS Standard Sentence',
         offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'No exclusion offence' },
-        sdsReleaseArrangements: {
-          isSDSPlus: false,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: [],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
+        isSDSPlus: false,
+        sentenceAndOffenceAnalysis: 'SAME',
+        hasAnSDSEarlyReleaseExclusion: 'NO',
+        sdsDescriptions: {},
+      } as AnalysedSentenceAndOffence,
     ])
     viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
@@ -553,269 +528,19 @@ describe('View Sentences and Offences controller tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('.sentence-card:contains("SXOFFENCE")').text()).toContain('Sexual')
-        expect($('.sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
+        const sexualOffenceCard = $('.sentence-card:contains("SXOFFENCE")')
+        expect(sexualOffenceCard.find('[data-qa=sds-40-early-release-exclusion]').text()).toContain('Sexual')
+        expect(sexualOffenceCard.find('[data-qa=sds-progression-model-early-release-exclusion]')).toHaveLength(0)
+
+        const progressionModelOffenceCard = $('.sentence-card:contains("PMOFFENCE")')
+        expect(progressionModelOffenceCard.find('[data-qa=sds-40-early-release-exclusion]')).toHaveLength(0)
+        expect(
+          progressionModelOffenceCard.find('[data-qa=sds-progression-model-early-release-exclusion]').text(),
+        ).toContain('Would be SDS+')
+
         const noExclusionCard = $('.sentence-card:contains("No exclusion offence")')
-        expect(noExclusionCard.text()).not.toContain('Sexual')
-        expect(noExclusionCard.text()).not.toContain('Violent')
-      })
-  })
-
-  it('GET /view/:calculationRequestId/sentences-and-offences should show correctly formatted exclusion for Terrorism, Domestic Abuse and National Security', () => {
-    config.featureToggles.sdsExclusionIndicatorsEnabled = true
-    viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-      stubbedResultsWithBreakdownAndAdjustments,
-    )
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
-      {
-        terms: [
-          {
-            years: 2,
-          },
-        ],
-        caseSequence: 2,
-        lineSequence: 2,
-        sentenceSequence: 2,
-        consecutiveToSequence: 1,
-        sentenceCalculationType: 'ADIMP',
-        sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'DOMESTIC_ABUSE_OFFENCE' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['DOMESTIC_ABUSE'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
-      {
-        terms: [
-          {
-            years: 2,
-          },
-        ],
-        caseSequence: 2,
-        lineSequence: 2,
-        sentenceSequence: 2,
-        consecutiveToSequence: 1,
-        sentenceCalculationType: 'ADIMP',
-        sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'TERROR_OFFENCE' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['TERRORISM'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
-      {
-        terms: [
-          {
-            years: 2,
-          },
-        ],
-        caseSequence: 2,
-        lineSequence: 2,
-        sentenceSequence: 2,
-        consecutiveToSequence: 1,
-        sentenceCalculationType: 'ADIMP',
-        sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'NSOFFENCE' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['NATIONAL_SECURITY'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
-    ])
-    viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
-      calculateErsed: true,
-      sentenceCalculationUserInputs: [],
-    } as CalculationUserInputs)
-    return request(app)
-      .get('/view/A1234AA/sentences-and-offences/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('.sentence-card:contains("DOMESTIC_ABUSE_OFFENCE")').text()).toContain('Domestic Abuse')
-        expect($('.sentence-card:contains("TERROR_OFFENCE")').text()).toContain('Terrorism')
-        expect($('.sentence-card:contains("NSOFFENCE")').text()).toContain('National Security')
-      })
-  })
-
-  it('GET /view/:calculationRequestId/sentences-and-offences should show correctly formatted exclusion for Terrorism and exclude PART_3 tranche', () => {
-    config.featureToggles.sdsExclusionIndicatorsEnabled = true
-    viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-      stubbedResultsWithBreakdownAndAdjustments,
-    )
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
-      {
-        terms: [
-          {
-            years: 2,
-          },
-        ],
-        caseSequence: 2,
-        lineSequence: 2,
-        sentenceSequence: 2,
-        consecutiveToSequence: 1,
-        sentenceCalculationType: 'ADIMP',
-        sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: {
-          offenceEndDate: '2021-02-03',
-          offenceCode: '123',
-          offenceDescription: 'PROGRESSION_MODEL_OFFENCE',
-        },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['PROGRESSION_MODEL_SCHEDULE_13_PART_3'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
-      {
-        terms: [
-          {
-            years: 2,
-          },
-        ],
-        caseSequence: 2,
-        lineSequence: 2,
-        sentenceSequence: 2,
-        consecutiveToSequence: 1,
-        sentenceCalculationType: 'ADIMP',
-        sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'TERROR_OFFENCE' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['TERRORISM'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
-      {
-        terms: [
-          {
-            years: 2,
-          },
-        ],
-        caseSequence: 2,
-        lineSequence: 2,
-        sentenceSequence: 2,
-        consecutiveToSequence: 1,
-        sentenceCalculationType: 'ADIMP',
-        sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'NSOFFENCE' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['NATIONAL_SECURITY'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
-    ])
-    viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
-      calculateErsed: true,
-      sentenceCalculationUserInputs: [],
-    } as CalculationUserInputs)
-    return request(app)
-      .get('/view/A1234AA/sentences-and-offences/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('.sentence-card:contains("PROGRESSION_MODEL_OFFENCE")').text()).not.toContain('Progression')
-        expect($('.sentence-card:contains("TERROR_OFFENCE")').text()).toContain('Terrorism')
-        expect($('.sentence-card:contains("NSOFFENCE")').text()).toContain('National Security')
-      })
-  })
-
-  it('GET /view/:calculationRequestId/sentences-and-offences should not show exclusions if feature toggle is off', () => {
-    config.featureToggles.sdsExclusionIndicatorsEnabled = false
-    viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
-      stubbedResultsWithBreakdownAndAdjustments,
-    )
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
-      {
-        terms: [
-          {
-            years: 2,
-          },
-        ],
-        caseSequence: 2,
-        lineSequence: 2,
-        sentenceSequence: 2,
-        consecutiveToSequence: 1,
-        sentenceCalculationType: 'ADIMP',
-        sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'SXOFFENCE' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['SEXUAL'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
-      {
-        terms: [
-          {
-            years: 2,
-          },
-        ],
-        caseSequence: 2,
-        lineSequence: 2,
-        sentenceSequence: 2,
-        consecutiveToSequence: 1,
-        sentenceCalculationType: 'ADIMP',
-        sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'VIOOFFENCE' },
-        sdsReleaseArrangements: {
-          isSDSPlus: true,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['VIOLENT'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
-      {
-        terms: [
-          {
-            years: 2,
-          },
-        ],
-        caseSequence: 2,
-        lineSequence: 2,
-        sentenceSequence: 2,
-        consecutiveToSequence: 1,
-        sentenceCalculationType: 'ADIMP',
-        sentenceTypeDescription: 'SDS Standard Sentence',
-        offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'No exclusion offence' },
-        sdsReleaseArrangements: {
-          isSDSPlus: false,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          sdsEarlyReleaseExclusions: ['NO'],
-          isSection250: false,
-        },
-      } as SentenceAndOffenceWithReleaseArrangements,
-    ])
-    viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
-    viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
-      calculateErsed: true,
-      sentenceCalculationUserInputs: [],
-    } as CalculationUserInputs)
-    return request(app)
-      .get('/view/A1234AA/sentences-and-offences/123456')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('.sentence-card:contains("SXOFFENCE")').text()).not.toContain('Sexual')
-        expect($('.sentence-card:contains("VIOOFFENCE")').text()).not.toContain('Violent')
+        expect(noExclusionCard.find('[data-qa=sds-40-early-release-exclusion]')).toHaveLength(0)
+        expect(noExclusionCard.find('[data-qa=sds-progression-model-early-release-exclusion]')).toHaveLength(0)
       })
   })
 
@@ -838,7 +563,8 @@ describe('View Sentences and Offences controller tests', () => {
         sentenceCalculationType: 'ADIMP',
         sentenceTypeDescription: 'SDS Standard Sentence',
         offence: { offenceEndDate: '2021-02-03', offenceCode: '123' },
-      } as SentenceAndOffenceWithReleaseArrangements,
+        sdsDescriptions: {}, // user marked as SDS+ so no SDS+ description would be provided
+      } as AnalysedSentenceAndOffence,
     ])
     viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
     viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
@@ -861,6 +587,85 @@ describe('View Sentences and Offences controller tests', () => {
         expect($('.moj-badge.moj-badge--small:contains("SDS+")')).toHaveLength(1)
       })
   })
+
+  it('GET /view/:calculationRequestId/sentences-and-offences should return another SDS+ badge if user marked sentence as SDS+', () => {
+    viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+      stubbedResultsWithBreakdownAndAdjustments,
+    )
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
+      {
+        terms: [
+          {
+            years: 2,
+          },
+        ],
+        caseSequence: 2,
+        lineSequence: 2,
+        sentenceSequence: 2,
+        consecutiveToSequence: 1,
+        sentenceCalculationType: 'ADIMP',
+        sentenceTypeDescription: 'SDS Standard Sentence',
+        offence: { offenceEndDate: '2021-02-03', offenceCode: '123' },
+        sdsDescriptions: {},
+      } as AnalysedSentenceAndOffence,
+    ])
+    viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
+      calculateErsed: true,
+      sentenceCalculationUserInputs: [],
+    } as CalculationUserInputs)
+    return request(app)
+      .get('/view/A1234AA/sentences-and-offences/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.moj-badge.moj-badge--small')).toHaveLength(0)
+      })
+  })
+
+  it.each(['SDS+', 'YOI+', 'S250+'])(
+    'GET /view/:calculationRequestId/sentences-and-offences should return SDS+ badges as defined by backend',
+    (sdsPlusDescription: string) => {
+      viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
+      viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue([
+        {
+          terms: [
+            {
+              years: 2,
+            },
+          ],
+          caseSequence: 2,
+          lineSequence: 2,
+          sentenceSequence: 2,
+          consecutiveToSequence: 1,
+          sentenceCalculationType: 'ADIMP',
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'SDS plus offence' },
+          sdsDescriptions: {
+            sdsPlusDisplayName: sdsPlusDescription,
+          },
+        } as AnalysedSentenceAndOffence,
+      ])
+      viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+      viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
+        calculateErsed: true,
+      } as CalculationUserInputs)
+      return request(app)
+        .get('/view/A1234AA/sentences-and-offences/123456')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($(`.moj-badge.moj-badge--small:contains("${sdsPlusDescription}")`)).toHaveLength(1)
+        })
+    },
+  )
+
   it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences without ERSED', () => {
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)

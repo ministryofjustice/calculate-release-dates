@@ -19,13 +19,13 @@ import {
   CalculationUserInputs,
   ValidationMessage,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import config from '../../config'
 import CheckInformationService from '../../services/checkInformationService'
 import UserInputService from '../../services/userInputService'
 import { ErrorMessageType } from '../../types/ErrorMessages'
 import SentenceAndOffenceViewModel from '../../models/SentenceAndOffenceViewModel'
 import trimHtml from '../testutils/testUtils'
 import { FullPageError } from '../../types/FullPageError'
+import config from '../../config'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -374,64 +374,6 @@ describe('CheckInformationController', () => {
     },
   ] as AnalysedAdjustment[]
 
-  const sentencesAndOffencesWithExclusions = [
-    {
-      terms: [
-        {
-          years: 3,
-        },
-      ],
-      sentenceTypeDescription: 'SDS Standard Sentence',
-      caseSequence: 1,
-      lineSequence: 1,
-      caseReference: 'CASE001',
-      courtDescription: 'Court 1',
-      sentenceSequence: 1,
-      offence: { offenceEndDate: '2021-02-03', offenceDescription: 'SXOFFENCE' },
-      sentenceAndOffenceAnalysis: 'NEW',
-      isSDSPlus: true,
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL',
-    } as AnalysedSentenceAndOffence,
-    {
-      terms: [
-        {
-          years: 3,
-        },
-      ],
-      sentenceTypeDescription: 'SDS Standard Sentence',
-      caseSequence: 1,
-      lineSequence: 2,
-      caseReference: 'CASE001',
-      courtDescription: 'Court 1',
-      sentenceSequence: 1,
-      offence: {
-        offenceStartDate: '2021-01-04',
-        offenceEndDate: '2021-01-05',
-        offenceDescription: 'VIOOFFENCE',
-      },
-      sentenceAndOffenceAnalysis: 'NEW',
-      isSDSPlus: true,
-      hasAnSDSEarlyReleaseExclusion: 'VIOLENT',
-    } as AnalysedSentenceAndOffence,
-    {
-      terms: [
-        {
-          years: 3,
-        },
-      ],
-      sentenceTypeDescription: 'SDS Standard Sentence',
-      caseSequence: 1,
-      lineSequence: 3,
-      caseReference: 'CASE001',
-      courtDescription: 'Court 1',
-      sentenceSequence: 1,
-      offence: { offenceStartDate: '2021-03-06', offenceDescription: 'No exclusion offence' },
-      sentenceAndOffenceAnalysis: 'NEW',
-      isSDSPlus: true,
-      hasAnSDSEarlyReleaseExclusion: 'NO',
-    } as AnalysedSentenceAndOffence,
-  ]
-
   const stubbedReturnToCustodyDate = {
     returnToCustodyDate: '2022-04-12',
   } as PrisonApiReturnToCustodyDate
@@ -454,6 +396,7 @@ describe('CheckInformationController', () => {
   })
 
   afterEach(() => {
+    config.featureToggles.progressionModelEnabled = true
     jest.resetAllMocks()
   })
 
@@ -523,7 +466,7 @@ describe('CheckInformationController', () => {
           const LicenceMatches = (res.text.match(/Licence period/g) || []).length
           expect(LicenceMatches).toBe(3)
           expect(res.text).not.toContain('98765')
-          expect(res.text).toContain('CJA Code')
+          expect(res.text).toContain('CJA code')
           expect(res.text).toContain('2020')
           expect(res.text).toContain('Imprisonment in Default of Fine')
           expect(res.text).toContain('£3,000.00')
@@ -598,9 +541,8 @@ describe('CheckInformationController', () => {
         })
     })
 
-    it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle on for single sentence', () => {
-      config.featureToggles.sdsExclusionIndicatorsEnabled = true
-
+    it('GET /calculation/:nomsId/check-information should show exclusions without progression feature toggle on for single sentence', () => {
+      config.featureToggles.progressionModelEnabled = false
       calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
       const singleSentencesAndOffencesWithExclusions = [
@@ -647,8 +589,73 @@ describe('CheckInformationController', () => {
           expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
         })
     })
-    it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle on', () => {
-      config.featureToggles.sdsExclusionIndicatorsEnabled = true
+
+    it('GET /calculation/:nomsId/check-information should show exclusions', () => {
+      const sentencesAndOffencesWithSDSDescriptions = [
+        {
+          terms: [
+            {
+              years: 3,
+            },
+          ],
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          caseSequence: 1,
+          lineSequence: 1,
+          caseReference: 'CASE001',
+          courtDescription: 'Court 1',
+          sentenceSequence: 1,
+          offence: { offenceEndDate: '2021-02-03', offenceDescription: 'SXOFFENCE' },
+          sentenceAndOffenceAnalysis: 'NEW',
+          isSDSPlus: true,
+          hasAnSDSEarlyReleaseExclusion: 'SEXUAL',
+          sdsDescriptions: {
+            sds40ExclusionDescription: 'Sexual (if sentenced after blah)',
+            sdsPlusDisplayName: 'SDS+',
+          },
+        } as AnalysedSentenceAndOffence,
+        {
+          terms: [
+            {
+              years: 3,
+            },
+          ],
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          caseSequence: 1,
+          lineSequence: 2,
+          caseReference: 'CASE001',
+          courtDescription: 'Court 1',
+          sentenceSequence: 1,
+          offence: {
+            offenceStartDate: '2021-01-04',
+            offenceEndDate: '2021-01-05',
+            offenceDescription: 'PMOFFENCE',
+          },
+          sentenceAndOffenceAnalysis: 'NEW',
+          isSDSPlus: false,
+          hasAnSDSEarlyReleaseExclusion: 'NO',
+          sdsDescriptions: {
+            progressionModelExclusionDescription: 'Would be S250+',
+          },
+        } as AnalysedSentenceAndOffence,
+        {
+          terms: [
+            {
+              years: 3,
+            },
+          ],
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          caseSequence: 1,
+          lineSequence: 3,
+          caseReference: 'CASE001',
+          courtDescription: 'Court 1',
+          sentenceSequence: 1,
+          offence: { offenceStartDate: '2021-03-06', offenceDescription: 'No exclusion offence' },
+          sentenceAndOffenceAnalysis: 'NEW',
+          isSDSPlus: true,
+          hasAnSDSEarlyReleaseExclusion: 'NO',
+          sdsDescriptions: {},
+        } as AnalysedSentenceAndOffence,
+      ]
 
       calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
@@ -656,7 +663,7 @@ describe('CheckInformationController', () => {
       const model = new SentenceAndOffenceViewModel(
         stubbedPrisonerData,
         stubbedUserInput,
-        sentencesAndOffencesWithExclusions,
+        sentencesAndOffencesWithSDSDescriptions,
         false,
         true,
         false,
@@ -671,46 +678,25 @@ describe('CheckInformationController', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
-          expect($('.new-sentence-card:contains("SXOFFENCE")').text()).toContain('Sexual')
-          expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
-          const noExclusionCard = $('.new-sentence-card:contains("No exclusion offence")')
-          expect(noExclusionCard.text()).not.toContain('Sexual')
-          expect(noExclusionCard.text()).not.toContain('Violent')
-        })
-    })
-    it('GET /calculation/:nomsId/check-information should show exclusions with feature toggle off', () => {
-      config.featureToggles.sdsExclusionIndicatorsEnabled = false
+          const sexualOffenceCard = $('.new-sentence-card:contains("SXOFFENCE")')
+          expect(sexualOffenceCard.find('[data-qa=sds-40-early-release-exclusion]').text()).toContain(
+            'Sexual (if sentenced after blah)',
+          )
+          expect(sexualOffenceCard.find('[data-qa=sds-progression-model-early-release-exclusion]')).toHaveLength(0)
 
-      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
-      userInputService.isCalculationReasonSet.mockReturnValue(true)
+          const progressionModelOffenceCard = $('.new-sentence-card:contains("PMOFFENCE")')
+          expect(progressionModelOffenceCard.find('[data-qa=sds-40-early-release-exclusion]')).toHaveLength(0)
+          expect(
+            progressionModelOffenceCard.find('[data-qa=sds-progression-model-early-release-exclusion]').text(),
+          ).toContain('Would be S250+')
 
-      const model = new SentenceAndOffenceViewModel(
-        stubbedPrisonerData,
-        stubbedUserInput,
-        sentencesAndOffencesWithExclusions,
-        false,
-        true,
-        false,
-        stubbedReturnToCustodyDate,
-        null,
-        [],
-      )
-      checkInformationService.checkInformation.mockResolvedValue(model)
-      return request(app)
-        .get('/calculation/A1234AA/check-information')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          const $ = cheerio.load(res.text)
-          expect($('.new-sentence-card:contains("SXOFFENCE")').text()).not.toContain('Sexual')
-          expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).not.toContain('Violent')
           const noExclusionCard = $('.new-sentence-card:contains("No exclusion offence")')
-          expect(noExclusionCard.text()).not.toContain('Sexual')
-          expect(noExclusionCard.text()).not.toContain('Violent')
+          expect(noExclusionCard.find('[data-qa=sds-40-early-release-exclusion]')).toHaveLength(0)
+          expect(noExclusionCard.find('[data-qa=sds-progression-model-early-release-exclusion]')).toHaveLength(0)
         })
     })
 
-    it('GET /calculation/:nomsId/check-information should display mini profile and correct title', () => {
+    it('GET /calculation/:noms/check-information should display mini profile and correct title', () => {
       calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
 
