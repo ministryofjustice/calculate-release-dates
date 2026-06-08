@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import {
   ReleaseDatesAndCalculationContext,
-  SentenceAndOffenceWithReleaseArrangements,
+  AnalysedSentenceAndOffence,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import PrisonerService from '../../services/prisonerService'
 import UserService from '../../services/userService'
@@ -95,7 +95,7 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceEndDate: '2021-02-03' },
-  } as SentenceAndOffenceWithReleaseArrangements,
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -108,7 +108,7 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceStartDate: '2021-01-04', offenceEndDate: '2021-01-05' },
-  } as SentenceAndOffenceWithReleaseArrangements,
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -121,7 +121,7 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceStartDate: '2021-03-06' },
-  } as SentenceAndOffenceWithReleaseArrangements,
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -134,7 +134,7 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: {},
-  } as SentenceAndOffenceWithReleaseArrangements,
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -147,7 +147,7 @@ const stubbedSentencesAndOffences = [
     lineSequence: 1,
     sentenceSequence: 1,
     offence: { offenceStartDate: '2021-01-07', offenceEndDate: '2021-01-07' },
-  } as SentenceAndOffenceWithReleaseArrangements,
+  } as AnalysedSentenceAndOffence,
   {
     terms: [
       {
@@ -161,7 +161,7 @@ const stubbedSentencesAndOffences = [
     sentenceCalculationType: 'ADIMP',
     sentenceTypeDescription: 'SDS Standard Sentence',
     offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
-  } as SentenceAndOffenceWithReleaseArrangements,
+  } as AnalysedSentenceAndOffence,
 ]
 const stubbedReleaseDatesUsingCalcReqId: ReleaseDatesAndCalculationContext = {
   calculation: {
@@ -235,7 +235,7 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
       {
         terms: [
           {
@@ -250,7 +250,7 @@ describe('Print Notification slip controller tests', () => {
         sentenceCalculationType: 'ADIMP',
         sentenceTypeDescription: 'SDS Standard Sentence',
         offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
     ]
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)
@@ -513,7 +513,7 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
     ]
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)
@@ -551,7 +551,7 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
     ]
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)
@@ -652,7 +652,7 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
       {
         terms: [
           {
@@ -670,7 +670,7 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
     ]
     const stubbedNoAdjustments = {
       sentenceAdjustments: [],
@@ -772,7 +772,7 @@ describe('Print Notification slip controller tests', () => {
         lineSequence: 1,
         sentenceSequence: 1,
         offence: { offenceEndDate: '2021-02-03' },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
       {
         terms: [
           {
@@ -787,7 +787,7 @@ describe('Print Notification slip controller tests', () => {
         sentenceCalculationType: 'ADIMP',
         sentenceTypeDescription: 'SDS Standard Sentence',
         offence: { offenceEndDate: '2021-02-03', offenceCode: '123', offenceDescription: 'Doing a crime' },
-      } as SentenceAndOffenceWithReleaseArrangements,
+      } as AnalysedSentenceAndOffence,
     ]
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesLocal)

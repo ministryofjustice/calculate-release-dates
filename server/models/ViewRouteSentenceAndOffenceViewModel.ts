@@ -6,7 +6,6 @@ import {
   CalculationSentenceUserInput,
   CalculationUserInputs,
   OffenderOffence,
-  SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   PrisonApiOffenderSentenceAndOffences,
@@ -37,7 +36,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
   public constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public userInputs: CalculationUserInputs,
-    sentencesAndOffences: SentenceAndOffenceWithReleaseArrangements[],
+    sentencesAndOffences: AnalysedSentenceAndOffence[],
     public calculationType: string,
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
@@ -64,26 +63,14 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     this.adjustmentsTablesModel = adjustmentsTablesFromAdjustmentDTOs(adjustmentsDtos ?? [], sentencesAndOffences)
   }
 
-  private static isSentenceWithReleaseArrangements(
-    sentence: AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements,
-  ): sentence is SentenceAndOffenceWithReleaseArrangements {
-    return !('isSDSPlus' in sentence)
-  }
-
-  public rowIsSdsPlus(
-    sentence: AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements,
-    offence: OffenderOffence,
-  ): boolean {
+  public rowIsSdsPlus(sentence: AnalysedSentenceAndOffence, offence: OffenderOffence): boolean {
     const oldUserInputForSDSPlus =
       this.userInputs &&
       this.userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
     const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus?.userChoice ?? false
-    const isSDSPlus = ViewRouteSentenceAndOffenceViewModel.isSentenceWithReleaseArrangements(sentence)
-      ? (sentence.sdsReleaseArrangements?.isSDSPlus ?? false)
-      : sentence.isSDSPlus
-    return isUserIdentifiedSDSPlus || isSDSPlus
+    return isUserIdentifiedSDSPlus || sentence.isSDSPlus
   }
 
   public isErsedChecked(): boolean {

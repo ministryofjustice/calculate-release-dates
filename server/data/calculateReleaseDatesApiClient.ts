@@ -31,7 +31,6 @@ import {
   NomisCalculationSummary,
   PersonComparisonInputs,
   ReleaseDatesAndCalculationContext,
-  SentenceAndOffenceWithReleaseArrangements,
   SubmitCalculationRequest,
   SupportedValidationResponse,
   ValidationMessage,
@@ -90,13 +89,10 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     return this.get<PrisonApiPrisoner>({ path: `/calculation/prisoner-details/${calculationId}` }, asSystem(username))
   }
 
-  getSentencesAndOffences(
-    calculationId: number,
-    username: string,
-  ): Promise<SentenceAndOffenceWithReleaseArrangements[]> {
-    return this.get<SentenceAndOffenceWithReleaseArrangements[]>(
+  getSentencesAndOffences(calculationId: number, username: string): Promise<AnalysedSentenceAndOffence[]> {
+    return this.get<AnalysedSentenceAndOffence[]>(
       {
-        path: `/calculation/sentence-and-offences/${calculationId}`,
+        path: `/calculation/sentence-and-offence-information/${calculationId}`,
       },
       asSystem(username),
     )

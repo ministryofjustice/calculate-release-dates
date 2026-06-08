@@ -5,7 +5,6 @@ import PrisonerService from '../services/prisonerService'
 import UserService from '../services/userService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import ViewReleaseDatesService from '../services/viewReleaseDatesService'
-import config from '../config'
 import { FullPageError } from '../types/FullPageError'
 import AuditService from '../services/auditService'
 
@@ -26,7 +25,6 @@ const viewReleaseDatesService = new ViewReleaseDatesService(null) as jest.Mocked
 
 let app: Express
 beforeEach(() => {
-  config.featureToggles.sdsExclusionIndicatorsEnabled = false
   app = appWithAllRoutes({
     services: {
       userService,
