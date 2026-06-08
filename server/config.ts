@@ -142,7 +142,7 @@ export default {
     tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),
   },
   featureToggles: {
-    sdsExclusionIndicatorsEnabled: get('SDS_EXCLUSION_INDICATORS_ENABLED', false) === 'true',
+    progressionModelEnabled: get('PROGRESSION_MODEL_ENABLED', false) === 'true',
     showCrdsIntercept: get('SHOW_CRDS_INTERCEPT', false) === 'true',
     genuineOverridesEnabled: get('GENUINE_OVERRIDES_ENABLED', false) === 'true',
     thingsToDoIntercept: get('THING_TO_DO_INTERCEPT_ENABLED', false) === 'true',

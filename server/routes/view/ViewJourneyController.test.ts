@@ -9,7 +9,6 @@ import {
   PrisonApiSentenceDetail,
 } from '../../@types/prisonApi/prisonClientTypes'
 import { BookingCalculation } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import config from '../../config'
 import { appWithAllRoutes } from '../testutils/appSetup'
 
 jest.mock('../../services/prisonerService')
@@ -22,7 +21,6 @@ const viewReleaseDatesService = new ViewReleaseDatesService(null) as jest.Mocked
 let app: Express
 
 beforeEach(() => {
-  config.featureToggles.sdsExclusionIndicatorsEnabled = false
   app = appWithAllRoutes({
     services: {
       prisonerService,

@@ -1,6 +1,6 @@
 import {
+  AnalysedSentenceAndOffence,
   CalculationUserInputs,
-  SentenceAndOffenceWithReleaseArrangements,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ViewRouteSentenceAndOffenceViewModel from './ViewRouteSentenceAndOffenceViewModel'
 import {
@@ -56,10 +56,9 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
       const sentencesAndOffences = [
         {
           caseSequence: 1,
-          hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlus: false,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          isSDSPlusOffenceInPeriod: false,
+          hasAnSDSEarlyReleaseExclusion: 'NO',
+          sentenceAndOffenceAnalysis: 'SAME',
           lineSequence: 1,
           offence: { indicators: [], offenceCode: '', offenceDescription: '', offenderChargeId: 0 },
           sentenceCalculationType: 'SDS Standard Sentence',
@@ -79,13 +78,12 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           ],
           bookingId: 123,
           revocationDates: [],
-        } as SentenceAndOffenceWithReleaseArrangements,
+        } as AnalysedSentenceAndOffence,
         {
           caseSequence: 1,
-          hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlus: false,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          isSDSPlusOffenceInPeriod: false,
+          hasAnSDSEarlyReleaseExclusion: 'NO',
+          sentenceAndOffenceAnalysis: 'SAME',
           lineSequence: 1,
           offence: {
             indicators: [],
@@ -112,13 +110,12 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           ],
           bookingId: 123,
           revocationDates: [],
-        } as SentenceAndOffenceWithReleaseArrangements,
+        } as AnalysedSentenceAndOffence,
         {
           caseSequence: 1,
-          hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlus: false,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          isSDSPlusOffenceInPeriod: false,
+          hasAnSDSEarlyReleaseExclusion: 'NO',
+          sentenceAndOffenceAnalysis: 'SAME',
           lineSequence: 1,
           offence: {
             offenderChargeId: 3933639,
@@ -139,7 +136,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           ],
           bookingId: 123,
           revocationDates: [],
-        } as SentenceAndOffenceWithReleaseArrangements,
+        } as AnalysedSentenceAndOffence,
       ]
       const model = new ViewRouteSentenceAndOffenceViewModel(
         stubbedPrisonerData,
@@ -156,10 +153,9 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
       const sentencesAndOffences = [
         {
           caseSequence: 1,
-          hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlus: false,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          isSDSPlusOffenceInPeriod: false,
+          hasAnSDSEarlyReleaseExclusion: 'NO',
+          sentenceAndOffenceAnalysis: 'SAME',
           lineSequence: 1,
           offence: {
             indicators: [],
@@ -185,13 +181,12 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           ],
           bookingId: 123,
           revocationDates: [],
-        } as SentenceAndOffenceWithReleaseArrangements,
+        } as AnalysedSentenceAndOffence,
         {
           caseSequence: 1,
-          hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlus: false,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          isSDSPlusOffenceInPeriod: false,
+          hasAnSDSEarlyReleaseExclusion: 'NO',
+          sentenceAndOffenceAnalysis: 'SAME',
           lineSequence: 2,
           offence: {
             offenceDescription: 'Description',
@@ -218,13 +213,12 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           ],
           bookingId: 123,
           revocationDates: [],
-        } as SentenceAndOffenceWithReleaseArrangements,
+        } as AnalysedSentenceAndOffence,
         {
           caseSequence: 5,
-          hasAnSDSEarlyReleaseExclusion: 'NO',
           isSDSPlus: false,
-          isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
-          isSDSPlusOffenceInPeriod: false,
+          hasAnSDSEarlyReleaseExclusion: 'NO',
+          sentenceAndOffenceAnalysis: 'SAME',
           lineSequence: 5,
           offence: {
             offenderChargeId: 3933639,
@@ -245,7 +239,7 @@ describe('ViewRouteSentenceAndOffenceViewModel', () => {
           ],
           bookingId: 123,
           revocationDates: [],
-        } as SentenceAndOffenceWithReleaseArrangements,
+        } as AnalysedSentenceAndOffence,
       ]
       const model = new ViewRouteSentenceAndOffenceViewModel(
         stubbedPrisonerData,

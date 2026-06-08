@@ -4,7 +4,6 @@ import {
   AdjustmentType,
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
-  SentenceAndOffenceWithReleaseArrangements,
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import SentenceTypes from '../../../../models/SentenceTypes'
 
@@ -41,7 +40,7 @@ const recallBadge = '<span class="moj-badge moj-badge--black govuk-!-margin-left
 
 export function adjustmentsTablesFromAdjustmentDTOs(
   dtos: AnalysedAdjustment[] | AdjustmentDto[],
-  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
+  sentencesAndOffences: AnalysedSentenceAndOffence[],
 ): AdjustmentTablesModel {
   const unusedDeductionsTracker: UnusedDeductionsTracker = {
     remainingUnallocated: activeAdjustmentsOfType('UNUSED_DEDUCTIONS', dtos).reduce(
@@ -156,10 +155,7 @@ function toTable(
   }
 }
 
-function toRemandRow(
-  dto: AdjustmentDto,
-  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
-): AdjustmentCell[] {
+function toRemandRow(dto: AdjustmentDto, sentencesAndOffences: AnalysedSentenceAndOffence[]): AdjustmentCell[] {
   const anyRecallSentenceForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
     dto.remand?.chargeId,
     dto.sentenceSequence,
@@ -175,10 +171,7 @@ function toRemandRow(
   ]
 }
 
-function toTaggedBailRow(
-  dto: AdjustmentDto,
-  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
-): AdjustmentCell[] {
+function toTaggedBailRow(dto: AdjustmentDto, sentencesAndOffences: AnalysedSentenceAndOffence[]): AdjustmentCell[] {
   const sentenceAndOffence = findSentenceAndOffenceBySentenceSequence(dto.sentenceSequence, sentencesAndOffences)
   return [
     {
@@ -193,7 +186,7 @@ function toTaggedBailRow(
 function findSentenceAndOffencesByChargeIdsOrSentenceSequence(
   chargeIds: number[] | undefined,
   sentenceSequence: number | undefined,
-  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
+  sentencesAndOffences: AnalysedSentenceAndOffence[],
 ) {
   if (chargeIds) {
     return (
@@ -208,10 +201,7 @@ function findSentenceAndOffencesByChargeIdsOrSentenceSequence(
   return []
 }
 
-function toCustodyAbroadRow(
-  dto: AdjustmentDto,
-  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
-): AdjustmentCell[] {
+function toCustodyAbroadRow(dto: AdjustmentDto, sentencesAndOffences: AnalysedSentenceAndOffence[]): AdjustmentCell[] {
   let documentType = 'Unknown'
   if (dto.timeSpentInCustodyAbroad?.documentationSource === 'COURT_WARRANT') {
     documentType = 'Sentencing warrant from the court'
@@ -322,7 +312,7 @@ function toLALRow(dto: AdjustmentDto): AdjustmentCell[] {
 
 function toAppealApplicantRow(
   dto: AdjustmentDto,
-  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
+  sentencesAndOffences: AnalysedSentenceAndOffence[],
 ): AdjustmentCell[] {
   const anyRecallSentenceForAdjustment = findSentenceAndOffencesByChargeIdsOrSentenceSequence(
     dto.timeSpentAsAnAppealApplicant?.chargeIds,
@@ -341,15 +331,15 @@ function toAppealApplicantRow(
 
 function findSentenceAndOffenceByChargeId(
   chargeId: number,
-  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
-): AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements | null {
+  sentencesAndOffences: AnalysedSentenceAndOffence[],
+): AnalysedSentenceAndOffence | null {
   return sentencesAndOffences.find(it => it.offence.offenderChargeId === chargeId)
 }
 
 function findSentenceAndOffenceBySentenceSequence(
   sentenceSequence: number,
-  sentencesAndOffences: AnalysedSentenceAndOffence[] | SentenceAndOffenceWithReleaseArrangements[],
-): AnalysedSentenceAndOffence | SentenceAndOffenceWithReleaseArrangements | null {
+  sentencesAndOffences: AnalysedSentenceAndOffence[],
+): AnalysedSentenceAndOffence | null {
   if (!sentenceSequence) {
     return null
   }
