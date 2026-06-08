@@ -64,13 +64,15 @@ export default class ViewRouteSentenceAndOffenceViewModel {
   }
 
   public rowIsSdsPlus(sentence: AnalysedSentenceAndOffence, offence: OffenderOffence): boolean {
+    if (sentence.isSDSPlus) {
+      return true
+    }
     const oldUserInputForSDSPlus =
       this.userInputs &&
       this.userInputs.sentenceCalculationUserInputs.find((it: CalculationSentenceUserInput) => {
         return it.offenceCode === offence.offenceCode && it.sentenceSequence === sentence.sentenceSequence
       })
-    const isUserIdentifiedSDSPlus = oldUserInputForSDSPlus?.userChoice ?? false
-    return isUserIdentifiedSDSPlus || sentence.isSDSPlus
+    return oldUserInputForSDSPlus?.userChoice ?? false
   }
 
   public isErsedChecked(): boolean {
