@@ -288,6 +288,8 @@ describe('StartController', () => {
         const $ = cheerio.load(res.text)
         const calculateDatesFlowLink = $('[data-qa=calc-release-dates-for-prisoner-action-link]').first()
         expect(calculateDatesFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/reason')
+        const secondCheckFlowLink = $('[data-qa=calc-release-dates-for-prisoner-second-check]').first()
+        expect(secondCheckFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/secondCheck')
         const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
         expect(addDatesFlowLink.length).toStrictEqual(0)
       })
@@ -337,6 +339,9 @@ describe('StartController', () => {
         expect($('.govuk-phase-banner__content__tag').length).toStrictEqual(0)
         expect($('[data-qa=calc-release-dates-for-prisoner-action-link]').attr('href')).toStrictEqual(
           '/calculation/A1234AA/reason',
+        )
+        expect($('[data-qa=calc-release-dates-for-prisoner-second-check]').attr('href')).toStrictEqual(
+          '/calculation/A1234AA/secondCheck',
         )
         expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
         expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')

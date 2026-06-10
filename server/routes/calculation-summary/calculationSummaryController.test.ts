@@ -18,6 +18,7 @@ import { ResultsWithBreakdownAndAdjustments } from '../../@types/calculateReleas
 import ReleaseDateWithAdjustments from '../../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../../types/ManualJourney'
 import AuthorisedRoles from '../../enumerations/authorisedRoles'
+import UserInputService from '../../services/userInputService'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -31,6 +32,7 @@ describe('CalculationSummaryController', () => {
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
+  const userInputService = new UserInputService() as jest.Mocked<UserInputService>
 
   let approvedDates: Record<string, ManualJourneySelectedDate[]>
   const prisonerNumber = 'A1234BC'
@@ -321,6 +323,7 @@ describe('CalculationSummaryController', () => {
 
   beforeEach(() => {
     approvedDates = {}
+    userInputService.isSecondCheck = jest.fn()
     userRoles = user.userRoles
     sessionSetup.sessionDoctor = req => {
       req.session.selectedApprovedDates = approvedDates
@@ -332,6 +335,7 @@ describe('CalculationSummaryController', () => {
       services: {
         calculateReleaseDatesService,
         prisonerService,
+        userInputService,
       },
       sessionSetup,
       userSupplier: () => {

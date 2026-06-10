@@ -45,6 +45,7 @@ import CompareManualDetailController from './compare/CompareManualDetailControll
 import CompareManualJsonController from './compare/CompareManualJsonController'
 import CompareManualCalculationController from './compare/CompareManualCalculationController'
 import CompareSubmitManualCalculationController from './compare/CompareSubmitManualCalculationController'
+import SecondCheckController from './calculation-reason/secondCheckController'
 
 export default function Index({
   prisonerService,
@@ -188,7 +189,11 @@ export default function Index({
     )
   }
 
-  const calculationSummaryController = new CalculationSummaryController(calculateReleaseDatesService, prisonerService)
+  const calculationSummaryController = new CalculationSummaryController(
+    calculateReleaseDatesService,
+    prisonerService,
+    userInputService,
+  )
 
   const approvedDatesRoutes = () => {
     // routes integrated into the regular calculation journey
@@ -275,6 +280,13 @@ export default function Index({
     })
   }
 
+  const secondCheckRoutes = () => {
+    route({
+      path: '/calculation/:nomsId/secondCheck',
+      controller: new SecondCheckController(calculateReleaseDatesService, prisonerService),
+    })
+  }
+
   const viewRoutes = () => {
     route({
       path: '/view/:nomsId/latest',
@@ -358,6 +370,7 @@ export default function Index({
   indexRoutes()
   calculationRoutes()
   reasonRoutes()
+  secondCheckRoutes()
   checkInformationRoutes()
   manualEntryRoutes()
   viewRoutes()

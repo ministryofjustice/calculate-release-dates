@@ -81,6 +81,7 @@ export default class CalculationRoutes {
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
         req.session.isAddDatesFlow?.[nomsId] ?? false,
+        false,
         req.originalUrl,
       ),
     )
@@ -135,9 +136,16 @@ export default class CalculationRoutes {
       throw FullPageError.notFoundError()
     }
     this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)
+    const isSecondCheck = this.userInputService.isSecondCheck(req, nomsId)
     res.render(
       'pages/calculation/calculationComplete',
-      new CalculationCompleteViewModel(prisonerDetail, calculationRequestId, noDates, hasIndeterminateSentence),
+      new CalculationCompleteViewModel(
+        prisonerDetail,
+        calculationRequestId,
+        noDates,
+        hasIndeterminateSentence,
+        isSecondCheck,
+      ),
     )
   }
 }

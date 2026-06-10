@@ -26,4 +26,12 @@ export default class UserInputService {
   public isCalculationReasonSet(req: Request, nomsId: string): boolean {
     return req.session.calculationReasonId && !!req.session.calculationReasonId[nomsId]
   }
+
+  public getCalculationReason(req: Request, nomsId: string): number {
+    return req.session.calculationReasonId[nomsId]
+  }
+
+  public isSecondCheck(req: Request, nomsId: string): boolean {
+    return req.session.calculationReasonId?.[nomsId] === 18
+  }
 }

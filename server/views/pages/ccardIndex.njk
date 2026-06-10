@@ -7,7 +7,7 @@
 {% set pageId = "ccard-index" %}
 
 {% set navigation = {
-    activeSubNav: 'release-dates', 
+    activeSubNav: 'release-dates',
     recalls: { enabled: commonElementConfig.environment == 'dev' },
     documents: { enabled: false },
     courtCases: { enabled: false },
@@ -29,11 +29,11 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            
+
             {% if anyThingsToDo %}
                 {{thingsToDo(serviceDefinitions, 'all')}}
             {% endif %}
-            
+
             {% if calculationHistory.length %}
                 {% if latestCalculationCardConfig %}
                     {% if not anyThingsToDo  %}
@@ -68,6 +68,11 @@
                 href: '/calculation/' + prisonerDetail.offenderNo + '/reason',
                 title: 'Calculate release dates',
                 dataQa: 'calc-release-dates-for-prisoner-action-link'
+            },
+            {
+                href: '/calculation/' + prisonerDetail.offenderNo + '/secondCheck',
+                title: 'Record a second calculation check',
+                dataQa: 'calc-release-dates-for-prisoner-second-check'
             }
         ] %}
 

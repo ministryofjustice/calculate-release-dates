@@ -63,6 +63,11 @@
                             }
                         ), buttons) %}
                     {% else %}
+                        {% if reason.id == 18 %}
+                            {% set buttons = (buttons.push(
+                                { divider: 'or' }
+                            ), buttons) %}
+                        {% endif %}
                         {% set buttons = (buttons.push(
                             {
                                 value: reason.id,

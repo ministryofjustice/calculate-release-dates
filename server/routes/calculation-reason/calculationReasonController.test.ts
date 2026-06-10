@@ -161,6 +161,7 @@ describe('CalculationReasonController', () => {
       requiresFurtherDetail: false,
     },
     { id: 11, isOther: true, displayName: 'Other', useForApprovedDates: false, requiresFurtherDetail: true },
+    { id: 18, isOther: false, displayName: 'Second Check', useForApprovedDates: true, requiresFurtherDetail: false },
   ]
 
   let currentSession: Partial<SessionData>
@@ -243,6 +244,21 @@ describe('CalculationReasonController', () => {
           expect(currentSession.calculationReasonId[prisonerNumber]).toStrictEqual(8)
           expect(currentSession.otherReasonDescription[prisonerNumber]).toBeUndefined()
           expect(currentSession.isAddDatesFlow[prisonerNumber]).toStrictEqual(true)
+        })
+    })
+    it('GET /calculation/:nomsId/secondCheck should set the reason and redirect to check information', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/secondCheck')
+        .expect(302)
+        .expect('Location', '/calculation/A1234AA/check-information')
+        .expect(_ => {
+          expect(currentSession.calculationReasonId[prisonerNumber]).toStrictEqual(18)
+          expect(currentSession.otherReasonDescription[prisonerNumber]).toBeUndefined()
+          expect(currentSession.isAddDatesFlow[prisonerNumber]).toStrictEqual(false)
         })
     })
     it('GET /calculation/:nomsId/reason should be ada intercepted if there are ada review needed', () => {
@@ -367,6 +383,22 @@ describe('CalculationReasonController', () => {
             'validationErrors',
             JSON.stringify({ calculationReasonId: ['You must select a reason for this calculation'] }),
           )
+        })
+    })
+
+    it('POST /calculation/:nomsId/reason should render divider before second check', () => {
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/reason')
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.govuk-radios__divider').text()).toBe('or')
+
+          expect($('[data-qa=reasonRadio-18]').length).toBe(1)
+          expect(res.text).toContain('Second Check')
         })
     })
 
