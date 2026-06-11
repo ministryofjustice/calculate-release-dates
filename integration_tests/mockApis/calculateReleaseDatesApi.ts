@@ -855,6 +855,13 @@ export default {
             useForApprovedDates: false,
             requiresFurtherDetail: true,
           },
+          {
+            id: 18,
+            displayName: 'Second Check',
+            isOther: false,
+            useForApprovedDates: false,
+            requiresFurtherDetail: false,
+          },
         ],
       },
     })
