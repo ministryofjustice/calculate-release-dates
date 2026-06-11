@@ -2257,6 +2257,29 @@ export interface components {
       fatalException?: string | null
       /** Format: int64 */
       calculationRequestId?: number | null
+      latestCalculationReason?: string | null
+      latestCalculationReasonFurtherDetail?: string | null
+      /** @enum {string|null} */
+      progressionModelTranche?:
+        | 'TRANCHE_0'
+        | 'TRANCHE_1'
+        | 'TRANCHE_2'
+        | 'TRANCHE_3'
+        | 'TRANCHE_4'
+        | 'TRANCHE_5'
+        | 'TRANCHE_6'
+        | 'TRANCHE_7'
+        | 'TRANCHE_8'
+        | 'TRANCHE_9'
+        | 'TRANCHE_10'
+        | 'FTR_56_TRANCHE_0'
+        | 'FTR_56_TRANCHE_1'
+        | 'FTR_56_TRANCHE_2'
+        | 'FTR_56_TRANCHE_3'
+        | 'FTR_56_TRANCHE_4'
+        | 'FTR_56_TRANCHE_5'
+        | 'FTR_56_TRANCHE_6'
+        | null
     }
     /** @description Calculation breakdown details for a release date type */
     ReleaseDateCalculationBreakdown: {
@@ -2612,6 +2635,7 @@ export interface components {
       calculationRequestId?: number | null
       establishment?: string | null
       reason: string
+      reasonFurtherDetail?: string | null
       /** @enum {string} */
       source: 'NOMIS' | 'CRDS'
       dates: components['schemas']['DetailedDate'][]
