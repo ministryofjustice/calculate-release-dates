@@ -74,7 +74,7 @@ function appSetup(
     app.use(routes(services))
   }
 
-  app.use((req, res, next) => next(new NotFound()))
+  app.use((_req, _res, next) => next(new NotFound()))
   app.use(errorHandler(production))
 
   return app

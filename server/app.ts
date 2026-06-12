@@ -27,9 +27,14 @@ import populateValidationErrors from './middleware/populateValidationErrors'
 import getPrisoner from './middleware/getPrisoner'
 import maintenanceMiddleware from './middleware/maintenanceMiddleware'
 import config from './config'
+import logger from '../logger'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
+
+  process.on('unhandledRejection', (reason, promise) => {
+    logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`)
+  })
 
   app.set('json spaces', 2)
   app.set('trust proxy', true)
