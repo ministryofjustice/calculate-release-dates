@@ -428,16 +428,22 @@ export default class ManualEntryRoutes {
 
     const dateToRemove: string = <string>req.query.dateType
     const fullDateName = await this.manualEntryService.fullStringLookup(username, dateToRemove)
-    if (req.body == null || (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no')) {
+
+    const errorMessage = this.manualEntryService.validateRemovedDate(req, nomsId)
+
+    if (errorMessage) {
       return res.render(
         'pages/manualEntry/removeDate',
-        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName, req.originalUrl, true),
+        new ManualEntryRemoteDateViewModel(prisonerDetail, dateToRemove, fullDateName, req.originalUrl, errorMessage),
       )
     }
+
     const remainingDates = this.manualEntryService.removeDate(req, nomsId)
+
     if (remainingDates === 0) {
       return res.redirect(`/calculation/${nomsId}/manual-entry/select-dates`)
     }
+
     return res.redirect(`/calculation/${nomsId}/manual-entry/confirmation`)
   }
 
