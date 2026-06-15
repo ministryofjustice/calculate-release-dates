@@ -11,11 +11,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import {
-  ManualEntrySelectedDateType,
-  SubmittedDate,
-  ValidationMessage,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
@@ -27,7 +23,7 @@ import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
 import { ErrorMessageType } from '../types/ErrorMessages'
 import AuditService from '../services/auditService'
-import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
+import { ManualJourneySelectedDate } from '../types/ManualJourney'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 
 jest.mock('../services/prisonerService')
