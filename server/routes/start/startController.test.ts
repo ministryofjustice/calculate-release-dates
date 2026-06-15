@@ -619,7 +619,7 @@ describe('StartController', () => {
       maintenanceAlert: {
         enabled: true,
         message: 'There is due to be an outage in the future',
-      }
+      },
     }
     courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(enabledMaintenanceServiceDefinitions)
     return request(app)
@@ -628,7 +628,9 @@ describe('StartController', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('.moj-outage-banner').text().trim()).toStrictEqual(enabledMaintenanceServiceDefinitions.maintenanceAlert.message)
+        expect($('.moj-outage-banner').text().trim()).toStrictEqual(
+          enabledMaintenanceServiceDefinitions.maintenanceAlert.message,
+        )
       })
   })
   describe('Check access tests', () => {
