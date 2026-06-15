@@ -22,6 +22,7 @@ export default class IndexViewModel extends OptionalPrisonerContextViewModel {
     public serviceDefinitions?: CcrdServiceDefinitions,
     public anyThingsToDo?: boolean,
     public latestCalculation?: LatestCalculation,
+    public displayMaintenanceAlert?: boolean
   ) {
     super(prisonerDetail)
   }
@@ -37,6 +38,7 @@ export function indexViewModelForPrisoner(
   hasNoIndeterminateSentence?: boolean,
   serviceDefinitions?: CcrdServiceDefinitions,
   latestCalculation?: LatestCalculation,
+  displayMaintenanceAlert?: boolean
 ): IndexViewModel {
   return new IndexViewModel(
     prisonerDetail,
@@ -51,5 +53,6 @@ export function indexViewModelForPrisoner(
       it => it.thingsToDo.count > 0 && it.thingsToDo.severity !== 'NOTIFICATION',
     ),
     latestCalculation,
+    displayMaintenanceAlert,
   )
 }
