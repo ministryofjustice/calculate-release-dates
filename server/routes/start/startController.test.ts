@@ -593,6 +593,46 @@ describe('StartController', () => {
         ).toStrictEqual(['User Override', '', 'Some details about the GO'])
       })
   })
+
+  it('GET ?prisonId=123 if maintenance alert enabled', () => {
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: latestCalcCardActionForPrisoner,
+      calculation: {
+        source: 'CRDS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        establishment: 'Kirkham (HMP)',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        calculatedByDisplayName: 'Bob Smith',
+        dates: [],
+      } as LatestCalculation,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    const enabledMaintenanceServiceDefinitions = {
+      ...serviceDefinitionsNoThingsToDo,
+      maintenanceAlert: {
+        enabled: true,
+        message: 'There is due to be an outage in the future',
+      },
+    }
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(enabledMaintenanceServiceDefinitions)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.moj-outage-banner').text().trim()).toStrictEqual(
+          enabledMaintenanceServiceDefinitions.maintenanceAlert.message,
+        )
+      })
+  })
   describe('Check access tests', () => {
     const runTest = async (routes: { method: 'GET' | 'POST'; url: string }[]) => {
       await Promise.all(

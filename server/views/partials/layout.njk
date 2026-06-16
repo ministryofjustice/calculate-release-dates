@@ -3,6 +3,7 @@
 {% from "moj/components/header/macro.njk" import mojHeader %}
 {% from "hmpps/components/court-cases-release-dates/service-header/macro.njk" import serviceHeader %}
 {% from "hmpps/components/court-cases-release-dates/footer/macro.njk" import footer %}
+{% from "hmpps/components/outage-banner/macro.njk" import outageBanner %}
 
 {% block head %}
   {% if appInsightsConnectionString %}
@@ -135,6 +136,11 @@
 
 {% block beforeContent %}
   <aside role="complementary">
+    {% if displayMaintenanceAlert and serviceDefinitions.maintenanceAlert.enabled %}
+        <div class="govuk-!-margin-top-7">
+            {{ outageBanner({ text: serviceDefinitions.maintenanceAlert.message}) }}
+        </div>
+    {% endif %}
     {% include "../pages/partials/prisonerIdentityBar.njk" %}
   </aside>
   <span class="govuk-visually-hidden" id="{{ pageId }}"></span>
