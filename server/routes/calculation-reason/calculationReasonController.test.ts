@@ -85,6 +85,10 @@ describe('CalculationReasonController', () => {
           things: [],
           count: 0,
         },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
       },
       adjustments: {
         href: 'http://localhost:8002/AB1234AB',
@@ -92,6 +96,10 @@ describe('CalculationReasonController', () => {
         thingsToDo: {
           things: [],
           count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
         },
       },
       releaseDates: {
@@ -109,7 +117,15 @@ describe('CalculationReasonController', () => {
           ],
           count: 1,
         },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
       },
+    },
+    maintenanceAlert: {
+      enabled: false,
+      message: 'placeholder',
     },
   } as CcrdServiceDefinitions
 
@@ -121,6 +137,10 @@ describe('CalculationReasonController', () => {
         thingsToDo: {
           things: [],
           count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
         },
       },
       adjustments: {
@@ -138,6 +158,10 @@ describe('CalculationReasonController', () => {
           ],
           count: 1,
         },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
       },
       releaseDates: {
         href: 'http://localhost:8004?prisonId=AB1234AB',
@@ -146,7 +170,15 @@ describe('CalculationReasonController', () => {
           things: [],
           count: 0,
         },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
       },
+    },
+    maintenanceAlert: {
+      enabled: false,
+      message: 'placeholder',
     },
   } as CcrdServiceDefinitions
 

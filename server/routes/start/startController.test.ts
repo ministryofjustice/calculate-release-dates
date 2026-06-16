@@ -98,6 +98,10 @@ const serviceDefinitionsNoThingsToDo = {
         things: [],
         count: 0,
       },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
+      },
     },
     adjustments: {
       href: 'http://localhost:8002/AB1234AB',
@@ -105,6 +109,10 @@ const serviceDefinitionsNoThingsToDo = {
       thingsToDo: {
         things: [],
         count: 0,
+      },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
       },
     },
     releaseDates: {
@@ -114,7 +122,15 @@ const serviceDefinitionsNoThingsToDo = {
         things: [],
         count: 0,
       },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
+      },
     },
+  },
+  maintenanceAlert: {
+    enabled: false,
+    message: 'placeholder',
   },
 } as CcrdServiceDefinitions
 
