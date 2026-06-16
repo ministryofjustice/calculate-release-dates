@@ -24,8 +24,6 @@ export default class SentenceAndOffenceViewModel {
 
   public sentencesAndOffences: AnalysedSentenceAndOffence[]
 
-  public displaySDSPlusBanner: boolean
-
   public adjustmentsTablesModel: AdjustmentTablesModel
 
   public constructor(
@@ -51,7 +49,6 @@ export default class SentenceAndOffenceViewModel {
     this.offenceCount = sentencesAndOffences.length
     this.returnToCustodyDate = returnToCustodyDate?.returnToCustodyDate
     this.sentencesAndOffences = sentencesAndOffences
-    this.displaySDSPlusBanner = sentencesAndOffences.some(sentence => sentence.isSDSPlus === true)
     this.adjustmentsTablesModel = adjustmentsTablesFromAdjustmentDTOs(adjustmentsDtos ?? [], sentencesAndOffences)
   }
 
