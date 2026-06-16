@@ -817,6 +817,11 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
   })
 
   it('POST /calculation/:nomsId/manual-entry/remove-date should show the delete date page with mini profile if no confirmation option selected', () => {
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+      req.session.calculationReasonId = { A1234AA: 1 }
+      req.session.selectedManualEntryDates.A1234AA = [{} as unknown as ManualJourneySelectedDate]
+    }
     manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
@@ -833,6 +838,43 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         const $ = cheerio.load(res.text)
         expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/remove-date?dateType=CRD',
+        )
+      })
+  })
+
+  it('POST /calculation/:nomsId/manual-entry/remove-date should show error where removing HDCED where HDCAD is present', () => {
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedManualEntryDates = {}
+      req.session.calculationReasonId = { A1234AA: 1 }
+      req.session.manualEntryRoutingForBookings = []
+      req.session.selectedManualEntryDates.A1234AA = [
+        {
+          completed: false,
+          dateType: 'HDCAD',
+          date: { day: 3, month: 3, year: 2017 },
+        } as unknown as ManualJourneySelectedDate,
+      ]
+    }
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    return request(app)
+      .post('/calculation/A1234AA/manual-entry/remove-date?dateType=HDCED')
+      .send({ 'remove-date': 'yes' })
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expectMiniProfile(res.text, expectedMiniProfile)
+        const $ = cheerio.load(res.text)
+        expect($('.govuk-error-message').first().text()).toContain(
+          'HDCED cannot be deleted because a HDCAD still exists. You must delete the HDCAD first.',
+        )
+        expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+          '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/manual-entry/remove-date?dateType=HDCED',
         )
       })
   })
