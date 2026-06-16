@@ -124,11 +124,17 @@ export interface components {
       href: string
       text: string
       thingsToDo: components['schemas']['ThingsToDo']
+      maintenanceAlert: components['schemas']['MaintenanceAlert']
     }
     CcrdServiceDefinitions: {
       services: {
         [key: string]: components['schemas']['CcrdServiceDefinition']
       }
+      maintenanceAlert: components['schemas']['MaintenanceAlert']
+    }
+    MaintenanceAlert: {
+      enabled: boolean
+      message: string
     }
     ThingToDo: {
       title: string
