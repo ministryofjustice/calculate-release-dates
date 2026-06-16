@@ -30,7 +30,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             {% set cancelUrl = "/calculation/" + prisonerDetail.offenderNo + "/cancelCalculation?redirectUrl=" + pageCancelRedirectUrl %}
-            {% if not model.approvedDates and not isSecondCheck %}
+            {% if not model.approvedDates %}
                 {% if not model.hasGenuineOverridesAccess %}
                 <h3 class="govuk-heading-m govuk-!-margin-top-4">Confirm the dates are correct</h3>
                 <p class="govuk-body">By continuing you are confirming that, to the best of your knowledge, the calculation is correct.</p>
@@ -75,28 +75,6 @@
                             attributes: { 'data-qa': 'submit-to-nomis' }
                         }) }}
                     {% endif %}
-                        <a data-qa="cancel-link"
-                            data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
-                            data-module="govuk-button"
-                            href="{{ cancelUrl }}">
-                            Cancel
-                    </a>
-                </form>
-            {% elif isSecondCheck %}
-                <h3 class="govuk-heading-m govuk-!-margin-top-4">What to do if the dates are wrong</h3>
-                <p class="govuk-body">If something is wrong with the dates, check the sentence and offence information is correct
-                then calculate release dates again.</p>
-                <form method="post">
-                    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-                    <input type="hidden" name="agreeWithDates" value="YES"/>
-
-                    {{ govukButton({
-                        text: "Confirm and continue",
-                        value: 'save',
-                        preventDoubleClick: true,
-                        type: submit,
-                        attributes: { 'data-qa': 'submit-to-nomis' }
-                    }) }}
                         <a data-qa="cancel-link"
                             data-prevent-double-click="true" class="govuk-button govuk-!-margin-left-3 govuk-button--secondary no-js-hidden"
                             data-module="govuk-button"
