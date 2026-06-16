@@ -14,7 +14,7 @@ export interface User {
 
 export default class ManageUsersApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
-    super('Example API', config.apis.manageUsersApi, logger, authenticationClient)
+    super('Manage Users API', config.apis.manageUsersApi, logger, authenticationClient)
   }
 
   getUser(token: string): Promise<User> {

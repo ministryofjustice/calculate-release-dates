@@ -25,6 +25,12 @@ export default class ComparisonResultMismatchDetailModel {
 
   calculationRequestId?: number
 
+  latestCalculationReason: string
+
+  latestCalculationReasonFurtherDetail: string
+
+  progressionModelTranche: string
+
   constructor(comparisonPerson: ComparisonPersonOverview) {
     this.nomisReference = comparisonPerson.personId
     this.lastName = comparisonPerson.lastName
@@ -40,6 +46,9 @@ export default class ComparisonResultMismatchDetailModel {
     this.sdsPlusOffences = this.getSdsSentenceCaseAndCount(comparisonPerson)
 
     this.mismatchType = comparisonPerson.mismatchType
+    this.latestCalculationReason = comparisonPerson.latestCalculationReason
+    this.latestCalculationReasonFurtherDetail = comparisonPerson.latestCalculationReasonFurtherDetail
+    this.progressionModelTranche = comparisonPerson.progressionModelTranche
 
     this.dates = [
       this.createDateRow(

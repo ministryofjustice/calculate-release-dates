@@ -8,6 +8,7 @@ import { createSupportLink } from '../utils/utils'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
 import config from '../config'
+import { ErrorMessages } from '../types/ErrorMessages'
 
 type ManualEntrySession = Request['session'] & {
   selectedManualEntryDates?: Record<string, ManualJourneySelectedDate[]>
@@ -68,6 +69,7 @@ const errorMessage = {
     text: 'Select at least one release date.',
   },
 }
+
 export default class ManualEntryService {
   constructor(
     private readonly dateTypeConfigurationService: DateTypeConfigurationService,
@@ -118,9 +120,8 @@ export default class ManualEntryService {
       session.selectedManualEntryDates[nomsId] = []
     }
 
-    const newDates = session.selectedManualEntryDates[nomsId].filter(
-      (existingDate: ManualJourneySelectedDate) => !existingDate.completed,
-    )
+    const existingDates = session.selectedManualEntryDates[nomsId]
+    const newDates = existingDates.filter((existingDate: ManualJourneySelectedDate) => !existingDate.completed)
 
     const insufficientDatesSelected =
       req.body == null ||
@@ -145,6 +146,8 @@ export default class ManualEntryService {
       selectedDateTypes,
     )
 
+    this.validateHdcadWithHdced(existingDates, selectedDateTypes, firstLoad, validationMessages)
+
     if (validationMessages.messages.length > 0) {
       const errorStart = 'There is a problem'
       const errorEnd = createSupportLink({
@@ -163,8 +166,45 @@ export default class ManualEntryService {
       this.enrichConfiguration(<DateSelectConfiguration>mergedConfig, req, nomsId, existingDateTypes)
       return { error: true, config: <DateSelectConfiguration>mergedConfig }
     }
+
     this.enrichConfiguration(dateConfig, req, nomsId, existingDateTypes)
     return { error: false, config: <DateSelectConfiguration>dateConfig }
+  }
+
+  public validateHdcadWithHdced(
+    existingDates: ManualJourneySelectedDate[],
+    selectedDateTypes: string[],
+    firstLoad: boolean,
+    validationMessages: ErrorMessages,
+  ) {
+    const isHdcadSelected =
+      existingDates.some(d => d.dateType === 'HDCAD') || (selectedDateTypes.includes('HDCAD') && !firstLoad)
+    const isHdcedSelected = selectedDateTypes.includes('HDCED')
+
+    if (isHdcadSelected && !isHdcedSelected) {
+      validationMessages.messages.push({
+        text: 'HDCED must be selected with HDCAD',
+      })
+    }
+  }
+
+  public validateRemovedDate(req: Request, nomsId: string): string | null {
+    const dateToRemove: string = <string>req.query.dateType
+    const existingDates = req.session.selectedManualEntryDates?.[nomsId] ?? []
+
+    if (req.body == null || (req.body['remove-date'] !== 'yes' && req.body['remove-date'] !== 'no')) {
+      return "You must select either 'Yes' or 'No'"
+    }
+
+    if (
+      req.body['remove-date'] === 'yes' &&
+      dateToRemove === 'HDCED' &&
+      existingDates.some(d => d.dateType === 'HDCAD')
+    ) {
+      return 'HDCED cannot be deleted because a HDCAD still exists. You must delete the HDCAD first.'
+    }
+
+    return null
   }
 
   private enrichConfiguration(

@@ -41,6 +41,16 @@
 <h1 class="govuk-heading-xl">Bulk Comparison Detail</h1>
 
     <h3 class="govuk-heading-l">Overview</h3>
+    {% set tranche = '' %}
+    {% set reason = 'Unknown' %}
+    {% if bulkComparison.progressionModelTranche and bulkComparison.progressionModelTranche != 'TRANCHE_0' %}
+        {% set tranche = bulkComparison.progressionModelTranche | formatTranche %}
+    {% endif %}
+    {% if bulkComparison.latestCalculationReason and bulkComparison.latestCalculationReasonFurtherDetail %}
+        {% set reason = bulkComparison.latestCalculationReason + '<p class="govuk-body govuk-hint govuk-!-font-size-16">' + bulkComparison.latestCalculationReasonFurtherDetail + '</p>' %}
+    {% elseif bulkComparison.latestCalculationReason %}
+        {% set reason = bulkComparison.latestCalculationReason  %}
+    {% endif %}
     {{ govukSummaryList({
         rows: [
             {
@@ -61,18 +71,18 @@
             },
             {
                 key: {
-                    text: "Showing Latest Dates"
+                    text: "Progression Model tranche"
                 },
                 value: {
-                    text: "True"
+                    text: tranche
                 }
             },
             {
                 key: {
-                    text: "Source of latest calculation"
+                    text: "Calculation reason"
                 },
                 value: {
-                    text: "NOMIS"
+                    html: reason
                 }
             },
             {
