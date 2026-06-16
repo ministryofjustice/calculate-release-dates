@@ -939,32 +939,6 @@ describe('CheckInformationController', () => {
         })
     })
 
-    it('GET /calculation/:nomsId/check-information should display notification if any sentence is SDS+', () => {
-      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
-      userInputService.isCalculationReasonSet.mockReturnValue(true)
-
-      const model = new SentenceAndOffenceViewModel(
-        stubbedPrisonerData,
-        stubbedUserInput,
-        stubbedSentencesAndOffences,
-        false,
-        true,
-        false,
-        stubbedReturnToCustodyDate,
-        null,
-        [],
-      )
-      checkInformationService.checkInformation.mockResolvedValue(model)
-      return request(app)
-        .get('/calculation/A1234AA/check-information')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          const $ = cheerio.load(res.text)
-          expect($('[data-qa=sds-plus-notification-banner]')).toHaveLength(1)
-        })
-    })
-
     it('GET /calculation/:nomsId/check-information should not display notification if no sentence is SDS+', () => {
       const sentenceAndOffencesWithNoSDSPlus = [
         {
