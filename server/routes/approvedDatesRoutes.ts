@@ -87,7 +87,17 @@ export default class ApprovedDatesRoutes {
       req.session.selectedApprovedDates[nomsId] = []
     }
     const prisonerDetail = req.prisoner
-    const { error, config } = await this.approvedDatesService.submitApprovedDateTypes(req, username)
+    const detailedCalculationResults = await this.calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments(
+      Number(req.params.calculationRequestId),
+      username,
+    )
+
+    const { error, config } = await this.approvedDatesService.submitApprovedDateTypes(
+      req,
+      username,
+      detailedCalculationResults,
+    )
+
     if (error) {
       return res.render(
         'pages/approvedDates/selectApprovedDates',

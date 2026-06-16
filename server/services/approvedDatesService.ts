@@ -2,10 +2,16 @@ import { Request } from 'express'
 import { DateSelectConfiguration } from './manualEntryService'
 import DateTypeConfigurationService from './dateTypeConfigurationService'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import { DetailedCalculationResults } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 const selectDatesError = {
   errorMessage: {
     text: 'Select at least one release date.',
+  },
+}
+const hdcadMissingHdcedError = {
+  errorMessage: {
+    text: 'HDCAD cannot be added because a HDCED was not part of the calculated dates. A HDCED must be accompanied by a HDCAD.',
   },
 }
 export default class ApprovedDatesService {
@@ -31,10 +37,23 @@ export default class ApprovedDatesService {
     }
   }
 
-  public async submitApprovedDateTypes(req: Request, username: string): Promise<SubmitApprovedDateTypesResponse> {
+  public async submitApprovedDateTypes(
+    req: Request,
+    username: string,
+    detailedCalculationResults: DetailedCalculationResults,
+  ): Promise<SubmitApprovedDateTypesResponse> {
     if (req.body.dateSelect === undefined || req.body.dateSelect.length === 0) {
       const config = await this.getApprovedDatesConfig(username)
       return { error: true, config: { ...config, ...selectDatesError } }
+    }
+
+    const selectedDateTypes: string[] = Array.isArray(req.body.dateSelect) ? req.body.dateSelect : [req.body.dateSelect]
+    const isHdcedInCalc = detailedCalculationResults.dates.HDCED !== undefined
+    const isHdcadSelected = selectedDateTypes.includes('HDCAD')
+
+    if (!isHdcedInCalc && isHdcadSelected) {
+      const config = await this.getApprovedDatesConfig(username)
+      return { error: true, config: { ...config, ...hdcadMissingHdcedError } }
     }
 
     req.session.selectedApprovedDates[req.params.nomsId] = await this.dateTypeConfigurationService.configureViaBackend(
