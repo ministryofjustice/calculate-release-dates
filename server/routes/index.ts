@@ -189,11 +189,7 @@ export default function Index({
     )
   }
 
-  const calculationSummaryController = new CalculationSummaryController(
-    calculateReleaseDatesService,
-    prisonerService,
-    userInputService,
-  )
+  const calculationSummaryController = new CalculationSummaryController(calculateReleaseDatesService, prisonerService)
 
   const approvedDatesRoutes = () => {
     // routes integrated into the regular calculation journey

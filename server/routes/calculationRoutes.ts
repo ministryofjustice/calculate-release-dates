@@ -81,7 +81,6 @@ export default class CalculationRoutes {
         calculationSummaryDatesCardModelFromCalculationSummaryViewModel(model, hasNone),
         approvedSummaryDatesCardModelFromCalculationSummaryViewModel(model, false),
         req.session.isAddDatesFlow?.[nomsId] ?? false,
-        false,
         req.originalUrl,
       ),
     )

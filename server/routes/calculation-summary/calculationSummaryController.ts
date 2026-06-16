@@ -17,13 +17,11 @@ import saveCalculation from '../saveCalculationHelper'
 import GenuineOverrideUrls from '../genuine-overrides/genuineOverrideUrls'
 import { hasGenuineOverridesAccess } from '../genuine-overrides/genuineOverrideUtils'
 import { getSiblingCalculationWithPreviouslyRecordedSLED } from '../../utils/previouslyRecordedSledUtils'
-import UserInputService from '../../services/userInputService'
 
 export default class CalculationSummaryController implements Controller {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly userInputService: UserInputService,
   ) {}
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
@@ -111,7 +109,6 @@ export default class CalculationSummaryController implements Controller {
           calculationRequestId,
         } as ApprovedDateActionConfig),
         req.session.isAddDatesFlow?.[nomsId],
-        this.userInputService.isSecondCheck(req, nomsId),
         callbackUrl || req.originalUrl,
         backLink,
       ),
@@ -133,7 +130,7 @@ export default class CalculationSummaryController implements Controller {
       res.redirect(GenuineOverrideUrls.startGenuineOverride(nomsId, calculationRequestId))
       return
     }
-    if (!this.hasBeenAskedApprovedDatesQuestion(req, nomsId) && !this.userInputService.isSecondCheck(req, nomsId)) {
+    if (!this.hasBeenAskedApprovedDatesQuestion(req, nomsId)) {
       if (req.session.isAddDatesFlow && req.session.isAddDatesFlow[nomsId]) {
         res.redirect(`/calculation/${nomsId}/${calculationRequestId}/select-approved-dates`)
       } else {
