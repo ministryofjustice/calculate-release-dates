@@ -1776,7 +1776,16 @@ export interface components {
       bookingId: number
       prisonerId: string
       /** @enum {string} */
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL' | 'BULK' | 'OVERRIDDEN'
+      calculationStatus:
+        | 'SECOND_CHECK_INITIATED'
+        | 'SECOND_CHECK_CONFIRMED'
+        | 'PRELIMINARY'
+        | 'CONFIRMED'
+        | 'ERROR'
+        | 'TEST'
+        | 'RECORD_A_RECALL'
+        | 'BULK'
+        | 'OVERRIDDEN'
       calculationFragments?: components['schemas']['CalculationFragments'] | null
       effectiveSentenceLength?: string | null
       /** @enum {string} */
@@ -2641,6 +2650,7 @@ export interface components {
       dates: components['schemas']['DetailedDate'][]
       calculatedByUsername: string
       calculatedByDisplayName: string
+      calculationType: string
     }
     ReleaseDateHint: {
       text: string
@@ -2659,7 +2669,16 @@ export interface components {
       bookingId: number
       prisonerId: string
       /** @enum {string} */
-      calculationStatus: 'PRELIMINARY' | 'CONFIRMED' | 'ERROR' | 'TEST' | 'RECORD_A_RECALL' | 'BULK' | 'OVERRIDDEN'
+      calculationStatus:
+        | 'SECOND_CHECK_INITIATED'
+        | 'SECOND_CHECK_CONFIRMED'
+        | 'PRELIMINARY'
+        | 'CONFIRMED'
+        | 'ERROR'
+        | 'TEST'
+        | 'RECORD_A_RECALL'
+        | 'BULK'
+        | 'OVERRIDDEN'
       /** Format: uuid */
       calculationReference: string
       calculationReason?: components['schemas']['CalculationReasonDto'] | null

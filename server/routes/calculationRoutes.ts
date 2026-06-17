@@ -131,7 +131,10 @@ export default class CalculationRoutes {
       prisonerDetail.bookingId,
       username,
     )
-    if (calculation.prisonerId !== nomsId || calculation.calculationStatus !== 'CONFIRMED') {
+    if (
+      calculation.prisonerId !== nomsId ||
+      (calculation.calculationStatus !== 'CONFIRMED' && calculation.calculationStatus !== 'SECOND_CHECK_CONFIRMED')
+    ) {
       throw FullPageError.notFoundError()
     }
     this.userInputService.resetCalculationUserInputForPrisoner(req, nomsId)

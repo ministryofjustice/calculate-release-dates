@@ -1262,6 +1262,7 @@ export default {
       establishment: 'Kirkham (HMP)',
       calculatedByUsername: 'user1',
       calculatedByDisplayName: 'User One',
+      calculationType: 'CALCULATED',
       dates: [
         { date: '2018-11-05', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
         {

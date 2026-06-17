@@ -1,0 +1,22 @@
+
+{% if calculationType.startsWith("MANUAL") %}
+    {% set titleText = "Confirm the manually entered dates are correct " %}
+{% elseif calculationType === 'GENUINE_OVERRIDE' %}
+    {% set titleText = "Confirm the overridden dates are correct" %}
+{% else %}
+    {% set titleText = "Confirm the calculated dates are correct" %}
+{% endif %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+       <span class="govuk-caption-xl">Calculate release dates</span>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">{{ titleText }}</h1>
+    </div>
+</div>
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% include "../../partials/calculationSummary/minimalSecondCheckCalculationCard.njk" %}
+    </div>
+</div>

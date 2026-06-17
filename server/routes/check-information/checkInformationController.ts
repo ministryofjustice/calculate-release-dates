@@ -31,7 +31,10 @@ export default class CheckInformationController implements Controller {
     }
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     const model = await this.checkInformationService.checkInformation(nomsId, userInputs, username, req.prisoner)
-    return res.render('pages/calculation/checkInformation', new CheckInformationViewModel(model, true, req.originalUrl))
+    return res.render(
+      'pages/calculation/checkInformation',
+      new CheckInformationViewModel(model, true, this.userInputService.isSecondCheck(req, nomsId), req.originalUrl),
+    )
   }
 
   POST = async (req: Request<{ nomsId: string }, unknown, CheckInformationForm>, res: Response): Promise<void> => {
@@ -48,7 +51,7 @@ export default class CheckInformationController implements Controller {
 
     const errors = await this.calculateReleaseDatesService.validateBackend(nomsId, userInputs, username)
 
-    if (errors.length > 0) {
+    if (errors.length > 0 && !this.userInputService.isSecondCheck(req, nomsId)) {
       if (errors.find(e => e.calculationUnsupported)) {
         const validForManualEntry = await this.calculateReleaseDatesService.validateBookingForManualEntry(
           nomsId,
@@ -81,6 +84,11 @@ export default class CheckInformationController implements Controller {
       calculationRequestModel,
       username,
     )
+
+    if (this.userInputService.isSecondCheck(req, nomsId)) {
+      return res.redirect(`/calculation/${nomsId}/secondCheckSummary/${releaseDates.calculationRequestId}`)
+    }
+
     if (releaseDates.usedPreviouslyRecordedSLED) {
       return res.redirect(
         `/calculation/${nomsId}/previously-recorded-sled-intercept/${releaseDates.calculationRequestId}`,

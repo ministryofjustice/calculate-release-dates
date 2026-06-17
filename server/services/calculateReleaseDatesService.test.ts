@@ -340,6 +340,7 @@ describe('Calculate release dates service tests', () => {
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
+        calculationType: 'CALCULATED',
         calculatedByUsername: 'user1',
         calculatedByDisplayName: 'User One',
         dates: [
@@ -380,6 +381,7 @@ describe('Calculate release dates service tests', () => {
         source: 'CRDS',
         establishment: 'Kirkham (HMP)',
         calculatedByUsername: 'user1',
+        calculationType: 'CALCULATED',
         calculatedByDisplayName: 'User One',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
@@ -421,6 +423,7 @@ describe('Calculate release dates service tests', () => {
         reason: 'Initial check',
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
+        calculationType: 'CALCULATED',
         establishment: 'Kirkham (HMP)',
         calculatedByUsername: 'user1',
         calculatedByDisplayName: 'User One',
@@ -463,6 +466,7 @@ describe('Calculate release dates service tests', () => {
         reason: 'Initial check',
         calculatedAt: '2025-02-01T10:30:00',
         source: 'CRDS',
+        calculationType: 'CALCULATED',
         establishment: 'Kirkham (HMP)',
         calculatedByUsername: 'user1',
         calculatedByDisplayName: 'User One',

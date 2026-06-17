@@ -46,6 +46,7 @@ import CompareManualJsonController from './compare/CompareManualJsonController'
 import CompareManualCalculationController from './compare/CompareManualCalculationController'
 import CompareSubmitManualCalculationController from './compare/CompareSubmitManualCalculationController'
 import SecondCheckController from './calculation-reason/secondCheckController'
+import CalculationSecondCheckSummaryController from './calculation-summary/calcSecondCheckSummaryController'
 
 export default function Index({
   prisonerService,
@@ -276,11 +277,24 @@ export default function Index({
     })
   }
 
+  const calculationSecondCheckSummaryController = new CalculationSecondCheckSummaryController(
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+
   const secondCheckRoutes = () => {
     route({
       path: '/calculation/:nomsId/secondCheck',
       controller: new SecondCheckController(calculateReleaseDatesService, prisonerService),
     })
+    router.get(
+      '/calculation/:nomsId/secondCheckSummary/:calculationRequestId',
+      calculationSecondCheckSummaryController.GET,
+    )
+    router.post(
+      '/calculation/:nomsId/secondCheckSummary/:calculationRequestId',
+      calculationSecondCheckSummaryController.POST,
+    )
   }
 
   const viewRoutes = () => {
