@@ -23,6 +23,7 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import AuditService from '../services/auditService'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
+import { ResultsWithBreakdownAndAdjustments } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/auditService')
@@ -76,6 +77,21 @@ const stubbedPrisonerData = {
     description: 'D-2-003',
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
+
+const stubbedResultsWithBreakdownAndAdjustments = {
+  context: {},
+  calculationOriginalData: {},
+  allocatedTranches: [],
+  dates: {
+    CRD: {
+      date: '2021-02-03',
+      type: 'CRD',
+      description: 'Conditional release date',
+      hints: [{ text: 'Tuesday, 02 February 2021 when adjusted to a working day' }],
+    },
+    SED: { date: '2021-02-03', type: 'SED', description: 'Sentence expiry date', hints: [] },
+  },
+} as unknown as ResultsWithBreakdownAndAdjustments
 
 const expectedMiniProfile = {
   name: 'Nobody, Anon',
@@ -216,6 +232,7 @@ describe('approvedDatesRoutes', () => {
         expect(res.redirect).toBeTruthy()
       })
   })
+
   it('GET /calculation/:nomsId/:calculationRequestId/select-approved-dates shows list of approved dates', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
@@ -235,6 +252,10 @@ describe('approvedDatesRoutes', () => {
       })
   })
   it('POST /calculation/:nomsId/:calculationRequestId/select-approved-dates adds date to session', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+      stubbedResultsWithBreakdownAndAdjustments,
+    )
     return request(app)
       .post('/calculation/A1234AA/123456/select-approved-dates')
       .type('form')
@@ -262,6 +283,56 @@ describe('approvedDatesRoutes', () => {
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/select-approved-dates',
         )
       })
+  })
+
+  describe('POST /calculation/:nomsId/:calculationRequestId/select-approved-dates with no calculated HDCED and selected HDCAD shows validation error', () => {
+    it('shows a validation error', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+        stubbedResultsWithBreakdownAndAdjustments,
+      )
+      return request(app)
+        .post('/calculation/A1234AA/123456/select-approved-dates')
+        .type('form')
+        .send({ dateSelect: 'HDCAD' })
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain('APD')
+          expect(res.text).toContain('HDCAD')
+          expect(res.text).toContain('ROTL')
+          expectMiniProfile(res.text, expectedMiniProfile)
+          const $ = cheerio.load(res.text)
+          expect($('#dateSelect-error').text()).toContain(
+            'HDCAD cannot be added because a HDCED was not part of the calculated dates. A HDCED must be accompanied by a HDCAD.',
+          )
+          expect($('[data-qa=cancel-link]').first().attr('href')).toStrictEqual(
+            '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/select-approved-dates',
+          )
+        })
+    })
+    it('POST /calculation/:nomsId/:calculationRequestId/select-approved-dates adds date to session', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
+        ...stubbedResultsWithBreakdownAndAdjustments,
+        dates: {
+          HDCED: {
+            date: '2021-10-03',
+            type: 'HDCED',
+            description: 'Home detention curfew eligibility date',
+            hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
+          },
+        },
+      })
+      return request(app)
+        .post('/calculation/A1234AA/123456/select-approved-dates')
+        .type('form')
+        .send({ dateSelect: 'HDCAD' })
+        .expect(302)
+        .expect('Location', '/calculation/A1234AA/123456/submit-dates?dateType=HDCAD')
+        .expect(res => {
+          expect(res.text).not.toContain('Select at least one release date.')
+        })
+    })
   })
 
   it('GET /calculation/:nomsId/:calculationRequestId/remove loads remove date page if the date is found', () => {

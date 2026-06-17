@@ -33,6 +33,10 @@ const serviceDefinitionsOnlyCrdThingsToDo = {
         things: [],
         count: 0,
       },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
+      },
     },
     adjustments: {
       href: 'http://localhost:8002/A1234AA',
@@ -40,6 +44,10 @@ const serviceDefinitionsOnlyCrdThingsToDo = {
       thingsToDo: {
         things: [],
         count: 0,
+      },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
       },
     },
     releaseDates: {
@@ -57,7 +65,15 @@ const serviceDefinitionsOnlyCrdThingsToDo = {
         ],
         count: 1,
       },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
+      },
     },
+  },
+  maintenanceAlert: {
+    enabled: false,
+    message: 'placeholder',
   },
 } as CcrdServiceDefinitions
 
@@ -69,6 +85,10 @@ const serviceDefinitionsOnlyAdjustmentsThingsToDo = {
       thingsToDo: {
         things: [],
         count: 0,
+      },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
       },
     },
     adjustments: {
@@ -95,6 +115,10 @@ const serviceDefinitionsOnlyAdjustmentsThingsToDo = {
         ],
         count: 2,
       },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
+      },
     },
     releaseDates: {
       href: 'http://localhost:8004?prisonId=A1234AA',
@@ -103,7 +127,15 @@ const serviceDefinitionsOnlyAdjustmentsThingsToDo = {
         things: [],
         count: 0,
       },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
+      },
     },
+  },
+  maintenanceAlert: {
+    enabled: false,
+    message: 'placeholder',
   },
 } as CcrdServiceDefinitions
 

@@ -1,4 +1,4 @@
-import { TelemetryClient } from 'applicationinsights'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import SentenceAndOffenceViewModel from '../models/SentenceAndOffenceViewModel'
 import SentenceTypes from '../models/SentenceTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
@@ -12,7 +12,6 @@ export default class CheckInformationService {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
-    private readonly telemetryClient: TelemetryClient,
   ) {
     // intentionally blank
   }
@@ -58,16 +57,13 @@ export default class CheckInformationService {
     }
 
     if (validationMessages?.messages?.length) {
-      const prisonId = prisonerDetail?.agencyId || null
-      this.telemetryClient?.trackEvent({
-        name: 'validation-failures-requiring-fix',
-        properties: {
-          count: validationMessages?.messages?.length,
-          prisonerNumber: nomsId,
-          username,
-          isUnsupported,
-          ...(prisonId && { prisonId }),
-        },
+      const caseloadId = prisonerDetail?.agencyId || null
+      telemetry.trackEvent('validation-failures-requiring-fix', {
+        count: validationMessages?.messages?.length,
+        prisonerNumber: nomsId,
+        username,
+        isUnsupported,
+        ...(caseloadId && { caseloadId }),
       })
     }
 
