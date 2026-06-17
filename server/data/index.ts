@@ -3,7 +3,6 @@
  * In particular, applicationinsights automatically collects bunyan logs
  */
 import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
-import { buildAppInsightsClient, initialiseAppInsights } from '../utils/azureAppInsights'
 import applicationInfoSupplier from '../applicationInfo'
 import ManageUsersApiClient from './manageUsersApiClient'
 import { createRedisClient } from './redisClient'
@@ -16,8 +15,6 @@ import FrontendComponentsApiClient from './frontendComponentsApiClient'
 import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 
 const applicationInfo = applicationInfoSupplier()
-initialiseAppInsights()
-const telemetryClient = buildAppInsightsClient(applicationInfo)
 
 const hmppsAuthClient = new AuthenticationClient(
   config.apis.hmppsAuth,
@@ -34,7 +31,6 @@ const dataAccess = () => ({
   courtCasesReleaseDatesApiClient: new CourtCasesReleaseDatesApiClient(hmppsAuthClient),
   frontendComponentsApiClient: new FrontendComponentsApiClient(hmppsAuthClient),
   calculateReleaseDatesApiClient: new CalculateReleaseDatesApiClient(hmppsAuthClient),
-  telemetryClient,
 })
 
 export default dataAccess

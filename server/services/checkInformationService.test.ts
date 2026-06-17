@@ -1,5 +1,5 @@
 import createError from 'http-errors'
-import { TelemetryClient } from 'applicationinsights'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import PrisonerService from './prisonerService'
 import CheckInformationService from './checkInformationService'
@@ -18,6 +18,11 @@ import { ErrorMessageType } from '../types/ErrorMessages'
 
 jest.mock('./calculateReleaseDatesService')
 jest.mock('./prisonerService')
+jest.mock('@ministryofjustice/hmpps-azure-telemetry', () => ({
+  telemetry: {
+    trackEvent: jest.fn(),
+  },
+}))
 
 describe('checkInformationService', () => {
   const stubbedPrisonerData = {
@@ -86,16 +91,8 @@ describe('checkInformationService', () => {
     null,
   ) as jest.Mocked<CalculateReleaseDatesService>
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
-  const mockTrackEvent = jest.fn()
-  const telemetryClient: TelemetryClient = {
-    trackEvent: mockTrackEvent,
-  } as unknown as jest.Mocked<TelemetryClient>
 
-  const checkInformationService = new CheckInformationService(
-    calculateReleaseDatesService,
-    prisonerService,
-    telemetryClient,
-  )
+  const checkInformationService = new CheckInformationService(calculateReleaseDatesService, prisonerService)
 
   const nomsId = 'A1234BC'
   const userInputs = {} as CalculationUserInputs
@@ -136,15 +133,12 @@ describe('checkInformationService', () => {
       messageType: ErrorMessageType.VALIDATION,
       messages: [{ text: 'Sentence type is not supported' }],
     })
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      name: 'validation-failures-requiring-fix',
-      properties: {
-        count: 1,
-        prisonerNumber: nomsId,
-        username: 'user1',
-        isUnsupported: true,
-        prisonId: 'LEI',
-      },
+    expect(telemetry.trackEvent).toHaveBeenCalledWith('validation-failures-requiring-fix', {
+      count: 1,
+      prisonerNumber: nomsId,
+      username: 'user1',
+      isUnsupported: true,
+      caseloadId: 'LEI',
     })
   })
 
@@ -182,15 +176,12 @@ describe('checkInformationService', () => {
       messageType: ErrorMessageType.VALIDATION,
       messages: [{ text: 'Missing dates' }],
     })
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      name: 'validation-failures-requiring-fix',
-      properties: {
-        count: 1,
-        prisonerNumber: nomsId,
-        username: 'user1',
-        isUnsupported: false,
-        prisonId: 'LEI',
-      },
+    expect(telemetry.trackEvent).toHaveBeenCalledWith('validation-failures-requiring-fix', {
+      count: 1,
+      prisonerNumber: nomsId,
+      username: 'user1',
+      isUnsupported: false,
+      caseloadId: 'LEI',
     })
   })
 
@@ -214,15 +205,12 @@ describe('checkInformationService', () => {
       messageType: ErrorMessageType.VALIDATION,
       messages: [{ text: 'Missing dates' }],
     })
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      name: 'validation-failures-requiring-fix',
-      properties: {
-        count: 1,
-        prisonerNumber: nomsId,
-        username: 'user1',
-        isUnsupported: false,
-        prisonId: 'LEI',
-      },
+    expect(telemetry.trackEvent).toHaveBeenCalledWith('validation-failures-requiring-fix', {
+      count: 1,
+      prisonerNumber: nomsId,
+      username: 'user1',
+      isUnsupported: false,
+      caseloadId: 'LEI',
     })
   })
 
