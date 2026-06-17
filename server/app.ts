@@ -28,6 +28,7 @@ import getPrisoner from './middleware/getPrisoner'
 import maintenanceMiddleware from './middleware/maintenanceMiddleware'
 import config from './config'
 import logger from '../logger'
+import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -63,6 +64,7 @@ export default function createApp(services: Services): express.Application {
       ['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId', '/'],
       getPrisoner(services.prisonerService),
     )
+    app.use(addUsernameAndCaseloadToTelemetry())
     app.use(routes(services))
   }
 
