@@ -129,18 +129,15 @@
   {% else %}
       {{ serviceHeader(defaultServiceHeaderConfig) }}
   {% endif %}
-
+  {% if displayMaintenanceAlert and serviceDefinitions.maintenanceAlert.enabled %}
+    {{ outageBanner({ text: serviceDefinitions.maintenanceAlert.message}) }}
+  {% endif %}
 {% endblock %}
 
 {% block bodyStart %}{% endblock %}
 
 {% block beforeContent %}
   <aside role="complementary">
-    {% if displayMaintenanceAlert and serviceDefinitions.maintenanceAlert.enabled %}
-        <div class="govuk-!-margin-top-7">
-            {{ outageBanner({ text: serviceDefinitions.maintenanceAlert.message}) }}
-        </div>
-    {% endif %}
     {% include "../pages/partials/prisonerIdentityBar.njk" %}
   </aside>
   <span class="govuk-visually-hidden" id="{{ pageId }}"></span>
