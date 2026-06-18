@@ -90,6 +90,7 @@ const stubbedCalculationResults = {
     isOther: false,
     useForApprovedDates: false,
     requiresFurtherDetail: false,
+    isSecondCheck: false,
   },
 } as BookingCalculation
 
@@ -752,6 +753,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: true,
+          isSecondCheck: false,
         },
         otherReasonDescription: 'Fixed term recall 56',
       },
@@ -783,6 +785,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: true,
           useForApprovedDates: false,
           requiresFurtherDetail: true,
+          isSecondCheck: false,
         },
         otherReasonDescription: 'Another reason for calculation',
       },
@@ -810,6 +813,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: false,
+          isSecondCheck: false,
         },
       },
     })
@@ -837,6 +841,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: true,
+          isSecondCheck: false,
         },
         otherReasonDescription: 'Fixed term recall 56',
       },
@@ -866,6 +871,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: false,
+          isSecondCheck: false,
         },
         calculatedByDisplayName: 'User One',
         calculatedAtPrisonDescription: 'Kirkham (HMP)',

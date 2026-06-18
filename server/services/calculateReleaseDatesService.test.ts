@@ -520,6 +520,7 @@ describe('Calculate release dates service tests', () => {
           displayName: 'Other',
           useForApprovedDates: false,
           requiresFurtherDetail: true,
+          isSecondCheck: false,
         },
         otherReasonDescription: 'Test',
         usePreviouslyRecordedSLEDIfFound: false,

@@ -63,7 +63,7 @@
                             }
                         ), buttons) %}
                     {% else %}
-                        {% if reason.id == 18 %}
+                        {% if reason.isSecondCheck %}
                             {% set buttons = (buttons.push(
                                 { divider: 'or' }
                             ), buttons) %}
