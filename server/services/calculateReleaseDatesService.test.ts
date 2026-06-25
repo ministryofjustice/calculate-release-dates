@@ -192,6 +192,21 @@ describe('Calculate release dates service tests', () => {
     expect(result).toEqual(calculationResults)
   })
 
+  it('Test confirming second check', async () => {
+    fakeApi.post(`/calculation/confirm/second-check/${calculationRequestId}`).reply(200, { success: true })
+
+    const result = await calculateReleaseDatesService.confirmSecondCheck(
+      calculationRequestId,
+      {
+        checkedByUsername: userName,
+        prisonerId: nomsId,
+      },
+      token,
+    )
+
+    expect(result).toEqual({ success: true })
+  })
+
   it('Test confirming the results of a calculation', async () => {
     fakeApi.post(`/calculation/confirm/${calculationRequestId}`).reply(200, calculationResults)
 
@@ -343,6 +358,9 @@ describe('Calculate release dates service tests', () => {
         calculationType: 'CALCULATED',
         calculatedByUsername: 'user1',
         calculatedByDisplayName: 'User One',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -383,6 +401,9 @@ describe('Calculate release dates service tests', () => {
         calculatedByUsername: 'user1',
         calculationType: 'CALCULATED',
         calculatedByDisplayName: 'User One',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -427,6 +448,9 @@ describe('Calculate release dates service tests', () => {
         establishment: 'Kirkham (HMP)',
         calculatedByUsername: 'user1',
         calculatedByDisplayName: 'User One',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
@@ -470,6 +494,9 @@ describe('Calculate release dates service tests', () => {
         establishment: 'Kirkham (HMP)',
         calculatedByUsername: 'user1',
         calculatedByDisplayName: 'User One',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [
           { date: '2024-02-21', type: 'CRD', description: 'Conditional release date', hints: [] },
           { date: '2024-06-15', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },

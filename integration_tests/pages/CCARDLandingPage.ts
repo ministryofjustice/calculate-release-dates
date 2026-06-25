@@ -30,6 +30,10 @@ export default class CCARDLandingPage extends Page {
     return cy.get('[data-qa=calculation-summary-calculated-by]')
   }
 
+  latestCalculationCheckedBy(): PageElement {
+    return cy.get('[data-qa=calculation-summary-checked-by]')
+  }
+
   latestCalculationSource(): PageElement {
     return cy.get('[data-qa=calculation-summary-source]')
   }

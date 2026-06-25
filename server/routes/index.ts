@@ -280,6 +280,7 @@ export default function Index({
   const calculationSecondCheckSummaryController = new CalculationSecondCheckSummaryController(
     calculateReleaseDatesService,
     prisonerService,
+    userInputService,
   )
 
   const secondCheckRoutes = () => {
@@ -287,14 +288,8 @@ export default function Index({
       path: '/calculation/:nomsId/secondCheck',
       controller: new SecondCheckController(calculateReleaseDatesService, prisonerService),
     })
-    router.get(
-      '/calculation/:nomsId/secondCheckSummary/:calculationRequestId',
-      calculationSecondCheckSummaryController.GET,
-    )
-    router.post(
-      '/calculation/:nomsId/secondCheckSummary/:calculationRequestId',
-      calculationSecondCheckSummaryController.POST,
-    )
+    router.get('/calculation/:nomsId/secondCheckSummary', calculationSecondCheckSummaryController.GET)
+    router.post('/calculation/:nomsId/secondCheckSummary', calculationSecondCheckSummaryController.POST)
   }
 
   const viewRoutes = () => {

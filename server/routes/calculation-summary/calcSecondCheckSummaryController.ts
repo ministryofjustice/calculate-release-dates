@@ -2,17 +2,17 @@ import { Request, Response } from 'express'
 import { Controller } from '../controller'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import PrisonerService from '../../services/prisonerService'
-import { CalculationSummaryForm } from './calculationSummarySchema'
-import saveCalculation from '../saveCalculationHelper'
 import CalculationSecondCheckSummaryPageViewModel from '../../models/calculation/CalculationSummarySecondCheckViewModel'
+import UserInputService from '../../services/userInputService'
 
 export default class CalculationSecondCheckSummaryController implements Controller {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly prisonerService: PrisonerService,
+    private readonly userInputService: UserInputService,
   ) {}
 
-  GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
+  GET = async (req: Request, res: Response): Promise<void> => {
     const { caseloads, userRoles, username } = res.locals.user
     const { nomsId } = req.params
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
@@ -30,6 +30,8 @@ export default class CalculationSecondCheckSummaryController implements Controll
     )
     const { latestCalcCard, calculation } = latestCalculationCardOrError
 
+    this.setLatestCalculationRequestId(req, nomsId, calculation.calculationRequestId)
+
     return res.render(
       'pages/calculation/secondCheckCalculationSummary',
       new CalculationSecondCheckSummaryPageViewModel(
@@ -42,18 +44,28 @@ export default class CalculationSecondCheckSummaryController implements Controll
     )
   }
 
-  POST = async (
-    req: Request<{ nomsId: string; calculationRequestId: string }, unknown, CalculationSummaryForm>,
-    res: Response,
-  ): Promise<void> => {
+  POST = async (req: Request, res: Response): Promise<void> => {
     const { nomsId } = req.params
-    const calculationRequestId = Number(req.params.calculationRequestId)
+    const { username, token } = res.locals.user
+    const calculationRequestId = this.userInputService.getLatestCalculationRequestId(req, nomsId)
 
-    await saveCalculation(
-      req,
-      res,
-      this.calculateReleaseDatesService,
-      `/calculation/${nomsId}/secondCheckSummary/${calculationRequestId}`,
+    await this.calculateReleaseDatesService.confirmSecondCheck(
+      calculationRequestId,
+      {
+        prisonerId: nomsId,
+        checkedByUsername: username,
+      },
+      token,
     )
+
+    res.redirect(`/calculation/${nomsId}/complete/${calculationRequestId}`)
+  }
+
+  private setLatestCalculationRequestId(req: Request, nomsId: string, latestCalculationRequestId: number) {
+    if (req.session.latestCalculationRequestId == null) {
+      req.session.latestCalculationRequestId = {}
+    }
+
+    req.session.latestCalculationRequestId[nomsId] = latestCalculationRequestId
   }
 }

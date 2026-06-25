@@ -34,4 +34,8 @@ export default class UserInputService {
   public isSecondCheck(req: Request, nomsId: string): boolean {
     return req.session.calculationReasonId?.[nomsId] === 18
   }
+
+  public getLatestCalculationRequestId(req: Request, nomsId: string) {
+    return req.session.latestCalculationRequestId[nomsId]
+  }
 }

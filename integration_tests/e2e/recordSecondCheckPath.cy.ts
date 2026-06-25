@@ -37,6 +37,7 @@ context('End to end user journeys recording a second check', () => {
     cy.task('stubHasNoIndeterminateSentences')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetEligibility')
+    cy.task('stubConfirmSecondCheck')
   })
 
   it('Can record a second check via link in landing page', () => {

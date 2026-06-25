@@ -110,6 +110,21 @@ export default {
       },
     })
   },
+  stubConfirmSecondCheck: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: `/calculate-release-dates/calculation/confirm/second-check/123`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          success: true,
+        },
+      },
+    })
+  },
   stubConfirmCalculation_errorNomisDataChanged: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -831,6 +846,7 @@ export default {
             id: 1,
             displayName: 'A reason',
             isOther: false,
+            isSecondCheck: false,
             useForApprovedDates: false,
             requiresFurtherDetail: false,
           },
@@ -838,6 +854,7 @@ export default {
             id: 99,
             displayName: 'Add dates',
             isOther: false,
+            isSecondCheck: false,
             useForApprovedDates: true,
             requiresFurtherDetail: false,
           },
@@ -845,6 +862,7 @@ export default {
             id: 75,
             displayName: 'Legislative Changes',
             isOther: false,
+            isSecondCheck: false,
             useForApprovedDates: true,
             requiresFurtherDetail: true,
           },
@@ -852,6 +870,7 @@ export default {
             id: 2,
             displayName: 'Other',
             isOther: true,
+            isSecondCheck: false,
             useForApprovedDates: false,
             requiresFurtherDetail: true,
           },
@@ -859,6 +878,7 @@ export default {
             id: 18,
             displayName: 'Second Check',
             isOther: false,
+            isSecondCheck: true,
             useForApprovedDates: false,
             requiresFurtherDetail: false,
           },

@@ -219,6 +219,9 @@ describe('StartController', () => {
         calculatedByDisplayName: 'User One',
         calculationRequestId: 90328,
         reason: 'New Sentence',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [],
       },
     }
@@ -256,6 +259,9 @@ describe('StartController', () => {
         calculatedByDisplayName: 'User One',
         calculationRequestId: 90328,
         reason: 'New Sentence',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [],
       },
     }
@@ -292,6 +298,9 @@ describe('StartController', () => {
         calculatedByDisplayName: 'User One',
         calculationRequestId: 90328,
         reason: 'New Sentence',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [],
       },
     }
@@ -308,7 +317,7 @@ describe('StartController', () => {
         const calculateDatesFlowLink = $('[data-qa=calc-release-dates-for-prisoner-action-link]').first()
         expect(calculateDatesFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/reason')
         const secondCheckFlowLink = $('[data-qa=calc-release-dates-for-prisoner-second-check]').first()
-        expect(secondCheckFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/secondCheck')
+        expect(secondCheckFlowLink.length).toStrictEqual(0)
         const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
         expect(addDatesFlowLink.length).toStrictEqual(0)
       })
@@ -330,6 +339,9 @@ describe('StartController', () => {
         calculationRequestId: 90328,
         reason: 'New Sentence',
         calculatedByDisplayName: 'Bob Smith',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [],
       } as LatestCalculation,
     }
@@ -435,6 +447,9 @@ describe('StartController', () => {
         calculationRequestId: 90328,
         reason: 'New Sentence',
         calculatedByDisplayName: 'Bob Smith',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [],
       } as LatestCalculation,
     }
@@ -450,6 +465,7 @@ describe('StartController', () => {
         expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
         expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
         expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Bob Smith')
+        expect($('dt:contains("Last checked by")').next().text().trim()).toStrictEqual('User One on 05 March 2026')
         expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
         expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
       })
@@ -470,6 +486,9 @@ describe('StartController', () => {
         calculationRequestId: 90328,
         reason: 'New Sentence',
         establishment: 'Kirkham (HMP)',
+        checkedByUsername: null,
+        checkedByDisplayName: '',
+        checkedAt: '',
         dates: [],
       } as LatestCalculation,
     }
@@ -485,6 +504,7 @@ describe('StartController', () => {
         expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
         expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
         expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Kirkham (HMP)')
+        expect($('dt:contains("Last checked by")').next().text().trim()).toStrictEqual('Not checked')
         expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
         expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
       })
@@ -572,6 +592,9 @@ describe('StartController', () => {
         calculatedByDisplayName: 'Bob Smith',
         calculationRequestId: 90328,
         reason: 'New Sentence',
+        checkedAt: '2026-03-05',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
         dates: [],
       } as LatestCalculation,
     }
@@ -619,6 +642,9 @@ describe('StartController', () => {
             .split('\n')
             .map(it => it.trim()),
         ).toStrictEqual(['User Override', '', 'Some details about the GO'])
+        const secondCheckFlowLink = $('[data-qa=calc-release-dates-for-prisoner-second-check]').first()
+        expect(secondCheckFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/secondCheck')
+        expect($('dt:contains("Last checked by")').next().text().trim()).toStrictEqual('User One on 05 March 2026')
       })
   })
 
@@ -638,6 +664,9 @@ describe('StartController', () => {
         calculationRequestId: 90328,
         reason: 'New Sentence',
         calculatedByDisplayName: 'Bob Smith',
+        checkedByUsername: 'user1',
+        checkedByDisplayName: 'User One',
+        checkedAt: '2026-03-05',
         dates: [],
       } as LatestCalculation,
     }

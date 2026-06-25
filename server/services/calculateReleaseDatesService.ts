@@ -31,6 +31,8 @@ import {
   SubmitCalculationRequest,
   SupportedValidationResponse,
   ValidationMessage,
+  SubmitSecondCheckRequest,
+  ConfirmSecondCheckResult,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import logger from '../../logger'
@@ -324,6 +326,29 @@ export default class CalculateReleaseDatesService {
 
   public async getGenuineOverrideReasons(username: string): Promise<GenuineOverrideReason[]> {
     return this.calculateReleaseDatesApiRestClient.getGenuineOverrideReasons(username)
+  }
+
+  async confirmSecondCheck(
+    calculationRequestId: number,
+    body: SubmitSecondCheckRequest,
+    token: string,
+  ): Promise<ConfirmSecondCheckResult> {
+    try {
+      const secondCheckResult = await this.calculateReleaseDatesApiRestClient.confirmSecondCheck(
+        calculationRequestId,
+        body,
+        token,
+      )
+
+      if (secondCheckResult.success) {
+        await this.auditService.publishSecondCheck(body.checkedByUsername, body.prisonerId, calculationRequestId)
+      }
+      return secondCheckResult
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error(String(error))
+      await this.auditService.publishSecondCheckFailure(body.checkedByUsername, body.prisonerId, err)
+      throw err
+    }
   }
 
   async confirmCalculation(

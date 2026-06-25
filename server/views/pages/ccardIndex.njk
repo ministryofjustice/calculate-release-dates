@@ -63,18 +63,22 @@
                 {% endif %}
             {% endif %}
         </div>
+
         {% set actions = [
             {
                 href: '/calculation/' + prisonerDetail.offenderNo + '/reason',
                 title: 'Calculate release dates',
                 dataQa: 'calc-release-dates-for-prisoner-action-link'
-            },
-            {
+            }
+        ] %}
+
+        {% if latestCalculation.source == "CRDS" %}
+            {% set _ = actions.push({
                 href: '/calculation/' + prisonerDetail.offenderNo + '/secondCheck',
                 title: 'Record a second calculation check',
                 dataQa: 'calc-release-dates-for-prisoner-second-check'
-            }
-        ] %}
+            }) %}
+        {% endif %}
 
         {% if hasNoIndeterminateSentence %}
             {% set addDatesUrl = '/approved-dates/' + prisonerDetail.offenderNo + '/start' if featureToggles.useNewApprovedDatesFlow else '/calculation/' + prisonerDetail.offenderNo + '/reason?isAddDatesFlow=true' %}

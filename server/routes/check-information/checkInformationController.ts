@@ -44,6 +44,10 @@ export default class CheckInformationController implements Controller {
 
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
 
+    if (this.userInputService.isSecondCheck(req, nomsId)) {
+      return res.redirect(`/calculation/${nomsId}/secondCheckSummary`)
+    }
+
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
     userInputs.calculateErsed = ersed
     userInputs.usePreviouslyRecordedSLEDIfFound = true
@@ -84,10 +88,6 @@ export default class CheckInformationController implements Controller {
       calculationRequestModel,
       username,
     )
-
-    if (this.userInputService.isSecondCheck(req, nomsId)) {
-      return res.redirect(`/calculation/${nomsId}/secondCheckSummary/${releaseDates.calculationRequestId}`)
-    }
 
     if (releaseDates.usedPreviouslyRecordedSLED) {
       return res.redirect(

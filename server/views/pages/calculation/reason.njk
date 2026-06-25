@@ -62,20 +62,28 @@
                                 attributes: {'data-qa': 'reasonRadio-'+reason.id}
                             }
                         ), buttons) %}
-                    {% else %}
-                        {% if reason.isSecondCheck %}
+                    {% endif %}
+                    {% if isSecondCheckEnabled and reason.isSecondCheck %}
                             {% set buttons = (buttons.push(
                                 { divider: 'or' }
                             ), buttons) %}
-                        {% endif %}
-                        {% set buttons = (buttons.push(
-                            {
-                                value: reason.id,
-                                text: reason.displayName,
-                                checked: calculationReasonId == reason.id,
-                                attributes: {'data-qa': 'reasonRadio-'+reason.id}
-                            }
-                        ), buttons) %}
+                            {% set buttons = (buttons.push(
+                                {
+                                    value: reason.id,
+                                    text: reason.displayName,
+                                    checked: calculationReasonId == reason.id,
+                                    attributes: {'data-qa': 'reasonRadio-'+reason.id}
+                                }
+                            ), buttons) %}
+                    {% elif reason.isSecondCheck == false and reason.requiresFurtherDetail == false %}
+                            {% set buttons = (buttons.push(
+                                {
+                                    value: reason.id,
+                                    text: reason.displayName,
+                                    checked: calculationReasonId == reason.id,
+                                    attributes: {'data-qa': 'reasonRadio-'+reason.id}
+                                }
+                            ), buttons) %}
                     {% endif %}
                 {% endfor %}
 
