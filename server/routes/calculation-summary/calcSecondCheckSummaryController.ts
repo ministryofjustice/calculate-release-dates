@@ -49,9 +49,13 @@ export default class CalculationSecondCheckSummaryController implements Controll
     const { username, token } = res.locals.user
     const calculationRequestId = this.userInputService.getLatestCalculationRequestId(req, nomsId)
 
+    if (!calculationRequestId) {
+      return res.redirect(`/calculation/${nomsId}/check-information`)
+    }
+
     await this.calculateReleaseDatesService.confirmSecondCheck(calculationRequestId, username, nomsId, token)
 
-    res.redirect(`/calculation/${nomsId}/complete/${calculationRequestId}`)
+    return res.redirect(`/calculation/${nomsId}/complete/${calculationRequestId}`)
   }
 
   private setLatestCalculationRequestId(req: Request, nomsId: string, latestCalculationRequestId: number) {
