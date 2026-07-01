@@ -30,8 +30,11 @@ export default class CalculationSecondCheckSummaryController implements Controll
     )
     const { latestCalcCard, calculation } = latestCalculationCardOrError
 
-    this.setLatestCalculationRequestId(req, nomsId, calculation.calculationRequestId)
+    if (!calculation?.calculationRequestId) {
+      return res.redirect(`/?prisonId=${nomsId}`)
+    }
 
+    this.setLatestCalculationRequestId(req, nomsId, calculation.calculationRequestId)
     return res.render(
       'pages/calculation/secondCheckCalculationSummary',
       new CalculationSecondCheckSummaryPageViewModel(
