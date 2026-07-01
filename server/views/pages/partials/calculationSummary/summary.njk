@@ -14,7 +14,7 @@
     {% set establishment = latestCalculation.establishment %}
     {% set calculatedByDisplayName = latestCalculation.calculatedByDisplayName | capitaliseName %}
 
-    {% if latestCalculation.checkedByUsername == null %}
+    {% if latestCalculation.checkedByUsername == null or latestCalculation.checkedByDisplayName == null or latestCalculation.checkedAt == null %}
         {% set checkedByDisplayName = "Not checked" %}
     {% else %}
         {% set checkedByName = latestCalculation.checkedByDisplayName | capitaliseName %}
