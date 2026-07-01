@@ -35,7 +35,7 @@ export default class UserInputService {
     return req.session.calculationReasonId?.[nomsId] === 18
   }
 
-  public getLatestCalculationRequestId(req: Request, nomsId: string) {
-    return req.session.latestCalculationRequestId[nomsId]
+  public getLatestCalculationRequestId(req: Request, nomsId: string): number | undefined {
+    return req.session.latestCalculationRequestId?.[nomsId]
   }
 }
