@@ -1,6 +1,6 @@
 
-{% if calculationType.startsWith("MANUAL") %}
-    {% set titleText = "Confirm the manually entered dates are correct " %}
+{% if calculationType and calculationType.startsWith("MANUAL") %}
+    {% set titleText = "Confirm the manually entered dates are correct" %}
 {% elseif calculationType === 'GENUINE_OVERRIDE' %}
     {% set titleText = "Confirm the overridden dates are correct" %}
 {% else %}
