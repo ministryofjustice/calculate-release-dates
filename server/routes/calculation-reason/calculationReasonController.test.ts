@@ -472,6 +472,7 @@ describe('CalculationReasonController', () => {
     })
 
     it('POST /calculation/:nomsId/reason should render divider before second check', () => {
+      app.locals.secondCheckEnabled = true
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
@@ -487,6 +488,26 @@ describe('CalculationReasonController', () => {
 
           expect($('[data-qa=reasonRadio-18]').length).toBe(1)
           expect(res.text).toContain('Second Check')
+        })
+    })
+
+    it('POST /calculation/:nomsId/reason second check should not be rendered', () => {
+      app.locals.secondCheckEnabled = false
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
+        source: 'CRDS',
+      } as LatestCalculation)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/reason')
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.govuk-radios__divider').length).toBe(0)
+
+          expect($('[data-qa=reasonRadio-18]').length).toBe(0)
+          expect(res.text).not.toContain('Second Check')
         })
     })
 
