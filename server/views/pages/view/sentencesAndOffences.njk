@@ -55,7 +55,7 @@
 
             {% set calculatedByText %}{{ model.calculatedByDisplayName }}{% if model.calculatedByDisplayName and model.calculatedAtPrisonDescription %} at {% endif %}{{ model.calculatedAtPrisonDescription }}{% endset %}
 
-            {% if model.secondCheckDetails == null %}
+            {% if model.secondCheckDetails == null or model.secondCheckDetails.checkedByDisplayName == null or model.secondCheckDetails.checkedAt == null %}
                 {% set checkedByDisplayName = "Not checked" %}
             {% else %}
                 {% set checkedByName = model.secondCheckDetails.checkedByDisplayName | capitaliseName %}
