@@ -63,7 +63,7 @@
                             }
                         ), buttons) %}
                     {% endif %}
-                    {% if isSecondCheckEnabled and reason.isSecondCheck %}
+                    {% if isLatestCalcCRDS and reason.isSecondCheck %}
                             {% set buttons = (buttons.push(
                                 { divider: 'or' }
                             ), buttons) %}
