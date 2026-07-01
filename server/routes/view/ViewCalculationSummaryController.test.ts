@@ -158,6 +158,7 @@ describe('View calculation summary controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: false,
+          isSecondCheck: false,
         },
         calculatedByDisplayName: 'User One',
         calculatedAtPrisonDescription: undefined,
@@ -189,6 +190,7 @@ describe('View calculation summary controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: false,
+          isSecondCheck: false,
         },
         calculatedByDisplayName: undefined,
         calculatedAtPrisonDescription: 'Kirkham (HMP)',
@@ -241,6 +243,7 @@ describe('View calculation summary controller tests', () => {
           isOther: true,
           useForApprovedDates: false,
           requiresFurtherDetail: true,
+          isSecondCheck: false,
         },
         otherReasonDescription: 'Another reason for calculation',
       },
@@ -507,6 +510,7 @@ const stubbedCalculationResults = {
     isOther: false,
     useForApprovedDates: false,
     requiresFurtherDetail: false,
+    isSecondCheck: false,
   },
 } as BookingCalculation
 

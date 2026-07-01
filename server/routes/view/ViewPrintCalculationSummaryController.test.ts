@@ -82,6 +82,7 @@ const stubbedCalculationResults = {
     isOther: false,
     useForApprovedDates: false,
     requiresFurtherDetail: false,
+    isSecondCheck: false,
   },
 } as BookingCalculation
 

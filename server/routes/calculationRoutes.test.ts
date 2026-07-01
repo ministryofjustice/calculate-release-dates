@@ -456,6 +456,22 @@ describe('Calculation routes tests', () => {
       })
   })
 
+  it('GET /calculation/:nomsId/complete should return check recorded message', () => {
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)
+    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
+    userInputService.isSecondCheck.mockReturnValue(true)
+
+    return request(app)
+      .get('/calculation/A1234AB/complete/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Check recorded')
+        expect(res.text).toContain('The check has been saved to the calculation history.')
+      })
+  })
+
   it('GET /calculation/:nomsId/complete should return details about the calculation requested', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getCalculationResults.mockResolvedValue(stubbedCalculationResults)

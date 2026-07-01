@@ -32,6 +32,22 @@ export default class AuditService {
     await this.sendAuditMessage(AuditAction.CALCULATION_CREATED, user, prisonerId, details)
   }
 
+  public async publishSecondCheckAudit(
+    action: AuditAction,
+    user: string,
+    prisonerId: string,
+    calculationReference: number,
+    exception: Error | null,
+  ) {
+    let details
+    if (action === AuditAction.SECOND_CHECK_FAILED && exception) {
+      details = JSON.stringify({ error: exception.message })
+    } else {
+      details = JSON.stringify({ prisonerId, calculationReference })
+    }
+    await this.sendAuditMessage(action, user, prisonerId, details)
+  }
+
   public async publishManualSentenceCalculation(
     user: string,
     prisonerId: string,

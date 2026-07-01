@@ -216,6 +216,13 @@ context('End to end happy path of user journey', () => {
       })
 
     landingPage
+      .latestCalculationCheckedBy()
+      .invoke('text')
+      .then(text => {
+        expect(text.trim()).to.equal('Not checked')
+      })
+
+    landingPage
       .latestCalculationSource()
       .invoke('text')
       .then(text => {

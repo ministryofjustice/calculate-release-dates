@@ -55,47 +55,71 @@
 
             {% set calculatedByText %}{{ model.calculatedByDisplayName }}{% if model.calculatedByDisplayName and model.calculatedAtPrisonDescription %} at {% endif %}{{ model.calculatedAtPrisonDescription }}{% endset %}
 
+            {% if model.secondCheckDetails == null or model.secondCheckDetails.checkedByDisplayName == null or model.secondCheckDetails.checkedAt == null %}
+                {% set checkedByDisplayName = "Not checked" %}
+            {% else %}
+                {% set checkedByName = model.secondCheckDetails.checkedByDisplayName | capitaliseName %}
+                {% set checkedByDate = model.secondCheckDetails.checkedAt | hmppsFormatDate('dd MMMM yyyy') %}
+                {% set checkedByDisplayName = checkedByName + ' on ' + checkedByDate %}
+            {% endif %}
+
+            {% set rows = [
+                {
+                    key: {
+                        text: "Calculation date",
+                        classes: "custom-summary-list__key"
+                    },
+                    value: {
+                        text: model.calculationDate
+                    }
+                },
+                {
+                    key: {
+                        text: "Calculation reason",
+                        classes: "custom-summary-list__key"
+                    },
+                    value: {
+                        html: reason
+                    }
+                },
+                {
+                    key: {
+                        text: "Calculated by",
+                        classes: "custom-summary-list__key"
+                    },
+                    value: {
+                        text: calculatedByText
+                    }
+                }
+            ] %}
+
+            {% if secondCheckEnabled %}
+                {% set rows = rows.concat([{
+                    key: {
+                        text: "Last checked by",
+                        classes: "custom-summary-list__key"
+                    },
+                    value: {
+                        text: checkedByDisplayName
+                    }
+                }]) %}
+            {% endif %}
+
+            {% set rows = rows.concat([{
+                key: {
+                    text: "Source",
+                    classes: "custom-summary-list__key"
+                },
+                value: {
+                    html: source,
+                    classes: "summary-source-value"
+                }
+            }]) %}
+
             {% if model.calculationReason|length %}
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
-                    rows: [
-                        {
-                            key: {
-                            text: "Calculation date",
-                            classes: "custom-summary-list__key"
-                        },
-                            value: {
-                            text: model.calculationDate
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Calculation reason",
-                            classes: "custom-summary-list__key"
-                        },
-                            value: {
-                            html: reason
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Calculated by",
-                            classes: "custom-summary-list__key"
-                        },
-                            value: {
-                            text: calculatedByText
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Source",
-                            classes: "custom-summary-list__key"
-                        },
-                        value: {
-                            html: source,
-                            classes: 'summary-source-value'
-                        }
-                        }]
+                    rows: rows
                 }) }}
             {% endif %}
         </div>

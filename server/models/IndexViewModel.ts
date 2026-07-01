@@ -4,16 +4,14 @@ import {
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OptionalPrisonerContextViewModel from './OptionalPrisonerContextViewModel'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
-import {
-  HistoricCalculation,
-  LatestCalculation,
-} from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { LatestCalculation } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
+import { CalculationHistoryModel } from './CalculationHistoryModel'
 
 export default class IndexViewModel extends OptionalPrisonerContextViewModel {
   constructor(
     prisonerDetail?: PrisonApiPrisoner,
-    public calculationHistory?: HistoricCalculation[],
+    public calculationHistory?: CalculationHistoryModel[],
     public prisonId?: string,
     public allowBulkLoad?: boolean,
     public latestCalculationCardConfig?: LatestCalculationCardConfig,
@@ -30,7 +28,7 @@ export default class IndexViewModel extends OptionalPrisonerContextViewModel {
 
 export function indexViewModelForPrisoner(
   prisonerDetail: PrisonApiPrisoner,
-  calculationHistory: HistoricCalculation[],
+  calculationHistory: CalculationHistoryModel[],
   prisonId: string,
   allowBulkUpload: boolean,
   latestCalculationCardConfig?: LatestCalculationCardConfig,

@@ -421,6 +421,7 @@ describe('CheckInformationController', () => {
     it('GET /calculation/:nomsId/check-information should return detail about the prisoner with the EDS card view', () => {
       calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
+      userInputService.isSecondCheck.mockReturnValue(false)
 
       const model = new SentenceAndOffenceViewModel(
         stubbedPrisonerData,
@@ -871,6 +872,7 @@ describe('CheckInformationController', () => {
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
+      userInputService.isSecondCheck.mockReturnValue(false)
 
       return request(app)
         .get('/calculation/A1234AA/check-information')
@@ -887,6 +889,7 @@ describe('CheckInformationController', () => {
     it('GET /calculation/:nomsId/check-information should not display errors once they have been resolved', () => {
       calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([] as never)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
+      userInputService.isSecondCheck.mockReturnValue(false)
 
       const model = new SentenceAndOffenceViewModel(
         stubbedPrisonerData,

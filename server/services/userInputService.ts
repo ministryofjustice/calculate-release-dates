@@ -26,4 +26,18 @@ export default class UserInputService {
   public isCalculationReasonSet(req: Request, nomsId: string): boolean {
     return req.session.calculationReasonId && !!req.session.calculationReasonId[nomsId]
   }
+
+  public getCalculationReason(req: Request, nomsId: string): number | undefined {
+    return req.session.calculationReasonId?.[nomsId]
+  }
+
+  private static readonly SECOND_CHECK_REASON_ID = 18
+
+  public isSecondCheck(req: Request, nomsId: string): boolean {
+    return req.session.calculationReasonId?.[nomsId] === UserInputService.SECOND_CHECK_REASON_ID
+  }
+
+  public getLatestCalculationRequestId(req: Request, nomsId: string): number | undefined {
+    return req.session.latestCalculationRequestId?.[nomsId]
+  }
 }

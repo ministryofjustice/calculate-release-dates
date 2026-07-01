@@ -6,6 +6,7 @@ import {
   CalculationSentenceUserInput,
   CalculationUserInputs,
   OffenderOffence,
+  SecondCheckDetails,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import {
   PrisonApiOffenderSentenceAndOffences,
@@ -47,6 +48,7 @@ export default class ViewRouteSentenceAndOffenceViewModel {
     public genuineOverrideReasonDescription?: string,
     public calculatedByDisplayName?: string,
     public calculatedAtPrisonDescription?: string,
+    public secondCheckDetails?: SecondCheckDetails | null,
   ) {
     this.cases = Array.from(
       groupBy(sentencesAndOffences, (sent: PrisonApiOffenderSentenceAndOffences) => sent.caseSequence).values(),

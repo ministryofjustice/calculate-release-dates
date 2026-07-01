@@ -10,6 +10,7 @@ export default class CalculationReasonViewModel extends PrisonerContextViewModel
   constructor(
     prisonerDetail: PrisonApiPrisoner,
     public reasons: CalculationReason[],
+    public isLatestCalcCRDS: boolean,
     public calculationReasonId?: string,
     public otherReasonDescription?: string,
     public pageCancelRedirectUrl?: string,

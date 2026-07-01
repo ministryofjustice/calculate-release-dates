@@ -62,15 +62,28 @@
                                 attributes: {'data-qa': 'reasonRadio-'+reason.id}
                             }
                         ), buttons) %}
-                    {% else %}
-                        {% set buttons = (buttons.push(
-                            {
-                                value: reason.id,
-                                text: reason.displayName,
-                                checked: calculationReasonId == reason.id,
-                                attributes: {'data-qa': 'reasonRadio-'+reason.id}
-                            }
-                        ), buttons) %}
+                    {% endif %}
+                    {% if secondCheckEnabled and isLatestCalcCRDS and reason.isSecondCheck %}
+                            {% set buttons = (buttons.push(
+                                { divider: 'or' }
+                            ), buttons) %}
+                            {% set buttons = (buttons.push(
+                                {
+                                    value: reason.id,
+                                    text: reason.displayName,
+                                    checked: calculationReasonId == reason.id,
+                                    attributes: {'data-qa': 'reasonRadio-'+reason.id}
+                                }
+                            ), buttons) %}
+                    {% elif reason.isSecondCheck == false and reason.requiresFurtherDetail == false %}
+                            {% set buttons = (buttons.push(
+                                {
+                                    value: reason.id,
+                                    text: reason.displayName,
+                                    checked: calculationReasonId == reason.id,
+                                    attributes: {'data-qa': 'reasonRadio-'+reason.id}
+                                }
+                            ), buttons) %}
                     {% endif %}
                 {% endfor %}
 

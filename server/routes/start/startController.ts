@@ -37,6 +37,7 @@ export default class StartController implements Controller {
       const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(prisonId, token)
 
       const { latestCalcCard, latestCalcCardAction, calculation } = latestCalculationCardOrError
+
       return res.render(
         'pages/ccardIndex',
         indexViewModelForPrisoner(

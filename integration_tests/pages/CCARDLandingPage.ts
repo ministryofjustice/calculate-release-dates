@@ -30,12 +30,20 @@ export default class CCARDLandingPage extends Page {
     return cy.get('[data-qa=calculation-summary-calculated-by]')
   }
 
+  latestCalculationCheckedBy(): PageElement {
+    return cy.get('[data-qa=calculation-summary-checked-by]')
+  }
+
   latestCalculationSource(): PageElement {
     return cy.get('[data-qa=calculation-summary-source]')
   }
 
   addReleaseDatesAction(): PageElement {
     return cy.get('[data-qa=calc-release-dates-for-adding-dates-link]')
+  }
+
+  recordSecondCheckAction(): PageElement {
+    return cy.get('[data-qa=calc-release-dates-for-prisoner-second-check]')
   }
 
   hasMissingOffenceDates(flag: boolean) {

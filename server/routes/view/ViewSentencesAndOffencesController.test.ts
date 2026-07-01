@@ -90,6 +90,7 @@ const stubbedCalculationResults = {
     isOther: false,
     useForApprovedDates: false,
     requiresFurtherDetail: false,
+    isSecondCheck: false,
   },
 } as BookingCalculation
 
@@ -263,6 +264,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
   },
   approvedDates: {},
   allocatedTranches: [],
+  secondCheckDetails: null,
 }
 
 const stubbedAdjustments = {
@@ -668,7 +670,14 @@ describe('View Sentences and Offences controller tests', () => {
 
   it('GET /view/:calculationRequestId/sentences-and-offences should return detail about the sentences and offences without ERSED', () => {
     viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    const stubbedSentencesAndOffencesCopy = stubbedSentencesAndOffences.map(offence => ({
+      ...offence,
+      secondCheckDetails: {
+        checkedByDisplayName: 'Default Checker',
+        checkedAt: '2023-10-18',
+      },
+    }))
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffencesCopy)
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
       stubbedResultsWithBreakdownAndAdjustments,
     )
@@ -679,6 +688,7 @@ describe('View Sentences and Offences controller tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        expect(res.text).not.toContain('Default checker on 18 Oct 2023')
         expect(res.text).not.toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
         expect(res.text).not.toContain(
           'An Early removal scheme eligibility date (ERSED) was included in this calculation',
@@ -704,6 +714,30 @@ describe('View Sentences and Offences controller tests', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).not.toContain('SDS+')
+        expect(res.text).toContain('Not checked')
+      })
+  })
+  it('GET /view/:calculationRequestId/sentences-and-offences should not return Last Checked if second check switch is off', () => {
+    app.locals.secondCheckEnabled = false
+    viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue(
+      stubbedResultsWithBreakdownAndAdjustments,
+    )
+    viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    viewReleaseDatesService.getCalculationUserInputs.mockResolvedValue({
+      calculateErsed: false,
+      useOffenceIndicators: false,
+      sentenceCalculationUserInputs: [],
+      usePreviouslyRecordedSLEDIfFound: false,
+    })
+    return request(app)
+      .get('/view/A1234AA/sentences-and-offences/123456')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).not.toContain('Not checked')
+        expect(res.text).not.toContain('Last checked by')
       })
   })
   it('GET /view/:calculationRequestId/sentences-and-offences should show details if the calculation is a genuine override', () => {
@@ -752,6 +786,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: true,
+          isSecondCheck: false,
         },
         otherReasonDescription: 'Fixed term recall 56',
       },
@@ -783,6 +818,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: true,
           useForApprovedDates: false,
           requiresFurtherDetail: true,
+          isSecondCheck: false,
         },
         otherReasonDescription: 'Another reason for calculation',
       },
@@ -810,6 +846,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: false,
+          isSecondCheck: false,
         },
       },
     })
@@ -837,6 +874,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: true,
+          isSecondCheck: false,
         },
         otherReasonDescription: 'Fixed term recall 56',
       },
@@ -866,6 +904,7 @@ describe('View Sentences and Offences controller tests', () => {
           isOther: false,
           useForApprovedDates: false,
           requiresFurtherDetail: false,
+          isSecondCheck: false,
         },
         calculatedByDisplayName: 'User One',
         calculatedAtPrisonDescription: 'Kirkham (HMP)',

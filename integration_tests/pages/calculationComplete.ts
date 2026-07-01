@@ -13,4 +13,8 @@ export default class CalculationCompletePage extends Page {
   public title() {
     return cy.get('h1')
   }
+
+  public subText() {
+    return cy.get('.govuk-panel__body')
+  }
 }

@@ -8,7 +8,9 @@
 </div>
 <h2 class="govuk-heading-m govuk-!-margin-top-6" data-qa="now-crd-title">Now calculate release dates</h2>
 
-{{ includeErsedCheckbox(model) }}
+{% if isSecondCheck == false %}
+    {{ includeErsedCheckbox(model) }}
+{% endif %}
 
 <p class="govuk-body">The release dates will not be saved in NOMIS until you have reviewed the calculation.</p>
 <br/>

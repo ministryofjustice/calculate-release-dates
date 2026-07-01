@@ -17,6 +17,7 @@ import AuthorisedRoles from '../../enumerations/authorisedRoles'
 import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
 import { CcrdServiceDefinitions } from '../../@types/courtCasesReleaseDatesApi/types'
 import { FullPageError } from '../../types/FullPageError'
+import { LatestCalculation } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -183,16 +184,46 @@ describe('CalculationReasonController', () => {
   } as CcrdServiceDefinitions
 
   const stubbedCalculationReasons = [
-    { id: 8, isOther: false, displayName: 'Add dates', useForApprovedDates: true, requiresFurtherDetail: false },
-    { id: 9, isOther: false, displayName: '2 day check', useForApprovedDates: false, requiresFurtherDetail: false },
+    {
+      id: 8,
+      isOther: false,
+      displayName: 'Add dates',
+      useForApprovedDates: true,
+      requiresFurtherDetail: false,
+      isSecondCheck: false,
+    },
+    {
+      id: 9,
+      isOther: false,
+      displayName: '2 day check',
+      useForApprovedDates: false,
+      requiresFurtherDetail: false,
+      isSecondCheck: false,
+    },
     {
       id: 10,
       isOther: false,
       displayName: 'Appeal decision',
       useForApprovedDates: false,
       requiresFurtherDetail: false,
+      isSecondCheck: false,
     },
-    { id: 11, isOther: true, displayName: 'Other', useForApprovedDates: false, requiresFurtherDetail: true },
+    {
+      id: 11,
+      isOther: true,
+      displayName: 'Other',
+      useForApprovedDates: false,
+      requiresFurtherDetail: true,
+      isSecondCheck: false,
+    },
+    {
+      id: 18,
+      isOther: false,
+      displayName: 'Second Check',
+      useForApprovedDates: true,
+      requiresFurtherDetail: false,
+      isSecondCheck: true,
+    },
   ]
 
   let currentSession: Partial<SessionData>
@@ -275,6 +306,21 @@ describe('CalculationReasonController', () => {
           expect(currentSession.calculationReasonId[prisonerNumber]).toStrictEqual(8)
           expect(currentSession.otherReasonDescription[prisonerNumber]).toBeUndefined()
           expect(currentSession.isAddDatesFlow[prisonerNumber]).toStrictEqual(true)
+        })
+    })
+    it('GET /calculation/:nomsId/secondCheck should set the reason and redirect to check information', () => {
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/secondCheck')
+        .expect(302)
+        .expect('Location', '/calculation/A1234AA/check-information')
+        .expect(_ => {
+          expect(currentSession.calculationReasonId[prisonerNumber]).toStrictEqual(18)
+          expect(currentSession.otherReasonDescription[prisonerNumber]).toBeUndefined()
+          expect(currentSession.isAddDatesFlow[prisonerNumber]).toStrictEqual(false)
         })
     })
     it('GET /calculation/:nomsId/reason should be ada intercepted if there are ada review needed', () => {
@@ -399,6 +445,69 @@ describe('CalculationReasonController', () => {
             'validationErrors',
             JSON.stringify({ calculationReasonId: ['You must select a reason for this calculation'] }),
           )
+        })
+    })
+
+    it('POST /calculation/:nomsId/reason should not render divider and second check reason', () => {
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
+        source: 'NOMIS',
+      } as LatestCalculation)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/reason')
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.govuk-radios__divider').length).toBe(0)
+
+          expect($('[data-qa=reasonRadio-18]').length).toBe(0)
+          expect($('[data-qa=reasonRadio-8]').length).toBe(1)
+          expect($('[data-qa=reasonRadio-9]').length).toBe(1)
+          expect($('[data-qa=reasonRadio-10]').length).toBe(1)
+          expect($('[data-qa=reasonRadio-11]').length).toBe(1)
+          expect(res.text).not.toContain('Second Check')
+        })
+    })
+
+    it('POST /calculation/:nomsId/reason should render divider before second check', () => {
+      app.locals.secondCheckEnabled = true
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
+        source: 'CRDS',
+      } as LatestCalculation)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/reason')
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.govuk-radios__divider').text()).toBe('or')
+
+          expect($('[data-qa=reasonRadio-18]').length).toBe(1)
+          expect(res.text).toContain('Second Check')
+        })
+    })
+
+    it('POST /calculation/:nomsId/reason second check should not be rendered', () => {
+      app.locals.secondCheckEnabled = false
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
+        source: 'CRDS',
+      } as LatestCalculation)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/reason')
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.govuk-radios__divider').length).toBe(0)
+
+          expect($('[data-qa=reasonRadio-18]').length).toBe(0)
+          expect(res.text).not.toContain('Second Check')
         })
     })
 

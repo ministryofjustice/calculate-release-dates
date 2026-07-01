@@ -349,6 +349,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/calculation/confirm/second-check/{calculationRequestId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Persist the second check for a confirmed calculation
+     * @description This endpoint will save a second check for a confirmed calculation, this is required for the second check process
+     */
+    post: operations['confirmSecondCheck']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/working-day/previous/{date}': {
     parameters: {
       query?: never
@@ -1804,6 +1824,7 @@ export interface components {
       displayName: string
       useForApprovedDates: boolean
       requiresFurtherDetail: boolean
+      isSecondCheck: boolean
     }
     PreviouslyRecordedSLED: {
       /**
@@ -1860,6 +1881,9 @@ export interface components {
     SubmitCalculationRequest: {
       calculationFragments: components['schemas']['CalculationFragments']
       approvedDates?: components['schemas']['ManuallyEnteredDate'][] | null
+    }
+    ConfirmSecondCheckResult: {
+      success: boolean
     }
     WorkingDay: {
       /** Format: date */
@@ -2049,6 +2073,13 @@ export interface components {
       genuineOverrideReasonDescription?: string | null
       calculatedByUsername: string
       calculatedByDisplayName: string
+      secondCheckDetails: components['schemas']['SecondCheckDetails'][]
+    }
+    SecondCheckDetails: {
+      checkedByUsername?: string | null
+      checkedByDisplayName?: string | null
+      /** Format: date-time */
+      checkedAt?: string | null
     }
     GenuineOverrideReasonResponse: {
       code: string
@@ -2631,6 +2662,8 @@ export interface components {
       bookingId: number
       /** Format: date-time */
       calculatedAt: string
+      /** Format: date-time */
+      checkedAt?: string | null
       /** Format: int64 */
       calculationRequestId?: number | null
       establishment?: string | null
@@ -2640,7 +2673,10 @@ export interface components {
       source: 'NOMIS' | 'CRDS'
       dates: components['schemas']['DetailedDate'][]
       calculatedByUsername: string
+      checkedByUsername?: string | null
       calculatedByDisplayName: string
+      checkedByDisplayName?: string | null
+      calculationType: string
     }
     ReleaseDateHint: {
       text: string
@@ -2907,6 +2943,7 @@ export interface components {
       approvedDates?: {
         [key: string]: components['schemas']['DetailedDate']
       } | null
+      secondCheckDetails?: components['schemas']['SecondCheckDetails'] | null
       calculationOriginalData: components['schemas']['CalculationOriginalData']
       calculationBreakdown?: components['schemas']['CalculationBreakdown'] | null
       /** @enum {string|null} */
@@ -3031,6 +3068,7 @@ export interface components {
       useForApprovedDates: boolean
       requiresFurtherDetail: boolean
       furtherDetailDescription?: string | null
+      isSecondCheck: boolean
     }
     AnalysedBookingAdjustment: {
       active: boolean
@@ -4139,6 +4177,55 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+    }
+  }
+  confirmSecondCheck: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        calculationRequestId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Second check persisted successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ConfirmSecondCheckResult']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ConfirmSecondCheckResult']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ConfirmSecondCheckResult']
+        }
+      }
+      /** @description No calculation request id found to confirm the second check */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ConfirmSecondCheckResult']
         }
       }
     }

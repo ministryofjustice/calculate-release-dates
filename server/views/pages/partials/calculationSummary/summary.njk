@@ -13,6 +13,15 @@
 
     {% set establishment = latestCalculation.establishment %}
     {% set calculatedByDisplayName = latestCalculation.calculatedByDisplayName | capitaliseName %}
+
+    {% if latestCalculation.checkedByUsername == null or latestCalculation.checkedByDisplayName == null or latestCalculation.checkedAt == null %}
+        {% set checkedByDisplayName = "Not checked" %}
+    {% else %}
+        {% set checkedByName = latestCalculation.checkedByDisplayName | capitaliseName %}
+        {% set checkedByDate = latestCalculation.checkedAt | hmppsFormatDate('dd MMMM yyyy') %}
+        {% set checkedByDisplayName = checkedByName + ' on ' + checkedByDate %}
+    {% endif %}
+
     {% set reason = latestCalculation.reason or "Not entered" %}
     {% set genuineOverrideReasonDescription = latestCalcFromHistory.genuineOverrideReasonDescription %}
     <div class="govuk-summary-list__row">
@@ -39,6 +48,16 @@
             {{ calculatedByDisplayName }}{% if calculatedByDisplayName and establishment %} at {% endif %}{{ establishment }}
         </dd>
     </div>
+    {% if secondCheckEnabled %}
+        <div class="govuk-summary-list__row">
+            <dt class="custom-summary-list__key">
+                Last checked by
+            </dt>
+            <dd class="govuk-summary-list__value" data-qa="calculation-summary-checked-by">
+                {{ checkedByDisplayName }}
+            </dd>
+        </div>
+    {% endif %}
     <div class="govuk-summary-list__row">
         <dt class="custom-summary-list__key">
             Source

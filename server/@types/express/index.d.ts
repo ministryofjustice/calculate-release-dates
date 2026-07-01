@@ -16,6 +16,7 @@ declare module 'express-session' {
     HDCED?: Record<string, string>
     HDCED_WEEKEND_ADJUSTED?: Record<string, boolean>
     calculationReasonId?: Record<string, number>
+    latestCalculationRequestId?: Record<string, number>
     unchangedManualJourney?: boolean
     manualJourneyDifferentDatesConfirmed?: boolean
     otherReasonDescription?: Record<string, string>

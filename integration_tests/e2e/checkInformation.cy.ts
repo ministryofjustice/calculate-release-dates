@@ -9,6 +9,7 @@ context('Check nomis information', () => {
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetSentencesAndOffences')
     cy.task('stubGetActiveCalculationReasons')
+    cy.task('stubGetLatestCalculation')
     cy.task('stubGetAnalyzedSentencesAndOffences')
     cy.task('stubGetAnalyzedSentenceAdjustments')
     cy.task('stubGetAdjustmentsForPrisoner')

@@ -56,11 +56,14 @@ export default class CalculationReasonController implements Controller {
       )?.furtherDetail
     }
 
+    const latestCalc = await this.calculateReleaseDatesService.getLatestCalculationForPrisoner(nomsId, user.username)
+
     return res.render(
       'pages/calculation/reason',
       new CalculationReasonViewModel(
         prisonerDetail,
         calculationReasons,
+        latestCalc?.source === 'CRDS',
         calculationReasonId,
         otherReasonDescription,
         `/calculation/${nomsId}/reason`,

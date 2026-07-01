@@ -49,6 +49,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.appInsightsApplicationName = applicationInfo.applicationName
   app.locals.buildNumber = config.buildNumber
   app.locals.adjustmentsUiUrl = config.adjustments.url
+  app.locals.secondCheckEnabled = config.featureToggles.secondCheckEnabled
 
   // Cache-busting version string
   if (production) {
