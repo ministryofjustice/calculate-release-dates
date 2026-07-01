@@ -48,14 +48,16 @@
             {{ calculatedByDisplayName }}{% if calculatedByDisplayName and establishment %} at {% endif %}{{ establishment }}
         </dd>
     </div>
-    <div class="govuk-summary-list__row">
-        <dt class="custom-summary-list__key">
-            Last checked by
-        </dt>
-        <dd class="govuk-summary-list__value" data-qa="calculation-summary-checked-by">
-            {{ checkedByDisplayName }}
-        </dd>
-    </div>
+    {% if secondCheckEnabled %}
+        <div class="govuk-summary-list__row">
+            <dt class="custom-summary-list__key">
+                Last checked by
+            </dt>
+            <dd class="govuk-summary-list__value" data-qa="calculation-summary-checked-by">
+                {{ checkedByDisplayName }}
+            </dd>
+        </div>
+    {% endif %}
     <div class="govuk-summary-list__row">
         <dt class="custom-summary-list__key">
             Source

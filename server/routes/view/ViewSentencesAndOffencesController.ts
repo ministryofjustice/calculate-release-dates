@@ -67,6 +67,7 @@ export default class ViewSentencesAndOffencesController implements Controller {
             detailedCalculationResults.context.genuineOverrideReasonDescription,
             detailedCalculationResults.context.calculatedByDisplayName,
             detailedCalculationResults.context.calculatedAtPrisonDescription,
+            detailedCalculationResults.secondCheckDetails,
           ),
           calculationRequestId,
           nomsId,

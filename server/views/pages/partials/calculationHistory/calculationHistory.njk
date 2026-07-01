@@ -3,7 +3,7 @@
     {% if calculation.calculationSource === 'NOMIS' %}
         {% set source = "NOMIS" %}
     {% else %}
-        {% if calculationType.startsWith("MANUAL") %}
+        {% if calculationType and calculationType.startsWith("MANUAL") %}
             {% set source = "Paper calculation" %}
         {% elseif calculationType === 'GENUINE_OVERRIDE' %}
             {% set source = "User Override" %}

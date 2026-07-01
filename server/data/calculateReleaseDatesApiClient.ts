@@ -35,7 +35,6 @@ import {
   SupportedValidationResponse,
   ValidationMessage,
   WorkingDay,
-  SubmitSecondCheckRequest,
   ConfirmSecondCheckResult,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import logger from '../../logger'
@@ -475,15 +474,10 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     )
   }
 
-  confirmSecondCheck(
-    calculationRequestId: number,
-    body: SubmitSecondCheckRequest,
-    token: string,
-  ): Promise<ConfirmSecondCheckResult> {
+  confirmSecondCheck(calculationRequestId: number, token: string): Promise<ConfirmSecondCheckResult> {
     return this.post<ConfirmSecondCheckResult>(
       {
         path: `/calculation/confirm/second-check/${calculationRequestId}`,
-        data: body,
       },
       asUser(token),
     )

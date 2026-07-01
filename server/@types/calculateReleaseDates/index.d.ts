@@ -1800,12 +1800,7 @@ export interface components {
       calculationFragments?: components['schemas']['CalculationFragments'] | null
       effectiveSentenceLength?: string | null
       /** @enum {string} */
-      calculationType:
-        | 'CALCULATED'
-        | 'MANUAL_DETERMINATE'
-        | 'MANUAL_INDETERMINATE'
-        | 'GENUINE_OVERRIDE'
-        | 'SECOND_CHECK'
+      calculationType: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE'
       approvedDates?: {
         [key: string]: string
       } | null
@@ -1886,10 +1881,6 @@ export interface components {
     SubmitCalculationRequest: {
       calculationFragments: components['schemas']['CalculationFragments']
       approvedDates?: components['schemas']['ManuallyEnteredDate'][] | null
-    }
-    SubmitSecondCheckRequest: {
-      prisonerId: string
-      checkedByUsername: string
     }
     ConfirmSecondCheckResult: {
       success: boolean
@@ -2061,13 +2052,7 @@ export interface components {
       calculationViewConfiguration?: components['schemas']['CalculationViewConfiguration'] | null
       commentText?: string | null
       /** @enum {string|null} */
-      calculationType?:
-        | 'CALCULATED'
-        | 'MANUAL_DETERMINATE'
-        | 'MANUAL_INDETERMINATE'
-        | 'GENUINE_OVERRIDE'
-        | 'SECOND_CHECK'
-        | null
+      calculationType?: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE' | null
       establishment?: string | null
       /** Format: int64 */
       calculationRequestId?: number | null
@@ -2088,6 +2073,13 @@ export interface components {
       genuineOverrideReasonDescription?: string | null
       calculatedByUsername: string
       calculatedByDisplayName: string
+      secondCheckDetails: components['schemas']['SecondCheckDetails'][]
+    }
+    SecondCheckDetails: {
+      checkedByUsername?: string | null
+      checkedByDisplayName?: string | null
+      /** Format: date-time */
+      checkedAt?: string | null
     }
     GenuineOverrideReasonResponse: {
       code: string
@@ -2711,12 +2703,7 @@ export interface components {
       /** Format: date */
       calculationDate?: string | null
       /** @enum {string} */
-      calculationType:
-        | 'CALCULATED'
-        | 'MANUAL_DETERMINATE'
-        | 'MANUAL_INDETERMINATE'
-        | 'GENUINE_OVERRIDE'
-        | 'SECOND_CHECK'
+      calculationType: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE'
       /** Format: int64 */
       overridesCalculationRequestId?: number | null
       /** @enum {string|null} */
@@ -2956,6 +2943,7 @@ export interface components {
       approvedDates?: {
         [key: string]: components['schemas']['DetailedDate']
       } | null
+      secondCheckDetails?: components['schemas']['SecondCheckDetails'] | null
       calculationOriginalData: components['schemas']['CalculationOriginalData']
       calculationBreakdown?: components['schemas']['CalculationBreakdown'] | null
       /** @enum {string|null} */
@@ -3168,7 +3156,6 @@ export interface components {
         | 'INPUTS_CHANGED_SINCE_LAST_CALCULATION'
         | 'PREVIOUS_CALCULATION_MANUAL'
         | 'PREVIOUS_CALCULATION_GENUINE_OVERRIDE'
-        | 'SECOND_CHECK'
         | 'VALIDATION_FAILED'
         | 'CALCULATION_FAILED'
         | 'DATES_HAVE_CHANGED'
@@ -4203,11 +4190,7 @@ export interface operations {
       }
       cookie?: never
     }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SubmitSecondCheckRequest']
-      }
-    }
+    requestBody?: never
     responses: {
       /** @description Second check persisted successfully */
       200: {

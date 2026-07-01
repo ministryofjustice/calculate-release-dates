@@ -72,7 +72,7 @@
             }
         ] %}
 
-        {% if latestCalculation.source == "CRDS" %}
+        {% if latestCalculation.source == "CRDS" and secondCheckEnabled %}
             {% set _ = actions.push({
                 href: '/calculation/' + prisonerDetail.offenderNo + '/secondCheck',
                 title: 'Record a second calculation check',

@@ -32,9 +32,20 @@ export default class AuditService {
     await this.sendAuditMessage(AuditAction.CALCULATION_CREATED, user, prisonerId, details)
   }
 
-  public async publishSecondCheck(user: string, prisonerId: string, calculationReference: number) {
-    const details = JSON.stringify({ prisonerId, calculationReference })
-    await this.sendAuditMessage(AuditAction.SECOND_CHECK_RECORDED, user, prisonerId, details)
+  public async publishSecondCheckAudit(
+    action: AuditAction,
+    user: string,
+    prisonerId: string,
+    calculationReference: number,
+    exception: Error | null,
+  ) {
+    let details
+    if (action === AuditAction.SECOND_CHECK_FAILED && exception) {
+      details = JSON.stringify({ error: exception.message })
+    } else {
+      details = JSON.stringify({ prisonerId, calculationReference })
+    }
+    await this.sendAuditMessage(action, user, prisonerId, details)
   }
 
   public async publishManualSentenceCalculation(
@@ -59,15 +70,6 @@ export default class AuditService {
   public async publishSentenceCalculationFailure(user: string, nomisId: string, exception: Error) {
     await this.sendAuditMessage(
       AuditAction.CALCULATION_FAILED,
-      user,
-      nomisId,
-      JSON.stringify({ error: exception.message }),
-    )
-  }
-
-  public async publishSecondCheckFailure(user: string, nomisId: string, exception: Error) {
-    await this.sendAuditMessage(
-      AuditAction.SECOND_CHECK_FAILED,
       user,
       nomisId,
       JSON.stringify({ error: exception.message }),

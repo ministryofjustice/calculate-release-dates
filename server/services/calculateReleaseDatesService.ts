@@ -31,7 +31,6 @@ import {
   SubmitCalculationRequest,
   SupportedValidationResponse,
   ValidationMessage,
-  SubmitSecondCheckRequest,
   ConfirmSecondCheckResult,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
@@ -52,6 +51,8 @@ import {
 import { FullPageError } from '../types/FullPageError'
 import AuditService from './auditService'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
+import AuditAction from '../enumerations/auditType'
+import { CalculationHistoryModel } from '../models/CalculationHistoryModel'
 
 export default class CalculateReleaseDatesService {
   constructor(
@@ -330,23 +331,35 @@ export default class CalculateReleaseDatesService {
 
   async confirmSecondCheck(
     calculationRequestId: number,
-    body: SubmitSecondCheckRequest,
+    username: string,
+    prisonerId: string,
     token: string,
   ): Promise<ConfirmSecondCheckResult> {
     try {
       const secondCheckResult = await this.calculateReleaseDatesApiRestClient.confirmSecondCheck(
         calculationRequestId,
-        body,
         token,
       )
 
       if (secondCheckResult.success) {
-        await this.auditService.publishSecondCheck(body.checkedByUsername, body.prisonerId, calculationRequestId)
+        await this.auditService.publishSecondCheckAudit(
+          AuditAction.SECOND_CHECK_RECORDED,
+          username,
+          prisonerId,
+          calculationRequestId,
+          null,
+        )
       }
       return secondCheckResult
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error))
-      await this.auditService.publishSecondCheckFailure(body.checkedByUsername, body.prisonerId, err)
+      await this.auditService.publishSecondCheckAudit(
+        AuditAction.SECOND_CHECK_FAILED,
+        username,
+        prisonerId,
+        calculationRequestId,
+        err,
+      )
       throw err
     }
   }
@@ -458,8 +471,54 @@ export default class CalculateReleaseDatesService {
     return this.calculateReleaseDatesApiRestClient.hasExistingManualCalculation(prisonerId, username)
   }
 
-  async getCalculationHistory(prisonerId: string, username: string): Promise<HistoricCalculation[]> {
-    return this.calculateReleaseDatesApiRestClient.getCalculationHistory(prisonerId, username)
+  async getCalculationHistory(prisonerId: string, username: string): Promise<CalculationHistoryModel[]> {
+    const calcHistory = await this.calculateReleaseDatesApiRestClient.getCalculationHistory(prisonerId, username)
+    if (calcHistory && calcHistory.length > 0) {
+      return this.flattenCalculationHistory(calcHistory).sort(
+        (a, b) => new Date(b.calculationDate).getTime() - new Date(a.calculationDate).getTime(),
+      )
+    }
+    return []
+  }
+
+  flattenCalculationHistory(calculationHistory: HistoricCalculation[]): CalculationHistoryModel[] {
+    return calculationHistory.flatMap(calculation => {
+      const flattenedHistory: CalculationHistoryModel[] = [
+        {
+          calculationReason: calculation.calculationReason,
+          calculationDate: calculation.calculationDate,
+          calculationSource: calculation.calculationSource,
+          calculatedByDisplayName: calculation.calculatedByDisplayName,
+          establishment: calculation.establishment,
+          calculationType: calculation.calculationType,
+          genuineOverrideReasonDescription: calculation.genuineOverrideReasonDescription,
+          offenderNo: calculation.offenderNo,
+          calculationRequestId: calculation.calculationRequestId,
+          offenderSentCalculationId: calculation.offenderSentCalculationId,
+          commentText: calculation.commentText,
+        },
+      ]
+
+      if (calculation.secondCheckDetails && calculation.secondCheckDetails.length > 0) {
+        calculation.secondCheckDetails.forEach(secondCheckDetail => {
+          flattenedHistory.push({
+            calculationReason: 'SECOND_CHECK',
+            calculationDate: secondCheckDetail.checkedAt ?? calculation.calculationDate,
+            calculationSource: 'DPS',
+            calculatedByDisplayName: secondCheckDetail.checkedByDisplayName ?? null,
+            establishment: calculation.establishment ?? null,
+            calculationType: 'SECOND_CHECK',
+            genuineOverrideReasonDescription: null,
+            offenderNo: null,
+            offenderSentCalculationId: null,
+            calculationRequestId: null,
+            commentText: null,
+          })
+        })
+      }
+
+      return flattenedHistory
+    })
   }
 
   async getResultsWithBreakdownAndAdjustments(

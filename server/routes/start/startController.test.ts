@@ -12,10 +12,7 @@ import CalculateReleaseDatesService from '../../services/calculateReleaseDatesSe
 import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
 import AuthorisedRoles from '../../enumerations/authorisedRoles'
 import { CalculationCard } from '../../types/CalculationCard'
-import {
-  HistoricCalculation,
-  LatestCalculation,
-} from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { LatestCalculation } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../../config'
 import { expectMiniProfile, expectServiceHeaderForPrisoner } from '../testutils/layoutExpectations'
 import {
@@ -25,6 +22,7 @@ import {
 } from '../../@types/prisonApi/prisonClientTypes'
 import { CcrdServiceDefinitions } from '../../@types/courtCasesReleaseDatesApi/types'
 import { FullPageError } from '../../types/FullPageError'
+import { CalculationHistoryModel } from '../../models/CalculationHistoryModel'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -75,7 +73,7 @@ const stubbedPrisonerData = {
   } as PrisonAPIAssignedLivingUnit,
 } as PrisonApiPrisoner
 
-const nomisCalculationHistory = [
+const nomisCalculationHistory: CalculationHistoryModel[] = [
   {
     offenderNo: 'GU32342',
     calculationDate: '2024-03-05',
@@ -87,7 +85,7 @@ const nomisCalculationHistory = [
     calculationReason: 'New Sentence',
     offenderSentCalculationId: 123456,
   },
-] as HistoricCalculation[]
+] as unknown as CalculationHistoryModel[]
 
 const serviceDefinitionsNoThingsToDo = {
   services: {
@@ -134,7 +132,7 @@ const serviceDefinitionsNoThingsToDo = {
   },
 } as CcrdServiceDefinitions
 
-const calculationHistory = [
+const calculationHistory: CalculationHistoryModel[] = [
   {
     offenderNo: 'GU32342',
     calculationDate: '2024-03-05',
@@ -166,7 +164,7 @@ const calculationHistory = [
     calculationRequestId: 849432,
     calculationReason: null,
   },
-] as HistoricCalculation[]
+] as unknown as CalculationHistoryModel[]
 
 const latestCalcCardForPrisoner: LatestCalculationCardConfig = {
   reason: 'Initial check',
@@ -324,8 +322,10 @@ describe('StartController', () => {
   })
 
   it('GET ?prisonId=123 if user has CRD and adjustments then show all CCARD nav', () => {
+    app.locals.secondCheckEnabled = true
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
+
     const cardAndAction = {
       latestCalcCard: latestCalcCardForPrisoner,
       latestCalcCardAction: latestCalcCardActionForPrisoner,
@@ -433,6 +433,7 @@ describe('StartController', () => {
   })
 
   it('GET ?prisonId=123 when latest calc has no establishment', () => {
+    app.locals.secondCheckEnabled = true
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
     const cardAndAction = {
@@ -472,6 +473,7 @@ describe('StartController', () => {
   })
 
   it('GET ?prisonId=123 when latest calc has no user', () => {
+    app.locals.secondCheckEnabled = true
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
     const cardAndAction = {
@@ -505,6 +507,86 @@ describe('StartController', () => {
         expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
         expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Kirkham (HMP)')
         expect($('dt:contains("Last checked by")').next().text().trim()).toStrictEqual('Not checked')
+        expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
+        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
+      })
+  })
+
+  it('GET ?prisonId=123 when latest has no second check enabled', () => {
+    app.locals.secondCheckEnabled = false
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: latestCalcCardActionForPrisoner,
+      calculation: {
+        source: 'NOMIS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        calculationType: 'CALCULATED',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        establishment: 'Kirkham (HMP)',
+        checkedByUsername: null,
+        checkedByDisplayName: '',
+        checkedAt: '',
+        dates: [],
+      } as LatestCalculation,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
+        expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
+        expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Kirkham (HMP)')
+        expect($('dt:contains("Last checked by")').length).toBe(0)
+        expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
+        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
+      })
+  })
+
+  it('GET ?prisonId=123 should correctly render if the second Check is disabled', () => {
+    app.locals.secondCheckEnabled = false
+    userPermissionsService.allowBulkLoad.mockReturnValue(true)
+    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
+    const cardAndAction = {
+      latestCalcCard: latestCalcCardForPrisoner,
+      latestCalcCardAction: latestCalcCardActionForPrisoner,
+      calculation: {
+        source: 'NOMIS',
+        prisonerId: 'GU32342',
+        bookingId: 90328,
+        calculatedAt: '2024-03-05',
+        calculationType: 'CALCULATED',
+        calculationRequestId: 90328,
+        reason: 'New Sentence',
+        establishment: 'Kirkham (HMP)',
+        checkedByUsername: null,
+        checkedByDisplayName: '',
+        checkedAt: '',
+        dates: [],
+      } as LatestCalculation,
+    }
+    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
+    return request(app)
+      .get('?prisonId=123')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
+        expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
+        expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Kirkham (HMP)')
+        expect($('dt:contains("Last checked by")').length).toStrictEqual(0)
         expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
         expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
       })
@@ -560,6 +642,7 @@ describe('StartController', () => {
   })
 
   it('GET ?prisonId=123 if latest calc is a genuine override', () => {
+    app.locals.secondCheckEnabled = true
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
 
     const calculationHistoryWithGenuineOverride = [
@@ -576,7 +659,7 @@ describe('StartController', () => {
         genuineOverrideReasonDescription: 'Some details about the GO',
         calculatedByDisplayName: 'Bob Smith',
       },
-    ] as HistoricCalculation[]
+    ] as unknown as CalculationHistoryModel[]
 
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistoryWithGenuineOverride)
     const cardAndAction = {

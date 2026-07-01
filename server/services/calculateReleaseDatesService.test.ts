@@ -11,6 +11,7 @@ import {
   BookingCalculation,
   DetailedCalculationResults,
   GenuineOverrideCreatedResponse,
+  HistoricCalculation,
   LatestCalculation,
   ValidationMessage,
   WorkingDay,
@@ -143,6 +144,97 @@ describe('Calculate release dates service tests', () => {
     jest.resetAllMocks()
   })
 
+  describe('getCalculationHistory', () => {
+    const username = 'test-user'
+
+    const mockCalculationHistory: HistoricCalculation[] = [
+      {
+        calculationReason: 'REASON_1',
+        calculationDate: '2023-10-01',
+        calculationSource: 'SOURCE_1',
+        calculatedByDisplayName: 'User One',
+        calculationType: 'TYPE_1',
+        establishment: 'Establishment 1',
+        genuineOverrideReasonDescription: 'TRIAL_RECORD_OR_BREAKDOWN_DOES_NOT_MATCH_OVERALL_SENTENCE_LENGTH',
+        offenderNo: 'A1234AB',
+        offenderSentCalculationId: 12345,
+        calculationRequestId: 67890,
+        commentText: 'Comment 1',
+        secondCheckDetails: [],
+      } as unknown as HistoricCalculation,
+      {
+        calculationReason: 'REASON_2',
+        calculationDate: '2023-09-15',
+        calculationSource: 'SOURCE_2',
+        calculatedByDisplayName: 'User Two',
+        calculationType: 'TYPE_2',
+        establishment: 'Establishment 2',
+        genuineOverrideReasonDescription: 'TRIAL_RECORD_OR_BREAKDOWN_DOES_NOT_MATCH_OVERALL_SENTENCE_LENGTH',
+        offenderNo: 'B5678CD',
+        offenderSentCalculationId: 54321,
+        calculationRequestId: 98765,
+        commentText: 'Comment 2',
+        secondCheckDetails: null,
+      } as unknown as HistoricCalculation,
+    ]
+
+    it('should return a sorted calculation history when data is available', async () => {
+      fakeApi.get(`/historicCalculations/${prisonerId}`).reply(200, mockCalculationHistory)
+      const result = await calculateReleaseDatesService.getCalculationHistory(prisonerId, username)
+
+      expect(result).toHaveLength(2)
+      expect(result[0].calculationDate).toBe('2023-10-01') // Sorted by date descending
+      expect(result[1].calculationDate).toBe('2023-09-15')
+    })
+
+    it('should return an empty array when no calculation history is available', async () => {
+      fakeApi.get(`/historicCalculations/${prisonerId}`).reply(200, [])
+
+      const result = await calculateReleaseDatesService.getCalculationHistory(prisonerId, username)
+
+      expect(result).toEqual([])
+    })
+
+    it('should return an empty array when no calculation history is null', async () => {
+      fakeApi.get(`/historicCalculations/${prisonerId}`).reply(200, null)
+
+      const result = await calculateReleaseDatesService.getCalculationHistory(prisonerId, username)
+
+      expect(result).toEqual([])
+    })
+
+    it('should handle errors when fetching calculation history', async () => {
+      fakeApi.get(`/historicCalculations/${prisonerId}`).reply(404)
+
+      await expect(calculateReleaseDatesService.getCalculationHistory(prisonerId, username)).rejects.toThrow(
+        'Not Found',
+      )
+    })
+
+    it('should flatten and include second check details in the calculation history', async () => {
+      const mockHistoryWithSecondCheck = [
+        {
+          ...mockCalculationHistory[0],
+          secondCheckDetails: [
+            {
+              checkedAt: '2023-10-02',
+              checkedByDisplayName: 'Second Checker',
+            },
+          ],
+        },
+      ]
+      fakeApi.get(`/historicCalculations/${prisonerId}`).reply(200, mockHistoryWithSecondCheck)
+
+      const result = await calculateReleaseDatesService.getCalculationHistory(prisonerId, username)
+
+      expect(result).toHaveLength(2)
+      expect(result[0].calculationReason).toBe('SECOND_CHECK')
+      expect(result[0].calculationDate).toBe('2023-10-02')
+      expect(result[1].calculationReason).toBe('REASON_1')
+      expect(result[1].calculationDate).toBe('2023-10-01')
+    })
+  })
+
   describe('Test GET releases date using a calculation request id', () => {
     it('asserting successful scenario', async () => {
       fakeApi.get(`/calculation/release-dates/${calculationRequestId}`).reply(200, releaseDatesAndCalcContext)
@@ -197,10 +289,8 @@ describe('Calculate release dates service tests', () => {
 
     const result = await calculateReleaseDatesService.confirmSecondCheck(
       calculationRequestId,
-      {
-        checkedByUsername: userName,
-        prisonerId: nomsId,
-      },
+      'userName',
+      'nomsId',
       token,
     )
 
@@ -326,7 +416,7 @@ describe('Calculate release dates service tests', () => {
     })
 
     it('Gets calculation history', async () => {
-      const history = [
+      const history: HistoricCalculation[] = [
         {
           offenderNo: 'GU32342',
           calculationDate: '2024-03-05',
@@ -336,7 +426,9 @@ describe('Calculate release dates service tests', () => {
           establishment: 'Kirkham (HMP)',
           calculationRequestId: 90328,
           calculationReason: 'New Sentence',
-        },
+          genuineOverrideReasonDescription: null,
+          offenderSentCalculationId: null,
+        } as HistoricCalculation,
       ]
       fakeApi.get(`/historicCalculations/${prisonerId}`).reply(200, history)
 
