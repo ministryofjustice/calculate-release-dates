@@ -27,8 +27,8 @@ export default class UserInputService {
     return req.session.calculationReasonId && !!req.session.calculationReasonId[nomsId]
   }
 
-  public getCalculationReason(req: Request, nomsId: string): number {
-    return req.session.calculationReasonId[nomsId]
+  public getCalculationReason(req: Request, nomsId: string): number | undefined {
+    return req.session.calculationReasonId?.[nomsId]
   }
 
   public isSecondCheck(req: Request, nomsId: string): boolean {
