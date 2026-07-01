@@ -20,6 +20,11 @@ export default class SecondCheckController implements Controller {
     await this.prisonerService.checkPrisonerAccess(nomsId, username, caseloads, userRoles)
     this.setReason(req, nomsId, 18)
 
+    if (!req.session.isAddDatesFlow) {
+      req.session.isAddDatesFlow = {}
+    }
+    req.session.isAddDatesFlow[nomsId] = false
+
     return res.redirect(`/calculation/${nomsId}/check-information`)
   }
 
