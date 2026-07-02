@@ -213,14 +213,14 @@ export default class ComparisonResultMismatchDetailModel {
   }
 
   private displayMismatchLabel(key: string, crdsDate: string, nomisDate: string, overrideDate: string) {
-    const datesNotApplicableForMatch = ['HDCAD', 'APD', 'ROTL', 'ESED']
+    const datesNotApplicableForMatch = ['HDCAD', 'APD', 'ROTL', 'ESED', 'TUSED']
     if (datesNotApplicableForMatch.includes(key)) {
       return this.notApplicableLabel()
     }
-    if (crdsDate === overrideDate) {
+    if (overrideDate && crdsDate === overrideDate) {
       return this.matchLabel()
     }
-    if (overrideDate === '' && crdsDate === nomisDate) {
+    if (!overrideDate && crdsDate === nomisDate) {
       return this.matchLabel()
     }
     return this.mismatchLabel()
