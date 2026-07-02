@@ -129,6 +129,9 @@ export const convertValidationToErrorMessages = (validationMessages: ValidationM
   return {
     messageType: ErrorMessageType[validationMessages[0].type],
     messages: validationMessages.map(m => {
+      if (m.contentType === 'HTML') {
+        return { html: m.message } as ErrorMessage
+      }
       return { text: m.message } as ErrorMessage
     }),
   }

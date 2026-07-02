@@ -831,6 +831,43 @@ describe('CheckInformationController', () => {
           expect(res.text).toContain('Update these details in NOMIS and then')
         })
     })
+
+    it('GET /calculation/:nomsId/check-information should display HTML errors with VALIDATION_FIXABLE_IN_DPS type', () => {
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        {
+          messages: [
+            { html: 'Some bad adjustments exists <a href="/foo" data-qa="error-message-test-link">Click here</a>' },
+          ],
+          messageType: ErrorMessageType.VALIDATION_FIXABLE_IN_DPS,
+        },
+        [],
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/A1234AA/check-information?hasErrors=true')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const link = $('[data-qa=error-message-test-link]').eq(0)
+          //  show header but not reload this page footer
+          expect(res.text).toContain('There is a problem')
+          expect(link.text().trim()).toStrictEqual('Click here')
+          expect(link.attr('href')).toStrictEqual('/foo')
+          expect(res.text).not.toContain('Update these details in NOMIS and then')
+        })
+    })
+
     it('GET /calculation/:nomsId/check-information should show unsupported navigation and no ERSED if the calc is unsupported', () => {
       const model = new SentenceAndOffenceViewModel(
         stubbedPrisonerData,

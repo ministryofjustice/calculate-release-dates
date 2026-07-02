@@ -6,7 +6,7 @@ interface ErrorMessage {
   /* Id of the html element to tie the error to. */
   id?: string
   /* Text to display */
-  text: string
+  text?: string
 }
 
 export default ErrorMessage

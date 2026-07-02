@@ -1299,6 +1299,7 @@ export interface components {
         | 'A_FINE_SENTENCE_WITH_PAYMENTS'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED_REMAND'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED_TAGGED_BAIL'
+        | 'RELEASE_DATE_BEFORE_SENTENCE_DATE'
         | 'PROGRESSION_MODEL_UNSUPPORTED_EXTINGUISHED_SENTENCE'
         | 'DTO_CONSECUTIVE_TO_SENTENCE'
         | 'DTO_HAS_SENTENCE_CONSECUTIVE_TO_IT'
@@ -1388,12 +1389,19 @@ export interface components {
         | 'UNSUPPORTED_SENTENCE'
         | 'UNSUPPORTED_CALCULATION'
         | 'VALIDATION'
+        | 'VALIDATION_FIXABLE_IN_DPS'
         | 'INCORRECT_OFFENCE'
         | 'SUSPENDED_OFFENCE'
         | 'MANUAL_ENTRY_JOURNEY_REQUIRED'
         | 'CONCURRENT_CONSECUTIVE'
       calculationUnsupported: boolean
+      contentType: components['schemas']['ValidationMessageContentType']
     }
+    /**
+     * @description The type content for the validation message
+     * @enum {string}
+     */
+    ValidationMessageContentType: 'PLAIN_TEXT' | 'HTML'
     AdditionalDaysAwardedDto: {
       adjudicationId: string[]
       prospective: boolean
