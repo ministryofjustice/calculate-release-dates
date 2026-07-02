@@ -77,6 +77,7 @@ const invalidValidationResult: ValidationMessage[] = [
     arguments: [],
     type: 'VALIDATION',
     calculationUnsupported: false,
+    contentType: 'PLAIN_TEXT',
   },
   {
     code: 'OFFENCE_MISSING_DATE',
@@ -84,6 +85,7 @@ const invalidValidationResult: ValidationMessage[] = [
     arguments: [],
     type: 'VALIDATION',
     calculationUnsupported: false,
+    contentType: 'PLAIN_TEXT',
   },
 ]
 
@@ -94,6 +96,7 @@ const unsupportedValidationResult: ValidationMessage[] = [
     arguments: [],
     type: 'UNSUPPORTED_SENTENCE',
     calculationUnsupported: true,
+    contentType: 'PLAIN_TEXT',
   },
   {
     code: 'UNSUPPORTED_SENTENCE_TYPE',
@@ -101,6 +104,7 @@ const unsupportedValidationResult: ValidationMessage[] = [
     arguments: [],
     type: 'UNSUPPORTED_SENTENCE',
     calculationUnsupported: true,
+    contentType: 'PLAIN_TEXT',
   },
 ]
 
@@ -111,6 +115,7 @@ const unsupportedCalculationResult: ValidationMessage[] = [
     arguments: [],
     type: 'UNSUPPORTED_CALCULATION',
     calculationUnsupported: true,
+    contentType: 'PLAIN_TEXT',
   },
   {
     code: 'A_FINE_SENTENCE_CONSECUTIVE_TO',
@@ -118,6 +123,7 @@ const unsupportedCalculationResult: ValidationMessage[] = [
     arguments: [],
     type: 'UNSUPPORTED_CALCULATION',
     calculationUnsupported: true,
+    contentType: 'PLAIN_TEXT',
   },
 ]
 
@@ -1004,6 +1010,7 @@ describe('Calculate release dates service tests', () => {
           type: 'VALIDATION',
           arguments: [],
           calculationUnsupported: false,
+          contentType: 'PLAIN_TEXT',
         },
         {
           code: 'DATES_PAIRINGS_INVALID',
@@ -1011,6 +1018,7 @@ describe('Calculate release dates service tests', () => {
           type: 'VALIDATION',
           arguments: [],
           calculationUnsupported: false,
+          contentType: 'PLAIN_TEXT',
         },
       ],
     }

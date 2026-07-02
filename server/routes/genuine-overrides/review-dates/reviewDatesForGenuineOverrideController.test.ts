@@ -248,6 +248,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
             type: 'VALIDATION',
             arguments: [],
             calculationUnsupported: false,
+            contentType: 'PLAIN_TEXT',
           },
           {
             code: 'DATES_PAIRINGS_INVALID',
@@ -255,6 +256,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
             type: 'VALIDATION',
             arguments: [],
             calculationUnsupported: false,
+            contentType: 'PLAIN_TEXT',
           },
         ],
       })
