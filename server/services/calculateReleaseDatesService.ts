@@ -509,7 +509,7 @@ export default class CalculateReleaseDatesService {
             establishment: calculation.establishment ?? null,
             calculationType: 'SECOND_CHECK',
             genuineOverrideReasonDescription: null,
-            offenderNo: null,
+            offenderNo: calculation.offenderNo,
             offenderSentCalculationId: null,
             calculationRequestId: null,
             commentText: null,
