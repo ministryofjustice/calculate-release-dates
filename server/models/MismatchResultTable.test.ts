@@ -22,6 +22,14 @@ describe('Should contain table headings and rows for validation error mismatches
             calculationUnsupported: false,
             contentType: 'PLAIN_TEXT',
           },
+          {
+            code: 'RELEASE_DATE_BEFORE_SENTENCE_DATE',
+            arguments: [],
+            message: 'A validation message with <b>HTML</b> <a href="/foo">click here</a>',
+            type: 'VALIDATION',
+            calculationUnsupported: false,
+            contentType: 'HTML',
+          },
         ],
         misMatchType: 'VALIDATION_ERROR',
         shortReference: 'ref-1',
@@ -96,7 +104,7 @@ describe('Should contain table headings and rows for validation error mismatches
         [
           'ZXY738',
           'last name 1',
-          'A default term is consecutive to another default term or sentence',
+          'A default term is consecutive to another default term or sentence, A validation message with HTML click here',
           '<a class="govuk-link" href=/compare/result/comparison-ref/detail/ref-1>View details</a>',
         ],
       ])
