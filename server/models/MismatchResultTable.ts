@@ -37,7 +37,13 @@ export default class MismatchResultTable {
     comparison: ComparisonOverview,
     mismatch: ComparisonMismatchSummary,
   ): ({ text: string } | { html?: string })[] {
-    const message = mismatch.validationMessages.map(validationMessage => validationMessage.message).join(', ')
+    const message = mismatch.validationMessages
+      .map(validationMessage =>
+        validationMessage.contentType === 'PLAIN_TEXT'
+          ? validationMessage.message
+          : this.removeTags(validationMessage.message),
+      )
+      .join(', ')
 
     let detailsHref: string
     if (comparison.comparisonType === ComparisonType.MANUAL) {
@@ -59,6 +65,13 @@ export default class MismatchResultTable {
       })
     }
     return row.filter(e => e)
+  }
+
+  private removeTags(value: string) {
+    return value
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s{2,}/g, ' ')
+      .trim()
   }
 
   private isAllPrisons(prison: string) {
