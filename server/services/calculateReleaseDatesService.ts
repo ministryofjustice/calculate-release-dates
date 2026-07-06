@@ -179,12 +179,10 @@ export default class CalculateReleaseDatesService {
     }
     if (breakdown.breakdownByReleaseDateType.ERSED) {
       const ersedDetails = breakdown.breakdownByReleaseDateType.ERSED
-      if (
-        !(
-          ersedDetails.rules.includes('ERSED_ADJUSTED_TO_CONCURRENT_TERM') ||
-          ersedDetails.rules.includes('ERSED_BEFORE_SENTENCE_DATE')
-        )
-      ) {
+      if (!(
+        ersedDetails.rules.includes('ERSED_ADJUSTED_TO_CONCURRENT_TERM') ||
+        ersedDetails.rules.includes('ERSED_BEFORE_SENTENCE_DATE')
+      )) {
         releaseDatesWithAdjustments.push(
           this.ersedRulesToAdjustmentRow(
             ersedDetails.rules,
