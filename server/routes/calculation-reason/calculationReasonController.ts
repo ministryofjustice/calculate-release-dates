@@ -56,7 +56,9 @@ export default class CalculationReasonController implements Controller {
       )?.furtherDetail
     }
 
-    const latestCalc = await this.calculateReleaseDatesService.getLatestCalculationForPrisoner(nomsId, user.username)
+    const latestCalc = config.featureToggles.secondCheckEnabled
+      ? await this.calculateReleaseDatesService.getLatestCalculationForPrisoner(nomsId, user.username)
+      : null
 
     return res.render(
       'pages/calculation/reason',
