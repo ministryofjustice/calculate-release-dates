@@ -69,12 +69,15 @@ describe('View calculation summary controller tests', () => {
         expect(res.text).toContain('/?prisonId=A1234AA')
         expect(res.text).toContain('Why are some details missing?')
         expect(res.text).toContain('How are final release dates calculated?')
+        expect(res.text).toContain('Not checked')
+        expect(res.text).toContain('Last checked by')
         expectMiniProfile(res.text, expectedMiniProfile)
       })
   })
 
   describe('View calculation tests', () => {
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should not show help links for manual calculation', () => {
+      app.locals.secondCheckEnabled = false
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
         ...stubbedResultsWithBreakdownAndAdjustments,
         context: {
@@ -100,6 +103,8 @@ describe('View calculation summary controller tests', () => {
         .expect(res => {
           expect(res.text).not.toContain('Why are some details missing?')
           expect(res.text).not.toContain('How are final release dates calculated?')
+          expect(res.text).not.toContain('Not checked')
+          expect(res.text).not.toContain('Last checked by')
           expectMiniProfile(res.text, {
             name: 'Nobody, Anon',
             dob: '24/06/2000',
@@ -147,6 +152,7 @@ describe('View calculation summary controller tests', () => {
   })
 
   it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the calculation meta data if name but no establishment present', () => {
+    app.locals.secondCheckEnabled = true
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
       ...stubbedResultsWithBreakdownAndAdjustments,
       context: {
@@ -163,6 +169,11 @@ describe('View calculation summary controller tests', () => {
         calculatedByDisplayName: 'User One',
         calculatedAtPrisonDescription: undefined,
       },
+      secondCheckDetails: {
+        checkedByUsername: 'default-checker',
+        checkedByDisplayName: 'Default Checker',
+        checkedAt: '2023-10-18',
+      },
     })
 
     return request(app)
@@ -174,6 +185,9 @@ describe('View calculation summary controller tests', () => {
         expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('13 January 2024')
         expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('A calculation reason')
         expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('User One')
+        expect($('dt:contains("Last checked by")').next().text().trim()).toStrictEqual(
+          'Default Checker on 18 October 2023',
+        )
         expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
       })
   })

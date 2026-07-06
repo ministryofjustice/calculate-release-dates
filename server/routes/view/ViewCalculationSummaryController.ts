@@ -76,6 +76,9 @@ export default class ViewCalculationSummaryController implements Controller {
         detailedCalculationResults.context.genuineOverrideReasonDescription,
         detailedCalculationResults.context.calculatedByDisplayName,
         detailedCalculationResults.context.calculatedAtPrisonDescription,
+        detailedCalculationResults.secondCheckDetails?.checkedAt,
+        detailedCalculationResults.secondCheckDetails?.checkedByUsername,
+        detailedCalculationResults.secondCheckDetails?.checkedByDisplayName,
       )
     }
     const hasNone = detailedCalculationResults.dates.None !== undefined
@@ -107,6 +110,9 @@ export default class ViewCalculationSummaryController implements Controller {
       detailedCalculationResults.context.genuineOverrideReasonDescription,
       detailedCalculationResults.context.calculatedByDisplayName,
       detailedCalculationResults.context.calculatedAtPrisonDescription,
+      detailedCalculationResults.secondCheckDetails?.checkedAt,
+      detailedCalculationResults.secondCheckDetails?.checkedByUsername,
+      detailedCalculationResults.secondCheckDetails?.checkedByDisplayName,
     )
   }
 

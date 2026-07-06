@@ -35,6 +35,14 @@
             {% set isManualCalc = (model.calculationType != null) and (model.calculationType.startsWith("MANUAL")) %}
             {% set isGenuineOverride = (model.calculationType != null) and (model.calculationType === "GENUINE_OVERRIDE") %}
 
+            {% if model.checkedByUsername == null or model.checkedByDisplayName == null or model.checkedAt == null %}
+                {% set checkedByDisplayName = "Not checked" %}
+            {% else %}
+                {% set checkedByName = model.checkedByDisplayName | capitaliseName %}
+                {% set checkedByDate = model.checkedAt | hmppsFormatDate('dd MMMM yyyy') %}
+                {% set checkedByDisplayName = checkedByName + ' on ' + checkedByDate %}
+            {% endif %}
+
             {% if model.calculationReason.isOther %}
                 {% set reason = "Other (" + model.otherReasonDescription + ")" %}
             {% elseif model.calculationReason.requiresFurtherDetail %}
@@ -64,43 +72,61 @@
                     {% endset %}
                 {% endif %}
                 {% set calculatedByText %}{{ model.calculatedByDisplayName }}{% if model.calculatedByDisplayName and model.calculatedAtPrisonDescription %} at {% endif %}{{ model.calculatedAtPrisonDescription }}{% endset %}
-                {{ govukSummaryList({
-                    classes: "govuk-summary-list--no-border",
-                    rows: [
-                        {
-                            key: {
-                            text: "Calculation date",
+
+                {% set rows = [
+                {
+                    key: {
+                    text: "Calculation date",
+                    classes: "custom-summary-list__key"
+                },
+                    value: {
+                    text: model.calculationDate
+                }
+                },{
+                    key: {
+                        text: "Calculation reason",
+                        classes: "custom-summary-list__key"
+                    },
+                    value: {
+                        html: reason
+                    }
+                },{
+                    key: {
+                        text: "Calculated by",
+                        classes: "custom-summary-list__key"
+                    },
+                    value: {
+                        text: calculatedByText
+                    }
+                }
+                ]%}
+
+                {% if secondCheckEnabled %}
+                    {% set rows = rows.concat([{
+                        key: {
+                            text: "Last checked by",
                             classes: "custom-summary-list__key"
                         },
-                            value: {
-                            text: model.calculationDate
+                        value: {
+                            text: checkedByDisplayName
                         }
-                        },{
-                            key: {
-                                text: "Calculation reason",
-                                classes: "custom-summary-list__key"
-                            },
-                            value: {
-                                html: reason
-                            }
-                        },{
-                            key: {
-                                text: "Calculated by",
-                                classes: "custom-summary-list__key"
-                            },
-                            value: {
-                                text: calculatedByText
-                            }
-                        },{
-                            key: {
-                                text: "Source",
-                                classes: "custom-summary-list__key"
-                            },
-                            value: {
-                                html: source,
-                                classes: "summary-source-value"
-                            }
-                        }]
+                    }]) %}
+                {% endif %}
+
+                {% set rows = rows.concat([{
+                    key: {
+                        text: "Source",
+                        classes: "custom-summary-list__key"
+                    },
+                    value: {
+                        html: source,
+                        classes: "summary-source-value"
+                    }
+                }]) %}
+
+                {{ govukSummaryList({
+                    classes: "govuk-summary-list--no-border",
+                    rows: rows
                 }) }}
             {% endif %}
         </div>
