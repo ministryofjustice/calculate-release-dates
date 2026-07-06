@@ -1513,14 +1513,7 @@ export interface components {
       ineligibleSentences: components['schemas']['RecallableSentence'][]
       sentencesBeforeInitialRelease: components['schemas']['RecallableSentence'][]
       unexpectedRecallTypes: (
-        | 'LR'
-        | 'FTR_14'
-        | 'FTR_28'
-        | 'FTR_56'
-        | 'FTR_HDC_14'
-        | 'FTR_HDC_28'
-        | 'CUR_HDC'
-        | 'IN_HDC'
+        'LR' | 'FTR_14' | 'FTR_28' | 'FTR_56' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC'
       )[]
     }
     RecallSentenceCalculation: {
@@ -1543,11 +1536,7 @@ export interface components {
     RecordARecallDecisionResult: {
       /** @enum {string} */
       decision:
-        | 'CRITICAL_ERRORS'
-        | 'AUTOMATED'
-        | 'NO_RECALLABLE_SENTENCES_FOUND'
-        | 'VALIDATION'
-        | 'CONFLICTING_ADJUSTMENTS'
+        'CRITICAL_ERRORS' | 'AUTOMATED' | 'NO_RECALLABLE_SENTENCES_FOUND' | 'VALIDATION' | 'CONFLICTING_ADJUSTMENTS'
       validationMessages: components['schemas']['ValidationMessage'][]
       conflictingAdjustments: string[]
       automatedCalculationData?: components['schemas']['AutomatedCalculationData'] | null
@@ -2157,11 +2146,7 @@ export interface components {
       shortReference: string
       /** @enum {string} */
       misMatchType:
-        | 'NONE'
-        | 'RELEASE_DATES_MISMATCH'
-        | 'VALIDATION_ERROR'
-        | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'FATAL_EXCEPTION'
+        'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE' | 'FATAL_EXCEPTION'
       sdsSentencesIdentified: components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
       establishment?: string | null
       fatalException?: string | null
@@ -2268,11 +2253,7 @@ export interface components {
       hasDiscrepancyRecord: boolean
       /** @enum {string} */
       mismatchType:
-        | 'NONE'
-        | 'RELEASE_DATES_MISMATCH'
-        | 'VALIDATION_ERROR'
-        | 'UNSUPPORTED_SENTENCE_TYPE'
-        | 'FATAL_EXCEPTION'
+        'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE' | 'FATAL_EXCEPTION'
       isActiveSexOffender?: boolean | null
       validationMessages: components['schemas']['ValidationMessage'][]
       shortReference: string
@@ -2418,8 +2399,7 @@ export interface components {
       /** Format: date */
       toDate?: string | null
       additionalInfo:
-        | components['schemas']['NoAdjustmentAdditionalInfo']
-        | components['schemas']['UALAdjustmentAdditionalInfo']
+        components['schemas']['NoAdjustmentAdditionalInfo'] | components['schemas']['UALAdjustmentAdditionalInfo']
     }
     AdjustmentAdditionalInfo: {
       type: string
