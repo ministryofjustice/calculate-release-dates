@@ -277,6 +277,9 @@ describe('CalculationReasonController', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
+        source: 'NOMIS',
+      } as LatestCalculation)
 
       return request(app)
         .get('/calculation/A1234AA/reason/')
@@ -341,6 +344,9 @@ describe('CalculationReasonController', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyAdjustmentsThingsToDo)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
+        source: 'NOMIS',
+      } as LatestCalculation)
 
       return request(app)
         .get('/calculation/A1234AA/reason/')
@@ -360,6 +366,9 @@ describe('CalculationReasonController', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyAdjustmentsThingsToDo)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
+        source: 'NOMIS',
+      } as LatestCalculation)
 
       return request(app)
         .get('/calculation/A1234AA/reason/')
@@ -373,6 +382,9 @@ describe('CalculationReasonController', () => {
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
+        source: 'NOMIS',
+      } as LatestCalculation)
 
       return request(app)
         .get('/calculation/A1234AA/reason')
@@ -454,6 +466,66 @@ describe('CalculationReasonController', () => {
       calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
         source: 'NOMIS',
       } as LatestCalculation)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/reason')
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.govuk-radios__divider').length).toBe(0)
+
+          expect($('[data-qa=reasonRadio-18]').length).toBe(0)
+          expect($('[data-qa=reasonRadio-8]').length).toBe(1)
+          expect($('[data-qa=reasonRadio-9]').length).toBe(1)
+          expect($('[data-qa=reasonRadio-10]').length).toBe(1)
+          expect($('[data-qa=reasonRadio-11]').length).toBe(1)
+          expect(res.text).not.toContain('Second Check')
+        })
+    })
+
+    it('POST /calculation/:nomsId/reason should throw error if no latest calc returns 500', () => {
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
+        status: 500,
+        message: 'System error',
+      })
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app).get('/calculation/A1234AA/reason').expect(500)
+    })
+
+    it('POST /calculation/:nomsId/reason should not render divider and second check reason if no latest calc with 404 status', () => {
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
+        status: 404,
+        message: 'Not Found',
+      })
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app)
+        .get('/calculation/A1234AA/reason')
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('.govuk-radios__divider').length).toBe(0)
+
+          expect($('[data-qa=reasonRadio-18]').length).toBe(0)
+          expect($('[data-qa=reasonRadio-8]').length).toBe(1)
+          expect($('[data-qa=reasonRadio-9]').length).toBe(1)
+          expect($('[data-qa=reasonRadio-10]').length).toBe(1)
+          expect($('[data-qa=reasonRadio-11]').length).toBe(1)
+          expect(res.text).not.toContain('Second Check')
+        })
+    })
+
+    it('POST /calculation/:nomsId/reason should not render divider and second check reason if no latest calc  with 404 response status', () => {
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
+        responseStatus: 404,
+        message: 'Not Found',
+      })
       courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
 
       return request(app)
