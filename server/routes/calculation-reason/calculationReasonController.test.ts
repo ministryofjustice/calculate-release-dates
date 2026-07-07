@@ -483,7 +483,8 @@ describe('CalculationReasonController', () => {
         })
     })
 
-    it('POST /calculation/:nomsId/reason should throw error if no latest calc returns 500', () => {
+    it('GET /calculation/:nomsId/reason should throw error if latest calc returns 500', () => {
+      config.featureToggles.secondCheckEnabled = true
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
@@ -495,7 +496,17 @@ describe('CalculationReasonController', () => {
       return request(app).get('/calculation/A1234AA/reason').expect(500)
     })
 
-    it('POST /calculation/:nomsId/reason should not render divider and second check reason if no latest calc with 404 status', () => {
+    it('GET /calculation/:nomsId/reason should throw error the second check switch is disabled', () => {
+      config.featureToggles.secondCheckEnabled = false
+      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+
+      return request(app).get('/calculation/A1234AA/reason').expect(200)
+    })
+
+    it('GET /calculation/:nomsId/reason should not render divider and second check reason if latest calc responds with 404 status', () => {
+      config.featureToggles.secondCheckEnabled = true
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
@@ -519,7 +530,8 @@ describe('CalculationReasonController', () => {
         })
     })
 
-    it('POST /calculation/:nomsId/reason should not render divider and second check reason if no latest calc  with 404 response status', () => {
+    it('GET /calculation/:nomsId/reason should not render divider and second check reason if latest calc with 404 response status', () => {
+      config.featureToggles.secondCheckEnabled = true
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
