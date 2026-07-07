@@ -688,7 +688,7 @@ describe('View Sentences and Offences controller tests', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).not.toContain('Default checker on 18 Oct 2023')
+        expect(res.text).not.toContain('Default checker on 18 October 2023')
         expect(res.text).not.toContain('Include an Early removal scheme eligibility date (ERSED) in this calculation')
         expect(res.text).not.toContain(
           'An Early removal scheme eligibility date (ERSED) was included in this calculation',

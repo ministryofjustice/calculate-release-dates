@@ -32,6 +32,9 @@ export default class CalculationSummaryViewModel {
     public genuineOverrideReasonDescription?: string,
     public calculatedByDisplayName?: string,
     public calculatedAtPrisonDescription?: string,
+    public checkedAt?: string,
+    public checkedByUsername?: string,
+    public checkedByDisplayName?: string,
   ) {
     // intentionally left blank
   }
