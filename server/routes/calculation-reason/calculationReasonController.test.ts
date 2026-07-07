@@ -496,11 +496,15 @@ describe('CalculationReasonController', () => {
       return request(app).get('/calculation/A1234AA/reason').expect(500)
     })
 
-    it('GET /calculation/:nomsId/reason should throw error the second check switch is disabled', () => {
+    it('GET /calculation/:nomsId/reason should not throw error when the second check switch is disabled', () => {
       config.featureToggles.secondCheckEnabled = false
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
+      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
+        status: 500,
+        message: 'System error',
+      })
 
       return request(app).get('/calculation/A1234AA/reason').expect(200)
     })
