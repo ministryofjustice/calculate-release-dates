@@ -311,6 +311,28 @@ describe('Tests for adjustments tables component', () => {
     )
   })
 
+  it('Should handle sentence details missing for remand if the sentence sequence matches nothing', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aRemand,
+          id: 'remand-1',
+          days: 1,
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+          sentenceSequence: 9999999999,
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    const remandTable = $('[data-qa=remand-table]')
+    const remandRows = remandTable.find('tbody').find('tr')
+    const firstRowCells = remandRows.eq(0).find('td')
+    expect(firstRowCells.eq(0).html()).toStrictEqual('25/12/2022 to 01/02/2023')
+  })
+
   it('Should show deductions section and tagged bail table if there is tagged bail present', () => {
     const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
       [
@@ -388,6 +410,34 @@ describe('Tests for adjustments tables component', () => {
     expect(firstRowCells.eq(0).html()).toStrictEqual(
       'Court case 2<span class="moj-badge moj-badge--black govuk-!-margin-left-4">RECALL</span>',
     )
+    expect(firstRowCells.eq(1).text()).toStrictEqual('1')
+  })
+
+  it('Should show unknown for sentence details for tagged bail if the sentence sequence matches nothing', () => {
+    const model: AdjustmentTablesModel = adjustmentsTablesFromAdjustmentDTOs(
+      [
+        {
+          ...aTaggedBail,
+          id: 'tb-1',
+          days: 1,
+          taggedBail: { caseSequence: 2 },
+          toDate: '2023-02-01',
+          fromDate: '2022-12-25',
+          sentenceSequence: 9999999,
+        },
+      ],
+      sentencesAndOffences,
+    )
+    const content = nunjucks.render('test.njk', { model })
+    const $ = cheerio.load(content)
+    expect($('[data-qa=deductions-heading]')).toHaveLength(1)
+    const taggedBailTable = $('[data-qa=tagged-bail-table]')
+    expect(taggedBailTable).toHaveLength(1)
+    const taggedBailRows = taggedBailTable.find('tbody').find('tr')
+    expect(taggedBailRows).toHaveLength(2)
+
+    const firstRowCells = taggedBailRows.eq(0).find('td')
+    expect(firstRowCells.eq(0).html()).toStrictEqual('Court case unknown')
     expect(firstRowCells.eq(1).text()).toStrictEqual('1')
   })
 

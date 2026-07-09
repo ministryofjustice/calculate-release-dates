@@ -175,7 +175,7 @@ function toTaggedBailRow(dto: AdjustmentDto, sentencesAndOffences: AnalysedSente
   const sentenceAndOffence = findSentenceAndOffenceBySentenceSequence(dto.sentenceSequence, sentencesAndOffences)
   return [
     {
-      html: `Court case ${sentenceAndOffence.caseSequence}${SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
+      html: `Court case ${sentenceAndOffence?.caseSequence ?? 'unknown'}${sentenceAndOffence && SentenceTypes.isRecall(sentenceAndOffence) ? recallBadge : ''}`,
     },
     {
       text: `${dto.days}`,
