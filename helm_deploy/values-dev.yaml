@@ -33,7 +33,6 @@ generic-service:
     GENUINE_OVERRIDES_ENABLED: "true"
     THING_TO_DO_INTERCEPT_ENABLED: "true"
     PROGRESSION_MODEL_ENABLED: "true"
-    SECOND_CHECK_ENABLED: "true"
 
   # Switches off the allow list in the DEV env only.
   allowlist: null
