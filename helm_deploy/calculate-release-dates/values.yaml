@@ -80,6 +80,5 @@ generic-service:
       - prisons
       - private_prisons
 
-
 generic-prometheus-alerts:
   targetApplication: calculate-release-dates
