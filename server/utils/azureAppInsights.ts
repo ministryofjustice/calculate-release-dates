@@ -1,6 +1,4 @@
 import { flushTelemetry, initialiseTelemetry, telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
-import type { RequestHandler } from 'express'
-import logger from '../../logger'
 
 initialiseTelemetry({
   serviceName: 'calculate-release-dates',
@@ -14,24 +12,10 @@ initialiseTelemetry({
   .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
   .startRecording()
 
-const shutdown = async (signal: string) => {
-  logger.info(`${signal} received, shutting down...`)
+const shutdown = async () => {
   await flushTelemetry()
   process.exit(0)
 }
 
-process.on('SIGTERM', () => shutdown('SIGTERM'))
-process.on('SIGINT', () => shutdown('SIGINT'))
-
-export default function addUsernameAndCaseloadToTelemetry(): RequestHandler {
-  return (req, res, next) => {
-    const { username } = res?.locals?.user || {}
-    const caseloadId = req?.prisoner?.agencyId || null
-
-    telemetry.setSpanAttributes({
-      ...(username && { username }),
-      ...(caseloadId && { caseloadId }),
-    })
-    return next()
-  }
-}
+process.on('SIGTERM', () => shutdown())
+process.on('SIGINT', () => shutdown())
