@@ -28,7 +28,7 @@ import getPrisoner from './middleware/getPrisoner'
 import maintenanceMiddleware from './middleware/maintenanceMiddleware'
 import config from './config'
 import logger from '../logger'
-import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
+import addUsernameAndCaseloadToTelemetry from './utils/appInsightsCustomTelemetry'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
