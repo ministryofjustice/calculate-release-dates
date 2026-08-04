@@ -148,6 +148,8 @@ export interface components {
         | 'REVIEW_IDENTIFIED_REMAND'
         | 'PREVIOUS_PERIOD_OF_UAL_FOR_REVIEW'
         | 'HMCTS_API_DOCUMENT_RECEIVED'
+        | 'WARRANT_NEW_COURT_CASE'
+      messageIsHtml: boolean
     }
     ThingsToDo: {
       things: components['schemas']['ThingToDo'][]
