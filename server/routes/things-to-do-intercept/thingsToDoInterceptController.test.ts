@@ -61,6 +61,7 @@ const serviceDefinitionsOnlyCrdThingsToDo = {
             message: '',
             title: '',
             type: 'CALCULATION_REQUIRED',
+            messageIsHtml: false,
           },
         ],
         count: 1,
@@ -103,6 +104,7 @@ const serviceDefinitionsOnlyAdjustmentsThingsToDo = {
             buttonText: 'Review remand',
             buttonHref: 'https://identify-remand-periods-dev.hmpps.service.justice.gov.uk/prisoner/A1234AA',
             type: 'REVIEW_IDENTIFIED_REMAND',
+            messageIsHtml: false,
           },
           {
             title: 'Review ADA updates',
@@ -111,6 +113,7 @@ const serviceDefinitionsOnlyAdjustmentsThingsToDo = {
             buttonHref:
               'https://adjustments-dev.hmpps.service.justice.gov.uk/A1234AA/additional-days/review-and-approve',
             type: 'ADA_INTERCEPT',
+            messageIsHtml: false,
           },
         ],
         count: 2,
