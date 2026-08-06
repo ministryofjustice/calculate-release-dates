@@ -141,6 +141,15 @@ describe('manualEntryService', () => {
       expect(validationMessages.messages).toEqual([])
     })
 
+    it('should not add a validation message if HDCED is within existing dates when adding HDCAD', () => {
+      const existingDates: ManualJourneySelectedDate[] = [{ dateType: 'HDCED', position: 0, completed: false }]
+      const selectedDateTypes = ['HDCAD']
+      const firstLoad = false
+      const validationMessages: ErrorMessages = { messages: [], messageType: null }
+      manualEntryService.validateHdcadWithHdced(existingDates, selectedDateTypes, firstLoad, validationMessages)
+      expect(validationMessages.messages).toEqual([])
+    })
+
     it('should not add a validation message if HDCAD is selected on first load', () => {
       const existingDates: ManualJourneySelectedDate[] = []
       const selectedDateTypes = ['HDCAD']

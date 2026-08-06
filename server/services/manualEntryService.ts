@@ -179,7 +179,8 @@ export default class ManualEntryService {
   ) {
     const isHdcadSelected =
       existingDates.some(d => d.dateType === 'HDCAD') || (selectedDateTypes.includes('HDCAD') && !firstLoad)
-    const isHdcedSelected = selectedDateTypes.includes('HDCED')
+
+    const isHdcedSelected = selectedDateTypes.includes('HDCED') || existingDates.some(d => d.dateType === 'HDCED')
 
     if (isHdcadSelected && !isHdcedSelected) {
       validationMessages.messages.push({
