@@ -42,7 +42,7 @@ generic-service:
     SHOW_REVOCATION_DATE: "true"
     USE_NEW_APPROVED_DATES_FLOW: "true"
     APPLY_POST_RECALL_REPEAL_RULES: "true"
-    PROGRESSION_MODEL_ENABLED: "false"
+    PROGRESSION_MODEL_ENABLED: "true"
     SECOND_CHECK_ENABLED: "true"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
