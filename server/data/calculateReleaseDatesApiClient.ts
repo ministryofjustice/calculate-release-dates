@@ -36,6 +36,7 @@ import {
   ValidationMessage,
   WorkingDay,
   ConfirmSecondCheckResult,
+  ConfigItem,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import logger from '../../logger'
 import {
@@ -508,6 +509,15 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
         data: manualEntryRequest,
       },
       asUser(token),
+    )
+  }
+
+  getConfigItems(username: string): Promise<ConfigItem[]> {
+    return this.get<ConfigItem[]>(
+      {
+        path: `/configuration/all`,
+      },
+      asSystem(username),
     )
   }
 }

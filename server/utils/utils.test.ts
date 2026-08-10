@@ -1,4 +1,11 @@
-import { capitaliseName, initialiseName, createSupportLink, sortDisplayableDates } from './utils'
+import {
+  capitaliseName,
+  initialiseName,
+  createSupportLink,
+  sortDisplayableDates,
+  featureTogglesToConfigItems,
+} from './utils'
+import config from '../config'
 
 describe('capitalise name', () => {
   it.each([
@@ -90,5 +97,12 @@ describe('sort displayable dates', () => {
       { type: 'HDCED', date: '2021-10-03' },
       { type: 'ERSED', date: '2020-02-03' },
     ])
+  })
+})
+
+describe('feature toggles', () => {
+  it('all feature toggles should be described', () => {
+    const expected = Object.keys(config.featureToggles).length
+    expect(featureTogglesToConfigItems()).toHaveLength(expected)
   })
 })
