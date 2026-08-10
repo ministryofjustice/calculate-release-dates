@@ -578,7 +578,7 @@ export interface paths {
      *
      *     Determines the operative sentence envelope for a prisoner either using CRDS data if available or NOMIS if not.
      *
-     *     Indicators for SDS+ and recall are only available when the source is CRDS.
+     *     Indicators for SDS+, recall and progression model exclusions are only available when the source is CRDS and a calculation has been performed since the field was introduced.
      */
     get: operations['getOperativeSentenceEnvelopeForPrisoner']
     put?: never
@@ -689,6 +689,27 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/has-offences-excluded-from-progression-model/{prisonerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Determine if a prisoners latest booking has any offences appearing on SA2026 Excluded Offences for Progression Model
+     * @description This endpoint will return true if the prisoners latest booking has any offences appearing on SA2026 Excluded Offences for Progression Model.
+     *      Does not check Schedule 13 Part 3 which is a separate exclusion for Progression Model.
+     */
+    get: operations['hasOffencesExcludedFromProgressionModel']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/genuine-override/reasons': {
     parameters: {
       query?: never
@@ -737,6 +758,26 @@ export interface paths {
       cookie?: never
     }
     get: operations['ersedEligibility']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/configuration/all': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the current configuration of this environment
+     * @description Returns the feature toggles and other important information about the current environment
+     */
+    get: operations['getAllConfiguration']
     put?: never
     post?: never
     delete?: never
@@ -897,6 +938,26 @@ export interface paths {
      * @description This endpoint will return the release dates based on a calculationRequestId
      */
     get: operations['getCalculationResults_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/calculation/{prisonerId}/overview': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get an overview of the prisoners calculations
+     * @description This endpoint will return the latest calculation in detail as well, the request number of most recent calculations in summary form and other metadata about the prisoners calculations.
+     */
+    get: operations['getOverview']
     put?: never
     post?: never
     delete?: never
@@ -1292,6 +1353,7 @@ export interface components {
         | 'ADJUSTMENT_FUTURE_DATED_ADA'
         | 'ADJUSTMENT_FUTURE_DATED_RADA'
         | 'ADJUSTMENT_FUTURE_DATED_UAL'
+        | 'ADJUSTMENT_INVALID_DATE_RANGE'
         | 'A_FINE_SENTENCE_CONSECUTIVE'
         | 'A_FINE_SENTENCE_CONSECUTIVE_TO'
         | 'DTO_RECALL'
@@ -1300,6 +1362,8 @@ export interface components {
         | 'CUSTODIAL_PERIOD_EXTINGUISHED_REMAND'
         | 'CUSTODIAL_PERIOD_EXTINGUISHED_TAGGED_BAIL'
         | 'RELEASE_DATE_BEFORE_SENTENCE_DATE'
+        | 'DUPLICATE_OR_OVERLAPPING_UAL'
+        | 'ADJUSTMENT_LINKED_TO_INACTIVE_SENTENCE'
         | 'PROGRESSION_MODEL_UNSUPPORTED_EXTINGUISHED_SENTENCE'
         | 'DTO_CONSECUTIVE_TO_SENTENCE'
         | 'DTO_HAS_SENTENCE_CONSECUTIVE_TO_IT'
@@ -1382,6 +1446,8 @@ export interface components {
         | 'CONSECUTIVE_TO_SENTENCE_IMPOSED_AFTER'
         | 'REVOCATION_DATE_IN_THE_FUTURE'
         | 'HDCED_REPEAL'
+        | 'PROGRESSION_TRANCHE_ONE_ALLOCATION'
+        | 'PROGRESSION_MODEL_SCHEDULE_EXCLUSION'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1933,6 +1999,7 @@ export interface components {
         | 'DOMESTIC_ABUSE_T3'
         | 'MURDER_T3'
         | 'PROGRESSION_MODEL_SCHEDULE_13_PART_3'
+        | 'SA2026_PROGRESSION_MODEL_SCHEDULE'
         | 'NO'
       sdsDescriptions?: components['schemas']['SDSDescriptions'] | null
       revocationDates: string[]
@@ -1998,6 +2065,12 @@ export interface components {
     OperativeSentenceEnvelope: {
       /**
        * Format: int64
+       * @description The id of the booking the calculation of operative sentence envelope considered the sentences from
+       * @example 123456789
+       */
+      bookingId: number
+      /**
+       * Format: int64
        * @description The length in days of the sentence envelope
        * @example 365
        */
@@ -2022,6 +2095,13 @@ export interface components {
        * @example null
        */
       containsAnSDSPlusSentence?: boolean | null
+      /**
+       * @description Whether the sentence envelope contains an offence appearing on the SA2026 Excluded Offences for Progression Model schedule .
+       * @example true
+       * @example false
+       * @example null
+       */
+      containsOffenceExcludedFromProgressionModel?: boolean | null
       /**
        * @description The source of the data used to determine the operative sentence envelope
        * @example CRDS
@@ -2078,6 +2158,9 @@ export interface components {
       /** Format: date-time */
       checkedAt?: string | null
     }
+    ProgressionModelExclusionResponse: {
+      containsOffenceExcludedFromProgressionModel: boolean
+    }
     GenuineOverrideReasonResponse: {
       code: string
       description: string
@@ -2110,6 +2193,10 @@ export interface components {
     ErsedEligibility: {
       isValid: boolean
       reason?: string | null
+    }
+    ConfigItem: {
+      description: string
+      value: string
     }
     ComparisonProgress: {
       /** Format: double */
@@ -2186,6 +2273,7 @@ export interface components {
         | 'DOMESTIC_ABUSE_T3'
         | 'MURDER_T3'
         | 'PROGRESSION_MODEL_SCHEDULE_13_PART_3'
+        | 'SA2026_PROGRESSION_MODEL_SCHEDULE'
         | 'NO'
       )[]
       isSection250: boolean
@@ -2644,6 +2732,23 @@ export interface components {
       date: string
       hints: components['schemas']['ReleaseDateHint'][]
     }
+    HistoricCalculationSummary: {
+      /** Format: date-time */
+      calculationDate: string
+      /** @enum {string} */
+      calculationSource: 'NOMIS' | 'CRDS'
+      /** @enum {string|null} */
+      calculationType?: 'CALCULATED' | 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE' | 'GENUINE_OVERRIDE' | null
+      /** Format: int64 */
+      crdsCalculationId?: number | null
+      /** Format: int64 */
+      nomisCalculationId?: number | null
+      reasonDescription: string
+      reasonFurtherDetail?: string | null
+      genuineOverrideReasonDescription?: string | null
+      calculatedByDisplayName: string
+      establishmentCalculatedAtDescription?: string | null
+    }
     LatestCalculation: {
       prisonerId: string
       /** Format: int64 */
@@ -2657,6 +2762,7 @@ export interface components {
       establishment?: string | null
       reason: string
       reasonFurtherDetail?: string | null
+      genuineOverrideReasonDescription?: string | null
       /** @enum {string} */
       source: 'NOMIS' | 'CRDS'
       dates: components['schemas']['DetailedDate'][]
@@ -2665,6 +2771,12 @@ export interface components {
       calculatedByDisplayName: string
       checkedByDisplayName?: string | null
       calculationType: string
+    }
+    PrisonerCalculationOverview: {
+      latestCalculation?: components['schemas']['LatestCalculation'] | null
+      recentCalculations: components['schemas']['HistoricCalculationSummary'][]
+      /** Format: int32 */
+      totalCalculationCount: number
     }
     ReleaseDateHint: {
       text: string
@@ -4884,6 +4996,50 @@ export interface operations {
       }
     }
   }
+  hasOffencesExcludedFromProgressionModel: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns a boolean value */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProgressionModelExclusionResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProgressionModelExclusionResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProgressionModelExclusionResponse']
+        }
+      }
+    }
+  }
   getGenuineOverrideReasons: {
     parameters: {
       query?: never
@@ -4993,6 +5149,35 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErsedEligibility']
+        }
+      }
+    }
+  }
+  getAllConfiguration: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Configuration and feature toggles */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ConfigItem'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ConfigItem'][]
         }
       }
     }
@@ -5371,6 +5556,65 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['CalculatedReleaseDates']
+        }
+      }
+    }
+  }
+  getOverview: {
+    parameters: {
+      query?: {
+        /**
+         * @description The number of historic calculation summaries to return. Default is 5, specify 0 if you want no summaries.
+         * @example 5
+         */
+        numberOfSummaries?: number
+      }
+      header?: never
+      path: {
+        /**
+         * @description The id of the prisoner
+         * @example ABC123
+         */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns prisoner overview */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerCalculationOverview']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerCalculationOverview']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerCalculationOverview']
+        }
+      }
+      /** @description The prisoner could not be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerCalculationOverview']
         }
       }
     }

@@ -3,7 +3,7 @@ import { DesignSystemEnvironment } from '@ministryofjustice/hmpps-court-cases-re
 import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import config from '../config'
 import { getFilteredListOfDates } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
-import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ConfigItem, ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import ErrorMessage from '../types/ErrorMessage'
 
@@ -135,4 +135,20 @@ export const convertValidationToErrorMessages = (validationMessages: ValidationM
       return { text: m.message } as ErrorMessage
     }),
   }
+}
+
+export const featureTogglesToConfigItems = (): ConfigItem[] => {
+  const { featureToggles } = config
+  return [
+    { description: 'Progression Model enabled', value: `${featureToggles.progressionModelEnabled}` },
+    { description: 'Show CRDS things to do intercept', value: `${featureToggles.showCrdsIntercept}` },
+    { description: 'Genuine overrides enabled', value: `${featureToggles.genuineOverridesEnabled}` },
+    { description: 'Show adjustments things to do intercept', value: `${featureToggles.thingsToDoIntercept}` },
+    { description: 'Use new approved dates flow', value: `${featureToggles.useNewApprovedDatesFlow}` },
+    {
+      description: 'Apply post recall repeal rules (disable TUSED)',
+      value: `${featureToggles.applyPostRecallRepealRules}`,
+    },
+    { description: 'Second check enabled', value: `${featureToggles.secondCheckEnabled}` },
+  ]
 }

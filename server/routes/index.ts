@@ -47,6 +47,7 @@ import CompareManualCalculationController from './compare/CompareManualCalculati
 import CompareSubmitManualCalculationController from './compare/CompareSubmitManualCalculationController'
 import SecondCheckController from './calculation-reason/secondCheckController'
 import CalculationSecondCheckSummaryController from './calculation-summary/calcSecondCheckSummaryController'
+import ConfigItemController from './config/configItemController'
 
 export default function Index({
   prisonerService,
@@ -372,6 +373,13 @@ export default function Index({
     })
   }
 
+  const configRoutes = () => {
+    route({
+      path: '/config',
+      controller: new ConfigItemController(calculateReleaseDatesService),
+    })
+  }
+
   indexRoutes()
   calculationRoutes()
   reasonRoutes()
@@ -390,5 +398,6 @@ export default function Index({
   })
 
   disableNomisRoutes()
+  configRoutes()
   return router
 }

@@ -1,0 +1,68 @@
+{% extends "../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " - Environment Configuration" %}
+{% set pageId = "config-list" %}
+
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h2 class="govuk-heading-l">Feature toggles and other config currently set for this environment</h2>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            {% set apiRows = [] %}
+            {% for item in apiConfigItems %}
+            {% set apiRows = (apiRows.push(
+                {
+                    key: {
+                        text: item.description,
+                        classes: 'govuk-!-width-two-thirds'
+                    },
+                    value: {
+                        text: item.value
+                    }
+                }), apiRows) %}
+            {% endfor %}
+
+            {{ govukSummaryList({
+                card: {
+                    title: {
+                        text: "API Config"
+                    }
+                },
+                rows: apiRows
+            }) }}
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            {% set uiRows = [] %}
+            {% for item in uiConfigItems %}
+            {% set uiRows = (uiRows.push(
+                {
+                    key: {
+                        text: item.description,
+                        classes: 'govuk-!-width-two-thirds'
+                    },
+                    value: {
+                        text: item.value
+                    }
+                }), uiRows) %}
+            {% endfor %}
+
+            {{ govukSummaryList({
+                card: {
+                    title: {
+                        text: "UI Config"
+                    }
+                },
+                rows: uiRows
+            }) }}
+        </div>
+    </div>
+{% endblock %}

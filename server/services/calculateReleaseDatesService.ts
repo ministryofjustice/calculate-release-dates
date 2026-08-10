@@ -32,6 +32,7 @@ import {
   SupportedValidationResponse,
   ValidationMessage,
   ConfirmSecondCheckResult,
+  ConfigItem,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import logger from '../../logger'
@@ -657,5 +658,9 @@ export default class CalculateReleaseDatesService {
 
   async updateDisabledNomisAgencies(username: string): Promise<AgencySwitchUpdateResult> {
     return this.calculateReleaseDatesApiRestClient.updateDisabledNomisAgencies(username)
+  }
+
+  async getApiConfigItems(username: string): Promise<ConfigItem[]> {
+    return this.calculateReleaseDatesApiRestClient.getConfigItems(username)
   }
 }
