@@ -11,7 +11,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { LatestCalculation, ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
@@ -317,6 +317,76 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
         expect(manualEntryTitle.text().trim()).toStrictEqual('Enter the dates manually')
         expect(res.text).toContain('The unsupported sentence type is:')
         expect(res.text).toContain('This type of sentence is a not supported')
+      })
+  })
+
+  it('GET manual express when can load previous calc', () => {
+    const populateExistingDatesSpy = jest.spyOn(manualEntryService, 'populateExistingDates')
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType.mockResolvedValue({
+      unsupportedSentenceMessages: [
+        {
+          type: 'UNSUPPORTED_SENTENCE',
+          message: 'This type of sentence is a not supported.',
+        } as ValidationMessage,
+      ],
+      unsupportedCalculationMessages: [],
+      unsupportedManualMessages: [],
+    })
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
+    calculateReleaseDatesService.offenderHasPreviousManualCalculation.mockResolvedValue(true)
+    calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
+      source: 'NOMIS',
+      dates: [{ type: 'CRD', date: '2000-01-01' }],
+    } as LatestCalculation)
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(populateExistingDatesSpy).toHaveBeenCalled()
+      })
+  })
+
+  it('GET manual express when cannot load previous calc', () => {
+    const populateExistingDatesSpy = jest.spyOn(manualEntryService, 'populateExistingDates')
+    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
+      {
+        type: 'UNSUPPORTED_SENTENCE',
+      } as ValidationMessage,
+    ])
+    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessagesWithType.mockResolvedValue({
+      unsupportedSentenceMessages: [
+        {
+          type: 'UNSUPPORTED_SENTENCE',
+          message: 'This type of sentence is a not supported.',
+        } as ValidationMessage,
+      ],
+      unsupportedCalculationMessages: [],
+      unsupportedManualMessages: [],
+    })
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
+    calculateReleaseDatesService.offenderHasPreviousManualCalculation.mockResolvedValue(true)
+    calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
+      status: 404,
+      message: 'Not Found',
+    })
+
+    return request(app)
+      .get('/calculation/A1234AA/manual-entry')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(populateExistingDatesSpy).not.toHaveBeenCalled()
       })
   })
 
