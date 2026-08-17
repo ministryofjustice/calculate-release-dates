@@ -2018,8 +2018,15 @@ export interface components {
     SDSDescriptions: {
       /** @description Any reason this sentence might be excluded from SDS40 */
       sds40ExclusionDescription?: string | null
-      /** @description Any reason this sentence might be excluded from Progression Model */
+      /**
+       * @deprecated
+       * @description DEPRECATED - Use progressionModelDoesNotApplyDescription and progressionModelExcludedOffenceDescription
+       */
       progressionModelExclusionDescription?: string | null
+      /** @description Any reason this sentence might be excluded from Progression Model */
+      progressionModelDoesNotApplyDescription?: string | null
+      /** @description If this offence is excluded from progression model */
+      progressionModelExcludedOffenceDescription?: string | null
       /**
        * @description The way to display SDS plus status for the sentence
        * @enum {string|null}

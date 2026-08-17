@@ -635,7 +635,7 @@ describe('CheckInformationController', () => {
           isSDSPlus: false,
           hasAnSDSEarlyReleaseExclusion: 'NO',
           sdsDescriptions: {
-            progressionModelExclusionDescription: 'Would be S250+',
+            progressionModelDoesNotApplyDescription: 'Would be S250+',
           },
         } as AnalysedSentenceAndOffence,
         {
@@ -683,17 +683,75 @@ describe('CheckInformationController', () => {
           expect(sexualOffenceCard.find('[data-qa=sds-40-early-release-exclusion]').text()).toContain(
             'Sexual (if sentenced after blah)',
           )
-          expect(sexualOffenceCard.find('[data-qa=sds-progression-model-early-release-exclusion]')).toHaveLength(0)
+          expect(sexualOffenceCard.find('[data-qa=sds-progression-model-does-not-apply]')).toHaveLength(0)
+          expect(sexualOffenceCard.find('[data-qa=sds-progression-model-offence-exclusion]')).toHaveLength(0)
 
           const progressionModelOffenceCard = $('.new-sentence-card:contains("PMOFFENCE")')
           expect(progressionModelOffenceCard.find('[data-qa=sds-40-early-release-exclusion]')).toHaveLength(0)
-          expect(
-            progressionModelOffenceCard.find('[data-qa=sds-progression-model-early-release-exclusion]').text(),
-          ).toContain('Would be S250+')
+          expect(progressionModelOffenceCard.find('[data-qa=sds-progression-model-does-not-apply]').text()).toContain(
+            'Would be S250+',
+          )
 
           const noExclusionCard = $('.new-sentence-card:contains("No exclusion offence")')
           expect(noExclusionCard.find('[data-qa=sds-40-early-release-exclusion]')).toHaveLength(0)
-          expect(noExclusionCard.find('[data-qa=sds-progression-model-early-release-exclusion]')).toHaveLength(0)
+          expect(noExclusionCard.find('[data-qa=sds-progression-model-does-not-apply]')).toHaveLength(0)
+        })
+    })
+
+    it('GET /calculation/:nomsId/check-information should show progression model does not apply and offence exclusions', () => {
+      const sentencesAndOffencesWithSDSDescriptions = [
+        {
+          terms: [
+            {
+              years: 3,
+            },
+          ],
+          sentenceTypeDescription: 'SDS Standard Sentence',
+          caseSequence: 1,
+          lineSequence: 1,
+          caseReference: 'CASE001',
+          courtDescription: 'Court 1',
+          sentenceSequence: 1,
+          offence: { offenceEndDate: '2021-02-03', offenceDescription: 'PMOFFENCE' },
+          sentenceAndOffenceAnalysis: 'NEW',
+          isSDSPlus: true,
+          hasAnSDSEarlyReleaseExclusion: 'NO',
+          sdsDescriptions: {
+            progressionModelDoesNotApplyDescription: 'Some reason does not apply',
+            progressionModelExcludedOffenceDescription: 'Some PM excluded offence',
+          },
+        } as AnalysedSentenceAndOffence,
+      ]
+
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        sentencesAndOffencesWithSDSDescriptions,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        null,
+        [],
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/A1234AA/check-information')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const progressionModelOffenceCard = $('.new-sentence-card:contains("PMOFFENCE")')
+          expect(progressionModelOffenceCard.find('[data-qa=sds-40-early-release-exclusion]')).toHaveLength(0)
+          expect(progressionModelOffenceCard.find('[data-qa=sds-progression-model-does-not-apply]').text()).toContain(
+            'Some reason does not apply',
+          )
+          expect(
+            progressionModelOffenceCard.find('[data-qa=sds-progression-model-offence-exclusion]').text(),
+          ).toContain('Some PM excluded offence')
         })
     })
 

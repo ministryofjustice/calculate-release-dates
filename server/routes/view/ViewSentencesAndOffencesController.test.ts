@@ -497,7 +497,7 @@ describe('View Sentences and Offences controller tests', () => {
         hasAnSDSEarlyReleaseExclusion: 'PROGRESSION_MODEL_SCHEDULE_13_PART_3',
         sentenceAndOffenceAnalysis: 'SAME',
         sdsDescriptions: {
-          progressionModelExclusionDescription: 'Would be SDS+',
+          progressionModelDoesNotApplyDescription: 'Would be SDS+',
         },
       } as AnalysedSentenceAndOffence,
       {
@@ -532,17 +532,17 @@ describe('View Sentences and Offences controller tests', () => {
         const $ = cheerio.load(res.text)
         const sexualOffenceCard = $('.sentence-card:contains("SXOFFENCE")')
         expect(sexualOffenceCard.find('[data-qa=sds-40-early-release-exclusion]').text()).toContain('Sexual')
-        expect(sexualOffenceCard.find('[data-qa=sds-progression-model-early-release-exclusion]')).toHaveLength(0)
+        expect(sexualOffenceCard.find('[data-qa=sds-progression-model-does-not-apply]')).toHaveLength(0)
 
         const progressionModelOffenceCard = $('.sentence-card:contains("PMOFFENCE")')
         expect(progressionModelOffenceCard.find('[data-qa=sds-40-early-release-exclusion]')).toHaveLength(0)
-        expect(
-          progressionModelOffenceCard.find('[data-qa=sds-progression-model-early-release-exclusion]').text(),
-        ).toContain('Would be SDS+')
+        expect(progressionModelOffenceCard.find('[data-qa=sds-progression-model-does-not-apply]').text()).toContain(
+          'Would be SDS+',
+        )
 
         const noExclusionCard = $('.sentence-card:contains("No exclusion offence")')
         expect(noExclusionCard.find('[data-qa=sds-40-early-release-exclusion]')).toHaveLength(0)
-        expect(noExclusionCard.find('[data-qa=sds-progression-model-early-release-exclusion]')).toHaveLength(0)
+        expect(noExclusionCard.find('[data-qa=sds-progression-model-does-not-apply]')).toHaveLength(0)
       })
   })
 
