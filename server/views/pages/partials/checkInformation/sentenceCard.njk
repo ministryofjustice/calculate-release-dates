@@ -113,10 +113,16 @@
                                                 <td class="govuk-table__cell">{{ sentence.sdsDescriptions.sds40ExclusionDescription }}</td>
                                             </tr>
                                         {% endif %}
-                                        {% if sentence.sdsDescriptions.progressionModelExclusionDescription %}
-                                            <tr class="govuk-table__row govuk-body-s" data-qa="sds-progression-model-early-release-exclusion">
+                                        {% if sentence.sdsDescriptions.progressionModelDoesNotApplyDescription %}
+                                            <tr class="govuk-table__row govuk-body-s" data-qa="sds-progression-model-does-not-apply">
                                                 <th scope="row" class="govuk-table__header sentence-table-header">Progression model does not apply to</th>
-                                                <td class="govuk-table__cell">{{ sentence.sdsDescriptions.progressionModelExclusionDescription }}</td>
+                                                <td class="govuk-table__cell">{{ sentence.sdsDescriptions.progressionModelDoesNotApplyDescription }}</td>
+                                            </tr>
+                                        {% endif %}
+                                        {% if sentence.sdsDescriptions.progressionModelExcludedOffenceDescription %}
+                                            <tr class="govuk-table__row govuk-body-s" data-qa="sds-progression-model-offence-exclusion">
+                                                <th scope="row" class="govuk-table__header sentence-table-header">Progression model exclusion</th>
+                                                <td class="govuk-table__cell">{{ sentence.sdsDescriptions.progressionModelExcludedOffenceDescription }}</td>
                                             </tr>
                                         {% endif %}
                                     {% else %}
