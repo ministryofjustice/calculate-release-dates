@@ -15,7 +15,7 @@ import DateTypeConfigurationService from '../services/dateTypeConfigurationServi
 import { expectMiniProfile } from './testutils/layoutExpectations'
 import ManualEntryService from '../services/manualEntryService'
 import SessionSetup from './testutils/sessionSetup'
-import { StorageResponseModel } from '../services/dateValidationService'
+import DateValidationService, { StorageResponseModel } from '../services/dateValidationService'
 import config from '../config'
 import { testDateTypeDefinitions } from '../testutils/createUserToken'
 import { FullPageError } from '../types/FullPageError'
@@ -43,7 +43,12 @@ const calculateReleaseDatesService = new CalculateReleaseDatesService(
   auditService,
   null,
 ) as jest.Mocked<CalculateReleaseDatesService>
-const manualEntryService = new ManualEntryService(dateTypeConfigurationService, null, calculateReleaseDatesService)
+const dateValidationService = new DateValidationService() as jest.Mocked<DateValidationService>
+const manualEntryService = new ManualEntryService(
+  dateTypeConfigurationService,
+  dateValidationService,
+  calculateReleaseDatesService,
+)
 
 jest.mock('../services/prisonerService')
 
@@ -162,6 +167,17 @@ describe('Check access tests', () => {
 })
 
 describe('approvedDatesRoutes', () => {
+  afterEach(() => {
+    jest.resetAllMocks()
+    nock.cleanAll()
+  })
+  beforeEach(() => {
+    jest.spyOn(dateValidationService, 'singleItemsErrored').mockReturnValue(undefined)
+    jest.spyOn(dateValidationService, 'isDateValid').mockReturnValue(true)
+    jest.spyOn(dateValidationService, 'notWithinOneHundredYears').mockReturnValue(undefined)
+    jest.spyOn(dateValidationService, 'validateAgainstOtherDates').mockReturnValue(undefined)
+  })
+
   it('GET /calculation/:nomsId/:calculationRequestId/approved-dates-question asks the question', () => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     return request(app)
@@ -461,6 +477,73 @@ describe('approvedDatesRoutes', () => {
           '/calculation/A1234AA/cancelCalculation?redirectUrl=/calculation/A1234AA/123456/submit-dates?year=2029&month=09&day=23',
         )
       })
+  })
+
+  it('POST/ /calculation/:nomsId/:calculationRequestId/submit-dates calls validation service with submitted HDCAD and existing HDCED date within calculation', () => {
+    const nomsId = 'A1234AA'
+    sessionSetup.sessionDoctor = req => {
+      req.session.selectedApprovedDates = {}
+      req.session.selectedApprovedDates[nomsId] = [
+        {
+          position: 1,
+          dateType: 'HDCAD',
+          completed: false,
+          manualEntrySelectedDate: {
+            dateType: 'HDCAD',
+            dateText: 'HDCAD',
+            date: { day: 1, month: 1, year: 2017 },
+          },
+        } as ManualJourneySelectedDate,
+      ]
+      req.session.HDCED = {}
+      req.session.HDCED[nomsId] = '2018-01-01'
+    }
+
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+
+    const expectedManualDates: ManualJourneySelectedDate[] = [
+      {
+        position: 1,
+        dateType: 'HDCAD',
+        completed: false,
+        manualEntrySelectedDate: {
+          dateType: 'HDCAD',
+          dateText: 'HDCAD',
+          date: { day: 1, month: 1, year: 2017 },
+        },
+        date: { day: 1, month: 1, year: 2017 },
+      } as ManualJourneySelectedDate,
+      {
+        position: 4,
+        dateType: 'HDCED',
+        completed: true,
+        manualEntrySelectedDate: {
+          dateType: 'HDCED',
+          dateText: 'HDCED',
+          date: { day: 1, month: 1, year: 2018 },
+        },
+      },
+    ]
+
+    const storeDateSpy = jest.spyOn(manualEntryService, 'storeDate')
+
+    return request(app)
+      .post('/calculation/A1234AA/123456/submit-dates?dateType=HDCAD')
+      .type('form')
+      .send({
+        day: '1',
+        month: '1',
+        year: '2017',
+        dateType: 'HDCAD',
+      })
+      .expect(() =>
+        expect(storeDateSpy).toHaveBeenCalledWith(expectedManualDates, {
+          day: '1',
+          month: '1',
+          year: '2017',
+          dateType: 'HDCAD',
+        }),
+      )
   })
 
   it('POST /calculation/:nomsId/:calculationRequestId/submit-dates loads submit dates page with mini profile if storing fails', () => {
