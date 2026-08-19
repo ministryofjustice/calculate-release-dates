@@ -188,8 +188,34 @@ export default class ApprovedDatesRoutes {
 
     const prisonerDetail = req.prisoner
     const dateValue: EnteredDate = req.body
-    const storeDateResponse = this.manualEntryService.storeDate(req.session.selectedApprovedDates[nomsId], dateValue)
+
     const approvedDates: ManualJourneySelectedDate[] = req.session.selectedApprovedDates[nomsId]
+
+    const existingHdced = req?.session?.HDCED?.[nomsId]
+      ? (() => {
+          const dateObject = DateTime.fromISO(req.session.HDCED[nomsId])
+          return {
+            position: 4,
+            completed: true,
+            dateType: 'HDCED' as const,
+            manualEntrySelectedDate: {
+              dateText: 'HDCED',
+              dateType: 'HDCED' as const,
+              date: {
+                day: dateObject.day,
+                month: dateObject.month,
+                year: dateObject.year,
+              },
+            },
+          }
+        })()
+      : null
+
+    // if calculation contains HDCED, amend approved dates prior to validation. HDCAD is relative to HDCED where present.
+    const storeDateResponse = this.manualEntryService.storeDate(
+      existingHdced ? approvedDates.concat(existingHdced) : approvedDates,
+      dateValue,
+    )
 
     if (!storeDateResponse.success && storeDateResponse.message) {
       const { date, message, enteredDate } = storeDateResponse
