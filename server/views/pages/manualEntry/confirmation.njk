@@ -4,6 +4,7 @@
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageTitle = applicationName + " - determinite manual entry" %}
 {% set pageId = "manual-dates-confirmation" %}
@@ -49,6 +50,14 @@
                 {% set formError = {
                     text: "Please select either 'Yes' or 'No'"
                 } if confirmationError else null %}
+
+                {% if not formError and systemErrors %}
+                    {{ govukErrorSummary({
+                        titleText: "There is a problem",
+                        errorList: systemErrors.messages
+                    }) }}
+                {% endif %}
+
                 <h2 class="govuk-heading-m">Confirm if the dates are still correct</h2>
                 <p>If the dates are correct, they will be saved in NOMIS.</p>
 
