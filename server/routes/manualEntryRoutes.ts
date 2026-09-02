@@ -357,6 +357,9 @@ export default class ManualEntryRoutes {
       return res.redirect(`/calculation/${nomsId}/manual-entry/select-dates`)
     }
 
+    const serverErrors = req.flash('serverErrors')
+    const errorMessages = serverErrors && serverErrors[0] ? JSON.parse(serverErrors[0]) : null
+
     const viewModel = new ManualEntryConfirmationViewModel(
       prisonerDetail,
       rows,
@@ -364,6 +367,7 @@ export default class ManualEntryRoutes {
       Boolean(unchangedManualJourney),
       Boolean(confirmationError),
       manualJourneyDifferentDatesConfirmed,
+      errorMessages,
     )
 
     return res.render('pages/manualEntry/confirmation', viewModel)
