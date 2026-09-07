@@ -57,4 +57,6 @@ export type PreviouslyRecordedSLED = components['schemas']['PreviouslyRecordedSL
 export type Agency = components['schemas']['Agency']
 export type AgencySwitchUpdateResult = components['schemas']['AgencySwitchUpdateResult']
 export type ApiReleaseDateType = components['schemas']['DetailedDate']['type']
+export type PrisonerCalculationOverview = components['schemas']['PrisonerCalculationOverview']
+export type HistoricCalculationSummary = components['schemas']['HistoricCalculationSummary']
 export type ConfigItem = components['schemas']['ConfigItem']

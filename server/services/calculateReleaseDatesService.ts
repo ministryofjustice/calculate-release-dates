@@ -3,8 +3,6 @@ import { Request } from 'express'
 import {
   Action,
   LatestCalculationCardConfig,
-  LatestCalculationCardDate,
-  LatestCalculationCardDateHint,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
   Agency,
@@ -17,6 +15,8 @@ import {
   CalculationReason,
   CalculationRequestModel,
   CalculationUserInputs,
+  ConfigItem,
+  ConfirmSecondCheckResult,
   DateTypeDefinition,
   GenuineOverrideCreatedResponse,
   GenuineOverrideInputResponse,
@@ -26,13 +26,12 @@ import {
   LatestCalculation,
   NomisCalculationSummary,
   PersonComparisonInputs,
+  PrisonerCalculationOverview,
   ReleaseDateCalculationBreakdown,
   ReleaseDatesAndCalculationContext,
   SubmitCalculationRequest,
   SupportedValidationResponse,
   ValidationMessage,
-  ConfirmSecondCheckResult,
-  ConfigItem,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages } from '../types/ErrorMessages'
 import logger from '../../logger'
@@ -54,6 +53,7 @@ import AuditService from './auditService'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import AuditAction from '../enumerations/auditType'
 import { CalculationHistoryModel } from '../models/CalculationHistoryModel'
+import latestCalculationComponentConfig from '../utils/latestCalculation'
 
 export default class CalculateReleaseDatesService {
   constructor(
@@ -560,7 +560,7 @@ export default class CalculateReleaseDatesService {
       .getLatestCalculationForPrisoner(prisonerId, username)
       .then(async latestCalc => {
         let action: Action | undefined
-        const latestCalcCard = this.latestCalculationComponentConfig(latestCalc)
+        const latestCalcCard = latestCalculationComponentConfig(latestCalc)
         if (latestCalc.calculationRequestId) {
           action = {
             title: 'View details',
@@ -595,31 +595,6 @@ export default class CalculateReleaseDatesService {
       mismatchReference,
       username,
     )
-  }
-
-  private latestCalculationComponentConfig(latestCalculation: LatestCalculation): LatestCalculationCardConfig {
-    const dates: LatestCalculationCardDate[] = Object.values(latestCalculation.dates).map(date => {
-      const cardDate: LatestCalculationCardDate = {
-        type: date.type,
-        description: date.description,
-        date: date.date,
-        hints: date.hints.map(hint => {
-          const cardHint: LatestCalculationCardDateHint = {
-            text: hint.text,
-            href: hint.link ?? '',
-          }
-          return cardHint
-        }),
-      }
-      return cardDate
-    })
-    return {
-      source: latestCalculation.source,
-      calculatedAt: latestCalculation.calculatedAt,
-      establishment: latestCalculation.establishment ?? '',
-      reason: latestCalculation.reason,
-      dates,
-    }
   }
 
   async getNomisCalculationSummary(offenderSentCalcId: number, username: string): Promise<NomisCalculationSummary> {
@@ -662,5 +637,9 @@ export default class CalculateReleaseDatesService {
 
   async getApiConfigItems(username: string): Promise<ConfigItem[]> {
     return this.calculateReleaseDatesApiRestClient.getConfigItems(username)
+  }
+
+  async getPrisonCalculationOverview(nomsId: string, username: string): Promise<PrisonerCalculationOverview> {
+    return this.calculateReleaseDatesApiRestClient.getPrisonCalculationOverview(nomsId, username)
   }
 }
