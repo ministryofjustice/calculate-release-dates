@@ -1601,8 +1601,7 @@ export interface components {
     }
     RecordARecallDecisionResult: {
       /** @enum {string} */
-      decision:
-        'CRITICAL_ERRORS' | 'AUTOMATED' | 'NO_RECALLABLE_SENTENCES_FOUND' | 'VALIDATION' | 'CONFLICTING_ADJUSTMENTS'
+      decision: 'AUTOMATED' | 'NO_RECALLABLE_SENTENCES_FOUND' | 'VALIDATION' | 'CONFLICTING_ADJUSTMENTS'
       validationMessages: components['schemas']['ValidationMessage'][]
       conflictingAdjustments: string[]
       automatedCalculationData?: components['schemas']['AutomatedCalculationData'] | null
@@ -2476,12 +2475,12 @@ export interface components {
       identifier: string
       consecutiveSentenceUUIDs: string[]
       /** Format: int32 */
-      caseSequence?: number
+      caseSequence?: number | null
       /** Format: int32 */
-      lineSequence?: number
-      externalSentenceId?: components['schemas']['ExternalSentenceId']
-      caseReference?: string
-      recall?: components['schemas']['Recall']
+      lineSequence?: number | null
+      externalSentenceId?: components['schemas']['ExternalSentenceId'] | null
+      caseReference?: string | null
+      recall?: components['schemas']['Recall'] | null
       type: string
     }
     Adjustment: {
@@ -2784,6 +2783,9 @@ export interface components {
       recentCalculations: components['schemas']['HistoricCalculationSummary'][]
       /** Format: int32 */
       totalCalculationCount: number
+      /** Format: int32 */
+      numberOfSentences: number
+      hasIndeterminateSentences: boolean
     }
     ReleaseDateHint: {
       text: string
@@ -3267,6 +3269,7 @@ export interface components {
         | 'CALCULATION_FAILED'
         | 'DATES_HAVE_CHANGED'
         | null
+      /** @description The results of preliminary calculation if approved dates can be added */
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates'] | null
       /** @description Previous approved dates for this prisoner if any are found */
       previousApprovedDates: components['schemas']['ApprovedDate'][]

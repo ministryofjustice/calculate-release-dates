@@ -68,7 +68,7 @@ function appSetup(
     app.use(setUpCCARDComponents())
     app.use(populateValidationErrors())
     app.use(
-      ['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId', '/'],
+      ['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId', '/', '/:nomsId/overview'],
       getPrisoner(services.prisonerService),
     )
     app.use(routes(services))
