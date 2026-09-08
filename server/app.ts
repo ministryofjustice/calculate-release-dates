@@ -61,7 +61,7 @@ export default function createApp(services: Services): express.Application {
     app.use(setUpCCARDComponents())
     app.use(populateValidationErrors())
     app.use(
-      ['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId', '/'],
+      ['/calculation/:nomsId', '/view/:nomsId', '/approved-dates/:nomsId', '/', '/:nomsId/overview'],
       getPrisoner(services.prisonerService),
     )
     app.use(addUsernameAndCaseloadToTelemetry())

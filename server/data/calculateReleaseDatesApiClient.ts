@@ -36,6 +36,7 @@ import {
   ValidationMessage,
   WorkingDay,
   ConfirmSecondCheckResult,
+  PrisonerCalculationOverview,
   ConfigItem,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import logger from '../../logger'
@@ -516,6 +517,15 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     return this.get<ConfigItem[]>(
       {
         path: `/configuration/all`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getPrisonCalculationOverview(nomsId: string, username: string): Promise<PrisonerCalculationOverview> {
+    return this.get<PrisonerCalculationOverview>(
+      {
+        path: `/calculation/${nomsId}/overview`,
       },
       asSystem(username),
     )

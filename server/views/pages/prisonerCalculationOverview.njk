@@ -1,0 +1,231 @@
+{% extends "../partials/layout.njk" %}
+{% from "hmpps/components/court-cases-release-dates/actions-card/macro.njk" import actionsCard %}
+{% from "hmpps/components/court-cases-release-dates/sub-navigation/macro.njk" import subNavigation %}
+{% from "hmpps/components/court-cases-release-dates/things-to-do/macro.njk" import thingsToDo %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "hmpps/components/court-cases-release-dates/latest-calculation-card/macro.njk" import latestCalculationCard %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitle = applicationName + " - Overview" %}
+{% set pageId = "prisoner-calculation-overview" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {% if serviceDefinitions %}
+        {{ subNavigation(serviceDefinitions.services, 'releaseDates') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row release-dates-summary-container">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl" data-qa="main-heading" id="main-heading">Release dates and calculations</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            {% if anyThingsToDo %}
+                {{thingsToDo(serviceDefinitions, 'all')}}
+            {% endif %}
+
+            {% if not anyThingsToDo  %}
+                <h3 class="govuk-heading-l" data-qa="latest-calc-heading">Latest calculation</h3>
+                {% if latestCalculationCardConfig %}
+                    {% set calculationSourceHtml %}
+                        {{ calculationSourceDescription }}
+                        {% if calculationSourceAdditionalHint %}
+                            <br/> <span class="govuk-!-font-size-16 govuk-hint">{{ calculationSourceAdditionalHint }}</span>
+                        {% endif %}
+                    {% endset %}
+                    {% set calculatedByText %}{{ calculatedByDisplayName | capitaliseName }}{% if calculatedByDisplayName and calculatedAtEstablishment %} at {% endif %}{{ calculatedAtEstablishment }}{% endset %}
+                    {% if checkedByDisplayName == null %}
+                        {% set checkedBy = "Not checked" %}
+                    {% else %}
+                        {% set checkedByName = checkedByDisplayName | capitaliseName %}
+                        {% set checkedByDate = checkedOnDate | hmppsFormatDate('dd MMMM yyyy') %}
+                        {% set checkedBy = checkedByName + ' on ' + checkedByDate %}
+                    {% endif %}
+                    {{ govukSummaryList({
+                        classes: "govuk-summary-list--no-border govuk-!-margin-bottom-2",
+                        attributes: {  "data-qa": "calculation-summary"},
+                        rows: [
+                            {
+                                key: {
+                                    text: "Calculation date",
+                                    classes: "custom-summary-list__key"
+                                },
+                                value: {
+                                    text: calculationDate | hmppsFormatDate('dd MMMM yyyy')
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Calculation reason",
+                                    classes: "custom-summary-list__key"
+                                },
+                                value: {
+                                    text: calculationReasonDescription
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Calculated by",
+                                    classes: "custom-summary-list__key"
+                                },
+                                value: {
+                                    text: calculatedByText
+                                }
+                            },
+                            {
+                                key: {
+                                    text: "Last checked by",
+                                    classes: "custom-summary-list__key"
+                                },
+                                value: {
+                                    text: checkedBy
+                                }
+                            } if secondCheckEnabled,
+                            {
+                                key: {
+                                    text: "Source",
+                                    classes: "custom-summary-list__key"
+                                },
+                                value: {
+                                    html: calculationSourceHtml
+                                }
+                            }
+                        ],
+                        attributes: { id: 'latest-calc-summary' }
+                    }) }}
+                    {{ latestCalculationCard(latestCalculationCardConfig, latestCalculationCardAction, false) }}
+                {% elseif numberOfActiveSentences > 0 %}
+                    <p class="govuk-body">There are no previous calculations.</p>
+                {% else %}
+                    <p class="govuk-body">This person has no active sentences.</p>
+                    <p class="govuk-body">To calculate release dates, you must enter active sentence information in court cases and try again.</p>
+                {% endif %}
+                {% if latestCalculation.source !== 'NOMIS' %}
+                    <ul class="govuk-list">
+                        <li>
+                            <a data-qa="ccard-sentence-details-link" class="govuk-link"
+                               href="/view/{{ latestCalc.offenderNo }}/sentences-and-offences/{{ latestCalculation.calculationRequestId }}">View calculation details</a>
+                        </li>
+                    </ul>
+                {% endif %}
+            {% endif %}
+
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+            <h3 class="govuk-heading-l">Calculation history</h3>
+            {% if historicCalculations and historicCalculations.length > 0 %}
+                <p class="govuk-body" data-qa="historic-calc-page-summary">
+                    {% if historicCalculations.length < totalCalculationsCount %}
+                        Showing <b>1</b> to <b>{{ historicCalculations.length }}</b> of <b>{{ totalCalculationsCount }}</b>
+                    {% else %}
+                        Showing <b>{{ historicCalculations.length }}</b> calculation{% if historicCalculations.length > 1 %}s{% endif %}
+                    {% endif %}
+                </p>
+                {% set historyRows = [] %}
+                {% for historicCalculation in historicCalculations %}
+                    {% set historicCalculationDate %}
+                        {% if historicCalculation.calculationSource === 'NOMIS' %}
+                            <a class="govuk-link" href="/view/{{ prisonerDetail.offenderNo }}/nomis-calculation-summary/{{historicCalculation.nomisCalculationId}}">{{ historicCalculation.calculationDate | hmppsFormatDate('dd MMMM yyyy') }}</a>
+                        {% else %}
+                            <a class="govuk-link" href="/view/{{ prisonerDetail.offenderNo }}/sentences-and-offences/{{ historicCalculation.crdsCalculationId }}">{{ historicCalculation.calculationDate | hmppsFormatDate('dd MMMM yyyy') }}</a>
+                        {% endif %}
+                    {% endset %}
+                    {% if historicCalculation.reasonDescription %}
+                        {% set historicCalculationReason = historicCalculation.reasonDescription %}
+                    {% else %}
+                        {% set historicCalculationReason = 'Not entered' %}
+                    {% endif %}
+
+
+                    {% set historicCalculationEstablishment %}{{ historicCalculation.calculatedByDisplayName | capitaliseName }}{% if historicCalculation.calculatedByDisplayName and historicCalculation.establishmentCalculatedAtDescription %} at {% endif %}{{ historicCalculation.establishmentCalculatedAtDescription }}{% endset %}
+
+                    {% set historicCalculationType = historicCalculation.calculationType %}
+                    {% set historicCalculationSourceSubHeading = '' %}
+                    {% if historicCalculation.calculationSource === 'NOMIS' %}
+                        {% set historicCalculationSource = "NOMIS" %}
+                    {% else %}
+                        {% if historicCalculationType and historicCalculationType.startsWith("MANUAL") %}
+                            {% set historicCalculationSource = "Paper calculation" %}
+                            {% set historicCalculationSourceSubHeading %}<br/><span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>{% endset %}
+                        {% elseif historicCalculationType === 'GENUINE_OVERRIDE' %}
+                            {% set historicCalculationSource = "User Override" %}
+                            {% set historicCalculationSourceSubHeading %}<br/><span class="govuk-!-font-size-16 govuk-hint">{{ historicCalculation.genuineOverrideReasonDescription }}</span>{% endset %}
+                        {% else %}
+                            {% set historicCalculationSource = "Calculate release dates service" %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% set historyRows = (historyRows.push(
+                        [
+                            { html: historicCalculationDate, classes: "calculation-history-table-first-column" },
+                            { text: historicCalculationReason, classes: "calculation-history-table-second-column" },
+                            { text: historicCalculationEstablishment, classes: "calculation-history-table-third-column" },
+                            { html: historicCalculationSource + historicCalculationSourceSubHeading, classes: "calculation-history-table-fourth-column" }
+                        ]), historyRows)
+                    %}
+
+                {% endfor %}
+                {{ govukTable({
+                    head: [
+                        {
+                            text: "Calculation date"
+                        },
+                        {
+                            text: "Calculation reason"
+                        },
+                        {
+                            text: "Calculated by"
+                        },
+                        {
+                            text: "Source"
+                        }
+                    ],
+                    rows: historyRows,
+                    attributes: { "data-qa": "calculation-history-table" }
+                }) }}
+            {% else %}
+                <p class="govuk-body" data-qa="historic-calc-page-summary">There are no previous calculations.</p>
+            {% endif %}
+        </div>
+
+        {% set actions = [
+            {
+                href: '/calculation/' + prisonerDetail.offenderNo + '/reason',
+                title: 'Calculate release dates',
+                dataQa: 'calc-release-dates-for-prisoner-action-link'
+            }
+        ] %}
+
+        {% if calculationSource == "CRDS" and secondCheckEnabled %}
+            {% set _ = actions.push({
+                href: '/calculation/' + prisonerDetail.offenderNo + '/secondCheck',
+                title: 'Record a second calculation check',
+                dataQa: 'calc-release-dates-for-prisoner-second-check'
+            }) %}
+        {% endif %}
+
+        {% if hasNoIndeterminateSentence %}
+            {% set addDatesUrl = '/approved-dates/' + prisonerDetail.offenderNo + '/start' if featureToggles.useNewApprovedDatesFlow else '/calculation/' + prisonerDetail.offenderNo + '/reason?isAddDatesFlow=true' %}
+            {% set _ = actions.push({
+                href: addDatesUrl,
+                title: 'Add APD, HDCAD or ROTL dates',
+                dataQa: 'calc-release-dates-for-adding-dates-link'
+            }) %}
+        {% endif %}
+
+        {% if allowBulkLoad %}
+            {% set actions = (actions.push(
+                {
+                    href: '/compare',
+                    title: 'Perform bulk comparison',
+                    dataQa: 'bulk-comparison-action-link'
+                }), actions) %}
+        {% endif %}
+
+        {{ actionsCard(actions) }}
+    </div>
+{% endblock %}
