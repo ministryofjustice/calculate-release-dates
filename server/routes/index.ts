@@ -47,6 +47,7 @@ import CompareManualCalculationController from './compare/CompareManualCalculati
 import CompareSubmitManualCalculationController from './compare/CompareSubmitManualCalculationController'
 import SecondCheckController from './calculation-reason/secondCheckController'
 import CalculationSecondCheckSummaryController from './calculation-summary/calcSecondCheckSummaryController'
+import PrisonerCalculationOverviewController from './start/prisonerCalculationOverviewController'
 import ConfigItemController from './config/configItemController'
 
 export default function Index({
@@ -107,6 +108,11 @@ export default function Index({
     userPermissionsService,
     courtCasesReleaseDatesService,
   )
+  const prisonerCalculationOverviewController = new PrisonerCalculationOverviewController(
+    calculateReleaseDatesService,
+    userPermissionsService,
+    courtCasesReleaseDatesService,
+  )
   const supportedSentencesController = new SupportedSentencesController()
   const accessibilityController = new AccessibilityController()
   const viewJourneyController = new ViewJourneyController(prisonerService, viewReleaseDatesService)
@@ -154,6 +160,7 @@ export default function Index({
 
   const indexRoutes = () => {
     route({ path: '/', controller: startController })
+    route({ path: '/:nomsId/overview', controller: prisonerCalculationOverviewController })
     route({ path: '/supported-sentences', controller: supportedSentencesController })
     route({ path: '/supported-sentences/:nomsId', controller: supportedSentencesController })
     route({ path: '/accessibility', controller: accessibilityController })
