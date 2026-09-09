@@ -1448,6 +1448,7 @@ export interface components {
         | 'HDCED_REPEAL'
         | 'PROGRESSION_TRANCHE_ONE_ALLOCATION'
         | 'PROGRESSION_MODEL_SCHEDULE_EXCLUSION'
+        | 'INVALID_NOMIS_OFFENCE_CODE'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1456,6 +1457,7 @@ export interface components {
         | 'UNSUPPORTED_CALCULATION'
         | 'VALIDATION'
         | 'VALIDATION_FIXABLE_IN_DPS'
+        | 'INVALID_OFFENCE'
         | 'INCORRECT_OFFENCE'
         | 'SUSPENDED_OFFENCE'
         | 'MANUAL_ENTRY_JOURNEY_REQUIRED'

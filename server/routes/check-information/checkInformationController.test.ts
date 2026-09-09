@@ -926,6 +926,39 @@ describe('CheckInformationController', () => {
         })
     })
 
+    it('GET /calculation/:nomsId/check-information should display errors with INVALID_OFFENCE type', () => {
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        {
+          messages: [{ html: 'Offence XXABC supply drugs is invalid' }, { html: 'Offence XX123 murder is invalid' }],
+          messageType: ErrorMessageType.INVALID_OFFENCE,
+        },
+        [],
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/A1234AA/check-information?hasErrors=true')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('This calculation contains invalid offences')
+          expect(res.text).toContain('Offence XXABC supply drugs is invalid')
+          expect(res.text).toContain('Offence XX123 murder is invalid')
+          expect(res.text).toContain(
+            'Check the warrant information and update the offence code in the Court Cases tab.',
+          )
+        })
+    })
+
     it('GET /calculation/:nomsId/check-information should show unsupported navigation and no ERSED if the calc is unsupported', () => {
       const model = new SentenceAndOffenceViewModel(
         stubbedPrisonerData,
