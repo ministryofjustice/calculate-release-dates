@@ -17,7 +17,7 @@ export default class PrisonerCalculationOverviewController implements Controller
     const { nomsId } = req.params
 
     const prisonerDetail = req.prisoner
-    const prisonerCalculationOverview = await this.calculateReleaseDatesService.getPrisonCalculationOverview(
+    const prisonerCalculationOverview = await this.calculateReleaseDatesService.getPrisonerCalculationOverview(
       nomsId,
       username,
     )

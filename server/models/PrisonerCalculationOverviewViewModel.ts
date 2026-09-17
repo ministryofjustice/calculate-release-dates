@@ -18,6 +18,8 @@ export default class PrisonerCalculationOverviewViewModel extends OptionalPrison
 
   public anyThingsToDo: boolean
 
+  public calculationRequestId: number
+
   public calculationDate: string
 
   public calculationReasonDescription: string
@@ -59,7 +61,7 @@ export default class PrisonerCalculationOverviewViewModel extends OptionalPrison
       if (latestCalc.calculationRequestId) {
         this.latestCalculationCardAction = {
           title: 'View details',
-          href: `/view/${prisonerDetail.offenderNo}/sentences-and-offences/${latestCalc.calculationRequestId}`,
+          href: `/view/${prisonerDetail.offenderNo}/calculation-history/CRDS/${latestCalc.calculationRequestId}/overview`,
           dataQa: 'latest-calc-card-action',
         }
         if (latestCalc.source === 'CRDS' && !prisonerCalculationOverview.hasIndeterminateSentences) {
@@ -76,6 +78,7 @@ export default class PrisonerCalculationOverviewViewModel extends OptionalPrison
       this.calculatedAtEstablishment = latestCalc.establishment
       this.checkedByDisplayName = latestCalc.checkedByDisplayName
       this.checkedOnDate = latestCalc.checkedAt
+      this.calculationRequestId = latestCalc.calculationRequestId
       if (latestCalc.source === 'NOMIS') {
         this.calculationSourceDescription = 'NOMIS'
       } else if (latestCalc.source === 'CRDS' && latestCalc.calculationType.startsWith('MANUAL')) {

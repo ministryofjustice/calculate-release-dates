@@ -1,0 +1,14 @@
+<div class="app-stat-card-grid govuk-!-margin-bottom-4 govuk-!-margin-top-4" data-qa="release-dates-panel">
+    {% for releaseDate in model.releaseDates %}
+        <div class="app-stat-card">
+            <div class="app-stat-card__header"><p class="govuk-heading-s govuk-!-margin-bottom-1" data-qa="{{ releaseDate.shortName }}-short-name">{{ releaseDate.shortName }}</p></div>
+            <p class="app-stat-card__description govuk-hint" data-qa="{{ releaseDate.shortName }}-full-name">{{ releaseDate.fullName }}</p>
+            <p class="govuk-body govuk-!-margin-bottom-1" data-qa="{{ releaseDate.shortName }}-date">{{ releaseDate.date | hmppsFormatDate('cccc, dd MMMM yyyy') }}</p>
+            <p style="margin-top: 10px;" data-qa="{{ releaseDate.shortName }}-release-date-hints">
+                {% for hint in releaseDate.hints %}
+                    {{ hint.html | safe }}
+                {% endfor %}
+            </p>
+        </div>
+    {% endfor %}
+</div>

@@ -18,11 +18,13 @@ import {
   ConfigItem,
   ConfirmSecondCheckResult,
   DateTypeDefinition,
+  DetailedCalculationResults,
   GenuineOverrideCreatedResponse,
   GenuineOverrideInputResponse,
   GenuineOverrideReason,
   GenuineOverrideRequest,
   HistoricCalculation,
+  HistoricCalculationSummaryPage,
   LatestCalculation,
   NomisCalculationSummary,
   PersonComparisonInputs,
@@ -480,6 +482,15 @@ export default class CalculateReleaseDatesService {
     return []
   }
 
+  async getCalculationHistoryPage(
+    prisonerId: string,
+    page: number,
+    size: number,
+    username: string,
+  ): Promise<HistoricCalculationSummaryPage> {
+    return this.calculateReleaseDatesApiRestClient.getCalculationHistoryPage(prisonerId, page, size, username)
+  }
+
   flattenCalculationHistory(calculationHistory: HistoricCalculation[]): CalculationHistoryModel[] {
     return calculationHistory.flatMap(calculation => {
       const flattenedHistory: CalculationHistoryModel[] = [
@@ -541,6 +552,13 @@ export default class CalculateReleaseDatesService {
         }
         return withAdjustments
       })
+  }
+
+  async getDetailedCalculationResults(
+    calculationRequestId: number,
+    username: string,
+  ): Promise<DetailedCalculationResults> {
+    return this.calculateReleaseDatesApiRestClient.getDetailedCalculationResults(calculationRequestId, username)
   }
 
   async getLatestCalculationForPrisoner(prisonerId: string, username: string): Promise<LatestCalculation> {
@@ -639,7 +657,7 @@ export default class CalculateReleaseDatesService {
     return this.calculateReleaseDatesApiRestClient.getConfigItems(username)
   }
 
-  async getPrisonCalculationOverview(nomsId: string, username: string): Promise<PrisonerCalculationOverview> {
-    return this.calculateReleaseDatesApiRestClient.getPrisonCalculationOverview(nomsId, username)
+  async getPrisonerCalculationOverview(nomsId: string, username: string): Promise<PrisonerCalculationOverview> {
+    return this.calculateReleaseDatesApiRestClient.getPrisonerCalculationOverview(nomsId, username)
   }
 }
