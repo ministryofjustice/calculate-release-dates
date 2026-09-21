@@ -25,7 +25,7 @@ import ComparisonType from '../enumerations/comparisonType'
 import { FieldValidationError } from '../types/FieldValidationError'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
 import logger from '../../logger'
-import { AllocatedTranches } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { AdjustmentDtoTypes, AllocatedTranches } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 dayjs.extend(customParseFormat)
 
@@ -112,6 +112,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   })
 
   njkEnv.addFilter('remandDate', remandDate)
+
+  njkEnv.addFilter('formatAdjustmentType', formatAdjustmentType)
 
   njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
 
@@ -236,6 +238,33 @@ export const remandDate = (date: string, format: string) => {
     return 'Date Not Entered'
   }
   return hmppsFormatDate(date, format)
+}
+
+export const formatAdjustmentType = (type: AdjustmentDtoTypes) => {
+  switch (type) {
+    case 'REMAND':
+      return 'Remand'
+    case 'TAGGED_BAIL':
+      return 'Tagged bail'
+    case 'CUSTODY_ABROAD':
+      return 'Time spent in custody abroad'
+    case 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED':
+      return 'RADA (Restoration of additional days awarded)'
+    case 'SPECIAL_REMISSION':
+      return 'Special remission'
+    case 'ADDITIONAL_DAYS_AWARDED':
+      return 'ADA (Additional days awarded)'
+    case 'UNLAWFULLY_AT_LARGE':
+      return 'UAL (Unlawfully at large)'
+    case 'LAWFULLY_AT_LARGE':
+      return 'LAL (Lawfully at large)'
+    case 'APPEAL_APPLICANT':
+      return 'Time spent as an appeal applicant not to count'
+    case 'UNUSED_DEDUCTIONS':
+      return 'Unused deductions'
+    default:
+      return ''
+  }
 }
 
 export const formatSds40Exclusion = (exclusion: string) => {

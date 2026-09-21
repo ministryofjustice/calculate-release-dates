@@ -47,7 +47,6 @@
     "compression": "^1.8.1",
     "connect-flash": "^0.1.1",
     "connect-redis": "^10.0.0",
-    "cookie-parser": "^1.4.7",
     "csrf-sync": "^4.2.1",
     "dayjs": "^1.11.23",
     "express": "^5.2.1",

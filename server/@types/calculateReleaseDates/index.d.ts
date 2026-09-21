@@ -678,6 +678,7 @@ export interface paths {
     }
     /**
      * Get historic calculations for a prisoner
+     * @deprecated
      * @description This endpoint will return a list of calculations performed for a given prisoner
      */
     get: operations['getCalculationResults']
@@ -1234,6 +1235,26 @@ export interface paths {
       cookie?: never
     }
     get: operations['getActiveCalculationReasons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/calculation-history/{nomsId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a page of historic calculations for a prisoner
+     * @description This endpoint will return a list of calculations performed for a given prisoner based the on the page number and page size requested. The results are ordered with the most recent calculation first.
+     */
+    get: operations['getHistoricCalculationSummaryPage']
     put?: never
     post?: never
     delete?: never
@@ -2142,6 +2163,7 @@ export interface components {
       /** Format: int64 */
       calculationRequestId?: number | null
       calculationReason?: string | null
+      reasonFurtherDetail?: string | null
       /** Format: int64 */
       offenderSentCalculationId?: number | null
       /** @enum {string|null} */
@@ -2992,7 +3014,8 @@ export interface components {
     }
     CalculationOriginalData: {
       prisonerDetails?: components['schemas']['PrisonerDetails'] | null
-      sentencesAndOffences?: components['schemas']['SentenceAndOffenceWithReleaseArrangements'][] | null
+      sentencesAndOffences?: components['schemas']['AnalysedSentenceAndOffence'][] | null
+      adjustments?: components['schemas']['AdjustmentDto'][] | null
     }
     ConcurrentSentenceBreakdown: {
       /** Format: date */
@@ -3180,6 +3203,31 @@ export interface components {
       requiresFurtherDetail: boolean
       furtherDetailDescription?: string | null
       isSecondCheck: boolean
+    }
+    /** @description A page of historic calculation summaries along with metadata to support pagination */
+    HistoricCalculationSummaryPage: {
+      /** @description The items in this page */
+      items: components['schemas']['HistoricCalculationSummary'][]
+      /** @description Metadata about this page */
+      page: components['schemas']['PageInfo']
+    }
+    /** @description Metadata to support pagination */
+    PageInfo: {
+      /**
+       * Format: int32
+       * @description The current page number
+       */
+      pageNumber: number
+      /**
+       * Format: int32
+       * @description The total number of pages available
+       */
+      totalPages: number
+      /**
+       * Format: int32
+       * @description The total number of items across all pages
+       */
+      totalItems: number
     }
     AnalysedBookingAdjustment: {
       active: boolean
@@ -6368,6 +6416,70 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['CalculationReason'][]
+        }
+      }
+    }
+  }
+  getHistoricCalculationSummaryPage: {
+    parameters: {
+      query: {
+        /**
+         * @description The number of the page to load with 1 being the first page
+         * @example 1
+         */
+        page: number
+        /**
+         * @description The number of items to load in the page
+         * @example 10
+         */
+        size: number
+      }
+      header?: never
+      path: {
+        /**
+         * @description The nomsId of the prisoner
+         * @example AD123A
+         */
+        nomsId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns historic calculations */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoricCalculationSummaryPage']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoricCalculationSummaryPage']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoricCalculationSummaryPage']
+        }
+      }
+      /** @description This prisoner id does not exist */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoricCalculationSummaryPage']
         }
       }
     }

@@ -49,6 +49,8 @@ import SecondCheckController from './calculation-reason/secondCheckController'
 import CalculationSecondCheckSummaryController from './calculation-summary/calcSecondCheckSummaryController'
 import PrisonerCalculationOverviewController from './start/prisonerCalculationOverviewController'
 import ConfigItemController from './config/configItemController'
+import CalculationHistoryOverviewController from './view/CalculationHistoryOverviewController'
+import CalculationHistoryNavigationController from './view/CalculationHistoryNavigationController'
 
 export default function Index({
   prisonerService,
@@ -123,6 +125,13 @@ export default function Index({
   const viewCalculationSummaryOverridesController = new CalculationSummaryOverridesController(
     calculateReleaseDatesService,
     prisonerService,
+  )
+  const calculationHistoryOverviewController = new CalculationHistoryOverviewController(
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+  const calculationHistoryNavigationController = new CalculationHistoryNavigationController(
+    calculateReleaseDatesService,
   )
   const viewPrintCalculationSummaryController = new ViewPrintCalculationSummaryController(
     viewReleaseDatesService,
@@ -328,6 +337,14 @@ export default function Index({
     route({
       path: '/view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip',
       controller: viewPrintNotificationSlipController,
+    })
+    route({
+      path: '/view/:nomsId/calculation-history/:source/:id/overview',
+      controller: calculationHistoryOverviewController,
+    })
+    route({
+      path: '/view/:nomsId/calculation-history/:direction',
+      controller: calculationHistoryNavigationController,
     })
   }
 

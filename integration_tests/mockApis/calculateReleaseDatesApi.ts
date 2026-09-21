@@ -3,12 +3,12 @@ import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
 import {
   AllocatedTranches,
+  AnalysedSentenceAndOffence,
   ApprovedDate,
   CalculationBreakdown,
   DetailedCalculationResults,
   LatestCalculation,
   PreviouslyRecordedSLED,
-  SentenceAndOffenceWithReleaseArrangements,
   ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { components } from '../../server/@types/calculateReleaseDates'
@@ -1168,7 +1168,8 @@ export default {
         isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
         isSDSPlusOffenceInPeriod: false,
         revocationDates: [],
-      } as SentenceAndOffenceWithReleaseArrangements,
+        sentenceAndOffenceAnalysis: 'SAME',
+      } as AnalysedSentenceAndOffence,
       {
         bookingId: 1,
         sentenceCategory: '',
@@ -1202,7 +1203,8 @@ export default {
         isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
         isSDSPlusOffenceInPeriod: false,
         revocationDates: [],
-      } as SentenceAndOffenceWithReleaseArrangements,
+        sentenceAndOffenceAnalysis: 'SAME',
+      } as AnalysedSentenceAndOffence,
     ]
     const detailedResults: DetailedCalculationResults = {
       allocatedTranches: [],

@@ -38,6 +38,7 @@ import {
   ConfirmSecondCheckResult,
   PrisonerCalculationOverview,
   ConfigItem,
+  HistoricCalculationSummaryPage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import logger from '../../logger'
 import {
@@ -372,6 +373,21 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     )
   }
 
+  getCalculationHistoryPage(
+    prisonerId: string,
+    page: number,
+    size: number,
+    username: string,
+  ): Promise<HistoricCalculationSummaryPage> {
+    return this.get<HistoricCalculationSummaryPage>(
+      {
+        path: `/calculation-history/${prisonerId}`,
+        query: { page, size },
+      },
+      asSystem(username),
+    )
+  }
+
   getDetailedCalculationResults(calculationRequestId: number, username: string): Promise<DetailedCalculationResults> {
     return this.get<DetailedCalculationResults>(
       {
@@ -522,7 +538,7 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     )
   }
 
-  getPrisonCalculationOverview(nomsId: string, username: string): Promise<PrisonerCalculationOverview> {
+  getPrisonerCalculationOverview(nomsId: string, username: string): Promise<PrisonerCalculationOverview> {
     return this.get<PrisonerCalculationOverview>(
       {
         path: `/calculation/${nomsId}/overview`,

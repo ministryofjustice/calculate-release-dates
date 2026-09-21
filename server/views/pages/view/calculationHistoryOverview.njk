@@ -1,0 +1,147 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "../components/calculation-summary-dates-panel/macro.njk" import calculationSummaryDatesPanel %}
+
+{% set pageTitle = applicationName + " - calculation history" %}
+{% set pageId = "view-calculation-history" %}
+
+{% block beforeContent %}
+    {{ super() }}
+
+    {% set backlink = "/" + prisonerDetail.offenderNo + '/overview' %}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: backlink
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl">Calculation history</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <p class="govuk-label govuk-label--s govuk-!-margin-bottom-1">Select a calculation</p>
+            <p class="govuk-body govuk-hint govuk-!-margin-bottom-1" data-qa="current-items-hint">Showing {{ thisPageItems.from }} to {{ thisPageItems.to }} of {{ history.page.totalItems }}</p>
+            <nav class="moj-side-navigation app-calc-nav" aria-label="Select a calculation">
+                <ul class="moj-side-navigation__list">
+                    {% for historicCalculation in history.items %}
+                        {% set id = historicCalculation.nomisCalculationId %}
+                        {% if historicCalculation.calculationSource === 'CRDS' %}
+                            {% set id = historicCalculation.crdsCalculationId %}
+                        {% endif %}
+                        {% set current = selectedCalculationId === id and selectedCalculationSource === historicCalculation.calculationSource %}
+                        <li class="moj-side-navigation__item{% if current %} moj-side-navigation__item--active{% endif %}">
+                            {% set historicCalculatedByFields %}{{ historicCalculation.calculatedByDisplayName | capitaliseName }}{% if historicCalculation.calculatedByDisplayName and historicCalculation.establishmentCalculatedAtDescription %} at {% endif %}{{ historicCalculation.establishmentCalculatedAtDescription }}{% endset %}
+                            <a href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/{{ historicCalculation.calculationSource }}/{{ id }}/overview?page={{ history.page.pageNumber }}" {% if current %}aria-current="location"{% endif %}>
+                                <span class="app-calc-row__header">
+                                    <strong class="govuk-body app-calc-row__date"> {{ historicCalculation.calculationDate | hmppsFormatDate('dd MMMM yyyy') }}</strong>
+                                    {% if history.page.pageNumber === 1 and loop.index0 === 0 %}
+                                    <span class="app-calc-row__tags"><strong class="govuk-tag govuk-tag--moj-blue">Latest</strong></span>
+                                    {% endif %}
+                                </span>
+                                <span class="govuk-body govuk-!-display-block">{{ historicCalculation.reasonDescription }}</span>
+                                <span class="govuk-body govuk-!-display-block">{{ historicCalculatedByFields }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+            <nav class="govuk-pagination govuk-pagination--block" aria-label="Calculation navigation">
+                {% if previousPageItems %}
+                    <div class="govuk-pagination__prev">
+                        <a class="govuk-link govuk-pagination__link" href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/newer?currentPage={{ history.page.pageNumber }}" data-qa="newer-calculations-link">
+                            <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" focusable="false" aria-hidden="true" viewBox="0 0 15 13">
+                                <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+                            </svg>
+                            <span class="govuk-pagination__link-title">Newer calculations</span>
+                            <span class="govuk-visually-hidden">:</span>
+                            <span class="govuk-pagination__link-label">{{ previousPageItems.from }} to {{ previousPageItems.to }} of {{ history.page.totalItems }}</span>
+                        </a>
+                    </div>
+                {% endif %}
+                {% if nextPageItems %}
+                    <div class="govuk-pagination__next">
+                        <a class="govuk-link govuk-pagination__link" href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/older?currentPage={{ history.page.pageNumber }}" data-qa="older-calculations-link">
+                            <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" focusable="false" aria-hidden="true" viewBox="0 0 15 13">
+                                <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7246z"></path>
+                            </svg>
+                            <span class="govuk-pagination__link-title">Older calculations</span>
+                            <span class="govuk-visually-hidden">:</span>
+                            <span class="govuk-pagination__link-label">{{ nextPageItems.from }} to {{ nextPageItems.to }} of {{ history.page.totalItems }}</span>
+                        </a>
+                    </div>
+                {% endif %}
+            </nav>
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-l">Calculation on {{ calculationDate | hmppsFormatDate('dd MMMM yyyy') }}</h2>
+            <div class="govuk-grid-row govuk-!-margin-bottom-2">
+                <div class="govuk-grid-column-one-third">
+                    <p class="govuk-body govuk-!-margin-bottom-0">
+                        <strong class="govuk-!-display-block">Calculation reason</strong>
+                        <span class="govuk-body" data-qa="metadata-calculation-reason">{{ calculationReason }}</span><br />
+                        {% if calculationReasonFurtherDetail %}<span class="govuk-body govuk-hint govuk-!-font-size-16" data-qa="metadata-calculation-reason-further-detail">{{ calculationReasonFurtherDetail }}</span>{% endif %}
+                    </p>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    <p class="govuk-body govuk-!-margin-bottom-0">
+                        <strong class="govuk-!-display-block">Calculated by</strong>
+                        <span data-qa="metadata-calculated-by">{{ calculatedByDisplayName | capitaliseName }}{% if calculatedByDisplayName and establishmentCalculatedAtDescription %} at {% endif %}{{ establishmentCalculatedAtDescription }}</span>
+                    </p>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    <p class="govuk-body govuk-!-margin-bottom-0">
+                        <strong class="govuk-!-display-block">Checked by</strong>
+                        <span data-qa="metadata-checked-by">
+                            {% if secondCheckDetails %}
+                                {{ secondCheckDetails.checkedByDisplayName | capitaliseName }} on {{ secondCheckDetails.checkedAt | hmppsFormatDate('dd MMMM yyyy') }}
+                            {% else %}
+                                Not checked
+                            {% endif %}
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+            <div class="govuk-grid-row govuk-!-margin-bottom-2">
+                {{ calculationSummaryDatesPanel(calculationSummaryDatesPanelModel) }}
+            </div>
+
+            {% if selectedCalculationSource === 'CRDS' %}
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                <h3 class="govuk-heading-m">Court cases and adjustments</h3>
+                <div class="app-stat-card-grid app-stat-card-grid--thirds govuk-!-margin-bottom-4">
+                    <div class="app-stat-card">
+                        <div class="app-stat-card__header"><p class="govuk-body govuk-!-margin-bottom-0">Court cases</p></div>
+                        <p class="govuk-heading-m govuk-!-margin-bottom-0" data-qa="court-case-count">{{ courtCaseCount }}</p>
+                    </div>
+                    <div class="app-stat-card">
+                        <div class="app-stat-card__header"><p class="govuk-body govuk-!-margin-bottom-0">Sentences</p></div>
+                        <p class="govuk-heading-m govuk-!-margin-bottom-0" data-qa="sentence-count">{{ sentenceCount }}</p>
+                    </div>
+                    <div class="app-stat-card" data-qa="adjustment-types">
+                        <div class="app-stat-card__header"><p class="govuk-body govuk-!-margin-bottom-0">Adjustments</p></div>
+                        {% if adjustmentTypes and adjustmentTypes.length %}
+                            {% for adjustmentType in adjustmentTypes %}
+                                <p class="govuk-body-s govuk-!-margin-bottom-1"><strong>{{ adjustmentType | formatAdjustmentType }}</strong></p>
+                            {% endfor %}
+                        {% else %}
+                            <p class="govuk-body-s govuk-!-margin-bottom-0"><strong>None</strong></p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

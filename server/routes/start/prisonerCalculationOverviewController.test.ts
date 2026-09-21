@@ -190,7 +190,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
       courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsAdjustmentsThingsToDo)
 
       return request(app)
@@ -265,7 +265,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
       courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsDocsThingsToDo)
 
       return request(app)
@@ -298,7 +298,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -333,7 +333,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -367,7 +367,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: true,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -401,7 +401,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: true,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
       userPermissionsService.allowBulkLoad.mockReturnValue(true)
 
       return request(app)
@@ -427,7 +427,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 0,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -456,7 +456,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 10,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -494,7 +494,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -528,7 +528,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -570,7 +570,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -615,7 +615,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -649,7 +649,7 @@ describe('GET /:nomsId/overview', () => {
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue(overview)
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
 
       return request(app)
         .get(`/${stubbedPrisonerData.offenderNo}/overview`)
@@ -686,7 +686,7 @@ describe('GET /:nomsId/overview', () => {
     }
 
     it('Render calculation history for CRDS permutations', () => {
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue({
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue({
         ...baseOverview,
         recentCalculations: [
           {
@@ -738,13 +738,17 @@ describe('GET /:nomsId/overview', () => {
           expect(calcHistoryTableRows).toHaveLength(4)
           const firstRowCells = $(calcHistoryTableRows).eq(0).children('td')
           expect(firstRowCells.eq(0).text().trim()).toStrictEqual('01 June 2025')
-          expect(firstRowCells.eq(0).find('a').attr('href')).toStrictEqual('/view/A1234AA/sentences-and-offences/123')
+          expect(firstRowCells.eq(0).find('a').attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-history/CRDS/123/overview',
+          )
           expect(firstRowCells.eq(1).text().trim()).toStrictEqual('Initial calculation')
           expect(firstRowCells.eq(2).text().trim()).toStrictEqual('Fred at Kirkham')
           expect(firstRowCells.eq(3).text().trim()).toStrictEqual('Calculate release dates service')
           const secondRowCells = $(calcHistoryTableRows).eq(1).children('td')
           expect(secondRowCells.eq(0).text().trim()).toStrictEqual('23 May 2025')
-          expect(secondRowCells.eq(0).find('a').attr('href')).toStrictEqual('/view/A1234AA/sentences-and-offences/456')
+          expect(secondRowCells.eq(0).find('a').attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-history/CRDS/456/overview',
+          )
           expect(secondRowCells.eq(1).text().trim()).toStrictEqual('14 day check')
           expect(secondRowCells.eq(2).text().trim()).toStrictEqual('Fred')
           expect(secondRowCells.eq(3).html().trim()).toStrictEqual(
@@ -752,7 +756,9 @@ describe('GET /:nomsId/overview', () => {
           )
           const thirdRowCells = $(calcHistoryTableRows).eq(2).children('td')
           expect(thirdRowCells.eq(0).text().trim()).toStrictEqual('13 May 2025')
-          expect(thirdRowCells.eq(0).find('a').attr('href')).toStrictEqual('/view/A1234AA/sentences-and-offences/789')
+          expect(thirdRowCells.eq(0).find('a').attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-history/CRDS/789/overview',
+          )
           expect(thirdRowCells.eq(1).text().trim()).toStrictEqual('Sentence')
           expect(thirdRowCells.eq(2).text().trim()).toStrictEqual('Fred')
           expect(thirdRowCells.eq(3).html().trim()).toStrictEqual(
@@ -760,7 +766,9 @@ describe('GET /:nomsId/overview', () => {
           )
           const fourthRowCells = $(calcHistoryTableRows).eq(3).children('td')
           expect(fourthRowCells.eq(0).text().trim()).toStrictEqual('06 April 2025')
-          expect(fourthRowCells.eq(0).find('a').attr('href')).toStrictEqual('/view/A1234AA/sentences-and-offences/999')
+          expect(fourthRowCells.eq(0).find('a').attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-history/CRDS/999/overview',
+          )
           expect(fourthRowCells.eq(1).text().trim()).toStrictEqual('Reason for calculation not provided')
           expect(fourthRowCells.eq(2).text().trim()).toStrictEqual('Fred')
           expect(fourthRowCells.eq(3).html().trim()).toStrictEqual(
@@ -769,7 +777,7 @@ describe('GET /:nomsId/overview', () => {
         })
     })
     it('Render calculation history for NOMIS permutations', () => {
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue({
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue({
         ...baseOverview,
         recentCalculations: [
           {
@@ -796,7 +804,7 @@ describe('GET /:nomsId/overview', () => {
           const firstRowCells = $(calcHistoryTableRows).eq(0).children('td')
           expect(firstRowCells.eq(0).text().trim()).toStrictEqual('01 June 2025')
           expect(firstRowCells.eq(0).find('a').attr('href')).toStrictEqual(
-            '/view/A1234AA/nomis-calculation-summary/555',
+            '/view/A1234AA/calculation-history/NOMIS/555/overview',
           )
           expect(firstRowCells.eq(1).text().trim()).toStrictEqual('Initial calculation')
           expect(firstRowCells.eq(2).text().trim()).toStrictEqual('Fred at Kirkham')
@@ -804,7 +812,7 @@ describe('GET /:nomsId/overview', () => {
         })
     })
     it('Render calculation history when the only calculations is shown', () => {
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue({
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue({
         ...baseOverview,
         recentCalculations: [
           {
@@ -832,7 +840,7 @@ describe('GET /:nomsId/overview', () => {
         })
     })
     it('Render calculation history when all calculations are shown', () => {
-      calculateReleaseDatesService.getPrisonCalculationOverview.mockResolvedValue({
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue({
         ...baseOverview,
         recentCalculations: [
           {
