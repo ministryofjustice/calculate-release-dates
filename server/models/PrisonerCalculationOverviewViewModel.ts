@@ -59,11 +59,6 @@ export default class PrisonerCalculationOverviewViewModel extends OptionalPrison
       const latestCalc = prisonerCalculationOverview.latestCalculation
       this.latestCalculationCardConfig = latestCalculationComponentConfig(latestCalc)
       if (latestCalc.calculationRequestId) {
-        this.latestCalculationCardAction = {
-          title: 'View details',
-          href: `/view/${prisonerDetail.offenderNo}/calculation-history/CRDS/${latestCalc.calculationRequestId}/overview`,
-          dataQa: 'latest-calc-card-action',
-        }
         if (latestCalc.source === 'CRDS' && !prisonerCalculationOverview.hasIndeterminateSentences) {
           this.latestCalculationCardConfig.printNotificationSlip = {
             href: `/view/${prisonerDetail.offenderNo}/calculation-summary/${latestCalc.calculationRequestId}/printNotificationSlip?fromPage=view`,

@@ -8,6 +8,7 @@ import {
   AdjustmentDto,
   DetailedCalculationResults,
   HistoricCalculationSummaryPage,
+  NomisCalculationSummary,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonAPIAssignedLivingUnit, PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 
@@ -30,6 +31,10 @@ beforeEach(() => {
       calculateReleaseDatesService,
     },
   })
+})
+
+afterEach(() => {
+  jest.resetAllMocks()
 })
 
 describe('View calculation history overview', () => {
@@ -265,6 +270,10 @@ describe('View calculation history overview', () => {
           expect($('[data-qa=metadata-calculation-reason-further-detail]')).toHaveLength(0)
           expect($('[data-qa=metadata-calculated-by]').text().trim()).toStrictEqual('User One at HMP Brixham')
           expect($('[data-qa=metadata-checked-by]').text().trim()).toStrictEqual('Not checked')
+          expect($('[data-qa=metadata-source]')).toHaveLength(0)
+
+          expect(calculateReleaseDatesService.getDetailedCalculationResults).toHaveBeenCalledWith(123456, 'user1')
+          expect(calculateReleaseDatesService.getNomisCalculationSummary).not.toHaveBeenCalled()
         })
     })
     it('Should show the calculation metadata for a CRDS calculation with full metadata', () => {
@@ -293,6 +302,26 @@ describe('View calculation history overview', () => {
           )
           expect($('[data-qa=metadata-calculated-by]').text().trim()).toStrictEqual('User One at HMP Brixham')
           expect($('[data-qa=metadata-checked-by]').text().trim()).toStrictEqual('Fred on 01 June 2026')
+          expect($('[data-qa=metadata-source]')).toHaveLength(0)
+        })
+    })
+    it('Should show the calculation metadata for a NOMIS calculation', () => {
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(stubbedNomisCalculationSummary)
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/NOMIS/123456/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=metadata-calculation-reason]').text().trim()).toStrictEqual('Initial calculation')
+          expect($('[data-qa=metadata-calculation-reason-further-detail]')).toHaveLength(0)
+          expect($('[data-qa=metadata-calculated-by]').text().trim()).toStrictEqual('Nomis User')
+          expect($('[data-qa=metadata-checked-by]')).toHaveLength(0)
+          expect($('[data-qa=metadata-source]').text().trim()).toStrictEqual('NOMIS')
+          expect(calculateReleaseDatesService.getNomisCalculationSummary).toHaveBeenCalledWith(123456, 'user1')
+          expect(calculateReleaseDatesService.getDetailedCalculationResults).not.toHaveBeenCalled()
         })
     })
     it.each([
@@ -324,7 +353,7 @@ describe('View calculation history overview', () => {
     )
   })
 
-  describe('release dates scenarios', () => {
+  describe('release dates section', () => {
     it('Should show the calculated release dates for a CRDS calculation in the correct order', () => {
       calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
       calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
@@ -340,12 +369,133 @@ describe('View calculation history overview', () => {
           expect(dateCards.eq(0).text()).toContain('SED')
           expect(dateCards.eq(1).text()).toContain('CRD')
           expect(dateCards.eq(2).text()).toContain('HDCED')
+          const manualDatesNotification = $('[data-qa=manual-dates-notification]')
+          expect(manualDatesNotification).toHaveLength(0)
+        })
+    })
+    it.each(['MANUAL_DETERMINATE', 'MANUAL_INDETERMINATE'])(
+      'Should show the manually entered release dates for a CRDS manual calculation and display the manual dates notification',
+      (calculationType: 'MANUAL_DETERMINATE' | 'MANUAL_INDETERMINATE') => {
+        calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+          ...stubbedDetailedCalculationResults,
+          context: { ...stubbedDetailedCalculationResults.context, calculationType },
+        })
+        calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+        prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+        return request(app)
+          .get('/view/A1234AA/calculation-history/CRDS/123456/overview')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            const $ = cheerio.load(res.text)
+            const dateCards = $('[data-qa=release-dates-panel]').eq(0).find('.app-stat-card')
+            expect(dateCards).toHaveLength(3)
+            expect(dateCards.eq(0).text()).toContain('SED')
+            expect(dateCards.eq(1).text()).toContain('CRD')
+            expect(dateCards.eq(2).text()).toContain('HDCED')
+            const manualDatesNotification = $('[data-qa=manual-dates-notification]')
+            expect(manualDatesNotification).toHaveLength(1)
+          })
+      },
+    )
+    it('Should show the print notification slip and second check buttons if this is the latest CRDS calculation', () => {
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/CRDS/123456/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const printButton = $('[data-qa=print-notification-slip]')
+          expect(printButton).toHaveLength(1)
+          expect(printButton.eq(0).attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=history',
+          )
+          const secondCheckButton = $('[data-qa=record-counter-check]')
+          expect(secondCheckButton).toHaveLength(1)
+          expect(secondCheckButton.eq(0).attr('href')).toStrictEqual('/calculation/A1234AA/secondCheck')
+        })
+    })
+    it('Should not show the print notification slip and second check buttons if this is the latest CRDS calculation on the page but not the first page', () => {
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue({
+        ...stubbedFullPageOfCalculationHistory,
+        page: {
+          ...stubbedFullPageOfCalculationHistory.page,
+          pageNumber: 2,
+        },
+      })
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/CRDS/123456/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const printButton = $('[data-qa=print-notification-slip]')
+          expect(printButton).toHaveLength(0)
+          const secondCheckButton = $('[data-qa=record-counter-check]')
+          expect(secondCheckButton).toHaveLength(0)
+        })
+    })
+    it('Should not show the print notification slip and second check buttons if this is the first page but not the latest', () => {
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+        ...stubbedDetailedCalculationResults,
+        context: { ...stubbedDetailedCalculationResults.context, calculationRequestId: 999 },
+      })
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/CRDS/999/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const printButton = $('[data-qa=print-notification-slip]')
+          expect(printButton).toHaveLength(0)
+          const secondCheckButton = $('[data-qa=record-counter-check]')
+          expect(secondCheckButton).toHaveLength(0)
+        })
+    })
+    it('Should show the calculated release dates for a NOMIS calculation in the correct order', () => {
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(stubbedNomisCalculationSummary)
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/NOMIS/123456/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const dateCards = $('[data-qa=release-dates-panel]').eq(0).find('.app-stat-card')
+          expect(dateCards).toHaveLength(3)
+          expect(dateCards.eq(0).text()).toContain('SED')
+          expect(dateCards.eq(1).text()).toContain('CRD')
+          expect(dateCards.eq(2).text()).toContain('HDCED')
+        })
+    })
+    it('Should not show the print notification slip or second check buttons for NOMIS even if the latest', () => {
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(stubbedNomisCalculationSummary)
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/NOMIS/123456/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const printButton = $('[data-qa=print-notification-slip]')
+          expect(printButton).toHaveLength(0)
+          const secondCheckButton = $('[data-qa=record-counter-check]')
+          expect(secondCheckButton).toHaveLength(0)
         })
     })
   })
 
   describe('court cases and adjustments summary scenarios', () => {
-    it('Should show the court cases and sentence counts', () => {
+    it('Should show the court cases and sentence counts for CRDS', () => {
       calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
       calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -357,6 +507,21 @@ describe('View calculation history overview', () => {
           const $ = cheerio.load(res.text)
           expect($('[data-qa=court-case-count]').eq(0).text().trim()).toStrictEqual('2')
           expect($('[data-qa=sentence-count]').eq(0).text().trim()).toStrictEqual('3')
+        })
+    })
+    it('Should not show the court cases and sentence counts for NOMIS', () => {
+      calculateReleaseDatesService.getNomisCalculationSummary.mockResolvedValue(stubbedNomisCalculationSummary)
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/NOMIS/123456/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=court-case-count]')).toHaveLength(0)
+          expect($('[data-qa=sentence-count]')).toHaveLength(0)
+          expect($('[data-qa=adjustment-types]')).toHaveLength(0)
         })
     })
     it('Should show none if no adjustments', () => {
@@ -715,3 +880,25 @@ const anAdjustment = {
   effectiveDays: 1,
   source: 'DPS',
 } as AdjustmentDto
+
+const stubbedNomisCalculationSummary: NomisCalculationSummary = {
+  calculatedAt: '2026-12-28',
+  calculatedByDisplayName: 'Nomis User',
+  calculatedByUsername: 'USER1',
+  reason: 'Initial calculation',
+  releaseDates: [
+    {
+      date: '2021-02-03',
+      type: 'CRD',
+      description: 'Conditional release date',
+      hints: [{ text: 'Tuesday, 02 February 2021 when adjusted to a working day' }],
+    },
+    { date: '2021-02-03', type: 'SED', description: 'Sentence expiry date', hints: [] },
+    {
+      date: '2021-10-03',
+      type: 'HDCED',
+      description: 'Home detention curfew eligibility date',
+      hints: [{ text: 'Tuesday, 05 October 2021 when adjusted to a working day' }],
+    },
+  ],
+}

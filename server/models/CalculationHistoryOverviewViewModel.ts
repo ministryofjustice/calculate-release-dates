@@ -15,6 +15,8 @@ export default class CalculationHistoryOverviewViewModel extends PrisonerContext
 
   public nextPageItems: PageItems
 
+  public selectedCalculationIsLatest: boolean
+
   constructor(
     public prisonerDetail: PrisonApiPrisoner,
     public selectedCalculationSource: string,
@@ -23,7 +25,8 @@ export default class CalculationHistoryOverviewViewModel extends PrisonerContext
     public calculationReason: string,
     public calculationReasonFurtherDetail: string | null,
     public calculatedByDisplayName: string,
-    public establishmentCalculatedAtDescription: string,
+    public establishmentCalculatedAtDescription: string | null,
+    public calculationType: string | null,
     public secondCheckDetails: SecondCheckDetails | null,
     public history: HistoricCalculationSummaryPage,
     public pageSize: number,
@@ -50,6 +53,17 @@ export default class CalculationHistoryOverviewViewModel extends PrisonerContext
         from: thisPageFrom + pageSize,
         to: nextPageTo < history.page.totalItems ? nextPageTo : history.page.totalItems,
       }
+    }
+    if (selectedCalculationSource === 'CRDS') {
+      this.selectedCalculationIsLatest =
+        history.page.pageNumber === 1 &&
+        history.items[0].calculationSource === 'CRDS' &&
+        history.items[0].crdsCalculationId === selectedCalculationId
+    } else if (selectedCalculationSource === 'NOMIS') {
+      this.selectedCalculationIsLatest =
+        history.page.pageNumber === 1 &&
+        history.items[0].calculationSource === 'NOMIS' &&
+        history.items[0].nomisCalculationId === selectedCalculationId
     }
   }
 }

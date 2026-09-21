@@ -105,11 +105,19 @@
                     <p class="govuk-body">This person has no active sentences.</p>
                     <p class="govuk-body">To calculate release dates, you must enter active sentence information in court cases and try again.</p>
                 {% endif %}
-                {% if latestCalculation.source !== 'NOMIS' %}
+                {% if calculationSource === 'CRDS' %}
                     <ul class="govuk-list">
                         <li>
-                            <a data-qa="ccard-sentence-details-link" class="govuk-link"
+                            <a data-qa="ccard-sentence-details-link" class="govuk-link govuk-link--no-visited-state"
                                href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/CRDS/{{ calculationRequestId }}/overview">View calculation details</a>
+                        </li>
+                    </ul>
+                {% elseif calculationSource === 'NOMIS' and historicCalculations and historicCalculations.length > 0 %}
+                    {# Prison API doesn't give the sentence calculation id for current dates so we have to rely on the latest also being the first in the history #}
+                    <ul class="govuk-list">
+                        <li>
+                            <a data-qa="ccard-sentence-details-link" class="govuk-link govuk-link--no-visited-state"
+                               href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/NOMIS/{{ historicCalculations[0].nomisCalculationId }}/overview">View calculation details</a>
                         </li>
                     </ul>
                 {% endif %}
@@ -129,9 +137,9 @@
                 {% for historicCalculation in historicCalculations %}
                     {% set historicCalculationDate %}
                         {% if historicCalculation.calculationSource === 'NOMIS' %}
-                            <a class="govuk-link" href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/NOMIS/{{ historicCalculation.nomisCalculationId }}/overview">{{ historicCalculation.calculationDate | hmppsFormatDate('dd MMMM yyyy') }}</a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/NOMIS/{{ historicCalculation.nomisCalculationId }}/overview">{{ historicCalculation.calculationDate | hmppsFormatDate('dd MMMM yyyy') }}</a>
                         {% else %}
-                            <a class="govuk-link" href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/CRDS/{{ historicCalculation.crdsCalculationId }}/overview">{{ historicCalculation.calculationDate | hmppsFormatDate('dd MMMM yyyy') }}</a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/CRDS/{{ historicCalculation.crdsCalculationId }}/overview">{{ historicCalculation.calculationDate | hmppsFormatDate('dd MMMM yyyy') }}</a>
                         {% endif %}
                     {% endset %}
                     {% if historicCalculation.reasonDescription %}

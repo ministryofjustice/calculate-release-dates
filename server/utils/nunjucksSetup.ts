@@ -240,31 +240,27 @@ export const remandDate = (date: string, format: string) => {
   return hmppsFormatDate(date, format)
 }
 
+export const ADJUSTMENT_TYPE_LABELS: Record<AdjustmentDtoTypes, string> = {
+  REMAND: 'Remand',
+  TAGGED_BAIL: 'Tagged bail',
+  CUSTODY_ABROAD: 'Time spent in custody abroad',
+  RESTORATION_OF_ADDITIONAL_DAYS_AWARDED: 'RADA (Restoration of additional days awarded)',
+  SPECIAL_REMISSION: 'Special remission',
+  ADDITIONAL_DAYS_AWARDED: 'ADA (Additional days awarded)',
+  UNLAWFULLY_AT_LARGE: 'UAL (Unlawfully at large)',
+  LAWFULLY_AT_LARGE: 'LAL (Lawfully at large)',
+  APPEAL_APPLICANT: 'Time spent as an appeal applicant not to count',
+  UNUSED_DEDUCTIONS: 'Unused deductions',
+}
+
 export const formatAdjustmentType = (type: AdjustmentDtoTypes) => {
-  switch (type) {
-    case 'REMAND':
-      return 'Remand'
-    case 'TAGGED_BAIL':
-      return 'Tagged bail'
-    case 'CUSTODY_ABROAD':
-      return 'Time spent in custody abroad'
-    case 'RESTORATION_OF_ADDITIONAL_DAYS_AWARDED':
-      return 'RADA (Restoration of additional days awarded)'
-    case 'SPECIAL_REMISSION':
-      return 'Special remission'
-    case 'ADDITIONAL_DAYS_AWARDED':
-      return 'ADA (Additional days awarded)'
-    case 'UNLAWFULLY_AT_LARGE':
-      return 'UAL (Unlawfully at large)'
-    case 'LAWFULLY_AT_LARGE':
-      return 'LAL (Lawfully at large)'
-    case 'APPEAL_APPLICANT':
-      return 'Time spent as an appeal applicant not to count'
-    case 'UNUSED_DEDUCTIONS':
-      return 'Unused deductions'
-    default:
-      return ''
+  const label = ADJUSTMENT_TYPE_LABELS[type]
+
+  if (!label) {
+    throw new Error(`Unknown adjustment type: ${type}`)
   }
+
+  return label
 }
 
 export const formatSds40Exclusion = (exclusion: string) => {
