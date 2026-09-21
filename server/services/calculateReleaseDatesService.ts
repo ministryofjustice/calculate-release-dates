@@ -10,6 +10,7 @@ import {
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   ApprovedDatesInputResponse,
+  ManualCalculationInputResponse,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
@@ -639,6 +640,10 @@ export default class CalculateReleaseDatesService {
 
   async getApprovedDatesInputs(prisonerId: string, username: string): Promise<ApprovedDatesInputResponse> {
     return this.calculateReleaseDatesApiRestClient.getApprovedDatesInputs(prisonerId, username)
+  }
+
+  async getManualCalculationInputs(prisonerId: string, username: string): Promise<ManualCalculationInputResponse> {
+    return this.calculateReleaseDatesApiRestClient.getManualCalculationInputs(prisonerId, username)
   }
 
   async getDateTypeDefinitions(username: string): Promise<DateTypeDefinition[]> {

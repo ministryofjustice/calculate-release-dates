@@ -7,7 +7,9 @@ import {
   ApprovedDate,
   CalculationBreakdown,
   DetailedCalculationResults,
+  DetailedDate,
   LatestCalculation,
+  ManualCalculationInputResponse,
   PreviouslyRecordedSLED,
   ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -1443,16 +1445,23 @@ export default {
       },
     })
   },
-  stubExistingManualJourney: (flag: boolean): SuperAgentRequest => {
+  stubManualCalculationInputs: (opts: {
+    mode: 'STANDARD' | 'EXPRESS'
+    manuallyEnteredDates?: DetailedDate[]
+  }): SuperAgentRequest => {
+    const manualCalculationInputResponse: ManualCalculationInputResponse = {
+      mode: opts.mode,
+      manuallyEnteredDates: opts.manuallyEnteredDates ?? [],
+    }
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/calculate-release-dates/manual-calculation/A1234AB/has-existing-calculation',
+        urlPattern: '/calculate-release-dates/manual-calculation/A1234AB/inputs',
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: flag,
+        jsonBody: manualCalculationInputResponse,
       },
     })
   },
