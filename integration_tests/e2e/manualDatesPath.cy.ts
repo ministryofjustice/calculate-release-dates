@@ -380,9 +380,9 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
   describe('Express Manual Journey', () => {
     const existingManualDates = [
-      { type: 'SLED', description: 'Sentence and licence expiry date', date: '2027-11-01', hints: [] },
-      { type: 'CRD', description: 'Conditional release date', date: '2027-05-01', hints: [] },
-      { type: 'HDCED', description: 'Home detention curfew eligibility date', date: '2026-12-01', hints: [] },
+      { type: 'SLED', description: 'Sentence and licence expiry date', date: '2018-11-01', hints: [] },
+      { type: 'CRD', description: 'Conditional release date', date: '2018-05-01', hints: [] },
+      { type: 'HDCED', description: 'Home detention curfew eligibility date', date: '2018-03-01', hints: [] },
     ]
 
     it('Confirming dates are unchanged creates new calculation using existing dates', () => {
