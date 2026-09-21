@@ -10,6 +10,7 @@ import {
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   ApprovedDatesInputResponse,
+  ManualCalculationInputResponse,
   BookingCalculation,
   CalculationBreakdown,
   CalculationReason,
@@ -182,10 +183,12 @@ export default class CalculateReleaseDatesService {
     }
     if (breakdown.breakdownByReleaseDateType.ERSED) {
       const ersedDetails = breakdown.breakdownByReleaseDateType.ERSED
-      if (!(
-        ersedDetails.rules.includes('ERSED_ADJUSTED_TO_CONCURRENT_TERM') ||
-        ersedDetails.rules.includes('ERSED_BEFORE_SENTENCE_DATE')
-      )) {
+      if (
+        !(
+          ersedDetails.rules.includes('ERSED_ADJUSTED_TO_CONCURRENT_TERM') ||
+          ersedDetails.rules.includes('ERSED_BEFORE_SENTENCE_DATE')
+        )
+      ) {
         releaseDatesWithAdjustments.push(
           this.ersedRulesToAdjustmentRow(
             ersedDetails.rules,
@@ -639,6 +642,10 @@ export default class CalculateReleaseDatesService {
 
   async getApprovedDatesInputs(prisonerId: string, username: string): Promise<ApprovedDatesInputResponse> {
     return this.calculateReleaseDatesApiRestClient.getApprovedDatesInputs(prisonerId, username)
+  }
+
+  async getManualCalculationInputs(prisonerId: string, username: string): Promise<ManualCalculationInputResponse> {
+    return this.calculateReleaseDatesApiRestClient.getManualCalculationInputs(prisonerId, username)
   }
 
   async getDateTypeDefinitions(username: string): Promise<DateTypeDefinition[]> {

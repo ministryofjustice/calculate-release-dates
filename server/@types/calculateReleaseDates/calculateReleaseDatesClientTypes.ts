@@ -51,6 +51,7 @@ export type AdjustmentType = components['schemas']['AnalysedAdjustment']['adjust
 export type GenuineOverrideReason = components['schemas']['GenuineOverrideReasonResponse']
 export type GenuineOverrideInputResponse = components['schemas']['GenuineOverrideInputResponse']
 export type ApprovedDatesInputResponse = components['schemas']['ApprovedDatesInputResponse']
+export type ManualCalculationInputResponse = components['schemas']['ManualCalculationInputResponse']
 export type ApprovedDate = components['schemas']['ApprovedDate']
 export type CalculatedReleaseDates = components['schemas']['CalculatedReleaseDates']
 export type GenuineOverrideDate = components['schemas']['GenuineOverrideDate']

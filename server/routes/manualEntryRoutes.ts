@@ -56,22 +56,17 @@ export default class ManualEntryRoutes {
       username,
     )
 
-    const existingManualJourney = await this.calculateReleaseDatesService.offenderHasPreviousManualCalculation(
+    const manualCalculationInputResponse = await this.calculateReleaseDatesService.getManualCalculationInputs(
       nomsId,
       username,
     )
 
-    if (existingManualJourney && !this.existingDatesInSession(req, nomsId)) {
-      if (req.session.selectedManualEntryDates == null) req.session.selectedManualEntryDates = {}
-      const latestCalculation = await this.calculateReleaseDatesService
-        .getLatestCalculationForPrisoner(nomsId, username)
-        .catch((error: { status?: number; responseStatus?: number }): null | never => {
-          if ((error.status ?? error.responseStatus) === 404) {
-            return null // No latest record found / No previous calculations
-          }
-          throw error
-        })
-      if (latestCalculation) this.manualEntryService.populateExistingDates(req, nomsId, latestCalculation.dates)
+    const existingManualJourney =
+      manualCalculationInputResponse.mode === 'EXPRESS' &&
+      manualCalculationInputResponse.manuallyEnteredDates.length > 0
+
+    if (existingManualJourney) {
+      this.manualEntryService.populateExistingDates(req, nomsId, manualCalculationInputResponse.manuallyEnteredDates)
     }
 
     req.session.unchangedManualJourney = existingManualJourney

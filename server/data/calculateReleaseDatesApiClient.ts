@@ -8,6 +8,7 @@ import {
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   ApprovedDatesInputResponse,
+  ManualCalculationInputResponse,
   BookingCalculation,
   CalculationReason,
   CalculationRequestModel,
@@ -455,6 +456,15 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     return this.get<ApprovedDatesInputResponse>(
       {
         path: `/approved-dates/${prisonerId}/inputs`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getManualCalculationInputs(prisonerId: string, username: string): Promise<ManualCalculationInputResponse> {
+    return this.get<ManualCalculationInputResponse>(
+      {
+        path: `/manual-calculation/${prisonerId}/inputs`,
       },
       asSystem(username),
     )

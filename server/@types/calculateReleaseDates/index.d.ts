@@ -609,6 +609,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/manual-calculation/{prisonerId}/inputs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the inputs for a manual calculation
+     * @description This endpoint will return the already manually entered dates with express mode or with no dates with standard mode - required to perform a manual calculation for a prisoner
+     */
+    get: operations['inputsForAManualCalculation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/manual-calculation/{prisonerId}/has-existing-calculation': {
     parameters: {
       query?: never
@@ -1602,7 +1622,14 @@ export interface components {
       ineligibleSentences: components['schemas']['RecallableSentence'][]
       sentencesBeforeInitialRelease: components['schemas']['RecallableSentence'][]
       unexpectedRecallTypes: (
-        'LR' | 'FTR_14' | 'FTR_28' | 'FTR_56' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC'
+        | 'LR'
+        | 'FTR_14'
+        | 'FTR_28'
+        | 'FTR_56'
+        | 'FTR_HDC_14'
+        | 'FTR_HDC_28'
+        | 'CUR_HDC'
+        | 'IN_HDC'
       )[]
     }
     RecallSentenceCalculation: {
@@ -2144,6 +2171,47 @@ export interface components {
       date: string
       usePolicy: boolean
     }
+    DetailedDate: {
+      /** @enum {string} */
+      type:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
+      description: string
+      /** Format: date */
+      date: string
+      hints: components['schemas']['ReleaseDateHint'][]
+    }
+    ManualCalculationInputResponse: {
+      manuallyEnteredDates: components['schemas']['DetailedDate'][]
+      /** @enum {string} */
+      mode: 'STANDARD' | 'EXPRESS'
+    }
+    ReleaseDateHint: {
+      text: string
+      link?: string | null
+    }
     CalculationViewConfiguration: {
       reference: string
       /** Format: int64 */
@@ -2263,7 +2331,11 @@ export interface components {
       shortReference: string
       /** @enum {string} */
       misMatchType:
-        'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE' | 'FATAL_EXCEPTION'
+        | 'NONE'
+        | 'RELEASE_DATES_MISMATCH'
+        | 'VALIDATION_ERROR'
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'FATAL_EXCEPTION'
       sdsSentencesIdentified: components['schemas']['SentenceAndOffenceWithReleaseArrangements'][]
       establishment?: string | null
       fatalException?: string | null
@@ -2371,7 +2443,11 @@ export interface components {
       hasDiscrepancyRecord: boolean
       /** @enum {string} */
       mismatchType:
-        'NONE' | 'RELEASE_DATES_MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED_SENTENCE_TYPE' | 'FATAL_EXCEPTION'
+        | 'NONE'
+        | 'RELEASE_DATES_MISMATCH'
+        | 'VALIDATION_ERROR'
+        | 'UNSUPPORTED_SENTENCE_TYPE'
+        | 'FATAL_EXCEPTION'
       isActiveSexOffender?: boolean | null
       validationMessages: components['schemas']['ValidationMessage'][]
       shortReference: string
@@ -2517,7 +2593,8 @@ export interface components {
       /** Format: date */
       toDate?: string | null
       additionalInfo:
-        components['schemas']['NoAdjustmentAdditionalInfo'] | components['schemas']['UALAdjustmentAdditionalInfo']
+        | components['schemas']['NoAdjustmentAdditionalInfo']
+        | components['schemas']['UALAdjustmentAdditionalInfo']
     }
     AdjustmentAdditionalInfo: {
       type: string
@@ -2730,38 +2807,6 @@ export interface components {
       /** @enum {string|null} */
       reason?: 'RECALL' | 'ESCAPE' | 'SENTENCED_IN_ABSENCE' | 'RELEASE_IN_ERROR' | 'IMMIGRATION_DETENTION' | null
     })
-    DetailedDate: {
-      /** @enum {string} */
-      type:
-        | 'CRD'
-        | 'LED'
-        | 'SED'
-        | 'NPD'
-        | 'ARD'
-        | 'TUSED'
-        | 'PED'
-        | 'SLED'
-        | 'HDCED'
-        | 'NCRD'
-        | 'ETD'
-        | 'MTD'
-        | 'LTD'
-        | 'DPRRD'
-        | 'PRRD'
-        | 'ESED'
-        | 'ERSED'
-        | 'TERSED'
-        | 'APD'
-        | 'HDCAD'
-        | 'None'
-        | 'Tariff'
-        | 'ROTL'
-        | 'HDCED4PLUS'
-      description: string
-      /** Format: date */
-      date: string
-      hints: components['schemas']['ReleaseDateHint'][]
-    }
     HistoricCalculationSummary: {
       /** Format: date-time */
       calculationDate: string
@@ -2810,10 +2855,6 @@ export interface components {
       /** Format: int32 */
       numberOfSentences: number
       hasIndeterminateSentences: boolean
-    }
-    ReleaseDateHint: {
-      text: string
-      link?: string | null
     }
     ReturnToCustodyDate: {
       /** Format: int64 */
@@ -4889,6 +4930,47 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['NonFridayReleaseDay']
+        }
+      }
+    }
+  }
+  inputsForAManualCalculation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner ID to check against */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns a ManualCalculationInputResponse */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ManualCalculationInputResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ManualCalculationInputResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ManualCalculationInputResponse']
         }
       }
     }
