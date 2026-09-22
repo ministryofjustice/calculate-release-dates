@@ -292,6 +292,7 @@ describe('GET /:nomsId/overview', () => {
           calculatedByDisplayName: 'Bob Smith',
           establishment: 'HMP ABC',
           calculationType: 'CALCULATED',
+          calculationRequestId: 99999,
         },
         recentCalculations: [],
         totalCalculationCount: 0,
@@ -311,6 +312,8 @@ describe('GET /:nomsId/overview', () => {
           expect(actions.eq(0).text().trim()).toStrictEqual('Calculate release dates')
           expect(actions.eq(1).text().trim()).toStrictEqual('Record a second calculation check')
           expect(actions.eq(2).text().trim()).toStrictEqual('Add APD, HDCAD or ROTL dates')
+          const viewCalcLink = $('[data-qa=ccard-sentence-details-link]').eq(0)
+          expect(viewCalcLink.attr('href')).toStrictEqual('/view/A1234AA/calculation-history/CRDS/99999/overview')
         })
     })
 
@@ -328,7 +331,16 @@ describe('GET /:nomsId/overview', () => {
           establishment: 'HMP ABC',
           calculationType: 'CALCULATED',
         },
-        recentCalculations: [],
+        recentCalculations: [
+          {
+            calculationDate: '2025-06-01',
+            calculationSource: 'NOMIS',
+            nomisCalculationId: 555,
+            reasonDescription: 'Initial calculation',
+            calculatedByDisplayName: 'Fred',
+            establishmentCalculatedAtDescription: 'Kirkham',
+          },
+        ],
         totalCalculationCount: 0,
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
@@ -345,6 +357,8 @@ describe('GET /:nomsId/overview', () => {
           expect(actions).toHaveLength(2)
           expect(actions.eq(0).text().trim()).toStrictEqual('Calculate release dates')
           expect(actions.eq(1).text().trim()).toStrictEqual('Add APD, HDCAD or ROTL dates')
+          const viewCalcLink = $('[data-qa=ccard-sentence-details-link]').eq(0)
+          expect(viewCalcLink.attr('href')).toStrictEqual('/view/A1234AA/calculation-history/NOMIS/555/overview')
         })
     })
 

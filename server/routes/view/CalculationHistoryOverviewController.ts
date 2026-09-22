@@ -7,6 +7,7 @@ import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 import {
   DetailedCalculationResults,
   HistoricCalculationSummaryPage,
+  NomisCalculationSummary,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../../config'
 import { calculationSummaryDatesPanelModelFromCalculationSummaryViewModel } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
@@ -39,7 +40,11 @@ export default class CalculationHistoryOverviewController implements Controller 
           this.createModelFromDetailedCalculationResults(prisonerDetail, detailedResults, history, source, id),
         )
     } else if (source === 'NOMIS') {
-      throw Error(`NOMIS not implemented yet`)
+      model = await this.calculateReleaseDatesService
+        .getNomisCalculationSummary(Number(id), username)
+        .then(nomisCalculationSummary =>
+          this.createModelFromNomisCalculationSummary(prisonerDetail, nomisCalculationSummary, history, source, id),
+        )
     } else {
       throw Error(`Unknown source for historic calculation ${source}`)
     }
@@ -76,6 +81,7 @@ export default class CalculationHistoryOverviewController implements Controller 
       detailedResults.context.otherReasonDescription,
       detailedResults.context.calculatedByDisplayName,
       detailedResults.context.calculatedAtPrisonDescription,
+      detailedResults.context.calculationType,
       detailedResults.secondCheckDetails,
       history,
       config.calculationHistory.pageSize,
@@ -83,6 +89,33 @@ export default class CalculationHistoryOverviewController implements Controller 
       courtCaseCount,
       sentenceCount,
       adjustmentTypes,
+    )
+  }
+
+  private createModelFromNomisCalculationSummary(
+    prisonerDetail: PrisonApiPrisoner,
+    nomisCalculationSummary: NomisCalculationSummary,
+    history: HistoricCalculationSummaryPage,
+    source: string,
+    id: string,
+  ): CalculationHistoryOverviewViewModel {
+    return new CalculationHistoryOverviewViewModel(
+      prisonerDetail,
+      source,
+      Number(id),
+      nomisCalculationSummary.calculatedAt,
+      nomisCalculationSummary.reason ?? 'Not entered',
+      null,
+      nomisCalculationSummary.calculatedByDisplayName,
+      null,
+      null,
+      null,
+      history,
+      config.calculationHistory.pageSize,
+      calculationSummaryDatesPanelModelFromCalculationSummaryViewModel(nomisCalculationSummary),
+      null,
+      null,
+      [],
     )
   }
 }
