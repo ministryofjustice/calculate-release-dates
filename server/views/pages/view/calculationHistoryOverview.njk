@@ -5,6 +5,8 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "../components/calculation-summary-dates-panel/macro.njk" import calculationSummaryDatesPanel %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+
 
 {% set pageTitle = applicationName + " - calculation history" %}
 {% set pageId = "view-calculation-history" %}
@@ -130,7 +132,15 @@
                 {% if isManualCalc %}
                     <div class="govuk-inset-text" data-qa="manual-dates-notification">These release dates were entered manually in this service.</div>
                 {% endif %}
+                {% if isGenuineOverride and genuineOverrideReasonDescription %}
+                    <div class="govuk-inset-text" data-qa="genuine-override-dates-notification">This calculation was manually overridden. The reason provided was “{{ genuineOverrideReasonDescription }}”.</div>
+                {% endif %}
                 {{ calculationSummaryDatesPanel(calculationSummaryDatesPanelModel) }}
+                {% if isGenuineOverride and overriddenDatesDatesPanelModel %}
+                    {% call govukDetails({ summaryText: "View calculated dates" }) %}
+                        {{ calculationSummaryDatesPanel(overriddenDatesDatesPanelModel) }}
+                    {% endcall %}
+                {% endif %}
             </div>
 
             {% if selectedCalculationIsLatest and selectedCalculationSource === 'CRDS' %}

@@ -3099,6 +3099,9 @@ export interface components {
       dates: {
         [key: string]: components['schemas']['DetailedDate']
       }
+      overriddenDates?: {
+        [key: string]: components['schemas']['DetailedDate']
+      } | null
       approvedDates?: {
         [key: string]: components['schemas']['DetailedDate']
       } | null
