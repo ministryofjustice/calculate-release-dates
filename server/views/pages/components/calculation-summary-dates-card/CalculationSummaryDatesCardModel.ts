@@ -1,6 +1,5 @@
 import CalculationSummaryViewModel from '../../../../models/calculation/CalculationSummaryViewModel'
 import {
-  DetailedCalculationResults,
   DetailedDate,
   NomisCalculationSummary,
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -110,18 +109,12 @@ export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
 }
 
 export function calculationSummaryDatesPanelModelFromCalculationSummaryViewModel(
-  model: DetailedCalculationResults | NomisCalculationSummary,
+  model: DetailedDate[],
 ): CalculationSummaryDatesPanelModel {
   const releaseDates: CalculationSummaryDatesCardItem[] = []
 
   function pushLine(id: string) {
-    let detailed: DetailedDate | undefined
-    if ('dates' in model) {
-      detailed = model.dates[id]
-    } else {
-      detailed = model.releaseDates.find(date => date.type === id)
-    }
-
+    const detailed: DetailedDate | undefined = model.find(date => date.type === id)
     if (detailed) {
       releaseDates.push(getCalculationSummaryDatesCardItem(detailed, true))
     }

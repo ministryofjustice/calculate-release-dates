@@ -492,6 +492,73 @@ describe('View calculation history overview', () => {
           expect(secondCheckButton).toHaveLength(0)
         })
     })
+    it('Should show a warning and the overridden dates if it was a genuine override', () => {
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+        ...stubbedDetailedCalculationResults,
+        context: {
+          ...stubbedDetailedCalculationResults.context,
+          genuineOverrideReasonCode: 'OTHER',
+          genuineOverrideReasonDescription: 'Some reason',
+          calculationType: 'GENUINE_OVERRIDE',
+        },
+        overriddenDates: {
+          CRD: {
+            date: '2025-05-05',
+            type: 'CRD',
+            description: 'Conditional release date',
+            hints: [],
+          },
+          SED: { date: '2026-06-06', type: 'SED', description: 'Sentence expiry date', hints: [] },
+          LED: { date: '2027-07-07', type: 'LED', description: 'Licence expiry date', hints: [] },
+        },
+      })
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/CRDS/123456/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+
+          const overriddenDatesNotification = $('[data-qa=genuine-override-dates-notification]')
+          expect(overriddenDatesNotification).toHaveLength(1)
+          expect(overriddenDatesNotification.text().trim()).toStrictEqual(
+            'This calculation was manually overridden. The reason provided was “Some reason”.',
+          )
+
+          const datePanels = $('[data-qa=release-dates-panel]')
+          expect(datePanels).toHaveLength(2)
+
+          const finalDatesCards = datePanels.eq(0).find('.app-stat-card')
+          expect(finalDatesCards).toHaveLength(3)
+          expect(finalDatesCards.eq(0).text()).toContain('SED')
+          expect(finalDatesCards.eq(0).find('[data-qa=SED-date]').text().trim()).toStrictEqual(
+            'Friday, 05 February 2021',
+          )
+          expect(finalDatesCards.eq(1).text()).toContain('CRD')
+          expect(finalDatesCards.eq(1).find('[data-qa=CRD-date]').text().trim()).toStrictEqual(
+            'Wednesday, 03 February 2021',
+          )
+          expect(finalDatesCards.eq(2).text()).toContain('HDCED')
+          expect(finalDatesCards.eq(2).find('[data-qa=HDCED-date]').text().trim()).toStrictEqual(
+            'Sunday, 03 October 2021',
+          )
+
+          const overrideDatesCards = datePanels.eq(1).find('.app-stat-card')
+          expect(overrideDatesCards).toHaveLength(3)
+          expect(overrideDatesCards.eq(0).text()).toContain('LED')
+          expect(overrideDatesCards.eq(0).find('[data-qa=LED-date]').text().trim()).toStrictEqual(
+            'Wednesday, 07 July 2027',
+          )
+          expect(overrideDatesCards.eq(1).text()).toContain('SED')
+          expect(overrideDatesCards.eq(1).find('[data-qa=SED-date]').text().trim()).toStrictEqual(
+            'Saturday, 06 June 2026',
+          )
+          expect(overrideDatesCards.eq(2).text()).toContain('CRD')
+          expect(overrideDatesCards.eq(2).find('[data-qa=CRD-date]').text().trim()).toStrictEqual('Monday, 05 May 2025')
+        })
+    })
   })
 
   describe('court cases and adjustments summary scenarios', () => {
@@ -629,7 +696,7 @@ const stubbedDetailedCalculationResults: DetailedCalculationResults = {
       description: 'Conditional release date',
       hints: [{ text: 'Tuesday, 02 February 2021 when adjusted to a working day' }],
     },
-    SED: { date: '2021-02-03', type: 'SED', description: 'Sentence expiry date', hints: [] },
+    SED: { date: '2021-02-05', type: 'SED', description: 'Sentence expiry date', hints: [] },
     HDCED: {
       date: '2021-10-03',
       type: 'HDCED',
