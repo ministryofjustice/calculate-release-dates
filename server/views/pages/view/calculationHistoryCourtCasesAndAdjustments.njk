@@ -1,0 +1,71 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "../partials/checkInformation/sentenceCard.njk" import sentenceCard %}
+{% from "../components/adjustments-tables/macro.njk" import adjustmentsTables %}
+
+{% set pageTitle = applicationName + " - court cases and adjustments" %}
+{% set pageId = "calculation-history-court-cases-and-adjustments" %}
+{% set returnToOverviewLink = "/view/" + prisonerDetail.offenderNo + "/calculation-history/CRDS/" + calculationRequestId + "/overview?page=" + returnToPage %}
+
+{% block beforeContent %}
+    {{ super() }}
+    <nav>
+        {{ govukBackLink({
+            text: "Back",
+            href: returnToOverviewLink,
+            attributes: {
+                'data-qa': 'back-link'
+            }
+        }) }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <span class="govuk-caption-xl">{{ calculationDate | hmppsFormatDate('dd MMMM yyyy') }} - {{ calculationReasonDescription }}</span>
+            <h1 class="govuk-heading-xl">Court cases and adjustments</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h2 class="govuk-heading-l">Court cases</h2>
+            <div id="sentences">
+                {% for case in cases %}
+                    <h3 class="govuk-heading-m case-heading" data-qa="case-details-{{ case.caseSequence }}">
+                        {% if case.caseReference %}{{ case.caseReference }}{% else %}Court case {{ case.caseSequence }}{% endif %}{% if case.courtDescription %} at {{ case.courtDescription }}{% endif %}
+                    </h3>
+                    {{ sentenceCard({
+                        case: case,
+                        includeCheckboxes: false,
+                        includeConcurrentOrConsecutiveText: true,
+                        includeSDSPlusBadge: true,
+                        sentenceSequenceToSentence: sentenceSequenceToSentence,
+                        offenceCount: offenceCount,
+                        returnToCustodyDate: returnToCustodyDate,
+                        rowIsSdsPlus: sentenceHelper.rowIsSdsPlus
+                    })
+                    }}
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h2 class="govuk-heading-l">Adjustments</h2>
+            {{ adjustmentsTables(adjustmentsTablesModel) }}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa="return-to-overview-link" href="{{ returnToOverviewLink }}">Back to calculation history</a>
+        </div>
+    </div>
+{% endblock %}

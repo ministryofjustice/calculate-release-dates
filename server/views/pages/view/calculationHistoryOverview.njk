@@ -9,7 +9,7 @@
 
 
 {% set pageTitle = applicationName + " - calculation history" %}
-{% set pageId = "view-calculation-history" %}
+{% set pageId = "calculation-history-overview" %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -193,6 +193,9 @@
                             {% endif %}
                         </div>
                     </div>
+                </div>
+                <div class="govuk-grid-row">
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa="view-all-details-link" href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/CRDS/{{ selectedCalculationId }}/court-cases-and-adjustments?returnToPage={{ history.page.pageNumber }}">View all court case and adjustments information</a>
                 </div>
             {% endif %}
         </div>
