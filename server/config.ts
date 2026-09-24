@@ -149,6 +149,7 @@ export default {
     useNewApprovedDatesFlow: get('USE_NEW_APPROVED_DATES_FLOW', false) === 'true',
     applyPostRecallRepealRules: get('APPLY_POST_RECALL_REPEAL_RULES', false) === 'true',
     secondCheckEnabled: get('SECOND_CHECK_ENABLED', false) === 'true',
+    newCalculationHistoryEnabled: get('NEW_CALC_HISTORY_ENABLED', false) === 'true',
   },
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),

@@ -4,10 +4,10 @@ import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
 import CalculationReasonPage from '../pages/reasonForCalculation'
-import CCARDLandingPage from '../pages/CCARDLandingPage'
 import ApprovedDatesSelectDatesToEnterPage from '../pages/approvedDatesSelectDatesToEnter'
 import ApprovedDatesEnterDatePage from '../pages/approvedDatesEnterDate'
 import ApprovedDatesRemoveDatePage from '../pages/approvedDatesRemoveDate'
+import PrisonerOverviewPage from '../pages/PrisonerOverviewPage'
 
 context('End to end user journeys entering and modifying approved dates', () => {
   beforeEach(() => {
@@ -29,13 +29,13 @@ context('End to end user journeys entering and modifying approved dates', () => 
     cy.task('stubGetAdjustmentsForPrisoner')
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
-    cy.task('stubLatestCalculation')
     cy.task('stubCalculationUserInputs')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetCalculationHistory')
     cy.task('stubGetDetailedCalculationResults')
     cy.task('stubComponents')
     cy.task('stubGetLatestCalculation')
+    cy.task('stubGetPrisonerCalculationOverview')
     cy.task('stubGetReferenceDates')
     cy.task('stubHasNoIndeterminateSentences')
     cy.task('stubGetServiceDefinitions')
@@ -43,8 +43,8 @@ context('End to end user journeys entering and modifying approved dates', () => 
   })
 
   it('Can add all dates', () => {
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -96,8 +96,8 @@ context('End to end user journeys entering and modifying approved dates', () => 
   })
 
   it('Can edit a date', () => {
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -144,8 +144,8 @@ context('End to end user journeys entering and modifying approved dates', () => 
   })
 
   it('Can remove a date', () => {
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
