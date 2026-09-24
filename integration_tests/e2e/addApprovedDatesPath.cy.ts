@@ -1,6 +1,5 @@
 import CalculationCompletePage from '../pages/calculationComplete'
 import Page from '../pages/page'
-import CCARDLandingPage from '../pages/CCARDLandingPage'
 import StandaloneApprovedDatesReviewCalculatedDatesPage from '../pages/standaloneApprovedDatesReviewCalculatedDatesPage'
 import StandaloneApprovedDatesSelectDatesToEnterPage from '../pages/standaloneApprovedDatesSelectDatesToEnterPage'
 import StandaloneEnterApprovedDatePage from '../pages/standaloneEnterApprovedDatePage'
@@ -10,6 +9,7 @@ import CheckInformationPage from '../pages/checkInformation'
 import CalculationSummaryPage from '../pages/calculationSummary'
 import ApprovedDatesSelectDatesToEnterPage from '../pages/approvedDatesSelectDatesToEnter'
 import ApprovedDatesEnterDatePage from '../pages/approvedDatesEnterDate'
+import PrisonerOverviewPage from '../pages/PrisonerOverviewPage'
 
 context('End to end user journeys entering and modifying approved dates through dedicated link', () => {
   beforeEach(() => {
@@ -32,13 +32,13 @@ context('End to end user journeys entering and modifying approved dates through 
     cy.task('stubGetAdjustmentsForPrisoner')
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
-    cy.task('stubLatestCalculation')
     cy.task('stubCalculationUserInputs')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetCalculationHistory')
     cy.task('stubGetDetailedCalculationResults')
     cy.task('stubComponents')
     cy.task('stubGetLatestCalculation')
+    cy.task('stubGetPrisonerCalculationOverview')
     cy.task('stubGetReferenceDates')
     cy.task('stubHasNoIndeterminateSentences')
     cy.task('stubGetServiceDefinitions')
@@ -48,8 +48,8 @@ context('End to end user journeys entering and modifying approved dates through 
   it('Can add all dates if approved dates is available', () => {
     cy.task('stubAvailableApprovedDatesInputs')
 
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.addReleaseDatesAction().click()
 
     Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
@@ -101,8 +101,8 @@ context('End to end user journeys entering and modifying approved dates through 
   it('Can add all dates and edit them if approved dates is available', () => {
     cy.task('stubAvailableApprovedDatesInputs')
 
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.addReleaseDatesAction().click()
 
     Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
@@ -167,8 +167,8 @@ context('End to end user journeys entering and modifying approved dates through 
   it('Can add all dates and remove them if approved dates is available', () => {
     cy.task('stubAvailableApprovedDatesInputs')
 
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.addReleaseDatesAction().click()
 
     Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
@@ -250,8 +250,8 @@ context('End to end user journeys entering and modifying approved dates through 
       ],
     })
 
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.addReleaseDatesAction().click()
 
     Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
@@ -304,8 +304,8 @@ context('End to end user journeys entering and modifying approved dates through 
   it('If approved dates is unavailable then do a full calculation with preselected reason and skipping the approved dates question', () => {
     cy.task('stubUnavailableApprovedDatesInputs')
 
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.addReleaseDatesAction().click()
 
     const checkInformationPage = Page.verifyOnPage(CheckInformationPage)
@@ -374,8 +374,8 @@ context('End to end user journeys entering and modifying approved dates through 
   it('Can submit with no approved dates', () => {
     cy.task('stubAvailableApprovedDatesInputs')
 
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.addReleaseDatesAction().click()
 
     Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //
@@ -403,8 +403,8 @@ context('End to end user journeys entering and modifying approved dates through 
   it('Can add additional dates after originally selecting none', () => {
     cy.task('stubAvailableApprovedDatesInputs')
 
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.addReleaseDatesAction().click()
 
     Page.verifyOnPage(StandaloneApprovedDatesReviewCalculatedDatesPage) //

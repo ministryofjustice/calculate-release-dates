@@ -1,18 +1,17 @@
 import Page, { PageElement } from './page'
 
-// Deprecated - use PrisonerOverviewPage instead
-export default class CCARDLandingPage extends Page {
+export default class PrisonerOverviewPage extends Page {
   constructor() {
-    super('ccard-index')
+    super('prisoner-calculation-overview')
   }
 
-  public static goTo(prisonerId: string): CCARDLandingPage {
-    cy.visit(`/?prisonId=${prisonerId}`)
-    return new CCARDLandingPage()
+  public static goTo(prisonerId: string): PrisonerOverviewPage {
+    cy.visit(`/${prisonerId}/overview`)
+    return new PrisonerOverviewPage()
   }
 
-  navigateToSentenceDetailsAction(): PageElement {
-    return cy.get('[data-qa=ccard-sentence-details-link]')
+  navigateToCalculationDetailsLink(): PageElement {
+    return cy.get('[data-qa=view-calculation-details-link]')
   }
 
   calculateReleaseDatesAction(): PageElement {
@@ -45,27 +44,6 @@ export default class CCARDLandingPage extends Page {
 
   recordSecondCheckAction(): PageElement {
     return cy.get('[data-qa=calc-release-dates-for-prisoner-second-check]')
-  }
-
-  hasMissingOffenceDates(flag: boolean) {
-    const check = flag ? 'exist' : 'not.exist'
-    cy.get('p')
-      .contains('This service cannot calculate release dates because the offence start date is missing.')
-      .should(check)
-  }
-
-  hasMissingOffenceTerms(flag: boolean) {
-    const check = flag ? 'exist' : 'not.exist'
-    cy.get('p')
-      .contains('This service cannot calculate release dates because the offence is missing imprisonment terms.')
-      .should(check)
-  }
-
-  hasMissingOffenceLicenceTerms(flag: boolean) {
-    const check = flag ? 'exist' : 'not.exist'
-    cy.get('p')
-      .contains('This service cannot calculate release dates because the offence is missing a licence code.')
-      .should(check)
   }
 
   headerPhaseBanner(): PageElement {

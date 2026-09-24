@@ -185,6 +185,7 @@ const latestCalcCardActionForPrisoner: Action = {
 const noLatestCalcCard = {}
 
 beforeEach(() => {
+  config.featureToggles.newCalculationHistoryEnabled = false
   app = appWithAllRoutes({
     services: { calculateReleaseDatesService, prisonerService, userPermissionsService, courtCasesReleaseDatesService },
     userSupplier: () => ({ ...user, userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR] }),
