@@ -51,6 +51,7 @@ import PrisonerCalculationOverviewController from './start/prisonerCalculationOv
 import ConfigItemController from './config/configItemController'
 import CalculationHistoryOverviewController from './view/CalculationHistoryOverviewController'
 import CalculationHistoryNavigationController from './view/CalculationHistoryNavigationController'
+import CalculationHistoryCourtCasesAndAdjustmentsController from './view/CalculationHistoryCourtCasesAndAdjustmentsController'
 
 export default function Index({
   prisonerService,
@@ -127,6 +128,11 @@ export default function Index({
     prisonerService,
   )
   const calculationHistoryOverviewController = new CalculationHistoryOverviewController(
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+  const calculationHistoryCourtCasesAndAdjustmentsController = new CalculationHistoryCourtCasesAndAdjustmentsController(
+    viewReleaseDatesService,
     calculateReleaseDatesService,
     prisonerService,
   )
@@ -345,6 +351,10 @@ export default function Index({
     route({
       path: '/view/:nomsId/calculation-history/:direction',
       controller: calculationHistoryNavigationController,
+    })
+    route({
+      path: '/view/:nomsId/calculation-history/:source/:id/court-cases-and-adjustments',
+      controller: calculationHistoryCourtCasesAndAdjustmentsController,
     })
   }
 

@@ -562,7 +562,7 @@ describe('View calculation history overview', () => {
   })
 
   describe('court cases and adjustments summary scenarios', () => {
-    it('Should show the court cases and sentence counts for CRDS', () => {
+    it('Should show the court cases and sentence counts for CRDS and link to details', () => {
       calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
       calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -574,6 +574,9 @@ describe('View calculation history overview', () => {
           const $ = cheerio.load(res.text)
           expect($('[data-qa=court-case-count]').eq(0).text().trim()).toStrictEqual('2')
           expect($('[data-qa=sentence-count]').eq(0).text().trim()).toStrictEqual('3')
+          expect($('[data-qa=view-all-details-link]').eq(0).attr('href')).toStrictEqual(
+            '/view/A1234AA/calculation-history/CRDS/123456/court-cases-and-adjustments?returnToPage=1',
+          )
         })
     })
     it('Should not show the court cases and sentence counts for NOMIS', () => {
