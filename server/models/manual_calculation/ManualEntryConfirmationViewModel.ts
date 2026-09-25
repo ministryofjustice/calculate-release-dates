@@ -1,5 +1,6 @@
 import PrisonerContextViewModel from '../PrisonerContextViewModel'
 import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
+import { ErrorMessages } from '../../types/ErrorMessages'
 
 export default class ManualEntryConfirmationViewModel extends PrisonerContextViewModel {
   constructor(
@@ -9,6 +10,7 @@ export default class ManualEntryConfirmationViewModel extends PrisonerContextVie
     public existingCalculation: boolean = false,
     public confirmationError: boolean = false,
     public differentDatesConfirmed?: boolean,
+    public systemErrors?: ErrorMessages,
   ) {
     super(prisonerDetail)
   }
