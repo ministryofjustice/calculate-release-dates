@@ -609,6 +609,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/manual-calculation/{prisonerId}/inputs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the inputs for a manual calculation
+     * @description This endpoint will return the already manually entered dates with express mode or with no dates with standard mode - required to perform a manual calculation for a prisoner
+     */
+    get: operations['inputsForAManualCalculation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/manual-calculation/{prisonerId}/has-existing-calculation': {
     parameters: {
       query?: never
@@ -678,6 +698,7 @@ export interface paths {
     }
     /**
      * Get historic calculations for a prisoner
+     * @deprecated
      * @description This endpoint will return a list of calculations performed for a given prisoner
      */
     get: operations['getCalculationResults']
@@ -1242,6 +1263,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/calculation-history/{nomsId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a page of historic calculations for a prisoner
+     * @description This endpoint will return a list of calculations performed for a given prisoner based the on the page number and page size requested. The results are ordered with the most recent calculation first.
+     */
+    get: operations['getHistoricCalculationSummaryPage']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/booking-and-sentence-adjustments/{bookingId}': {
     parameters: {
       query?: never
@@ -1448,6 +1489,7 @@ export interface components {
         | 'HDCED_REPEAL'
         | 'PROGRESSION_TRANCHE_ONE_ALLOCATION'
         | 'PROGRESSION_MODEL_SCHEDULE_EXCLUSION'
+        | 'INVALID_NOMIS_OFFENCE_CODE'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1456,6 +1498,7 @@ export interface components {
         | 'UNSUPPORTED_CALCULATION'
         | 'VALIDATION'
         | 'VALIDATION_FIXABLE_IN_DPS'
+        | 'INVALID_OFFENCE'
         | 'INCORRECT_OFFENCE'
         | 'SUSPENDED_OFFENCE'
         | 'MANUAL_ENTRY_JOURNEY_REQUIRED'
@@ -1601,8 +1644,7 @@ export interface components {
     }
     RecordARecallDecisionResult: {
       /** @enum {string} */
-      decision:
-        'CRITICAL_ERRORS' | 'AUTOMATED' | 'NO_RECALLABLE_SENTENCES_FOUND' | 'VALIDATION' | 'CONFLICTING_ADJUSTMENTS'
+      decision: 'AUTOMATED' | 'NO_RECALLABLE_SENTENCES_FOUND' | 'VALIDATION' | 'CONFLICTING_ADJUSTMENTS'
       validationMessages: components['schemas']['ValidationMessage'][]
       conflictingAdjustments: string[]
       automatedCalculationData?: components['schemas']['AutomatedCalculationData'] | null
@@ -2122,6 +2164,47 @@ export interface components {
       date: string
       usePolicy: boolean
     }
+    DetailedDate: {
+      /** @enum {string} */
+      type:
+        | 'CRD'
+        | 'LED'
+        | 'SED'
+        | 'NPD'
+        | 'ARD'
+        | 'TUSED'
+        | 'PED'
+        | 'SLED'
+        | 'HDCED'
+        | 'NCRD'
+        | 'ETD'
+        | 'MTD'
+        | 'LTD'
+        | 'DPRRD'
+        | 'PRRD'
+        | 'ESED'
+        | 'ERSED'
+        | 'TERSED'
+        | 'APD'
+        | 'HDCAD'
+        | 'None'
+        | 'Tariff'
+        | 'ROTL'
+        | 'HDCED4PLUS'
+      description: string
+      /** Format: date */
+      date: string
+      hints: components['schemas']['ReleaseDateHint'][]
+    }
+    ManualCalculationInputResponse: {
+      manuallyEnteredDates: components['schemas']['DetailedDate'][]
+      /** @enum {string} */
+      mode: 'STANDARD' | 'EXPRESS'
+    }
+    ReleaseDateHint: {
+      text: string
+      link?: string | null
+    }
     CalculationViewConfiguration: {
       reference: string
       /** Format: int64 */
@@ -2141,6 +2224,7 @@ export interface components {
       /** Format: int64 */
       calculationRequestId?: number | null
       calculationReason?: string | null
+      reasonFurtherDetail?: string | null
       /** Format: int64 */
       offenderSentCalculationId?: number | null
       /** @enum {string|null} */
@@ -2476,12 +2560,12 @@ export interface components {
       identifier: string
       consecutiveSentenceUUIDs: string[]
       /** Format: int32 */
-      caseSequence?: number
+      caseSequence?: number | null
       /** Format: int32 */
-      lineSequence?: number
-      externalSentenceId?: components['schemas']['ExternalSentenceId']
-      caseReference?: string
-      recall?: components['schemas']['Recall']
+      lineSequence?: number | null
+      externalSentenceId?: components['schemas']['ExternalSentenceId'] | null
+      caseReference?: string | null
+      recall?: components['schemas']['Recall'] | null
       type: string
     }
     Adjustment: {
@@ -2707,38 +2791,6 @@ export interface components {
       /** @enum {string|null} */
       reason?: 'RECALL' | 'ESCAPE' | 'SENTENCED_IN_ABSENCE' | 'RELEASE_IN_ERROR' | 'IMMIGRATION_DETENTION' | null
     })
-    DetailedDate: {
-      /** @enum {string} */
-      type:
-        | 'CRD'
-        | 'LED'
-        | 'SED'
-        | 'NPD'
-        | 'ARD'
-        | 'TUSED'
-        | 'PED'
-        | 'SLED'
-        | 'HDCED'
-        | 'NCRD'
-        | 'ETD'
-        | 'MTD'
-        | 'LTD'
-        | 'DPRRD'
-        | 'PRRD'
-        | 'ESED'
-        | 'ERSED'
-        | 'TERSED'
-        | 'APD'
-        | 'HDCAD'
-        | 'None'
-        | 'Tariff'
-        | 'ROTL'
-        | 'HDCED4PLUS'
-      description: string
-      /** Format: date */
-      date: string
-      hints: components['schemas']['ReleaseDateHint'][]
-    }
     HistoricCalculationSummary: {
       /** Format: date-time */
       calculationDate: string
@@ -2784,10 +2836,9 @@ export interface components {
       recentCalculations: components['schemas']['HistoricCalculationSummary'][]
       /** Format: int32 */
       totalCalculationCount: number
-    }
-    ReleaseDateHint: {
-      text: string
-      link?: string | null
+      /** Format: int32 */
+      numberOfSentences: number
+      hasIndeterminateSentences: boolean
     }
     ReturnToCustodyDate: {
       /** Format: int64 */
@@ -2988,7 +3039,8 @@ export interface components {
     }
     CalculationOriginalData: {
       prisonerDetails?: components['schemas']['PrisonerDetails'] | null
-      sentencesAndOffences?: components['schemas']['SentenceAndOffenceWithReleaseArrangements'][] | null
+      sentencesAndOffences?: components['schemas']['AnalysedSentenceAndOffence'][] | null
+      adjustments?: components['schemas']['AdjustmentDto'][] | null
     }
     ConcurrentSentenceBreakdown: {
       /** Format: date */
@@ -3047,6 +3099,9 @@ export interface components {
       dates: {
         [key: string]: components['schemas']['DetailedDate']
       }
+      overriddenDates?: {
+        [key: string]: components['schemas']['DetailedDate']
+      } | null
       approvedDates?: {
         [key: string]: components['schemas']['DetailedDate']
       } | null
@@ -3177,6 +3232,31 @@ export interface components {
       furtherDetailDescription?: string | null
       isSecondCheck: boolean
     }
+    /** @description A page of historic calculation summaries along with metadata to support pagination */
+    HistoricCalculationSummaryPage: {
+      /** @description The items in this page */
+      items: components['schemas']['HistoricCalculationSummary'][]
+      /** @description Metadata about this page */
+      page: components['schemas']['PageInfo']
+    }
+    /** @description Metadata to support pagination */
+    PageInfo: {
+      /**
+       * Format: int32
+       * @description The current page number
+       */
+      pageNumber: number
+      /**
+       * Format: int32
+       * @description The total number of pages available
+       */
+      totalPages: number
+      /**
+       * Format: int32
+       * @description The total number of items across all pages
+       */
+      totalItems: number
+    }
     AnalysedBookingAdjustment: {
       active: boolean
       /** Format: date */
@@ -3267,6 +3347,7 @@ export interface components {
         | 'CALCULATION_FAILED'
         | 'DATES_HAVE_CHANGED'
         | null
+      /** @description The results of preliminary calculation if approved dates can be added */
       calculatedReleaseDates?: components['schemas']['CalculatedReleaseDates'] | null
       /** @description Previous approved dates for this prisoner if any are found */
       previousApprovedDates: components['schemas']['ApprovedDate'][]
@@ -4840,6 +4921,47 @@ export interface operations {
       }
     }
   }
+  inputsForAManualCalculation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The prisoner ID to check against */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns a ManualCalculationInputResponse */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ManualCalculationInputResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ManualCalculationInputResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ManualCalculationInputResponse']
+        }
+      }
+    }
+  }
   hasExistingCalculation: {
     parameters: {
       query?: never
@@ -6363,6 +6485,70 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['CalculationReason'][]
+        }
+      }
+    }
+  }
+  getHistoricCalculationSummaryPage: {
+    parameters: {
+      query: {
+        /**
+         * @description The number of the page to load with 1 being the first page
+         * @example 1
+         */
+        page: number
+        /**
+         * @description The number of items to load in the page
+         * @example 10
+         */
+        size: number
+      }
+      header?: never
+      path: {
+        /**
+         * @description The nomsId of the prisoner
+         * @example AD123A
+         */
+        nomsId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns historic calculations */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoricCalculationSummaryPage']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoricCalculationSummaryPage']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoricCalculationSummaryPage']
+        }
+      }
+      /** @description This prisoner id does not exist */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoricCalculationSummaryPage']
         }
       }
     }

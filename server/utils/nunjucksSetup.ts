@@ -25,7 +25,7 @@ import ComparisonType from '../enumerations/comparisonType'
 import { FieldValidationError } from '../types/FieldValidationError'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
 import logger from '../../logger'
-import { AllocatedTranches } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { AdjustmentDtoTypes, AllocatedTranches } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 dayjs.extend(customParseFormat)
 
@@ -112,6 +112,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   })
 
   njkEnv.addFilter('remandDate', remandDate)
+
+  njkEnv.addFilter('formatAdjustmentType', formatAdjustmentType)
 
   njkEnv.addFilter('pluralise', (word, number, appender) => (number === 1 ? word : `${word}${appender || 's'}`))
 
@@ -236,6 +238,29 @@ export const remandDate = (date: string, format: string) => {
     return 'Date Not Entered'
   }
   return hmppsFormatDate(date, format)
+}
+
+export const ADJUSTMENT_TYPE_LABELS: Record<AdjustmentDtoTypes, string> = {
+  REMAND: 'Remand',
+  TAGGED_BAIL: 'Tagged bail',
+  CUSTODY_ABROAD: 'Time spent in custody abroad',
+  RESTORATION_OF_ADDITIONAL_DAYS_AWARDED: 'RADA (Restoration of additional days awarded)',
+  SPECIAL_REMISSION: 'Special remission',
+  ADDITIONAL_DAYS_AWARDED: 'ADA (Additional days awarded)',
+  UNLAWFULLY_AT_LARGE: 'UAL (Unlawfully at large)',
+  LAWFULLY_AT_LARGE: 'LAL (Lawfully at large)',
+  APPEAL_APPLICANT: 'Time spent as an appeal applicant not to count',
+  UNUSED_DEDUCTIONS: 'Unused deductions',
+}
+
+export const formatAdjustmentType = (type: AdjustmentDtoTypes) => {
+  const label = ADJUSTMENT_TYPE_LABELS[type]
+
+  if (!label) {
+    throw new Error(`Unknown adjustment type: ${type}`)
+  }
+
+  return label
 }
 
 export const formatSds40Exclusion = (exclusion: string) => {

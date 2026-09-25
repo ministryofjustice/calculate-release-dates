@@ -3,12 +3,17 @@ import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
 import {
   AllocatedTranches,
+  AnalysedSentenceAndOffence,
   ApprovedDate,
   CalculationBreakdown,
   DetailedCalculationResults,
+  DetailedDate,
+  HistoricCalculationSummaryPage,
   LatestCalculation,
+  ManualCalculationInputResponse,
   PreviouslyRecordedSLED,
-  SentenceAndOffenceWithReleaseArrangements,
+  PrisonerCalculationOverview,
+  ReleaseDatesAndCalculationContext,
   ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { components } from '../../server/@types/calculateReleaseDates'
@@ -1168,7 +1173,8 @@ export default {
         isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
         isSDSPlusOffenceInPeriod: false,
         revocationDates: [],
-      } as SentenceAndOffenceWithReleaseArrangements,
+        sentenceAndOffenceAnalysis: 'SAME',
+      } as AnalysedSentenceAndOffence,
       {
         bookingId: 1,
         sentenceCategory: '',
@@ -1202,7 +1208,8 @@ export default {
         isSDSPlusEligibleSentenceTypeLengthAndOffence: false,
         isSDSPlusOffenceInPeriod: false,
         revocationDates: [],
-      } as SentenceAndOffenceWithReleaseArrangements,
+        sentenceAndOffenceAnalysis: 'SAME',
+      } as AnalysedSentenceAndOffence,
     ]
     const detailedResults: DetailedCalculationResults = {
       allocatedTranches: [],
@@ -1311,6 +1318,48 @@ export default {
       },
     })
   },
+  stubGetReleaseDates: (): SuperAgentRequest => {
+    const releaseDatesAndContext: ReleaseDatesAndCalculationContext = {
+      calculation: {
+        prisonerId: 'A1234AB',
+        bookingId: 1234,
+        calculationRequestId: 123,
+        calculationDate: '2024-03-05T10:30:00',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
+        calculationType: 'CALCULATED',
+        calculationStatus: 'PRELIMINARY',
+        calculationReference: '',
+        usePreviouslyRecordedSLEDIfFound: false,
+      },
+      dates: [
+        { date: '2018-11-05', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+        {
+          date: dayjs().add(7, 'day').format('YYYY-MM-DD'),
+          type: 'CRD',
+          description: 'Conditional release date',
+          hints: [{ text: 'Friday, 05 May 2017 when adjusted to a working day' }],
+        },
+        {
+          date: dayjs().add(3, 'day').format('YYYY-MM-DD'),
+          type: 'HDCED',
+          description: 'Home detention curfew eligibility date',
+          hints: [{ text: 'Wednesday, 28 December 2016 when adjusted to a working day' }],
+        },
+      ],
+    }
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/calculation/release-dates/123',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: releaseDatesAndContext,
+      },
+    })
+  },
   stubGetLatestCalculationNone: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -1320,6 +1369,87 @@ export default {
       response: {
         status: 404,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
+  stubGetPrisonerCalculationOverview: (): SuperAgentRequest => {
+    const prisonerCalculationOverview: PrisonerCalculationOverview = {
+      latestCalculation: {
+        prisonerId: 'A1234AB',
+        bookingId: 1234,
+        calculationRequestId: 123,
+        calculatedAt: '2024-03-05T10:30:00',
+        source: 'CRDS',
+        reason: 'Transfer',
+        establishment: 'Kirkham (HMP)',
+        calculatedByUsername: 'user1',
+        calculatedByDisplayName: 'User One',
+        calculationType: 'CALCULATED',
+        dates: [
+          { date: '2018-11-05', type: 'SLED', description: 'Sentence and licence expiry date', hints: [] },
+          {
+            date: dayjs().add(7, 'day').format('YYYY-MM-DD'),
+            type: 'CRD',
+            description: 'Conditional release date',
+            hints: [{ text: 'Friday, 05 May 2017 when adjusted to a working day' }],
+          },
+          {
+            date: dayjs().add(3, 'day').format('YYYY-MM-DD'),
+            type: 'HDCED',
+            description: 'Home detention curfew eligibility date',
+            hints: [{ text: 'Wednesday, 28 December 2016 when adjusted to a working day' }],
+          },
+        ],
+      },
+      hasIndeterminateSentences: false,
+      numberOfSentences: 1,
+      recentCalculations: [
+        {
+          calculationDate: '2024-03-05T10:30:00',
+          calculationSource: 'CRDS',
+          crdsCalculationId: 123,
+          reasonDescription: 'Transfer',
+          calculatedByDisplayName: 'User One',
+        },
+        {
+          calculationDate: '2024-02-01T09:30:00',
+          calculationSource: 'NOMIS',
+          nomisCalculationId: 666,
+          reasonDescription: 'Initial',
+          calculatedByDisplayName: 'User One',
+        },
+      ],
+      totalCalculationCount: 2,
+    }
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/calculation/A1234AB/overview',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: prisonerCalculationOverview,
+      },
+    })
+  },
+  stubGetPrisonerCalculationOverviewNone: (): SuperAgentRequest => {
+    const prisonerCalculationOverview: PrisonerCalculationOverview = {
+      latestCalculation: null,
+      hasIndeterminateSentences: false,
+      numberOfSentences: 0,
+      recentCalculations: [],
+      totalCalculationCount: 2,
+    }
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/calculate-release-dates/calculation/A1234AB/overview',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: prisonerCalculationOverview,
       },
     })
   },
@@ -1333,6 +1463,19 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: [],
+      },
+    })
+  },
+  stubGetCalculationHistoryPage: (page: HistoricCalculationSummaryPage): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/calculate-release-dates/calculation-history/A1234AB\\?page=${page.page.pageNumber}&size=10`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: page,
       },
     })
   },
@@ -1441,16 +1584,23 @@ export default {
       },
     })
   },
-  stubExistingManualJourney: (flag: boolean): SuperAgentRequest => {
+  stubManualCalculationInputs: (opts: {
+    mode: 'STANDARD' | 'EXPRESS'
+    manuallyEnteredDates?: DetailedDate[]
+  }): SuperAgentRequest => {
+    const manualCalculationInputResponse: ManualCalculationInputResponse = {
+      mode: opts.mode,
+      manuallyEnteredDates: opts.manuallyEnteredDates ?? [],
+    }
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/calculate-release-dates/manual-calculation/A1234AB/has-existing-calculation',
+        urlPattern: '/calculate-release-dates/manual-calculation/A1234AB/inputs',
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: flag,
+        jsonBody: manualCalculationInputResponse,
       },
     })
   },

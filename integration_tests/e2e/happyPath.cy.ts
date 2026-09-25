@@ -2,12 +2,10 @@ import CalculationCompletePage from '../pages/calculationComplete'
 import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
-import ViewCalculationSummary from '../pages/viewCalculationSummary'
-import ViewSentencesAndOffencesPage from '../pages/viewSentencesAndOffences'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
 import CancelQuestionPage from '../pages/cancelQuestion'
 import CalculationReasonPage from '../pages/reasonForCalculation'
-import CCARDLandingPage from '../pages/CCARDLandingPage'
+import PrisonerOverviewPage from '../pages/PrisonerOverviewPage'
 
 context('End to end happy path of user journey', () => {
   beforeEach(() => {
@@ -30,13 +28,13 @@ context('End to end happy path of user journey', () => {
     cy.task('stubGetAdjustmentsForPrisoner')
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
-    cy.task('stubLatestCalculation')
     cy.task('stubSupportedValidationNoMessages')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetCalculationHistory')
     cy.task('stubGetDetailedCalculationResults')
     cy.task('stubComponents')
     cy.task('stubGetLatestCalculation')
+    cy.task('stubGetPrisonerCalculationOverview')
     cy.task('stubHasNoIndeterminateSentences')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetEligibility')
@@ -44,9 +42,9 @@ context('End to end happy path of user journey', () => {
 
   it('Standalone user journey with a standard reason', () => {
     cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-    CCARDLandingPage.goTo('A1234AB')
+    PrisonerOverviewPage.goTo('A1234AB')
 
-    const landingPage = CCARDLandingPage.verifyOnPage(CCARDLandingPage)
+    const landingPage = PrisonerOverviewPage.verifyOnPage(PrisonerOverviewPage)
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -87,9 +85,9 @@ context('End to end happy path of user journey', () => {
 
   it('Standalone user journey with further details reason', () => {
     cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-    CCARDLandingPage.goTo('A1234AB')
+    PrisonerOverviewPage.goTo('A1234AB')
 
-    const landingPage = CCARDLandingPage.verifyOnPage(CCARDLandingPage)
+    const landingPage = PrisonerOverviewPage.verifyOnPage(PrisonerOverviewPage)
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -131,7 +129,7 @@ context('End to end happy path of user journey', () => {
   it('DPS user journey with selecting no in cancel question', () => {
     cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
 
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -165,7 +163,7 @@ context('End to end happy path of user journey', () => {
   it('DPS user journey with selecting yes in cancel question', () => {
     cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
 
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -186,127 +184,5 @@ context('End to end happy path of user journey', () => {
     const cancelQuestionPage = Page.verifyOnPage(CancelQuestionPage)
     cancelQuestionPage.yesOption().check()
     cancelQuestionPage.confirm().click()
-  })
-
-  it('View journey', () => {
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-
-    CCARDLandingPage.goTo('A1234AB')
-    const landingPage = CCARDLandingPage.verifyOnPage(CCARDLandingPage)
-
-    landingPage
-      .latestCalculationDate()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('05 March 2024')
-      })
-
-    landingPage
-      .latestCalculationReason()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('Transfer')
-      })
-
-    landingPage
-      .latestCalculationCalculatedBy()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('User One at Kirkham (HMP)')
-      })
-
-    landingPage
-      .latestCalculationCheckedBy()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('Not checked')
-      })
-
-    landingPage
-      .latestCalculationSource()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('Calculate release dates service')
-      })
-
-    landingPage.navigateToSentenceDetailsAction().click()
-
-    const checkInformationPage = Page.verifyOnPage(ViewSentencesAndOffencesPage)
-    checkInformationPage.offenceTitle('123').should('have.text', '123 - Doing a crime')
-    checkInformationPage.remandTable().should('contain.text', 'Remand')
-    checkInformationPage.remandTable().should('contain.text', '28')
-    checkInformationPage.loadCalculationSummary().click()
-
-    const calculationSummaryPage = Page.verifyOnPage(ViewCalculationSummary)
-    calculationSummaryPage.loadSentenceAndOffences()
-
-    calculationSummaryPage
-      .getCRDDateHintText()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('Manually overridden')
-      })
-
-    calculationSummaryPage.getSentenceFaq().should('exist')
-    calculationSummaryPage.getCalculationOverrides().should('not.exist')
-  })
-
-  it('View journey with genuine override', () => {
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-    cy.task('stubGetDetailedCalculationResults', {
-      calculationType: 'GENUINE_OVERRIDE',
-      overridesCalculationRequestId: 987654,
-    })
-
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
-
-    landingPage
-      .latestCalculationDate()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('05 March 2024')
-      })
-
-    landingPage
-      .latestCalculationReason()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('Transfer')
-      })
-
-    landingPage
-      .latestCalculationCalculatedBy()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('User One at Kirkham (HMP)')
-      })
-
-    landingPage
-      .latestCalculationSource()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('Calculate release dates service')
-      })
-
-    landingPage.navigateToSentenceDetailsAction().click()
-
-    const checkInformationPage = Page.verifyOnPage(ViewSentencesAndOffencesPage)
-    checkInformationPage.offenceTitle('123').should('have.text', '123 - Doing a crime')
-    checkInformationPage.remandTable().should('contain.text', 'Remand')
-    checkInformationPage.remandTable().should('contain.text', '28')
-    checkInformationPage.loadCalculationSummary().click()
-
-    const calculationSummaryPage = Page.verifyOnPage(ViewCalculationSummary)
-    calculationSummaryPage.loadSentenceAndOffences()
-
-    calculationSummaryPage
-      .getCRDDateHintText()
-      .invoke('text')
-      .then(text => {
-        expect(text.trim()).to.equal('Manually overridden')
-      })
-
-    calculationSummaryPage.getSentenceFaq().should('not.exist')
-    calculationSummaryPage.getCalculationOverrides().should('exist')
   })
 })

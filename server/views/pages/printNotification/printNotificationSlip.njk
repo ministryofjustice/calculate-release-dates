@@ -6,12 +6,13 @@
   {% if pageType == 'establishment' or pageType == 'offender' %}
      <script data-qa="print-invoker" src="{{ '/assets/js/print.js' | assetMap }}"></script>
   {% endif %}
-
   <head>
     <link href="{{ '/assets/css/index.css' | assetMap }}" media="all" rel="stylesheet" type="text/css" />
   </head>
 
   <body class="govuk-template__body  js-enabled" data-new-gr-c-s-check-loaded="14.1110.0" data-gr-ext-installed="">
+    {# page id for testing #}
+    <span class="govuk-visually-hidden" id="print-notification-slip"></span>
 
     <div class="print-width-container">
       <div class="moj-width-container govuk-!-margin-bottom-4 govuk-!-display-none-print" style="padding-top: 30px;">

@@ -11,7 +11,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { LatestCalculation, ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ManualCalculationService from '../services/manualCalculationService'
 import ManualEntryService from '../services/manualEntryService'
 import DateTypeConfigurationService from '../services/dateTypeConfigurationService'
@@ -108,6 +108,10 @@ beforeEach(() => {
   calculateReleaseDatesService.validateDatesForManualEntry.mockResolvedValue({
     messages: [],
     messageType: null,
+  })
+  calculateReleaseDatesService.getManualCalculationInputs.mockResolvedValue({
+    mode: 'STANDARD',
+    manuallyEnteredDates: [],
   })
   app = appWithAllRoutes({
     services: {
@@ -340,11 +344,10 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
-    calculateReleaseDatesService.offenderHasPreviousManualCalculation.mockResolvedValue(true)
-    calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
-      source: 'NOMIS',
-      dates: [{ type: 'CRD', date: '2000-01-01' }],
-    } as LatestCalculation)
+    calculateReleaseDatesService.getManualCalculationInputs.mockResolvedValue({
+      mode: 'EXPRESS',
+      manuallyEnteredDates: [{ type: 'CRD', description: 'Conditional release date', date: '2000-01-01', hints: [] }],
+    })
 
     return request(app)
       .get('/calculation/A1234AA/manual-entry')
@@ -375,10 +378,9 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
     })
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(true)
-    calculateReleaseDatesService.offenderHasPreviousManualCalculation.mockResolvedValue(true)
-    calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
-      status: 404,
-      message: 'Not Found',
+    calculateReleaseDatesService.getManualCalculationInputs.mockResolvedValue({
+      mode: 'STANDARD',
+      manuallyEnteredDates: [],
     })
 
     return request(app)

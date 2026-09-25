@@ -13,6 +13,7 @@ import {
   GenuineOverrideCreatedResponse,
   HistoricCalculation,
   LatestCalculation,
+  ManualCalculationInputResponse,
   ValidationMessage,
   WorkingDay,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
@@ -267,6 +268,49 @@ describe('Calculate release dates service tests', () => {
     it('asserting fail scenario', async () => {
       fakeApi.get(`/calculation/nomis-calculation-summary/${offenderSentCalcId}`).reply(404)
       await expect(calculateReleaseDatesService.getNomisCalculationSummary(offenderSentCalcId, token)).rejects.toThrow(
+        'Not Found',
+      )
+    })
+  })
+
+  describe('getManualCalculationInputs', () => {
+    const username = 'test-user'
+    const manualCalculationInputResponse: ManualCalculationInputResponse = {
+      manuallyEnteredDates: [
+        {
+          date: '2021-02-03',
+          type: 'CRD',
+          description: 'Conditional release date',
+          hints: [],
+        },
+      ],
+      mode: 'EXPRESS',
+    } as unknown as ManualCalculationInputResponse
+
+    it('should return the manual calculation inputs when data is available', async () => {
+      fakeApi.get(`/manual-calculation/${prisonerId}/inputs`).reply(200, manualCalculationInputResponse)
+
+      const result = await calculateReleaseDatesService.getManualCalculationInputs(prisonerId, username)
+
+      expect(result).toEqual(manualCalculationInputResponse)
+    })
+
+    it('should return manual calculation inputs with STANDARD mode and no dates', async () => {
+      const standardModeResponse: ManualCalculationInputResponse = {
+        manuallyEnteredDates: [],
+        mode: 'STANDARD',
+      }
+      fakeApi.get(`/manual-calculation/${prisonerId}/inputs`).reply(200, standardModeResponse)
+
+      const result = await calculateReleaseDatesService.getManualCalculationInputs(prisonerId, username)
+
+      expect(result).toEqual(standardModeResponse)
+    })
+
+    it('should handle errors when fetching manual calculation inputs', async () => {
+      fakeApi.get(`/manual-calculation/${prisonerId}/inputs`).reply(404)
+
+      await expect(calculateReleaseDatesService.getManualCalculationInputs(prisonerId, username)).rejects.toThrow(
         'Not Found',
       )
     })
@@ -712,6 +756,9 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             revocationDates: [],
+            sentenceAndOffenceAnalysis: 'SAME',
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
           {
             bookingId: 1,
@@ -741,6 +788,9 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             revocationDates: [],
+            sentenceAndOffenceAnalysis: 'SAME',
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
           {
             bookingId: 1,
@@ -769,6 +819,9 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             revocationDates: [],
+            sentenceAndOffenceAnalysis: 'SAME',
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
           {
             bookingId: 1,
@@ -798,6 +851,9 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             revocationDates: [],
+            sentenceAndOffenceAnalysis: 'SAME',
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
           {
             bookingId: 1,
@@ -827,6 +883,9 @@ describe('Calculate release dates service tests', () => {
               indicators: [],
             },
             revocationDates: [],
+            sentenceAndOffenceAnalysis: 'SAME',
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
         ],
       },

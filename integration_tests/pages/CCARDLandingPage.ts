@@ -1,5 +1,6 @@
 import Page, { PageElement } from './page'
 
+// Deprecated - use PrisonerOverviewPage instead
 export default class CCARDLandingPage extends Page {
   constructor() {
     super('ccard-index')

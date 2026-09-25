@@ -1,7 +1,8 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import { hmppsFormatDate } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
-import CalculationSummaryDatesCardModel, {
+import {
+  CalculationSummaryDatesCardModel,
   getFilteredListOfDates,
   calculationSummaryDatesCardModelFromOverridesViewModel,
 } from './CalculationSummaryDatesCardModel'

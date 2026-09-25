@@ -7,9 +7,9 @@ import ViewReleaseDatesService from '../../services/viewReleaseDatesService'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import { appWithAllRoutes } from '../testutils/appSetup'
 import {
+  AnalysedSentenceAndOffence,
   BookingCalculation,
   CalculationBreakdown,
-  SentenceAndOffenceWithReleaseArrangements,
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { PrisonAPIAssignedLivingUnit, PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 import { expectMiniProfile, expectNoMiniProfile } from '../testutils/layoutExpectations'
@@ -306,7 +306,11 @@ describe('View calculation summary controller tests', () => {
               offenceDescription: '',
               indicators: [],
             },
-          } as SentenceAndOffenceWithReleaseArrangements,
+            revocationDates: [],
+            sentenceAndOffenceAnalysis: 'SAME',
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
+          } as AnalysedSentenceAndOffence,
         ],
       },
     }
@@ -374,6 +378,9 @@ describe('View calculation summary controller tests', () => {
               indicators: [],
             },
             revocationDates: [],
+            sentenceAndOffenceAnalysis: 'SAME',
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
           {
             bookingId: 1,
@@ -403,6 +410,9 @@ describe('View calculation summary controller tests', () => {
               indicators: [],
             },
             revocationDates: [],
+            sentenceAndOffenceAnalysis: 'SAME',
+            isSDSPlus: false,
+            hasAnSDSEarlyReleaseExclusion: 'NO',
           },
         ],
       },
@@ -650,6 +660,9 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           indicators: [],
         },
         revocationDates: [],
+        sentenceAndOffenceAnalysis: 'SAME',
+        isSDSPlus: false,
+        hasAnSDSEarlyReleaseExclusion: 'NO',
       },
       {
         bookingId: 1,
@@ -679,6 +692,9 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
           indicators: [],
         },
         revocationDates: [],
+        sentenceAndOffenceAnalysis: 'SAME',
+        isSDSPlus: false,
+        hasAnSDSEarlyReleaseExclusion: 'NO',
       },
     ],
   },

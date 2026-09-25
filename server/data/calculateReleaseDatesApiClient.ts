@@ -8,6 +8,7 @@ import {
   AnalysedAdjustment,
   AnalysedSentenceAndOffence,
   ApprovedDatesInputResponse,
+  ManualCalculationInputResponse,
   BookingCalculation,
   CalculationReason,
   CalculationRequestModel,
@@ -36,7 +37,9 @@ import {
   ValidationMessage,
   WorkingDay,
   ConfirmSecondCheckResult,
+  PrisonerCalculationOverview,
   ConfigItem,
+  HistoricCalculationSummaryPage,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import logger from '../../logger'
 import {
@@ -371,6 +374,21 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     )
   }
 
+  getCalculationHistoryPage(
+    prisonerId: string,
+    page: number,
+    size: number,
+    username: string,
+  ): Promise<HistoricCalculationSummaryPage> {
+    return this.get<HistoricCalculationSummaryPage>(
+      {
+        path: `/calculation-history/${prisonerId}`,
+        query: { page, size },
+      },
+      asSystem(username),
+    )
+  }
+
   getDetailedCalculationResults(calculationRequestId: number, username: string): Promise<DetailedCalculationResults> {
     return this.get<DetailedCalculationResults>(
       {
@@ -438,6 +456,15 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     return this.get<ApprovedDatesInputResponse>(
       {
         path: `/approved-dates/${prisonerId}/inputs`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getManualCalculationInputs(prisonerId: string, username: string): Promise<ManualCalculationInputResponse> {
+    return this.get<ManualCalculationInputResponse>(
+      {
+        path: `/manual-calculation/${prisonerId}/inputs`,
       },
       asSystem(username),
     )
@@ -516,6 +543,15 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     return this.get<ConfigItem[]>(
       {
         path: `/configuration/all`,
+      },
+      asSystem(username),
+    )
+  }
+
+  getPrisonerCalculationOverview(nomsId: string, username: string): Promise<PrisonerCalculationOverview> {
+    return this.get<PrisonerCalculationOverview>(
+      {
+        path: `/calculation/${nomsId}/overview`,
       },
       asSystem(username),
     )

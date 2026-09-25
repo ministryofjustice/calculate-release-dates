@@ -5,12 +5,16 @@ import {
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import config from '../../../../config'
 
-export default interface CalculationSummaryDatesCardModel {
+export interface CalculationSummaryDatesCardModel {
   showNoDatesApply: boolean
-  releaseDates: CalculationSummaryDatesCardLine[]
+  releaseDates: CalculationSummaryDatesCardItem[]
 }
 
-export interface CalculationSummaryDatesCardLine {
+export interface CalculationSummaryDatesPanelModel {
+  releaseDates: CalculationSummaryDatesCardItem[]
+}
+
+export interface CalculationSummaryDatesCardItem {
   shortName: string
   fullName: string
   /** Format: date */
@@ -46,7 +50,7 @@ const filteredListOfDatesPostRecallRepeal = filteredListOfDates.filter(d => d !=
 export const getFilteredListOfDates = (): string[] =>
   config.featureToggles.applyPostRecallRepealRules ? filteredListOfDatesPostRecallRepeal : filteredListOfDates
 
-function getCalculationSummaryDatesCardLine(date: DetailedDate, showHints: boolean): CalculationSummaryDatesCardLine {
+function getCalculationSummaryDatesCardItem(date: DetailedDate, showHints: boolean): CalculationSummaryDatesCardItem {
   return {
     shortName: date.type,
     fullName: date.description,
@@ -79,7 +83,7 @@ export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
   showNoDatesApply: boolean,
   showHints = true,
 ): CalculationSummaryDatesCardModel {
-  const releaseDates: CalculationSummaryDatesCardLine[] = []
+  const releaseDates: CalculationSummaryDatesCardItem[] = []
 
   function pushLine(id: string) {
     let detailed: DetailedDate | undefined
@@ -90,7 +94,7 @@ export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
     }
 
     if (detailed) {
-      releaseDates.push(getCalculationSummaryDatesCardLine(detailed, showHints))
+      releaseDates.push(getCalculationSummaryDatesCardItem(detailed, showHints))
     }
   }
 
@@ -104,12 +108,33 @@ export function calculationSummaryDatesCardModelFromCalculationSummaryViewModel(
   } as CalculationSummaryDatesCardModel
 }
 
+export function calculationSummaryDatesPanelModelFromCalculationSummaryViewModel(
+  model: DetailedDate[],
+): CalculationSummaryDatesPanelModel {
+  const releaseDates: CalculationSummaryDatesCardItem[] = []
+
+  function pushLine(id: string) {
+    const detailed: DetailedDate | undefined = model.find(date => date.type === id)
+    if (detailed) {
+      releaseDates.push(getCalculationSummaryDatesCardItem(detailed, true))
+    }
+  }
+
+  filteredListOfDates.forEach(date => {
+    pushLine(date)
+  })
+
+  return {
+    releaseDates,
+  } as CalculationSummaryDatesPanelModel
+}
+
 export function calculationSummaryDatesCardModelFromOverridesViewModel(
   dates: DetailedDate[],
   showHints = true,
 ): CalculationSummaryDatesCardModel {
-  const releaseDates: CalculationSummaryDatesCardLine[] = dates.map(d =>
-    getCalculationSummaryDatesCardLine(d, showHints),
+  const releaseDates: CalculationSummaryDatesCardItem[] = dates.map(d =>
+    getCalculationSummaryDatesCardItem(d, showHints),
   )
   return {
     showNoDatesApply: false,

@@ -47,7 +47,11 @@ import CompareManualCalculationController from './compare/CompareManualCalculati
 import CompareSubmitManualCalculationController from './compare/CompareSubmitManualCalculationController'
 import SecondCheckController from './calculation-reason/secondCheckController'
 import CalculationSecondCheckSummaryController from './calculation-summary/calcSecondCheckSummaryController'
+import PrisonerCalculationOverviewController from './start/prisonerCalculationOverviewController'
 import ConfigItemController from './config/configItemController'
+import CalculationHistoryOverviewController from './view/CalculationHistoryOverviewController'
+import CalculationHistoryNavigationController from './view/CalculationHistoryNavigationController'
+import CalculationHistoryCourtCasesAndAdjustmentsController from './view/CalculationHistoryCourtCasesAndAdjustmentsController'
 
 export default function Index({
   prisonerService,
@@ -103,7 +107,11 @@ export default function Index({
 
   const startController = new StartController(
     calculateReleaseDatesService,
-    prisonerService,
+    userPermissionsService,
+    courtCasesReleaseDatesService,
+  )
+  const prisonerCalculationOverviewController = new PrisonerCalculationOverviewController(
+    calculateReleaseDatesService,
     userPermissionsService,
     courtCasesReleaseDatesService,
   )
@@ -117,6 +125,18 @@ export default function Index({
   const viewCalculationSummaryOverridesController = new CalculationSummaryOverridesController(
     calculateReleaseDatesService,
     prisonerService,
+  )
+  const calculationHistoryOverviewController = new CalculationHistoryOverviewController(
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+  const calculationHistoryCourtCasesAndAdjustmentsController = new CalculationHistoryCourtCasesAndAdjustmentsController(
+    viewReleaseDatesService,
+    calculateReleaseDatesService,
+    prisonerService,
+  )
+  const calculationHistoryNavigationController = new CalculationHistoryNavigationController(
+    calculateReleaseDatesService,
   )
   const viewPrintCalculationSummaryController = new ViewPrintCalculationSummaryController(
     viewReleaseDatesService,
@@ -154,6 +174,7 @@ export default function Index({
 
   const indexRoutes = () => {
     route({ path: '/', controller: startController })
+    route({ path: '/:nomsId/overview', controller: prisonerCalculationOverviewController })
     route({ path: '/supported-sentences', controller: supportedSentencesController })
     route({ path: '/supported-sentences/:nomsId', controller: supportedSentencesController })
     route({ path: '/accessibility', controller: accessibilityController })
@@ -321,6 +342,18 @@ export default function Index({
     route({
       path: '/view/:nomsId/calculation-summary/:calculationRequestId/printNotificationSlip',
       controller: viewPrintNotificationSlipController,
+    })
+    route({
+      path: '/view/:nomsId/calculation-history/:source/:id/overview',
+      controller: calculationHistoryOverviewController,
+    })
+    route({
+      path: '/view/:nomsId/calculation-history/:direction',
+      controller: calculationHistoryNavigationController,
+    })
+    route({
+      path: '/view/:nomsId/calculation-history/:source/:id/court-cases-and-adjustments',
+      controller: calculationHistoryCourtCasesAndAdjustmentsController,
     })
   }
 
