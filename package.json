@@ -99,7 +99,7 @@
     "cypress": "^15.21.1",
     "cypress-axe": "^1.7.0",
     "del": "8.0.1",
-    "dotenv": "^17.4.2",
+    "dotenv": "^18.0.1",
     "esbuild": "^0.28.0",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
