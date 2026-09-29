@@ -39,7 +39,7 @@
     "@ministryofjustice/hmpps-azure-telemetry": "^1.1.0",
     "@ministryofjustice/hmpps-court-cases-release-dates-design": "^5.3.0",
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
-    "accessible-autocomplete": "^3.0.1",
+    "accessible-autocomplete": "^3.0.2",
     "agentkeepalive": "^4.6.0",
     "body-parser": "^2.3.0",
     "bunyan": "^1.8.15",
@@ -118,7 +118,7 @@
     "prettier-plugin-jinja-template": "^2.2.0",
     "sass": "^1.105.0",
     "supertest": "^7.3.0",
-    "ts-jest": "^29.4.12",
+    "ts-jest": "^29.4.13",
     "typescript": "^5.9.3"
   },
   "overrides": {
