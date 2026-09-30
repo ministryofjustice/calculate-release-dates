@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { Controller } from '../controller'
-import PrisonerService from '../../services/prisonerService'
 import UserPermissionsService from '../../services/userPermissionsService'
 import { indexViewModelForPrisoner } from '../../models/IndexViewModel'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
@@ -10,7 +9,6 @@ import config from '../../config'
 export default class StartController implements Controller {
   constructor(
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly prisonerService: PrisonerService,
     private readonly userPermissionsService: UserPermissionsService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
   ) {}
@@ -19,6 +17,9 @@ export default class StartController implements Controller {
     const { prisonId } = req.query as Record<string, string>
 
     if (prisonId) {
+      if (config.featureToggles.newCalculationHistoryEnabled) {
+        return res.redirect(`/${prisonId}/overview`)
+      }
       const allowBulkLoad = this.userPermissionsService.allowBulkLoad(res.locals.user.userRoles)
       const { token, username } = res.locals.user
       const prisonerDetail = req.prisoner

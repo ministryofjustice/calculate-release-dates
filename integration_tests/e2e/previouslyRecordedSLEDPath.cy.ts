@@ -2,10 +2,10 @@ import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
 import CalculationReasonPage from '../pages/reasonForCalculation'
-import CCARDLandingPage from '../pages/CCARDLandingPage'
 import AuthorisedRoles from '../../server/enumerations/authorisedRoles'
 import PreviouslyRecordedSledInterceptPage from '../pages/previouslyRecordedSledInterceptPage'
 import { PreviouslyRecordedSLED } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import PrisonerOverviewPage from '../pages/PrisonerOverviewPage'
 
 context('End to end user journey with previously recorded SLED found', () => {
   beforeEach(() => {
@@ -37,6 +37,7 @@ context('End to end user journey with previously recorded SLED found', () => {
     cy.task('stubGetCalculationHistory')
     cy.task('stubComponents')
     cy.task('stubGetLatestCalculation')
+    cy.task('stubGetPrisonerCalculationOverview')
     cy.task('stubGetReferenceDates')
     cy.task('stubHasNoIndeterminateSentences')
     cy.task('stubGetServiceDefinitions')
@@ -46,8 +47,8 @@ context('End to end user journey with previously recorded SLED found', () => {
     cy.task('stubGetGenuineOverrideInputStandardMode')
     cy.task('stubManualEntryDateValidation')
 
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)

@@ -150,5 +150,9 @@ export const featureTogglesToConfigItems = (): ConfigItem[] => {
       value: `${featureToggles.applyPostRecallRepealRules}`,
     },
     { description: 'Second check enabled', value: `${featureToggles.secondCheckEnabled}` },
+    {
+      description: 'Use the new landing page and calculation history',
+      value: `${featureToggles.newCalculationHistoryEnabled}`,
+    },
   ]
 }

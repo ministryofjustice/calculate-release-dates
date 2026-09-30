@@ -2,7 +2,6 @@ import CalculationSummaryPage from '../pages/calculationSummary'
 import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
 import CalculationReasonPage from '../pages/reasonForCalculation'
-import CCARDLandingPage from '../pages/CCARDLandingPage'
 import AuthorisedRoles from '../../server/enumerations/authorisedRoles'
 import GenuineOverrideExpressInterceptPage from '../pages/genuineOverrideExpressInterceptPage'
 import GenuineOverrideReviewPreviousOverridePage from '../pages/genuineOverrideReviewPreviousOverridePage'
@@ -13,6 +12,7 @@ import GenuineOverrideEnterDatePage from '../pages/genuineOverrideEnterDatePage'
 import GenuineOverrideRemoveDatePage from '../pages/genuineOverrideRemoveDatePage'
 import GenuineOverridesSelectDatesToEnterPage from '../pages/genuineOverridesSelectDatesToEnterPage'
 import CancelQuestionPage from '../pages/cancelQuestion'
+import PrisonerOverviewPage from '../pages/PrisonerOverviewPage'
 
 context(
   'End to end user journeys when the previous calculation was a genuine override with no changes to the booking since',
@@ -40,7 +40,6 @@ context(
       cy.task('stubGetAdjustmentsForPrisoner')
       cy.task('stubSentencesAndOffences')
       cy.task('stubPrisonerDetails')
-      cy.task('stubLatestCalculation')
       cy.task('stubCalculationUserInputs')
       cy.task('stubSupportedValidationNoMessages')
       cy.task('stubGetActiveCalculationReasons')
@@ -48,6 +47,7 @@ context(
       cy.task('stubGetDetailedCalculationResults')
       cy.task('stubComponents')
       cy.task('stubGetLatestCalculation')
+      cy.task('stubGetPrisonerCalculationOverview')
       cy.task('stubGetReferenceDates')
       cy.task('stubHasNoIndeterminateSentences')
       cy.task('stubGetServiceDefinitions')
@@ -56,8 +56,8 @@ context(
       cy.task('stubCreateGenuineOverrideSuccessfully', { originalCalcId: 123, newCalcId: 456 })
       cy.task('stubManualEntryDateValidation')
 
-      cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-      const landingPage = CCARDLandingPage.goTo('A1234AB')
+      cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+      const landingPage = PrisonerOverviewPage.goTo('A1234AB')
       landingPage.calculateReleaseDatesAction().click()
 
       const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)

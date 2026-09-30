@@ -5,7 +5,6 @@ import CheckInformationPage from '../pages/checkInformation'
 import Page from '../pages/page'
 import ApprovedDatesQuestionPage from '../pages/approvedDatesQuestion'
 import CalculationReasonPage from '../pages/reasonForCalculation'
-import CCARDLandingPage from '../pages/CCARDLandingPage'
 import ApprovedDatesSelectDatesToEnterPage from '../pages/approvedDatesSelectDatesToEnter'
 import ApprovedDatesEnterDatePage from '../pages/approvedDatesEnterDate'
 import AuthorisedRoles from '../../server/enumerations/authorisedRoles'
@@ -14,6 +13,7 @@ import GenuineOverrideReviewDatesPage from '../pages/genuineOverrideReviewDatesP
 import GenuineOverridesSelectDatesToEnterPage from '../pages/genuineOverridesSelectDatesToEnterPage'
 import GenuineOverrideEnterDatePage from '../pages/genuineOverrideEnterDatePage'
 import GenuineOverrideRemoveDatePage from '../pages/genuineOverrideRemoveDatePage'
+import PrisonerOverviewPage from '../pages/PrisonerOverviewPage'
 
 context('End to end user journeys for a user with genuine overrides access', () => {
   // stubGetCalculationResults returns an HDCED 3 days in the future and a CRD 7 days in the future
@@ -43,7 +43,6 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.task('stubGetAdjustmentsForPrisoner')
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
-    cy.task('stubLatestCalculation')
     cy.task('stubCalculationUserInputs')
     cy.task('stubSupportedValidationNoMessages')
     cy.task('stubGetActiveCalculationReasons')
@@ -51,6 +50,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.task('stubGetDetailedCalculationResults')
     cy.task('stubComponents')
     cy.task('stubGetLatestCalculation')
+    cy.task('stubGetPrisonerCalculationOverview')
     cy.task('stubGetReferenceDates')
     cy.task('stubHasNoIndeterminateSentences')
     cy.task('stubGetServiceDefinitions')
@@ -61,7 +61,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
     cy.task('stubManualEntryDateValidation')
 
     cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.calculateReleaseDatesAction().click()
 
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)

@@ -107,7 +107,6 @@ export default function Index({
 
   const startController = new StartController(
     calculateReleaseDatesService,
-    prisonerService,
     userPermissionsService,
     courtCasesReleaseDatesService,
   )

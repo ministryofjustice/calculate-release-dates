@@ -1,7 +1,7 @@
 import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
-import CCARDLandingPage from '../pages/CCARDLandingPage'
 import CalculationReasonPage from '../pages/reasonForCalculation'
+import PrisonerOverviewPage from '../pages/PrisonerOverviewPage'
 
 context('Sign In', () => {
   beforeEach(() => {
@@ -15,6 +15,7 @@ context('Sign In', () => {
     cy.task('stubSentencesAndOffences')
     cy.task('stubPrisonerDetails')
     cy.task('stubLatestCalculation')
+    cy.task('stubGetPrisonerCalculationOverview')
     cy.task('stubSupportedValidationNoMessages')
     cy.task('stubGetActiveCalculationReasons')
     cy.task('stubGetCalculationHistory')
@@ -27,7 +28,7 @@ context('Sign In', () => {
   })
 
   it('Unauthenticated user directed to auth', () => {
-    cy.visit('/prisonId=A1234AB')
+    cy.visit('/A1234AB/overview')
     Page.verifyOnPage(AuthSignInPage)
   })
 
@@ -37,7 +38,7 @@ context('Sign In', () => {
   })
 
   it('User name visible in header', () => {
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
 
     CalculationReasonPage.goTo('A1234AB')
     const calculationReasonPage = CalculationReasonPage.verifyOnPage(CalculationReasonPage)
@@ -45,53 +46,59 @@ context('Sign In', () => {
   })
 
   it('Phase banner visible in header', () => {
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.headerPhaseBanner().should('contain.text', 'dev')
   })
 
   it('User can sign out', () => {
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
 
     landingPage.signOut().click()
     Page.verifyOnPage(AuthSignInPage)
   })
 
   it('Token verification failure takes user to sign in page', () => {
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
     cy.task('stubVerifyToken', false)
 
     // can't do a visit here as cypress requires only one domain
-    cy.request('/prisonId=A1234AB').its('body').should('contain', 'Sign in')
+    cy.request('/A1234AB/overview').its('body').should('contain', 'Sign in')
   })
 
   it('Token verification failure clears user session', () => {
     cy.task('stubComponentsFail')
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
     cy.task('stubVerifyToken', false)
 
-    cy.request('/?prisonId=A1234AB').its('body').should('contain', 'Sign in')
+    cy.request('/A1234AB/overview').its('body').should('contain', 'Sign in')
 
     cy.task('stubVerifyToken', true)
     cy.task('stubManageUser', 'bass matrix')
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
 
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.headerUserName().contains('B. Matrix')
   })
 
   it('common components header is displayed', () => {
     cy.task('stubComponents')
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.commonComponentsHeader().should('exist')
   })
 
   it('design library footer is displayed', () => {
     cy.task('stubComponents')
-    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
-    const landingPage = CCARDLandingPage.goTo('A1234AB')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/A1234AB/overview' })
+    const landingPage = PrisonerOverviewPage.goTo('A1234AB')
     landingPage.designLibraryFooter().should('exist')
+  })
+
+  it('old homepage url should redirect to the new url', () => {
+    cy.task('stubComponents')
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/?prisonId=A1234AB' })
+    PrisonerOverviewPage.verifyOnPage(PrisonerOverviewPage)
   })
 })

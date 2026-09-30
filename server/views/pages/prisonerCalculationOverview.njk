@@ -108,7 +108,7 @@
                 {% if calculationSource === 'CRDS' %}
                     <ul class="govuk-list">
                         <li>
-                            <a data-qa="ccard-sentence-details-link" class="govuk-link govuk-link--no-visited-state"
+                            <a data-qa="view-calculation-details-link" class="govuk-link govuk-link--no-visited-state"
                                href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/CRDS/{{ calculationRequestId }}/overview">View calculation details</a>
                         </li>
                     </ul>
@@ -116,7 +116,7 @@
                     {# Prison API doesn't give the sentence calculation id for current dates so we have to rely on the latest also being the first in the history #}
                     <ul class="govuk-list">
                         <li>
-                            <a data-qa="ccard-sentence-details-link" class="govuk-link govuk-link--no-visited-state"
+                            <a data-qa="view-calculation-details-link" class="govuk-link govuk-link--no-visited-state"
                                href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/NOMIS/{{ historicCalculations[0].nomisCalculationId }}/overview">View calculation details</a>
                         </li>
                     </ul>
