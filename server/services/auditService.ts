@@ -58,8 +58,10 @@ export default class AuditService {
     dates: Map<ReleaseDateType, string>,
     reasonId: number,
   ) {
+    // `dates` is a plain object at runtime (deserialised from the API's JSON response),
+    // despite being typed as a Map, so it must be spread rather than passed to Object.fromEntries.
     await this.sendAuditMessage(AuditAction.MANUAL_CALCULATION_CREATED, user, prisonerId, {
-      ...Object.fromEntries(dates),
+      ...dates,
       reasonId,
     })
   }

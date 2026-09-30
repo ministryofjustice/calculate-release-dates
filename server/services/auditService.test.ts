@@ -70,7 +70,9 @@ describe('AuditService', () => {
   })
 
   it('publishes a manual sentence calculation event including the entered dates', async () => {
-    const dates = new Map<ReleaseDateType, string>([[ReleaseDateType.CRD, '2024-01-01']])
+    // The API returns `enteredDates` as a plain JSON object, not a real Map instance,
+    // despite the `Map<ReleaseDateType, string>` type on `publishManualSentenceCalculation`.
+    const dates = { [ReleaseDateType.CRD]: '2024-01-01' } as unknown as Map<ReleaseDateType, string>
 
     await auditService.publishManualSentenceCalculation('a-user', 'A1234BC', dates, 7)
 
