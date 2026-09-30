@@ -39,7 +39,7 @@
     "@ministryofjustice/hmpps-azure-telemetry": "^1.1.0",
     "@ministryofjustice/hmpps-court-cases-release-dates-design": "^5.3.0",
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
-    "accessible-autocomplete": "^3.0.1",
+    "accessible-autocomplete": "^3.0.2",
     "agentkeepalive": "^4.6.0",
     "body-parser": "^2.3.0",
     "bunyan": "^1.8.15",
@@ -69,7 +69,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@jgoz/esbuild-plugin-typecheck": "^4.0.5",
+    "@jgoz/esbuild-plugin-typecheck": "^5.0.0",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
     "@ministryofjustice/frontend-types": "2.0.2",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
@@ -99,7 +99,7 @@
     "cypress": "^15.21.1",
     "cypress-axe": "^1.7.0",
     "del": "8.0.1",
-    "dotenv": "^17.4.2",
+    "dotenv": "^18.0.3",
     "esbuild": "^0.28.0",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
@@ -118,7 +118,7 @@
     "prettier-plugin-jinja-template": "^2.2.0",
     "sass": "^1.105.0",
     "supertest": "^7.3.0",
-    "ts-jest": "^29.4.12",
+    "ts-jest": "^29.4.13",
     "typescript": "^5.9.3"
   },
   "overrides": {
