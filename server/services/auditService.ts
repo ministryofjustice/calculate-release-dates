@@ -1,19 +1,26 @@
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
+import { AuditService as HmppsAuditService, AuditServiceFactory } from '@ministryofjustice/hmpps-audit-client'
 import logger from '../../logger'
 import ReleaseDateType from '../enumerations/releaseDateType'
 import AuditAction from '../enumerations/auditType'
 
-export default class AuditService {
-  private serviceName = 'calculate-release-dates'
+type SubjectType = 'CALCULATION'
 
-  private async sendAuditMessage(action: AuditAction, user: string, subjectId: string, details: string) {
+export default class AuditService {
+  private readonly hmppsAuditService: HmppsAuditService<string, SubjectType> =
+    AuditServiceFactory.configureFromEnv(logger)
+
+  private async sendAuditMessage(
+    action: AuditAction,
+    user: string,
+    subjectId: string,
+    details: Record<string, unknown>,
+  ) {
     try {
-      await auditService.sendAuditMessage({
-        action,
+      await this.hmppsAuditService.logAuditEvent({
+        what: action,
         who: user,
         subjectId,
         subjectType: 'CALCULATION',
-        service: this.serviceName,
         details,
       })
     } catch (error) {
@@ -28,8 +35,7 @@ export default class AuditService {
     nomisId: string,
     calculationReference: string,
   ) {
-    const details = JSON.stringify({ nomisId, calculationReference })
-    await this.sendAuditMessage(AuditAction.CALCULATION_CREATED, user, prisonerId, details)
+    await this.sendAuditMessage(AuditAction.CALCULATION_CREATED, user, prisonerId, { nomisId, calculationReference })
   }
 
   public async publishSecondCheckAudit(
@@ -39,12 +45,10 @@ export default class AuditService {
     calculationReference: number,
     exception: Error | null,
   ) {
-    let details
-    if (action === AuditAction.SECOND_CHECK_FAILED && exception) {
-      details = JSON.stringify({ error: exception.message })
-    } else {
-      details = JSON.stringify({ prisonerId, calculationReference })
-    }
+    const details =
+      action === AuditAction.SECOND_CHECK_FAILED && exception
+        ? { error: exception.message }
+        : { prisonerId, calculationReference }
     await this.sendAuditMessage(action, user, prisonerId, details)
   }
 
@@ -54,26 +58,18 @@ export default class AuditService {
     dates: Map<ReleaseDateType, string>,
     reasonId: number,
   ) {
-    const detail = { ...dates, reasonId }
-    await this.sendAuditMessage(AuditAction.MANUAL_CALCULATION_CREATED, user, prisonerId, JSON.stringify(detail))
+    await this.sendAuditMessage(AuditAction.MANUAL_CALCULATION_CREATED, user, prisonerId, {
+      ...Object.fromEntries(dates),
+      reasonId,
+    })
   }
 
   public async publishManualSentenceCalculationFailure(user: string, nomisId: string, exception: Error) {
-    await this.sendAuditMessage(
-      AuditAction.MANUAL_CALCULATION_FAILED,
-      user,
-      nomisId,
-      JSON.stringify({ error: exception.message }),
-    )
+    await this.sendAuditMessage(AuditAction.MANUAL_CALCULATION_FAILED, user, nomisId, { error: exception.message })
   }
 
   public async publishSentenceCalculationFailure(user: string, nomisId: string, exception: Error) {
-    await this.sendAuditMessage(
-      AuditAction.CALCULATION_FAILED,
-      user,
-      nomisId,
-      JSON.stringify({ error: exception.message }),
-    )
+    await this.sendAuditMessage(AuditAction.CALCULATION_FAILED, user, nomisId, { error: exception.message })
   }
 
   public async publishBulkComparison(
@@ -82,17 +78,16 @@ export default class AuditService {
     comparisonShortReference: string,
     comparisonType: string,
   ) {
-    const detail = { comparisonShortReference, comparisonType }
-    await this.sendAuditMessage(AuditAction.BULK_COMPARISON_CREATED, user, selectedOMU, JSON.stringify(detail))
+    await this.sendAuditMessage(AuditAction.BULK_COMPARISON_CREATED, user, selectedOMU, {
+      comparisonShortReference,
+      comparisonType,
+    })
   }
 
   public async publishBulkComparisonFailure(user: string, selectedOMU: string, exception: Error) {
-    await this.sendAuditMessage(
-      AuditAction.BULK_COMPARISON_FAILED,
-      user,
-      selectedOMU,
-      JSON.stringify({ error: exception.message }),
-    )
+    await this.sendAuditMessage(AuditAction.BULK_COMPARISON_FAILED, user, selectedOMU, {
+      error: exception.message,
+    })
   }
 
   public async publishGenuineOverride(
@@ -101,8 +96,11 @@ export default class AuditService {
     originalCalculationRequestId: number,
     overrideCalculationRequestId: number,
   ) {
-    const details = JSON.stringify({ prisonerNumber, originalCalculationRequestId, overrideCalculationRequestId })
-    await this.sendAuditMessage(AuditAction.GENUINE_OVERRIDE_CREATED, user, prisonerNumber, details)
+    await this.sendAuditMessage(AuditAction.GENUINE_OVERRIDE_CREATED, user, prisonerNumber, {
+      prisonerNumber,
+      originalCalculationRequestId,
+      overrideCalculationRequestId,
+    })
   }
 
   public async publishGenuineOverrideFailed(
@@ -111,7 +109,9 @@ export default class AuditService {
     originalCalculationRequestId: number,
     exception: Error,
   ) {
-    const details = JSON.stringify({ originalCalculationRequestId, error: exception.message })
-    await this.sendAuditMessage(AuditAction.GENUINE_OVERRIDE_FAILED, user, prisonerNumber, details)
+    await this.sendAuditMessage(AuditAction.GENUINE_OVERRIDE_FAILED, user, prisonerNumber, {
+      originalCalculationRequestId,
+      error: exception.message,
+    })
   }
 }
