@@ -128,7 +128,7 @@ afterEach(() => {
 
 describe('GET /:nomsId/overview', () => {
   describe('Navigation scenarios', () => {
-    it('If there are things to do then do not show latest calculation', () => {
+    it('If there are things to do then do not show latest calculation but still allow navigation in the history', () => {
       const serviceDefinitionsAdjustmentsThingsToDo = {
         services: {
           adjustments: {
@@ -181,12 +181,22 @@ describe('GET /:nomsId/overview', () => {
           source: 'CRDS',
           dates: [],
           calculatedByUsername: 'user1',
+          calculationRequestId: 99999,
           calculatedByDisplayName: 'Bob Smith',
           establishment: 'HMP ABC',
           calculationType: 'CALCULATED',
         },
-        recentCalculations: [],
-        totalCalculationCount: 0,
+        recentCalculations: [
+          {
+            calculationDate: '2024-03-05',
+            calculationSource: 'CRDS',
+            crdsCalculationId: 99999,
+            reasonDescription: 'Initial calculation',
+            calculatedByDisplayName: 'Bob Smith',
+            establishmentCalculatedAtDescription: 'HMP ABC',
+          },
+        ],
+        totalCalculationCount: 5,
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
@@ -201,6 +211,9 @@ describe('GET /:nomsId/overview', () => {
           const $ = cheerio.load(res.text)
           expect($('[data-qa=latest-calc-heading]')).toHaveLength(0)
           expect($('[aria-label="Review ADAs"]')).toHaveLength(1)
+          const viewAllCalcsLink = $('[data-qa=view-all-link]').eq(0)
+          expect(viewAllCalcsLink.text().trim()).toStrictEqual('View all 5 calculations')
+          expect(viewAllCalcsLink.attr('href')).toStrictEqual('/view/A1234AA/calculation-history/CRDS/99999/overview')
         })
     })
     it('If there are things to do but not required before a calculation then do show latest calculation', () => {
@@ -294,8 +307,17 @@ describe('GET /:nomsId/overview', () => {
           calculationType: 'CALCULATED',
           calculationRequestId: 99999,
         },
-        recentCalculations: [],
-        totalCalculationCount: 0,
+        recentCalculations: [
+          {
+            calculationDate: '2024-03-05',
+            calculationSource: 'CRDS',
+            crdsCalculationId: 99999,
+            reasonDescription: 'Initial calculation',
+            calculatedByDisplayName: 'Bob Smith',
+            establishmentCalculatedAtDescription: 'HMP ABC',
+          },
+        ],
+        totalCalculationCount: 99,
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
@@ -313,7 +335,11 @@ describe('GET /:nomsId/overview', () => {
           expect(actions.eq(1).text().trim()).toStrictEqual('Record a second calculation check')
           expect(actions.eq(2).text().trim()).toStrictEqual('Add APD, HDCAD or ROTL dates')
           const viewCalcLink = $('[data-qa=view-calculation-details-link]').eq(0)
-          expect(viewCalcLink.attr('href')).toStrictEqual('/view/A1234AA/calculation-history/CRDS/99999/overview')
+          const expectedLatestCalcLink = '/view/A1234AA/calculation-history/CRDS/99999/overview'
+          expect(viewCalcLink.attr('href')).toStrictEqual(expectedLatestCalcLink)
+          const viewAllCalcsLink = $('[data-qa=view-all-link]').eq(0)
+          expect(viewAllCalcsLink.text().trim()).toStrictEqual('View all 99 calculations')
+          expect(viewAllCalcsLink.attr('href')).toStrictEqual(expectedLatestCalcLink)
         })
     })
 
@@ -341,7 +367,7 @@ describe('GET /:nomsId/overview', () => {
             establishmentCalculatedAtDescription: 'Kirkham',
           },
         ],
-        totalCalculationCount: 0,
+        totalCalculationCount: 99,
         hasIndeterminateSentences: false,
         numberOfSentences: 5,
       }
@@ -358,7 +384,11 @@ describe('GET /:nomsId/overview', () => {
           expect(actions.eq(0).text().trim()).toStrictEqual('Calculate release dates')
           expect(actions.eq(1).text().trim()).toStrictEqual('Add APD, HDCAD or ROTL dates')
           const viewCalcLink = $('[data-qa=view-calculation-details-link]').eq(0)
-          expect(viewCalcLink.attr('href')).toStrictEqual('/view/A1234AA/calculation-history/NOMIS/555/overview')
+          const expectedLatestCalcLink = '/view/A1234AA/calculation-history/NOMIS/555/overview'
+          expect(viewCalcLink.attr('href')).toStrictEqual(expectedLatestCalcLink)
+          const viewAllCalcsLink = $('[data-qa=view-all-link]').eq(0)
+          expect(viewAllCalcsLink.text().trim()).toStrictEqual('View all 99 calculations')
+          expect(viewAllCalcsLink.attr('href')).toStrictEqual(expectedLatestCalcLink)
         })
     })
 
@@ -459,6 +489,7 @@ describe('GET /:nomsId/overview', () => {
           expect($('[data-qa=historic-calc-page-summary]').eq(0).text().trim()).toStrictEqual(
             'There are no previous calculations.',
           )
+          expect($('[data-qa=view-all-link]')).toHaveLength(0)
         })
     })
 

@@ -29,6 +29,12 @@
                 {{thingsToDo(serviceDefinitions, 'all')}}
             {% endif %}
 
+            {% if calculationSource === 'CRDS' %}
+                {% set calcHistoryLink = '/view/' + prisonerDetail.offenderNo  + '/calculation-history/CRDS/' + calculationRequestId + '/overview' %}
+            {% elseif calculationSource === 'NOMIS' and historicCalculations and historicCalculations.length > 0 %}
+                {# Prison API doesn't give the sentence calculation id for current dates so we have to rely on the latest also being the first in the history #}
+                {% set calcHistoryLink = '/view/' + prisonerDetail.offenderNo  + '/calculation-history/NOMIS/' + historicCalculations[0].nomisCalculationId + '/overview' %}
+            {% endif %}
             {% if not anyThingsToDo  %}
                 <h3 class="govuk-heading-l" data-qa="latest-calc-heading">Latest calculation</h3>
                 {% if latestCalculationCardConfig %}
@@ -105,21 +111,12 @@
                     <p class="govuk-body">This person has no active sentences.</p>
                     <p class="govuk-body">To calculate release dates, you must enter active sentence information in court cases and try again.</p>
                 {% endif %}
-                {% if calculationSource === 'CRDS' %}
-                    <ul class="govuk-list">
-                        <li>
-                            <a data-qa="view-calculation-details-link" class="govuk-link govuk-link--no-visited-state"
-                               href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/CRDS/{{ calculationRequestId }}/overview">View calculation details</a>
-                        </li>
-                    </ul>
-                {% elseif calculationSource === 'NOMIS' and historicCalculations and historicCalculations.length > 0 %}
-                    {# Prison API doesn't give the sentence calculation id for current dates so we have to rely on the latest also being the first in the history #}
-                    <ul class="govuk-list">
-                        <li>
-                            <a data-qa="view-calculation-details-link" class="govuk-link govuk-link--no-visited-state"
-                               href="/view/{{ prisonerDetail.offenderNo }}/calculation-history/NOMIS/{{ historicCalculations[0].nomisCalculationId }}/overview">View calculation details</a>
-                        </li>
-                    </ul>
+                {% if calcHistoryLink %}
+                <ul class="govuk-list">
+                    <li>
+                        <a data-qa="view-calculation-details-link" class="govuk-link govuk-link--no-visited-state" href="{{ calcHistoryLink }}">View calculation details</a>
+                    </li>
+                </ul>
                 {% endif %}
             {% endif %}
 
@@ -193,8 +190,10 @@
                         }
                     ],
                     rows: historyRows,
-                    attributes: { "data-qa": "calculation-history-table" }
+                    attributes: { "data-qa": "calculation-history-table" },
+                    classes: "govuk-!-margin-bottom-2"
                 }) }}
+                <p class="govuk-body"><a href="{{ calcHistoryLink }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="view-all-link">View all {{ totalCalculationsCount }} calculations</a></p>
             {% else %}
                 <p class="govuk-body" data-qa="historic-calc-page-summary">There are no previous calculations.</p>
             {% endif %}
