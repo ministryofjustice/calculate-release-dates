@@ -38,7 +38,7 @@
                             <li>has no bookings assigned to them</li>
                             <li>has no active bookings</li>
                         </ul>
-                        <p class="gouk-body">Check the details in NOMIS and then <a class="govuk-link" href="{{ url }}">try again</a>.</p> 
+                        <p class="gouk-body">Check the details in NOMIS and then <a class="govuk-link" href="{{ url }}">try again</a>.</p>
                         {% elif errorKey === 'NO_SENTENCES' %}
                         <p>The calculation must include at least one active sentence.</p>
 
@@ -82,8 +82,8 @@
 
                     <p class="govuk-body">Email
                         {{ createSupportLink({
-                            emailAddress: 'calculatereleasedates@digital.justice.gov.uk',
-                            linkText: 'calculatereleasedates@digital.justice.gov.uk',
+                            emailAddress: 'CourtCasesandReleaseDates@justice.gov.uk',
+                            linkText: 'CourtCasesandReleaseDates@justice.gov.uk',
                             emailSubjectText: 'Calculate release dates - Page not found'
                         }) | safe }}
                         if you need support.
