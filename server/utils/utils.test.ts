@@ -71,10 +71,10 @@ describe('createSupportLink', () => {
     [
       'With different email',
       {
-        emailAddress: 'calculatereleasedates@digital.justice.gov.uk',
+        emailAddress: 'CourtCasesandReleaseDates@justice.gov.uk',
         linkText: 'contact Calculate release dates team',
       },
-      '<a href="mailto:calculatereleasedates@digital.justice.gov.uk">contact Calculate release dates team</a>',
+      '<a href="mailto:CourtCasesandReleaseDates@justice.gov.uk">contact Calculate release dates team</a>',
     ],
   ])('%s', (_, options, expected) => {
     expect(createSupportLink(options)).toEqual(expected)
