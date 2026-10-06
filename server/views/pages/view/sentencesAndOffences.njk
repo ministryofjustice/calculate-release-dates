@@ -93,17 +93,15 @@
                 }
             ] %}
 
-            {% if secondCheckEnabled %}
-                {% set rows = rows.concat([{
-                    key: {
-                        text: "Last checked by",
-                        classes: "custom-summary-list__key"
-                    },
-                    value: {
-                        text: checkedByDisplayName
-                    }
-                }]) %}
-            {% endif %}
+            {% set rows = rows.concat([{
+                key: {
+                    text: "Last checked by",
+                    classes: "custom-summary-list__key"
+                },
+                value: {
+                    text: checkedByDisplayName
+                }
+            }]) %}
 
             {% set rows = rows.concat([{
                 key: {

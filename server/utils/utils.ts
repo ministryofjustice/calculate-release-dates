@@ -149,7 +149,6 @@ export const featureTogglesToConfigItems = (): ConfigItem[] => {
       description: 'Apply post recall repeal rules (disable TUSED)',
       value: `${featureToggles.applyPostRecallRepealRules}`,
     },
-    { description: 'Second check enabled', value: `${featureToggles.secondCheckEnabled}` },
     {
       description: 'Use the new landing page and calculation history',
       value: `${featureToggles.newCalculationHistoryEnabled}`,

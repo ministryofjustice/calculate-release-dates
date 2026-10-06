@@ -77,7 +77,6 @@ describe('View calculation summary controller tests', () => {
 
   describe('View calculation tests', () => {
     it('GET /view/:nomsId/calculation-summary/:calculationRequestId should not show help links for manual calculation', () => {
-      app.locals.secondCheckEnabled = false
       calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
         ...stubbedResultsWithBreakdownAndAdjustments,
         context: {
@@ -103,8 +102,8 @@ describe('View calculation summary controller tests', () => {
         .expect(res => {
           expect(res.text).not.toContain('Why are some details missing?')
           expect(res.text).not.toContain('How are final release dates calculated?')
-          expect(res.text).not.toContain('Not checked')
-          expect(res.text).not.toContain('Last checked by')
+          expect(res.text).toContain('Last checked by')
+          expect(res.text).toContain('Not checked')
           expectMiniProfile(res.text, {
             name: 'Nobody, Anon',
             dob: '24/06/2000',
@@ -152,7 +151,6 @@ describe('View calculation summary controller tests', () => {
   })
 
   it('GET /view/:nomsId/calculation-summary/:calculationRequestId should display the calculation meta data if name but no establishment present', () => {
-    app.locals.secondCheckEnabled = true
     calculateReleaseDatesService.getResultsWithBreakdownAndAdjustments.mockResolvedValue({
       ...stubbedResultsWithBreakdownAndAdjustments,
       context: {

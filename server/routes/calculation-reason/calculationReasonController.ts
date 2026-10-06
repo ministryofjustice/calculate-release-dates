@@ -57,16 +57,14 @@ export default class CalculationReasonController implements Controller {
     }
 
     let latestCalc = null
-    if (config.featureToggles.secondCheckEnabled) {
-      latestCalc = await this.calculateReleaseDatesService
-        .getLatestCalculationForPrisoner(nomsId, user.username)
-        .catch((error: { status?: number; responseStatus?: number }): null | never => {
-          if ((error.status ?? error.responseStatus) === 404) {
-            return null // No latest record found / No previous calculations
-          }
-          throw error
-        })
-    }
+    latestCalc = await this.calculateReleaseDatesService
+      .getLatestCalculationForPrisoner(nomsId, user.username)
+      .catch((error: { status?: number; responseStatus?: number }): null | never => {
+        if ((error.status ?? error.responseStatus) === 404) {
+          return null // No latest record found / No previous calculations
+        }
+        throw error
+      })
 
     return res.render(
       'pages/calculation/reason',
