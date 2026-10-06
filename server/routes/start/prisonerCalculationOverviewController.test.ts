@@ -13,7 +13,6 @@ import {
 import { CcrdServiceDefinitions } from '../../@types/courtCasesReleaseDatesApi/types'
 import { appWithAllRoutes, user } from '../testutils/appSetup'
 import AuthorisedRoles from '../../enumerations/authorisedRoles'
-import config from '../../config'
 import { PrisonerCalculationOverview } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 
 jest.mock('../../services/calculateReleaseDatesService')
@@ -119,7 +118,6 @@ beforeEach(() => {
   userPermissionsService.allowBulkLoad.mockReturnValue(false)
   calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
   courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
-  config.featureToggles.secondCheckEnabled = true
 })
 
 afterEach(() => {

@@ -486,7 +486,6 @@ describe('CalculationReasonController', () => {
     })
 
     it('GET /calculation/:nomsId/reason should throw error if latest calc returns 500', () => {
-      config.featureToggles.secondCheckEnabled = true
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
@@ -498,21 +497,7 @@ describe('CalculationReasonController', () => {
       return request(app).get('/calculation/A1234AA/reason').expect(500)
     })
 
-    it('GET /calculation/:nomsId/reason should not throw error when the second check switch is disabled', () => {
-      config.featureToggles.secondCheckEnabled = false
-      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
-      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
-        status: 500,
-        message: 'System error',
-      })
-
-      return request(app).get('/calculation/A1234AA/reason').expect(200)
-    })
-
     it('GET /calculation/:nomsId/reason should not render divider and second check reason if latest calc responds with 404 status', () => {
-      config.featureToggles.secondCheckEnabled = true
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
@@ -537,7 +522,6 @@ describe('CalculationReasonController', () => {
     })
 
     it('GET /calculation/:nomsId/reason should not render divider and second check reason if latest calc with 404 response status', () => {
-      config.featureToggles.secondCheckEnabled = true
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getLatestCalculationForPrisoner.mockRejectedValue({
@@ -562,7 +546,6 @@ describe('CalculationReasonController', () => {
     })
 
     it('POST /calculation/:nomsId/reason should render divider before second check', () => {
-      app.locals.secondCheckEnabled = true
       calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
       calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
@@ -578,26 +561,6 @@ describe('CalculationReasonController', () => {
 
           expect($('[data-qa=reasonRadio-18]').length).toBe(1)
           expect(res.text).toContain('Second Check')
-        })
-    })
-
-    it('POST /calculation/:nomsId/reason second check should not be rendered', () => {
-      app.locals.secondCheckEnabled = false
-      calculateReleaseDatesService.getCalculationReasons.mockResolvedValue(stubbedCalculationReasons)
-      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-      calculateReleaseDatesService.getLatestCalculationForPrisoner.mockResolvedValue({
-        source: 'CRDS',
-      } as LatestCalculation)
-      courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsOnlyCrdThingsToDo)
-
-      return request(app)
-        .get('/calculation/A1234AA/reason')
-        .expect(res => {
-          const $ = cheerio.load(res.text)
-          expect($('.govuk-radios__divider').length).toBe(0)
-
-          expect($('[data-qa=reasonRadio-18]').length).toBe(0)
-          expect(res.text).not.toContain('Second Check')
         })
     })
 

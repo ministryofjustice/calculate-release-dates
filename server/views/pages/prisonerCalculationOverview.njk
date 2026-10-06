@@ -91,7 +91,7 @@
                                 value: {
                                     text: checkedBy
                                 }
-                            } if secondCheckEnabled,
+                            },
                             {
                                 key: {
                                     text: "Source",
@@ -207,7 +207,7 @@
             }
         ] %}
 
-        {% if calculationSource == "CRDS" and secondCheckEnabled %}
+        {% if calculationSource == "CRDS" %}
             {% set _ = actions.push({
                 href: '/calculation/' + prisonerDetail.offenderNo + '/secondCheck',
                 title: 'Record a second calculation check',

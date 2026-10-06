@@ -316,14 +316,13 @@ describe('StartController', () => {
         const calculateDatesFlowLink = $('[data-qa=calc-release-dates-for-prisoner-action-link]').first()
         expect(calculateDatesFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/reason')
         const secondCheckFlowLink = $('[data-qa=calc-release-dates-for-prisoner-second-check]').first()
-        expect(secondCheckFlowLink.length).toStrictEqual(0)
+        expect(secondCheckFlowLink.length).toStrictEqual(1)
         const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
         expect(addDatesFlowLink.length).toStrictEqual(0)
       })
   })
 
   it('GET ?prisonId=123 if user has CRD and adjustments then show all CCARD nav', () => {
-    app.locals.secondCheckEnabled = true
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(calculationHistory)
 
@@ -434,7 +433,6 @@ describe('StartController', () => {
   })
 
   it('GET ?prisonId=123 when latest calc has no establishment', () => {
-    app.locals.secondCheckEnabled = true
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
     const cardAndAction = {
@@ -474,7 +472,6 @@ describe('StartController', () => {
   })
 
   it('GET ?prisonId=123 when latest calc has no user', () => {
-    app.locals.secondCheckEnabled = true
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
     const cardAndAction = {
@@ -508,86 +505,6 @@ describe('StartController', () => {
         expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
         expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Kirkham (HMP)')
         expect($('dt:contains("Last checked by")').next().text().trim()).toStrictEqual('Not checked')
-        expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
-        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
-      })
-  })
-
-  it('GET ?prisonId=123 when latest has no second check enabled', () => {
-    app.locals.secondCheckEnabled = false
-    userPermissionsService.allowBulkLoad.mockReturnValue(true)
-    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
-    const cardAndAction = {
-      latestCalcCard: latestCalcCardForPrisoner,
-      latestCalcCardAction: latestCalcCardActionForPrisoner,
-      calculation: {
-        source: 'NOMIS',
-        prisonerId: 'GU32342',
-        bookingId: 90328,
-        calculatedAt: '2024-03-05',
-        calculationType: 'CALCULATED',
-        calculationRequestId: 90328,
-        reason: 'New Sentence',
-        establishment: 'Kirkham (HMP)',
-        checkedByUsername: null,
-        checkedByDisplayName: '',
-        checkedAt: '',
-        dates: [],
-      } as LatestCalculation,
-    }
-    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
-    return request(app)
-      .get('?prisonId=123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
-        expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
-        expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Kirkham (HMP)')
-        expect($('dt:contains("Last checked by")').length).toBe(0)
-        expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
-        expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
-      })
-  })
-
-  it('GET ?prisonId=123 should correctly render if the second Check is disabled', () => {
-    app.locals.secondCheckEnabled = false
-    userPermissionsService.allowBulkLoad.mockReturnValue(true)
-    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
-    const cardAndAction = {
-      latestCalcCard: latestCalcCardForPrisoner,
-      latestCalcCardAction: latestCalcCardActionForPrisoner,
-      calculation: {
-        source: 'NOMIS',
-        prisonerId: 'GU32342',
-        bookingId: 90328,
-        calculatedAt: '2024-03-05',
-        calculationType: 'CALCULATED',
-        calculationRequestId: 90328,
-        reason: 'New Sentence',
-        establishment: 'Kirkham (HMP)',
-        checkedByUsername: null,
-        checkedByDisplayName: '',
-        checkedAt: '',
-        dates: [],
-      } as LatestCalculation,
-    }
-    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
-    return request(app)
-      .get('?prisonId=123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
-        expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
-        expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Kirkham (HMP)')
-        expect($('dt:contains("Last checked by")').length).toStrictEqual(0)
         expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('NOMIS')
         expect($('[data-qa=calculation-history-table]').length).toStrictEqual(1)
       })
@@ -643,7 +560,6 @@ describe('StartController', () => {
   })
 
   it('GET ?prisonId=123 if latest calc is a genuine override', () => {
-    app.locals.secondCheckEnabled = true
     userPermissionsService.allowBulkLoad.mockReturnValue(true)
 
     const calculationHistoryWithGenuineOverride = [

@@ -72,13 +72,11 @@
             }
         ] %}
 
-        {% if latestCalculation.source == "CRDS" and secondCheckEnabled %}
-            {% set _ = actions.push({
-                href: '/calculation/' + prisonerDetail.offenderNo + '/secondCheck',
-                title: 'Record a second calculation check',
-                dataQa: 'calc-release-dates-for-prisoner-second-check'
-            }) %}
-        {% endif %}
+        {% set _ = actions.push({
+            href: '/calculation/' + prisonerDetail.offenderNo + '/secondCheck',
+            title: 'Record a second calculation check',
+            dataQa: 'calc-release-dates-for-prisoner-second-check'
+        }) %}
 
         {% if hasNoIndeterminateSentence %}
             {% set addDatesUrl = '/approved-dates/' + prisonerDetail.offenderNo + '/start' if featureToggles.useNewApprovedDatesFlow else '/calculation/' + prisonerDetail.offenderNo + '/reason?isAddDatesFlow=true' %}
