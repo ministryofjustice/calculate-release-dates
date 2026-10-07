@@ -202,7 +202,6 @@ describe('StartController', () => {
   })
 
   it('should render correct links for prisoner with no Indeterminate sentences and new add dates flow', async () => {
-    config.featureToggles.useNewApprovedDatesFlow = true
     calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
     const cardAndAction: CalculationCard = {
       latestCalcCard: latestCalcCardForPrisoner,
@@ -237,46 +236,6 @@ describe('StartController', () => {
         const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
         expect($('.govuk-link').first().attr('href')).toStrictEqual('/view/GU32342/nomis-calculation-summary/123456')
         expect(addDatesFlowLink.attr('href')).toStrictEqual('/approved-dates/A1234AA/start')
-        expect(addDatesFlowLink.text()).toStrictEqual('Add APD, HDCAD or ROTL dates')
-      })
-  })
-
-  it('should render correct links for prisoner with no Indeterminate sentences and old approved dates flow', async () => {
-    config.featureToggles.useNewApprovedDatesFlow = false
-    calculateReleaseDatesService.getCalculationHistory.mockResolvedValue(nomisCalculationHistory)
-    const cardAndAction: CalculationCard = {
-      latestCalcCard: latestCalcCardForPrisoner,
-      latestCalcCardAction: null,
-      calculation: {
-        source: 'NOMIS',
-        prisonerId: 'GU32342',
-        bookingId: 90328,
-        calculatedAt: '2024-03-05',
-        establishment: 'Kirkham (HMP)',
-        calculationType: 'CALCULATED',
-        calculatedByUsername: 'user1',
-        calculatedByDisplayName: 'User One',
-        calculationRequestId: 90328,
-        reason: 'New Sentence',
-        checkedByUsername: 'user1',
-        checkedByDisplayName: 'User One',
-        checkedAt: '2026-03-05',
-        dates: [],
-      },
-    }
-    calculateReleaseDatesService.getLatestCalculationCardForPrisoner.mockResolvedValue(cardAndAction)
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    calculateReleaseDatesService.hasIndeterminateSentences.mockResolvedValue(false)
-    courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue(serviceDefinitionsNoThingsToDo)
-    await request(app)
-      .get('?prisonId=123')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const addDatesFlowLink = $('[data-qa=calc-release-dates-for-adding-dates-link]').first()
-        expect($('.govuk-link').first().attr('href')).toStrictEqual('/view/GU32342/nomis-calculation-summary/123456')
-        expect(addDatesFlowLink.attr('href')).toStrictEqual('/calculation/A1234AA/reason?isAddDatesFlow=true')
         expect(addDatesFlowLink.text()).toStrictEqual('Add APD, HDCAD or ROTL dates')
       })
   })

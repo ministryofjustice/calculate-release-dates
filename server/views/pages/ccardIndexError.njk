@@ -7,7 +7,7 @@
 {% set pageId = "ccard-index" %}
 
 {% set navigation = {
-    activeSubNav: 'release-dates', 
+    activeSubNav: 'release-dates',
     recalls: { enabled: commonElementConfig.environment == 'dev' },
     documents: { enabled: false },
     courtCases: { enabled: false },
@@ -29,7 +29,7 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            
+
             {% if anyThingsToDo %}
                 {{thingsToDo(serviceDefinitions, 'all')}}
             {% endif %}
@@ -55,7 +55,7 @@
         ] %}
 
         {% if hasNoIndeterminateSentence %}
-            {% set addDatesUrl = '/approved-dates/' + prisonerDetail.offenderNo + '/start' if featureToggles.useNewApprovedDatesFlow else '/calculation/' + prisonerDetail.offenderNo + '/reason?isAddDatesFlow=true' %}
+            {% set addDatesUrl = '/approved-dates/' + prisonerDetail.offenderNo + '/start'  %}
             {% set _ = actions.push({
                 href: addDatesUrl,
                 title: 'Add APD, HDCAD or ROTL dates',
