@@ -25,7 +25,6 @@ import { ErrorMessageType } from '../../types/ErrorMessages'
 import SentenceAndOffenceViewModel from '../../models/SentenceAndOffenceViewModel'
 import trimHtml from '../testutils/testUtils'
 import { FullPageError } from '../../types/FullPageError'
-import config from '../../config'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -396,7 +395,6 @@ describe('CheckInformationController', () => {
   })
 
   afterEach(() => {
-    config.featureToggles.progressionModelEnabled = true
     jest.resetAllMocks()
   })
 
@@ -539,55 +537,6 @@ describe('CheckInformationController', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           expect($('th:contains("Return to custody")').eq(0).next().text().trim()).toStrictEqual('Not entered')
-        })
-    })
-
-    it('GET /calculation/:nomsId/check-information should show exclusions without progression feature toggle on for single sentence', () => {
-      config.featureToggles.progressionModelEnabled = false
-      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
-      userInputService.isCalculationReasonSet.mockReturnValue(true)
-      const singleSentencesAndOffencesWithExclusions = [
-        {
-          terms: [
-            {
-              years: 3,
-            },
-          ],
-          sentenceTypeDescription: 'SDS Standard Sentence',
-          caseSequence: 1,
-          lineSequence: 2,
-          caseReference: 'CASE001',
-          courtDescription: 'Court 1',
-          sentenceSequence: 1,
-          offence: {
-            offenceStartDate: '2021-01-04',
-            offenceEndDate: '2021-01-05',
-            offenceDescription: 'VIOOFFENCE',
-          },
-          sentenceAndOffenceAnalysis: 'NEW',
-          isSDSPlus: true,
-          hasAnSDSEarlyReleaseExclusion: 'VIOLENT',
-        } as AnalysedSentenceAndOffence,
-      ]
-      const model = new SentenceAndOffenceViewModel(
-        stubbedPrisonerData,
-        stubbedUserInput,
-        singleSentencesAndOffencesWithExclusions,
-        false,
-        true,
-        false,
-        stubbedReturnToCustodyDate,
-        null,
-        [],
-      )
-      checkInformationService.checkInformation.mockResolvedValue(model)
-      return request(app)
-        .get('/calculation/A1234AA/check-information')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          const $ = cheerio.load(res.text)
-          expect($('.new-sentence-card:contains("VIOOFFENCE")').text()).toContain('Violent')
         })
     })
 

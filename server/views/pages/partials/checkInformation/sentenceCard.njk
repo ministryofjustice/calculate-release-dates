@@ -43,7 +43,7 @@
                                         <th scope="row" class="govuk-table__header sentence-table-header">Sentence type</th>
                                         <td class="govuk-table__cell">
                                             {{ sentence.sentenceTypeDescription }}
-                                            {% if featureToggles.progressionModelEnabled and sentence.sdsDescriptions and sentence.sdsDescriptions.sdsPlusDisplayName %}
+                                            {% if sentence.sdsDescriptions and sentence.sdsDescriptions.sdsPlusDisplayName %}
                                                 <span class="moj-badge moj-badge--small" data-qa="{{ sentence.lineSequence }}-sds-plus-badge">{{ sentence.sdsDescriptions.sdsPlusDisplayName }}</span>
                                             {% elseif params.includeSDSPlusBadge and params.rowIsSdsPlus(sentence, offence)%}
                                                 <span class="moj-badge moj-badge--small">SDS+</span>
@@ -106,7 +106,7 @@
                                             </tr>
                                         {% endif %}
                                     {% endif %}
-                                    {% if featureToggles.progressionModelEnabled and sentence.sdsDescriptions %}
+                                    {% if sentence.sdsDescriptions %}
                                         {% if sentence.sdsDescriptions.sds40ExclusionDescription %}
                                             <tr class="govuk-table__row govuk-body-s" data-qa="sds-40-early-release-exclusion">
                                                 <th scope="row" class="govuk-table__header sentence-table-header">SDS40 release exclusion</th>
