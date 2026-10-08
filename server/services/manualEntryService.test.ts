@@ -5,6 +5,8 @@ import DateValidationService from './dateValidationService'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import { ErrorMessages } from '../types/ErrorMessages'
 import { ManualJourneySelectedDate } from '../types/ManualJourney'
+import { DetailedDate } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import { testDateTypeToDescriptions } from '../testutils/createUserToken'
 
 jest.mock('../services/calculateReleaseDatesService')
 jest.mock('../services/dateTypeConfigurationService')
@@ -157,6 +159,76 @@ describe('manualEntryService', () => {
       const validationMessages: ErrorMessages = { messages: [], messageType: null }
       manualEntryService.validateHdcadWithHdced(existingDates, selectedDateTypes, firstLoad, validationMessages)
       expect(validationMessages.messages).toEqual([])
+    })
+  })
+
+  describe('populateExistingDates', () => {
+    const nomsId = 'A1234BC'
+    let testReq: Request
+
+    beforeEach(() => {
+      testReq = {
+        user: {},
+        session: {
+          selectedManualEntryDates: {
+            [nomsId]: [],
+          },
+        },
+        query: {},
+        body: {},
+      } as unknown as Request
+    })
+
+    it('should split SLED into SED and LED', async () => {
+      const dates: DetailedDate[] = [
+        {
+          type: 'SLED',
+          description: 'Sentence and licence expiry date',
+          date: '2029-01-02',
+          hints: [],
+        },
+        {
+          type: 'CRD',
+          description: 'Conditional release date',
+          date: '2027-02-03',
+          hints: [],
+        },
+      ]
+      dateTypeConfigurationService.dateTypeToDescriptionMapping.mockResolvedValue(testDateTypeToDescriptions)
+      await manualEntryService.populateExistingDates(testReq, nomsId, dates, 'user1')
+
+      expect(testReq.session.selectedManualEntryDates[nomsId]).toStrictEqual([
+        {
+          position: 1,
+          completed: true,
+          dateType: 'SED',
+          manualEntrySelectedDate: {
+            dateType: 'SED',
+            dateText: 'Sentence expiry date',
+            date: { day: 2, month: 1, year: 2029 },
+          },
+        },
+        {
+          position: 2,
+          completed: true,
+          dateType: 'LED',
+          manualEntrySelectedDate: {
+            dateType: 'LED',
+            dateText: 'Licence expiry date',
+            date: { day: 2, month: 1, year: 2029 },
+          },
+        },
+        {
+          position: 3,
+          completed: true,
+          dateType: 'CRD',
+          manualEntrySelectedDate: {
+            dateType: 'CRD',
+            dateText: 'Conditional release date',
+            date: { day: 3, month: 2, year: 2027 },
+          },
+        },
+      ])
     })
   })
 

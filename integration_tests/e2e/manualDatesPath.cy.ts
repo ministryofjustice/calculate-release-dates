@@ -456,12 +456,28 @@ context('End to end user journeys entering and modifying approved dates', () => 
 
       manualDatePageWithEditableDates.addAnotherDatesLink().should('exist')
 
-      manualDatePageWithEditableDates.editReleaseDateLink('SLED').should('exist')
-      manualDatePageWithEditableDates.removeReleaseDateLink('SLED').should('exist')
+      // SLED decomposed into SED and LED
+      manualDatePageWithEditableDates.editReleaseDateLink('SED').should('exist')
+      manualDatePageWithEditableDates.removeReleaseDateLink('SED').should('exist')
+      manualDatePageWithEditableDates.editReleaseDateLink('LED').should('exist')
+      manualDatePageWithEditableDates.removeReleaseDateLink('LED').should('exist')
+
       manualDatePageWithEditableDates.editReleaseDateLink('CRD').should('exist')
       manualDatePageWithEditableDates.removeReleaseDateLink('CRD').should('exist')
       manualDatePageWithEditableDates.editReleaseDateLink('HDCED').should('exist')
       manualDatePageWithEditableDates.removeReleaseDateLink('HDCED').should('exist')
+
+      manualDatePageWithEditableDates.removeReleaseDateLink('SED').click()
+      const removeSedPage = Page.verifyOnPage(ManualDatesRemoveDatePage)
+      removeSedPage.yes().click()
+      removeSedPage.continue().click()
+      Page.verifyOnPage(ManualDatesConfirmationPage)
+
+      manualDatePageWithEditableDates.removeReleaseDateLink('LED').click()
+      const removeLedPage = Page.verifyOnPage(ManualDatesRemoveDatePage)
+      removeLedPage.yes().click()
+      removeLedPage.continue().click()
+      Page.verifyOnPage(ManualDatesConfirmationPage)
 
       manualDatePageWithEditableDates.addAnotherReleaseDateLink().click()
 
