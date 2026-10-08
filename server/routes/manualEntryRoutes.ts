@@ -66,7 +66,12 @@ export default class ManualEntryRoutes {
       manualCalculationInputResponse.manuallyEnteredDates.length > 0
 
     if (existingManualJourney) {
-      this.manualEntryService.populateExistingDates(req, nomsId, manualCalculationInputResponse.manuallyEnteredDates)
+      await this.manualEntryService.populateExistingDates(
+        req,
+        nomsId,
+        manualCalculationInputResponse.manuallyEnteredDates,
+        username,
+      )
     }
 
     req.session.unchangedManualJourney = existingManualJourney

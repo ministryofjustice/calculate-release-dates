@@ -79,7 +79,7 @@ export default class ManualEntryService {
     // intentionally left blank
   }
 
-  public populateExistingDates(req: Request, nomsId: string, dates: DetailedDate[]) {
+  public async populateExistingDates(req: Request, nomsId: string, dates: DetailedDate[], username: string) {
     const session = req.session as ManualEntrySession
     if (!session.selectedManualEntryDates) {
       session.selectedManualEntryDates = {}
@@ -87,9 +87,22 @@ export default class ManualEntryService {
     if (!session.selectedManualEntryDates[nomsId]) {
       session.selectedManualEntryDates[nomsId] = new Array<ManualJourneySelectedDate>()
     }
+    const descriptions = dates.some(it => it.type === 'SLED')
+      ? await this.dateTypeConfigurationService.dateTypeToDescriptionMapping(username, 'DESCRIPTION_ONLY')
+      : {}
+
     session.selectedManualEntryDates[nomsId] = dates
+      .flatMap(date => {
+        if (date.type === 'SLED') {
+          return [
+            { ...date, type: 'SED', description: descriptions.SED },
+            { ...date, type: 'LED', description: descriptions.LED },
+          ] as DetailedDate[]
+        }
+        return [date]
+      })
       .filter(d => d.date)
-      .map(({ type, description, date }, i): ManualJourneySelectedDate => {
+      .flatMap(({ type, description, date }, i): ManualJourneySelectedDate => {
         const { day, month, year } = DateTime.fromISO(date)
         return {
           position: i + 1,
