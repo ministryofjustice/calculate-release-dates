@@ -4,14 +4,9 @@ import {
   genuineOverrideInputsForPrisoner,
   getGenuineOverrideNextAction,
   getGenuineOverridePreviousDateUrl,
-  hasGenuineOverridesAccess,
 } from './genuineOverrideUtils'
-import config from '../../config'
 
 describe('genuineOverrideUtils', () => {
-  afterEach(() => {
-    config.featureToggles.genuineOverridesEnabled = false
-  })
   describe('genuineOverrideInputsForPrisoner', () => {
     it('should blow up if the inputs have not been initialised at all', () => {
       const req = { session: {} as Partial<SessionData> } as Request
@@ -60,16 +55,6 @@ describe('genuineOverrideUtils', () => {
     })
   })
 
-  describe('hasGenuineOverridesAccess', () => {
-    it('should allow genuine overrides if the feature toggle is enabled', () => {
-      config.featureToggles.genuineOverridesEnabled = true
-      expect(hasGenuineOverridesAccess()).toStrictEqual(true)
-    })
-    it('should not allow genuine overrides if the feature toggle is disabled', () => {
-      config.featureToggles.genuineOverridesEnabled = false
-      expect(hasGenuineOverridesAccess()).toStrictEqual(false)
-    })
-  })
   describe('getGenuineOverridePreviousDateUrl', () => {
     it('should return select dates URL if this is the first date', () => {
       expect(

@@ -141,7 +141,6 @@ export const featureTogglesToConfigItems = (): ConfigItem[] => {
   const { featureToggles } = config
   return [
     { description: 'Show CRDS things to do intercept', value: `${featureToggles.showCrdsIntercept}` },
-    { description: 'Genuine overrides enabled', value: `${featureToggles.genuineOverridesEnabled}` },
     { description: 'Show adjustments things to do intercept', value: `${featureToggles.thingsToDoIntercept}` },
     {
       description: 'Apply post recall repeal rules (disable TUSED)',

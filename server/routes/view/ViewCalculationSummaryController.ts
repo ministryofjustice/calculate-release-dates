@@ -10,7 +10,6 @@ import { ErrorMessages, ErrorMessageType } from '../../types/ErrorMessages'
 import ViewCalculateReleaseDatePageViewModel from '../../models/ViewCalculateReleaseDatePageViewModel'
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
-import { hasGenuineOverridesAccess } from '../genuine-overrides/genuineOverrideUtils'
 import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
 
 export default class ViewCalculationSummaryController implements Controller {
@@ -72,7 +71,6 @@ export default class ViewCalculationSummaryController implements Controller {
         true,
         undefined,
         detailedCalculationResults,
-        hasGenuineOverridesAccess(),
         detailedCalculationResults.context.genuineOverrideReasonDescription,
         detailedCalculationResults.context.calculatedByDisplayName,
         detailedCalculationResults.context.calculatedAtPrisonDescription,
@@ -106,7 +104,6 @@ export default class ViewCalculationSummaryController implements Controller {
       false,
       approvedDates,
       detailedCalculationResults,
-      hasGenuineOverridesAccess(),
       detailedCalculationResults.context.genuineOverrideReasonDescription,
       detailedCalculationResults.context.calculatedByDisplayName,
       detailedCalculationResults.context.calculatedAtPrisonDescription,

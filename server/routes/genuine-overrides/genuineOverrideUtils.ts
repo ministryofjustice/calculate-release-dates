@@ -1,5 +1,4 @@
 import { Request } from 'express'
-import config from '../../config'
 import GenuineOverrideUrls from './genuineOverrideUrls'
 import { GenuineOverrideInputs, NewDate } from '../../@types/journeys'
 
@@ -9,10 +8,6 @@ const genuineOverrideInputsForPrisoner = (req: Request, prisonerNumber: string):
     throw Error(`No session state found for genuine override for prisoner ${prisonerNumber}. Session may have expired`)
   }
   return session.genuineOverrideInputs[prisonerNumber]
-}
-
-const hasGenuineOverridesAccess = (): boolean => {
-  return config.featureToggles.genuineOverridesEnabled
 }
 
 const getGenuineOverridePreviousDateUrl = (
@@ -52,9 +47,4 @@ const getGenuineOverrideNextAction = (
   }
 }
 
-export {
-  genuineOverrideInputsForPrisoner,
-  hasGenuineOverridesAccess,
-  getGenuineOverridePreviousDateUrl,
-  getGenuineOverrideNextAction,
-}
+export { genuineOverrideInputsForPrisoner, getGenuineOverridePreviousDateUrl, getGenuineOverrideNextAction }

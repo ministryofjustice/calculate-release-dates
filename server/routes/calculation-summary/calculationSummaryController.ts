@@ -15,7 +15,6 @@ import {
 import { ManualJourneySelectedDate } from '../../types/ManualJourney'
 import saveCalculation from '../saveCalculationHelper'
 import GenuineOverrideUrls from '../genuine-overrides/genuineOverrideUrls'
-import { hasGenuineOverridesAccess } from '../genuine-overrides/genuineOverrideUtils'
 import { getSiblingCalculationWithPreviouslyRecordedSLED } from '../../utils/previouslyRecordedSledUtils'
 
 export default class CalculationSummaryController implements Controller {
@@ -85,7 +84,6 @@ export default class CalculationSummaryController implements Controller {
       false,
       approvedDates,
       detailedCalculationResults,
-      hasGenuineOverridesAccess(),
     )
     const siblingCalculationWithoutPreviouslyRecordedSLED = getSiblingCalculationWithPreviouslyRecordedSLED(
       req,
