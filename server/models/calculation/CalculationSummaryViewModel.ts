@@ -28,7 +28,6 @@ export default class CalculationSummaryViewModel {
     public calculationSummaryUnavailable?: boolean,
     public approvedDates?: { [key: string]: string },
     public detailedCalculationResults?: DetailedCalculationResults,
-    public hasGenuineOverridesAccess?: boolean,
     public genuineOverrideReasonDescription?: string,
     public calculatedByDisplayName?: string,
     public calculatedAtPrisonDescription?: string,

@@ -11,7 +11,6 @@ import CalculationSummaryPageViewModel from '../models/calculation/CalculationSu
 import { calculationSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { approvedSummaryDatesCardModelFromCalculationSummaryViewModel } from '../views/pages/components/approved-summary-dates-card/ApprovedSummaryDatesCardModel'
 import CancelQuestionViewModel from '../models/CancelQuestionViewModel'
-import { hasGenuineOverridesAccess } from './genuine-overrides/genuineOverrideUtils'
 
 export default class CalculationRoutes {
   constructor(
@@ -72,7 +71,6 @@ export default class CalculationRoutes {
       false,
       approvedDates,
       detailedCalculationResults,
-      hasGenuineOverridesAccess(),
     )
     res.render(
       'pages/calculation/printCalculationSummary',

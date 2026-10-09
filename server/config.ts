@@ -143,7 +143,6 @@ export default {
   },
   featureToggles: {
     showCrdsIntercept: get('SHOW_CRDS_INTERCEPT', false) === 'true',
-    genuineOverridesEnabled: get('GENUINE_OVERRIDES_ENABLED', false) === 'true',
     thingsToDoIntercept: get('THING_TO_DO_INTERCEPT_ENABLED', false) === 'true',
     applyPostRecallRepealRules: get('APPLY_POST_RECALL_REPEAL_RULES', false) === 'true',
     newCalculationHistoryEnabled: get('NEW_CALC_HISTORY_ENABLED', false) === 'true',

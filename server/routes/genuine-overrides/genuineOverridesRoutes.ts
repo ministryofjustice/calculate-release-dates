@@ -13,7 +13,6 @@ import AddGenuineOverrideDateController from './add-date/addGenuineOverrideDateC
 import { releaseDateSchema } from '../common-schemas/releaseDateSchemas'
 import EditGenuineOverrideDateController from './edit-date/editGenuineOverrideDateController'
 import DeleteGenuineOverrideDateController from './delete-date/deleteGenuineOverrideDateController'
-import requireGenuineOverrideAccess from '../../middleware/requireGenuineOverrideAccess'
 import StartGenuineOverrideController from './start/startGenuineOverrideController'
 import GenuineOverrideExpressInterceptController from './express-intercept/genuineOverrideExpressInterceptController'
 import ReviewDatesFromPreviousGenuineOverrideController from './review-previous-override/reviewDatesFromPreviousGenuineOverrideController'
@@ -39,12 +38,12 @@ const GenuineOverridesRoutes = (
     controller: Controller
     validateToSchema?: z.ZodTypeAny | SchemaFactory<P>
   }) => {
-    router.get(path, requireGenuineOverrideAccess(), controller.GET)
+    router.get(path, controller.GET)
     if (controller.POST) {
       if (validateToSchema) {
-        router.post(path, requireGenuineOverrideAccess(), validate(validateToSchema), controller.POST)
+        router.post(path, validate(validateToSchema), controller.POST)
       } else {
-        router.post(path, requireGenuineOverrideAccess(), controller.POST)
+        router.post(path, controller.POST)
       }
     }
   }
