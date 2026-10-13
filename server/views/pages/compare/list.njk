@@ -1,14 +1,16 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
-{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "moj/components/pagination/macro.njk" import mojPagination %}
 
 {% from "./list/comparisonListItem.njk" import comparisonListItem %}
 {% from "./list/comparisonListItem.njk" import noUserItems %}
 {% from "./list/comparisonListItem.njk" import noOtherItems %}
 
-{% set pageTitle = applicationName + " - Compare Release Dates" %}
+{% set scopeHeading = "Your Comparisons" if scope == "your" else "Other's Comparisons" %}
+{% set pageTitle = applicationName + " - Bulk Comparisons - " + scopeHeading %}
 {% set pageId = "compare" %}
 
 {% block beforeContent %}
@@ -39,26 +41,19 @@
     <script id="autocomplete-script" src="{{ '/assets/js/autoCompletePrisonName.js' | assetMap }}"></script>
 {% endblock %}
 
-{% set otherComparisonsList %}
+{% set comparisonsList %}
     <ul class="gem-c-document-list gem-c-document-list--no-underline gem-c-document-list--no-top-border-first-child">
-        {% for comparison in otherComparisons %}
+        {% for comparison in comparisons %}
             {{ comparisonListItem(comparison, true) }}
         {% endfor %}
-        {% if otherComparisons.length == 0 %}
-            {{ noOtherItems() }}
+        {% if comparisons.length == 0 %}
+            {% if scope == "your" %}
+                {{ noUserItems() }}
+            {% else %}
+                {{ noOtherItems() }}
+            {% endif %}
         {% endif %}
      </ul>
-{% endset -%}
-
-{% set userComparisonsList %}
-    <ul class="gem-c-document-list gem-c-document-list--no-underline gem-c-document-list--no-top-border-first-child">
-        {% for comparison in userComparisons %}
-            {{ comparisonListItem(comparison, true) }}
-        {% endfor %}
-        {% if userComparisonsList.length == 0 %}
-            {{ noUserItems() }}
-        {% endif %}
-    </ul>
 {% endset -%}
 
 
@@ -66,6 +61,25 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Bulk Comparisons</h1>
+
+            {{ govukServiceNavigation({
+              navigationLabel: "Comparisons",
+              navigation: [
+                {
+                  href: "/compare/list",
+                  text: "Your Comparisons",
+                  current: scope == "your"
+                },
+                {
+                  href: "/compare/list/others",
+                  text: "Other's Comparisons",
+                  current: scope == "others"
+                }
+              ]
+            }) }}
+
+            <br/>
+
             <h3 class="govuk-heading-m">Filter comparisons by prison</h3>
             <div class="govuk-grid-row">
 
@@ -83,31 +97,16 @@
                               text: "Filter",
                               classes: "govuk-button--primary"
                             }) }}
-                             <a href="/compare/list" type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">Clear</a>
+                             <a href="{{ '/compare/list' if scope == 'your' else '/compare/list/others' }}" type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">Clear</a>
                         </div>
                     </div>
                 </form>
             </div>
 
-            {{ govukTabs({
-              items: [
-                {
-                  label: "Your Comparisons",
-                  id: "your-comparisons",
-                  panel: {
-                    html: userComparisonsList
-                  }
-                },
-                {
-                  label: "Other's Comparisons",
-                  id: "other-comparisons",
-                  panel: {
-                    html: otherComparisonsList
-                  }
-                }
-              ]
-              })
-            }}
+            <h2 class="govuk-heading-l">{{ scopeHeading }}</h2>
+            {{ comparisonsList | safe }}
+
+            {{ mojPagination(pagination) }}
         </div>
     </div>
 {% endblock %}

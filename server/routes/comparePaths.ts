@@ -5,6 +5,7 @@ const comparePaths = {
   COMPARE_RUN: '/compare/run',
   COMPARE_MANUAL_LIST: '/compare/manual/list',
   COMPARE_LIST: '/compare/list',
+  COMPARE_LIST_OTHERS: '/compare/list/others',
   COMPARE_RESULT: '/compare/result/:bulkComparisonResultId',
   COMPARE_DETAIL: '/compare/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId',
   COMPARE_DETAIL_JSON: '/compare/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId/json',

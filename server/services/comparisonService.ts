@@ -5,6 +5,7 @@ import {
   ComparisonPersonDiscrepancySummary,
   ComparisonPersonOverview,
   ComparisonSummary,
+  PageComparisonSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonType from '../enumerations/comparisonType'
 import AuditService from './auditService'
@@ -46,6 +47,16 @@ export default class ComparisonService {
 
   async getPrisonComparisons(username: string): Promise<ComparisonSummary[]> {
     return this.calculateReleaseDatesApiClient.getPrisonComparisons(username)
+  }
+
+  async searchComparisons(
+    prison: string,
+    calculatedByCurrentUser: boolean,
+    page: number,
+    size: number,
+    username: string,
+  ): Promise<PageComparisonSummary> {
+    return this.calculateReleaseDatesApiClient.searchComparisons(prison, calculatedByCurrentUser, page, size, username)
   }
 
   async getManualComparisons(username: string): Promise<ComparisonSummary[]> {

@@ -11,6 +11,7 @@ import {
   HistoricCalculationSummaryPage,
   LatestCalculation,
   ManualCalculationInputResponse,
+  PageComparisonSummary,
   PreviouslyRecordedSLED,
   PrisonerCalculationOverview,
   ReleaseDatesAndCalculationContext,
@@ -955,6 +956,31 @@ export default {
           ],
           previousOverrideForExpressGenuineOverride: previousOverride,
         },
+      },
+    })
+  },
+  stubSearchComparisons: (opts: {
+    calculatedByCurrentUser: boolean
+    prison?: string
+    page?: number
+    size?: number
+    response: PageComparisonSummary
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/calculate-release-dates/comparison/search',
+        queryParameters: {
+          calculatedByCurrentUser: { equalTo: String(opts.calculatedByCurrentUser) },
+          prison: { equalTo: opts.prison ?? '' },
+          page: { equalTo: String(opts.page ?? 0) },
+          size: { equalTo: String(opts.size ?? 10) },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: opts.response,
       },
     })
   },

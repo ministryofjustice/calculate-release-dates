@@ -93,7 +93,18 @@ export default function Index({
 
   const compareIndexController = new CompareIndexController(userPermissionsService)
   const compareChooseController = new CompareChooseController(userPermissionsService, prisonerService)
-  const compareListController = new CompareListController(userPermissionsService, comparisonService)
+  const compareListController = new CompareListController(
+    userPermissionsService,
+    comparisonService,
+    prisonerService,
+    'your',
+  )
+  const compareOtherListController = new CompareListController(
+    userPermissionsService,
+    comparisonService,
+    prisonerService,
+    'others',
+  )
   const compareManualListController = new CompareManualListController(userPermissionsService, comparisonService)
   const compareResultController = new CompareResultController(userPermissionsService, comparisonService)
   const compareManualResultController = new CompareManualResultController(userPermissionsService, comparisonService)
@@ -373,6 +384,7 @@ export default function Index({
     route({ path: comparePaths.COMPARE_DETAIL, controller: compareDetailController })
     route({ path: comparePaths.COMPARE_DETAIL_JSON, controller: compareJsonController })
     route({ path: comparePaths.COMPARE_LIST, controller: compareListController })
+    route({ path: comparePaths.COMPARE_LIST_OTHERS, controller: compareOtherListController })
     route({ path: comparePaths.COMPARE_MANUAL_LIST, controller: compareManualListController })
     route({ path: comparePaths.COMPARE_MANUAL_RESULT, controller: compareManualResultController })
     route({ path: comparePaths.COMPARE_MANUAL_DETAIL, controller: compareManualDetailController })

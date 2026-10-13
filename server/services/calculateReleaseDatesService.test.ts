@@ -1031,6 +1031,7 @@ describe('Calculate release dates service tests', () => {
   it('creating a genuine override successfully audits it', async () => {
     const response: GenuineOverrideCreatedResponse = {
       success: true,
+      error: false,
       newCalculationRequestId: 564658897564,
       originalCalculationRequestId: calculationRequestId,
     }
@@ -1062,6 +1063,7 @@ describe('Calculate release dates service tests', () => {
     auditService.publishGenuineOverrideFailed.mockResolvedValue()
     const response: GenuineOverrideCreatedResponse = {
       success: false,
+      error: false,
       validationMessages: [
         {
           code: 'DATES_MISSING_REQUIRED_TYPE',

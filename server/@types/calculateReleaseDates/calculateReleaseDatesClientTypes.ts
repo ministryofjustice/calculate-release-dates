@@ -20,6 +20,7 @@ export type GenuineOverrideRequestReasonCode = components['schemas']['GenuineOve
 export type GenuineOverrideCreatedResponse = components['schemas']['GenuineOverrideCreatedResponse']
 export type Comparison = components['schemas']['ComparisonDto']
 export type ComparisonSummary = components['schemas']['ComparisonSummary']
+export type PageComparisonSummary = components['schemas']['PagedModelComparisonSummary']
 export type ComparisonOverview = components['schemas']['ComparisonOverview']
 export type ComparisonMismatchSummary = components['schemas']['ComparisonMismatchSummary']
 export type ComparisonPersonOverview = components['schemas']['ComparisonPersonOverview']
