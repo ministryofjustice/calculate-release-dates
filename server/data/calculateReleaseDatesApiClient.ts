@@ -40,6 +40,7 @@ import {
   PrisonerCalculationOverview,
   ConfigItem,
   HistoricCalculationSummaryPage,
+  PageComparisonSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import logger from '../../logger'
 import {
@@ -186,6 +187,22 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
 
   getPrisonComparisons(username: string): Promise<ComparisonSummary[]> {
     return this.get<ComparisonSummary[]>({ path: '/comparison' }, asSystem(username))
+  }
+
+  searchComparisons(
+    prison: string,
+    calculatedByCurrentUser: boolean,
+    page: number,
+    size: number,
+    username: string,
+  ): Promise<PageComparisonSummary> {
+    return this.get<PageComparisonSummary>(
+      {
+        path: '/comparison/search',
+        query: { prison, calculatedByCurrentUser, page, size },
+      },
+      asSystem(username),
+    )
   }
 
   getManualComparisons(username: string): Promise<ComparisonSummary[]> {

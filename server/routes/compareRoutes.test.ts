@@ -3,6 +3,7 @@ import { Express } from 'express'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import UserPermissionsService from '../services/userPermissionsService'
 import ComparisonService from '../services/comparisonService'
+import PrisonerService from '../services/prisonerService'
 import {
   Comparison,
   ComparisonOverview,
@@ -15,13 +16,15 @@ let app: Express
 
 jest.mock('../services/userPermissionsService')
 jest.mock('../services/comparisonService')
+jest.mock('../services/prisonerService')
 const userPermissionsService = new UserPermissionsService() as jest.Mocked<UserPermissionsService>
 const auditService = new AuditService() as jest.Mocked<AuditService>
 const comparisonService = new ComparisonService(auditService, null) as jest.Mocked<ComparisonService>
+const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { userPermissionsService, comparisonService },
+    services: { userPermissionsService, comparisonService, prisonerService },
     userSupplier: () => {
       return { ...user, caseloadMap: new Map([['HMP', 'HMP Prison']]) }
     },
@@ -131,12 +134,45 @@ describe('Compare routes tests', () => {
         expect(res.text).toContain('Bulk comparison results')
       })
   })
-  it('GET /compare/list should return the Bulk Comparison previous list page', () => {
+  it('GET /compare/list/others should return the Bulk Comparison previous list page for other users', () => {
     userPermissionsService.allowBulkComparison.mockReturnValue(true)
-    comparisonService.getPrisonComparisons.mockResolvedValue([
-      comparisonSummaryWithFailures,
-      comparisonSummaryNoFailures,
-    ])
+    comparisonService.searchComparisons.mockResolvedValue({
+      content: [comparisonSummaryWithFailures, comparisonSummaryNoFailures],
+      page: {
+        size: 10,
+        number: 0,
+        totalElements: 2,
+        totalPages: 1,
+      },
+    })
+    prisonerService.getUsersCaseloads.mockResolvedValue([{ caseLoadId: 'HMP', description: 'HMP Prison' } as never])
+    return request(app)
+      .get('/compare/list/others')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('15 mismatches from 15 out of 20 results - full comparison')
+        expect(res.text).toContain('50% complete. Expected completion time 01 January 2030 at 13:00')
+        expect(res.text).toContain('10 mismatches with 5 failures from 15 out of 20 results - full comparison')
+        expect(comparisonService.searchComparisons).toHaveBeenCalledWith('', false, 0, 10, 'user1')
+        expect(prisonerService.getUsersCaseloads).toHaveBeenCalledWith('token')
+      })
+  })
+  it('GET /compare/list should return the Bulk Comparison previous list page for the current user', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.searchComparisons.mockResolvedValue({
+      content: [
+        { ...comparisonSummaryWithFailures, calculatedByUsername: 'user1' },
+        { ...comparisonSummaryNoFailures, calculatedByUsername: 'user1' },
+      ],
+      page: {
+        size: 10,
+        number: 0,
+        totalElements: 2,
+        totalPages: 1,
+      },
+    })
+    prisonerService.getUsersCaseloads.mockResolvedValue([{ caseLoadId: 'HMP', description: 'HMP Prison' } as never])
     return request(app)
       .get('/compare/list')
       .expect(200)
@@ -145,6 +181,56 @@ describe('Compare routes tests', () => {
         expect(res.text).toContain('15 mismatches from 15 out of 20 results - full comparison')
         expect(res.text).toContain('50% complete. Expected completion time 01 January 2030 at 13:00')
         expect(res.text).toContain('10 mismatches with 5 failures from 15 out of 20 results - full comparison')
+        expect(comparisonService.searchComparisons).toHaveBeenCalledWith('', true, 0, 10, 'user1')
+        expect(prisonerService.getUsersCaseloads).toHaveBeenCalledWith('token')
+      })
+  })
+  it('GET /compare/list?prisonName=all should search with the literal "all" prison filter and mark the All prisons option selected', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.searchComparisons.mockResolvedValue({
+      content: [],
+      page: { size: 10, number: 0, totalElements: 0, totalPages: 0 },
+    })
+    prisonerService.getUsersCaseloads.mockResolvedValue([{ caseLoadId: 'HMP', description: 'HMP Prison' } as never])
+    return request(app)
+      .get('/compare/list?prisonName=all')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(comparisonService.searchComparisons).toHaveBeenCalledWith('all', true, 0, 10, 'user1')
+        expect(res.text).toMatch(/<option value="all" selected>All prisons<\/option>/)
+      })
+  })
+  it('GET /compare/list with no prisonName should search with an empty prison filter and mark the "All comparisons" option selected', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.searchComparisons.mockResolvedValue({
+      content: [],
+      page: { size: 10, number: 0, totalElements: 0, totalPages: 0 },
+    })
+    prisonerService.getUsersCaseloads.mockResolvedValue([{ caseLoadId: 'HMP', description: 'HMP Prison' } as never])
+    return request(app)
+      .get('/compare/list')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(comparisonService.searchComparisons).toHaveBeenCalledWith('', true, 0, 10, 'user1')
+        expect(res.text).toMatch(/<option value="allcomp" selected>All comparisons<\/option>/)
+      })
+  })
+  it('GET /compare/list?prisonName=allcomp should search with an empty prison filter and mark the "All comparisons" option selected', () => {
+    userPermissionsService.allowBulkComparison.mockReturnValue(true)
+    comparisonService.searchComparisons.mockResolvedValue({
+      content: [],
+      page: { size: 10, number: 0, totalElements: 0, totalPages: 0 },
+    })
+    prisonerService.getUsersCaseloads.mockResolvedValue([{ caseLoadId: 'HMP', description: 'HMP Prison' } as never])
+    return request(app)
+      .get('/compare/list?prisonName=allcomp')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(comparisonService.searchComparisons).toHaveBeenCalledWith('', true, 0, 10, 'user1')
+        expect(res.text).toMatch(/<option value="allcomp" selected>All comparisons<\/option>/)
       })
   })
   it('GET /compare/manual/list should return the Bulk Comparison previous list page', () => {

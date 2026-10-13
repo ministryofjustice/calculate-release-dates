@@ -200,6 +200,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
       const newCalculationRequestId = 2468972456
       calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
         success: true,
+        error: false,
         newCalculationRequestId,
         originalCalculationRequestId: calculationRequestId,
       })
@@ -241,6 +242,7 @@ describe('ReviewDatesForGenuineOverrideController', () => {
     it('should redirect to input with errors if saving genuine override was not successful', async () => {
       calculateReleaseDatesService.createGenuineOverrideForCalculation.mockResolvedValue({
         success: false,
+        error: false,
         validationMessages: [
           {
             code: 'DATES_MISSING_REQUIRED_TYPE',

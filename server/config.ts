@@ -153,4 +153,7 @@ export default {
   calculationHistory: {
     pageSize: 10,
   },
+  compareList: {
+    pageSize: 10,
+  },
 }

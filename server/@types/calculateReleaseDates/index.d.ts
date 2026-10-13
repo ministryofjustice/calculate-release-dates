@@ -89,6 +89,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/scheduled-task/delete-old-preliminary-calculations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Delete preliminary calculations older than the configured amount
+     * @description An API that can only be called locally within an environment to allow it to be triggered by a cron job. It will delete preliminary calculations that are over 2 years old and a maximum of 2000 at a time
+     */
+    post: operations['deleteOldPreliminaryCalculations']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/record-a-recall/{prisonerId}/decision': {
     parameters: {
       query?: never
@@ -887,6 +907,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/comparison/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Search Comparisons performed using presets, with paging and a prison filter
+     * @description This endpoint will return a page of comparisons for your caseload, optionally filtered by prison
+     */
+    get: operations['searchComparisons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/comparison/manual/{comparisonReference}': {
     parameters: {
       query?: never
@@ -1603,6 +1643,12 @@ export interface components {
       unusedDeductions?: number | null
       validationMessages: components['schemas']['ValidationMessage'][]
     }
+    DeletedPreviousCalculationResult: {
+      /** Format: int32 */
+      numberFound: number
+      /** Format: int32 */
+      numberDeletedSuccessfully: number
+    }
     RecordARecallRequest: {
       /** Format: date */
       revocationDate: string
@@ -1720,6 +1766,7 @@ export interface components {
       year: number
     }
     ManualCalculationResponse: {
+      success: boolean
       enteredDates?: {
         [key: string]: string
       } | null
@@ -1772,6 +1819,7 @@ export interface components {
     }
     GenuineOverrideCreatedResponse: {
       success: boolean
+      error: boolean
       /** Format: int64 */
       newCalculationRequestId?: number | null
       /** Format: int64 */
@@ -2424,6 +2472,14 @@ export interface components {
         | 'Eras'
         | 'Forever'
     }
+    /** @description adjustment details for a release date type */
+    AppliedAdjustments: {
+      /**
+       * Format: int64
+       * @description the amount of awarded days applied for this specific release date
+       */
+      awarded: number
+    }
     ComparisonPersonOverview: {
       personId: string
       lastName?: string | null
@@ -2532,6 +2588,8 @@ export interface components {
        * @description Based on the screen design, the unadjusted date isn't derived in a consistent manner but is set as per the screen design
        */
       unadjustedDate: string
+      /** @description The breakdown of adjustments applied to this date */
+      appliedAdjustments?: components['schemas']['AppliedAdjustments'] | null
     }
     AFineSentence: {
       type: 'AFineSentence'
@@ -2791,6 +2849,27 @@ export interface components {
       /** @enum {string|null} */
       reason?: 'RECALL' | 'ESCAPE' | 'SENTENCED_IN_ABSENCE' | 'RELEASE_IN_ERROR' | 'IMMIGRATION_DETENTION' | null
     })
+    Pageable: {
+      /** Format: int32 */
+      page?: number
+      /** Format: int32 */
+      size?: number
+      sort?: string[]
+    }
+    PageMetadata: {
+      /** Format: int64 */
+      size?: number
+      /** Format: int64 */
+      number?: number
+      /** Format: int64 */
+      totalElements?: number
+      /** Format: int64 */
+      totalPages?: number
+    }
+    PagedModelComparisonSummary: {
+      content?: components['schemas']['ComparisonSummary'][]
+      page?: components['schemas']['PageMetadata']
+    }
     HistoricCalculationSummary: {
       /** Format: date-time */
       calculationDate: string
@@ -3378,6 +3457,14 @@ export interface components {
       fromDate?: string | null
       /** Format: int32 */
       days?: number | null
+      remand?: components['schemas']['RemandDto'] | null
+      additionalDaysAwarded?: components['schemas']['AdditionalDaysAwardedDto'] | null
+      unlawfullyAtLarge?: components['schemas']['UnlawfullyAtLargeDto'] | null
+      lawfullyAtLarge?: components['schemas']['LawfullyAtLargeDto'] | null
+      specialRemission?: components['schemas']['SpecialRemissionDto'] | null
+      taggedBail?: components['schemas']['TaggedBailDto'] | null
+      timeSpentInCustodyAbroad?: components['schemas']['TimeSpentInCustodyAbroadDto'] | null
+      timeSpentAsAnAppealApplicant?: components['schemas']['TimeSpentAsAnAppealApplicantDto'] | null
       /** Format: int32 */
       sentenceSequence?: number | null
       /** Format: uuid */
@@ -3567,6 +3654,44 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['UnusedDeductionCalculationResponse']
+        }
+      }
+    }
+  }
+  deleteOldPreliminaryCalculations: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The task was processed and a count of deleted calculations returned */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeletedPreviousCalculationResult']
+        }
+      }
+      /** @description Unauthorised, can only be called by trusted services within the namespace and not through ingress */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeletedPreviousCalculationResult']
+        }
+      }
+      /** @description Couldn't find the requested prisoner */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeletedPreviousCalculationResult']
         }
       }
     }
@@ -5493,6 +5618,57 @@ export interface operations {
         }
         content: {
           'application/json': number
+        }
+      }
+    }
+  }
+  searchComparisons: {
+    parameters: {
+      query: {
+        /**
+         * @description The prison code to filter comparisons by. If omitted or blank, comparisons for all prisons accessible to the caller are returned
+         * @example MDI
+         */
+        prison?: string
+        /**
+         * @description Whether to only return comparisons calculated by the logged in (current) user. If true, comparisons calculated by the current user are returned. If false, comparisons NOT calculated by the current user are returned
+         * @example true
+         */
+        calculatedByCurrentUser: boolean
+        /** @description Pagination and sorting parameters, e.g. page=0&size=20&sort=calculatedAt,desc */
+        pageable: components['schemas']['Pageable']
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns a page of comparisons */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PagedModelComparisonSummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PagedModelComparisonSummary']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PagedModelComparisonSummary']
         }
       }
     }
