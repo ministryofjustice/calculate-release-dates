@@ -221,21 +221,21 @@ context(
         .click()
 
       Page.verifyOnPage(GenuineOverridesSelectDatesToEnterPage) //
-        .checkDate('TUSED')
+        .checkDate('PED')
         .continue('continue-button')
         .click()
 
       Page.verifyOnPage(GenuineOverrideEnterDatePage) //
-        .checkIsFor('TUSED (Top up supervision expiry date)')
+        .checkIsFor('PED (Parole eligibility date)')
         .enterDate('19', '12', '2024')
         .clickContinue()
 
       Page.verifyOnPage(GenuineOverrideReviewDatesPage) //
-        .expectDates(['LED', 'SED', 'CRD', 'TUSED'])
+        .expectDates(['LED', 'SED', 'CRD', 'PED'])
         .expectDate('CRD', '01 February 2024')
         .expectDate('LED', '07 June 2025')
         .expectDate('SED', '07 June 2025')
-        .expectDate('TUSED', '19 December 2024')
+        .expectDate('PED', '19 December 2024')
         .continueButton()
         .click()
 
@@ -253,7 +253,7 @@ context(
             { dateType: 'LED', date: '2025-06-07' },
             { dateType: 'SED', date: '2025-06-07' },
             { dateType: 'CRD', date: '2024-02-01' },
-            { dateType: 'TUSED', date: '2024-12-19' },
+            { dateType: 'PED', date: '2024-12-19' },
           ],
           reason: 'TERRORISM',
         },
@@ -391,18 +391,18 @@ context(
       Page.verifyOnPage(CancelQuestionPage).clickNo().clickConfirm()
 
       Page.verifyOnPage(GenuineOverridesSelectDatesToEnterPage) //
-        .checkDate('TUSED')
+        .checkDate('PED')
         .continue('continue-button')
         .click()
 
       Page.verifyOnPage(GenuineOverrideEnterDatePage) //
-        .checkIsFor('TUSED (Top up supervision expiry date)')
+        .checkIsFor('PED (Parole eligibility date)')
         .clickCancel()
 
       Page.verifyOnPage(CancelQuestionPage).clickNo().clickConfirm()
 
       Page.verifyOnPage(GenuineOverrideEnterDatePage) //
-        .checkIsFor('TUSED (Top up supervision expiry date)')
+        .checkIsFor('PED (Parole eligibility date)')
         .clickBack()
 
       Page.verifyOnPage(GenuineOverridesSelectDatesToEnterPage) //

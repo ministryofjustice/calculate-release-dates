@@ -3,7 +3,6 @@ import {
   DetailedDate,
   NomisCalculationSummary,
 } from '../../../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import config from '../../../../config'
 
 export interface CalculationSummaryDatesCardModel {
   showNoDatesApply: boolean
@@ -35,7 +34,7 @@ const filteredListOfDates = [
   'ETD',
   'MTD',
   'LTD',
-  'TUSED',
+  'TUSED', // only supported for display of old calculations and not entry of new dates
   'ERSED',
   'ROTL',
   'HDCAD',
@@ -45,10 +44,7 @@ const filteredListOfDates = [
   'APD',
 ]
 
-const filteredListOfDatesPostRecallRepeal = filteredListOfDates.filter(d => d !== 'TUSED')
-
-export const getFilteredListOfDates = (): string[] =>
-  config.featureToggles.applyPostRecallRepealRules ? filteredListOfDatesPostRecallRepeal : filteredListOfDates
+export const getFilteredListOfDatesForDisplayOnly = (): string[] => filteredListOfDates
 
 function getCalculationSummaryDatesCardItem(date: DetailedDate, showHints: boolean): CalculationSummaryDatesCardItem {
   return {

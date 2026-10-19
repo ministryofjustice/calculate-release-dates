@@ -68,7 +68,6 @@ describe('manualEntryService', () => {
       'LED',
       'CRD',
       'HDCED',
-      'TUSED',
       'PRRD',
       'PED',
       'ROTL',

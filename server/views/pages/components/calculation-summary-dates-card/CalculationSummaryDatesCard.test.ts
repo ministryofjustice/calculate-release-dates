@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 import { hmppsFormatDate } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import {
   CalculationSummaryDatesCardModel,
-  getFilteredListOfDates,
+  getFilteredListOfDatesForDisplayOnly,
   calculationSummaryDatesCardModelFromOverridesViewModel,
 } from './CalculationSummaryDatesCardModel'
 import { validPreCalcHints } from '../../../../utils/utils'
@@ -15,7 +15,7 @@ njkEnv.addFilter('validPreCalcHints', validPreCalcHints)
 
 describe('ReleaseDateType', () => {
   it('should not have some of the properties in filteredListOfDates', () => {
-    const filteredListOfDates = getFilteredListOfDates()
+    const filteredListOfDates = getFilteredListOfDatesForDisplayOnly()
     expect(filteredListOfDates).not.toContain('NCRD')
     expect(filteredListOfDates).not.toContain('ESED')
     expect(filteredListOfDates).not.toContain('None')
