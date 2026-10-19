@@ -459,26 +459,7 @@ describe('Tests for /calculation/:nomsId/manual-entry', () => {
       })
   })
 
-  it('GET should include TUSED date', () => {
-    manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
-    manualCalculationService.hasRecallSentences.mockResolvedValue(false)
-    calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([
-      {
-        type: 'UNSUPPORTED_SENTENCE',
-      } as ValidationMessage,
-    ])
-    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
-    return request(app)
-      .get('/calculation/A1234AA/manual-entry/select-dates')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('TUSED')
-      })
-  })
-
-  it('GET should not include TUSED date when applyPostRecallRepealRules is applied', () => {
-    config.featureToggles.applyPostRecallRepealRules = true
+  it('GET should not include TUSED date', () => {
     manualCalculationService.hasIndeterminateSentences.mockResolvedValue(false)
     manualCalculationService.hasRecallSentences.mockResolvedValue(false)
     calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue([

@@ -120,7 +120,6 @@ context('End to end user journeys for a user with genuine overrides access', () 
         'LED',
         'CRD',
         'HDCED',
-        'TUSED',
         'PRRD',
         'PED',
         'ROTL',
@@ -138,13 +137,13 @@ context('End to end user journeys for a user with genuine overrides access', () 
       .expectDateToBeUnavailable('LED')
       .expectDateToBeUnavailable('CRD')
       .expectDateToBeUnavailable('HDCED')
-      .checkDate('TUSED')
+      .checkDate('PED')
       .checkDate('ERSED')
       .continue('continue-button')
       .click()
 
     Page.verifyOnPage(GenuineOverrideEnterDatePage) //
-      .checkIsFor('TUSED (Top up supervision expiry date)')
+      .checkIsFor('PED (Parole eligibility date)')
       .enterDate('01', '02', '2025')
       .clickContinue()
 
@@ -153,12 +152,12 @@ context('End to end user journeys for a user with genuine overrides access', () 
       .clickBack()
 
     Page.verifyOnPage(GenuineOverrideEnterDatePage) //
-      .checkIsFor('TUSED (Top up supervision expiry date)')
+      .checkIsFor('PED (Parole eligibility date)')
       .clickBack()
 
     Page.verifyOnPage(GenuineOverridesSelectDatesToEnterPage) //
       .uncheckDate('ERSED')
-      .uncheckDate('TUSED')
+      .uncheckDate('PED')
       .checkDate('HDCAD')
       .continue('continue-button')
       .click()

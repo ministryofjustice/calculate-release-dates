@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { DesignSystemEnvironment } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import config from '../config'
-import { getFilteredListOfDates } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
+import { getFilteredListOfDatesForDisplayOnly } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { ConfigItem, ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
 import ErrorMessage from '../types/ErrorMessage'
@@ -111,7 +111,10 @@ export const maxOf = <A, B>(all: A[], map: (a: A) => B): B | null => {
 }
 
 export const sortDisplayableDates = <T extends { type: string }>(dates: T[]): T[] => {
-  return dates.sort((a, b) => getFilteredListOfDates().indexOf(a.type) - getFilteredListOfDates().indexOf(b.type))
+  return dates.sort(
+    (a, b) =>
+      getFilteredListOfDatesForDisplayOnly().indexOf(a.type) - getFilteredListOfDatesForDisplayOnly().indexOf(b.type),
+  )
 }
 
 export const dateToDayMonthYear = (date: string): { day: number; month: number; year: number } => {
@@ -142,10 +145,6 @@ export const featureTogglesToConfigItems = (): ConfigItem[] => {
   return [
     { description: 'Show CRDS things to do intercept', value: `${featureToggles.showCrdsIntercept}` },
     { description: 'Show adjustments things to do intercept', value: `${featureToggles.thingsToDoIntercept}` },
-    {
-      description: 'Apply post recall repeal rules (disable TUSED)',
-      value: `${featureToggles.applyPostRecallRepealRules}`,
-    },
     {
       description: 'Use the new landing page and calculation history',
       value: `${featureToggles.newCalculationHistoryEnabled}`,
