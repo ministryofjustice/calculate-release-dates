@@ -213,6 +213,7 @@ describe('Print Release Dates Notification Slip', () => {
         { code: 'HDCED', date: '2025-06-15', description: 'HDC eligibility date' },
         { code: 'TUSED', date: '2029-06-15', description: 'Top up supervision date' },
         { code: 'ERSED', date: '2028-06-15', description: 'Early Removal Scheme Eligibility Date' },
+        { code: 'APD', date: '2036-06-15', description: 'Approved parole date' },
         { code: 'ROTL', date: '2030-06-15', description: 'Release on temporary licence' },
         { code: 'PED', date: '2027-06-15', description: 'Parole eligibility date' },
         { code: 'ARD', date: '2023-06-15', description: 'Automatic Release Date' },
@@ -240,6 +241,7 @@ describe('Print Release Dates Notification Slip', () => {
         { code: 'ERSED', date: '2028-06-15', description: 'Early Removal Scheme Eligibility Date' },
         { code: 'TUSED', date: '2029-06-15', description: 'Top up supervision date' },
         { code: 'ROTL', date: '2030-06-15', description: 'Release on temporary licence' },
+        { code: 'APD', date: '2036-06-15', description: 'Approved parole date' },
       ])
     })
 
