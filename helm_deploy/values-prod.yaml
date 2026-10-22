@@ -28,4 +28,4 @@ generic-service:
     SHOW_REVOCATION_DATE: "false"
 
 generic-prometheus-alerts:
-  alertSeverity: legacy-replacement-alerts
+  alertSeverityOverride: legacy-replacement-alerts
