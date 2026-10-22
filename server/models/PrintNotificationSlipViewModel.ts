@@ -32,7 +32,7 @@ export default class PrintNotificationSlipViewModel extends PrisonerContextViewM
   }
 
   getNonDTOKeyDatesInOrder(): { code: string; date: string; description: string }[] {
-    const codes = ['SED', 'LED', 'SLED', 'HDCED', 'HDCAD', 'PED', 'ERSED', 'TUSED', 'ROTL']
+    const codes = ['SED', 'LED', 'SLED', 'HDCED', 'HDCAD', 'PED', 'ERSED', 'TUSED', 'ROTL', 'APD']
     const keyDates: KeyDate[] = codes
       .map(code => this.keyDatesArray.find(keyDate => keyDate.code === code))
       .filter(Boolean)
