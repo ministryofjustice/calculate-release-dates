@@ -43,4 +43,4 @@ generic-service:
 generic-prometheus-alerts:
   targetApplication: calculate-release-dates-alt-dev
   businessHoursOnly: true
-  alertSeverity: legacy-replacement-alerts-non-prod
+  alertSeverityOverride: legacy-replacement-alerts-non-prod
