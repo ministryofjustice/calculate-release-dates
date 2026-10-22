@@ -371,6 +371,8 @@ describe('View calculation history overview', () => {
           expect(dateCards.eq(2).text()).toContain('HDCED')
           const manualDatesNotification = $('[data-qa=manual-dates-notification]')
           expect(manualDatesNotification).toHaveLength(0)
+
+          expect($('[data-qa=approved-dates-panel]')).toHaveLength(0)
         })
     })
     it.each(['MANUAL_DETERMINATE', 'MANUAL_INDETERMINATE'])(
@@ -474,6 +476,8 @@ describe('View calculation history overview', () => {
           expect(dateCards.eq(0).text()).toContain('SED')
           expect(dateCards.eq(1).text()).toContain('CRD')
           expect(dateCards.eq(2).text()).toContain('HDCED')
+
+          expect($('[data-qa=approved-dates-panel]')).toHaveLength(0)
         })
     })
     it('Should not show the print notification slip or second check buttons for NOMIS even if the latest', () => {
@@ -501,6 +505,7 @@ describe('View calculation history overview', () => {
           genuineOverrideReasonDescription: 'Some reason',
           calculationType: 'GENUINE_OVERRIDE',
         },
+        approvedDates: {},
         overriddenDates: {
           CRD: {
             date: '2025-05-05',
@@ -557,6 +562,60 @@ describe('View calculation history overview', () => {
           )
           expect(overrideDatesCards.eq(2).text()).toContain('CRD')
           expect(overrideDatesCards.eq(2).find('[data-qa=CRD-date]').text().trim()).toStrictEqual('Monday, 05 May 2025')
+
+          expect($('[data-qa=approved-dates-panel]')).toHaveLength(0)
+        })
+    })
+
+    it('Should show approved dates', () => {
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+        ...stubbedDetailedCalculationResults,
+        approvedDates: {
+          HDCAD: { date: '2026-06-06', type: 'HDCAD', description: 'Home detention curfew approved date', hints: [] },
+          ROTL: { date: '2027-07-07', type: 'ROTL', description: 'Release on temporary licence', hints: [] },
+          APD: { date: '2025-05-05', type: 'APD', description: 'Approved parole date', hints: [] },
+        },
+      })
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/CRDS/123456/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+
+          const datePanels = $('[data-qa=release-dates-panel]')
+          expect(datePanels).toHaveLength(2)
+
+          const finalDatesCards = datePanels.eq(0).find('.app-stat-card')
+          expect(finalDatesCards).toHaveLength(3)
+          expect(finalDatesCards.eq(0).text()).toContain('SED')
+          expect(finalDatesCards.eq(0).find('[data-qa=SED-date]').text().trim()).toStrictEqual(
+            'Friday, 05 February 2021',
+          )
+          expect(finalDatesCards.eq(1).text()).toContain('CRD')
+          expect(finalDatesCards.eq(1).find('[data-qa=CRD-date]').text().trim()).toStrictEqual(
+            'Wednesday, 03 February 2021',
+          )
+          expect(finalDatesCards.eq(2).text()).toContain('HDCED')
+          expect(finalDatesCards.eq(2).find('[data-qa=HDCED-date]').text().trim()).toStrictEqual(
+            'Sunday, 03 October 2021',
+          )
+
+          const approvedDatesCards = datePanels.eq(1).find('.app-stat-card')
+
+          expect(approvedDatesCards).toHaveLength(3)
+          expect(approvedDatesCards.eq(0).text()).toContain('ROTL')
+          expect(approvedDatesCards.eq(0).find('[data-qa=ROTL-date]').text().trim()).toStrictEqual(
+            'Wednesday, 07 July 2027',
+          )
+          expect(approvedDatesCards.eq(1).text()).toContain('HDCAD')
+          expect(approvedDatesCards.eq(1).find('[data-qa=HDCAD-date]').text().trim()).toStrictEqual(
+            'Saturday, 06 June 2026',
+          )
+          expect(approvedDatesCards.eq(2).text()).toContain('APD')
+          expect(approvedDatesCards.eq(2).find('[data-qa=APD-date]').text().trim()).toStrictEqual('Monday, 05 May 2025')
         })
     })
   })
