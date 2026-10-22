@@ -33,6 +33,7 @@ export default class CalculationHistoryOverviewViewModel extends PrisonerContext
     public pageSize: number,
     public calculationSummaryDatesPanelModel: CalculationSummaryDatesPanelModel,
     public overriddenDatesDatesPanelModel: CalculationSummaryDatesPanelModel | null,
+    public approvedDatesDatesPanelModel: CalculationSummaryDatesPanelModel | null,
     public courtCaseCount: number | null,
     public sentenceCount: number | null,
     public adjustmentTypes: string[],
