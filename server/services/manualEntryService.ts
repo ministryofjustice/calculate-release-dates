@@ -7,7 +7,6 @@ import { ApiReleaseDateType, DetailedDate } from '../@types/calculateReleaseDate
 import { createSupportLink } from '../utils/utils'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../types/ManualJourney'
 import releaseDateType from '../enumerations/releaseDateType'
-import config from '../config'
 import { ErrorMessages } from '../types/ErrorMessages'
 
 type ManualEntrySession = Request['session'] & {
@@ -42,7 +41,6 @@ const determinateDateTypesForManualEntry = [
   'LED',
   'CRD',
   'HDCED',
-  'TUSED',
   'PRRD',
   'PED',
   'ROTL',
@@ -57,12 +55,7 @@ const determinateDateTypesForManualEntry = [
   'DPRRD',
 ]
 
-const determinateDateTypesForManualEntryPostRecallRepeal = determinateDateTypesForManualEntry.filter(d => d !== 'TUSED')
-
-export const getDeterminateDateTypesForManualEntry = () =>
-  config.featureToggles.applyPostRecallRepealRules
-    ? determinateDateTypesForManualEntryPostRecallRepeal
-    : determinateDateTypesForManualEntry
+export const getDeterminateDateTypesForManualEntry = () => determinateDateTypesForManualEntry
 
 const errorMessage = {
   errorMessage: {

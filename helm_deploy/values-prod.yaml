@@ -26,6 +26,7 @@ generic-service:
     GENUINE_OVERRIDES_ENABLED: "true"
     THING_TO_DO_INTERCEPT_ENABLED: "false"
     SHOW_REVOCATION_DATE: "false"
+    NEW_CALC_HISTORY_ENABLED: "false"
 
 generic-prometheus-alerts:
   alertSeverityOverride: legacy-replacement-alerts

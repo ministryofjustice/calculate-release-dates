@@ -11,7 +11,6 @@ import AuthorisedRoles from '../../../enumerations/authorisedRoles'
 import { testDateTypeToDescriptions } from '../../../testutils/createUserToken'
 import CalculateReleaseDatesService from '../../../services/calculateReleaseDatesService'
 import { GenuineOverrideInputs } from '../../../@types/journeys'
-import config from '../../../config'
 
 jest.mock('../../../services/prisonerService')
 jest.mock('../../../services/dateTypeConfigurationService')
@@ -107,15 +106,7 @@ describe('SelectGenuineOverrideReasonController', () => {
       })
     })
 
-    it('should show TUSED date as an option', async () => {
-      const response = await request(app).get(pageUrl)
-      expect(response.status).toEqual(200)
-      const $ = cheerio.load(response.text)
-      expect($(`[data-qa=checkbox-TUSED]`)).toHaveLength(1)
-    })
-
-    it('should not show TUSED date as an option when applyPostRecallRepealRules is applied', async () => {
-      config.featureToggles.applyPostRecallRepealRules = true
+    it('should not show TUSED date as an option', async () => {
       const response = await request(app).get(pageUrl)
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
