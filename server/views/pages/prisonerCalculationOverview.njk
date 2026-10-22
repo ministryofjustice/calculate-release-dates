@@ -193,7 +193,9 @@
                     attributes: { "data-qa": "calculation-history-table" },
                     classes: "govuk-!-margin-bottom-2"
                 }) }}
-                <p class="govuk-body"><a href="{{ calcHistoryLink }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="view-all-link">View all {{ totalCalculationsCount }} calculations</a></p>
+                {% if historicCalculations.length > 1 %}
+                    <p class="govuk-body"><a href="{{ calcHistoryLink }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="view-all-link">View all {{ totalCalculationsCount }} calculations</a></p>
+                {% endif %}
             {% else %}
                 <p class="govuk-body" data-qa="historic-calc-page-summary">There are no previous calculations.</p>
             {% endif %}
