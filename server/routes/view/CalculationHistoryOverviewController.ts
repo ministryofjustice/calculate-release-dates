@@ -72,6 +72,7 @@ export default class CalculationHistoryOverviewController implements Controller 
           .map(it => it.adjustmentType),
       ),
     ]
+    const approvedDates = detailedResults.approvedDates ? Object.values(detailedResults.approvedDates) : []
     return new CalculationHistoryOverviewViewModel(
       prisonerDetail,
       source,
@@ -92,6 +93,7 @@ export default class CalculationHistoryOverviewController implements Controller 
             Object.values(detailedResults.overriddenDates),
           )
         : null,
+      approvedDates.length > 0 ? calculationSummaryDatesPanelModelFromCalculationSummaryViewModel(approvedDates) : null,
       courtCaseCount,
       sentenceCount,
       adjustmentTypes,
@@ -120,6 +122,7 @@ export default class CalculationHistoryOverviewController implements Controller 
       history,
       config.calculationHistory.pageSize,
       calculationSummaryDatesPanelModelFromCalculationSummaryViewModel(nomisCalculationSummary.releaseDates),
+      null,
       null,
       null,
       null,
