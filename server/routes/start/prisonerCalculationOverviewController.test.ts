@@ -193,6 +193,14 @@ describe('GET /:nomsId/overview', () => {
             calculatedByDisplayName: 'Bob Smith',
             establishmentCalculatedAtDescription: 'HMP ABC',
           },
+          {
+            calculationDate: '2024-01-03',
+            calculationSource: 'CRDS',
+            crdsCalculationId: 99998,
+            reasonDescription: 'Initial calculation',
+            calculatedByDisplayName: 'Bob Smith',
+            establishmentCalculatedAtDescription: 'HMP ABC',
+          },
         ],
         totalCalculationCount: 5,
         hasIndeterminateSentences: false,
@@ -290,6 +298,57 @@ describe('GET /:nomsId/overview', () => {
         })
     })
 
+    it('Show correct navigation when there is only one calculation', () => {
+      const overview: PrisonerCalculationOverview = {
+        latestCalculation: {
+          prisonerId: stubbedPrisonerData.offenderNo,
+          bookingId: stubbedPrisonerData.bookingId,
+          calculatedAt: '2024-03-05',
+          reason: 'New Sentence',
+          source: 'CRDS',
+          dates: [],
+          calculatedByUsername: 'user1',
+          calculatedByDisplayName: 'Bob Smith',
+          establishment: 'HMP ABC',
+          calculationType: 'CALCULATED',
+          calculationRequestId: 99999,
+        },
+        recentCalculations: [
+          {
+            calculationDate: '2024-03-05',
+            calculationSource: 'CRDS',
+            crdsCalculationId: 99999,
+            reasonDescription: 'Initial calculation',
+            calculatedByDisplayName: 'Bob Smith',
+            establishmentCalculatedAtDescription: 'HMP ABC',
+          },
+        ],
+        totalCalculationCount: 1,
+        hasIndeterminateSentences: false,
+        numberOfSentences: 5,
+      }
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
+
+      return request(app)
+        .get(`/${stubbedPrisonerData.offenderNo}/overview`)
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const actions = $('.actions-list').children('ul').children('li')
+          expect(actions).toHaveLength(3)
+          expect(actions.eq(0).text().trim()).toStrictEqual('Calculate release dates')
+          expect(actions.eq(1).text().trim()).toStrictEqual('Record a second calculation check')
+          expect(actions.eq(2).text().trim()).toStrictEqual('Add APD, HDCAD or ROTL dates')
+          const viewCalcLink = $('[data-qa=view-calculation-details-link]').eq(0)
+          const expectedLatestCalcLink = '/view/A1234AA/calculation-history/CRDS/99999/overview'
+          expect(viewCalcLink.attr('href')).toStrictEqual(expectedLatestCalcLink)
+          // hide view all link when there is only one calculation
+          expect($('[data-qa=view-all-link]')).toHaveLength(0)
+          expect($('[data-qa=historic-calc-page-summary]').eq(0).text().trim()).toStrictEqual('Showing 1 calculation')
+        })
+    })
+
     it('Show correct navigation when the latest calculation was CRDS there are no indeterminate sentences', () => {
       const overview: PrisonerCalculationOverview = {
         latestCalculation: {
@@ -310,6 +369,14 @@ describe('GET /:nomsId/overview', () => {
             calculationDate: '2024-03-05',
             calculationSource: 'CRDS',
             crdsCalculationId: 99999,
+            reasonDescription: 'Initial calculation',
+            calculatedByDisplayName: 'Bob Smith',
+            establishmentCalculatedAtDescription: 'HMP ABC',
+          },
+          {
+            calculationDate: '2024-01-03',
+            calculationSource: 'CRDS',
+            crdsCalculationId: 99998,
             reasonDescription: 'Initial calculation',
             calculatedByDisplayName: 'Bob Smith',
             establishmentCalculatedAtDescription: 'HMP ABC',
@@ -360,6 +427,14 @@ describe('GET /:nomsId/overview', () => {
             calculationDate: '2025-06-01',
             calculationSource: 'NOMIS',
             nomisCalculationId: 555,
+            reasonDescription: 'Initial calculation',
+            calculatedByDisplayName: 'Fred',
+            establishmentCalculatedAtDescription: 'Kirkham',
+          },
+          {
+            calculationDate: '2025-05-15',
+            calculationSource: 'NOMIS',
+            nomisCalculationId: 554,
             reasonDescription: 'Initial calculation',
             calculatedByDisplayName: 'Fred',
             establishmentCalculatedAtDescription: 'Kirkham',
