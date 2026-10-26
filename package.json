@@ -96,7 +96,7 @@
     "axe-core": "^4.14.0",
     "cheerio": "^1.2.0",
     "cookie-session": "^2.1.1",
-    "cypress": "^15.21.1",
+    "cypress": "^16.2.0",
     "cypress-axe": "^1.7.0",
     "del": "9.0.1",
     "dotenv": "^18.0.8",
