@@ -603,8 +603,8 @@ describe('GET /:nomsId/overview', () => {
           source: 'CRDS',
           dates: [],
           calculatedByUsername: 'user1',
-          calculatedByDisplayName: 'Bob Smith',
-          establishment: 'HMP ABC',
+          calculatedByDisplayName: "Bob O'Hare",
+          establishment: 'Kirkham (HMP & YOI)',
           calculationType: 'CALCULATED',
         },
         recentCalculations: [],
@@ -622,7 +622,9 @@ describe('GET /:nomsId/overview', () => {
           const $ = cheerio.load(res.text)
           expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
           expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
-          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Bob Smith at HMP ABC')
+          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual(
+            "Bob O'Hare at Kirkham (HMP & YOI)",
+          )
           expect($('dt:contains("Last checked by")').next().text().trim()).toStrictEqual('Not checked')
           expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
         })
