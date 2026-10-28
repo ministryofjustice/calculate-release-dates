@@ -168,7 +168,7 @@
                         [
                             { html: historicCalculationDate, classes: "calculation-history-table-first-column" },
                             { text: historicCalculationReason, classes: "calculation-history-table-second-column" },
-                            { text: historicCalculationEstablishment, classes: "calculation-history-table-third-column" },
+                            { text: historicCalculationEstablishment | safe, classes: "calculation-history-table-third-column" },
                             { html: historicCalculationSource + historicCalculationSourceSubHeading, classes: "calculation-history-table-fourth-column" }
                         ]), historyRows)
                     %}
