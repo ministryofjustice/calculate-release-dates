@@ -627,6 +627,40 @@ describe('GET /:nomsId/overview', () => {
           expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
         })
     })
+    it('Escapes calculated by name and establishment only once', () => {
+      const overview: PrisonerCalculationOverview = {
+        latestCalculation: {
+          prisonerId: stubbedPrisonerData.offenderNo,
+          bookingId: stubbedPrisonerData.bookingId,
+          calculatedAt: '2024-03-05',
+          reason: 'New Sentence',
+          source: 'CRDS',
+          dates: [],
+          calculatedByUsername: 'user1',
+          calculatedByDisplayName: "Sean O'Brien",
+          establishment: 'Hindley (HMP & YOI)',
+          calculationType: 'CALCULATED',
+        },
+        recentCalculations: [],
+        totalCalculationCount: 0,
+        hasIndeterminateSentences: false,
+        numberOfSentences: 5,
+      }
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue(overview)
+
+      return request(app)
+        .get(`/${stubbedPrisonerData.offenderNo}/overview`)
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).not.toContain('&amp;amp;')
+          expect(res.text).not.toContain('&amp;#39;')
+          const $ = cheerio.load(res.text)
+          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual(
+            "Sean O'Brien at Hindley (HMP & YOI)",
+          )
+        })
+    })
     it('Latest calc is manual CRDS calculation', () => {
       const overview: PrisonerCalculationOverview = {
         latestCalculation: {
@@ -992,6 +1026,45 @@ describe('GET /:nomsId/overview', () => {
           expect($('[data-qa=historic-calc-page-summary]').eq(0).text().trim()).toStrictEqual('Showing 2 calculations')
           const calcHistoryTableRows = $('[data-qa=calculation-history-table]').eq(0).children('tbody').children('tr')
           expect(calcHistoryTableRows).toHaveLength(2)
+        })
+    })
+
+    it('Escapes calculated by name and establishment only once in the history table', () => {
+      calculateReleaseDatesService.getPrisonerCalculationOverview.mockResolvedValue({
+        ...baseOverview,
+        recentCalculations: [
+          {
+            calculationDate: '2025-06-01',
+            calculationSource: 'CRDS',
+            calculationType: 'CALCULATED',
+            crdsCalculationId: 123,
+            reasonDescription: 'Initial calculation',
+            calculatedByDisplayName: "Sean O'Brien",
+            establishmentCalculatedAtDescription: 'Hindley (HMP & YOI)',
+          },
+          {
+            calculationDate: '2025-05-01',
+            calculationSource: 'NOMIS',
+            nomisCalculationId: 456,
+            reasonDescription: 'Initial calculation',
+            calculatedByDisplayName: '',
+            establishmentCalculatedAtDescription: 'Hindley (HMP & YOI)',
+          },
+        ],
+        totalCalculationCount: 2,
+      })
+
+      return request(app)
+        .get(`/${stubbedPrisonerData.offenderNo}/overview`)
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).not.toContain('&amp;amp;')
+          expect(res.text).not.toContain('&amp;#39;')
+          const $ = cheerio.load(res.text)
+          const calculatedByCells = $('[data-qa=calculation-history-table] .calculation-history-table-third-column')
+          expect(calculatedByCells.eq(0).text().trim()).toStrictEqual("Sean O'Brien at Hindley (HMP & YOI)")
+          expect(calculatedByCells.eq(1).text().trim()).toStrictEqual('Hindley (HMP & YOI)')
         })
     })
   })

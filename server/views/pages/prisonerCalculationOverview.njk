@@ -44,7 +44,7 @@
                             <br/> <span class="govuk-!-font-size-16 govuk-hint">{{ calculationSourceAdditionalHint }}</span>
                         {% endif %}
                     {% endset %}
-                    {% set calculatedByText %}{{ calculatedByDisplayName | capitaliseName }}{% if calculatedByDisplayName and calculatedAtEstablishment %} at {% endif %}{{ calculatedAtEstablishment }}{% endset %}
+                    {% set calculatedByText = (calculatedByDisplayName | capitaliseName) + (' at ' if calculatedByDisplayName and calculatedAtEstablishment else '') + (calculatedAtEstablishment or '') %}
                     {% if checkedByDisplayName == null %}
                         {% set checkedBy = "Not checked" %}
                     {% else %}
@@ -146,7 +146,7 @@
                     {% endif %}
 
 
-                    {% set historicCalculationEstablishment %}{{ historicCalculation.calculatedByDisplayName | capitaliseName }}{% if historicCalculation.calculatedByDisplayName and historicCalculation.establishmentCalculatedAtDescription %} at {% endif %}{{ historicCalculation.establishmentCalculatedAtDescription }}{% endset %}
+                    {% set historicCalculationEstablishment = (historicCalculation.calculatedByDisplayName | capitaliseName) + (' at ' if historicCalculation.calculatedByDisplayName and historicCalculation.establishmentCalculatedAtDescription else '') + (historicCalculation.establishmentCalculatedAtDescription or '') %}
 
                     {% set historicCalculationType = historicCalculation.calculationType %}
                     {% set historicCalculationSourceSubHeading = '' %}
