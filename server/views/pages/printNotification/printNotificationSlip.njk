@@ -20,6 +20,8 @@
           <a data-qa="back-link" class="govuk-back-link" href="/calculation/{{ model.prisonerDetail.offenderNo }}/complete/{{ calculationRequestId }}">Back</a>
         {% elif fromPage == 'view' %}
           <a data-qa="back-link" class="govuk-back-link" href="/?prisonId={{ model.prisonerDetail.offenderNo }}">Back</a>
+        {% elif fromPage == 'history' %}
+          <a data-qa="back-link" class="govuk-back-link" href="/view/{{ model.prisonerDetail.offenderNo }}/calculation-history/latest">Back</a>
         {% endif %}
       </div>
 
@@ -30,7 +32,7 @@
               <div class="govuk-button-group govuk-!-display-none-print">
                 {% if fromPage == 'calculation' %}
                   {% set printLinks = '/calculation/' ~ model.prisonerDetail.offenderNo ~ '/summary/' ~ calculationRequestId ~ '/printNotificationSlip?fromPage=' ~ fromPage %}
-                {% elif fromPage == 'view' %}
+                {% elif fromPage == 'view' or fromPage == 'history' %}
                   {% set printLinks = '/view/' ~ model.prisonerDetail.offenderNo ~ '/calculation-summary/' ~ calculationRequestId ~ '/printNotificationSlip?fromPage=' ~ fromPage %}
                 {% endif %}
 

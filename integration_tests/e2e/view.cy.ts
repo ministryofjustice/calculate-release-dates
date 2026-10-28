@@ -81,7 +81,9 @@ context('View journey tests', () => {
 
     Page.verifyOnPage(CalculationHistoryOverviewPage).clickPrintNotificationSlip()
 
-    Page.verifyOnPage(PrintNotificationSlipPage)
+    Page.verifyOnPage(PrintNotificationSlipPage).clickBack()
+
+    Page.verifyOnPage(CalculationHistoryOverviewPage)
   })
 
   it('Can navigate pages of history', () => {
