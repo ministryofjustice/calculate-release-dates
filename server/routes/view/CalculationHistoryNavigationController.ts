@@ -13,7 +13,14 @@ export default class CalculationHistoryNavigationController implements Controlle
     const prisonerDetail = req.prisoner
 
     const isNewer = direction === 'newer'
-    const requestedPage = Number(currentPage) + (isNewer ? -1 : 1)
+    const isLatest = direction === 'latest'
+
+    let requestedPage: number
+    if (isLatest) {
+      requestedPage = 1
+    } else {
+      requestedPage = Number(currentPage) + (isNewer ? -1 : 1)
+    }
 
     const history = await this.calculateReleaseDatesService.getCalculationHistoryPage(
       nomsId,

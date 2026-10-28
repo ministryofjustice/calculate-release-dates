@@ -82,6 +82,33 @@ describe('View calculation history overview', () => {
         expect(calculateReleaseDatesService.getCalculationHistoryPage).toHaveBeenCalledWith('A1234AA', 4, 10, 'user1')
       })
   })
+  it('Should navigate to the first item in the first page if it is a CRDS calc when choosing latest as direction', () => {
+    calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/view/A1234AA/calculation-history/latest')
+      .expect(302)
+      .expect('Location', '/view/A1234AA/calculation-history/CRDS/30/overview?page=1')
+      .expect(_ => {
+        expect(calculateReleaseDatesService.getCalculationHistoryPage).toHaveBeenCalledWith('A1234AA', 1, 10, 'user1')
+      })
+  })
+  it('Should navigate to the first item in the first page if it is a NOMIS calc when choosing latest as direction', () => {
+    calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue({
+      ...stubbedFullPageOfCalculationHistory,
+      items: stubbedFullPageOfCalculationHistory.items.map(item => {
+        return { ...item, calculationSource: 'NOMIS', nomisCalculationId: item.crdsCalculationId + 100 }
+      }),
+    })
+    prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    return request(app)
+      .get('/view/A1234AA/calculation-history/latest')
+      .expect(302)
+      .expect('Location', '/view/A1234AA/calculation-history/NOMIS/130/overview?page=1')
+      .expect(_ => {
+        expect(calculateReleaseDatesService.getCalculationHistoryPage).toHaveBeenCalledWith('A1234AA', 1, 10, 'user1')
+      })
+  })
 })
 
 const stubbedPrisonerData: PrisonApiPrisoner = {
