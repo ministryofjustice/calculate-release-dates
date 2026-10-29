@@ -1278,6 +1278,7 @@ export default {
       calculationBreakdown: breakdown,
       approvedDates: {},
       usedPreviouslyRecordedSLED: previouslyRecordedSLED,
+      hasIndeterminateSentences: false,
     }
 
     if (ftr56Tranche) {

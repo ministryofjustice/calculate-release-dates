@@ -250,6 +250,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
   },
   approvedDates: {},
   allocatedTranches: [],
+  hasIndeterminateSentences: false,
 }
 let app: Express
 

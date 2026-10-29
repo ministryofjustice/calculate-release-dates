@@ -97,6 +97,7 @@ export default class CalculationHistoryOverviewController implements Controller 
       courtCaseCount,
       sentenceCount,
       adjustmentTypes,
+      detailedResults.hasIndeterminateSentences,
     )
   }
 
@@ -127,6 +128,7 @@ export default class CalculationHistoryOverviewController implements Controller 
       null,
       null,
       [],
+      null,
     )
   }
 }
