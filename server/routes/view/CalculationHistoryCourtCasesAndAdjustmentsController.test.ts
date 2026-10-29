@@ -303,6 +303,7 @@ const stubbedDetailedCalculationResults: DetailedCalculationResults = {
   approvedDates: {},
   allocatedTranches: [],
   secondCheckDetails: null,
+  hasIndeterminateSentences: false,
 }
 
 let app: Express

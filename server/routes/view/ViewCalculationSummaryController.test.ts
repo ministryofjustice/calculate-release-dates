@@ -698,4 +698,5 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
   },
   approvedDates: {},
   allocatedTranches: [],
+  hasIndeterminateSentences: false,
 }

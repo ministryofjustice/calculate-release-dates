@@ -120,6 +120,7 @@ describe('PreviouslyRecordedSledInterceptController', () => {
     approvedDates: {},
     sds40Tranche: 'TRANCHE_1',
     allocatedTranches: [],
+    hasIndeterminateSentences: false,
   }
 
   beforeEach(() => {

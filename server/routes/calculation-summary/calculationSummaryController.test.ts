@@ -322,6 +322,7 @@ describe('CalculationSummaryController', () => {
     approvedDates: {},
     sds40Tranche: 'TRANCHE_1',
     allocatedTranches: [],
+    hasIndeterminateSentences: false,
   }
   const expectedMiniProfile = {
     name: 'Nobody, Anon',

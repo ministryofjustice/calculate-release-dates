@@ -250,6 +250,7 @@ describe('calculationSummaryOverridesController', () => {
     },
     approvedDates: {},
     allocatedTranches: [],
+    hasIndeterminateSentences: false,
   }
 
   let userRoles: string[]

@@ -892,6 +892,7 @@ describe('Calculate release dates service tests', () => {
       approvedDates: {},
       breakdownMissingReason: 'UNSUPPORTED_CALCULATION_BREAKDOWN',
       allocatedTranches: [],
+      hasIndeterminateSentences: false,
     }
 
     it('can get with breakdown missing safely', async () => {

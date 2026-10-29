@@ -150,14 +150,16 @@
 
             {% if selectedCalculationIsLatest and selectedCalculationSource === 'CRDS' %}
                 <div class="govuk-grid-row govuk-button-group govuk-!-margin-bottom-2">
-                    {{ govukButton({
-                        text: "Print notification slip",
-                        preventDoubleClick: true,
-                        type: submit,
-                        href: '/view/' + prisonerDetail.offenderNo + '/calculation-summary/' + selectedCalculationId + '/printNotificationSlip?fromPage=history',
-                        attributes: { 'data-qa': 'print-notification-slip' },
-                        classes: "govuk-button--secondary"
-                    }) }}
+                    {% if not hasIndeterminateSentences %}
+                        {{ govukButton({
+                            text: "Print notification slip",
+                            preventDoubleClick: true,
+                            type: submit,
+                            href: '/view/' + prisonerDetail.offenderNo + '/calculation-summary/' + selectedCalculationId + '/printNotificationSlip?fromPage=history',
+                            attributes: { 'data-qa': 'print-notification-slip' },
+                            classes: "govuk-button--secondary"
+                        }) }}
+                    {% endif %}
 
                     {{ govukButton({
                         text: "Record a second calculation check",
