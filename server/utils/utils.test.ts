@@ -111,9 +111,14 @@ describe('feature toggles', () => {
 
 describe('filter unique values', () => {
   it('should filter unique fix sources from array', () => {
-    const fixSources = [
-      FixSource.ADJUDICATIONS, FixSource.ADJUDICATIONS, FixSource.ADJUSTMENTS, FixSource.ADJUSTMENTS
-    ]
-    expect(fixSources.filter(onlyUnique)).toHaveLength(2)
+    const result = [
+      FixSource.ADJUDICATIONS,
+      FixSource.ADJUDICATIONS,
+      FixSource.ADJUSTMENTS,
+      FixSource.ADJUSTMENTS,
+    ].filter(onlyUnique)
+    expect(result).toHaveLength(2)
+    expect(result).toContain(FixSource.ADJUSTMENTS)
+    expect(result).toContain(FixSource.ADJUDICATIONS)
   })
 })
