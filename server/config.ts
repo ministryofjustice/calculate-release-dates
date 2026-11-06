@@ -133,6 +133,14 @@ export default {
     courtCasesAndReleaseDatesUi: {
       url: get('COURT_CASES_AND_RELEASE_DATES_URL', 'http://localhost:3100', requiredInProduction),
     },
+    adjudications: {
+      url: get('ADJUDICATIONS_API_URL', 'http://localhost:8080', requiredInProduction),
+      timeout: {
+        response: get('ADJUDICATIONS_API_TIMEOUT_RESPONSE', 10000),
+        deadline: get('ADJUDICATIONS_API_TIMEOUT_DEADLINE', 10000),
+      },
+      agent: new AgentConfig(Number(get('ADJUDICATIONS_API_AGENT_TIMEOUT', 20000))),
+    },
   },
   adjustments: {
     url: get('ADJUSTMENTS_UI_URL', 'http://127.0.0.1:3000/adjustments', requiredInProduction),

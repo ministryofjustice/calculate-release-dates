@@ -4,8 +4,10 @@ import {
   createSupportLink,
   sortDisplayableDates,
   featureTogglesToConfigItems,
+  onlyUnique,
 } from './utils'
 import config from '../config'
+import { FixSource } from '../types/ErrorMessages'
 
 describe('capitalise name', () => {
   it.each([
@@ -104,5 +106,19 @@ describe('feature toggles', () => {
   it('all feature toggles should be described', () => {
     const expected = Object.keys(config.featureToggles).length
     expect(featureTogglesToConfigItems()).toHaveLength(expected)
+  })
+})
+
+describe('filter unique values', () => {
+  it('should filter unique fix sources from array', () => {
+    const result = [
+      FixSource.ADJUDICATIONS,
+      FixSource.ADJUDICATIONS,
+      FixSource.ADJUSTMENTS,
+      FixSource.ADJUSTMENTS,
+    ].filter(onlyUnique)
+    expect(result).toHaveLength(2)
+    expect(result).toContain(FixSource.ADJUSTMENTS)
+    expect(result).toContain(FixSource.ADJUDICATIONS)
   })
 })

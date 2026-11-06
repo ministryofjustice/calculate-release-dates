@@ -1,6 +1,22 @@
 {% include "./list-validation-messages.njk" %}
 
-<li>
-    <p class="govuk-body govuk-!-margin-bottom-0">Update these details in NOMIS and then <a href="">reload this page</a>.
-    </p>
-</li>
+     {% if validationErrors.fixSources|length %}
+          {% if 'ADJUSTMENTS' in validationErrors.fixSources %}
+               <li>
+                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in <a href="{{ adjustmentsUiUrl }}/{{ model.prisonerDetail.offenderNo }}">Adjustments</a>.
+                   </p>
+               </li>
+          {% endif %}
+
+          {% if 'ADJUDICATIONS' in validationErrors.fixSources %}
+               <li>
+                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in <a href="{{ adjudicationsApiUrl }}/adjudication-history/{{ model.prisonerDetail.offenderNo }}">Adjudications</a>.
+                   </p>
+               </li>
+          {% endif %}
+     {% else %}
+        <li>
+            <p class="govuk-body govuk-!-margin-bottom-0">Update these details in NOMIS and then <a href="">reload this page</a>.
+            </p>
+        </li>
+     {% endif %}
