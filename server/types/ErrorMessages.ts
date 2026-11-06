@@ -3,6 +3,7 @@ import ErrorMessage from './ErrorMessage'
 export interface ErrorMessages {
   messages: ErrorMessage[]
   messageType?: ErrorMessageType
+  fixSources?: FixSource[]
 }
 
 export enum ErrorMessageType {
@@ -20,4 +21,9 @@ export enum ErrorMessageType {
   CONCURRENT_CONSECUTIVE = 'CONCURRENT_CONSECUTIVE',
   INCORRECT_OFFENCE = 'INCORRECT_OFFENCE',
   INVALID_OFFENCE = 'INVALID_OFFENCE',
+}
+
+export enum FixSource {
+  ADJUSTMENTS = 'ADJUSTMENTS',
+  ADJUDICATIONS = 'ADJUDICATIONS',
 }
