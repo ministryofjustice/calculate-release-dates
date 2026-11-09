@@ -175,6 +175,7 @@ describe('checkInformationService', () => {
     expect(model.validationErrors).toStrictEqual({
       messageType: ErrorMessageType.VALIDATION,
       messages: [{ text: 'Missing dates' }],
+      fixSources: [],
     })
     expect(telemetry.trackEvent).toHaveBeenCalledWith('validation-failures-requiring-fix', {
       count: 1,
