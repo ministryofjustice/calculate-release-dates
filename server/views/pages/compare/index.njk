@@ -29,7 +29,7 @@
                         <a
                             class="govuk-link gem-c-cards__link"
                             href="/compare/choose">
-                            Perform a bulk comparison
+                            Perform a bulk calculate release dates comparison
                         </a>
                     </h2>
                     <p class="govuk-body gem-c-cards__description">Identify and compare any differences in the release dates calculated by staff, NOMIS and the Calculate release dates service.</p>
@@ -42,12 +42,34 @@
                         <a
                             class="govuk-link gem-c-cards__link"
                             href="/compare/list">
-                            View previous comparisons
+                            View previous calculate release dates comparisons
                         </a>
                     </h2>
                     <p class="govuk-body gem-c-cards__description">Review the results of previously performed calculations.</p>
                 </div>
             </li>
+
+                <li class="gem-c-cards__list-item">
+                    <div class="gem-c-cards__list-item-wrapper">
+                        <h2 class="gem-c-cards__sub-heading govuk-heading-s">
+                            <a class="govuk-link gem-c-cards__link" href="/compare/unused-deductions">
+                                Perform a bulk unused deductions calculation
+                            </a>
+                        </h2>
+                        <p class="govuk-body gem-c-cards__description">Compare existing unused deductions adjustments with the amount calculated by the Calculate release dates service.</p>
+                    </div>
+                </li>
+
+                <li class="gem-c-cards__list-item">
+                    <div class="gem-c-cards__list-item-wrapper">
+                        <h2 class="gem-c-cards__sub-heading govuk-heading-s">
+                            <a class="govuk-link gem-c-cards__link" href="/compare/unused-deductions/list">
+                                View previous unused deductions calculations
+                            </a>
+                        </h2>
+                        <p class="govuk-body gem-c-cards__description">Review the results of previously performed unused deductions calculations.</p>
+                    </div>
+                </li>
 
             {% if allowManualComparison %}
 
@@ -56,7 +78,7 @@
                         <h2 class="gem-c-cards__sub-heading govuk-heading-s">
                             <a class="govuk-link gem-c-cards__link"
                                 href="/compare/manual">
-                                Manual bulk comparison
+                                Manual bulk calculate release dates comparison
                             </a>
                         </h2>
                         <p class="govuk-body gem-c-cards__description">Compare differences in the release dates between Staff, NOMIS and those calculated by the Calculate Release Dates service for NOMIS references provided.</p>
@@ -68,7 +90,7 @@
                         <h2 class="gem-c-cards__sub-heading govuk-heading-s">
                             <a class="govuk-link gem-c-cards__link"
                                href="/compare/manual/list">
-                                View manual comparisons
+                                View manual calculate release dates comparisons
                             </a>
                         </h2>
                         <p class="govuk-body gem-c-cards__description">Review the results of previously performed calculations.</p>

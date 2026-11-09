@@ -2,6 +2,14 @@ import { asSystem, asUser, RestClient } from '@ministryofjustice/hmpps-rest-clie
 import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import {
+  UnusedDeductionsComparisonInput,
+  UnusedDeductionsComparisonOverview,
+  UnusedDeductionsComparisonPage,
+  UnusedDeductionsComparisonOverviewOptions,
+  UnusedDeductionsComparisonPersonDetail,
+  UnusedDeductionsComparisonSummary,
+} from '../@types/calculateReleaseDates/unusedDeductionsComparisonTypes'
+import {
   AdjustmentDto,
   Agency,
   AgencySwitchUpdateResult,
@@ -167,6 +175,52 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
       {
         path: `/manual-calculation/${bookingId}/has-indeterminate-sentences`,
       },
+      asSystem(username),
+    )
+  }
+
+  createUnusedDeductionsComparison(
+    input: UnusedDeductionsComparisonInput,
+    username: string,
+  ): Promise<UnusedDeductionsComparisonSummary> {
+    return this.post<UnusedDeductionsComparisonSummary>(
+      { path: '/unused-deductions/comparison', data: input },
+      asSystem(username),
+    )
+  }
+
+  getUnusedDeductionsComparisons(
+    page: number,
+    size: number,
+    username: string,
+  ): Promise<UnusedDeductionsComparisonPage> {
+    return this.get<UnusedDeductionsComparisonPage>(
+      { path: '/unused-deductions/comparison', query: { page, size } },
+      asSystem(username),
+    )
+  }
+
+  getUnusedDeductionsComparison(
+    reference: string,
+    options: UnusedDeductionsComparisonOverviewOptions,
+    username: string,
+  ): Promise<UnusedDeductionsComparisonOverview> {
+    const query = Object.fromEntries(
+      Object.entries(options).filter(([, value]) => value !== undefined && value !== null && value !== ''),
+    )
+    return this.get<UnusedDeductionsComparisonOverview>(
+      { path: `/unused-deductions/comparison/${reference}`, query },
+      asSystem(username),
+    )
+  }
+
+  getUnusedDeductionsComparisonPerson(
+    reference: string,
+    personReference: string,
+    username: string,
+  ): Promise<UnusedDeductionsComparisonPersonDetail> {
+    return this.get<UnusedDeductionsComparisonPersonDetail>(
+      { path: `/unused-deductions/comparison/${reference}/person/${personReference}` },
       asSystem(username),
     )
   }
