@@ -143,7 +143,7 @@ export const convertValidationToErrorMessages = (validationMessages: ValidationM
   }
 }
 
-export function onlyUnique(value: any, index: any, array: string | any[]) {
+export function onlyUnique(value: FixSource, index: number, array: FixSource[]) {
   return array.indexOf(value) === index
 }
 
