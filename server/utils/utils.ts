@@ -137,9 +137,7 @@ export const convertValidationToErrorMessages = (validationMessages: ValidationM
       }
       return { text: m.message } as ErrorMessage
     }),
-    fixSources: [...new Set<FixSource>(
-      validationMessages.map(f => FixSource[f.fixSource])
-    )],
+    fixSources: [...new Set<FixSource>(validationMessages.map(f => FixSource[f.fixSource]))],
   }
 }
 
