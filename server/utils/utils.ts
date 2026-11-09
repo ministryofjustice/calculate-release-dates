@@ -137,14 +137,10 @@ export const convertValidationToErrorMessages = (validationMessages: ValidationM
       }
       return { text: m.message } as ErrorMessage
     }),
-    fixSources: validationMessages
-      .map(f => FixSource[f.fixSource])
-      .filter(onlyUnique),
+    fixSources: [...new Set<FixSource>(
+      validationMessages.map(f => FixSource[f.fixSource])
+    )],
   }
-}
-
-export function onlyUnique(value: FixSource, index: number, array: FixSource[]) {
-  return array.indexOf(value) === index
 }
 
 export const featureTogglesToConfigItems = (): ConfigItem[] => {
