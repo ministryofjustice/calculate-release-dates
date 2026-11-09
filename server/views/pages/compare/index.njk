@@ -49,6 +49,7 @@
                 </div>
             </li>
 
+            {% if isDigitalSupportUser %}
                 <li class="gem-c-cards__list-item">
                     <div class="gem-c-cards__list-item-wrapper">
                         <h2 class="gem-c-cards__sub-heading govuk-heading-s">
@@ -70,6 +71,7 @@
                         <p class="govuk-body gem-c-cards__description">Review the results of previously performed unused deductions calculations.</p>
                     </div>
                 </li>
+            {% endif %}
 
             {% if allowManualComparison %}
 

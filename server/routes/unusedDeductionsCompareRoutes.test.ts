@@ -25,7 +25,7 @@ const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerS
 beforeEach(() => {
   app = appWithAllRoutes({
     services: { userPermissionsService, comparisonService, prisonerService },
-    userSupplier: () => ({ ...user, caseloadMap: new Map([['MDI', 'Moorland (HMP)']]) }),
+    userSupplier: () => ({ ...user, isDigitalSupportUser: true, caseloadMap: new Map([['MDI', 'Moorland (HMP)']]) }),
   })
   userPermissionsService.allowBulkLoad.mockReturnValue(true)
   userPermissionsService.allowManualComparison.mockReturnValue(true)
