@@ -6,7 +6,6 @@ import {
   featureTogglesToConfigItems,
 } from './utils'
 import config from '../config'
-import { FixSource } from '../types/ErrorMessages'
 
 describe('capitalise name', () => {
   it.each([
