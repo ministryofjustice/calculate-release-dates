@@ -17,7 +17,6 @@ import {
 import { ResultsWithBreakdownAndAdjustments } from '../../@types/calculateReleaseDates/rulesWithExtraAdjustments'
 import ReleaseDateWithAdjustments from '../../@types/calculateReleaseDates/releaseDateWithAdjustments'
 import { ManualEntrySelectedDate, ManualJourneySelectedDate } from '../../types/ManualJourney'
-import AuthorisedRoles from '../../enumerations/authorisedRoles'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -736,7 +735,6 @@ describe('CalculationSummaryController', () => {
         ...stubbedResultsWithBreakdownAndAdjustments,
         context: { ...stubbedResultsWithBreakdownAndAdjustments.context, prisonerId: 'A1234AA' },
       })
-      userRoles.push(AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW)
 
       return request(app)
         .get('/calculation/A1234AA/summary/123456')

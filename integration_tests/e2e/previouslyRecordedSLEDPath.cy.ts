@@ -10,10 +10,7 @@ import PrisonerOverviewPage from '../pages/PrisonerOverviewPage'
 context('End to end user journey with previously recorded SLED found', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn', [
-      AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR,
-      AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW,
-    ])
+    cy.task('stubSignIn', [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR])
     cy.task('stubManageUser')
     cy.task('stubPrisonerSearch')
     cy.task('stubGetUserCaseloads')
