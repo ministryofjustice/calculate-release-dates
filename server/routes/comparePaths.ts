@@ -12,6 +12,11 @@ const comparePaths = {
   COMPARE_MANUAL_RESULT: '/compare/manual/result/:bulkComparisonResultId',
   COMPARE_MANUAL_DETAIL: '/compare/manual/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId',
   COMPARE_MANUAL_DETAIL_JSON: '/compare/manual/result/:bulkComparisonResultId/detail/:bulkComparisonDetailId/json',
+  UNUSED_DEDUCTIONS_INDEX: '/compare/unused-deductions',
+  UNUSED_DEDUCTIONS_LIST: '/compare/unused-deductions/list',
+  UNUSED_DEDUCTIONS_RUN: '/compare/unused-deductions/run',
+  UNUSED_DEDUCTIONS_RESULT: '/compare/unused-deductions/result/:comparisonId',
+  UNUSED_DEDUCTIONS_DETAIL: '/compare/unused-deductions/result/:comparisonId/detail/:personId',
 }
 
 export default comparePaths

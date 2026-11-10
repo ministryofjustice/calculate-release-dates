@@ -22,10 +22,7 @@ context('End to end user journeys for a user with genuine overrides access', () 
 
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn', [
-      AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR,
-      AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW,
-    ])
+    cy.task('stubSignIn', [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR])
     cy.task('stubManageUser')
     cy.task('stubPrisonerSearch')
     cy.task('stubGetUserCaseloads')
