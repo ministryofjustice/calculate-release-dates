@@ -89,6 +89,27 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/unused-deductions/comparison': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List unused deductions comparisons */
+    get: operations['list']
+    put?: never
+    /**
+     * Start an unused deductions comparison
+     * @description Runs for a manual list of prisoners, a single prison or all prisons
+     */
+    post: operations['create']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/scheduled-task/delete-old-preliminary-calculations': {
     parameters: {
       query?: never
@@ -501,6 +522,40 @@ export interface paths {
      * @description Some dates cannot be calculated together, while some dates may require another date to be valid
      */
     get: operations['validateForDatesManualEntry']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/unused-deductions/comparison/{comparisonReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get an unused deductions comparison and the result for each person */
+    get: operations['get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/unused-deductions/comparison/{comparisonReference}/person/{personReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get the detail of one person in an unused deductions comparison, including the adjustment inputs */
+    get: operations['getPerson']
     put?: never
     post?: never
     delete?: never
@@ -1546,6 +1601,17 @@ export interface components {
         | 'CONCURRENT_CONSECUTIVE'
       calculationUnsupported: boolean
       contentType: components['schemas']['ValidationMessageContentType']
+      /**
+       * @description Validation fix source
+       * @enum {string|null}
+       */
+      fixSource?:
+        | 'ADJUSTMENTS'
+        | 'ADJUDICATIONS'
+        | 'FIXED_TERM_RECALLS'
+        | 'FIXED_TERM_RECALLS_14'
+        | 'FIXED_TERM_RECALLS_28'
+        | null
     }
     /**
      * @description The type content for the validation message
@@ -1643,6 +1709,44 @@ export interface components {
       /** Format: int64 */
       unusedDeductions?: number | null
       validationMessages: components['schemas']['ValidationMessage'][]
+    }
+    /** @description Request to run an unused deductions comparison. Provide prisonerIds for a manual list, otherwise a prison code or 'all'. */
+    UnusedDeductionsComparisonInput: {
+      /**
+       * @description A prison code, or 'all' for every prison . Ignored when prisonerIds are provided
+       * @example MDI
+       */
+      prison?: string | null
+      /** @description A manual list of prisoner numbers to compare */
+      prisonerIds?: string[] | null
+    }
+    ComparisonProgress: {
+      /** Format: double */
+      percentageComplete: number
+      /** Format: date-time */
+      expectedCompletionTime?: string | null
+    }
+    UnusedDeductionsComparisonSummary: {
+      comparisonShortReference: string
+      prison?: string | null
+      /** @enum {string} */
+      comparisonType: 'MANUAL' | 'PRISON' | 'ALL_PRISONS'
+      /** @enum {string} */
+      comparisonStatus: 'SETUP' | 'PROCESSING' | 'COMPLETED' | 'ERROR'
+      /** Format: date-time */
+      calculatedAt: string
+      calculatedByUsername: string
+      /** Format: int64 */
+      numberOfMismatches: number
+      /** Format: int64 */
+      numberOfValidationErrors: number
+      /** Format: int64 */
+      numberOfPeopleExpected: number
+      /** Format: int64 */
+      numberOfPeopleCompared: number
+      /** Format: int64 */
+      numberOfPeopleComparisonFailedFor: number
+      comparisonProgress: components['schemas']['ComparisonProgress']
     }
     DeletedPreviousCalculationResult: {
       /** Format: int32 */
@@ -2056,6 +2160,68 @@ export interface components {
       unsupportedCalculationMessages: components['schemas']['ValidationMessage'][]
       unsupportedManualMessages: components['schemas']['ValidationMessage'][]
     }
+    UnusedDeductionsComparisonPage: {
+      content: components['schemas']['UnusedDeductionsComparisonSummary'][]
+      page: components['schemas']['UnusedDeductionsPageInfo']
+    }
+    UnusedDeductionsPageInfo: {
+      /** Format: int32 */
+      number: number
+      /** Format: int32 */
+      size: number
+      /** Format: int64 */
+      totalElements: number
+      /** Format: int32 */
+      totalPages: number
+    }
+    UnusedDeductionsComparisonOverview: {
+      comparison: components['schemas']['UnusedDeductionsComparisonSummary']
+      criteria: {
+        [key: string]: unknown
+      }
+      people: components['schemas']['UnusedDeductionsComparisonPersonSummary'][]
+      page: components['schemas']['UnusedDeductionsPageInfo']
+    }
+    UnusedDeductionsComparisonPersonSummary: {
+      personShortReference: string
+      person: string
+      lastName?: string | null
+      establishment?: string | null
+      /** @enum {string} */
+      outcome: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR'
+      /** Format: int64 */
+      existingUnusedDeductions: number
+      /** Format: int64 */
+      calculatedUnusedDeductions?: number | null
+      /** Format: int64 */
+      custodialDays?: number | null
+      /** Format: int64 */
+      totalDeductions?: number | null
+    }
+    /** @description An adjustment supplied as an input to the unused deductions calculation */
+    UnusedDeductionsAdjustmentInput: {
+      /** Format: uuid */
+      id?: string | null
+      adjustmentType: string
+      source?: string | null
+      /** Format: date */
+      fromDate?: string | null
+      /** Format: date */
+      toDate?: string | null
+      /** Format: int32 */
+      days?: number | null
+      /** Format: int32 */
+      effectiveDays?: number | null
+    }
+    UnusedDeductionsComparisonPersonDetail: {
+      comparison: components['schemas']['UnusedDeductionsComparisonSummary']
+      person: components['schemas']['UnusedDeductionsComparisonPersonSummary']
+      adjustments: components['schemas']['UnusedDeductionsAdjustmentInput'][]
+      validationMessages: components['schemas']['ValidationMessage'][]
+      fatalException?: string | null
+      /** Format: date-time */
+      calculatedAt: string
+    }
     ThingsToDo: {
       prisonerId: string
       thingsToDo: 'CALCULATION_REQUIRED'[]
@@ -2344,12 +2510,6 @@ export interface components {
       description: string
       value: string
     }
-    ComparisonProgress: {
-      /** Format: double */
-      percentageComplete: number
-      /** Format: date-time */
-      expectedCompletionTime?: string | null
-    }
     ComparisonSummary: {
       comparisonShortReference: string
       prison?: string | null
@@ -2568,6 +2728,8 @@ export interface components {
         | 'ERSED_ADJUSTED_TO_MTD'
         | 'ERSED_ADJUSTED_TO_ERS30_COMMENCEMENT'
         | 'ERSED_ADJUSTED_TO_ERS_ZERO_COMMENCEMENT'
+        | 'ERSED_ADJUSTED_FOR_REMAINING_ADAS_POST_ERS_ZERO'
+        | 'ERSED_ERS_ZERO'
         | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_1_COMMENCEMENT'
         | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_2_COMMENCEMENT'
         | 'SDS_STANDARD_RELEASE_APPLIES'
@@ -3577,6 +3739,82 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['UnusedDeductionCalculationResponse']
+        }
+      }
+    }
+  }
+  list: {
+    parameters: {
+      query?: {
+        page?: number
+        size?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonPage']
+        }
+      }
+    }
+  }
+  create: {
+    parameters: {
+      query?: never
+      header: {
+        Authorization: string
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UnusedDeductionsComparisonInput']
+      }
+    }
+    responses: {
+      /** @description The newly created comparison */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonSummary']
+        }
+      }
+      /** @description No prisoners or prison supplied */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonSummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonSummary']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonSummary']
         }
       }
     }
@@ -4716,6 +4954,56 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+    }
+  }
+  get: {
+    parameters: {
+      query?: {
+        outcome?: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR'
+        prisonerId?: string
+        page?: number
+        size?: number
+      }
+      header?: never
+      path: {
+        comparisonReference: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonOverview']
+        }
+      }
+    }
+  }
+  getPerson: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        comparisonReference: string
+        personReference: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonPersonDetail']
         }
       }
     }
