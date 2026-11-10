@@ -155,4 +155,10 @@ export default {
   compareList: {
     pageSize: 10,
   },
+  unusedDeductionsList: {
+    pageSize: 10,
+  },
+  unusedDeductionsResults: {
+    pageSize: 10,
+  },
 }

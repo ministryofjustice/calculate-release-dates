@@ -12,6 +12,7 @@ export default class CompareIndexController implements Controller {
     res.render('pages/compare/index', {
       allowBulkLoad,
       allowManualComparison,
+      isDigitalSupportUser: res.locals.user.isDigitalSupportUser,
     })
   }
 }

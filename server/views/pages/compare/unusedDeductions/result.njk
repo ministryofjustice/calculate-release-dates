@@ -1,0 +1,86 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "moj/components/badge/macro.njk" import mojBadge %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "moj/components/pagination/macro.njk" import mojPagination %}
+{% from "./_breadcrumbs.njk" import unusedDeductionsBreadcrumbs %}
+
+{% set pageTitle = applicationName + " - Unused deductions comparison results" %}
+{% set pageId = "compare" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {{ unusedDeductionsBreadcrumbs([{ text: "Results", href: "/compare/unused-deductions/result/" + comparison.comparisonShortReference }]) }}
+{% endblock %}
+
+{% set outcomeLabels = { MATCH: "Match", MISMATCH: "Mismatch", VALIDATION_ERROR: "Validation error", FATAL_ERROR: "Failed" } %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">Unused deductions comparison results</h1>
+    <p class="govuk-body">
+        {{ 'All prisons' if comparison.comparisonType == 'ALL_PRISONS' else ('Manual list' if comparison.comparisonType == 'MANUAL' else comparison.prison) }}
+        - {{ comparison.calculatedAt | hmppsFormatDate('dd MMMM yyyy') }} by {{ comparison.calculatedByUsername }}
+        {{ mojBadge({ text: comparison.comparisonStatus }) }}
+    </p>
+    {% if comparison.comparisonStatus == 'PROCESSING' %}
+        <p class="govuk-body">{{ comparison.comparisonProgress.percentageComplete | round(0) }}% complete.{% if comparison.comparisonProgress.expectedCompletionTime %} Expected completion time {{ comparison.comparisonProgress.expectedCompletionTime | hmppsFormatDate('dd MMMM yyyy') }} at {{ comparison.comparisonProgress.expectedCompletionTime | hmppsFormatDate('HH:mm') }}{% endif %}</p>
+    {% endif %}
+    <p class="govuk-body">{{ comparison.numberOfMismatches }} mismatches, {{ comparison.numberOfValidationErrors }} validation errors, {{ comparison.numberOfPeopleComparisonFailedFor }} failures from {{ comparison.numberOfPeopleCompared }} of {{ comparison.numberOfPeopleExpected }} people</p>
+
+    <form method="get" class="govuk-!-margin-bottom-6">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-quarter">
+                {{ govukSelect({ id: "outcome", name: "outcome", label: { text: "Outcome" }, items: outcomeItems, value: filters.outcome or "" }) }}
+            </div>
+            <div class="govuk-grid-column-one-quarter">
+                {{ govukInput({ id: "prisonerId", name: "prisonerId", label: { text: "Prisoner number" }, value: filters.prisonerId }) }}
+            </div>
+            <div class="govuk-grid-column-one-quarter">
+                {{ govukButton({ text: "Filter", classes: "govuk-!-margin-top-6" }) }}
+                <a class="govuk-link govuk-!-margin-left-3" href="/compare/unused-deductions/result/{{ comparison.comparisonShortReference }}">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    {% if pagination.results.count == 0 %}
+        {% if filters.outcome or filters.prisonerId %}
+            <p class="govuk-body">No people match the selected filters.</p>
+        {% elif comparison.comparisonStatus == 'COMPLETED' or comparison.comparisonStatus == 'ERROR' %}
+            <p class="govuk-body">No calculable prisoners were found for this comparison.</p>
+        {% else %}
+            <p class="govuk-body">No results yet. Refresh this page to see progress.</p>
+        {% endif %}
+    {% else %}
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Prisoner</th>
+                <th scope="col" class="govuk-table__header">Name</th>
+                <th scope="col" class="govuk-table__header">Establishment</th>
+                <th scope="col" class="govuk-table__header">Outcome</th>
+                <th scope="col" class="govuk-table__header">Existing unused days</th>
+                <th scope="col" class="govuk-table__header">Calculated unused days</th>
+                <th scope="col" class="govuk-table__header">Custodial days</th>
+                <th scope="col" class="govuk-table__header">Total deductions</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            {% for person in overview.people %}
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"><a class="govuk-link" href="/compare/unused-deductions/result/{{ comparison.comparisonShortReference }}/detail/{{ person.personShortReference }}">{{ person.person }}</a></td>
+                    <td class="govuk-table__cell">{{ person.lastName }}</td>
+                    <td class="govuk-table__cell">{{ person.establishment }}</td>
+                    <td class="govuk-table__cell">{{ outcomeLabels[person.outcome] }}</td>
+                    <td class="govuk-table__cell">{{ person.existingUnusedDeductions }}</td>
+                    <td class="govuk-table__cell">{{ person.calculatedUnusedDeductions if person.calculatedUnusedDeductions !== null else '-' }}</td>
+                    <td class="govuk-table__cell">{{ person.custodialDays if person.custodialDays !== null else '-' }}</td>
+                    <td class="govuk-table__cell">{{ person.totalDeductions if person.totalDeductions !== null else '-' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    {{ mojPagination(pagination) }}
+{% endblock %}

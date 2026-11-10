@@ -18,6 +18,13 @@ import {
   ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { components } from '../../server/@types/calculateReleaseDates'
+import {
+  UnusedDeductionsComparisonInput,
+  UnusedDeductionsComparisonOverview,
+  UnusedDeductionsComparisonPage,
+  UnusedDeductionsComparisonPersonDetail,
+  UnusedDeductionsComparisonSummary,
+} from '../../server/@types/calculateReleaseDates/unusedDeductionsComparisonTypes'
 
 type PreviousOverride = components['schemas']['PreviousGenuineOverride']
 type EarlyReleaseTranche =
@@ -976,6 +983,88 @@ export default {
           page: { equalTo: String(opts.page ?? 0) },
           size: { equalTo: String(opts.size ?? 10) },
         },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: opts.response,
+      },
+    })
+  },
+  stubCreateUnusedDeductionsComparison: (opts: {
+    body: UnusedDeductionsComparisonInput
+    response: UnusedDeductionsComparisonSummary
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: '/calculate-release-dates/unused-deductions/comparison',
+        bodyPatterns: [{ equalToJson: opts.body }],
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: opts.response,
+      },
+    })
+  },
+  stubGetUnusedDeductionsComparisons: (opts: {
+    page?: number
+    size?: number
+    response: UnusedDeductionsComparisonPage
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/calculate-release-dates/unused-deductions/comparison',
+        queryParameters: {
+          page: { equalTo: String(opts.page ?? 0) },
+          size: { equalTo: String(opts.size ?? 10) },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: opts.response,
+      },
+    })
+  },
+  stubGetUnusedDeductionsComparison: (opts: {
+    reference: string
+    outcome?: string
+    prisonerId?: string
+    page?: number
+    size?: number
+    response: UnusedDeductionsComparisonOverview
+  }): SuperAgentRequest => {
+    const queryParameters: Record<string, { equalTo: string }> = {
+      page: { equalTo: String(opts.page ?? 0) },
+      size: { equalTo: String(opts.size ?? 10) },
+    }
+    if (opts.outcome) queryParameters.outcome = { equalTo: opts.outcome }
+    if (opts.prisonerId) queryParameters.prisonerId = { equalTo: opts.prisonerId }
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/calculate-release-dates/unused-deductions/comparison/${opts.reference}`,
+        queryParameters,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: opts.response,
+      },
+    })
+  },
+  stubGetUnusedDeductionsComparisonPerson: (opts: {
+    reference: string
+    personReference: string
+    response: UnusedDeductionsComparisonPersonDetail
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/calculate-release-dates/unused-deductions/comparison/${opts.reference}/person/${opts.personReference}`,
       },
       response: {
         status: 200,
