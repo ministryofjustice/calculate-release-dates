@@ -44,7 +44,9 @@
     </form>
 
     {% if pagination.results.count == 0 %}
-        {% if filters.outcome or filters.prisonerId %}
+        {% if defaultMismatchView and comparison.numberOfPeopleCompared > 0 %}
+            <p class="govuk-body">No mismatches found. Select "All outcomes" to see every result.</p>
+        {% elif not defaultMismatchView and (filters.outcome or filters.prisonerId) %}
             <p class="govuk-body">No people match the selected filters.</p>
         {% elif comparison.comparisonStatus == 'COMPLETED' or comparison.comparisonStatus == 'ERROR' %}
             <p class="govuk-body">No calculable prisoners were found for this comparison.</p>
