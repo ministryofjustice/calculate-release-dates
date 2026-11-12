@@ -40,9 +40,12 @@ describe('Unused deductions comparison API client', () => {
 
   it('lists comparisons a page at a time', async () => {
     const page = { content: [{ comparisonShortReference: 'abc12345' }], page: { number: 1, size: 10 } }
-    fakeApi.get('/unused-deductions/comparison').query({ page: 1, size: 10 }).reply(200, page)
+    fakeApi
+      .get('/unused-deductions/comparison')
+      .query({ page: 1, size: 10, calculatedByCurrentUser: true })
+      .reply(200, page)
 
-    const result = await client.getUnusedDeductionsComparisons(1, 10, 'user1')
+    const result = await client.getUnusedDeductionsComparisons(1, 10, 'user1', true)
 
     expect(result).toEqual(page)
     expect(nock.isDone()).toBe(true)

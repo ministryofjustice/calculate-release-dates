@@ -175,6 +175,18 @@ context('Bulk unused deductions comparison', () => {
     page.resultsText().should('contain.text', 'Showing 11 to 11 of 11 total runs')
   })
 
+  it("lists runs by other users on the other's comparisons tab", () => {
+    cy.task('stubGetUnusedDeductionsComparisons', {
+      calculatedByCurrentUser: false,
+      response: { content: [summary], page: { number: 0, size: 10, totalElements: 1, totalPages: 1 } },
+    })
+    cy.signIn({ failOnStatusCode: false, returnUrl: '/compare/unused-deductions/list/others' })
+
+    const page = Page.verifyOnPage(UnusedDeductionsPage)
+    page.listItems().should('have.length', 1)
+    cy.contains('h2.govuk-heading-l', "Other's Comparisons").should('exist')
+  })
+
   it('says when there are no previous runs', () => {
     cy.task('stubGetUnusedDeductionsComparisons', {
       response: { content: [], page: { number: 0, size: 10, totalElements: 0, totalPages: 0 } },
@@ -195,13 +207,15 @@ context('Bulk unused deductions comparison', () => {
     cy.signIn({ failOnStatusCode: false, returnUrl: '/compare/unused-deductions/result/abc12345' })
 
     const page = Page.verifyOnPage(UnusedDeductionsPage)
-    page.resultRows().should('have.length', 2)
-    page.outcomeSelect().select('MISMATCH')
-    page.filterButton().click()
-
-    cy.url().should('include', 'outcome=MISMATCH')
+    cy.url().should('not.include', 'outcome=')
     page.resultRows().should('have.length', 1)
     page.resultRows().first().should('contain.text', 'A1234BC')
+
+    page.outcomeSelect().select('All outcomes')
+    page.filterButton().click()
+
+    cy.url().should('include', 'outcome=')
+    page.resultRows().should('have.length', 2)
   })
 
   it('shows the adjustments used for a person', () => {

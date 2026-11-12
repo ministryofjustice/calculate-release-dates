@@ -17,7 +17,9 @@ export default class UnusedDeductionsResultController implements Controller {
   GET = async (req: Request, res: Response): Promise<void> => {
     const { comparisonId } = req.params
     const { pageSize } = config.unusedDeductionsResults
-    const outcome = OUTCOMES.find(o => o.value === req.query.outcome)?.value
+    // No outcome param defaults to mismatches; an explicit empty value means all outcomes
+    const outcomeParam = req.query.outcome === undefined ? 'MISMATCH' : req.query.outcome
+    const outcome = OUTCOMES.find(o => o.value === outcomeParam)?.value
     const prisonerId = typeof req.query.prisonerId === 'string' ? req.query.prisonerId.trim() || undefined : undefined
     const requestedPage = parsePage(req.query.page)
     const overview = await this.comparisonService.getUnusedDeductionsComparison(
@@ -28,7 +30,7 @@ export default class UnusedDeductionsResultController implements Controller {
 
     const hrefFor = (target: number) => {
       const query = new URLSearchParams()
-      if (outcome) query.set('outcome', outcome)
+      query.set('outcome', outcome ?? '')
       if (prisonerId) query.set('prisonerId', prisonerId)
       query.set('page', `${target}`)
       return `/compare/unused-deductions/result/${comparisonId}?${query.toString()}`
@@ -46,6 +48,7 @@ export default class UnusedDeductionsResultController implements Controller {
       overview,
       comparison: overview.comparison,
       filters: { outcome, prisonerId },
+      defaultMismatchView: req.query.outcome === undefined && !prisonerId,
       outcomeItems: [{ value: '', text: 'All outcomes' }, ...OUTCOMES],
       pagination,
     })
