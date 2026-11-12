@@ -96,7 +96,10 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    /** List unused deductions comparisons */
+    /**
+     * List unused deductions comparisons
+     * @description If calculatedByCurrentUser is true only comparisons calculated by the current user are returned, if false only those calculated by other users. If omitted all are returned
+     */
     get: operations['list']
     put?: never
     /**
@@ -3742,6 +3745,7 @@ export interface operations {
       query?: {
         page?: number
         size?: number
+        calculatedByCurrentUser?: boolean
       }
       header?: never
       path?: never

@@ -60,8 +60,14 @@ export default class ComparisonService {
     page: number,
     size: number,
     username: string,
+    calculatedByCurrentUser: boolean,
   ): Promise<UnusedDeductionsComparisonPage> {
-    return this.calculateReleaseDatesApiClient.getUnusedDeductionsComparisons(page, size, username)
+    return this.calculateReleaseDatesApiClient.getUnusedDeductionsComparisons(
+      page,
+      size,
+      username,
+      calculatedByCurrentUser,
+    )
   }
 
   async getUnusedDeductionsComparison(
