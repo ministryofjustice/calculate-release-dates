@@ -160,6 +160,28 @@ describe('Unused deductions comparison routes', () => {
           0,
           config.unusedDeductionsList.pageSize,
           'user1',
+          true,
+        )
+      })
+  })
+
+  it('GET /compare/unused-deductions/list/others shows other users runs', () => {
+    comparisonService.getUnusedDeductionsComparisons.mockResolvedValue({
+      content: [summary],
+      page: { number: 1, size: 10, totalElements: 25, totalPages: 3 },
+    })
+
+    return request(app)
+      .get('/compare/unused-deductions/list/others?page=2')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Other&#39;s Comparisons')
+        expect(res.text).toContain('href="/compare/unused-deductions/list/others?page=3"')
+        expect(comparisonService.getUnusedDeductionsComparisons).toHaveBeenCalledWith(
+          1,
+          config.unusedDeductionsList.pageSize,
+          'user1',
+          false,
         )
       })
   })
@@ -192,6 +214,7 @@ describe('Unused deductions comparison routes', () => {
           1,
           config.unusedDeductionsList.pageSize,
           'user1',
+          true,
         )
         expect(res.text).toContain('href="/compare/unused-deductions/list?page=1"')
         expect(res.text).toContain('href="/compare/unused-deductions/list?page=3"')
@@ -213,6 +236,7 @@ describe('Unused deductions comparison routes', () => {
           0,
           config.unusedDeductionsList.pageSize,
           'user1',
+          true,
         )
       })
   })
@@ -293,7 +317,7 @@ describe('Unused deductions comparison routes', () => {
         expect(res.text).toContain('>183<')
         expect(comparisonService.getUnusedDeductionsComparison).toHaveBeenCalledWith(
           'abc12345',
-          { outcome: undefined, prisonerId: undefined, page: 0, size: config.unusedDeductionsResults.pageSize },
+          { outcome: 'MISMATCH', prisonerId: undefined, page: 0, size: config.unusedDeductionsResults.pageSize },
           'user1',
         )
       })
