@@ -603,8 +603,8 @@ describe('GET /:nomsId/overview', () => {
           source: 'CRDS',
           dates: [],
           calculatedByUsername: 'user1',
-          calculatedByDisplayName: 'Bob Smith',
-          establishment: 'HMP ABC',
+          calculatedByDisplayName: "Bob O'Hare",
+          establishment: 'Kirkham (HMP & YOI)',
           calculationType: 'CALCULATED',
         },
         recentCalculations: [],
@@ -622,7 +622,9 @@ describe('GET /:nomsId/overview', () => {
           const $ = cheerio.load(res.text)
           expect($('dt:contains("Calculation date")').next().text().trim()).toStrictEqual('05 March 2024')
           expect($('dt:contains("Calculation reason")').next().text().trim()).toStrictEqual('New Sentence')
-          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual('Bob Smith at HMP ABC')
+          expect($('dt:contains("Calculated by")').next().text().trim()).toStrictEqual(
+            "Bob O'Hare at Kirkham (HMP & YOI)",
+          )
           expect($('dt:contains("Last checked by")').next().text().trim()).toStrictEqual('Not checked')
           expect($('dt:contains("Source")').next().text().trim()).toStrictEqual('Calculate release dates service')
         })
@@ -814,7 +816,7 @@ describe('GET /:nomsId/overview', () => {
             crdsCalculationId: 123,
             reasonDescription: 'Initial calculation',
             calculatedByDisplayName: 'Fred',
-            establishmentCalculatedAtDescription: 'Kirkham',
+            establishmentCalculatedAtDescription: 'Kirkham (HMP & YOI)',
           },
           {
             calculationDate: '2025-05-23',
@@ -822,7 +824,7 @@ describe('GET /:nomsId/overview', () => {
             calculationType: 'MANUAL_DETERMINATE',
             crdsCalculationId: 456,
             reasonDescription: '14 day check',
-            calculatedByDisplayName: 'Fred',
+            calculatedByDisplayName: "Fred O'Hare",
           },
           {
             calculationDate: '2025-05-13',
@@ -860,7 +862,7 @@ describe('GET /:nomsId/overview', () => {
             '/view/A1234AA/calculation-history/CRDS/123/overview',
           )
           expect(firstRowCells.eq(1).text().trim()).toStrictEqual('Initial calculation')
-          expect(firstRowCells.eq(2).text().trim()).toStrictEqual('Fred at Kirkham')
+          expect(firstRowCells.eq(2).text().trim()).toStrictEqual('Fred at Kirkham (HMP & YOI)')
           expect(firstRowCells.eq(3).text().trim()).toStrictEqual('Calculate release dates service')
           const secondRowCells = $(calcHistoryTableRows).eq(1).children('td')
           expect(secondRowCells.eq(0).text().trim()).toStrictEqual('23 May 2025')
@@ -868,7 +870,7 @@ describe('GET /:nomsId/overview', () => {
             '/view/A1234AA/calculation-history/CRDS/456/overview',
           )
           expect(secondRowCells.eq(1).text().trim()).toStrictEqual('14 day check')
-          expect(secondRowCells.eq(2).text().trim()).toStrictEqual('Fred')
+          expect(secondRowCells.eq(2).text().trim()).toStrictEqual("Fred O'Hare")
           expect(secondRowCells.eq(3).html().trim()).toStrictEqual(
             'Paper calculation<br><span class="govuk-!-font-size-16 govuk-hint">Entered in the Calculate release dates service</span>',
           )

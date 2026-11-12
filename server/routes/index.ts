@@ -43,6 +43,11 @@ import CompareDetailController from './compare/CompareDetailController'
 import CompareJsonController from './compare/CompareJsonController'
 import CompareManualDetailController from './compare/CompareManualDetailController'
 import CompareManualJsonController from './compare/CompareManualJsonController'
+import UnusedDeductionsIndexController from './compare/UnusedDeductionsIndexController'
+import UnusedDeductionsListController from './compare/UnusedDeductionsListController'
+import UnusedDeductionsRunController from './compare/UnusedDeductionsRunController'
+import UnusedDeductionsResultController from './compare/UnusedDeductionsResultController'
+import UnusedDeductionsDetailController from './compare/UnusedDeductionsDetailController'
 import CompareManualCalculationController from './compare/CompareManualCalculationController'
 import CompareSubmitManualCalculationController from './compare/CompareSubmitManualCalculationController'
 import SecondCheckController from './calculation-reason/secondCheckController'
@@ -113,6 +118,12 @@ export default function Index({
   const compareJsonController = new CompareJsonController(comparisonService, calculateReleaseDatesService)
   const compareManualDetailController = new CompareManualDetailController(comparisonService)
   const compareManualJsonController = new CompareManualJsonController(comparisonService, calculateReleaseDatesService)
+  const unusedDeductionsIndexController = new UnusedDeductionsIndexController(prisonerService)
+  const unusedDeductionsListController = new UnusedDeductionsListController(comparisonService, 'your')
+  const unusedDeductionsOtherListController = new UnusedDeductionsListController(comparisonService, 'others')
+  const unusedDeductionsRunController = new UnusedDeductionsRunController(comparisonService, prisonerService)
+  const unusedDeductionsResultController = new UnusedDeductionsResultController(comparisonService)
+  const unusedDeductionsDetailController = new UnusedDeductionsDetailController(comparisonService)
   const compareManualCalculationController = new CompareManualCalculationController()
   const compareSubmitManualCalculationController = new CompareSubmitManualCalculationController(comparisonService)
 
@@ -390,6 +401,12 @@ export default function Index({
     route({ path: comparePaths.COMPARE_MANUAL_DETAIL, controller: compareManualDetailController })
     route({ path: comparePaths.COMPARE_MANUAL_DETAIL_JSON, controller: compareManualJsonController })
     route({ path: comparePaths.COMPARE_MANUAL, controller: compareSubmitManualCalculationController })
+    route({ path: comparePaths.UNUSED_DEDUCTIONS_INDEX, controller: unusedDeductionsIndexController })
+    route({ path: comparePaths.UNUSED_DEDUCTIONS_LIST, controller: unusedDeductionsListController })
+    route({ path: comparePaths.UNUSED_DEDUCTIONS_LIST_OTHERS, controller: unusedDeductionsOtherListController })
+    route({ path: comparePaths.UNUSED_DEDUCTIONS_RUN, controller: unusedDeductionsRunController })
+    route({ path: comparePaths.UNUSED_DEDUCTIONS_RESULT, controller: unusedDeductionsResultController })
+    route({ path: comparePaths.UNUSED_DEDUCTIONS_DETAIL, controller: unusedDeductionsDetailController })
   }
 
   const thingsToDoInterceptRouter = () => {

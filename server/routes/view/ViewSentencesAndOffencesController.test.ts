@@ -259,6 +259,7 @@ const stubbedResultsWithBreakdownAndAdjustments: ResultsWithBreakdownAndAdjustme
   approvedDates: {},
   allocatedTranches: [],
   secondCheckDetails: null,
+  hasIndeterminateSentences: false,
 }
 
 const stubbedAdjustments = {

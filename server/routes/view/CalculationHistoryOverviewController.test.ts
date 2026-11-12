@@ -400,7 +400,7 @@ describe('View calculation history overview', () => {
           })
       },
     )
-    it('Should show the print notification slip and second check buttons if this is the latest CRDS calculation', () => {
+    it('Should show the print notification slip and second check buttons if this is the latest CRDS calculation and there are no indeterminate sentences', () => {
       calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue(stubbedDetailedCalculationResults)
       calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
       prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
@@ -415,6 +415,25 @@ describe('View calculation history overview', () => {
           expect(printButton.eq(0).attr('href')).toStrictEqual(
             '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=history',
           )
+          const secondCheckButton = $('[data-qa=record-counter-check]')
+          expect(secondCheckButton).toHaveLength(1)
+          expect(secondCheckButton.eq(0).attr('href')).toStrictEqual('/calculation/A1234AA/secondCheck')
+        })
+    })
+    it('Should show only show the second check button and not print notification slip if this is the latest CRDS calculation and there are some indeterminate sentences', () => {
+      calculateReleaseDatesService.getDetailedCalculationResults.mockResolvedValue({
+        ...stubbedDetailedCalculationResults,
+        hasIndeterminateSentences: true,
+      })
+      calculateReleaseDatesService.getCalculationHistoryPage.mockResolvedValue(stubbedFullPageOfCalculationHistory)
+      prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+      return request(app)
+        .get('/view/A1234AA/calculation-history/CRDS/123456/overview')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-qa=print-notification-slip]')).toHaveLength(0)
           const secondCheckButton = $('[data-qa=record-counter-check]')
           expect(secondCheckButton).toHaveLength(1)
           expect(secondCheckButton.eq(0).attr('href')).toStrictEqual('/calculation/A1234AA/secondCheck')
@@ -883,6 +902,7 @@ const stubbedDetailedCalculationResults: DetailedCalculationResults = {
   },
   approvedDates: {},
   allocatedTranches: [],
+  hasIndeterminateSentences: false,
 }
 
 const stubbedFullPageOfCalculationHistory: HistoricCalculationSummaryPage = {

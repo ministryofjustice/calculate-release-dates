@@ -89,6 +89,30 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/unused-deductions/comparison': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List unused deductions comparisons
+     * @description If calculatedByCurrentUser is true only comparisons calculated by the current user are returned, if false only those calculated by other users. If omitted all are returned
+     */
+    get: operations['list']
+    put?: never
+    /**
+     * Start an unused deductions comparison
+     * @description Runs for a manual list of prisoners, a single prison or all prisons
+     */
+    post: operations['create']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/scheduled-task/delete-old-preliminary-calculations': {
     parameters: {
       query?: never
@@ -100,9 +124,29 @@ export interface paths {
     put?: never
     /**
      * Delete preliminary calculations older than the configured amount
-     * @description An API that can only be called locally within an environment to allow it to be triggered by a cron job. It will delete preliminary calculations that are over 2 years old and a maximum of 2000 at a time
+     * @description An API that can only be called locally within an environment to allow it to be triggered by a cron job. It will delete preliminary calculations that are over 2 years old and a maximum of 10000 at a time
      */
     post: operations['deleteOldPreliminaryCalculations']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/scheduled-task/delete-old-bulk-comparisons': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Delete old bulk comparisons up to the maximum number of items or a single comparison
+     * @description An API that can only be called locally within an environment to allow it to be triggered by a cron job. It will delete bulk comparisons older than the specified number of business days while always keeping the latest 2. We take at least 10000 comparison people to delete at a time which may be one or more comparisons depending on if they were manual or not.
+     */
+    post: operations['deleteOldBulkComparison']
     delete?: never
     options?: never
     head?: never
@@ -481,6 +525,40 @@ export interface paths {
      * @description Some dates cannot be calculated together, while some dates may require another date to be valid
      */
     get: operations['validateForDatesManualEntry']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/unused-deductions/comparison/{comparisonReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get an unused deductions comparison and the result for each person */
+    get: operations['get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/unused-deductions/comparison/{comparisonReference}/person/{personReference}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get the detail of one person in an unused deductions comparison, including the adjustment inputs */
+    get: operations['getPerson']
     put?: never
     post?: never
     delete?: never
@@ -1278,7 +1356,7 @@ export interface paths {
      * Get adjustments for a calculationRequestId
      * @description This endpoint will return the adjustments based on a calculationRequestId
      */
-    get: operations['getAdjustmentsForCalculationRequest']
+    get: operations['getAdjustments']
     put?: never
     post?: never
     delete?: never
@@ -1323,26 +1401,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/booking-and-sentence-adjustments/{bookingId}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get booking and sentence adjustments
-     * @description This endpoint will return a response model which shows booking and sentence adjustments. It will notify if there are new adjustments since last calculation
-     */
-    get: operations['getBookingAndSentenceAdjustments']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/approved-dates/{prisonerId}/inputs': {
     parameters: {
       query?: never
@@ -1374,7 +1432,7 @@ export interface paths {
      * Get adjustments
      * @description This endpoint will return a response model which shows adjustments. It will notify if there are new adjustments since last calculation
      */
-    get: operations['getAdjustments']
+    get: operations['getAdjustments_1']
     put?: never
     post?: never
     delete?: never
@@ -1530,6 +1588,7 @@ export interface components {
         | 'PROGRESSION_TRANCHE_ONE_ALLOCATION'
         | 'PROGRESSION_MODEL_SCHEDULE_EXCLUSION'
         | 'INVALID_NOMIS_OFFENCE_CODE'
+        | 'CASE_NOT_FROM_ENGLISH_OR_WELSH_COURT'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1545,6 +1604,11 @@ export interface components {
         | 'CONCURRENT_CONSECUTIVE'
       calculationUnsupported: boolean
       contentType: components['schemas']['ValidationMessageContentType']
+      /**
+       * @description Validation fix source
+       * @enum {string|null}
+       */
+      fixSource?: 'ADJUSTMENTS' | 'ADJUDICATIONS' | null
     }
     /**
      * @description The type content for the validation message
@@ -1643,10 +1707,54 @@ export interface components {
       unusedDeductions?: number | null
       validationMessages: components['schemas']['ValidationMessage'][]
     }
+    /** @description Request to run an unused deductions comparison. Provide prisonerIds for a manual list, otherwise a prison code or 'all'. */
+    UnusedDeductionsComparisonInput: {
+      /**
+       * @description A prison code, or 'all' for every prison . Ignored when prisonerIds are provided
+       * @example MDI
+       */
+      prison?: string | null
+      /** @description A manual list of prisoner numbers to compare */
+      prisonerIds?: string[] | null
+    }
+    ComparisonProgress: {
+      /** Format: double */
+      percentageComplete: number
+      /** Format: date-time */
+      expectedCompletionTime?: string | null
+    }
+    UnusedDeductionsComparisonSummary: {
+      comparisonShortReference: string
+      prison?: string | null
+      /** @enum {string} */
+      comparisonType: 'MANUAL' | 'PRISON' | 'ALL_PRISONS'
+      /** @enum {string} */
+      comparisonStatus: 'SETUP' | 'PROCESSING' | 'COMPLETED' | 'ERROR'
+      /** Format: date-time */
+      calculatedAt: string
+      calculatedByUsername: string
+      /** Format: int64 */
+      numberOfMismatches: number
+      /** Format: int64 */
+      numberOfValidationErrors: number
+      /** Format: int64 */
+      numberOfPeopleExpected: number
+      /** Format: int64 */
+      numberOfPeopleCompared: number
+      /** Format: int64 */
+      numberOfPeopleComparisonFailedFor: number
+      comparisonProgress: components['schemas']['ComparisonProgress']
+    }
     DeletedPreviousCalculationResult: {
       /** Format: int32 */
       numberFound: number
       /** Format: int32 */
+      numberDeletedSuccessfully: number
+    }
+    DeletedBulkComparisonsResult: {
+      /** Format: int64 */
+      numberFound: number
+      /** Format: int64 */
       numberDeletedSuccessfully: number
     }
     RecordARecallRequest: {
@@ -2049,6 +2157,68 @@ export interface components {
       unsupportedCalculationMessages: components['schemas']['ValidationMessage'][]
       unsupportedManualMessages: components['schemas']['ValidationMessage'][]
     }
+    UnusedDeductionsComparisonPage: {
+      content: components['schemas']['UnusedDeductionsComparisonSummary'][]
+      page: components['schemas']['UnusedDeductionsPageInfo']
+    }
+    UnusedDeductionsPageInfo: {
+      /** Format: int32 */
+      number: number
+      /** Format: int32 */
+      size: number
+      /** Format: int64 */
+      totalElements: number
+      /** Format: int32 */
+      totalPages: number
+    }
+    UnusedDeductionsComparisonOverview: {
+      comparison: components['schemas']['UnusedDeductionsComparisonSummary']
+      criteria: {
+        [key: string]: unknown
+      }
+      people: components['schemas']['UnusedDeductionsComparisonPersonSummary'][]
+      page: components['schemas']['UnusedDeductionsPageInfo']
+    }
+    UnusedDeductionsComparisonPersonSummary: {
+      personShortReference: string
+      person: string
+      lastName?: string | null
+      establishment?: string | null
+      /** @enum {string} */
+      outcome: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR'
+      /** Format: int64 */
+      existingUnusedDeductions: number
+      /** Format: int64 */
+      calculatedUnusedDeductions?: number | null
+      /** Format: int64 */
+      custodialDays?: number | null
+      /** Format: int64 */
+      totalDeductions?: number | null
+    }
+    /** @description An adjustment supplied as an input to the unused deductions calculation */
+    UnusedDeductionsAdjustmentInput: {
+      /** Format: uuid */
+      id?: string | null
+      adjustmentType: string
+      source?: string | null
+      /** Format: date */
+      fromDate?: string | null
+      /** Format: date */
+      toDate?: string | null
+      /** Format: int32 */
+      days?: number | null
+      /** Format: int32 */
+      effectiveDays?: number | null
+    }
+    UnusedDeductionsComparisonPersonDetail: {
+      comparison: components['schemas']['UnusedDeductionsComparisonSummary']
+      person: components['schemas']['UnusedDeductionsComparisonPersonSummary']
+      adjustments: components['schemas']['UnusedDeductionsAdjustmentInput'][]
+      validationMessages: components['schemas']['ValidationMessage'][]
+      fatalException?: string | null
+      /** Format: date-time */
+      calculatedAt: string
+    }
     ThingsToDo: {
       prisonerId: string
       thingsToDo: 'CALCULATION_REQUIRED'[]
@@ -2337,12 +2507,6 @@ export interface components {
       description: string
       value: string
     }
-    ComparisonProgress: {
-      /** Format: double */
-      percentageComplete: number
-      /** Format: date-time */
-      expectedCompletionTime?: string | null
-    }
     ComparisonSummary: {
       comparisonShortReference: string
       prison?: string | null
@@ -2560,6 +2724,9 @@ export interface components {
         | 'ERSED_BEFORE_SENTENCE_DATE'
         | 'ERSED_ADJUSTED_TO_MTD'
         | 'ERSED_ADJUSTED_TO_ERS30_COMMENCEMENT'
+        | 'ERSED_ADJUSTED_TO_ERS_ZERO_COMMENCEMENT'
+        | 'ERSED_ADJUSTED_FOR_REMAINING_ADAS_POST_ERS_ZERO'
+        | 'ERSED_ERS_ZERO'
         | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_1_COMMENCEMENT'
         | 'SDS_EARLY_RELEASE_ADJUSTED_TO_TRANCHE_2_COMMENCEMENT'
         | 'SDS_STANDARD_RELEASE_APPLIES'
@@ -2858,17 +3025,17 @@ export interface components {
     }
     PageMetadata: {
       /** Format: int64 */
-      size?: number
+      size: number
       /** Format: int64 */
-      number?: number
+      number: number
       /** Format: int64 */
-      totalElements?: number
+      totalElements: number
       /** Format: int64 */
-      totalPages?: number
+      totalPages: number
     }
     PagedModelComparisonSummary: {
-      content?: components['schemas']['ComparisonSummary'][]
-      page?: components['schemas']['PageMetadata']
+      content: components['schemas']['ComparisonSummary'][]
+      page: components['schemas']['PageMetadata']
     }
     HistoricCalculationSummary: {
       /** Format: date-time */
@@ -3258,48 +3425,7 @@ export interface components {
         | null
       allocatedTranches: components['schemas']['AllocatedTranche'][]
       usedPreviouslyRecordedSLED?: components['schemas']['PreviouslyRecordedSLED'] | null
-    }
-    BookingAdjustment: {
-      active: boolean
-      /** Format: date */
-      fromDate: string
-      /** Format: date */
-      toDate?: string | null
-      /** Format: int32 */
-      numberOfDays: number
-      /** @enum {string} */
-      type:
-        | 'ADDITIONAL_DAYS_AWARDED'
-        | 'LAWFULLY_AT_LARGE'
-        | 'RESTORED_ADDITIONAL_DAYS_AWARDED'
-        | 'SPECIAL_REMISSION'
-        | 'UNLAWFULLY_AT_LARGE'
-    }
-    BookingAndSentenceAdjustments: {
-      bookingAdjustments: components['schemas']['BookingAdjustment'][]
-      sentenceAdjustments: components['schemas']['SentenceAdjustment'][]
-    }
-    SentenceAdjustment: {
-      /** Format: int32 */
-      sentenceSequence: number
-      active: boolean
-      /** Format: date */
-      fromDate?: string | null
-      /** Format: date */
-      toDate?: string | null
-      /** Format: int32 */
-      numberOfDays: number
-      /** @enum {string} */
-      type:
-        | 'RECALL_SENTENCE_REMAND'
-        | 'RECALL_SENTENCE_TAGGED_BAIL'
-        | 'REMAND'
-        | 'TAGGED_BAIL'
-        | 'UNUSED_REMAND'
-        | 'TIME_SPENT_IN_CUSTODY_ABROAD'
-        | 'TIME_SPENT_AS_AN_APPEAL_APPLICANT'
-      /** Format: int64 */
-      bookingId?: number | null
+      hasIndeterminateSentences: boolean
     }
     CalculationReason: {
       /** Format: int64 */
@@ -3335,50 +3461,6 @@ export interface components {
        * @description The total number of items across all pages
        */
       totalItems: number
-    }
-    AnalysedBookingAdjustment: {
-      active: boolean
-      /** Format: date */
-      fromDate: string
-      /** Format: date */
-      toDate?: string | null
-      /** Format: int32 */
-      numberOfDays: number
-      /** @enum {string} */
-      type:
-        | 'ADDITIONAL_DAYS_AWARDED'
-        | 'LAWFULLY_AT_LARGE'
-        | 'RESTORED_ADDITIONAL_DAYS_AWARDED'
-        | 'SPECIAL_REMISSION'
-        | 'UNLAWFULLY_AT_LARGE'
-      /** @enum {string} */
-      analysisResult: 'NEW' | 'SAME'
-    }
-    AnalysedBookingAndSentenceAdjustments: {
-      bookingAdjustments: components['schemas']['AnalysedBookingAdjustment'][]
-      sentenceAdjustments: components['schemas']['AnalysedSentenceAdjustment'][]
-    }
-    AnalysedSentenceAdjustment: {
-      /** Format: int32 */
-      sentenceSequence: number
-      active: boolean
-      /** Format: date */
-      fromDate?: string | null
-      /** Format: date */
-      toDate?: string | null
-      /** Format: int32 */
-      numberOfDays: number
-      /** @enum {string} */
-      type:
-        | 'RECALL_SENTENCE_REMAND'
-        | 'RECALL_SENTENCE_TAGGED_BAIL'
-        | 'REMAND'
-        | 'TAGGED_BAIL'
-        | 'UNUSED_REMAND'
-        | 'TIME_SPENT_IN_CUSTODY_ABROAD'
-        | 'TIME_SPENT_AS_AN_APPEAL_APPLICANT'
-      /** @enum {string} */
-      analysisResult: 'NEW' | 'SAME'
     }
     ApprovedDate: {
       /** @enum {string} */
@@ -3658,6 +3740,83 @@ export interface operations {
       }
     }
   }
+  list: {
+    parameters: {
+      query?: {
+        page?: number
+        size?: number
+        calculatedByCurrentUser?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonPage']
+        }
+      }
+    }
+  }
+  create: {
+    parameters: {
+      query?: never
+      header: {
+        Authorization: string
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UnusedDeductionsComparisonInput']
+      }
+    }
+    responses: {
+      /** @description The newly created comparison */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonSummary']
+        }
+      }
+      /** @description No prisoners or prison supplied */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonSummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonSummary']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonSummary']
+        }
+      }
+    }
+  }
   deleteOldPreliminaryCalculations: {
     parameters: {
       query?: never
@@ -3692,6 +3851,44 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['DeletedPreviousCalculationResult']
+        }
+      }
+    }
+  }
+  deleteOldBulkComparison: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The task was processed and a count of deleted comparison persons returned */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeletedBulkComparisonsResult']
+        }
+      }
+      /** @description Unauthorised, can only be called by trusted services within the namespace and not through ingress */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeletedBulkComparisonsResult']
+        }
+      }
+      /** @description Couldn't find the requested prisoner */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeletedBulkComparisonsResult']
         }
       }
     }
@@ -4755,6 +4952,56 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ValidationMessage'][]
+        }
+      }
+    }
+  }
+  get: {
+    parameters: {
+      query?: {
+        outcome?: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR'
+        prisonerId?: string
+        page?: number
+        size?: number
+      }
+      header?: never
+      path: {
+        comparisonReference: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonOverview']
+        }
+      }
+    }
+  }
+  getPerson: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        comparisonReference: string
+        personReference: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnusedDeductionsComparisonPersonDetail']
         }
       }
     }
@@ -6565,7 +6812,7 @@ export interface operations {
       }
     }
   }
-  getAdjustmentsForCalculationRequest: {
+  getAdjustments: {
     parameters: {
       query?: never
       header?: never
@@ -6586,7 +6833,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BookingAndSentenceAdjustments']
+          'application/json': components['schemas']['AdjustmentDto'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -6595,7 +6842,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BookingAndSentenceAdjustments']
+          'application/json': components['schemas']['AdjustmentDto'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
@@ -6604,7 +6851,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BookingAndSentenceAdjustments']
+          'application/json': components['schemas']['AdjustmentDto'][]
         }
       }
       /** @description No calculation exists for this calculationRequestId */
@@ -6613,7 +6860,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BookingAndSentenceAdjustments']
+          'application/json': components['schemas']['AdjustmentDto'][]
         }
       }
     }
@@ -6729,46 +6976,6 @@ export interface operations {
       }
     }
   }
-  getBookingAndSentenceAdjustments: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        bookingId: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Returns a List<AnalysedBookingAndSentenceAdjustments */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['AnalysedBookingAndSentenceAdjustments']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['AnalysedBookingAndSentenceAdjustments']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['AnalysedBookingAndSentenceAdjustments']
-        }
-      }
-    }
-  }
   getInputsForGenuineOverrideForCalculation_1: {
     parameters: {
       query?: never
@@ -6818,7 +7025,7 @@ export interface operations {
       }
     }
   }
-  getAdjustments: {
+  getAdjustments_1: {
     parameters: {
       query?: never
       header?: never
