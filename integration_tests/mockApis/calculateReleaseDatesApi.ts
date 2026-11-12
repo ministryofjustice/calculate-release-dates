@@ -1011,6 +1011,7 @@ export default {
   stubGetUnusedDeductionsComparisons: (opts: {
     page?: number
     size?: number
+    calculatedByCurrentUser?: boolean
     response: UnusedDeductionsComparisonPage
   }): SuperAgentRequest => {
     return stubFor({
@@ -1020,6 +1021,7 @@ export default {
         queryParameters: {
           page: { equalTo: String(opts.page ?? 0) },
           size: { equalTo: String(opts.size ?? 10) },
+          calculatedByCurrentUser: { equalTo: String(opts.calculatedByCurrentUser ?? true) },
         },
       },
       response: {
