@@ -193,9 +193,10 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     page: number,
     size: number,
     username: string,
+    calculatedByCurrentUser: boolean,
   ): Promise<UnusedDeductionsComparisonPage> {
     return this.get<UnusedDeductionsComparisonPage>(
-      { path: '/unused-deductions/comparison', query: { page, size } },
+      { path: '/unused-deductions/comparison', query: { page, size, calculatedByCurrentUser } },
       asSystem(username),
     )
   }
