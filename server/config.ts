@@ -137,8 +137,8 @@ export default {
   adjustments: {
     url: get('ADJUSTMENTS_UI_URL', 'http://127.0.0.1:3000/adjustments', requiredInProduction),
   },
-  adjudications: {
-    url: get('ADJUDICATIONS_UI_URL', 'http://127.0.0.1:3000/adjudications', requiredInProduction),
+  manageAdjudications: {
+    url: get('MANAGE_ADJUDICATIONS_URL', 'http://127.0.0.1:3000/manage-adjudications', requiredInProduction),
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   analytics: {

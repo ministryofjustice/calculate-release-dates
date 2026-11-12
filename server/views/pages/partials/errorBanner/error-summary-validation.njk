@@ -10,7 +10,7 @@
 
           {% if 'ADJUDICATIONS' in validationErrors.fixSources %}
                <li>
-                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ adjudicationsUiUrl }}/adjudication-history/{{ model.prisonerDetail.offenderNo }}">Adjudications tab</a>.
+                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ manageAdjudicationsUrl }}/adjudication-history/{{ model.prisonerDetail.offenderNo }}">Adjudications tab</a>.
                    </p>
                </li>
           {% endif %}
