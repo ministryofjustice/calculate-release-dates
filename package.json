@@ -27,7 +27,7 @@
     "generate-court-cases-release-dates-api-types": "openapi-typescript https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > server/@types/courtCasesReleaseDatesApi/index.d.ts"
   },
   "engines": {
-    "node": "^24",
+    "node": "^26",
     "npm": "11"
   },
   "dependencies": {
