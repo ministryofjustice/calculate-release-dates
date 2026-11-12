@@ -37,6 +37,7 @@ export default class CalculationHistoryOverviewViewModel extends PrisonerContext
     public courtCaseCount: number | null,
     public sentenceCount: number | null,
     public adjustmentTypes: string[],
+    public hasIndeterminateSentences: boolean | null,
   ) {
     super(prisonerDetail)
     const thisPageFrom = (history.page.pageNumber - 1) * pageSize + 1

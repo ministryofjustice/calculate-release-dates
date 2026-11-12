@@ -36,7 +36,7 @@ describe('SelectGenuineOverrideReasonController', () => {
   beforeEach(() => {
     currentUser = {
       ...user,
-      userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW],
+      userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR],
     }
     genuineOverrideInputs = { mode: 'STANDARD', datesToSave: [{ type: 'SED', date: '2011-01-02' }] }
     sessionSetup.sessionDoctor = req => {

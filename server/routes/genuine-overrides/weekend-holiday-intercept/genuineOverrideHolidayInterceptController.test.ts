@@ -44,7 +44,7 @@ describe('GenuineOverrideHolidayInterceptController', () => {
     }
     currentUser = {
       ...user,
-      userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR, AuthorisedRoles.ROLE_CRD__GENUINE_OVERRIDES__RW],
+      userRoles: [AuthorisedRoles.ROLE_RELEASE_DATES_CALCULATOR],
     }
     app = appWithAllRoutes({
       services: {

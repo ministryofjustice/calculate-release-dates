@@ -7,6 +7,14 @@ import {
   ComparisonSummary,
   PageComparisonSummary,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
+import {
+  UnusedDeductionsComparisonInput,
+  UnusedDeductionsComparisonOverview,
+  UnusedDeductionsComparisonPage,
+  UnusedDeductionsComparisonOverviewOptions,
+  UnusedDeductionsComparisonPersonDetail,
+  UnusedDeductionsComparisonSummary,
+} from '../@types/calculateReleaseDates/unusedDeductionsComparisonTypes'
 import ComparisonType from '../enumerations/comparisonType'
 import AuditService from './auditService'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
@@ -39,6 +47,43 @@ export default class ComparisonService {
       await this.auditService.publishBulkComparisonFailure(userName, selectedOMU, error)
       throw error
     }
+  }
+
+  async createUnusedDeductionsComparison(
+    input: UnusedDeductionsComparisonInput,
+    username: string,
+  ): Promise<UnusedDeductionsComparisonSummary> {
+    return this.calculateReleaseDatesApiClient.createUnusedDeductionsComparison(input, username)
+  }
+
+  async getUnusedDeductionsComparisons(
+    page: number,
+    size: number,
+    username: string,
+    calculatedByCurrentUser: boolean,
+  ): Promise<UnusedDeductionsComparisonPage> {
+    return this.calculateReleaseDatesApiClient.getUnusedDeductionsComparisons(
+      page,
+      size,
+      username,
+      calculatedByCurrentUser,
+    )
+  }
+
+  async getUnusedDeductionsComparison(
+    reference: string,
+    options: UnusedDeductionsComparisonOverviewOptions,
+    username: string,
+  ): Promise<UnusedDeductionsComparisonOverview> {
+    return this.calculateReleaseDatesApiClient.getUnusedDeductionsComparison(reference, options, username)
+  }
+
+  async getUnusedDeductionsComparisonPerson(
+    reference: string,
+    personReference: string,
+    username: string,
+  ): Promise<UnusedDeductionsComparisonPersonDetail> {
+    return this.calculateReleaseDatesApiClient.getUnusedDeductionsComparisonPerson(reference, personReference, username)
   }
 
   async getPrisonComparison(bulkComparisonId: string, username: string): Promise<ComparisonOverview> {

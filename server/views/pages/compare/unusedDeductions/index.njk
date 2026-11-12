@@ -1,0 +1,61 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "./_breadcrumbs.njk" import unusedDeductionsBreadcrumbs %}
+
+{% set pageTitle = applicationName + " - Bulk unused deductions calculation" %}
+{% set pageId = "compare" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {{ unusedDeductionsBreadcrumbs() }}
+{% endblock %}
+
+{% set prisonHtml %}
+    {{ govukSelect({
+        name: "prison",
+        id: "prison",
+        label: { text: "Prison" },
+        items: caseloadItems,
+        value: form.prison
+    }) }}
+{% endset %}
+
+{% set manualHtml %}
+    {{ govukTextarea({
+        name: "prisonerIds",
+        id: "prisonerIds",
+        label: { text: "Prisoner numbers, one per line" },
+        rows: 8,
+        value: form.prisonerIds
+    }) }}
+{% endset %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% if errors.length %}
+                {{ govukErrorSummary({ titleText: "There is a problem", errorList: errors }) }}
+            {% endif %}
+            <h1 class="govuk-heading-xl">Bulk unused deductions calculation</h1>
+            <p class="govuk-body">Compares each person's existing unused deductions adjustment with the amount calculated by the Calculate release dates service.</p>
+            <form class="form" method="post" action="/compare/unused-deductions/run">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+                {{ govukRadios({
+                    name: "runType",
+                    idPrefix: "runType",
+                    fieldset: { legend: { text: "Who do you want to compare?", classes: "govuk-fieldset__legend--m" } },
+                    items: [
+                        { value: "manual", text: "A list of prisoners", checked: form.runType == "manual", conditional: { html: manualHtml } },
+                        { value: "prison", text: "A single prison", checked: form.runType == "prison", conditional: { html: prisonHtml } },
+                        { value: "all", text: "All prisons", checked: form.runType == "all" }
+                    ]
+                }) }}
+                {{ govukButton({ text: "Run comparison", preventDoubleClick: true }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

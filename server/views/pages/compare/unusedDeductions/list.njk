@@ -1,0 +1,44 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+{% from "moj/components/badge/macro.njk" import mojBadge %}
+{% from "moj/components/pagination/macro.njk" import mojPagination %}
+{% from "./_breadcrumbs.njk" import unusedDeductionsBreadcrumbs %}
+
+{% set pageTitle = applicationName + " - Previous unused deductions calculations" %}
+{% set scopeHeading = "Your Comparisons" if scope == "your" else "Other's Comparisons" %}
+{% set pageId = "compare" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {{ unusedDeductionsBreadcrumbs([{ text: "Previous calculations", href: "/compare/unused-deductions/list" }]) }}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Previous unused deductions calculations</h1>
+            {{ govukServiceNavigation({
+              navigationLabel: "Comparisons",
+              navigation: [
+                { href: "/compare/unused-deductions/list", text: "Your Comparisons", current: scope == "your" },
+                { href: "/compare/unused-deductions/list/others", text: "Other's Comparisons", current: scope == "others" }
+              ]
+            }) }}
+            <br/>
+            <h2 class="govuk-heading-l">{{ scopeHeading }}</h2>
+            {% if comparisons.length == 0 %}
+                <p class="govuk-body">No previous runs</p>
+            {% endif %}
+            <ul class="gem-c-document-list gem-c-document-list--no-underline">
+                {% for comparison in comparisons %}
+                    <li class="gem-c-document-list__item">
+                        <a class="gem-c-document-list__item-title govuk-link" href="/compare/unused-deductions/result/{{ comparison.comparisonShortReference }}">{{ 'All prisons' if comparison.comparisonType == 'ALL_PRISONS' else ('Manual list' if comparison.comparisonType == 'MANUAL' else comparison.prison) }} - {{ comparison.calculatedAt | hmppsFormatDate('dd MMMM yyyy') }}</a>
+                        <p class="gem-c-document-list__item-description">{{ comparison.numberOfMismatches }} mismatches, {{ comparison.numberOfValidationErrors }} validation errors, {{ comparison.numberOfPeopleComparisonFailedFor }} failures from {{ comparison.numberOfPeopleCompared }} of {{ comparison.numberOfPeopleExpected }} people</p>
+                        <p class="govuk-body-s">{{ comparison.calculatedAt | hmppsFormatDate('dd MMMM yyyy') }} by {{ comparison.calculatedByUsername }} {{ mojBadge({ text: comparison.comparisonStatus }) }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+            {{ mojPagination(pagination) }}
+        </div>
+    </div>
+{% endblock %}

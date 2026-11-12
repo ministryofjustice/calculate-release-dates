@@ -1,0 +1,65 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "./_breadcrumbs.njk" import unusedDeductionsBreadcrumbs %}
+
+{% set pageTitle = applicationName + " - Unused deductions detail" %}
+{% set pageId = "compare" %}
+
+{% block beforeContent %}
+    {{ super() }}
+    {{ unusedDeductionsBreadcrumbs([
+        { text: "Results", href: "/compare/unused-deductions/result/" + comparison.comparisonShortReference },
+        { text: detail.person.person, href: "/compare/unused-deductions/result/" + comparison.comparisonShortReference + "/detail/" + detail.person.personShortReference }
+    ]) }}
+{% endblock %}
+
+{% block content %}
+    {% set person = detail.person %}
+    <h1 class="govuk-heading-xl">Unused deductions detail</h1>
+    <h2 class="govuk-heading-m">{{ person.person }}{% if person.lastName %} - {{ person.lastName }}{% endif %}</h2>
+
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Existing unused days</dt><dd class="govuk-summary-list__value">{{ person.existingUnusedDeductions }}</dd></div>
+        <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Calculated unused days</dt><dd class="govuk-summary-list__value">{{ person.calculatedUnusedDeductions if person.calculatedUnusedDeductions !== null else '-' }}</dd></div>
+        <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Custodial days</dt><dd class="govuk-summary-list__value">{{ person.custodialDays if person.custodialDays !== null else '-' }}</dd></div>
+        <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Total deductions</dt><dd class="govuk-summary-list__value">{{ person.totalDeductions if person.totalDeductions !== null else '-' }}</dd></div>
+    </dl>
+
+    {% if detail.fatalException %}
+        <div class="govuk-warning-text"><span class="govuk-warning-text__icon" aria-hidden="true">!</span><strong class="govuk-warning-text__text">The calculation failed: {{ detail.fatalException }}</strong></div>
+    {% endif %}
+
+    {% if detail.validationMessages.length %}
+        <h2 class="govuk-heading-m">Validation messages</h2>
+        <ul class="govuk-list govuk-list--bullet">
+            {% for message in detail.validationMessages %}
+                <li>{{ message.message or message.code }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2 class="govuk-heading-m">Adjustments used in the calculation</h2>
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Type</th>
+                <th scope="col" class="govuk-table__header">Source</th>
+                <th scope="col" class="govuk-table__header">From</th>
+                <th scope="col" class="govuk-table__header">To</th>
+                <th scope="col" class="govuk-table__header">Days</th>
+                <th scope="col" class="govuk-table__header">Effective days</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            {% for adjustment in detail.adjustments %}
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ adjustment.adjustmentType | formatAdjustmentType }}</td>
+                    <td class="govuk-table__cell">{{ adjustment.source }}</td>
+                    <td class="govuk-table__cell">{{ adjustment.fromDate | hmppsFormatDate('dd MMM yyyy') if adjustment.fromDate }}</td>
+                    <td class="govuk-table__cell">{{ adjustment.toDate | hmppsFormatDate('dd MMM yyyy') if adjustment.toDate }}</td>
+                    <td class="govuk-table__cell">{{ adjustment.days }}</td>
+                    <td class="govuk-table__cell">{{ adjustment.effectiveDays }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

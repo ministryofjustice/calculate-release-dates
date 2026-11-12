@@ -1,0 +1,12 @@
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% macro unusedDeductionsBreadcrumbs(extra) %}
+    <nav>
+        {{ govukBreadcrumbs({
+            items: [
+                { text: "Home", href: "/" },
+                { text: "Bulk Compare", href: "/compare/" },
+                { text: "Unused deductions", href: "/compare/unused-deductions" }
+            ].concat(extra or [])
+        }) }}
+    </nav>
+{% endmacro %}

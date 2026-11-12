@@ -442,6 +442,31 @@ describe('Print Notification slip controller tests', () => {
       })
   })
 
+  it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=history should generate page', () => {
+    viewReleaseDatesService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
+    viewReleaseDatesService.getSentencesAndOffences.mockResolvedValue(stubbedSentencesAndOffences)
+    viewReleaseDatesService.getBookingAndSentenceAdjustments.mockResolvedValue(stubbedAdjustments)
+    calculateReleaseDatesService.getReleaseDatesForACalcReqId.mockResolvedValue(stubbedReleaseDatesUsingCalcReqId)
+    return request(app)
+      .get('/calculation/A1234AA/summary/123456/printNotificationSlip?fromPage=history')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const backLink = $('[data-qa=back-link]').first()
+        const offenderSlipLink = $('[data-qa="slip-offender-copy"]').first()
+        const establishmentSlipLink = $('[data-qa="slip-establishment-copy"]').first()
+
+        expect(backLink.attr('href')).toStrictEqual('/view/A1234AA/calculation-history/latest')
+        expect(offenderSlipLink.attr('href')).toStrictEqual(
+          '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=history&pageType=offender',
+        )
+        expect(establishmentSlipLink.attr('href')).toStrictEqual(
+          '/view/A1234AA/calculation-summary/123456/printNotificationSlip?fromPage=history&pageType=establishment',
+        )
+      })
+  })
+
   it('GET /calculation/:nomsId/summary/:calculationRequestId/printNotificationSlip?fromPage=view&pageType=offender should generate page without HDCED text', () => {
     const stubbedReleaseDatesWithoutHDCED: ReleaseDatesAndCalculationContext = {
       calculation: {
