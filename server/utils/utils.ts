@@ -4,7 +4,7 @@ import { AdjustmentDuration } from '../@types/calculateReleaseDates/rulesWithExt
 import config from '../config'
 import { getFilteredListOfDatesForDisplayOnly } from '../views/pages/components/calculation-summary-dates-card/CalculationSummaryDatesCardModel'
 import { ConfigItem, ValidationMessage } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { ErrorMessages, ErrorMessageType } from '../types/ErrorMessages'
+import { ErrorMessages, ErrorMessageType, FixSource } from '../types/ErrorMessages'
 import ErrorMessage from '../types/ErrorMessage'
 
 export const capitaliseName = (name?: string): string => {
@@ -137,6 +137,7 @@ export const convertValidationToErrorMessages = (validationMessages: ValidationM
       }
       return { text: m.message } as ErrorMessage
     }),
+    fixSources: [...new Set<FixSource>(validationMessages.map(f => FixSource[f.fixSource]).filter(f => !f === false))],
   }
 }
 
