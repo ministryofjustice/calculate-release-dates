@@ -2185,7 +2185,7 @@ export interface components {
       lastName?: string | null
       establishment?: string | null
       /** @enum {string} */
-      outcome: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR'
+      outcome: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR' | 'UNSUPPORTED' | 'RECALL'
       /** Format: int64 */
       existingUnusedDeductions: number
       /** Format: int64 */
@@ -4959,7 +4959,7 @@ export interface operations {
   get: {
     parameters: {
       query?: {
-        outcome?: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR'
+        outcome?: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR' | 'UNSUPPORTED' | 'RECALL'
         prisonerId?: string
         page?: number
         size?: number
