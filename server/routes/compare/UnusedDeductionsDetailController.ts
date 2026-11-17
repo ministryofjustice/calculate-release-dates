@@ -12,6 +12,11 @@ export default class UnusedDeductionsDetailController implements Controller {
       personId,
       res.locals.user.username,
     )
-    res.render('pages/compare/unusedDeductions/detail', { detail, comparison: detail.comparison })
+    // Existing unused deductions are not inputs to a fresh calculation
+    const adjustments = detail.adjustments.filter(adjustment => adjustment.adjustmentType !== 'UNUSED_DEDUCTIONS')
+    res.render('pages/compare/unusedDeductions/detail', {
+      detail: { ...detail, adjustments },
+      comparison: detail.comparison,
+    })
   }
 }
