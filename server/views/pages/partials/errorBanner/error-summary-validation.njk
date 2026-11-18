@@ -21,6 +21,13 @@
                    </p>
                </li>
           {% endif %}
+
+          {% if 'RECALLS' in validationErrors.fixSources %}
+               <li>
+                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ remandAndSentencingUrl }}/person/{{ model.prisonerDetail.offenderNo }}">Recalls tab</a>.
+                   </p>
+               </li>
+          {% endif %}
      {% else %}
         <li>
             <p class="govuk-body govuk-!-margin-bottom-0">Update these details in NOMIS and then <a href="">reload this page</a>.
