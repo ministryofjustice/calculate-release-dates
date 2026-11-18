@@ -7,6 +7,8 @@ import ComparisonService from '../../services/comparisonService'
 const OUTCOMES = [
   { value: 'MISMATCH', text: 'Mismatch' },
   { value: 'VALIDATION_ERROR', text: 'Validation error' },
+  { value: 'UNSUPPORTED', text: 'Unsupported' },
+  { value: 'RECALL', text: 'Recall (manual entry)' },
   { value: 'FATAL_ERROR', text: 'Failed' },
   { value: 'MATCH', text: 'Match' },
 ]

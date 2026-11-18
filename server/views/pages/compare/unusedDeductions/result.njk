@@ -14,7 +14,7 @@
     {{ unusedDeductionsBreadcrumbs([{ text: "Results", href: "/compare/unused-deductions/result/" + comparison.comparisonShortReference }]) }}
 {% endblock %}
 
-{% set outcomeLabels = { MATCH: "Match", MISMATCH: "Mismatch", VALIDATION_ERROR: "Validation error", FATAL_ERROR: "Failed" } %}
+{% set outcomeLabels = { MATCH: "Match", MISMATCH: "Mismatch", VALIDATION_ERROR: "Validation error", FATAL_ERROR: "Failed", UNSUPPORTED: "Unsupported", RECALL: "Recall (manual entry)" } %}
 
 {% block content %}
     <h1 class="govuk-heading-xl">Unused deductions comparison results</h1>

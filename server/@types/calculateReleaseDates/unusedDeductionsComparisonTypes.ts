@@ -2,7 +2,8 @@ import { ValidationMessage } from './calculateReleaseDatesClientTypes'
 
 export type UnusedDeductionsComparisonStatus = 'SETUP' | 'PROCESSING' | 'COMPLETED' | 'ERROR'
 export type UnusedDeductionsComparisonType = 'MANUAL' | 'PRISON' | 'ALL_PRISONS'
-export type UnusedDeductionsComparisonOutcome = 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR'
+export type UnusedDeductionsComparisonOutcome =
+  'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR' | 'UNSUPPORTED' | 'RECALL'
 
 export type UnusedDeductionsComparisonInput = {
   prison?: string
