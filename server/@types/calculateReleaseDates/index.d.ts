@@ -4,54 +4,6 @@
  */
 
 export interface paths {
-  '/queue-admin/retry-dlq/{dlqName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['retryDlq']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/retry-all-dlqs': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['retryAllDlqs']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/purge-queue/{queueName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['purgeQueue']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/validation/{prisonerId}/full-validation': {
     parameters: {
       query?: never
@@ -207,6 +159,30 @@ export interface paths {
      * @description This endpoint will return a response model which indicates the success of storing a manual calculation
      */
     post: operations['storeManualCalculation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/legacy-data/migrate/{prisonerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Migrate sentence calculations from NOMIS into CRDS
+     * @description Creates an entry in the legacy sentence calculation table for use in calculation history.
+     *
+     *      If possible we link it to an existing CRDS calculation otherwise it is left as a NOMIS calculation for historical purposes.
+     *
+     *     Migrating a prisoner will first remove all current entries in the legacy sentence calculation table for that prisoner meaning it can be retried from scratch if required.
+     */
+    post: operations['migrate']
     delete?: never
     options?: never
     head?: never
@@ -639,22 +615,6 @@ export interface paths {
      * @description This endpoint will calculate release dates based on a prisoners latest booking - this is a transitory calculation that will not be published to NOMIS
      */
     get: operations['validate_1']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/get-dlq-messages/{dlqName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['getDlqMessages']
     put?: never
     post?: never
     delete?: never
@@ -1445,14 +1405,6 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
-    RetryDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
-    PurgeQueueResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
     CalculationSentenceUserInput: {
       /** Format: int32 */
       sentenceSequence: number
@@ -1608,7 +1560,7 @@ export interface components {
        * @description Validation fix source
        * @enum {string|null}
        */
-      fixSource?: 'ADJUSTMENTS' | 'ADJUDICATIONS' | null
+      fixSource?: 'ADJUSTMENTS' | 'ADJUDICATIONS' | 'COURT_CASES' | null
     }
     /**
      * @description The type content for the validation message
@@ -1880,6 +1832,249 @@ export interface components {
       } | null
       /** Format: int64 */
       calculationRequestId: number
+    }
+    /** @description Legacy sentence calculation imported from NOMIS */
+    LegacySentenceCalculationDto: {
+      /**
+       * Format: int64
+       * @description Source-assigned NOMIS calculation identity.
+       */
+      nomisCalculationId: number
+      /** @description The prisoner identifier. */
+      prisonerId: string
+      /**
+       * Format: int64
+       * @description The booking identifier.
+       */
+      bookingId: number
+      /**
+       * Format: date-time
+       * @description The date of the calculation.
+       */
+      calculationDate: string
+      /** @description Free text field from NOMIS which may contain the calculation reference if it came from CRDS originally. */
+      commentText?: string | null
+      /** @description NOMIS reason code */
+      calculationReasonCode: string
+      /**
+       * Format: date
+       * @description HDCED either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      hdcedCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description HDCED overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      hdcedOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description HDCAD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      hdcadCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description HDCAD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      hdcadOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description ETD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      etdCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description ETD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      etdOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description MTD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      mtdCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description MTD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      mtdOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description LTD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      ltdCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description LTD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      ltdOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description ARD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      ardCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description ARD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      ardOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description CRD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      crdCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description CRD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      crdOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description PED either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      pedCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description PED overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      pedOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description APD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      apdCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description APD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      apdOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description NPD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      npdCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description NPD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      npdOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description LED either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      ledCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description LED overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      ledOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description SED either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      sedCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description SED overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      sedOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description PRRD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      prrdCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description PRRD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      prrdOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description TARIFF either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      tariffCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description TARIFF overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      tariffOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description DPRRD either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      dprrdCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description DPRRD overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      dprrdOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description ERSED overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      ersedOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description TERSED overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      tersedOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description ROTL overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      rotlOverriddenDate?: string | null
+      /**
+       * Format: date
+       * @description TUSED either calculated by NOMIS or CRDS or manually entered in CRDS.
+       */
+      tusedCalculatedDate?: string | null
+      /**
+       * Format: date
+       * @description TUSED overridden date if source is from NOMIS, CRDS writes overridden dates into the calculated field.
+       */
+      tusedOverriddenDate?: string | null
+      /**
+       * Format: date-time
+       * @description NOMIS audit field relating to modifications of this calculation. Records the created at time
+       */
+      nomisCreatedAt: string
+      /** @description NOMIS audit field relating to modifications of this calculation. Records the created by user */
+      nomisCreatedBy: string
+      /**
+       * Format: date-time
+       * @description NOMIS audit field relating to modifications of this calculation. Records the modified at time
+       */
+      nomisModifiedAt?: string | null
+      /** @description NOMIS audit field relating to modifications of this calculation. Records the modified by user */
+      nomisModifiedBy?: string | null
+      /**
+       * Format: date-time
+       * @description NOMIS audit field relating to modifications of this calculation. Records the recorded at time
+       */
+      nomisRecordedAt?: string | null
+      /** @description NOMIS audit field relating to modifications of this calculation. Records the recorded by user */
+      nomisRecordedBy?: string | null
+    }
+    /** @description A request to migrate all sentence calculations for a prisoner */
+    LegacySentenceCalculationMigrationRequest: {
+      /** @description All sentence calculations for a prisoner */
+      sentenceCalculations: components['schemas']['LegacySentenceCalculationDto'][]
+    }
+    /** @description The result of migrating a prisoner */
+    LegacySentenceCalculationMigrationResponse: {
+      /** @description All successfully migrated calculations including whether we matched them to a CRDS calculation or not */
+      mappingResults: components['schemas']['LegacySentenceCalculationToCrdsMappingResult'][]
+    }
+    /** @description The result of mapping a legacy NOMIS calculation into CRDS */
+    LegacySentenceCalculationToCrdsMappingResult: {
+      /**
+       * Format: int64
+       * @description The offender sentence calculation id from NOMIS
+       */
+      nomisCalculationId: number
+      /**
+       * Format: int64
+       * @description The id of any existing calculation request that we found in CRDS. If the source of the original calculation was NOMIS or we simply couldn't match to a calculation in CRDS this will be null.
+       */
+      crdsCalculationId?: number | null
     }
     GenuineOverrideDate: {
       /** @enum {string} */
@@ -2185,7 +2380,7 @@ export interface components {
       lastName?: string | null
       establishment?: string | null
       /** @enum {string} */
-      outcome: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR' | 'UNSUPPORTED' | 'RECALL'
+      outcome: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED' | 'RECALL' | 'FATAL_ERROR'
       /** Format: int64 */
       existingUnusedDeductions: number
       /** Format: int64 */
@@ -2315,19 +2510,6 @@ export interface components {
       penultimateOtherMessages: components['schemas']['ValidationMessage'][]
       /** Format: date */
       earliestSentenceDate?: string | null
-    }
-    DlqMessage: {
-      body: {
-        [key: string]: unknown
-      }
-      messageId: string
-    }
-    GetDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      /** Format: int32 */
-      messagesReturnedCount: number
-      messages: components['schemas']['DlqMessage'][]
     }
     OperativeSentenceEnvelope: {
       /**
@@ -2562,6 +2744,8 @@ export interface components {
       mismatches: components['schemas']['ComparisonMismatchSummary'][]
       status: string
       comparisonProgress: components['schemas']['ComparisonProgress']
+      /** @description Eligible prisons that prison-api could not provide calculable prisoners for */
+      prisonsFailed: string[]
     }
     SDSReleaseArrangements: {
       isSDSPlus: boolean
@@ -3577,70 +3761,6 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
-  retryDlq: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        dlqName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['RetryDlqResult']
-        }
-      }
-    }
-  }
-  retryAllDlqs: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['RetryDlqResult'][]
-        }
-      }
-    }
-  }
-  purgeQueue: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        queueName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['PurgeQueueResult']
-        }
-      }
-    }
-  }
   validate: {
     parameters: {
       query?: {
@@ -4036,6 +4156,45 @@ export interface operations {
       }
     }
   }
+  migrate: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The prisoners ID (aka nomsId)
+         * @example A1234AB
+         */
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LegacySentenceCalculationMigrationRequest']
+      }
+    }
+    responses: {
+      /** @description If we successfully migrated the sentence calculations to CRDS */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacySentenceCalculationMigrationResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacySentenceCalculationMigrationResponse']
+        }
+      }
+    }
+  }
   storeGenuineOverrideForCalculation: {
     parameters: {
       query?: never
@@ -4211,6 +4370,15 @@ export interface operations {
     responses: {
       /** @description Returns a new Comparison */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ComparisonDto']
+        }
+      }
+      /** @description The prison is unknown to, or inactive in, prison-register */
+      400: {
         headers: {
           [name: string]: unknown
         }
@@ -4959,7 +5127,7 @@ export interface operations {
   get: {
     parameters: {
       query?: {
-        outcome?: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'FATAL_ERROR' | 'UNSUPPORTED' | 'RECALL'
+        outcome?: 'MATCH' | 'MISMATCH' | 'VALIDATION_ERROR' | 'UNSUPPORTED' | 'RECALL' | 'FATAL_ERROR'
         prisonerId?: string
         page?: number
         size?: number
@@ -5168,30 +5336,6 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['RecordARecallValidationResult']
-        }
-      }
-    }
-  }
-  getDlqMessages: {
-    parameters: {
-      query?: {
-        maxMessages?: number
-      }
-      header?: never
-      path: {
-        dlqName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }

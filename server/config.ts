@@ -140,6 +140,9 @@ export default {
   manageAdjudications: {
     url: get('MANAGE_ADJUDICATIONS_URL', 'http://127.0.0.1:3000/manage-adjudications', requiredInProduction),
   },
+  remandAndSentencing: {
+    url: get('REMAND_AND_SENTENCING_URL', 'http://127.0.0.1:3000/remand-and-sentencing', requiredInProduction),
+  },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   analytics: {
     tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),
