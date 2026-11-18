@@ -1560,7 +1560,7 @@ export interface components {
        * @description Validation fix source
        * @enum {string|null}
        */
-      fixSource?: 'ADJUSTMENTS' | 'ADJUDICATIONS' | 'COURT_CASES' | null
+      fixSource?: 'ADJUSTMENTS' | 'ADJUDICATIONS' | 'COURT_CASES' | 'RECALLS' | null
     }
     /**
      * @description The type content for the validation message
