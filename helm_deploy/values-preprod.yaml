@@ -31,7 +31,7 @@ generic-service:
     ADJUSTMENTS_UI_URL: "https://adjust-release-dates-preprod.hmpps.service.justice.gov.uk"
     MANAGE_ADJUDICATIONS_URL: "https://manage-adjudications-preprod.hmpps.service.justice.gov.uk"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-preprod.hmpps.service.justice.gov.uk"
-    REMAND_AND_SENTENCING: "https://remand-and-sentencing-preprod.hmpps.service.justice.gov.uk"
+    REMAND_AND_SENTENCING_URL: "https://remand-and-sentencing-preprod.hmpps.service.justice.gov.uk"
     THING_TO_DO_INTERCEPT_ENABLED: "true"
 
   allowlist:
