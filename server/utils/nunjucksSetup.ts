@@ -51,6 +51,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.adjustmentsUiUrl = config.adjustments.url
   app.locals.manageAdjudicationsUrl = config.manageAdjudications.url
   app.locals.remandAndSentencingUrl = config.remandAndSentencing.url
+  app.locals.recallsUrl = config.recalls.url
 
   // Cache-busting version string
   if (production) {

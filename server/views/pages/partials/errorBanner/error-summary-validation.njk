@@ -24,7 +24,7 @@
 
           {% if 'RECALLS' in validationErrors.fixSources %}
                <li>
-                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ remandAndSentencingUrl }}/person/{{ model.prisonerDetail.offenderNo }}">Recalls tab</a>.
+                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ recallsUrl }}/{{ model.prisonerDetail.offenderNo }}">Recalls tab</a>.
                    </p>
                </li>
           {% endif %}

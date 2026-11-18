@@ -143,6 +143,9 @@ export default {
   remandAndSentencing: {
     url: get('REMAND_AND_SENTENCING_URL', 'http://127.0.0.1:3000/remand-and-sentencing', requiredInProduction),
   },
+  recalls: {
+    url: get('RECALLS_URL', 'http://127.0.0.1:3000/record-a-recall', requiredInProduction),
+  },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   analytics: {
     tagManagerContainerId: get('TAG_MANAGER_CONTAINER_ID', false),

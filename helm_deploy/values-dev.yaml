@@ -31,6 +31,7 @@ generic-service:
     MANAGE_ADJUDICATIONS_URL: "https://manage-adjudications-dev.hmpps.service.justice.gov.uk"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk"
     REMAND_AND_SENTENCING_URL: "https://remand-and-sentencing-dev.hmpps.service.justice.gov.uk"
+    RECALLS_URL: "https://record-a-recall-dev.hmpps.service.justice.gov.uk"
     SHOW_CRDS_INTERCEPT: "true"
     THING_TO_DO_INTERCEPT_ENABLED: "true"
 
