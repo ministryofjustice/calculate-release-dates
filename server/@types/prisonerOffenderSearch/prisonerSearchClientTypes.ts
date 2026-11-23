@@ -1,4 +1,4 @@
-import { components } from './index'
+import type * as Api from './generated/types.gen'
 
-export type PrisonerSearchCriteria = components['schemas']['SearchCriteria']
-export type Prisoner = components['schemas']['Prisoner']
+export type PrisonerSearchCriteria = Api.SearchCriteria
+export type Prisoner = Api.Prisoner

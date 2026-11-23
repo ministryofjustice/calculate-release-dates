@@ -79,7 +79,7 @@ const stubbedAdjustments = {
       active: true,
     },
   ],
-} as AnalysedPrisonApiBookingAndSentenceAdjustments
+} as unknown as AnalysedPrisonApiBookingAndSentenceAdjustments
 
 const stubbedSentencesAndOffences = [
   {

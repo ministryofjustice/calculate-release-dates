@@ -264,7 +264,7 @@ describe('GET /:nomsId/overview', () => {
           enabled: false,
           message: 'placeholder',
         },
-      } as CcrdServiceDefinitions
+      } as unknown as CcrdServiceDefinitions
 
       const overview: PrisonerCalculationOverview = {
         latestCalculation: {

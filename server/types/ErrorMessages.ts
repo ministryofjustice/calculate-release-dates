@@ -26,4 +26,5 @@ export enum ErrorMessageType {
 export enum FixSource {
   ADJUSTMENTS = 'ADJUSTMENTS',
   ADJUDICATIONS = 'ADJUDICATIONS',
+  COURT_CASES = 'COURT_CASES',
 }
