@@ -1,4 +1,4 @@
-import { components } from './index'
+import type * as Api from './generated/types.gen'
 
-export type CcrdServiceDefinitions = components['schemas']['CcrdServiceDefinitions']
-export type CcrdServiceDefinition = components['schemas']['CcrdServiceDefinition']
+export type CcrdServiceDefinitions = Api.CcrdServiceDefinitions
+export type CcrdServiceDefinition = Api.CcrdServiceDefinition

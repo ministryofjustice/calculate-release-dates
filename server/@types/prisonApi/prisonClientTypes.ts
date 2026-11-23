@@ -1,19 +1,19 @@
-import { components } from './index'
+import type * as Api from './generated/types.gen'
 
-export type PrisonApiPrisoner = components['schemas']['InmateDetail']
-export type PrisonApiSentenceDetail = components['schemas']['SentenceCalcDates']
-export type PrisonApiSentenceAdjustmentDetail = components['schemas']['SentenceAdjustmentDetail']
-export type PrisonApiOffenderOffence = components['schemas']['OffenderOffence']
-export type PrisonApiUserCaseloads = components['schemas']['CaseLoad']
-export type PrisonApiSentenceCalcDates = components['schemas']['SentenceCalcDates']
-export type AnalysedPrisonApiBookingAndSentenceAdjustments = components['schemas']['BookingAndSentenceAdjustments']
-export type PrisonApiBookingAdjustment = components['schemas']['BookingAdjustment']
-export type PrisonApiSentenceAdjustmentValues = components['schemas']['SentenceAdjustmentValues']
-export type PrisonApiOffenderFinePayment = components['schemas']['OffenderFinePaymentDto']
-export type PrisonApiOffenderSentenceAndOffences = components['schemas']['OffenderSentenceAndOffences']
-export type PrisonApiOffenderSentenceTerm = components['schemas']['OffenderSentenceTerm']
-export type PrisonApiOffenderKeyDates = components['schemas']['OffenderKeyDates']
-export type PrisonApiFixedTermRecallDetails = components['schemas']['FixedTermRecallDetails']
+export type PrisonApiPrisoner = Api.InmateDetail
+export type PrisonApiSentenceDetail = Api.SentenceCalcDates
+export type PrisonApiSentenceAdjustmentDetail = Api.SentenceAdjustmentDetail
+export type PrisonApiOffenderOffence = Api.OffenderOffence
+export type PrisonApiUserCaseloads = Api.CaseLoad
+export type PrisonApiSentenceCalcDates = Api.SentenceCalcDates
+export type AnalysedPrisonApiBookingAndSentenceAdjustments = Api.BookingAndSentenceAdjustments
+export type PrisonApiBookingAdjustment = Api.BookingAdjustment
+export type PrisonApiSentenceAdjustmentValues = Api.SentenceAdjustmentValues
+export type PrisonApiOffenderFinePayment = Api.OffenderFinePaymentDto
+export type PrisonApiOffenderSentenceAndOffences = Api.OffenderSentenceAndOffences
+export type PrisonApiOffenderSentenceTerm = Api.OffenderSentenceTerm
+export type PrisonApiOffenderKeyDates = Api.OffenderKeyDates
+export type PrisonApiFixedTermRecallDetails = Api.FixedTermRecallDetails
 export type PrisonApiOffenderCalculatedKeyDates = PrisonApiOffenderKeyDates & {
   earlyRemovalSchemeEligibilityDate: string
   releaseOnTemporaryLicenceDate: string
@@ -27,4 +27,4 @@ export type PrisonApiReturnToCustodyDate = {
   bookingId: number
   returnToCustodyDate: string
 }
-export type PrisonAPIAssignedLivingUnit = components['schemas']['AssignedLivingUnit']
+export type PrisonAPIAssignedLivingUnit = Api.AssignedLivingUnit

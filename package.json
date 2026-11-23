@@ -12,8 +12,8 @@
     "start:dev": "node esbuild/esbuild --watch",
     "start-feature": " node $NODE_DEBUG_OPTION --env-file=feature.env dist/server.js | bunyan -o short",
     "start-feature:dev": "node esbuild/esbuild --watch --env feature.env",
-    "lint": "eslint . --cache --max-warnings 0",
-    "lint-fix": "eslint . --cache --max-warnings 0 --fix",
+    "lint": "eslint --cache --max-warnings 0",
+    "lint-fix": "eslint --cache --max-warnings 0 --fix",
     "typecheck": "tsc && tsc -p integration_tests",
     "test": "jest",
     "test:ci": "jest --runInBand",
@@ -23,8 +23,10 @@
     "setup": "npm ci && hmpps-npm-script-run-allowlist",
     "int-test": "cypress run --config video=false",
     "int-test-ui": "cypress open --e2e --browser chrome",
-    "generate-calculate-release-dates-api-types": "openapi-typescript https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/calculateReleaseDates/index.d.ts",
-    "generate-court-cases-release-dates-api-types": "openapi-typescript https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > server/@types/courtCasesReleaseDatesApi/index.d.ts"
+    "generate-calculate-release-dates-api-types": "openapi-ts -i https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o ./server/@types/calculateReleaseDates/generated -p @hey-api/typescript && eslint --cache --max-warnings 0 --fix \"./server/@types/calculateReleaseDates/generated/types.gen.ts\"",
+    "generate-court-cases-release-dates-api-types": "openapi-ts -i https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o ./server/@types/courtCasesReleaseDatesApi/generated -p @hey-api/typescript && eslint --cache --max-warnings 0 --fix \"./server/@types/courtCasesReleaseDatesApi/generated/types.gen.ts\"",
+    "generate-prison-api-types": "openapi-ts -i https://prison-api-dev.prison.service.justice.gov.uk/v3/api-docs -o ./server/@types/prisonApi/generated -p @hey-api/typescript && eslint --cache --max-warnings 0 --fix \"./server/@types/prisonApi/generated/types.gen.ts\"",
+    "generate-prisoner-offender-search-api-types": "openapi-ts -i https://prisoner-search-dev.prison.service.justice.gov.uk/v3/api-docs -o ./server/@types/prisonerOffenderSearch/generated -p @hey-api/typescript && eslint --cache --max-warnings 0 --fix \"./server/@types/prisonerOffenderSearch/generated/types.gen.ts\""
   },
   "engines": {
     "node": "^26",
@@ -69,6 +71,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "0.97.3",
     "@jgoz/esbuild-plugin-typecheck": "^5.0.0",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.4",
     "@ministryofjustice/frontend-types": "2.0.3",
@@ -113,7 +116,6 @@
     "mockdate": "^3.0.5",
     "nock": "^14.0.17",
     "nodemon": "^3.1.14",
-    "openapi-typescript": "^7.13.0",
     "prettier": "^3.9.10",
     "prettier-plugin-jinja-template": "^2.2.0",
     "sass": "^1.108.1",

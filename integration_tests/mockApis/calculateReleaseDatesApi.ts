@@ -17,7 +17,7 @@ import {
   ReleaseDatesAndCalculationContext,
   ValidationMessage,
 } from '../../server/@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
-import { components } from '../../server/@types/calculateReleaseDates'
+import type { PreviousGenuineOverride } from '../../server/@types/calculateReleaseDates/generated/types.gen'
 import {
   UnusedDeductionsComparisonInput,
   UnusedDeductionsComparisonOverview,
@@ -26,7 +26,7 @@ import {
   UnusedDeductionsComparisonSummary,
 } from '../../server/@types/calculateReleaseDates/unusedDeductionsComparisonTypes'
 
-type PreviousOverride = components['schemas']['PreviousGenuineOverride']
+type PreviousOverride = PreviousGenuineOverride
 type EarlyReleaseTranche =
   | 'TRANCHE_0'
   | 'TRANCHE_1'
