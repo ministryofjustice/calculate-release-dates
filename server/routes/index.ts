@@ -207,6 +207,7 @@ export default function Index({
     prisonerService,
     checkInformationService,
     userInputService,
+    courtCasesReleaseDatesService,
   )
   const checkInformationRoutes = () => {
     route({

@@ -12,6 +12,7 @@ import SentenceTypes from './SentenceTypes'
 import AdjustmentTablesModel, {
   adjustmentsTablesFromAdjustmentDTOs,
 } from '../views/pages/components/adjustments-tables/AdjustmentTablesModel'
+import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
 
 export default class SentenceAndOffenceViewModel {
   public cases: CourtCaseTableViewModel[]
@@ -36,6 +37,7 @@ export default class SentenceAndOffenceViewModel {
     returnToCustodyDate?: PrisonApiReturnToCustodyDate,
     public validationErrors?: ErrorMessages,
     adjustmentsDtos?: AnalysedAdjustment[] | AdjustmentDto[],
+    public serviceDefinitions?: CcrdServiceDefinitions,
   ) {
     this.cases = Array.from(
       groupBy(sentencesAndOffences, (sent: AnalysedSentenceAndOffence) => sent.caseSequence).values(),
@@ -90,5 +92,17 @@ export default class SentenceAndOffenceViewModel {
       }
     })
     return Object.keys(duplicates).map(key => [duplicates[key].caseSequence, duplicates[key].lineSequence])
+  }
+
+  public getCourtCasesTabUrl(): string {
+    return this.serviceDefinitions?.services.courtCases.href
+  }
+
+  public getRecallsTabUrl(): string {
+    return this.serviceDefinitions?.services.recalls.href
+  }
+
+  public getAdjustmentsTabUrl(): string {
+    return this.serviceDefinitions?.services.adjustments.href
   }
 }

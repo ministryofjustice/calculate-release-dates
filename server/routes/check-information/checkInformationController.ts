@@ -6,6 +6,7 @@ import { CheckInformationForm } from './checkInformationSchema'
 import CheckInformationViewModel from '../../models/CheckInformationViewModel'
 import CheckInformationService from '../../services/checkInformationService'
 import UserInputService from '../../services/userInputService'
+import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
 
 export default class CheckInformationController implements Controller {
   constructor(
@@ -13,10 +14,11 @@ export default class CheckInformationController implements Controller {
     private readonly prisonerService: PrisonerService,
     private readonly checkInformationService: CheckInformationService,
     private readonly userInputService: UserInputService,
+    private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
   ) {}
 
   GET = async (req: Request<{ nomsId: string; calculationRequestId: string }>, res: Response): Promise<void> => {
-    const { caseloads, userRoles, username } = res.locals.user
+    const { caseloads, userRoles, username, token } = res.locals.user
     const { nomsId } = req.params
 
     if (!req.session.selectedApprovedDates) {
@@ -30,7 +32,14 @@ export default class CheckInformationController implements Controller {
       return res.redirect(`/calculation/${nomsId}/reason`)
     }
     const userInputs = this.userInputService.getCalculationUserInputForPrisoner(req, nomsId)
-    const model = await this.checkInformationService.checkInformation(nomsId, userInputs, username, req.prisoner)
+    const serviceDefinitions = await this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token)
+    const model = await this.checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      username,
+      req.prisoner,
+      serviceDefinitions,
+    )
     return res.render(
       'pages/calculation/checkInformation',
       new CheckInformationViewModel(model, true, this.userInputService.isSecondCheck(req, nomsId), req.originalUrl),

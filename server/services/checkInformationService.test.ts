@@ -15,6 +15,7 @@ import {
   PrisonApiSentenceDetail,
 } from '../@types/prisonApi/prisonClientTypes'
 import { ErrorMessageType } from '../types/ErrorMessages'
+import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
 
 jest.mock('./calculateReleaseDatesService')
 jest.mock('./prisonerService')
@@ -97,6 +98,51 @@ describe('checkInformationService', () => {
   const nomsId = 'A1234BC'
   const userInputs = {} as CalculationUserInputs
 
+  const serviceDefinitionsNoThingsToDo = {
+    services: {
+      overview: {
+        href: 'http://localhost:8000/prisoner/AB1234AB/overview',
+        text: 'Overview',
+        thingsToDo: {
+          things: [],
+          count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
+      },
+      adjustments: {
+        href: 'http://localhost:8002/AB1234AB',
+        text: 'Adjustments',
+        thingsToDo: {
+          things: [],
+          count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
+      },
+      releaseDates: {
+        href: 'http://localhost:8004?prisonId=AB1234AB',
+        text: 'Release dates and calculations',
+        thingsToDo: {
+          things: [],
+          count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
+      },
+    },
+    maintenanceAlert: {
+      enabled: false,
+      message: 'placeholder',
+    },
+  } as CcrdServiceDefinitions
+
   beforeEach(() => {
     prisonerService.getPrisonerDetail.mockResolvedValue(stubbedPrisonerData)
     calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences.mockResolvedValue([])
@@ -107,7 +153,13 @@ describe('checkInformationService', () => {
   it('should build model with no validation errors present', async () => {
     calculateReleaseDatesService.validateBackend.mockResolvedValue([])
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, 'user1', stubbedPrisonerData)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      'user1',
+      stubbedPrisonerData,
+      serviceDefinitionsNoThingsToDo,
+    )
 
     expect(model.isUnsupported).toBe(false)
     expect(model.validationErrors).toStrictEqual({ messages: [] })
@@ -126,7 +178,13 @@ describe('checkInformationService', () => {
       messages: [{ text: 'Sentence type is not supported' }],
     })
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, 'user1', stubbedPrisonerData)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      'user1',
+      stubbedPrisonerData,
+      serviceDefinitionsNoThingsToDo,
+    )
 
     expect(model.isUnsupported).toBe(true)
     expect(model.validationErrors).toStrictEqual({
@@ -154,7 +212,13 @@ describe('checkInformationService', () => {
       messages: [],
     })
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, 'user1', stubbedPrisonerData)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      'user1',
+      stubbedPrisonerData,
+      serviceDefinitionsNoThingsToDo,
+    )
 
     expect(model.isUnsupported).toBe(true)
     expect(model.validationErrors).toStrictEqual({ messages: [] })
@@ -170,7 +234,13 @@ describe('checkInformationService', () => {
       } as ValidationMessage,
     ])
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, 'user1', stubbedPrisonerData)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      'user1',
+      stubbedPrisonerData,
+      serviceDefinitionsNoThingsToDo,
+    )
 
     expect(model.isUnsupported).toBe(false)
     expect(model.validationErrors).toStrictEqual({
@@ -203,7 +273,13 @@ describe('checkInformationService', () => {
       } as ValidationMessage,
     ])
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, 'user1', stubbedPrisonerData)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      'user1',
+      stubbedPrisonerData,
+      serviceDefinitionsNoThingsToDo,
+    )
 
     expect(model.validationErrors).toStrictEqual({
       messageType: ErrorMessageType.VALIDATION,
@@ -230,7 +306,13 @@ describe('checkInformationService', () => {
     calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences.mockResolvedValue([ftrSentence])
     prisonerService.getReturnToCustodyDate.mockResolvedValue({ bookingId: 99, returnToCustodyDate: '2025-01-03' })
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, 'user1', stubbedPrisonerData)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      'user1',
+      stubbedPrisonerData,
+      serviceDefinitionsNoThingsToDo,
+    )
 
     expect(model.returnToCustodyDate).toBe('2025-01-03')
     expect(prisonerService.getReturnToCustodyDate).toHaveBeenCalled()
@@ -247,7 +329,13 @@ describe('checkInformationService', () => {
     calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences.mockResolvedValue([ftrSentence])
     prisonerService.getReturnToCustodyDate.mockRejectedValue(createError(404, 'Not found'))
 
-    const model = await checkInformationService.checkInformation(nomsId, userInputs, 'user1', stubbedPrisonerData)
+    const model = await checkInformationService.checkInformation(
+      nomsId,
+      userInputs,
+      'user1',
+      stubbedPrisonerData,
+      serviceDefinitionsNoThingsToDo,
+    )
 
     expect(model.returnToCustodyDate).toBeUndefined()
     expect(prisonerService.getReturnToCustodyDate).toHaveBeenCalled()

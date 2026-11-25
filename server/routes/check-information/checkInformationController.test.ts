@@ -25,11 +25,14 @@ import { ErrorMessageType } from '../../types/ErrorMessages'
 import SentenceAndOffenceViewModel from '../../models/SentenceAndOffenceViewModel'
 import trimHtml from '../testutils/testUtils'
 import { FullPageError } from '../../types/FullPageError'
+import { CcrdServiceDefinitions } from '../../@types/courtCasesReleaseDatesApi/types'
+import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
 jest.mock('../../services/checkInformationService')
 jest.mock('../../services/userInputService')
+jest.mock('../../services/courtCasesReleaseDatesService')
 
 describe('CheckInformationController', () => {
   let app: Express
@@ -42,6 +45,9 @@ describe('CheckInformationController', () => {
   const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
   const checkInformationService = new CheckInformationService(null, null) as jest.Mocked<CheckInformationService>
   const userInputService = new UserInputService() as jest.Mocked<UserInputService>
+  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(
+    null,
+  ) as jest.Mocked<CourtCasesReleaseDatesService>
 
   const stubbedEmptyMessages: ValidationMessage[] = []
 
@@ -377,6 +383,51 @@ describe('CheckInformationController', () => {
     returnToCustodyDate: '2022-04-12',
   } as PrisonApiReturnToCustodyDate
 
+  const serviceDefinitionsNoThingsToDo = {
+    services: {
+      overview: {
+        href: 'http://localhost:8000/prisoner/AB1234AB/overview',
+        text: 'Overview',
+        thingsToDo: {
+          things: [],
+          count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
+      },
+      adjustments: {
+        href: 'http://localhost:8002/AB1234AB',
+        text: 'Adjustments',
+        thingsToDo: {
+          things: [],
+          count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
+      },
+      releaseDates: {
+        href: 'http://localhost:8004?prisonId=AB1234AB',
+        text: 'Release dates and calculations',
+        thingsToDo: {
+          things: [],
+          count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
+      },
+    },
+    maintenanceAlert: {
+      enabled: false,
+      message: 'placeholder',
+    },
+  } as CcrdServiceDefinitions
+
   beforeEach(() => {
     sessionSetup.sessionDoctor = req => {
       req.session.isAddDatesFlow = {}
@@ -389,6 +440,7 @@ describe('CheckInformationController', () => {
         prisonerService,
         checkInformationService,
         userInputService,
+        courtCasesReleaseDatesService,
       },
       sessionSetup,
     })
@@ -431,6 +483,7 @@ describe('CheckInformationController', () => {
         stubbedReturnToCustodyDate,
         null,
         stubbedAdjustmentsForPrisoner,
+        serviceDefinitionsNoThingsToDo,
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       return request(app)
@@ -827,6 +880,7 @@ describe('CheckInformationController', () => {
           messageType: ErrorMessageType.VALIDATION,
         },
         [],
+        serviceDefinitionsNoThingsToDo,
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       return request(app)
@@ -858,6 +912,7 @@ describe('CheckInformationController', () => {
           messageType: ErrorMessageType.VALIDATION_FIXABLE_IN_DPS,
         },
         [],
+        serviceDefinitionsNoThingsToDo,
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       return request(app)
@@ -892,6 +947,7 @@ describe('CheckInformationController', () => {
           messageType: ErrorMessageType.INVALID_OFFENCE,
         },
         [],
+        serviceDefinitionsNoThingsToDo,
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       return request(app)
@@ -919,6 +975,7 @@ describe('CheckInformationController', () => {
         stubbedReturnToCustodyDate,
         null,
         [],
+        serviceDefinitionsNoThingsToDo,
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
@@ -946,6 +1003,7 @@ describe('CheckInformationController', () => {
         stubbedReturnToCustodyDate,
         null,
         [],
+        serviceDefinitionsNoThingsToDo,
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       userInputService.isCalculationReasonSet.mockReturnValue(true)
@@ -978,6 +1036,7 @@ describe('CheckInformationController', () => {
         stubbedReturnToCustodyDate,
         { messages: [] } as never,
         [],
+        serviceDefinitionsNoThingsToDo,
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       return request(app)
@@ -1003,6 +1062,7 @@ describe('CheckInformationController', () => {
         null,
         { messages: [] } as never,
         [],
+        serviceDefinitionsNoThingsToDo,
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       return request(app)
@@ -1062,6 +1122,7 @@ describe('CheckInformationController', () => {
         stubbedReturnToCustodyDate,
         null,
         [],
+        serviceDefinitionsNoThingsToDo,
       )
       checkInformationService.checkInformation.mockResolvedValue(model)
       return request(app)
