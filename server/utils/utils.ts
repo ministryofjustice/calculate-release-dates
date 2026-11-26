@@ -152,3 +152,9 @@ export const featureTogglesToConfigItems = (): ConfigItem[] => {
     },
   ]
 }
+
+export const removeTags = (value: string): string =>
+  value
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
