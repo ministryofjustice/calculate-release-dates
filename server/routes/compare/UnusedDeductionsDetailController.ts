@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { Controller } from '../controller'
 import ComparisonService from '../../services/comparisonService'
+import { removeTags } from '../../utils/utils'
 
 export default class UnusedDeductionsDetailController implements Controller {
   constructor(private readonly comparisonService: ComparisonService) {}
@@ -14,8 +15,13 @@ export default class UnusedDeductionsDetailController implements Controller {
     )
     // Existing unused deductions are not inputs to a fresh calculation
     const adjustments = detail.adjustments.filter(adjustment => adjustment.adjustmentType !== 'UNUSED_DEDUCTIONS')
+    const validationMessages = detail.validationMessages?.map(message =>
+      message.contentType === 'HTML' && message.message
+        ? { ...message, message: removeTags(message.message) }
+        : message,
+    )
     res.render('pages/compare/unusedDeductions/detail', {
-      detail: { ...detail, adjustments },
+      detail: { ...detail, adjustments, validationMessages },
       comparison: detail.comparison,
     })
   }

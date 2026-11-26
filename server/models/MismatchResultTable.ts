@@ -3,6 +3,7 @@ import {
   ComparisonOverview,
 } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import ComparisonType from '../enumerations/comparisonType'
+import { removeTags } from '../utils/utils'
 
 export default class MismatchResultTable {
   headings: { text: string }[]
@@ -41,7 +42,7 @@ export default class MismatchResultTable {
       .map(validationMessage =>
         validationMessage.contentType === 'PLAIN_TEXT'
           ? validationMessage.message
-          : this.removeTags(validationMessage.message),
+          : removeTags(validationMessage.message),
       )
       .join(', ')
 
@@ -65,13 +66,6 @@ export default class MismatchResultTable {
       })
     }
     return row.filter(e => e)
-  }
-
-  private removeTags(value: string) {
-    return value
-      .replace(/<[^>]*>/g, ' ')
-      .replace(/\s{2,}/g, ' ')
-      .trim()
   }
 
   private isAllPrisons(prison: string) {

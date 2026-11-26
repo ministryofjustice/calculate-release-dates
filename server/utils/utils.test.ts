@@ -4,6 +4,7 @@ import {
   createSupportLink,
   sortDisplayableDates,
   featureTogglesToConfigItems,
+  removeTags,
 } from './utils'
 import config from '../config'
 
@@ -104,5 +105,15 @@ describe('feature toggles', () => {
   it('all feature toggles should be described', () => {
     const expected = Object.keys(config.featureToggles).length
     expect(featureTogglesToConfigItems()).toHaveLength(expected)
+  })
+})
+
+describe('removeTags', () => {
+  it('removes html tags and tidies whitespace', () => {
+    expect(removeTags('Fix it <a href="https://example.com">in the service</a>.')).toBe('Fix it in the service .')
+  })
+
+  it('leaves plain text untouched', () => {
+    expect(removeTags('No tags here')).toBe('No tags here')
   })
 })
