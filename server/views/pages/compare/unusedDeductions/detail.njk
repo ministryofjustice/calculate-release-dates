@@ -32,13 +32,7 @@
         <h2 class="govuk-heading-m">Validation messages</h2>
         <ul class="govuk-list govuk-list--bullet">
             {% for message in detail.validationMessages %}
-                <li>
-                    {%- if message.contentType == 'HTML' and message.message -%}
-                        {{ message.message | safe }}
-                    {%- else -%}
-                        {{ message.message or message.code }}
-                    {%- endif -%}
-                </li>
+                <li>{{ message.message or message.code }}</li>
             {% endfor %}
         </ul>
     {% endif %}

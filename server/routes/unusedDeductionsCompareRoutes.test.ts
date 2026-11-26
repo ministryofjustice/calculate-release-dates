@@ -490,7 +490,7 @@ describe('Unused deductions comparison routes', () => {
       })
   })
 
-  it('GET detail renders HTML validation messages as links and escapes plain text ones', () => {
+  it('GET detail strips HTML tags from validation messages rather than rendering links', () => {
     comparisonService.getUnusedDeductionsComparisonPerson.mockResolvedValue({
       ...personDetail,
       validationMessages: [
@@ -507,7 +507,8 @@ describe('Unused deductions comparison routes', () => {
       .get('/compare/unused-deductions/result/abc12345/detail/def67890')
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('<a href="https://adjustments.example/A1234BC">Review the adjustments</a>')
+        expect(res.text).toContain('Inactive sentence. Review the adjustments .')
+        expect(res.text).not.toContain('<a href="https://adjustments.example/A1234BC">')
         expect(res.text).toContain('Plain &lt;b&gt;text&lt;/b&gt;')
       })
   })
