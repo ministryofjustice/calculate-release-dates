@@ -21,7 +21,7 @@ import {
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CheckInformationService from '../../services/checkInformationService'
 import UserInputService from '../../services/userInputService'
-import { ErrorMessageType } from '../../types/ErrorMessages'
+import { ErrorMessageType, FixSource } from '../../types/ErrorMessages'
 import SentenceAndOffenceViewModel from '../../models/SentenceAndOffenceViewModel'
 import trimHtml from '../testutils/testUtils'
 import { FullPageError } from '../../types/FullPageError'
@@ -400,6 +400,18 @@ describe('CheckInformationController', () => {
       adjustments: {
         href: 'http://localhost:8002/AB1234AB',
         text: 'Adjustments',
+        thingsToDo: {
+          things: [],
+          count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
+      },
+      courtCases: {
+        href: 'http://localhost:8002/AB1234AB',
+        text: 'Court cases',
         thingsToDo: {
           things: [],
           count: 0,
@@ -1167,6 +1179,162 @@ describe('CheckInformationController', () => {
         .expect(res => {
           expect(res.text).toContain('There is a problem')
           expect(res.text).toContain('The calculation must include at least one active sentence.')
+        })
+    })
+
+    it('GET /calculation/:nomsId/check-information should display ADJUSTMENT_FUTURE_DATED_UAL (Adjustments) Validation Fix Source link', () => {
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        {
+          messages: [
+            { text: 'The from date for Unlawfully at Large (UAL) must be the first day the prisoner was deemed UAL.' },
+          ],
+          messageType: ErrorMessageType.VALIDATION,
+          fixSources: [FixSource.ADJUSTMENTS],
+        },
+        [],
+        serviceDefinitionsNoThingsToDo,
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/AB1234AB/check-information')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain(
+            'The from date for Unlawfully at Large (UAL) must be the first day the prisoner was deemed UAL.',
+          )
+          expect(res.text).toContain(
+            'Update these details in the <a href="http://localhost:8002/AB1234AB">Adjustments tab</a>',
+          )
+          expect(res.text).not.toContain('Update these details in NOMIS')
+        })
+    })
+
+    it('GET /calculation/:nomsId/check-information should display ADJUSTMENT_FUTURE_DATED_ADA (Adjudications) Validation Fix Source link', () => {
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        {
+          messages: [
+            { text: 'The from date for Additional days awarded (ADA) should be the date of the adjudication hearing.' },
+          ],
+          messageType: ErrorMessageType.VALIDATION,
+          fixSources: [FixSource.ADJUDICATIONS],
+        },
+        [],
+        serviceDefinitionsNoThingsToDo,
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/A1234AA/check-information')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain(
+            'The from date for Additional days awarded (ADA) should be the date of the adjudication hearing.',
+          )
+          expect(res.text).toContain(
+            'Update these details in <a href="http://127.0.0.1:3000/manage-adjudications/adjudication-history/A1234AA">Adjudications</a>',
+          )
+          expect(res.text).not.toContain('Update these details in NOMIS')
+        })
+    })
+
+    it('GET /calculation/:nomsId/check-information should display A_FINE_SENTENCE_MISSING_FINE_AMOUNT (Court Cases) Validation Fix Source link', () => {
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        {
+          messages: [
+            {
+              text: 'Sentence starting on 2019-12-12 in Court case CASE001 at Court 1 for offence Rape of a minor must include a fine amount',
+            },
+          ],
+          messageType: ErrorMessageType.VALIDATION,
+          fixSources: [FixSource.COURT_CASES],
+        },
+        [],
+        serviceDefinitionsNoThingsToDo,
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/AB1234AB/check-information')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain(
+            'Sentence starting on 2019-12-12 in Court case CASE001 at Court 1 for offence Rape of a minor must include a fine amount',
+          )
+          expect(res.text).toContain(
+            'Update these details in the <a href="http://localhost:8002/AB1234AB">Court cases tab</a>',
+          )
+          expect(res.text).not.toContain('Update these details in NOMIS')
+        })
+    })
+
+    it('GET /calculation/:nomsId/check-information should display A_FINE_SENTENCE_MISSING_FINE_AMOUNT (Court Cases) Validation Fix Source link', () => {
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        {
+          messages: [
+            {
+              text: 'Sentence starting on 2019-12-12 in Court case CASE001 at Court 1 for offence Rape of a minor must include a fine amount',
+            },
+          ],
+          messageType: ErrorMessageType.VALIDATION,
+          fixSources: [FixSource.COURT_CASES],
+        },
+        [],
+        serviceDefinitionsNoThingsToDo,
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/AB1234AB/check-information')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain(
+            'Sentence starting on 2019-12-12 in Court case CASE001 at Court 1 for offence Rape of a minor must include a fine amount',
+          )
+          expect(res.text).toContain(
+            'Update these details in the <a href="http://localhost:8002/AB1234AB">Court cases tab</a>',
+          )
+          expect(res.text).not.toContain('Update these details in NOMIS')
         })
     })
   })
