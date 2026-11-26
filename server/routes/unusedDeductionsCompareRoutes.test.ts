@@ -489,4 +489,26 @@ describe('Unused deductions comparison routes', () => {
         expect(res.text).toContain('boom')
       })
   })
+
+  it('GET detail renders HTML validation messages as links and escapes plain text ones', () => {
+    comparisonService.getUnusedDeductionsComparisonPerson.mockResolvedValue({
+      ...personDetail,
+      validationMessages: [
+        {
+          code: 'ADJUSTMENT_LINKED_TO_INACTIVE_SENTENCE',
+          message: 'Inactive sentence. <a href="https://adjustments.example/A1234BC">Review the adjustments</a>.',
+          contentType: 'HTML',
+        },
+        { code: 'OTHER', message: 'Plain <b>text</b>', contentType: 'TEXT' },
+      ],
+    } as never)
+
+    return request(app)
+      .get('/compare/unused-deductions/result/abc12345/detail/def67890')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('<a href="https://adjustments.example/A1234BC">Review the adjustments</a>')
+        expect(res.text).toContain('Plain &lt;b&gt;text&lt;/b&gt;')
+      })
+  })
 })
