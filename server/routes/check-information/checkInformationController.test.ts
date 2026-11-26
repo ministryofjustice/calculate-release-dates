@@ -421,6 +421,18 @@ describe('CheckInformationController', () => {
           message: 'placeholder',
         },
       },
+      recalls: {
+        href: 'http://localhost:8002/AB1234AB',
+        text: 'Recalls',
+        thingsToDo: {
+          things: [],
+          count: 0,
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
+      },
       releaseDates: {
         href: 'http://localhost:8004?prisonId=AB1234AB',
         text: 'Release dates and calculations',
@@ -1333,6 +1345,46 @@ describe('CheckInformationController', () => {
           )
           expect(res.text).toContain(
             'Update these details in the <a href="http://localhost:8002/AB1234AB">Court cases tab</a>',
+          )
+          expect(res.text).not.toContain('Update these details in NOMIS')
+        })
+    })
+
+    it('GET /calculation/:nomsId/check-information should display FTR_SENTENCES_CONFLICT_WITH_EACH_OTHER (Recalls) Validation Fix Source link', () => {
+      calculateReleaseDatesService.getUnsupportedSentenceOrCalculationMessages.mockResolvedValue(stubbedEmptyMessages)
+      userInputService.isCalculationReasonSet.mockReturnValue(true)
+
+      const model = new SentenceAndOffenceViewModel(
+        stubbedPrisonerData,
+        stubbedUserInput,
+        stubbedSentencesAndOffences,
+        false,
+        true,
+        false,
+        stubbedReturnToCustodyDate,
+        {
+          messages: [
+            {
+              text: 'The fixed term recalls in this calculation must all be the same, either 14, 28 or 56 days.',
+            },
+          ],
+          messageType: ErrorMessageType.VALIDATION,
+          fixSources: [FixSource.RECALLS],
+        },
+        [],
+        serviceDefinitionsNoThingsToDo,
+      )
+      checkInformationService.checkInformation.mockResolvedValue(model)
+      return request(app)
+        .get('/calculation/AB1234AB/check-information')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain(
+            'The fixed term recalls in this calculation must all be the same, either 14, 28 or 56 days.',
+          )
+          expect(res.text).toContain(
+            'Update these details in the <a href="http://localhost:8002/AB1234AB">Recalls tab</a>',
           )
           expect(res.text).not.toContain('Update these details in NOMIS')
         })
