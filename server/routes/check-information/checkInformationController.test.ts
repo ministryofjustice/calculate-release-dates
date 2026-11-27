@@ -21,12 +21,13 @@ import {
 } from '../../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import CheckInformationService from '../../services/checkInformationService'
 import UserInputService from '../../services/userInputService'
-import { ErrorMessageType, FixSource } from '../../types/ErrorMessages'
+import { ErrorMessageType } from '../../types/ErrorMessages'
 import SentenceAndOffenceViewModel from '../../models/SentenceAndOffenceViewModel'
 import trimHtml from '../testutils/testUtils'
 import { FullPageError } from '../../types/FullPageError'
 import { CcrdServiceDefinitions } from '../../@types/courtCasesReleaseDatesApi/types'
 import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
+import { FixSource } from '../../types/ErrorMessage'
 
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/prisonerService')
@@ -1208,10 +1209,12 @@ describe('CheckInformationController', () => {
         stubbedReturnToCustodyDate,
         {
           messages: [
-            { text: 'The from date for Unlawfully at Large (UAL) must be the first day the prisoner was deemed UAL.' },
+            {
+              text: 'The from date for Unlawfully at Large (UAL) must be the first day the prisoner was deemed UAL.',
+              fixSource: FixSource.ADJUSTMENTS,
+            },
           ],
           messageType: ErrorMessageType.VALIDATION,
-          fixSources: [FixSource.ADJUSTMENTS],
         },
         [],
         serviceDefinitionsNoThingsToDo,
@@ -1246,10 +1249,12 @@ describe('CheckInformationController', () => {
         stubbedReturnToCustodyDate,
         {
           messages: [
-            { text: 'The from date for Additional days awarded (ADA) should be the date of the adjudication hearing.' },
+            {
+              text: 'The from date for Additional days awarded (ADA) should be the date of the adjudication hearing.',
+              fixSource: FixSource.ADJUDICATIONS,
+            },
           ],
           messageType: ErrorMessageType.VALIDATION,
-          fixSources: [FixSource.ADJUDICATIONS],
         },
         [],
         serviceDefinitionsNoThingsToDo,
@@ -1286,10 +1291,10 @@ describe('CheckInformationController', () => {
           messages: [
             {
               text: 'Sentence starting on 2019-12-12 in Court case CASE001 at Court 1 for offence Rape of a minor must include a fine amount',
+              fixSource: FixSource.COURT_CASES,
             },
           ],
           messageType: ErrorMessageType.VALIDATION,
-          fixSources: [FixSource.COURT_CASES],
         },
         [],
         serviceDefinitionsNoThingsToDo,
@@ -1326,10 +1331,10 @@ describe('CheckInformationController', () => {
           messages: [
             {
               text: 'Sentence starting on 2019-12-12 in Court case CASE001 at Court 1 for offence Rape of a minor must include a fine amount',
+              fixSource: FixSource.COURT_CASES,
             },
           ],
           messageType: ErrorMessageType.VALIDATION,
-          fixSources: [FixSource.COURT_CASES],
         },
         [],
         serviceDefinitionsNoThingsToDo,
@@ -1366,10 +1371,10 @@ describe('CheckInformationController', () => {
           messages: [
             {
               text: 'The fixed term recalls in this calculation must all be the same, either 14, 28 or 56 days.',
+              fixSource: FixSource.RECALLS,
             },
           ],
           messageType: ErrorMessageType.VALIDATION,
-          fixSources: [FixSource.RECALLS],
         },
         [],
         serviceDefinitionsNoThingsToDo,
