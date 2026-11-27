@@ -7,6 +7,7 @@ import PrisonerService from './prisonerService'
 import { CalculationUserInputs } from '../@types/calculateReleaseDates/calculateReleaseDatesClientTypes'
 import { convertValidationToErrorMessages } from '../utils/utils'
 import { PrisonApiPrisoner } from '../@types/prisonApi/prisonClientTypes'
+import { CcrdServiceDefinitions } from '../@types/courtCasesReleaseDatesApi/types'
 
 export default class CheckInformationService {
   constructor(
@@ -21,6 +22,7 @@ export default class CheckInformationService {
     userInputs: CalculationUserInputs,
     username: string,
     prisonerDetail: PrisonApiPrisoner,
+    serviceDefinitions: CcrdServiceDefinitions,
   ): Promise<SentenceAndOffenceViewModel> {
     const [sentencesAndOffences, ersedAvailable, analysedAdjustments, validationResult] = await Promise.all([
       this.calculateReleaseDatesService.getActiveAnalysedSentencesAndOffences(prisonerDetail.bookingId, username),
@@ -77,6 +79,7 @@ export default class CheckInformationService {
       returnToCustody,
       validationMessages,
       analysedAdjustments,
+      serviceDefinitions,
     )
   }
 }
