@@ -7,6 +7,15 @@ interface ErrorMessage {
   id?: string
   /* Text to display */
   text?: string
+  /* Fix source to display */
+  fixSource?: FixSource
+}
+
+export enum FixSource {
+  ADJUSTMENTS = 'ADJUSTMENTS',
+  ADJUDICATIONS = 'ADJUDICATIONS',
+  COURT_CASES = 'COURT_CASES',
+  RECALLS = 'RECALLS',
 }
 
 export default ErrorMessage

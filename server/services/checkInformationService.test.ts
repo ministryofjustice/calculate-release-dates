@@ -230,7 +230,6 @@ describe('checkInformationService', () => {
         type: 'VALIDATION',
         message: 'Missing dates',
         calculationUnsupported: false,
-        fixSource: null,
       } as ValidationMessage,
     ])
 
@@ -246,7 +245,6 @@ describe('checkInformationService', () => {
     expect(model.validationErrors).toStrictEqual({
       messageType: ErrorMessageType.VALIDATION,
       messages: [{ text: 'Missing dates' }],
-      fixSources: [],
     })
     expect(telemetry.trackEvent).toHaveBeenCalledWith('validation-failures-requiring-fix', {
       count: 1,
@@ -263,13 +261,11 @@ describe('checkInformationService', () => {
         type: 'CONCURRENT_CONSECUTIVE',
         message: '0 years 0 months 5 weeks 0 days',
         calculationUnsupported: false,
-        fixSource: null,
       } as ValidationMessage,
       {
         type: 'VALIDATION',
         message: 'Missing dates',
         calculationUnsupported: false,
-        fixSource: null,
       } as ValidationMessage,
     ])
 
@@ -284,7 +280,6 @@ describe('checkInformationService', () => {
     expect(model.validationErrors).toStrictEqual({
       messageType: ErrorMessageType.VALIDATION,
       messages: [{ text: 'Missing dates' }],
-      fixSources: [],
     })
     expect(telemetry.trackEvent).toHaveBeenCalledWith('validation-failures-requiring-fix', {
       count: 1,

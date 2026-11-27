@@ -1,36 +1,46 @@
-{% include "./list-validation-messages.njk" %}
+{% for error in validationErrors.messages %}
+    <li>
+        <p class="govuk-body">
+            {% if error.href %}
+                <a href="{{ error.href }}">{{ error.html | safe if error.html else error.text }}</a>
+            {% else %}
+                {{ error.html | safe if error.html else error.text | replace('\n', '<br>') | safe }}
+            {% endif %}
 
-     {% if validationErrors.fixSources|length %}
-          {% if 'ADJUSTMENTS' in validationErrors.fixSources %}
-               <li>
-                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ model.getAdjustmentsTabUrl() }}">Adjustments tab</a>.
-                   </p>
-               </li>
-          {% endif %}
+             {% if error.fixSource != null %}
+                  {% if error.fixSource === 'ADJUSTMENTS' %}
+                       <li>
+                           <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ model.getAdjustmentsTabUrl() }}">Adjustments tab</a>.
+                           </p>
+                       </li>
+                  {% endif %}
 
-          {% if 'ADJUDICATIONS' in validationErrors.fixSources %}
-               <li>
-                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in <a href="{{ manageAdjudicationsUrl }}/adjudication-history/{{ model.prisonerDetail.offenderNo }}">Adjudications</a>.
-                   </p>
-               </li>
-          {% endif %}
+                  {% if error.fixSource === 'ADJUDICATIONS' %}
+                       <li>
+                           <p class="govuk-body govuk-!-margin-bottom-0">Update these details in <a href="{{ manageAdjudicationsUrl }}/adjudication-history/{{ model.prisonerDetail.offenderNo }}">Adjudications</a>.
+                           </p>
+                       </li>
+                  {% endif %}
 
-          {% if 'COURT_CASES' in validationErrors.fixSources %}
-               <li>
-                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ model.getCourtCasesTabUrl() }}">Court cases tab</a>.
-                   </p>
-               </li>
-          {% endif %}
+                  {% if error.fixSource === 'COURT_CASES' %}
+                       <li>
+                           <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ model.getCourtCasesTabUrl() }}">Court cases tab</a>.
+                           </p>
+                       </li>
+                  {% endif %}
 
-          {% if 'RECALLS' in validationErrors.fixSources %}
-               <li>
-                   <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ model.getRecallsTabUrl() }}">Recalls tab</a>.
-                   </p>
-               </li>
-          {% endif %}
-     {% else %}
-        <li>
-            <p class="govuk-body govuk-!-margin-bottom-0">Update these details in NOMIS and then <a href="">reload this page</a>.
-            </p>
-        </li>
-     {% endif %}
+                  {% if error.fixSource === 'RECALLS'%}
+                       <li>
+                           <p class="govuk-body govuk-!-margin-bottom-0">Update these details in the <a href="{{ model.getRecallsTabUrl() }}">Recalls tab</a>.
+                           </p>
+                       </li>
+                  {% endif %}
+             {% else %}
+                <li>
+                    <p class="govuk-body govuk-!-margin-bottom-0">Update these details in NOMIS and then <a href="">reload this page</a>.
+                    </p>
+                </li>
+             {% endif %}
+        </p>
+    </li>
+{% endfor %}
